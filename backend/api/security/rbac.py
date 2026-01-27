@@ -28,6 +28,8 @@ class RoleChecker:
         return True
 
 # Pre-defined role checkers
-require_admin = RoleChecker(["admin"])
-require_operator = RoleChecker(["admin", "operator"])
-require_viewer = RoleChecker(["admin", "operator", "viewer"])
+require_owner = RoleChecker(["owner"])
+require_admin = RoleChecker(["owner", "admin"])
+require_developer = RoleChecker(["owner", "admin", "developer"])
+require_operator = RoleChecker(["owner", "admin", "operator"])
+require_viewer = RoleChecker(["owner", "admin", "developer", "operator", "viewer"])

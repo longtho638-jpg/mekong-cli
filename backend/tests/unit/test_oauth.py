@@ -51,7 +51,9 @@ def jwt_service(monkeypatch):
     """Mock settings for JWTService"""
     class MockSettings:
         secret_key = TEST_SECRET_KEY
+        jwt_algorithm = "HS256"
         access_token_expire_minutes = 60
+        refresh_token_expire_minutes = 10080
         backend_url = TEST_ISSUER
 
     monkeypatch.setattr("backend.services.jwt_service.settings", MockSettings())
@@ -65,7 +67,8 @@ def oauth_service(db_session: Session):
 def token_service(db_session: Session):
     return TokenService(db_session)
 
-def test_jwt_generation_validation(jwt_service):
+@pytest.mark.asyncio
+async def test_jwt_generation_validation(jwt_service):
     """Test JWT creation and decoding"""
     user_id = "user_123"
     client_id = "client_abc"
@@ -77,8 +80,20 @@ def test_jwt_generation_validation(jwt_service):
     assert jti is not None
     assert expiry > datetime.now(timezone.utc)
 
+    # Mock Redis for jwt_service inside test if needed, or if fixture didn't handle it
+    # But jwt_service fixture calls JWTService() which uses real redis_client from imports unless mocked.
+    # We should mock redis in the jwt_service fixture or here.
+
+    # In integration test we used a mock. Here jwt_service fixture uses mocked settings but REAL redis_client import?
+    # backend.services.jwt_service imports redis_client from backend.core.infrastructure.redis
+    # We should patch that too.
+
+    from unittest.mock import AsyncMock
+    jwt_service.redis = AsyncMock()
+    jwt_service.redis.exists.return_value = 0
+
     # Decode
-    payload = jwt_service.decode_token(encoded)
+    payload = await jwt_service.decode_token(encoded)
     assert payload["sub"] == user_id
     assert payload["aud"] == client_id
     assert payload["scope"] == scope
@@ -185,11 +200,18 @@ def test_authorization_code_flow(oauth_service, token_service):
     except ValueError as e:
         assert str(e) == "Authorization code already used"
 
-def test_refresh_token_rotation(token_service):
+@pytest.mark.asyncio
+async def test_refresh_token_rotation(token_service):
     """Test refresh token rotation"""
     # Mock settings again for JWT service inside token_service
     # Or rely on integration/conftest patching if available.
     # For now, let's assume default settings work or use Mock in real test suite.
+
+    # Mock Redis
+    from unittest.mock import AsyncMock
+    token_service.jwt_service.redis = AsyncMock()
+    token_service.jwt_service.redis.exists.return_value = 0
+    token_service.jwt_service.redis.setex.return_value = True
 
     # Create initial tokens
     at, rt, exp = token_service.create_tokens("user_1", "client_1", "read")
@@ -199,7 +221,7 @@ def test_refresh_token_rotation(token_service):
     assert token_record.revoked is False
 
     # Rotate
-    new_at, new_rt, new_exp = token_service.rotate_refresh_token(token_record)
+    new_at, new_rt, new_exp = await token_service.rotate_refresh_token(token_record)
 
     # Old should be revoked
     old_record = token_service.get_token_by_refresh_token(rt)

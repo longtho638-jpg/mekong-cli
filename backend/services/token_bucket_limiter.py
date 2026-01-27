@@ -15,6 +15,44 @@ class TokenBucketLimiter:
     """
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
+        self.lua_script = self.redis.register_script("""
+            local key = KEYS[1]
+            local capacity = tonumber(ARGV[1])
+            local refill_rate = tonumber(ARGV[2])
+            local now = tonumber(ARGV[3])
+            local cost = tonumber(ARGV[4] or 1)
+
+            local tokens_raw = redis.call('HGET', key, 'tokens')
+            local last_refill_raw = redis.call('HGET', key, 'last_refill')
+
+            local tokens = capacity
+            local last_refill = now
+
+            if tokens_raw then
+                tokens = tonumber(tokens_raw)
+            end
+            if last_refill_raw then
+                last_refill = tonumber(last_refill_raw)
+            end
+
+            -- Refill
+            local elapsed = now - last_refill
+            if elapsed > 0 then
+                tokens = math.min(capacity, tokens + (elapsed * refill_rate))
+                last_refill = now
+            end
+
+            if tokens >= cost then
+                tokens = tokens - cost
+                redis.call('HSET', key, 'tokens', tokens, 'last_refill', last_refill)
+                -- Expire after suitable time (e.g. time to full + buffer)
+                -- default 1 hour if refill_rate is 0 or low
+                redis.call('EXPIRE', key, 3600)
+                return {1, tokens}
+            else
+                return {0, 0}
+            end
+        """)
 
     async def check_rate_limit(
         self,
@@ -36,41 +74,16 @@ class TokenBucketLimiter:
         now = time.time()
         bucket_key = f"rate_limit:bucket:{key}"
 
-        # Get current tokens and last refill time
-        pipeline = self.redis.pipeline()
-        pipeline.hget(bucket_key, 'tokens')
-        pipeline.hget(bucket_key, 'last_refill')
-        results = await pipeline.execute()
+        try:
+            # keys=[bucket_key], args=[capacity, refill_rate, now, cost=1]
+            result = await self.lua_script(keys=[bucket_key], args=[capacity, refill_rate, now, 1])
+            allowed = bool(result[0])
+            remaining = int(float(result[1])) # Lua returns numbers which might be float for tokens
+            return allowed, remaining
+        except Exception as e:
+            # Propagate error to service wrapper
+            raise e
 
-        tokens_raw = results[0]
-        last_refill_raw = results[1]
-
-        tokens = float(tokens_raw) if tokens_raw is not None else float(capacity)
-        last_refill = float(last_refill_raw) if last_refill_raw is not None else now
-
-        # Refill tokens based on time elapsed
-        elapsed = now - last_refill
-        # Calculate new tokens, capped at capacity
-        tokens = min(float(capacity), tokens + elapsed * refill_rate)
-
-        if tokens >= 1.0:
-            # Consume 1 token
-            tokens -= 1.0
-
-            pipeline = self.redis.pipeline()
-            pipeline.hset(bucket_key, 'tokens', tokens)
-            pipeline.hset(bucket_key, 'last_refill', now)
-            # Expire after bucket would be full + buffer
-            # Time to full = (capacity - tokens) / refill_rate
-            # But let's just use a safe margin like capacity / refill_rate * 2
-            expire_seconds = int((capacity / refill_rate) * 2) if refill_rate > 0 else 3600
-            pipeline.expire(bucket_key, max(60, expire_seconds))
-            await pipeline.execute()
-
-            return True, int(tokens)
-        else:
-            # No tokens available
-            return False, 0
 
     async def get_reset_time(self, key: str, refill_rate: float) -> int:
         """

@@ -39,7 +39,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    return verify_token(token, credentials_exception)
+    return await verify_token(token, credentials_exception)
 
 class RoleChecker:
     """Dependency factory for role-based access checks."""

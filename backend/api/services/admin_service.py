@@ -254,3 +254,21 @@ class AdminService:
             "system_health": "healthy", # Placeholder
             "version": "1.0.0"
         }
+
+    async def get_rate_limit_status(self) -> Dict[str, Any]:
+        """Get current rate limit status."""
+        from backend.services.rate_limiter_service import RateLimiterService
+        rate_limiter = RateLimiterService()
+
+        # In a real scenario, we might want to scan for active keys
+        # or return configuration + health status
+        try:
+            redis_health = await rate_limiter.redis.ping()
+        except:
+            redis_health = False
+
+        return {
+            "redis_connected": redis_health,
+            "service_status": "active" if redis_health else "degraded",
+            "timestamp": datetime.now().isoformat()
+        }

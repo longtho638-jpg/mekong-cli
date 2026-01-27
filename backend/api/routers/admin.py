@@ -40,6 +40,16 @@ async def get_system_stats(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/rate-limit-status", dependencies=[Depends(require_admin)])
+async def get_rate_limit_status(
+    service: AdminService = Depends(get_admin_service)
+) -> Dict[str, Any]:
+    """Get current rate limit system status."""
+    try:
+        return await service.get_rate_limit_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # --- User Management ---
 
 @router.get("/users", dependencies=[Depends(require_viewer)])

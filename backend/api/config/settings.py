@@ -64,7 +64,9 @@ class Settings(BaseSettings):
         default="dev-secret-key-CHANGE-IN-PRODUCTION",  # Dev fallback only
         description="Secret key for JWT signing (REQUIRED in production)"
     )
-    access_token_expire_minutes: int = Field(default=60 * 24 * 8, description="JWT expiration (8 days)")
+    access_token_expire_minutes: int = Field(default=15, description="JWT access token expiration (15 minutes)")
+    refresh_token_expire_minutes: int = Field(default=60 * 24 * 7, description="JWT refresh token expiration (7 days)")
+    jwt_algorithm: str = Field(default="HS256", description="JWT Algorithm")
 
     # Optional webhook secrets
     gumroad_webhook_secret: str = Field(default="", description="Gumroad webhook secret")

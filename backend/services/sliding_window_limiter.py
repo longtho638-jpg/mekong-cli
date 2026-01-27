@@ -15,6 +15,34 @@ class SlidingWindowLimiter:
     """
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
+        # Atomically:
+        # 1. Remove old entries
+        # 2. Count current entries
+        # 3. If count < limit, add new entry
+        # Returns: [allowed (0/1), remaining_count]
+        self.lua_script = self.redis.register_script("""
+            local key = KEYS[1]
+            local limit = tonumber(ARGV[1])
+            local window = tonumber(ARGV[2])
+            local now = tonumber(ARGV[3])
+            local unique_id = ARGV[4]
+
+            -- Remove elements older than window
+            redis.call('ZREMRANGEBYSCORE', key, 0, now - window)
+
+            -- Count current elements
+            local count = redis.call('ZCARD', key)
+
+            if count < limit then
+                -- Add new request. Member must be unique to prevent deduplication of requests at same timestamp.
+                -- We use 'timestamp:unique_id' as member.
+                redis.call('ZADD', key, now, now .. ':' .. unique_id)
+                redis.call('EXPIRE', key, window)
+                return {1, limit - count - 1}
+            else
+                return {0, 0}
+            end
+        """)
 
     async def check_rate_limit(
         self,
@@ -34,28 +62,22 @@ class SlidingWindowLimiter:
             (allowed: bool, remaining: int)
         """
         now = time.time()
-        window_start = now - window_seconds
+        import uuid
+        unique_id = str(uuid.uuid4())
 
-        pipeline = self.redis.pipeline()
-
-        # Remove old requests outside window
-        pipeline.zremrangebyscore(key, 0, window_start)
-
-        # Count requests in current window
-        pipeline.zcard(key)
-
-        results = await pipeline.execute()
-        current_count = results[1]
-
-        if current_count < limit:
-            # Add current request
-            # ZADD key score member
-            await self.redis.zadd(key, {str(now): now})
-            await self.redis.expire(key, window_seconds)
-            return True, limit - current_count - 1
-        else:
-            # Rate limit exceeded
-            return False, 0
+        # Execute Lua script
+        # keys=[key], args=[limit, window, now, unique_id]
+        try:
+            result = await self.lua_script(keys=[key], args=[limit, window_seconds, now, unique_id])
+            allowed = bool(result[0])
+            remaining = result[1]
+            return allowed, remaining
+        except Exception as e:
+            # Fallback or error handling
+            # If Redis script fails, we might default to blocking or allowing depending on policy.
+            # Here we let it bubble up or return False?
+            # The service wrapper catches generic exceptions and fails open (allows traffic).
+            raise e
 
     async def get_reset_time(self, key: str, window_seconds: int) -> int:
         """

@@ -6,22 +6,18 @@ import time
 from backend.services.sliding_window_limiter import SlidingWindowLimiter
 from backend.services.token_bucket_limiter import TokenBucketLimiter
 from backend.services.fixed_window_limiter import FixedWindowLimiter
-from backend.core.infrastructure.redis import redis_client as default_redis_client
+from backend.services.redis_client import redis_service
 
 class RateLimiterService:
     """
     Service facade for different rate limiting algorithms.
     """
     def __init__(self, redis_client: Optional[redis.Redis] = None):
-        # Use provided client or default global client
-        # Note: In a real app we might inject this dependency
-        # For now we assume a redis_client is available or we create one
+        # Use provided client or default global client service
         if redis_client:
             self.redis = redis_client
         else:
-            # Fallback to creating a client if global one not available/ready
-            # Or use the one from infrastructure if it's imported
-            self.redis = default_redis_client or redis.from_url(os.getenv("REDIS_URL", "redis://localhost:6379"))
+            self.redis = redis_service.get_client()
 
         self.sliding_window = SlidingWindowLimiter(self.redis)
         self.token_bucket = TokenBucketLimiter(self.redis)

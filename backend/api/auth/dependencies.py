@@ -11,7 +11,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    return verify_token(token, credentials_exception)
+    return await verify_token(token, credentials_exception)
 
 async def get_current_active_superuser(current_user: TokenData = Depends(get_current_user)) -> TokenData:
     if current_user.role != "superuser" and current_user.role != "admin":

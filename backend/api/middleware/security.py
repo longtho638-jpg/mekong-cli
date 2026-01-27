@@ -12,6 +12,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from backend.api.auth.utils import TokenData, verify_token
 from backend.core.security.audit import audit_logger
+from backend.db.session import SessionLocal
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
             token = auth_header.replace("Bearer ", "")
             try:
                 # We use the existing verify_token logic
-                user = verify_token(token, None)
+                user = await verify_token(token, None)
                 request.state.user = user
             except Exception:
                 # Invalid token, but we let it pass to allow public routes
@@ -48,33 +49,47 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                     actor_type = "user" if user else "unknown"
 
                     # Record in background
-                    await audit_logger.log(
-                        actor_id=actor_id,
-                        actor_type=actor_type,
-                        action=f"{request.method}:{request.url.path}",
-                        resource="api_endpoint",
-                        status="success" if response.status_code < 400 else "failed",
-                        ip_address=request.client.host,
-                        user_agent=request.headers.get("user-agent"),
-                        metadata={
-                            "status_code": response.status_code,
-                            "query_params": str(request.query_params)
-                        }
-                    )
+                    # Use a fresh session for the audit log
+                    db = SessionLocal()
+                    try:
+                        await audit_logger.log_event(
+                            db=db,
+                            action=f"{request.method}:{request.url.path}",
+                            user_id=actor_id,
+                            resource_type="api_endpoint",
+                            metadata={
+                                "status_code": response.status_code,
+                                "query_params": str(request.query_params),
+                                "actor_type": actor_type
+                            },
+                            ip_address=request.client.host,
+                            user_agent=request.headers.get("user-agent")
+                        )
+                    except Exception as log_error:
+                         logger.error(f"Audit logging failed: {log_error}")
+                    finally:
+                        db.close()
 
             return response
 
         except Exception as e:
             # Audit unexpected failures
             actor_id = getattr(user, "username", "anonymous") if user else "anonymous"
-            await audit_logger.log(
-                actor_id=actor_id,
-                actor_type="user" if user else "unknown",
-                action=f"{request.method}:{request.url.path}",
-                resource="api_endpoint",
-                status="failed",
-                ip_address=request.client.host,
-                user_agent=request.headers.get("user-agent"),
-                metadata={"error": str(e)}
-            )
+
+            db = SessionLocal()
+            try:
+                await audit_logger.log_event(
+                    db=db,
+                    action=f"{request.method}:{request.url.path}",
+                    user_id=actor_id,
+                    resource_type="api_endpoint",
+                    metadata={"error": str(e), "status": "failed", "actor_type": "user" if user else "unknown"},
+                    ip_address=request.client.host,
+                    user_agent=request.headers.get("user-agent")
+                )
+            except Exception as log_error:
+                logger.error(f"Audit logging failed: {log_error}")
+            finally:
+                db.close()
+
             raise e

@@ -71,7 +71,7 @@ class TokenService:
         token_hash = self._hash_token(refresh_token)
         query = select(OAuthToken).where(
             OAuthToken.refresh_token_hash == token_hash,
-            OAuthToken.revoked == False,
+            OAuthToken.revoked.is_(False),
             OAuthToken.refresh_token_expires_at > datetime.now(timezone.utc)
         )
         result = self.db.execute(query)
@@ -83,7 +83,7 @@ class TokenService:
         result = self.db.execute(query)
         return result.scalar_one_or_none()
 
-    def revoke_token(self, token_string: str, token_type_hint: Optional[str] = None) -> bool:
+    async def revoke_token(self, token_string: str, token_type_hint: Optional[str] = None) -> bool:
         """
         Revoke a token.
         If it's an access token (JWT), we revoke by JTI.
@@ -100,7 +100,7 @@ class TokenService:
 
         # Try as Access Token
         if not token_record and (token_type_hint == "access_token" or token_type_hint is None):
-            payload = self.jwt_service.decode_token(token_string)
+            payload = await self.jwt_service.decode_token(token_string)
             if payload and "jti" in payload:
                 jti = payload["jti"]
                 query = select(OAuthToken).where(OAuthToken.access_token_jti == jti)
@@ -110,11 +110,25 @@ class TokenService:
         if token_record:
             token_record.revoked = True
             self.db.commit()
+
+            # Sync with Redis Blacklist for immediate revocation
+            if token_record.access_token_jti:
+                # Calculate remaining TTL
+                now = datetime.now(timezone.utc)
+                # Ensure timezone awareness for comparison
+                expires_at = token_record.access_token_expires_at
+                if expires_at.tzinfo is None:
+                    expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+                if expires_at > now:
+                    expires_in = int((expires_at - now).total_seconds())
+                    await self.jwt_service.revoke_token(token_record.access_token_jti, expires_in)
+
             return True
 
         return False
 
-    def rotate_refresh_token(self, old_token_record: OAuthToken) -> Tuple[str, str, int]:
+    async def rotate_refresh_token(self, old_token_record: OAuthToken) -> Tuple[str, str, int]:
         """
         Revoke old token and issue new pair.
         Used during refresh flow.
@@ -122,6 +136,18 @@ class TokenService:
         # Revoke old
         old_token_record.revoked = True
         self.db.commit()
+
+        # Blacklist old access token if still valid
+        if old_token_record.access_token_jti:
+            now = datetime.now(timezone.utc)
+            # Ensure timezone awareness
+            expires_at = old_token_record.access_token_expires_at
+            if expires_at.tzinfo is None:
+                expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+            if expires_at > now:
+                expires_in = int((expires_at - now).total_seconds())
+                await self.jwt_service.revoke_token(old_token_record.access_token_jti, expires_in)
 
         # Issue new
         return self.create_tokens(

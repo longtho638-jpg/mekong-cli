@@ -1,0 +1,40 @@
+rate_limits:
+  global:
+    # Layer 1: IP-based rate limiting (DDoS protection)
+    ip_limit: 100
+    ip_window: 60  # 1 minute
+
+    # Layer 2: Authenticated User rate limiting
+    user_limit: 1000
+    user_window: 3600 # 1 hour
+
+    # Layer 4: Burst protection (reject sudden spikes >200% normal)
+    # This is handled by the token bucket capacity usually, or checking checking strictly short windows
+    burst_multiplier: 1.5
+
+  endpoints:
+    /api/auth/login:
+      enabled: true
+      limit: 5
+      window_seconds: 60
+      algorithm: sliding_window
+
+    /api/auth/register:
+      enabled: true
+      limit: 3
+      window_seconds: 60
+
+    /api/payment/*:
+      enabled: true
+      limit: 10
+      window_seconds: 60
+
+    /api/admin/*:
+      enabled: true
+      limit: 50
+      window_seconds: 60
+
+    /api/v1/public/*:
+      enabled: true
+      limit: 20
+      window_seconds: 60

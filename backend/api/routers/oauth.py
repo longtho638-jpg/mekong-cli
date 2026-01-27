@@ -197,7 +197,7 @@ async def token(
              raise HTTPException(status_code=400, detail="Client mismatch")
 
         # Rotate
-        access_token, new_refresh_token, expires_in = token_service.rotate_refresh_token(token_record)
+        access_token, new_refresh_token, expires_in = await token_service.rotate_refresh_token(token_record)
 
         return OAuth2TokenResponse(
             access_token=access_token,
@@ -241,7 +241,7 @@ async def introspect(
     # Inspect Token
     # Try JWT decode first for access tokens
     if token_type_hint != "refresh_token":
-        payload = token_service.jwt_service.decode_token(token)
+        payload = await token_service.jwt_service.decode_token(token)
         if payload:
             # Check revocation
             jti = payload.get("jti")
@@ -297,5 +297,5 @@ async def revoke(
     # Actually, to prevent DoS, we should verify ownership if possible.
     # For now, let's just allow revocation if valid token found.
 
-    token_service.revoke_token(token, token_type_hint)
+    await token_service.revoke_token(token, token_type_hint)
     return {} # 200 OK
