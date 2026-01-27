@@ -138,10 +138,12 @@ killall -HUP mDNSResponder    # Reset DNS cache
 # Kill oldest CC CLI processes (LIFO)
 ps aux | grep "claude.*dangerously" | sort -k10 -r | head -3 | awk '{print $2}' | xargs kill
 
-# 4. Recommend batch size based on Mac specs:
-# M1 8GB  → 2 CC CLI max
-# M1 16GB → 3 CC CLI max
-# M1 Pro/Max 32GB+ → 5 CC CLI max
+# 4. FACTORY LINE MODE (Sequential - Observable):
+# M1 8GB  → 1 CC CLI (sequential)
+# M1 16GB → 1 CC CLI (sequential) ← RECOMMENDED
+# M1 Pro/Max 32GB+ → 2-3 CC CLI max
+
+# Lý do: 1 task/time = dễ quan sát + không overload
 ```
 
 ### 🔴 BINH PHÁP DECISION FRAMEWORK:
@@ -232,6 +234,69 @@ never_stop_for:
 - ❌ Notify user và chờ đợi khi có thể tự quyết
 - ❌ Dừng giám sát trước khi all tasks complete
 - ❌ Không auto-advance batches
+
+---
+
+## 🚨 ĐIỀU 22: CC CLI EXECUTION PATTERN (FACTORY LINE)
+
+> **Cách chạy CC CLI từ Antigravity - KHÔNG ĐƯỢC QUÊN**
+
+### 🔴 SYNTAX CHÍNH XÁC:
+
+```bash
+# ✅ ĐÚNG - Echo pipe với /delegate:
+echo "/delegate TASK_DESCRIPTION" | claude --dangerously-skip-permissions
+
+# Ví dụ:
+echo "/delegate IPO-001: Create production Docker build" | claude --dangerously-skip-permissions
+```
+
+### 🔴 FACTORY LINE MODE (1 task at a time):
+
+```yaml
+factory_line_protocol:
+    step_1: "Start 1 CC CLI task"
+    step_2: "Monitor với command_status"
+    step_3: "Khi 100% + DONE → Update task.md"
+    step_4: "Start next task"
+    step_5: "Repeat until all complete"
+
+    never_do:
+        - Chạy nhiều task cùng lúc (parallel)
+        - Dừng giám sát giữa chừng
+        - Notify user và chờ approval
+```
+
+### 🔴 MONITORING COMMANDS:
+
+```bash
+# Check CC CLI status:
+command_status(CommandId, OutputCharacterCount=3000, WaitDurationSeconds=60)
+
+# Check system resources:
+top -l 1 -n 0 | grep -E "Load|CPU|PhysMem"
+
+# Count claude processes:
+ps aux | grep "claude" | grep -v grep | wc -l
+```
+
+### 🔴 ON TASK COMPLETE:
+
+```yaml
+on_complete:
+  1. Update task.md: [x] Task complete ✅ time cost
+  2. Check if more tasks in queue
+  3. If yes: start next task with echo pipe
+  4. If no: notify user with summary
+  5. Commit changes to git
+```
+
+### 🔴 SAI PHẠM NẾU:
+
+- ❌ Không dùng `/delegate` trong echo
+- ❌ Chạy nhiều task song song
+- ❌ Quên monitor với command_status
+- ❌ Không update task.md sau khi complete
 
 ---
 
