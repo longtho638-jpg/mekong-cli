@@ -1,6 +1,14 @@
 # Changelog
 
 
+## [2.1.0] - 2026-01-27
+
+### ✨ Features
+- feat: Mobile PWA Experience (Manifest, Service Worker, Offline Support)
+- feat: Mobile Bottom Navigation & Responsive UI (MD3)
+- feat: Push Notifications Infrastructure (FCM Backend + Frontend Hooks)
+- feat: Add to Home Screen Prompt & Offline Indicator
+
 ## [2.0.0] - 2026-01-25
 
 ### ✨ Features

@@ -1,0 +1,19 @@
+pwa:
+  manifest:
+    name: "AgencyOS"
+    short_name: "AgencyOS"
+    theme_color: "#6200EE"
+    background_color: "#FFFFFF"
+  service_worker:
+    cache_version: "v1"
+    cache_strategies:
+      api: network-first
+      static: cache-first
+      images: stale-while-revalidate
+  push_notifications:
+    fcm_enabled: true
+    vapid_public_key: ${VAPID_PUBLIC_KEY}
+    vapid_private_key: ${VAPID_PRIVATE_KEY}
+  offline:
+    enabled: true
+    fallback_page: "/dashboard"

@@ -1,6 +1,8 @@
 'use client'
 import { usePathname } from 'next/navigation'
 import { DashboardShell } from '@/components/DashboardShell'
+import BottomNav from '@/components/mobile/bottom-nav'
+import OfflineIndicator from '@/components/mobile/offline-indicator'
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
@@ -8,11 +10,20 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
     const isDashboard = pathname ? /^\/([a-z]{2}\/)?dashboard/.test(pathname) : false
 
     if (isDashboard) {
-        return <DashboardShell>{children}</DashboardShell>
+        return (
+            <>
+                <OfflineIndicator />
+                <DashboardShell>
+                    {children}
+                    <BottomNav />
+                </DashboardShell>
+            </>
+        )
     }
 
     return (
         <div>
+            <OfflineIndicator />
             {children}
         </div>
     )

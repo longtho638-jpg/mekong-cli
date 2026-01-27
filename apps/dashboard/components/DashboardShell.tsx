@@ -34,10 +34,10 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
             <div className="fixed inset-0 bg-noise opacity-[0.03] pointer-events-none" />
             
             {/* Sidebar */}
-            <motion.aside 
+            <motion.aside
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="w-64 flex-shrink-0 glass-ultra border-r border-white/5 z-20 flex flex-col relative"
+                className="hidden md:flex w-64 flex-shrink-0 glass-ultra border-r border-white/5 z-20 flex-col relative"
             >
                 <div className="p-6 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 agentic-core">
@@ -98,19 +98,19 @@ export function DashboardShell({ children }: { children: React.ReactNode }) {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative z-10">
-                <header className="h-16 flex items-center justify-between px-8 border-b border-white/5 glass-nav">
+                <header className="h-16 flex items-center justify-between px-4 md:px-8 border-b border-white/5 glass-nav">
                     <h1 className="text-lg font-medium text-white/90 tracking-tight">
                         {NAV_ITEMS.find(i => i.href === pathname)?.name || 'Dashboard'}
                     </h1>
                     <div className="flex items-center gap-4">
-                        <button className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium border border-emerald-500/20 hover:bg-emerald-500/20 transition-all hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
+                        <button className="hidden md:block px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium border border-emerald-500/20 hover:bg-emerald-500/20 transition-all hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                             ⚡ Binh Phap Mode
                         </button>
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 border border-white/10 shadow-lg" />
                     </div>
                 </header>
 
-                <div className="flex-1 overflow-auto p-8 relative scrollbar-hide">
+                <div className="flex-1 overflow-auto p-4 md:p-8 pb-20 md:pb-8 relative scrollbar-hide">
                     <div className="max-w-7xl mx-auto space-y-8">
                         {children}
                     </div>

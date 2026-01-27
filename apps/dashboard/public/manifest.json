@@ -1,48 +1,39 @@
 {
-    "name": "AgencyOS Dashboard",
+    "name": "AgencyOS - AI-Powered Agency Management",
     "short_name": "AgencyOS",
-    "description": "🏯 WIN-WIN-WIN Command Center - Dễ như ăn kẹo!",
-    "start_url": "/en/agentops",
+    "description": "IPO-ready agency management platform",
+    "start_url": "/dashboard",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#0a0a0a",
-    "theme_color": "#7c3aed",
-    "orientation": "any",
+    "orientation": "portrait-primary",
+    "theme_color": "#6200EE",
+    "background_color": "#FFFFFF",
     "icons": [
         {
             "src": "/icons/icon-192.png",
             "sizes": "192x192",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
         },
         {
             "src": "/icons/icon-512.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
-        }
-    ],
-    "categories": [
-        "business",
-        "productivity"
-    ],
-    "screenshots": [
+            "purpose": "any"
+        },
         {
-            "src": "/screenshots/dashboard.png",
-            "sizes": "1280x720",
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
             "type": "image/png",
-            "label": "AgentOps Command Center"
+            "purpose": "maskable"
         }
     ],
     "shortcuts": [
         {
-            "name": "AgentOps",
-            "url": "/en/agentops",
-            "description": "Open Command Center"
-        },
-        {
-            "name": "Revenue",
-            "url": "/en/revenue",
-            "description": "View Revenue Dashboard"
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "url": "/dashboard",
+            "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
         }
     ]
 }
