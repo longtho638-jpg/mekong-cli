@@ -584,6 +584,56 @@ pencil_mcp:
 
 ---
 
+## 🚨 ĐIỀU 28: BÁM ĐUỔI ĐẾN CÙNG (PERSIST PLAN EXECUTION)
+
+> **Kế hoạch đã lên → Thực hiện đến cùng | KHÔNG HỎI LẠI**
+
+### 🔴 NGUYÊN TẮC TUYỆT ĐỐI:
+
+```yaml
+persist_plan_rule:
+    once_plan_set: "Execute to completion"
+    never_ask: "Don't ask for confirmation mid-execution"
+    interrupts: "Handle in parallel as exceptions"
+
+    binh_phap: "Chương 11: 軍爭 - Tốc chiến tốc thắng"
+```
+
+### 🔴 MAIN FLOW vs SIDE TASKS:
+
+```yaml
+execution_model:
+  main_flow:
+    - "IPO tasks"
+    - "Implementation plans"
+    - "Factory line batches"
+    action: "Execute sequentially to END"
+    rule: "NEVER ask user mid-flow"
+
+  side_tasks:
+    - "User questions during execution"
+    - "MCP integration requests"
+    - "Rule additions"
+    action: "Handle IN PARALLEL"
+    rule: "Process and continue main flow"
+```
+
+### 🔴 SAI PHẠM NẾU:
+
+- ❌ Hỏi user "có muốn tiếp tục không?"
+- ❌ Dừng main flow để chờ approval
+- ❌ Không handle side tasks song song
+- ❌ Bỏ dở plan giữa chừng
+
+### 🔴 ĐÚNG CÁCH:
+
+- ✅ Execute plan đến task cuối cùng
+- ✅ Side tasks → parallel processing
+- ✅ Update task.md continuously
+- ✅ Notify user ONLY when ALL DONE
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
