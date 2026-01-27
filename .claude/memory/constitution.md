@@ -9,7 +9,63 @@ Tài liệu này là **LUẬT TỐI CAO** cho mọi Agent trong hệ sinh thái 
 
 ---
 
-## 🚨🚨🚨 CẢNH BÁO ĐỎ - ĐIỀU 0: LUÔN LUÔN /COMMAND 🚨🚨🚨
+## � BINH PHÁP MASTER MAPPING (13 CHƯƠNG)
+
+> **Mọi ĐIỀU trong Constitution ánh xạ với /binh-phap**
+
+### 🏯 13 Chương Binh Pháp:
+
+| Chapter | Name                 | Vietnamese | Purpose     |
+| ------- | -------------------- | ---------- | ----------- |
+| 1       | Strategic Assessment | Kế Hoạch   | Planning    |
+| 2       | Resource Management  | Tác Chiến  | Resources   |
+| 3       | Win Without Fighting | Mưu Công   | Efficiency  |
+| 4       | Positioning          | Hình Thế   | Structure   |
+| 5       | Momentum             | Thế Trận   | Force       |
+| 6       | Strengths/Weaknesses | Hư Thực    | Testing     |
+| 7       | Speed Advantage      | Quân Tranh | Speed       |
+| 8       | Adaptability         | Cửu Biến   | Flexibility |
+| 9       | Operations           | Hành Quân  | Execution   |
+| 10      | Terrain Analysis     | Địa Hình   | Analysis    |
+| 11      | 9 Situations         | Cửu Địa    | Context     |
+| 12      | Disruption           | Hỏa Công   | Deploy      |
+| 13      | Intelligence         | Dụng Gián  | Recon       |
+
+### 🔴 ĐIỀU → BINH PHÁP MAP:
+
+| ĐIỀU | Rule               | Binh Pháp            | Chinese          |
+| ---- | ------------------ | -------------------- | ---------------- |
+| 0    | Luôn /command      | Chương 1: Kế Hoạch   | 計謀             |
+| 1    | ClaudeKit First    | Chương 1: Kế Hoạch   | 計謀             |
+| 2-18 | ClaudeKit Rules    | Chương 4: Hình Thế   | 形勢             |
+| 19   | TỰ TRỊ CC CLI      | Chương 9: Hành Quân  | 行軍             |
+| 20   | RAM/Chip Cleanup   | Chương 8: Cửu Biến   | 九變             |
+| 21   | Continuous Monitor | Chương 13: Dụng Gián | 用間             |
+| 22   | Factory Line       | Chương 9: Hành Quân  | 行軍             |
+| 23   | Playwright MCP     | Chương 3: Mưu Công   | 謀攻 (Attack)    |
+| 24   | Jules Async        | Chương 2: Tác Chiến  | 作戰 (Logistics) |
+| 25   | Stitch MCP         | Chương 3: Mưu Công   | 借刀 (Borrowed)  |
+| 26   | Chrome DevTools    | Chương 13: Dụng Gián | 偵察 (Recon)     |
+| 27   | Pencil.dev MCP     | Chương 1: Kế Hoạch   | 就地 (Local)     |
+| 28   | Persist Plan       | Chương 11: Cửu Địa   | 軍爭 (Speed)     |
+
+### 🔴 QUICK REFERENCE:
+
+```yaml
+binh_phap_lookup:
+    planning: [ĐIỀU 0, ĐIỀU 1, ĐIỀU 27] # Chương 1
+    resources: [ĐIỀU 24] # Chương 2
+    attack: [ĐIỀU 23, ĐIỀU 25] # Chương 3
+    structure: [ĐIỀU 2-18] # Chương 4
+    flexibility: [ĐIỀU 20] # Chương 8
+    execution: [ĐIỀU 19, ĐIỀU 22] # Chương 9
+    context: [ĐIỀU 28] # Chương 11
+    intelligence: [ĐIỀU 21, ĐIỀU 26] # Chương 13
+```
+
+---
+
+## �🚨🚨🚨 CẢNH BÁO ĐỎ - ĐIỀU 0: LUÔN LUÔN /COMMAND 🚨🚨🚨
 
 > ⚠️⚠️⚠️ **CRITICAL RED ALERT** ⚠️⚠️⚠️
 >
