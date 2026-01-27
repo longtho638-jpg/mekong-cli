@@ -62,17 +62,24 @@ self.addEventListener('fetch', event => {
 
 // Push notification event
 self.addEventListener('push', event => {
-  const data = event.data ? event.data.json() : {};
+  if (!event.data) return;
+
+  const data = event.data.json();
   const options = {
     body: data.body || 'New notification',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-192.png',
+    icon: data.icon || '/icons/icon-192.png',
+    badge: data.badge || '/icons/icon-192.png',
+    image: data.image,
     vibrate: [200, 100, 200],
-    data: { url: data.url || '/dashboard' },
-    actions: [
-      { action: 'open', title: 'Open', icon: '/icons/icon-192.png' },
-      { action: 'close', title: 'Close', icon: '/icons/icon-192.png' }
-    ]
+    data: {
+      url: data.data?.url || '/dashboard',
+      ...data.data
+    },
+    actions: data.actions || [
+      { action: 'open', title: 'Open' }
+    ],
+    tag: data.tag,
+    renotify: !!data.tag
   };
 
   event.waitUntil(
@@ -83,9 +90,26 @@ self.addEventListener('push', event => {
 // Notification click event
 self.addEventListener('notificationclick', event => {
   event.notification.close();
-  if (event.action === 'open' || !event.action) {
-    event.waitUntil(
-      clients.openWindow(event.notification.data.url)
-    );
+
+  const urlToOpen = event.notification.data?.url || '/dashboard';
+
+  if (event.action === 'close') {
+    return;
   }
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(windowClients => {
+      // Check if there is already a window/tab open with the target URL
+      for (let i = 0; i < windowClients.length; i++) {
+        const client = windowClients[i];
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      // If not, open a new window
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
 });

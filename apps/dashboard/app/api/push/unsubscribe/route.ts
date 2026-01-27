@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value || cookieStore.get('access_token')?.value;
 
-    const response = await fetch(`${API_URL}/notifications/push/subscribe`, {
+    const response = await fetch(`${API_URL}/notifications/push/unsubscribe`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
       return NextResponse.json(
-        { success: false, error: errorData.detail || 'Failed to save subscription' },
+        { success: false, error: errorData.detail || 'Failed to unsubscribe' },
         { status: response.status }
       );
     }
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     const data = await response.json();
     return NextResponse.json({ success: true, data });
   } catch (error) {
-    console.error('Error proxying subscription:', error);
+    console.error('Error proxying unsubscribe:', error);
     return NextResponse.json(
       { success: false, error: 'Internal Server Error' },
       { status: 500 }
