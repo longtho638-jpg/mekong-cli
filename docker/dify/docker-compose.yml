@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  dify:
+    image: langgenius/dify:latest
+    ports:
+      - 3000:3000
+    environment:
+      - SECRET_KEY=your-secret-key
+    volumes:
+      - dify_data:/app/storage
+volumes:
+  dify_data:

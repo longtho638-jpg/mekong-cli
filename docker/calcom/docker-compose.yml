@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  calcom:
+    image: calcom/cal.com:latest
+    ports:
+      - 3001:3000
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/calcom
+      - NEXTAUTH_SECRET=your-nextauth-secret
+      - CALENDSO_ENCRYPTION_KEY=your-encryption-key
+    depends_on:
+      - db
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=calcom
+    volumes:
+      - calcom_db:/var/lib/postgresql/data
+volumes:
+  calcom_db:
