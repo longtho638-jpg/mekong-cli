@@ -47,10 +47,15 @@ from backend.api.routers import (
     license_production,
     mekong_commands,
     monitor,
+    notification_preferences,  # Added
+    notification_templates,  # Added
+    notifications,  # Added
     oauth,  # Added OAuth
     ops,
     payments,
     paypal_webhooks,
+    push_subscriptions,  # Added
+    rate_limits,  # Added Rate Limits
     revenue,
     stripe_webhooks,
     swarm,
@@ -58,7 +63,6 @@ from backend.api.routers import (
     vibes,
     webhook_health,  # Added Advanced Webhooks
     workflow,
-    rate_limits,  # Added Rate Limits
 )
 from backend.api.routers import (
     router as hybrid_router,
@@ -158,6 +162,10 @@ app.include_router(oauth.router) # Added OAuth Router
 app.include_router(jobs.router) # Added Job Queue
 app.include_router(webhook_health.router) # Added Webhook Health
 app.include_router(dlq.router) # Added Webhook DLQ
+app.include_router(notifications.router) # Added Notifications
+app.include_router(notification_preferences.router) # Added Notification Preferences
+app.include_router(notification_templates.router) # Added Notification Templates
+app.include_router(push_subscriptions.router) # Added Push Subscriptions
 app.include_router(user_preferences.router) # Added User Preferences
 app.include_router(exports.router) # Added Data Exports
 app.include_router(rate_limits.router) # Added Rate Limits

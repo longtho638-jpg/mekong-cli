@@ -11,6 +11,7 @@ from . import (
     analytics,
     audit,
     backup,
+    binh_phap,
     campaigns,
     commands,
     crm,
@@ -25,13 +26,17 @@ from . import (
     kanban,
     license_production,
     monitor,
+    notification_preferences,
+    notification_templates,
+    notifications,
     ops,
     payments,
     paypal_webhooks,
+    push_subscriptions,
+    rate_limits,
     router,
-    sales,
     scheduler,
-    search, # Added
+    search,  # Added
     stripe_production,
     stripe_webhooks,
     swarm,
@@ -56,7 +61,6 @@ __all__ = [
     "jobs", # Added
     "payments",
     "router",
-    "sales",
     "scheduler",
     "search", # Added
     "stripe_production",
@@ -75,7 +79,13 @@ __all__ = [
     "kanban",
     "ops",
     "webhook_health", # Added
+    "rate_limits",
+    "binh_phap",
     "dlq", # Added
     "user_preferences", # Added
     "exports", # Added
+    "notifications",
+    "notification_preferences",
+    "notification_templates",
+    "push_subscriptions",
 ]
