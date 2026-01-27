@@ -55,3 +55,62 @@ def test_subscription_manager_create_checkout():
             mode="subscription",
             trial_days=None
         )
+
+def test_invoice_manager_list_invoices():
+    mock_stripe_client = MagicMock()
+    mock_invoice = MagicMock()
+    mock_invoice.id = "inv_123"
+    mock_invoice.amount_due = 1000
+    mock_invoice.created = 1600000000
+    mock_stripe_client.list_invoices.return_value = [mock_invoice]
+
+    with patch("backend.core.payments.invoice_manager.StripeClient", return_value=mock_stripe_client):
+        from backend.core.payments.invoice_manager import InvoiceManager
+        manager = InvoiceManager()
+        invoices = manager.list_customer_invoices("cus_123")
+        assert len(invoices) == 1
+        assert invoices[0]["id"] == "inv_123"
+        assert invoices[0]["amount_due"] == 10.0  # Converted from cents
+
+def test_webhook_handler_checkout_completed():
+    mock_stripe_client = MagicMock()
+    mock_stripe_client.construct_event.return_value = {
+        "id": "evt_123",
+        "type": "checkout.session.completed",
+        "data": {
+            "object": {
+                "metadata": {"tenant_id": "tenant_1"},
+                "customer_details": {"email": "test@example.com"},
+                "customer": "cus_123",
+                "subscription": "sub_123",
+                "mode": "subscription"
+            }
+        }
+    }
+
+    mock_provisioning = MagicMock()
+    mock_licensing = MagicMock()
+
+    with patch("backend.core.payments.webhook_handler.StripeClient", return_value=mock_stripe_client), \
+         patch("backend.core.payments.webhook_handler.ProvisioningService", return_value=mock_provisioning), \
+         patch("backend.core.payments.webhook_handler.LicenseGenerator", return_value=mock_licensing):
+
+        from backend.core.payments.webhook_handler import WebhookHandler
+        handler = WebhookHandler()
+
+        result = handler.verify_and_process_stripe(b"payload", "sig_header")
+
+        assert result["status"] == "processed"
+        assert result["type"] == "checkout.session.completed"
+
+        # Verify provisioning called
+        mock_provisioning.activate_subscription.assert_called_with(
+            tenant_id="tenant_1",
+            plan="PRO",
+            provider="stripe",
+            subscription_id="sub_123",
+            customer_id="cus_123"
+        )
+
+        # Verify license generated
+        mock_licensing.generate.assert_called()

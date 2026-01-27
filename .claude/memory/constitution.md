@@ -1174,8 +1174,67 @@ continuous_monitoring:
 
 ---
 
+## 🚨 ĐIỀU 36: HAI BƯỚC GỬI LỆNH (TWO-STEP COMMAND PATTERN)
+
+> **PHẢI tách 2 lệnh: Command text → Enter riêng | Chương 11: Cửu Địa - Từng bước chính xác**
+
+### 🔴 QUY TẮC TUYỆT ĐỐI:
+
+```yaml
+two_step_command:
+    rule: "PHẢI tách 2 lần send_command_input liên tiếp"
+
+    # ĐÚNG: 2 lệnh riêng biệt
+    correct_pattern:
+        step_1: |
+            send_command_input(
+                Input="/delegate task here",  # CHỈ command text, KHÔNG có \n
+                WaitMs=2000
+            )
+        step_2: |
+            send_command_input(
+                Input="\n",  # CHỈ Enter
+                WaitMs=10000
+            )
+
+    # SAI: Gộp command + Enter
+    wrong_pattern: |
+        send_command_input(Input="/delegate task\n")  # ❌ WRONG!
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Gộp command + `\n` trong 1 lần gửi
+- ❌ Chỉ gửi command mà không gửi Enter riêng
+- ❌ Đợi quá lâu giữa 2 bước
+
+### 🔴 ĐÚNG CÁCH (COPY CHÍNH XÁC):
+
+```python
+# Bước 1: Gửi command text
+send_command_input(
+    CommandId="xxx",
+    Input="/delegate IPO-013-Affiliate: Build affiliate tracking.",
+    WaitMs=2000
+)
+
+# Bước 2: Gửi Enter NGAY SAU
+send_command_input(
+    CommandId="xxx",
+    Input="\n",
+    WaitMs=10000
+)
+```
+
+### 🏯 BINH PHÁP:
+
+> **Chương 11 九地: 投之亡地然後存，陷之死地然後生**
+> "Từng bước chính xác" = 2 bước gửi lệnh = Không gộp, không sai
+
+---
+
 **Effective Date:** 2026-01-27
-**Version:** 5.21.0 (Added ĐIỀU 35: GIÁM SÁT REALTIME - Continuous Monitoring)
+**Version:** 5.22.0 (Added ĐIỀU 36: HAI BƯỚC GỬI LỆNH - Two-Step Command Pattern)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
