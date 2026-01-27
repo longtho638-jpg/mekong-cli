@@ -479,6 +479,64 @@ claude mcp add stitch --url <stitch-mcp-url>
 
 ---
 
+## 🚨 ĐIỀU 26: CHROME DEVTOOLS MCP (BINH PHÁP CHƯƠNG 13)
+
+> **DevTools = Nội Gián (Inside Spy) | Debug, Network, Performance**
+
+### 🔴 BINH PHÁP ÁNH XẠ - CHƯƠNG 13: DỤNG GIÁN:
+
+```yaml
+binh_phap_chapter_13:
+    name: "Dụng Gián (Using Spies)"
+
+    chrome_devtools_mcp:
+        role: "Nội gián (Inside spy)"
+        purpose: "Thu thập intelligence từ browser"
+        tactics:
+            network_analysis: "截獲情報 (Intercept intel)"
+            console_logs: "監聽機密 (Monitor secrets)"
+            performance: "偵察弱點 (Recon weakness)"
+
+    playwright_mcp:
+        role: "Hành động gián (Action agent)"
+        purpose: "Thực hiện UI automations"
+```
+
+### 🔴 CAPABILITIES:
+
+```yaml
+chrome_devtools_mcp:
+    repo: "ChromeDevTools/chrome-devtools-mcp"
+    built_on: "Puppeteer"
+    runs: "Local"
+
+    tools:
+        - Console log inspection
+        - Network request analysis
+        - Performance trace recording
+        - Screenshot capture
+        - Debugging breakpoints
+        - DOM inspection
+```
+
+### 🔴 INSTALLATION:
+
+```bash
+# Installed 2026-01-27:
+claude mcp add chrome-devtools npx @anthropic-ai/chrome-devtools-mcp
+```
+
+### 🔴 USE CASES:
+
+| Task           | MCP        | Why                       |
+| -------------- | ---------- | ------------------------- |
+| UI automation  | Playwright | Click, fill, navigate     |
+| Debug errors   | DevTools   | Console logs, stack trace |
+| Network issues | DevTools   | Request/response analysis |
+| Performance    | DevTools   | Trace recording           |
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
