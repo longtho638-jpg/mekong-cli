@@ -915,9 +915,16 @@ always_on_factory:
         antigravity: "Chủ tịch giám sát từ IDE panel bên phải"
         cc_cli: "Nhân viên thực thi trong terminal bên trái"
 
+    terminal_rule: |
+        ⚠️ TERMINAL CHỈ CHẠY CC CLI - KHÔNG SPAM ECHO
+        - CC CLI là process DUY NHẤT trong terminal
+        - Antigravity KHÔNG được chạy echo/shell commands
+        - Antigravity CHỈ giám sát qua panel phải
+        - Commands gửi cho CC CLI = paste vào terminal
+
     factory_mode:
-        pattern: "Phase X → execute → ✅ Done → Phase Y → execute → ✅ Done"
-        visibility: "Step-by-step để Anh theo dõi tiến độ"
+        pattern: "CC CLI > /delegate task → CC CLI executes → ✅"
+        visibility: "CC CLI output visible trong terminal"
 
     never_close: true
     auto_restart: "Nếu CC CLI crash → restart ngay"
@@ -927,18 +934,21 @@ always_on_factory:
 
 - ❌ Không có CC CLI chạy trong terminal
 - ❌ Đóng terminal khi chưa xong task
-- ❌ Chạy task mà không visible trong terminal
+- ❌ **Antigravity spam echo commands vào terminal**
+- ❌ **Terminal lộn xộn với output không phải CC CLI**
 - ❌ Antigravity không giám sát CC CLI
 
 ### 🔴 ĐÚNG CÁCH:
 
-```bash
-# Terminal luôn có CC CLI ready:
-~/mekong-cli $ claude
-Claude Code v2.1.19
-claude-sonnet-4-5-thinking · API Usage Billing
-
-> |  # Ready for commands
+```
+┌─────────────────────┬──────────────────────┐
+│ TERMINAL (bên trái) │ ANTIGRAVITY (phải)   │
+├─────────────────────┼──────────────────────┤
+│ $ claude            │ Task view panel      │
+│ Claude Code v2.1.19 │ Progress monitoring  │
+│ > /delegate task... │ Status updates       │
+│ [CC CLI executing]  │ No echo spam!        │
+└─────────────────────┴──────────────────────┘
 ```
 
 ### 🏯 BINH PHÁP:
@@ -949,7 +959,7 @@ claude-sonnet-4-5-thinking · API Usage Billing
 ---
 
 **Effective Date:** 2026-01-27
-**Version:** 5.18.0 (Added ĐIỀU 32: NHÀ MÁY LUÔN BẬT)
+**Version:** 5.18.1 (Fixed ĐIỀU 32: No Echo Spam in Terminal)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
