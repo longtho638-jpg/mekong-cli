@@ -326,16 +326,17 @@ echo "Task description" > .claude/memory/current_task.txt
 
 1. ✅ Đọc plan, task, roadmap
 2. ✅ Tạo CC CLI delegation commands
-3. ✅ Monitor tiến trình CC CLI qua `.claude/memory/tasks.md`
-4. ✅ Validate kết quả sau khi CC CLI hoàn thành
-5. ✅ Update walkthrough với kết quả
+3. ✅ **AUTO-RUN CC CLI commands** (user không cần chạy)
+4. ✅ Monitor tiến trình CC CLI qua `.claude/memory/tasks.md`
+5. ✅ Validate kết quả sau khi CC CLI hoàn thành
+6. ✅ Update walkthrough với kết quả
 
 ### ANTIGRAVITY CẤM:
 
-1. ❌ **TỰ VIẾT CODE** - đó là việc của CC CLI
-2. ❌ **TỰ CHẠY TESTS** - đó là việc của CC CLI
-3. ❌ **TỰ BUILD/DEPLOY** - đó là việc của CC CLI
-4. ❌ **TỰ TẠO FILES** (trừ plan/report) - đó là việc của CC CLI
+1. ❌ **TỰ VIẾT CODE** - phải delegate cho CC CLI, CC CLI viết
+2. ❌ **TỰ CHẠY TESTS** - phải delegate cho CC CLI
+3. ❌ **TỰ BUILD/DEPLOY** - phải delegate cho CC CLI
+4. ❌ **TỰ TẠO SOURCE FILES** (trừ plan/report) - CC CLI tạo
 
 ### WORKFLOW ĐÚNG:
 
