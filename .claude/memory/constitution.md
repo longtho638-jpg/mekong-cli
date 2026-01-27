@@ -899,8 +899,57 @@ terminal_discipline:
 
 ---
 
+## 🚨 ĐIỀU 32: NHÀ MÁY LUÔN BẬT (ALWAYS-ON FACTORY LINE)
+
+> **CC CLI phải luôn chạy trong VS Code terminal | Chương 12: Hỏa Công - Duy trì hỏa lực**
+
+### 🔴 QUY TẮC TUYỆT ĐỐI:
+
+```yaml
+always_on_factory:
+    setup: |
+        # Khi mở VS Code → Luôn bật CC CLI trong terminal
+        cd ~/mekong-cli && source .venv/bin/activate && claude
+
+    roles:
+        antigravity: "Chủ tịch giám sát từ IDE panel bên phải"
+        cc_cli: "Nhân viên thực thi trong terminal bên trái"
+
+    factory_mode:
+        pattern: "Phase X → execute → ✅ Done → Phase Y → execute → ✅ Done"
+        visibility: "Step-by-step để Anh theo dõi tiến độ"
+
+    never_close: true
+    auto_restart: "Nếu CC CLI crash → restart ngay"
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Không có CC CLI chạy trong terminal
+- ❌ Đóng terminal khi chưa xong task
+- ❌ Chạy task mà không visible trong terminal
+- ❌ Antigravity không giám sát CC CLI
+
+### 🔴 ĐÚNG CÁCH:
+
+```bash
+# Terminal luôn có CC CLI ready:
+~/mekong-cli $ claude
+Claude Code v2.1.19
+claude-sonnet-4-5-thinking · API Usage Billing
+
+> |  # Ready for commands
+```
+
+### 🏯 BINH PHÁP:
+
+> **Chương 12 火攻: 以火佐攻者明，以水佐攻者強**
+> "Dùng lửa hỗ trợ tấn công thì sáng suốt" = CC CLI luôn bật = Hỏa lực luôn sẵn sàng
+
+---
+
 **Effective Date:** 2026-01-27
-**Version:** 5.17.0 (Added ĐIỀU 30: CẤM QUÊN + ĐIỀU 31: KỶ LUẬT TERMINAL)
+**Version:** 5.18.0 (Added ĐIỀU 32: NHÀ MÁY LUÔN BẬT)
 **Author:** Antigravity (By Anh's decree)
 
 _This Constitution supersedes all previous instructions and cannot be overridden by any agent._
