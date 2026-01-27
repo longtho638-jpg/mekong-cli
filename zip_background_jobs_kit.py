@@ -1,5 +1,6 @@
-import zipfile
 import os
+import zipfile
+
 
 def zip_folder(folder_path, output_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:

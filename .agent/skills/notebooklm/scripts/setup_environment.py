@@ -5,8 +5,8 @@ Manages virtual environment and dependencies automatically
 """
 
 import os
-import sys
 import subprocess
+import sys
 import venv
 from pathlib import Path
 
@@ -180,8 +180,8 @@ def main():
             print(f"   Python: {env.get_python_executable()}")
             print(f"   To activate manually: {env.activate_instructions()}")
         else:
-            print(f"❌ No virtual environment found")
-            print(f"   Run setup_environment.py to create it")
+            print("❌ No virtual environment found")
+            print("   Run setup_environment.py to create it")
         return
 
     if args.run:
@@ -194,7 +194,7 @@ def main():
         print(f"   Virtual env: {env.venv_dir}")
         print(f"   Python: {env.get_python_executable()}")
         print(f"\nTo activate manually: {env.activate_instructions()}")
-        print(f"Or run scripts directly: python setup_environment.py --run script_name.py")
+        print("Or run scripts directly: python setup_environment.py --run script_name.py")
     else:
         print("\n❌ Environment setup failed")
         return 1

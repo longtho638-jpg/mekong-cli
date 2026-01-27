@@ -1,7 +1,10 @@
-import pytest
 from unittest.mock import MagicMock, patch
+
+import pytest
+
 from backend.core.payments.stripe_client import StripeClient
 from backend.core.payments.subscription_manager import SubscriptionManager
+
 
 @pytest.fixture
 def mock_stripe():

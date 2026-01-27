@@ -6,8 +6,8 @@ from typing import Optional
 
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
-from sentry_sdk.integrations.starlette import StarletteIntegration
 from sentry_sdk.integrations.logging import LoggingIntegration
+from sentry_sdk.integrations.starlette import StarletteIntegration
 
 
 def init_sentry(
@@ -81,7 +81,7 @@ def init_sentry(
         before_send=before_send_hook,
     )
 
-    print(f"✅ Sentry initialized successfully")
+    print("✅ Sentry initialized successfully")
     print(f"   Environment: {env}")
     print(f"   Release: {version}")
     print(f"   Traces Sample Rate: {traces_sample_rate * 100}%")

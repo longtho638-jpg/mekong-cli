@@ -4,6 +4,7 @@ Backend Middleware Package
 Security and request processing middleware.
 """
 
+from backend.middleware.license_validator import LicenseValidatorMiddleware
 from backend.middleware.performance import (
     PerformanceMonitoringMiddleware,
     get_metrics_summary,
@@ -25,6 +26,7 @@ from backend.middleware.webhook_auth import (
 __all__ = [
     # Middleware classes
     "RateLimitMiddleware",
+    "LicenseValidatorMiddleware",
     "PerformanceMonitoringMiddleware",
     # Exceptions
     "WebhookAuthError",

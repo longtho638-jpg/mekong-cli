@@ -6,40 +6,40 @@ Chương 1 "Thủy Kế" - Strategic Planning for User Success
 This wizard guides NO-TECH users to setup Antigravity IDE optimally.
 """
 
-import sys
+import os
 import platform
 import shutil
 import subprocess
+import sys
 import time
-import os
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Third-party imports
 try:
-    from rich.console import Console
-    from rich.panel import Panel
-    from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
-    from rich.prompt import Prompt, Confirm
-    from rich.markdown import Markdown
-    from rich.table import Table
-    from rich import print as rprint
-    import questionary
     import psutil
+    import questionary
     import speedtest
+    from rich import print as rprint
+    from rich.console import Console
+    from rich.markdown import Markdown
+    from rich.panel import Panel
+    from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
+    from rich.prompt import Confirm, Prompt
+    from rich.table import Table
 except ImportError:
     print("Đang cài đặt các thư viện cần thiết... (Installing dependencies...)")
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "rich", "questionary", "psutil", "speedtest-cli"])
-        from rich.console import Console
-        from rich.panel import Panel
-        from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
-        from rich.prompt import Prompt, Confirm
-        from rich.markdown import Markdown
-        from rich.table import Table
-        from rich import print as rprint
-        import questionary
         import psutil
+        import questionary
         import speedtest
+        from rich import print as rprint
+        from rich.console import Console
+        from rich.markdown import Markdown
+        from rich.panel import Panel
+        from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
+        from rich.prompt import Confirm, Prompt
+        from rich.table import Table
     except Exception as e:
         print(f"Lỗi cài đặt thư viện: {e}")
         print("Vui lòng chạy: pip install -r requirements.txt")
@@ -120,7 +120,7 @@ class AntigravityWizard:
                 self.system_info['download_mbps'] = round(download_speed, 1)
                 self.system_info['upload_mbps'] = round(upload_speed, 1)
                 progress.update(task2, completed=100, description="[green]Kiểm tra mạng hoàn tất")
-            except Exception as e:
+            except Exception:
                 self.system_info['download_mbps'] = 0
                 self.system_info['upload_mbps'] = 0
                 progress.update(task2, completed=100, description="[yellow]Không thể kiểm tra tốc độ mạng (Bỏ qua)")

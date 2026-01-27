@@ -10,14 +10,18 @@ from . import (
     agents_creator,
     analytics,
     audit,
+    backup,
     campaigns,
     commands,
     crm,
+    dlq,  # Added
+    exports,  # Added
     franchise,
     gumroad_webhooks,
     hr,
     i18n,
     inventory,
+    jobs,  # Added
     kanban,
     license_production,
     monitor,
@@ -25,12 +29,16 @@ from . import (
     payments,
     paypal_webhooks,
     router,
+    sales,
     scheduler,
+    search, # Added
     stripe_production,
     stripe_webhooks,
     swarm,
+    user_preferences,  # Added
     vibes,
     vietnam,
+    webhook_health,  # Added
     workflow,
 )
 
@@ -45,9 +53,12 @@ __all__ = [
     "hr",
     "i18n",
     "inventory",
+    "jobs", # Added
     "payments",
     "router",
+    "sales",
     "scheduler",
+    "search", # Added
     "stripe_production",
     "vibes",
     "vietnam",
@@ -57,9 +68,14 @@ __all__ = [
     "agents_creator",
     "swarm",
     "audit",
+    "backup",
     "paypal_webhooks",
     "stripe_webhooks",
     "gumroad_webhooks",
     "kanban",
     "ops",
+    "webhook_health", # Added
+    "dlq", # Added
+    "user_preferences", # Added
+    "exports", # Added
 ]

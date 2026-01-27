@@ -3,10 +3,11 @@ MCP Server Wrapper for Agency Engine.
 Handles JSON-RPC over stdio.
 """
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import AgencyHandler
+
 
 class AgencyMCPServer(BaseMCPServer):
     def __init__(self):

@@ -1,8 +1,27 @@
 import Link from 'next/link';
+import { OrganizationLD, ProductLD } from '@/components/seo/structured-data';
 
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+      {/* Structured Data */}
+      <OrganizationLD
+        name="AgencyOS"
+        logo="https://agencyos.ai/logo.png"
+        url="https://agencyos.ai"
+        sameAs={[
+          "https://twitter.com/agencyos",
+          "https://linkedin.com/company/agencyos"
+        ]}
+      />
+      <ProductLD
+        name="Pro Agency Plan"
+        image="https://agencyos.ai/images/pro-plan.png"
+        price="497.00"
+        currency="USD"
+        availability="InStock"
+      />
+
       {/* Hero Section */}
       <div className="container mx-auto px-6 py-20">
         <div className="text-center max-w-4xl mx-auto">

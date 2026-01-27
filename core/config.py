@@ -45,6 +45,11 @@ class Settings(BaseSettings):
         default=None, description="Supabase service role or anon key"
     )
 
+    # --- Cache & Queue (Redis) ---
+    REDIS_URL: Optional[str] = Field(
+        default="redis://localhost:6379/0", description="Redis connection URL"
+    )
+
     # --- AI Intelligence Providers ---
     OPENAI_API_KEY: Optional[str] = Field(default=None, description="OpenAI API access key")
     GEMINI_API_KEY: Optional[str] = Field(default=None, description="Google Gemini API access key")

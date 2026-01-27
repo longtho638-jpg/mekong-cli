@@ -22,6 +22,7 @@ export type WSEventType =
   | 'data_refresh'
   | 'heartbeat'
   | 'pong'
+  | 'audit_log_created'
 
 /**
  * WebSocket Message Interface
@@ -221,6 +222,7 @@ export function useAntigravityRealtime(options?: {
   onVCScoreUpdated?: (data: Record<string, unknown> | undefined) => void
   onSwarmUpdate?: (data: Record<string, unknown> | undefined) => void
   onDataRefresh?: () => void
+  onAuditLogCreated?: (data: Record<string, unknown> | undefined) => void
 }) {
   const wsUrl =
     typeof window !== 'undefined'
@@ -245,6 +247,9 @@ export function useAntigravityRealtime(options?: {
           break
         case 'data_refresh':
           options?.onDataRefresh?.()
+          break
+        case 'audit_log_created':
+          options?.onAuditLogCreated?.(data)
           break
       }
     },

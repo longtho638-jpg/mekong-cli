@@ -21,7 +21,7 @@ def closest_integer(value):
     farthest from zero. For example closest_integer("14.5") should
     return 15 and closest_integer("-14.5") should return -15.
     '''
-    from math import floor, ceil
+    from math import ceil, floor
     
     num = float(value)
     

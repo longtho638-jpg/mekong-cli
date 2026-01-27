@@ -1,0 +1,20 @@
+export:
+  formats:
+    - csv
+    - json
+    - pdf
+    - xlsx
+  limits:
+    max_exports_per_day: 10
+    max_file_size_mb: 500
+    rate_limit_seconds: 300  # 1 export per 5 minutes
+  retention:
+    export_expiry_days: 7
+    cleanup_enabled: true
+  storage:
+    backend: s3
+    bucket: mekong-exports
+    presigned_url_expiry_hours: 168  # 7 days
+  pdf:
+    template_dir: templates/exports/pdf
+    company_logo_url: https://cdn.example.com/logo.png

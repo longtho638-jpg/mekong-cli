@@ -1,0 +1,29 @@
+/* RTL-specific overrides */
+[dir="rtl"] {
+  /* Flip text alignment */
+  text-align: right;
+}
+
+[dir="rtl"] .sidebar {
+  right: 0;
+  left: auto;
+}
+
+[dir="rtl"] .float-left {
+  float: right;
+}
+
+[dir="rtl"] .float-right {
+  float: left;
+}
+
+/* Use logical properties where possible */
+.button {
+  margin-inline-start: 1rem; /* auto-flips in RTL */
+  padding-inline: 1rem 2rem; /* auto-flips in RTL */
+}
+
+/* Flip icons */
+[dir="rtl"] .arrow-right {
+  transform: scaleX(-1);
+}

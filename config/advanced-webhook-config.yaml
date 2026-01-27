@@ -1,0 +1,29 @@
+retry_policy:
+  default:
+    max_retries: 5
+    backoff_base: 1.0 # seconds
+    backoff_multiplier: 2.0
+    jitter_max: 0.25 # 25%
+    circuit_breaker:
+      failure_threshold: 5
+      reset_timeout: 60
+
+rate_limiting:
+  default_rate: 10 # req/sec
+  default_burst: 50
+
+dlq:
+  retention_days: 30
+  alert_threshold: 100 # items
+
+batch_delivery:
+  max_batch_size: 100
+  max_wait_seconds: 60
+
+signature:
+  default_algorithm: hmac-sha256
+  allowed_algorithms:
+    - hmac-sha256
+    - hmac-sha512
+    - ed25519
+    - rsa

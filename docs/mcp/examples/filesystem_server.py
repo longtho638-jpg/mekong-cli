@@ -4,8 +4,9 @@ Demonstrates error handling and logging.
 """
 import asyncio
 import os
-from typing import Any, Dict, List
 from antigravity.mcp.base import BaseMCPServer
+from typing import Any, Dict, List
+
 
 class FileSystemMCPServer(BaseMCPServer):
     def __init__(self):

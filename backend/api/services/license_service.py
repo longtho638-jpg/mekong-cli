@@ -3,15 +3,15 @@ License Service - Database operations for license management.
 
 Handles persistence, retrieval, and activation tracking using Supabase.
 """
-import os
 import logging
+import os
 from datetime import datetime
-from typing import Optional, List, Dict, Tuple
+from typing import Dict, List, Optional, Tuple
 
-from supabase import Client, create_client
-from backend.core.licensing.models import License, LicenseStatus, LicensePlan
 from backend.core.licensing.generator import LicenseGenerator
+from backend.core.licensing.models import License, LicensePlan, LicenseStatus
 from backend.core.licensing.validator import LicenseValidator, ValidationResult
+from supabase import Client, create_client
 
 logger = logging.getLogger(__name__)
 

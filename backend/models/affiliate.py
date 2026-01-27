@@ -1,8 +1,11 @@
-from pydantic import BaseModel, Field, EmailStr
-from typing import Optional, List, Dict, Any
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
-from .enums import AffiliateStatus, PayoutStatus, ConversionStatus
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, EmailStr, Field
+
+from .enums import AffiliateStatus, ConversionStatus, PayoutStatus
+
 
 class Affiliate(BaseModel):
     id: str = Field(..., description="UUID")

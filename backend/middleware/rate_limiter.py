@@ -1,541 +1,143 @@
-"""
-Production Rate Limiting Middleware for Mekong-CLI API
-Redis-based distributed rate limiting with graceful degradation
-IPO-004: Production-grade rate limiting implementation
-"""
-
-import asyncio
-import logging
 import time
-from typing import Dict, Optional, Tuple
-
-from fastapi import Request, Response, status
-from fastapi.responses import JSONResponse
+import yaml
+import logging
+from typing import Optional
+from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-
-from backend.api.config import settings
-
-try:
-    import redis.asyncio as aioredis
-    REDIS_AVAILABLE = True
-except ImportError:
-    REDIS_AVAILABLE = False
-    aioredis = None  # type: ignore
+from backend.services.rate_limiter_service import RateLimiterService
+from backend.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Tier-based rate limits (requests per minute)
-TIER_LIMITS = {
-    "free": 10,
-    "starter": 30,
-    "pro": 100,
-    "franchise": 200,
-    "enterprise": -1,  # unlimited
-}
-
-
-class TokenBucket:
-    """Token bucket for in-memory rate limiting with refill mechanism"""
-
-    def __init__(self, capacity: int, refill_rate: float):
-        """
-        Initialize token bucket
-
-        Args:
-            capacity: Maximum tokens (requests per minute)
-            refill_rate: Tokens added per second (capacity / 60)
-        """
-        self.capacity = capacity
-        self.refill_rate = refill_rate
-        self.tokens = float(capacity)
-        self.last_refill = time.time()
-
-    def refill(self) -> None:
-        """Refill tokens based on time elapsed"""
-        now = time.time()
-        elapsed = now - self.last_refill
-        self.tokens = min(
-            self.capacity,
-            self.tokens + (elapsed * self.refill_rate)
-        )
-        self.last_refill = now
-
-    def consume(self, tokens: int = 1) -> bool:
-        """
-        Attempt to consume tokens
-
-        Returns:
-            True if tokens were consumed, False if insufficient tokens
-        """
-        self.refill()
-        if self.tokens >= tokens:
-            self.tokens -= tokens
-            return True
-        return False
-
-    def get_remaining(self) -> int:
-        """Get remaining tokens"""
-        self.refill()
-        return int(self.tokens)
-
-    def get_reset_time(self) -> int:
-        """Get seconds until bucket is full"""
-        self.refill()
-        if self.tokens >= self.capacity:
-            return 0
-        tokens_needed = self.capacity - self.tokens
-        return int(tokens_needed / self.refill_rate)
-
-
-class RedisRateLimiter:
-    """
-    Redis-based distributed rate limiter using sliding window algorithm
-
-    Features:
-    - Distributed across multiple instances
-    - Atomic operations with Lua scripting
-    - Per-user quota tracking
-    - Graceful fallback to in-memory
-    """
-
-    # Lua script for atomic rate limiting with sliding window
-    RATE_LIMIT_SCRIPT = """
-    local key = KEYS[1]
-    local limit = tonumber(ARGV[1])
-    local window = tonumber(ARGV[2])
-    local now = tonumber(ARGV[3])
-
-    -- Remove old entries outside the window
-    redis.call('ZREMRANGEBYSCORE', key, 0, now - window)
-
-    -- Count current requests in window
-    local current = redis.call('ZCARD', key)
-
-    if current < limit then
-        -- Add new request
-        redis.call('ZADD', key, now, now)
-        redis.call('EXPIRE', key, window)
-        return {1, limit - current - 1, 0}
-    else
-        -- Get oldest request timestamp
-        local oldest = redis.call('ZRANGE', key, 0, 0, 'WITHSCORES')
-        local reset_time = math.ceil(oldest[2] + window - now)
-        return {0, 0, reset_time}
-    end
-    """
-
-    def __init__(self, redis_url: str = "redis://localhost:6379"):
-        """
-        Initialize Redis rate limiter
-
-        Args:
-            redis_url: Redis connection URL
-        """
-        self.redis_url = redis_url
-        self.redis: Optional[aioredis.Redis] = None
-        self._script_sha: Optional[str] = None
-        self._connection_healthy = False
-
-    async def connect(self) -> bool:
-        """
-        Connect to Redis with health check
-
-        Returns:
-            True if connection successful, False otherwise
-        """
-        if not REDIS_AVAILABLE:
-            logger.warning("Redis library not available. Using in-memory fallback.")
-            return False
-
-        try:
-            self.redis = aioredis.from_url(
-                self.redis_url,
-                encoding="utf-8",
-                decode_responses=True,
-                socket_connect_timeout=2,
-                socket_timeout=2,
-            )
-            # Health check
-            await self.redis.ping()
-
-            # Register Lua script
-            self._script_sha = await self.redis.script_load(self.RATE_LIMIT_SCRIPT)
-
-            self._connection_healthy = True
-            logger.info("Redis rate limiter connected successfully")
-            return True
-
-        except Exception as e:
-            logger.error(f"Failed to connect to Redis: {e}")
-            self._connection_healthy = False
-            return False
-
-    async def check_rate_limit(
-        self,
-        identifier: str,
-        limit: int,
-        window: int = 60
-    ) -> Tuple[bool, int, int]:
-        """
-        Check rate limit for identifier using sliding window
-
-        Args:
-            identifier: Unique identifier (user/API key)
-            limit: Maximum requests allowed in window
-            window: Time window in seconds (default 60)
-
-        Returns:
-            Tuple of (allowed, remaining, reset_time)
-        """
-        if not self._connection_healthy or self.redis is None:
-            # Fallback handled by caller
-            raise ConnectionError("Redis not available")
-
-        try:
-            key = f"ratelimit:{identifier}"
-            now = int(time.time())
-
-            # Execute Lua script
-            result = await self.redis.evalsha(
-                self._script_sha,
-                1,  # number of keys
-                key,
-                limit,
-                window,
-                now
-            )
-
-            allowed = bool(result[0])
-            remaining = int(result[1])
-            reset_time = int(result[2])
-
-            return allowed, remaining, reset_time
-
-        except Exception as e:
-            logger.error(f"Redis rate limit check failed: {e}")
-            self._connection_healthy = False
-            raise ConnectionError(f"Redis operation failed: {e}")
-
-    async def close(self):
-        """Close Redis connection"""
-        if self.redis:
-            await self.redis.close()
-            logger.info("Redis rate limiter connection closed")
-
-
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """
-    Production-grade rate limiting middleware with graceful degradation
-
-    Features:
-    - Redis-based distributed limiting (primary)
-    - In-memory fallback (degraded mode)
-    - Per-user quota tracking
-    - Automatic failover and recovery
+    FastAPI middleware for rate limiting.
+    Applies per-user, per-IP, and per-endpoint limits.
+    Supports Sliding Window, Token Bucket, and Fixed Window algorithms.
+    Configurable via config/rate-limit-config.yaml.
     """
-
-    def __init__(self, app, redis_url: str = "redis://localhost:6379"):
+    def __init__(self, app, config_path: str = 'config/rate-limit-config.yaml'):
         super().__init__(app)
+        self.rate_limiter = RateLimiterService()
+        self.config_path = config_path
+        self.config = self._load_config()
 
-        # Redis limiter (primary)
-        self.redis_limiter = RedisRateLimiter(redis_url)
-
-        # In-memory buckets (fallback)
-        self.buckets: Dict[str, Tuple[str, TokenBucket]] = {}
-        self.default_tier = "free"
-
-        # Track degradation state
-        self._degraded_mode = False
-        self._last_redis_check = 0
-        self._redis_check_interval = 30  # seconds
-
-    async def startup(self):
-        """Initialize Redis connection on startup"""
-        success = await self.redis_limiter.connect()
-        if not success:
-            logger.warning("Starting in degraded mode (in-memory rate limiting)")
-            self._degraded_mode = True
-
-    async def shutdown(self):
-        """Cleanup on shutdown"""
-        await self.redis_limiter.close()
-
-    def _get_identifier(self, request: Request) -> str:
-        """
-        Get rate limit identifier from request
-        Priority: User ID > API key > IP address
-        """
-        # Priority 1: User ID from auth context
-        if hasattr(request.state, 'user_id'):
-            return f"user:{request.state.user_id}"
-
-        # Priority 2: API key in headers
-        api_key = request.headers.get("X-API-Key")
-        if api_key:
-            return f"key:{api_key}"
-
-        # Priority 3: IP address
-        client_ip = request.client.host if request.client else "unknown"
-        return f"ip:{client_ip}"
-
-    def _get_tier(self, request: Request, identifier: str) -> str:
-        """
-        Determine subscription tier for the request
-
-        Integration points:
-        - Auth service for user tier lookup
-        - Subscription service for API key tier
-        """
-        # Check custom header (for testing/demo)
-        tier = request.headers.get("X-Subscription-Tier")
-        if tier and tier.lower() in TIER_LIMITS:
-            return tier.lower()
-
-        # Future: Query database/auth service based on identifier
-        # if identifier.startswith("user:"):
-        #     return await subscription_service.get_user_tier(user_id)
-        # if identifier.startswith("key:"):
-        #     return await subscription_service.get_key_tier(api_key)
-
-        return self.default_tier
-
-    async def _check_redis_rate_limit(
-        self,
-        identifier: str,
-        tier: str
-    ) -> Tuple[bool, int, int]:
-        """
-        Check rate limit using Redis
-
-        Returns:
-            Tuple of (allowed, remaining, reset_time)
-        """
-        limit = TIER_LIMITS.get(tier, TIER_LIMITS["free"])
-
-        # Enterprise has unlimited requests
-        if limit == -1:
-            return True, 999999, 0
-
+    def _load_config(self):
         try:
-            return await self.redis_limiter.check_rate_limit(
-                identifier,
-                limit,
-                window=60
-            )
-        except ConnectionError:
-            # Trigger fallback
-            raise
-
-    def _check_memory_rate_limit(
-        self,
-        identifier: str,
-        tier: str
-    ) -> Tuple[bool, int, int]:
-        """
-        Check rate limit using in-memory buckets (fallback)
-
-        Returns:
-            Tuple of (allowed, remaining, reset_time)
-        """
-        # Get or create bucket
-        if identifier in self.buckets:
-            stored_tier, bucket = self.buckets[identifier]
-            if stored_tier != tier:
-                # Tier changed, create new bucket
-                bucket = self._create_bucket(tier)
-                self.buckets[identifier] = (tier, bucket)
-        else:
-            bucket = self._create_bucket(tier)
-            self.buckets[identifier] = (tier, bucket)
-
-        # Check limit
-        allowed = bucket.consume()
-        remaining = bucket.get_remaining()
-        reset_time = bucket.get_reset_time()
-
-        return allowed, remaining, reset_time
-
-    def _create_bucket(self, tier: str) -> TokenBucket:
-        """Create token bucket for tier"""
-        limit = TIER_LIMITS.get(tier, TIER_LIMITS["free"])
-
-        # Enterprise has unlimited requests
-        if limit == -1:
-            limit = 999999
-
-        return TokenBucket(
-            capacity=limit,
-            refill_rate=limit / 60.0
-        )
-
-    async def _attempt_redis_recovery(self) -> bool:
-        """
-        Attempt to reconnect to Redis periodically
-
-        Returns:
-            True if recovery successful
-        """
-        now = time.time()
-        if now - self._last_redis_check < self._redis_check_interval:
-            return False
-
-        self._last_redis_check = now
-        logger.info("Attempting Redis reconnection...")
-
-        success = await self.redis_limiter.connect()
-        if success:
-            logger.info("Redis connection recovered!")
-            self._degraded_mode = False
-            return True
-
-        return False
-
-    def _add_rate_limit_headers(
-        self,
-        response: Response,
-        tier: str,
-        remaining: int,
-        reset_time: int
-    ) -> None:
-        """Add rate limit headers to response"""
-        limit = TIER_LIMITS.get(tier, TIER_LIMITS["free"])
-
-        # Enterprise tier shows as unlimited
-        if limit == -1:
-            limit_str = "unlimited"
-            remaining_str = "unlimited"
-            reset_str = "0"
-        else:
-            limit_str = str(limit)
-            remaining_str = str(remaining)
-            reset_str = str(reset_time)
-
-        response.headers["X-RateLimit-Limit"] = limit_str
-        response.headers["X-RateLimit-Remaining"] = remaining_str
-        response.headers["X-RateLimit-Reset"] = reset_str
-        response.headers["X-RateLimit-Tier"] = tier
-
-        # Indicate if running in degraded mode
-        if self._degraded_mode:
-            response.headers["X-RateLimit-Mode"] = "degraded"
+            with open(self.config_path) as f:
+                return yaml.safe_load(f).get('rate_limits', {})
+        except Exception as e:
+            logger.warning(f"Failed to load rate limit config from {self.config_path}: {e}. Using defaults.")
+            return {}
 
     async def dispatch(self, request: Request, call_next):
-        """Process request and apply rate limiting"""
-
-        # Skip rate limiting for health check endpoints
-        if request.url.path in ["/", "/health", "/docs", "/openapi.json"]:
+        # Skip rate limiting for health checks and metrics
+        if request.url.path in ['/health', '/metrics', '/', '/docs', '/openapi.json', '/redoc']:
             return await call_next(request)
 
-        # Check for Admin Bypass Key
-        if settings.rate_limit_bypass_key:
-            bypass_key = request.headers.get("X-RateLimit-Bypass-Key")
-            if bypass_key == settings.rate_limit_bypass_key:
-                return await call_next(request)
+        # Skip OPTIONS requests
+        if request.method == "OPTIONS":
+            return await call_next(request)
 
-        # Check for IP Whitelist
+        # Get user ID (if authenticated) or IP
+        # We assume auth middleware has run before this if user is authenticated
+        user_id = getattr(request.state, 'user_id', None)
         client_ip = request.client.host if request.client else "unknown"
-        if client_ip in settings.rate_limit_whitelist_ips:
+
+        # Determine endpoint config
+        endpoint_path = request.url.path
+        endpoint_config = self._get_endpoint_config(endpoint_path)
+
+        if not endpoint_config.get('enabled', True):
+            # Rate limiting disabled for this endpoint
             return await call_next(request)
 
-        # Get identifier and tier
-        identifier = self._get_identifier(request)
-        tier = self._get_tier(request, identifier)
+        # Config values
+        default_config = self.config.get('default', {})
 
-        # Try Redis first, fallback to memory on failure
+        algorithm = endpoint_config.get('algorithm', default_config.get('algorithm', 'sliding_window'))
+        window = endpoint_config.get('window_seconds', default_config.get('window_seconds', 3600))
+
+        # Check rate limits (per-user takes precedence over per-IP if configured)
+        if user_id:
+            key = f"user:{user_id}:{endpoint_path}"
+            limit = endpoint_config.get('per_user_limit', default_config.get('per_user_limit', 1000))
+        else:
+            key = f"ip:{client_ip}:{endpoint_path}"
+            limit = endpoint_config.get('per_ip_limit', default_config.get('per_ip_limit', 100))
+
+        # Handle token bucket refill rate
+        refill_rate = endpoint_config.get('refill_rate', default_config.get('refill_rate', limit / window if window > 0 else 1))
+
+        allowed = True
+        remaining = 0
+
         try:
-            if self._degraded_mode:
-                # In degraded mode, try recovery periodically
-                await self._attempt_redis_recovery()
-
-            if not self._degraded_mode:
-                # Primary: Use Redis
-                allowed, remaining, reset_time = await self._check_redis_rate_limit(
-                    identifier,
-                    tier
+            if algorithm == 'token_bucket':
+                allowed, remaining = await self.rate_limiter.check_token_bucket(
+                    key,
+                    capacity=limit,
+                    refill_rate=refill_rate,
                 )
-            else:
-                raise ConnectionError("In degraded mode")
-
-        except ConnectionError:
-            # Fallback: Use in-memory
-            if not self._degraded_mode:
-                logger.warning(
-                    f"Redis unavailable, switching to degraded mode (in-memory)"
+            elif algorithm == 'fixed_window':
+                allowed, remaining = await self.rate_limiter.check_fixed_window(
+                    key, limit, window
                 )
-                self._degraded_mode = True
+            else:  # sliding_window (default)
+                allowed, remaining = await self.rate_limiter.check_sliding_window(
+                    key, limit, window
+                )
+        except Exception as e:
+            logger.error(f"Rate limiting error: {e}")
+            # Fail open if rate limiter fails
+            return await call_next(request)
 
-            allowed, remaining, reset_time = self._check_memory_rate_limit(
-                identifier,
-                tier
-            )
-
-
-        # Check rate limit
         if not allowed:
-            logger.info(f"Rate limit exceeded for {identifier} ({tier}). Remaining: {remaining}, Reset: {reset_time}, Mode: {'degraded' if self._degraded_mode else 'normal'}")
-            # Rate limit exceeded - return 429
-            response = JSONResponse(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                content={
-                    "error": "Rate limit exceeded",
-                    "message": f"Too many requests. Limit: {TIER_LIMITS[tier]} requests/minute for {tier} tier",
-                    "tier": tier,
-                    "retry_after": reset_time,
-                    "mode": "degraded" if self._degraded_mode else "normal"
-                }
-            )
-            self._add_rate_limit_headers(response, tier, remaining, reset_time)
-            response.headers["Retry-After"] = str(reset_time)
-            return response
+            # Rate limit exceeded - return 429 Too Many Requests
+            reset_time = await self.rate_limiter.get_reset_time(key, algorithm, window, refill_rate)
+            retry_after = max(1, reset_time - int(time.time()))
 
-        # Process request
+            return Response(
+                content='{"error": "Rate limit exceeded. Please try again later."}',
+                status_code=429,
+                media_type='application/json',
+                headers={
+                    'X-RateLimit-Limit': str(limit),
+                    'X-RateLimit-Remaining': '0',
+                    'X-RateLimit-Reset': str(reset_time),
+                    'Retry-After': str(retry_after),
+                },
+            )
+
+        # Request allowed - add rate limit headers
         response = await call_next(request)
 
-        # Add rate limit headers to successful response
-        self._add_rate_limit_headers(response, tier, remaining, reset_time)
+        # Calculate reset time for headers
+        try:
+            reset_time = await self.rate_limiter.get_reset_time(key, algorithm, window, refill_rate)
+            response.headers['X-RateLimit-Limit'] = str(limit)
+            response.headers['X-RateLimit-Remaining'] = str(remaining)
+            response.headers['X-RateLimit-Reset'] = str(reset_time)
+        except Exception as e:
+            logger.error(f"Error setting rate limit headers: {e}")
 
         return response
 
+    def _get_endpoint_config(self, path: str) -> dict:
+        """
+        Get rate limit config for endpoint.
+        Matches longest prefix (e.g., /api/auth/login > /api/auth > /api).
+        """
+        endpoints = self.config.get('endpoints', {})
 
-# Convenience function for manual rate limit checking in routes
-async def check_rate_limit(
-    identifier: str,
-    tier: str = "free",
-    redis_url: str = "redis://localhost:6379"
-) -> Tuple[bool, int]:
-    """
-    Manually check rate limit for an identifier
+        # Try exact match first
+        if path in endpoints:
+            return endpoints[path]
 
-    Args:
-        identifier: Unique identifier (API key, user ID, or IP)
-        tier: Subscription tier
-        redis_url: Redis connection URL
+        # Try prefix match (longest first)
+        for endpoint_path in sorted(endpoints.keys(), key=len, reverse=True):
+            if path.startswith(endpoint_path):
+                return endpoints[endpoint_path]
 
-    Returns:
-        Tuple of (allowed: bool, retry_after: int)
-    """
-    limiter = RedisRateLimiter(redis_url)
-
-    try:
-        await limiter.connect()
-        limit = TIER_LIMITS.get(tier, TIER_LIMITS["free"])
-
-        if limit == -1:
-            return True, 0
-
-        allowed, _, reset_time = await limiter.check_rate_limit(
-            identifier,
-            limit
-        )
-        return allowed, reset_time if not allowed else 0
-
-    except Exception:
-        # Fallback to in-memory
-        from fastapi import FastAPI
-        app = FastAPI()
-        middleware = RateLimitMiddleware(app, redis_url)
-        allowed, _, reset_time = middleware._check_memory_rate_limit(identifier, tier)
-        return allowed, reset_time if not allowed else 0
-
-    finally:
-        await limiter.close()
+        # Return default config merged with global defaults
+        return self.config.get('default', {})

@@ -5,11 +5,12 @@ Configures JSON logging for production to facilitate log aggregation
 (e.g., via CloudWatch, Datadog, or ELK).
 """
 
+import json
 import logging
 import sys
-import json
 from datetime import datetime
 from typing import Any, Dict, Optional
+
 
 class JSONFormatter(logging.Formatter):
     """

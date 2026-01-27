@@ -6,11 +6,12 @@ Demonstrates license generation, validation, and expiration handling.
 """
 
 from datetime import timedelta
+
 from core.licensing import (
     LicenseGenerator,
-    LicenseValidator,
     LicensePlan,
     LicenseStatus,
+    LicenseValidator,
 )
 
 
@@ -27,7 +28,7 @@ def demo_generate_licenses():
 
     # Solo license
     solo_license = generator.generate("customer_solo_001", LicensePlan.SOLO, 365)
-    print(f"✅ Solo License Generated:")
+    print("✅ Solo License Generated:")
     print(f"   Key: {solo_license.license_key}")
     print(f"   Max Users: {solo_license.max_users}")
     print(f"   Max Agents: {solo_license.max_agents}")
@@ -40,7 +41,7 @@ def demo_generate_licenses():
         365,
         bound_domain="team.example.com",
     )
-    print(f"\n✅ Team License Generated:")
+    print("\n✅ Team License Generated:")
     print(f"   Key: {team_license.license_key}")
     print(f"   Max Users: {team_license.max_users}")
     print(f"   Max Agents: {team_license.max_agents}")
@@ -50,7 +51,7 @@ def demo_generate_licenses():
     enterprise_license = generator.generate(
         "customer_enterprise_001", LicensePlan.ENTERPRISE, 365
     )
-    print(f"\n✅ Enterprise License Generated:")
+    print("\n✅ Enterprise License Generated:")
     print(f"   Key: {enterprise_license.license_key}")
     print(f"   Max Users: {enterprise_license.max_users}")
     print(f"   Max Agents: {enterprise_license.max_agents}")
@@ -68,7 +69,7 @@ def demo_validation(license, domain=None):
 
     # Basic validation
     result = validator.validate(license.license_key)
-    print(f"Basic Validation:")
+    print("Basic Validation:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -76,7 +77,7 @@ def demo_validation(license, domain=None):
     result = validator.validate(
         license.license_key, domain=domain, license_data=license
     )
-    print(f"\nFull Validation:")
+    print("\nFull Validation:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -97,13 +98,13 @@ def demo_invalid_scenarios():
 
     # Invalid format
     result = validator.validate("INVALID-LICENSE-KEY")
-    print(f"Invalid Format:")
+    print("Invalid Format:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
     # Invalid checksum
     result = validator.validate("AGY-test123-20260127-BADHASH")
-    print(f"\nInvalid Checksum:")
+    print("\nInvalid Checksum:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -113,7 +114,7 @@ def demo_invalid_scenarios():
     expired.expires_at = expired.expires_at - timedelta(days=10)  # Force expiration
 
     result = validator.validate(expired.license_key, license_data=expired)
-    print(f"\nExpired License:")
+    print("\nExpired License:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -122,7 +123,7 @@ def demo_invalid_scenarios():
     revoked.status = LicenseStatus.REVOKED
 
     result = validator.validate(revoked.license_key, license_data=revoked)
-    print(f"\nRevoked License:")
+    print("\nRevoked License:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -146,14 +147,14 @@ def demo_domain_binding():
     result = validator.validate(
         license.license_key, domain="example.com", license_data=license
     )
-    print(f"\nValidation with correct domain (example.com):")
+    print("\nValidation with correct domain (example.com):")
     print(f"   Valid: {result.valid}")
 
     # Invalid domain
     result = validator.validate(
         license.license_key, domain="wrong.com", license_data=license
     )
-    print(f"\nValidation with wrong domain (wrong.com):")
+    print("\nValidation with wrong domain (wrong.com):")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
 
@@ -168,7 +169,7 @@ def demo_renewal():
 
     # Create original license
     original = generator.generate("renewal_customer", LicensePlan.TEAM, 30)
-    print(f"Original License:")
+    print("Original License:")
     print(f"   Key: {original.license_key}")
     print(f"   Expires: {original.expires_at.strftime('%Y-%m-%d')}")
 
@@ -178,7 +179,7 @@ def demo_renewal():
 
     # Renew license
     renewed = generator.regenerate_with_same_checksum(original)
-    print(f"\nRenewed License:")
+    print("\nRenewed License:")
     print(f"   Key: {renewed.license_key}")
     print(f"   Expires: {renewed.expires_at.strftime('%Y-%m-%d')}")
 

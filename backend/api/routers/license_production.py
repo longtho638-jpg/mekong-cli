@@ -6,17 +6,17 @@ Connects to LicenseService for database persistence.
 """
 
 from datetime import datetime
-from typing import Optional, Dict
+from typing import Dict, Optional
 
-from fastapi import APIRouter, HTTPException, Header, Depends, status
+from fastapi import APIRouter, Depends, Header, HTTPException, status
 from pydantic import BaseModel, Field
 
+from backend.api.services.license_service import LicenseService
 from backend.core.licensing import (
     License,
     LicensePlan,
     LicenseStatus,
 )
-from backend.api.services.license_service import LicenseService
 
 router = APIRouter(prefix="/api/licenses", tags=["licenses"])
 

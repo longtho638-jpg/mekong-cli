@@ -5,10 +5,11 @@ Verify Frontend-Backend API synchronization.
 """
 
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import SyncHandler
+
 
 class SyncMCPServer(BaseMCPServer):
     def __init__(self):

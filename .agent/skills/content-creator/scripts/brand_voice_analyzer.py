@@ -3,9 +3,10 @@
 Brand Voice Analyzer - Analyzes content to establish and maintain brand voice consistency
 """
 
+import json
 import re
 from typing import Dict, List, Tuple
-import json
+
 
 class BrandVoiceAnalyzer:
     def __init__(self):
@@ -147,24 +148,24 @@ def analyze_content(content: str, output_format: str = 'json') -> str:
     else:
         # Human-readable format
         output = [
-            f"=== Brand Voice Analysis ===",
+            "=== Brand Voice Analysis ===",
             f"Word Count: {results['word_count']}",
             f"Readability Score: {results['readability_score']:.1f}/100",
-            f"",
-            f"Voice Profile:"
+            "",
+            "Voice Profile:"
         ]
         
         for dimension, profile in results['voice_profile'].items():
             output.append(f"  {dimension.title()}: {profile['dominant']}")
         
         output.extend([
-            f"",
-            f"Sentence Analysis:",
+            "",
+            "Sentence Analysis:",
             f"  Average Length: {results['sentence_analysis']['average_length']} words",
             f"  Variety: {results['sentence_analysis']['variety']}",
             f"  Total Sentences: {results['sentence_analysis']['count']}",
-            f"",
-            f"Recommendations:"
+            "",
+            "Recommendations:"
         ])
         
         for rec in results['recommendations']:

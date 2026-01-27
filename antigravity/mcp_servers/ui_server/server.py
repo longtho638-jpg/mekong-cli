@@ -5,10 +5,11 @@ Check UI package versions and sync status.
 """
 
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import UIHandler
+
 
 class UIMCPServer(BaseMCPServer):
     def __init__(self):

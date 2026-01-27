@@ -81,3 +81,7 @@ require_developer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER])
 require_editor = require_developer
 require_viewer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER, Role.VIEWER])
 require_agent = RoleChecker([Role.OWNER, Role.AGENT])
+
+def require_role(role_name: str):
+    """Factory to require a specific single role."""
+    return RoleChecker([Role(role_name)])

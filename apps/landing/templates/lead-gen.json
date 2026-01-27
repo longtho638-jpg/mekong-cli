@@ -1,0 +1,34 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "Get Your Free E-Book",
+      "subtitle": "Learn the secrets of successful marketing in 2026. Download our comprehensive guide now.",
+      "ctaText": "Download Now",
+      "ctaLink": "#form",
+      "alignment": "center",
+      "backgroundImage": ""
+    }
+  },
+  {
+    "id": "text-1",
+    "type": "text",
+    "props": {
+      "content": "In this guide, you will learn:\n- How to optimize conversion rates\n- The psychology of color in marketing\n- 5 copy templates that sell",
+      "fontSize": "base"
+    }
+  },
+  {
+    "id": "form-1",
+    "type": "form",
+    "props": {
+      "title": "Download for Free",
+      "fields": [
+        { "name": "email", "label": "Email Address", "type": "email", "required": true },
+        { "name": "name", "label": "First Name", "type": "text", "required": true }
+      ],
+      "submitText": "Send me the E-Book"
+    }
+  }
+]

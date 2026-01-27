@@ -1,0 +1,24 @@
+timeouts:
+  test: 30000
+  action: 5000
+  navigation: 30000
+
+retries:
+  flaky_tests: 3
+  ci_retries: 2
+
+parallelism:
+  workers: 4
+  shards: 4
+
+visual_regression:
+  threshold: 0.2
+  max_diff_pixels: 100
+
+performance:
+  max_load_time_ms: 3000
+  lighthouse_thresholds:
+    performance: 90
+    accessibility: 95
+    best-practices: 90
+    seo: 90

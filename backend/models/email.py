@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Optional, List
 from enum import Enum as PyEnum
+from typing import List, Optional
 
-from sqlalchemy import String, Integer, ForeignKey, DateTime, func, Boolean, Text, JSON, Enum
+from sqlalchemy import JSON, Boolean, DateTime, Enum, ForeignKey, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 # Assuming backend/db/base_class.py exists and has Base. If not, adjust import.

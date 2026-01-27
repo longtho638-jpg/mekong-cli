@@ -1,0 +1,29 @@
+audit:
+  retention:
+    hot_storage_days: 365
+    cold_storage_days: 2190 # 6 years
+    archive_schedule: "0 2 * * *" # Daily at 2 AM
+
+  export:
+    enabled: true
+    daily_report: true
+    email_recipients:
+      - "security@example.com"
+      - "audit@example.com"
+
+  compliance:
+    gdpr_mode: true
+    hipaa_mode: true
+    log_level: "INFO"
+
+  siem:
+    splunk:
+      enabled: false
+      hec_url: "${SPLUNK_HEC_URL}"
+    datadog:
+      enabled: false
+      site: "datadoghq.com"
+    elk:
+      enabled: false
+      host: "localhost"
+      port: 9200

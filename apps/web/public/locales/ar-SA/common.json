@@ -1,0 +1,12 @@
+{
+  "welcome": "مرحبًا بك في AgencyOS",
+  "language": "اللغة",
+  "item_zero": "لا توجد عناصر",
+  "item_one": "عنصر واحد",
+  "item_two": "عنصران",
+  "item_few": "{{count}} عناصر",
+  "item_many": "{{count}} عنصر",
+  "item_other": "{{count}} عنصر",
+  "greeting": "مرحبًا، <strong>{{name}}</strong>!",
+  "lastUpdated": "آخر تحديث {{date, datetime}}"
+}

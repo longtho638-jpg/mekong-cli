@@ -305,16 +305,38 @@ def cached(
         ttl: Cache TTL in seconds
         prefix: Cache key prefix
     """
+    import inspect
+
     def decorator(func):
         cache = CacheService(prefix=prefix)
 
         @wraps(func)
-        def wrapper(*args, **kwargs):
+        async def async_wrapper(*args, **kwargs):
             # Generate cache key
             if key_func:
                 cache_key = key_func(*args, **kwargs)
             else:
                 # Use function name and args as key
+                # Note: args might contain dependencies which are not serializable
+                # For endpoints, better to use explicit key_func
+                cache_key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
+
+            # Try to get from cache
+            cached_value = cache.get(cache_key)
+            if cached_value is not None:
+                return cached_value
+
+            # Call function and cache result
+            result = await func(*args, **kwargs)
+            cache.set(cache_key, result, ttl=ttl)
+            return result
+
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            # Generate cache key
+            if key_func:
+                cache_key = key_func(*args, **kwargs)
+            else:
                 cache_key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
 
             # Try to get from cache
@@ -326,6 +348,12 @@ def cached(
             result = func(*args, **kwargs)
             cache.set(cache_key, result, ttl=ttl)
             return result
+
+        # Return appropriate wrapper
+        if inspect.iscoroutinefunction(func):
+            wrapper = async_wrapper
+        else:
+            wrapper = sync_wrapper
 
         # Add cache control methods
         wrapper.cache = cache

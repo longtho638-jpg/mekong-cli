@@ -1,0 +1,28 @@
+seo:
+  default_meta:
+    title: "AgencyOS - AI-Powered Agency Management"
+    description: "IPO-ready agency management platform with Binh Pháp strategic framework"
+    keywords:
+      - agency management
+      - AI automation
+      - startup growth
+      - revenue optimization
+    og_image: "/og-default.png"
+  schema:
+    organization:
+      name: "AgencyOS"
+      logo: "https://agencyos.ai/logo.png"
+      url: "https://agencyos.ai"
+      social_profiles:
+        - "https://twitter.com/agencyos"
+        - "https://linkedin.com/company/agencyos"
+  sitemap:
+    base_url: "https://agencyos.ai"
+    regenerate_interval: "daily"
+  core_web_vitals:
+    lcp_target_ms: 2500
+    fid_target_ms: 100
+    cls_target: 0.1
+  google_search_console:
+    enabled: true
+    api_key: "${GOOGLE_SEARCH_CONSOLE_API_KEY}"

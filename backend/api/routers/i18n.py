@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter(prefix="/api/i18n", tags=["i18n"])
 
 try:
-    from locales import i18n, t
+    from backend.locales import i18n, t
 
     I18N_AVAILABLE = True
 except ImportError:

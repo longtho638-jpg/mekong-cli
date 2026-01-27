@@ -8,16 +8,16 @@ Handles the core logic for the affiliate system including:
 - Payout generation with Vietnam tax compliance
 """
 import os
-import uuid
 import secrets
 import string
-from datetime import datetime, date
+import uuid
+from datetime import date, datetime
 from decimal import Decimal
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
 
-from supabase import Client, create_client
 from backend.models.affiliate import Affiliate, AffiliateLink, Conversion, Payout
 from backend.models.enums import AffiliateStatus, ConversionStatus, PayoutStatus
+from supabase import Client, create_client
 
 # Constants
 VND_RATE = 25000.0

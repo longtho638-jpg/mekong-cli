@@ -3,9 +3,9 @@
 API Validator - Checks API endpoints for best practices.
 Validates OpenAPI specs, response formats, and common issues.
 """
-import sys
 import json
 import re
+import sys
 from pathlib import Path
 
 # Fix Windows console encoding for Unicode output

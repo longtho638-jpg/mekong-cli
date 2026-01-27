@@ -1,6 +1,7 @@
+from typing import List
+
 from fastapi import APIRouter
 from pydantic import BaseModel
-from typing import List
 
 router = APIRouter(prefix="/api/v1/accounting", tags=["accounting"])
 

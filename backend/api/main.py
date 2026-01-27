@@ -24,8 +24,17 @@ from backend.api.middleware.multitenant import MultiTenantMiddleware, setup_tena
 from backend.api.middleware.rate_limiting import setup_rate_limit_routes, setup_rate_limiting
 from backend.api.middleware.security import SecurityMiddleware
 from backend.api.middleware.validation import ValidationMiddleware
+from backend.api.routers import (
+    admin as admin_router,
+)
 
 # Import Routers
+from backend.api.routers import (
+    agents as agent_router,
+)
+from backend.api.routers import (
+    backup as backup_router,  # Backup & DR
+)
 from backend.api.routers import (
     code as code_router,
 )
@@ -36,6 +45,7 @@ from backend.api.routers import (
     kanban,
     paypal_checkout,  # PayPal payment integration
     scheduler,
+    stripe_production,  # Production Stripe Integration
     vietnam,
 )
 from backend.api.routers import (
@@ -45,10 +55,10 @@ from backend.api.routers import (
     health as health_router,  # Health check & monitoring
 )
 from backend.api.routers import (
-    license as license_router,  # License verification
+    landing_pages as landing_pages_router,
 )
 from backend.api.routers import (
-    stripe_production, # Production Stripe Integration
+    license as license_router,  # License verification
 )
 from backend.api.routers import (
     ops as ops_router,  # Refactored
@@ -116,13 +126,18 @@ app.include_router(kanban.router)
 app.include_router(dashboard_router.router)
 app.include_router(license_router.router)
 app.include_router(team_router.router)
+app.include_router(admin_router.router)
+app.include_router(agent_router.router)
+app.include_router(landing_pages_router.router)
 
 # Payment Integration
 app.include_router(paypal_checkout.router)
 app.include_router(stripe_production.router)
+app.include_router(search_router.router)
 
 # Utility & Integration
 app.include_router(health_router.router)  # Health check & monitoring (first for priority)
+app.include_router(backup_router.router)  # Backup Management
 app.include_router(i18n.router)
 app.include_router(vietnam.router)
 app.include_router(scheduler.router)

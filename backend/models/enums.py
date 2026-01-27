@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class InvoiceStatus(str, Enum):
     DRAFT = "draft"
     SENT = "sent"
@@ -49,4 +50,17 @@ class ConversionStatus(str, Enum):
     PENDING = "pending"
     PAID = "paid"
     REFUNDED = "refunded"
+
+class ABTestStatus(str, Enum):
+    DRAFT = "draft"
+    RUNNING = "running"
+    PAUSED = "paused"
+    COMPLETED = "completed"
+
+class AnalyticsEventType(str, Enum):
+    PAGE_VIEW = "page_view"
+    CLICK = "click"
+    SCROLL = "scroll"
+    FORM_SUBMISSION = "form_submission"
+    CUSTOM = "custom"
 

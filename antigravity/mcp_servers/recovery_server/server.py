@@ -5,10 +5,11 @@ Automatic recovery actions for detected anomalies.
 """
 
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import RecoveryHandler
+
 
 class RecoveryMCPServer(BaseMCPServer):
     def __init__(self):

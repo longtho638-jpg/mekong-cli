@@ -3,8 +3,8 @@ Metadata optimization module for App Store Optimization.
 Optimizes titles, descriptions, and keyword fields with platform-specific character limit validation.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
 import re
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class MetadataOptimizer:

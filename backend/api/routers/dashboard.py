@@ -3,25 +3,98 @@
 ==============================================================
 
 Endpoints:
-- GET /api/dashboard/revenue - Revenue metrics from ~/.mekong/
-- GET /api/dashboard/leads - Lead pipeline data
-- GET /api/dashboard/queue - Content queue status
-- GET /api/dashboard/sales - Recent sales
+- GET /api/dashboard/configs - List dashboards
+- GET /api/dashboard/data/{metric} - Get metric data
+- GET /api/dashboard/legacy/* - Legacy endpoints
 """
 
 import json
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional
+import logging
 
-from fastapi import APIRouter
+# Legacy imports
+from pathlib import Path
+from typing import List, Optional
+from uuid import UUID, uuid4
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
+from backend.models.dashboard import (
+    DashboardConfig,
+    DashboardConfigCreate,
+    DashboardConfigUpdate,
+    MetricResponse,
+)
+from backend.services.dashboard_service import DashboardService
 
-# Config
+router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
+logger = logging.getLogger(__name__)
+
+# Config for legacy
 MEKONG_DIR = Path.home() / ".mekong"
 
+# Dependency
+def get_dashboard_service():
+    return DashboardService()
+
+# --- New Endpoints ---
+
+@router.get("/configs", response_model=List[DashboardConfig])
+async def list_dashboards(
+    user_id: Optional[UUID] = None, # In real app, get from auth context
+    service: DashboardService = Depends(get_dashboard_service)
+):
+    """List user's saved dashboards."""
+    # Mock user_id if not provided (for dev)
+    uid = user_id or uuid4()
+    return await service.get_dashboards(uid)
+
+@router.post("/configs", response_model=DashboardConfig)
+async def create_dashboard(
+    config: DashboardConfigCreate,
+    user_id: Optional[UUID] = None,
+    service: DashboardService = Depends(get_dashboard_service)
+):
+    """Create a new dashboard configuration."""
+    uid = user_id or uuid4()
+    return await service.create_dashboard(uid, config)
+
+@router.get("/configs/{dashboard_id}", response_model=DashboardConfig)
+async def get_dashboard(
+    dashboard_id: UUID,
+    user_id: Optional[UUID] = None,
+    service: DashboardService = Depends(get_dashboard_service)
+):
+    """Get a specific dashboard."""
+    uid = user_id or uuid4()
+    dashboard = await service.get_dashboard(dashboard_id, uid)
+    if not dashboard:
+        raise HTTPException(status_code=404, detail="Dashboard not found")
+    return dashboard
+
+@router.put("/configs/{dashboard_id}", response_model=DashboardConfig)
+async def update_dashboard(
+    dashboard_id: UUID,
+    config: DashboardConfigUpdate,
+    user_id: Optional[UUID] = None,
+    service: DashboardService = Depends(get_dashboard_service)
+):
+    """Update a dashboard."""
+    uid = user_id or uuid4()
+    return await service.update_dashboard(dashboard_id, uid, config)
+
+@router.get("/data/{metric}", response_model=MetricResponse)
+async def get_metric_data(
+    metric: str,
+    date_range: str = Query("30d", regex="^(today|7d|30d|90d|ytd|custom)$"),
+    segment: Optional[str] = None,
+    service: DashboardService = Depends(get_dashboard_service)
+):
+    """Get aggregated data for a specific metric."""
+    return await service.get_metric_data(metric, date_range, segment)
+
+
+# --- Legacy Endpoints (Maintained for compatibility) ---
 
 class RevenueMetrics(BaseModel):
     mrr: float = 0.0
@@ -31,32 +104,7 @@ class RevenueMetrics(BaseModel):
     goal: float = 200000.0
     progress_percent: float = 0.0
 
-
-class Lead(BaseModel):
-    name: str
-    email: str
-    company: str
-    stage: str
-    added: Optional[str] = None
-
-
-class Sale(BaseModel):
-    date: str
-    product: str
-    price: float
-    email: str
-
-
-class QueueItem(BaseModel):
-    id: str
-    date: str
-    theme: str
-    product: str
-    status: str
-
-
-def load_json_file(filename: str) -> List[Dict]:
-    """Load a JSON file from ~/.mekong/"""
+def load_json_file(filename: str) -> List[dict]:
     filepath = MEKONG_DIR / filename
     if filepath.exists():
         try:
@@ -66,30 +114,14 @@ def load_json_file(filename: str) -> List[Dict]:
             return []
     return []
 
-
-def load_log_file(filename: str) -> List[str]:
-    """Load a log file from ~/.mekong/"""
-    filepath = MEKONG_DIR / filename
-    if filepath.exists():
-        try:
-            with open(filepath) as f:
-                return [line.strip() for line in f.readlines() if line.strip()]
-        except (IOError, OSError):
-            return []
-    return []
-
-
 @router.get("/revenue", response_model=RevenueMetrics)
 async def get_revenue():
-    """Get revenue metrics from invoices and sales."""
+    """Get revenue metrics from invoices (Legacy)."""
     invoices = load_json_file("invoices.json")
-
     pending = sum(i.get("amount", 0) for i in invoices if i.get("status") == "pending")
     paid = sum(i.get("amount", 0) for i in invoices if i.get("status") == "paid")
-
     goal = 200000.0
     progress = (paid / goal * 100) if goal > 0 else 0
-
     return RevenueMetrics(
         mrr=paid / 12 if paid > 0 else 0,
         arr=paid,
@@ -98,92 +130,3 @@ async def get_revenue():
         goal=goal,
         progress_percent=round(progress, 1),
     )
-
-
-@router.get("/leads", response_model=List[Lead])
-async def get_leads():
-    """Get lead pipeline."""
-    leads = load_json_file("leads.json")
-    return [
-        Lead(
-            name=lead.get("name", ""),
-            email=lead.get("email", ""),
-            company=lead.get("company", ""),
-            stage=lead.get("stage", "new"),
-            added=lead.get("added", "")[:10] if lead.get("added") else None,
-        )
-        for lead in leads
-    ]
-
-
-@router.get("/leads/stats")
-async def get_leads_stats():
-    """Get lead statistics by stage."""
-    leads = load_json_file("leads.json")
-
-    stages = {"new": 0, "contacted": 0, "replied": 0, "meeting": 0, "closed": 0}
-
-    for lead in leads:
-        stage = lead.get("stage", "new")
-        if stage in stages:
-            stages[stage] += 1
-
-    total = len(leads)
-    closed = stages.get("closed", 0)
-    conversion = (closed / total * 100) if total > 0 else 0
-
-    return {"total": total, "stages": stages, "conversion_rate": round(conversion, 1)}
-
-
-@router.get("/sales", response_model=List[Sale])
-async def get_sales():
-    """Get recent sales from sales.log."""
-    lines = load_log_file("sales.log")
-    sales = []
-
-    for line in lines[-20:]:  # Last 20 sales
-        parts = line.split("|")
-        if len(parts) >= 4:
-            sales.append(
-                Sale(
-                    date=parts[0],
-                    product=parts[1],
-                    price=float(parts[2]) if parts[2].replace(".", "").isdigit() else 0,
-                    email=parts[3],
-                )
-            )
-
-    return sales
-
-
-@router.get("/queue", response_model=List[QueueItem])
-async def get_queue():
-    """Get content queue."""
-    queue = load_json_file("social_queue.json")
-    return [
-        QueueItem(
-            id=q.get("id", ""),
-            date=q.get("date", ""),
-            theme=q.get("theme", ""),
-            product=q.get("product", ""),
-            status=q.get("status", "queued"),
-        )
-        for q in queue[:20]  # First 20 items
-    ]
-
-
-@router.get("/summary")
-async def get_dashboard_summary():
-    """Get complete dashboard summary."""
-    revenue = await get_revenue()
-    leads_stats = await get_leads_stats()
-    sales = await get_sales()
-    queue = await get_queue()
-
-    return {
-        "timestamp": datetime.now().isoformat(),
-        "revenue": revenue.model_dump(),
-        "leads": leads_stats,
-        "recent_sales": len(sales),
-        "queued_content": len(queue),
-    }

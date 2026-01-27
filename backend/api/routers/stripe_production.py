@@ -7,15 +7,15 @@ Designed for production use with proper validation and error handling.
 
 import logging
 import os
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Request, Header, Body
+from fastapi import APIRouter, Body, Depends, Header, HTTPException, Request
 from pydantic import BaseModel
 
+from backend.api.dependencies.database import get_db
 from backend.core.payments.stripe_client import StripeClient
 from backend.core.payments.subscription_manager import SubscriptionManager
 from backend.core.payments.webhook_handler import WebhookHandler
-from backend.core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 

@@ -17,11 +17,11 @@ WHAT IT CHECKS:
 Usage:
     python seo_checker.py <project_path>
 """
-import sys
 import json
 import re
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Fix Windows console encoding
 try:
@@ -149,7 +149,7 @@ def main():
     project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     
     print(f"\n{'='*60}")
-    print(f"  SEO CHECKER - Search Engine Optimization Audit")
+    print("  SEO CHECKER - Search Engine Optimization Audit")
     print(f"{'='*60}")
     print(f"Project: {project_path}")
     print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -4,10 +4,11 @@ Customer Interview Analyzer
 Extracts insights, patterns, and opportunities from user interviews
 """
 
-import re
-from typing import Dict, List, Tuple, Set
-from collections import Counter, defaultdict
 import json
+import re
+from collections import Counter, defaultdict
+from typing import Dict, List, Set, Tuple
+
 
 class InterviewAnalyzer:
     """Analyze customer interviews for insights and patterns"""

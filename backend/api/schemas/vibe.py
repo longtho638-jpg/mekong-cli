@@ -12,7 +12,7 @@ Consolidates:
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 from typing_extensions import TypedDict
 
 
@@ -52,7 +52,6 @@ class VibeResponse(BaseModel):
     detected_vibe: Optional[str] = Field(default=None, description="Auto-detected vibe")
     config: VibeConfigDict = Field(..., description="Vibe configuration")
 
-    class Config:
-        """Pydantic config."""
-
-        json_encoders = {datetime: lambda v: v.isoformat()}
+    model_config = ConfigDict(
+        json_encoders={datetime: lambda v: v.isoformat()}
+    )

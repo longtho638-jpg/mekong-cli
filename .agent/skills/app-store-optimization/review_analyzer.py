@@ -3,9 +3,9 @@ Review analysis module for App Store Optimization.
 Analyzes user reviews for sentiment, issues, and feature requests.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
-from collections import Counter
 import re
+from collections import Counter
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class ReviewAnalyzer:

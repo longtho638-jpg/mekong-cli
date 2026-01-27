@@ -3,9 +3,9 @@ Competitor analysis module for App Store Optimization.
 Analyzes top competitors' ASO strategies and identifies opportunities.
 """
 
-from typing import Dict, List, Any, Optional
-from collections import Counter
 import re
+from collections import Counter
+from typing import Any, Dict, List, Optional
 
 
 class CompetitorAnalyzer:

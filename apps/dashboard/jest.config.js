@@ -1,7 +1,7 @@
 /** @type {import('jest').Config} */
 module.exports = {
   testEnvironment: 'jsdom',
-  roots: ['<rootDir>/lib', '<rootDir>/components', '<rootDir>/app'],
+  roots: ['<rootDir>/lib', '<rootDir>/components', '<rootDir>/app', '<rootDir>/tests'],
   testMatch: [
     '**/__tests__/**/*.+(ts|tsx|js)',
     '**/*.(test|spec).+(ts|tsx|js)',

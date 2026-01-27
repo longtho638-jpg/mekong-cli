@@ -13,8 +13,8 @@ from fastapi.middleware.cors import CORSMiddleware
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Initialize Sentry for error tracking and performance monitoring
-from backend.core.sentry_config import init_sentry
 from backend.core.logging import setup_logging
+from backend.core.sentry_config import init_sentry
 
 # Setup structured logging first
 setup_logging(os.getenv("LOG_LEVEL", "INFO"))
@@ -26,41 +26,57 @@ init_sentry(
 
 from backend.api.auth.router import router as auth_router
 from backend.api.config import settings
+from backend.api.openapi import custom_openapi
 from backend.api.routers import (
     accounting,
+    affiliates,  # Added
     agents,
     agents_creator,
     analytics,
     audit,
     campaigns,
+    developers,  # Added
+    dlq,  # Added Advanced Webhooks DLQ
+    exports,  # Added Data Exports
     gumroad_webhooks,
     hr,
     inventory,
     invoices,
+    jobs,  # Added Job Queue
     kanban,
     license_production,
     mekong_commands,
     monitor,
+    oauth,  # Added OAuth
     ops,
     payments,
     paypal_webhooks,
     revenue,
     stripe_webhooks,
     swarm,
+    user_preferences,  # Added User Preferences
     vibes,
+    webhook_health,  # Added Advanced Webhooks
     workflow,
-    affiliates, # Added
+    rate_limits,  # Added Rate Limits
 )
 from backend.api.routers import (
     router as hybrid_router,
 )
+from backend.api.v1 import router as v1_router  # Added Public API V1
 from backend.middleware import (
+    LicenseValidatorMiddleware,
     PerformanceMonitoringMiddleware,
     RateLimitMiddleware,
-    LicenseValidatorMiddleware,
     get_metrics_summary,
 )
+from backend.middleware.api_auth import ApiAuthMiddleware  # Added
+from backend.middleware.audit_middleware import AuditMiddleware  # Added
+from backend.middleware.cache_middleware import CacheControlMiddleware  # Added
+from backend.middleware.locale_middleware import LocaleMiddleware  # Added
 from backend.routes.agentops import router as agentops_router
+from backend.services.api_key_service import ApiKeyService  # Added
+from backend.websocket.dashboard_routes import router as dashboard_ws_router
 from backend.websocket.routes import router as ws_router
 
 # Initialize FastAPI
@@ -72,8 +88,25 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# Override OpenAPI schema
+app.openapi = custom_openapi(app)
+
 # Add performance monitoring middleware (before rate limiting for accurate timing)
 app.add_middleware(PerformanceMonitoringMiddleware)
+
+# Add Cache Control Middleware
+app.add_middleware(CacheControlMiddleware)
+
+# Add Audit Middleware (Log all requests)
+app.add_middleware(AuditMiddleware)
+
+# Add Locale Middleware (Detect language/currency)
+app.add_middleware(LocaleMiddleware)
+
+# Add Public API Auth Middleware (tracks usage and verifies keys for /api/v1)
+# Initialize service
+api_key_service = ApiKeyService()
+app.add_middleware(ApiAuthMiddleware, api_key_service=api_key_service)
 
 # Add rate limiting middleware (before CORS)
 app.add_middleware(
@@ -119,7 +152,16 @@ app.include_router(affiliates.router) # Added
 app.include_router(ops.router)
 app.include_router(swarm.router)
 app.include_router(ws_router)
+app.include_router(dashboard_ws_router)
 app.include_router(auth_router)
+app.include_router(oauth.router) # Added OAuth Router
+app.include_router(jobs.router) # Added Job Queue
+app.include_router(webhook_health.router) # Added Webhook Health
+app.include_router(dlq.router) # Added Webhook DLQ
+app.include_router(user_preferences.router) # Added User Preferences
+app.include_router(exports.router) # Added Data Exports
+app.include_router(rate_limits.router) # Added Rate Limits
+app.include_router(v1_router) # Added Public API V1
 
 @app.get("/")
 async def root():

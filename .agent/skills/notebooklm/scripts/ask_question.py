@@ -10,9 +10,9 @@ See: https://github.com/microsoft/playwright/issues/36139
 """
 
 import argparse
+import re
 import sys
 import time
-import re
 from pathlib import Path
 
 from patchright.sync_api import sync_playwright
@@ -21,10 +21,10 @@ from patchright.sync_api import sync_playwright
 sys.path.insert(0, str(Path(__file__).parent))
 
 from auth_manager import AuthManager
-from notebook_manager import NotebookLibrary
-from config import QUERY_INPUT_SELECTORS, RESPONSE_SELECTORS
 from browser_utils import BrowserFactory, StealthUtils
+from notebook_manager import NotebookLibrary
 
+from config import QUERY_INPUT_SELECTORS, RESPONSE_SELECTORS
 
 # Follow-up reminder (adapted from MCP server for stateless operation)
 # Since we don't have persistent sessions, we encourage comprehensive questions

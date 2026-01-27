@@ -1,0 +1,39 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "Launch Your SaaS in Minutes",
+      "subtitle": "The ultimate platform for building and scaling your software business.",
+      "ctaText": "Start Free Trial",
+      "ctaLink": "/signup",
+      "alignment": "center",
+      "backgroundImage": ""
+    }
+  },
+  {
+    "id": "features-1",
+    "type": "features",
+    "props": {
+      "title": "Why Choose Us?",
+      "columns": 3
+    }
+  },
+  {
+    "id": "text-1",
+    "type": "text",
+    "props": {
+      "content": "Our platform handles everything from payments to user management, so you can focus on your code.",
+      "fontSize": "lg"
+    }
+  },
+  {
+    "id": "cta-1",
+    "type": "cta",
+    "props": {
+      "title": "Ready to scale?",
+      "buttonText": "Get Started Now",
+      "backgroundColor": "#f3f4f6"
+    }
+  }
+]

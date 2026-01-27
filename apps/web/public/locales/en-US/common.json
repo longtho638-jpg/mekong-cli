@@ -1,0 +1,9 @@
+{
+  "welcome": "Welcome to AgencyOS",
+  "language": "Language",
+  "item_zero": "No items",
+  "item_one": "{{count}} item",
+  "item_other": "{{count}} items",
+  "greeting": "Hello, <strong>{{name}}</strong>!",
+  "lastUpdated": "Last updated {{date, datetime}}"
+}

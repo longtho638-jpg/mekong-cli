@@ -1,26 +1,26 @@
 """
 Affiliate API Router - Management and Tracking endpoints.
 """
+from datetime import date, datetime, timedelta
 from typing import List, Optional
-from datetime import datetime, date, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from fastapi.responses import RedirectResponse
 
 from backend.api.auth.dependencies import get_current_user
 from backend.api.auth.utils import TokenData
-from backend.api.security.rbac import require_admin
-from backend.api.services.affiliate_service import AffiliateService
+from backend.api.config import settings
 from backend.api.schemas.affiliate import (
     AffiliateCreate,
     AffiliateResponse,
+    AffiliateStats,
     AffiliateUpdate,
     LinkCreate,
     LinkResponse,
     PayoutResponse,
-    AffiliateStats
 )
-from backend.api.config import settings
+from backend.api.security.rbac import require_admin
+from backend.api.services.affiliate_service import AffiliateService
 
 router = APIRouter(prefix="/affiliates", tags=["affiliates"])
 

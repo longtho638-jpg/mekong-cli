@@ -1,9 +1,10 @@
+import logging
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from typing import Dict, Any
-from backend.services.email_providers.base import EmailProvider, EmailMessage
-import logging
+from typing import Any, Dict
+
+from backend.services.email_providers.base import EmailMessage, EmailProvider
 
 logger = logging.getLogger(__name__)
 

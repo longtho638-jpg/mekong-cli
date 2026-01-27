@@ -4,17 +4,18 @@ Tests for shopify_init.py
 Run with: pytest test_shopify_init.py -v --cov=shopify_init --cov-report=term-missing
 """
 
-import os
-import sys
 import json
-import pytest
+import os
 import subprocess
+import sys
 from pathlib import Path
-from unittest.mock import Mock, patch, mock_open, MagicMock
+from unittest.mock import MagicMock, Mock, mock_open, patch
+
+import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from shopify_init import EnvLoader, EnvConfig, ShopifyInitializer
+from shopify_init import EnvConfig, EnvLoader, ShopifyInitializer
 
 
 class TestEnvLoader:

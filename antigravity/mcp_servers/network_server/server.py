@@ -5,10 +5,11 @@ Automates WARP/DoH management and latency optimization.
 """
 
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import NetworkHandler
+
 
 class NetworkMCPServer(BaseMCPServer):
     def __init__(self):

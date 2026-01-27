@@ -1,0 +1,46 @@
+backup_policy:
+  version: "1.0"
+
+  schedules:
+    full_backup:
+      cron: "0 2 * * *"  # Daily at 02:00 UTC
+      retention_days: 30
+      storage_class: "STANDARD"
+
+    incremental_backup:
+      cron: "15 * * * *" # Hourly at :15
+      retention_days: 7
+      storage_class: "STANDARD"
+
+  storage:
+    primary_bucket: "agencyos-backups-primary-us-east-1"
+    dr_bucket: "agencyos-backups-dr-eu-west-1"
+    region: "us-east-1"
+    dr_region: "eu-west-1"
+
+  encryption:
+    algorithm: "AES256"
+    kms_key_id: "alias/agencyos-backup-key" # Optional if using SSE-S3
+
+  compression:
+    enabled: true
+    algorithm: "gzip"
+    level: 9
+
+  databases:
+    postgres:
+      enabled: true
+      host: "${POSTGRES_HOST}"
+      port: 5432
+      user: "${POSTGRES_USER}"
+      database: "${POSTGRES_DB}"
+
+    redis:
+      enabled: true
+      host: "${REDIS_HOST}"
+      port: 6379
+
+  notifications:
+    email: "devops@agencyos.dev"
+    slack_webhook: "${SLACK_WEBHOOK_URL}"
+    pagerduty_integration_key: "${PAGERDUTY_KEY}"

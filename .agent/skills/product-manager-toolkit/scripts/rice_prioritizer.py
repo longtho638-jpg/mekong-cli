@@ -5,10 +5,11 @@ Calculates RICE scores for feature prioritization
 RICE = (Reach x Impact x Confidence) / Effort
 """
 
-import json
-import csv
-from typing import List, Dict, Tuple
 import argparse
+import csv
+import json
+from typing import Dict, List, Tuple
+
 
 class RICECalculator:
     """Calculate RICE scores for feature prioritization"""

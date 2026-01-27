@@ -65,11 +65,12 @@ Analyzes React Native / Flutter code for compliance with:
 Total: 50+ mobile-specific checks
 """
 
-import sys
+import json
 import os
 import re
-import json
+import sys
 from pathlib import Path
+
 
 class MobileAuditor:
     def __init__(self):

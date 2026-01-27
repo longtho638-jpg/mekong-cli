@@ -1,0 +1,46 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "Digital Excellence Agency",
+      "subtitle": "We build world-class digital experiences for ambitious brands.",
+      "ctaText": "View Our Work",
+      "ctaLink": "#portfolio",
+      "alignment": "center",
+      "backgroundImage": "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=2070&auto=format&fit=crop"
+    }
+  },
+  {
+    "id": "features-1",
+    "type": "features",
+    "props": {
+      "title": "Our Services",
+      "columns": 3
+    }
+  },
+  {
+    "id": "text-1",
+    "type": "text",
+    "props": {
+      "content": "From strategy to execution, we cover every aspect of your digital presence.",
+      "fontSize": "lg"
+    }
+  },
+  {
+    "id": "testimonials-1",
+    "type": "testimonials",
+    "props": {
+      "title": "Client Success Stories"
+    }
+  },
+  {
+    "id": "cta-1",
+    "type": "cta",
+    "props": {
+      "title": "Let's build something great together",
+      "buttonText": "Contact Us",
+      "backgroundColor": "#1a1a1a"
+    }
+  }
+]

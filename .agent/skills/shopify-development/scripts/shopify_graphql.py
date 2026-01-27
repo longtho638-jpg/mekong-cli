@@ -12,14 +12,13 @@ Usage:
     products = client.get_products(first=10)
 """
 
+import json
 import os
 import time
-import json
-from typing import Dict, List, Optional, Any, Generator
 from dataclasses import dataclass
-from urllib.request import Request, urlopen
+from typing import Any, Dict, Generator, List, Optional
 from urllib.error import HTTPError
-
+from urllib.request import Request, urlopen
 
 # API Configuration
 API_VERSION = "2026-01"
@@ -113,7 +112,7 @@ class ShopifyGraphQL:
                     time.sleep(delay)
                     continue
                 raise
-            except Exception as e:
+            except Exception:
                 if attempt == MAX_RETRIES - 1:
                     raise
                 time.sleep(RETRY_DELAY)
@@ -398,7 +397,6 @@ def build_gid(resource_type: str, id: str) -> str:
 
 def main():
     """Example usage of ShopifyGraphQL client."""
-    import os
 
     # Load from environment
     shop = os.environ.get('SHOP_DOMAIN', 'your-store.myshopify.com')

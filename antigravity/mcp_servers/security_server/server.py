@@ -5,10 +5,11 @@ Pre-deploy, runtime, and post-deploy quality gates.
 """
 
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import SecurityHandler
+
 
 class SecurityMCPServer(BaseMCPServer):
     def __init__(self):

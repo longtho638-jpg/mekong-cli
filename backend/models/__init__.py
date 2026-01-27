@@ -2,25 +2,50 @@
 Models module for backend request/response validation
 """
 
+# Admin
+from .admin import (
+    AdminAuditLog,
+    AdminUser,
+    AdminUserUpdate,
+    FeatureFlag,
+    FeatureFlagCreate,
+    FeatureFlagUpdate,
+    SystemSetting,
+    SystemSettingUpdate,
+)
+from .agency import Agency
 from .agent import AgentResponse, AgentTask
 from .agentops import OpsExecuteRequest, OpsExecuteResponse, OpsStatus
+from .audit_log import AuditLog
+from .client import Client
 from .command import CommandRequest, CommandResponse
-from .router import RouterRequest, RouterResponse
-from .vibe import VibeRequest, VibeResponse
 
 # Unified Models
 from .enums import (
+    ABTestStatus,
+    AnalyticsEventType,
+    ClientStatus,
     InvoiceStatus,
-    TaskStatus,
-    TaskPriority,
     ProjectStatus,
-    ClientStatus
+    TaskPriority,
+    TaskStatus,
 )
 from .invoice import Invoice
-from .task import Task
+from .landing_page import (
+    ABTest,
+    ABTestCreate,
+    ABTestResponse,
+    AnalyticsEvent,
+    AnalyticsEventCreate,
+    LandingPage,
+    LandingPageCreate,
+    LandingPageResponse,
+    LandingPageUpdate,
+)
 from .project import Project
-from .client import Client
-from .agency import Agency
+from .router import RouterRequest, RouterResponse
+from .task import Task
+from .vibe import VibeRequest, VibeResponse
 
 __all__ = [
     # Core
@@ -54,4 +79,26 @@ __all__ = [
     "AffiliateStatus",
     "PayoutStatus",
     "ConversionStatus",
+    # Admin
+    "FeatureFlag",
+    "FeatureFlagCreate",
+    "FeatureFlagUpdate",
+    "SystemSetting",
+    "SystemSettingUpdate",
+    "AdminUser",
+    "AdminUserUpdate",
+    "AdminAuditLog",
+    "AuditLog",
+    # Landing Page
+    "LandingPage",
+    "LandingPageCreate",
+    "LandingPageUpdate",
+    "LandingPageResponse",
+    "ABTest",
+    "ABTestCreate",
+    "ABTestResponse",
+    "AnalyticsEvent",
+    "AnalyticsEventCreate",
+    "ABTestStatus",
+    "AnalyticsEventType",
 ]

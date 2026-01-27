@@ -6,8 +6,8 @@ for AgencyOS production deployments.
 """
 
 from .generator import LicenseGenerator
+from .models import License, LicensePlan, LicenseStatus
 from .validator import LicenseValidator, ValidationResult
-from .models import License, LicenseStatus, LicensePlan
 
 __all__ = [
     "LicenseGenerator",

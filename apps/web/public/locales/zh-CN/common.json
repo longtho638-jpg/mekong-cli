@@ -1,0 +1,9 @@
+{
+  "welcome": "欢迎来到 AgencyOS",
+  "language": "语言",
+  "item_zero": "无项目",
+  "item_one": "{{count}} 个项目",
+  "item_other": "{{count}} 个项目",
+  "greeting": "你好, <strong>{{name}}</strong>!",
+  "lastUpdated": "最后更新 {{date, datetime}}"
+}

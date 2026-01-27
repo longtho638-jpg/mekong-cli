@@ -7,15 +7,15 @@ Handles transactional emails, marketing blasts, and drip campaigns.
 """
 
 import logging
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 from backend.api.config import settings
 from backend.services.email_providers import (
-    EmailProvider,
     EmailMessage,
+    EmailProvider,
     ResendProvider,
     SendGridProvider,
-    SMTPProvider
+    SMTPProvider,
 )
 
 logger = logging.getLogger(__name__)

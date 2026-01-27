@@ -1,0 +1,47 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "Premium Wireless Headphones",
+      "subtitle": "Experience sound like never before with our noise-cancelling technology.",
+      "ctaText": "Buy Now - $299",
+      "ctaLink": "/checkout",
+      "alignment": "left",
+      "backgroundImage": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop"
+    }
+  },
+  {
+    "id": "features-1",
+    "type": "features",
+    "props": {
+      "title": "Product Highlights",
+      "columns": 2
+    }
+  },
+  {
+    "id": "image-1",
+    "type": "image",
+    "props": {
+      "src": "https://images.unsplash.com/photo-1546435770-a3e426bf472b?q=80&w=2065&auto=format&fit=crop",
+      "alt": "Headphones Lifestyle"
+    }
+  },
+  {
+    "id": "text-1",
+    "type": "text",
+    "props": {
+      "content": "Immersion that lasts all day. With up to 30 hours of battery life, you can listen to your favorite music, podcasts, and movies without interruption.",
+      "fontSize": "base"
+    }
+  },
+  {
+    "id": "cta-1",
+    "type": "cta",
+    "props": {
+      "title": "Don't miss out",
+      "buttonText": "Add to Cart",
+      "backgroundColor": "#ffffff"
+    }
+  }
+]

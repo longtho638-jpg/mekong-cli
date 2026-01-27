@@ -247,7 +247,7 @@ class GIFBuilder:
         }
 
         # Print info
-        print(f"\n✓ GIF created successfully!")
+        print("\n✓ GIF created successfully!")
         print(f"  Path: {output_path}")
         print(f"  Size: {file_size_kb:.1f} KB ({file_size_mb:.2f} MB)")
         print(f"  Dimensions: {self.width}x{self.height}")
@@ -257,7 +257,7 @@ class GIFBuilder:
 
         # Size info
         if optimize_for_emoji:
-            print(f"  Optimized for emoji (128x128, reduced colors)")
+            print("  Optimized for emoji (128x128, reduced colors)")
         if file_size_mb > 1.0:
             print(f"\n  Note: Large file size ({file_size_kb:.1f} KB)")
             print("  Consider: fewer frames, smaller dimensions, or fewer colors")

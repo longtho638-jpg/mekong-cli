@@ -15,6 +15,7 @@ class TestSecretKeyValidation(unittest.TestCase):
             with self.assertRaises(RuntimeError) as context:
                 # Force reimport to trigger validation
                 import importlib
+
                 import backend.api.auth.utils as auth_utils
                 importlib.reload(auth_utils)
 
@@ -28,6 +29,7 @@ class TestSecretKeyValidation(unittest.TestCase):
         with patch.dict(os.environ, {"SECRET_KEY": test_key}):
             # Reimport to pick up new env var
             import importlib
+
             import backend.api.auth.utils as auth_utils
             importlib.reload(auth_utils)
 
@@ -56,6 +58,7 @@ class TestAuthUtilsTypeSafety(unittest.TestCase):
     def test_function_signatures(self):
         """Test that functions have proper type annotations."""
         import importlib
+
         import backend.api.auth.utils as auth_utils
         importlib.reload(auth_utils)
 

@@ -38,6 +38,7 @@ DEFAULT_WEBHOOK_PORTAL_URL = "https://platform.billmentor.com"
 # Default CORS origins for development
 DEFAULT_DEV_CORS_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:3002",
     "http://localhost:8000",
     "http://localhost:8080",
 ]

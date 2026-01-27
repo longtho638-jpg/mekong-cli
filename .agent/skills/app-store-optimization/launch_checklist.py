@@ -3,8 +3,8 @@ Launch checklist module for App Store Optimization.
 Generates comprehensive pre-launch and update checklists.
 """
 
-from typing import Dict, List, Any, Optional
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 
 class LaunchChecklistGenerator:

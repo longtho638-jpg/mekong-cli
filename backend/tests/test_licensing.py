@@ -4,15 +4,16 @@ Unit Tests for License System
 Tests license generation, validation, and expiration handling.
 """
 
-import pytest
 from datetime import datetime, timedelta
 
+import pytest
+
 from backend.core.licensing import (
-    LicenseGenerator,
-    LicenseValidator,
     License,
+    LicenseGenerator,
     LicensePlan,
     LicenseStatus,
+    LicenseValidator,
 )
 
 

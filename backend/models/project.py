@@ -1,6 +1,9 @@
-from pydantic import BaseModel
 from typing import Optional
+
+from pydantic import BaseModel
+
 from .enums import ProjectStatus
+
 
 class Project(BaseModel):
     id: str

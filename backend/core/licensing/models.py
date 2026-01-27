@@ -7,7 +7,8 @@ Defines the structure for license objects and status tracking.
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class LicenseStatus(str, Enum):

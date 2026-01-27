@@ -7,11 +7,12 @@ Usage: python lighthouse_audit.py https://example.com
 Output: JSON with performance scores
 Note: Requires lighthouse CLI (npm install -g lighthouse)
 """
-import subprocess
 import json
-import sys
 import os
+import subprocess
+import sys
 import tempfile
+
 
 def run_lighthouse(url: str) -> dict:
     """Run Lighthouse audit on URL."""

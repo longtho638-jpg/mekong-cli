@@ -1,7 +1,8 @@
-import sys
 import os
-import pytest
+import sys
 from importlib import import_module
+
+import pytest
 
 # Add current directory to path
 sys.path.insert(0, os.getcwd())
@@ -61,7 +62,7 @@ def test_server_import_and_instantiation():
                 try:
                     server_instance = server_class(name=server_name)
                     results[server_name] = "PASS"
-                except Exception as e2:
+                except Exception:
                     results[server_name] = f"FAIL: Instantiation error: {str(e)}"
 
         except ImportError as e:

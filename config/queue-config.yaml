@@ -1,0 +1,51 @@
+queues:
+  high:
+    priority: 1
+    description: "Critical tasks like transactional emails, password resets"
+  normal:
+    priority: 2
+    description: "Standard tasks like report generation, webhooks"
+  low:
+    priority: 3
+    description: "Background maintenance, cleanup, bulk data processing"
+
+job_types:
+  send_email:
+    queue: "high"
+    max_retries: 3
+    retry_backoff_seconds: [60, 300, 900]
+    timeout_seconds: 60
+
+  process_webhook:
+    queue: "normal"
+    max_retries: 5
+    retry_backoff_seconds: [30, 60, 300, 1800, 3600]
+    timeout_seconds: 30
+
+  generate_report:
+    queue: "normal"
+    max_retries: 2
+    retry_backoff_seconds: [60, 300]
+    timeout_seconds: 300
+
+  export_data:
+    queue: "low"
+    max_retries: 1
+    retry_backoff_seconds: [300]
+    timeout_seconds: 600
+
+  cleanup_old_data:
+    queue: "low"
+    max_retries: 0
+    timeout_seconds: 1200
+
+redis:
+  key_prefix: "agencyos:jobs:"
+  stream_prefix: "agencyos:stream:"
+  dlq_key: "agencyos:queue:dlq"
+  schedule_key: "agencyos:schedule"
+
+workers:
+  default_concurrency: 4
+  poll_interval_seconds: 0.1
+  heartbeat_interval_seconds: 30

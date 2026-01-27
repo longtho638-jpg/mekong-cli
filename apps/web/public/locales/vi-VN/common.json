@@ -1,0 +1,9 @@
+{
+  "welcome": "Chào mừng đến với AgencyOS",
+  "language": "Ngôn ngữ",
+  "item_zero": "Không có mục nào",
+  "item_one": "{{count}} mục",
+  "item_other": "{{count}} mục",
+  "greeting": "Xin chào, <strong>{{name}}</strong>!",
+  "lastUpdated": "Cập nhật lần cuối {{date, datetime}}"
+}

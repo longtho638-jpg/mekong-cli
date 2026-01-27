@@ -5,10 +5,10 @@ Individual browser session for persistent NotebookLM conversations
 Based on the original NotebookLM API implementation
 """
 
-import time
 import sys
-from typing import Any, Dict, Optional
+import time
 from pathlib import Path
+from typing import Any, Dict, Optional
 
 from patchright.sync_api import BrowserContext, Page
 
@@ -54,7 +54,7 @@ class BrowserSession:
 
         # Create new page (tab) in context
         self.page = self.context.new_page()
-        print(f"  🌐 Navigating to NotebookLM...")
+        print("  🌐 Navigating to NotebookLM...")
 
         try:
             # Navigate to notebook

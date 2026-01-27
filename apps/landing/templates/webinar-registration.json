@@ -1,0 +1,39 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "Mastering Advanced React Patterns",
+      "subtitle": "Join us for an exclusive live webinar with industry experts.",
+      "ctaText": "Reserve Your Spot",
+      "ctaLink": "#register",
+      "alignment": "center",
+      "backgroundImage": "https://images.unsplash.com/photo-1544531586-fde5298cdd40?q=80&w=2070&auto=format&fit=crop"
+    }
+  },
+  {
+    "id": "text-1",
+    "type": "text",
+    "props": {
+      "content": "Date: October 24th, 2026\nTime: 2:00 PM EST\nDuration: 60 Minutes",
+      "fontSize": "lg"
+    }
+  },
+  {
+    "id": "features-1",
+    "type": "features",
+    "props": {
+      "title": "What You'll Learn",
+      "columns": 3
+    }
+  },
+  {
+    "id": "cta-1",
+    "type": "cta",
+    "props": {
+      "title": "Limited Seats Available",
+      "buttonText": "Register Now",
+      "backgroundColor": "#f3f4f6"
+    }
+  }
+]

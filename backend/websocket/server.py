@@ -37,6 +37,7 @@ class EventType(str, Enum):
     SWARM_UPDATE = "swarm_update"
     DATA_REFRESH = "data_refresh"
     HEARTBEAT = "heartbeat"
+    AUDIT_LOG_CREATED = "audit_log_created"
 
 
 class ConnectionManager:
@@ -188,3 +189,8 @@ async def emit_swarm_update(swarm_data: dict = None):
 async def emit_data_refresh():
     """Emit general data refresh signal."""
     await manager.broadcast_event(EventType.DATA_REFRESH)
+
+
+async def emit_audit_log_created(log_data: dict):
+    """Emit when a new audit log is created."""
+    await manager.broadcast_event(EventType.AUDIT_LOG_CREATED, log_data)

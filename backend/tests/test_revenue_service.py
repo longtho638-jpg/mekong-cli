@@ -1,8 +1,11 @@
-import pytest
-from unittest.mock import Mock, patch
-from decimal import Decimal
 from datetime import date
+from decimal import Decimal
+from unittest.mock import Mock, patch
+
+import pytest
+
 from backend.api.services.revenue_service import RevenueService
+
 
 @pytest.fixture
 def mock_supabase():

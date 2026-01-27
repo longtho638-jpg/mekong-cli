@@ -1,7 +1,10 @@
-from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any
 from datetime import datetime
-from .enums import TaskStatus, TaskPriority
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
+
+from .enums import TaskPriority, TaskStatus
+
 
 class Task(BaseModel):
     id: str = Field(description="UUID")

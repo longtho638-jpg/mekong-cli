@@ -5,13 +5,13 @@ Manages a library of NotebookLM notebooks with metadata
 Based on the MCP server implementation
 """
 
-import json
 import argparse
-import uuid
+import json
 import os
-from pathlib import Path
-from typing import Dict, List, Optional, Any
+import uuid
 from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 class NotebookLibrary:

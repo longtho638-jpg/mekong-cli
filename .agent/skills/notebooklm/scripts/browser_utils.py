@@ -4,12 +4,13 @@ Handles browser launching, stealth features, and common interactions
 """
 
 import json
-import time
 import random
-from typing import Optional, List
+import time
+from typing import List, Optional
 
-from patchright.sync_api import Playwright, BrowserContext, Page
-from config import BROWSER_PROFILE_DIR, STATE_FILE, BROWSER_ARGS, USER_AGENT
+from patchright.sync_api import BrowserContext, Page, Playwright
+
+from config import BROWSER_ARGS, BROWSER_PROFILE_DIR, STATE_FILE, USER_AGENT
 
 
 class BrowserFactory:

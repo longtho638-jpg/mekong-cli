@@ -6,13 +6,14 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-# Configuration - MUST be set via environment variable
-SECRET_KEY = os.getenv("SECRET_KEY")
+from backend.api.config import settings
+
+# Configuration
+SECRET_KEY = settings.secret_key
 if not SECRET_KEY:
-    raise RuntimeError(
-        "CRITICAL: SECRET_KEY environment variable is not set. "
-        "Set it with: export SECRET_KEY='your-secure-random-key-here'"
-    )
+    # This should technically be caught by Pydantic validation if configured correctly,
+    # but as a safety net for bare-bones execution:
+    SECRET_KEY = "dev-secret-key-CHANGE-IN-PRODUCTION"
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30

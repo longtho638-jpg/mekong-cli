@@ -1,8 +1,10 @@
-from pydantic import BaseModel, Field, EmailStr, HttpUrl
-from typing import Optional, List, Dict, Any
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
-from backend.models.enums import AffiliateStatus, PayoutStatus, ConversionStatus
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, EmailStr, Field, HttpUrl
+
+from backend.models.enums import AffiliateStatus, ConversionStatus, PayoutStatus
 
 # --- Affiliate Schemas ---
 

@@ -1,0 +1,39 @@
+[
+  {
+    "id": "hero-1",
+    "type": "hero",
+    "props": {
+      "title": "AgencyOS Mobile App",
+      "subtitle": "Manage your agency from your pocket. Real-time metrics, client chat, and task management.",
+      "ctaText": "Download for iOS",
+      "ctaLink": "#store",
+      "alignment": "center",
+      "backgroundImage": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop"
+    }
+  },
+  {
+    "id": "features-1",
+    "type": "features",
+    "props": {
+      "title": "App Features",
+      "columns": 3
+    }
+  },
+  {
+    "id": "image-1",
+    "type": "image",
+    "props": {
+      "src": "https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=1974&auto=format&fit=crop",
+      "alt": "App Dashboard Screenshot"
+    }
+  },
+  {
+    "id": "cta-1",
+    "type": "cta",
+    "props": {
+      "title": "Get it now",
+      "buttonText": "Download on App Store",
+      "backgroundColor": "#000000"
+    }
+  }
+]

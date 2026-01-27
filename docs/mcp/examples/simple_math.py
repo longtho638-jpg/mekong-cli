@@ -3,8 +3,9 @@ Example 1: Simple Math Server
 Demonstrates basic tool definition and handling.
 """
 import asyncio
-from typing import Any, Dict, List
 from antigravity.mcp.base import BaseMCPServer
+from typing import Any, Dict, List
+
 
 class MathMCPServer(BaseMCPServer):
     def __init__(self):

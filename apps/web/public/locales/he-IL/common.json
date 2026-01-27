@@ -1,0 +1,10 @@
+{
+  "welcome": "ברוכים הבאים ל-AgencyOS",
+  "language": "שפה",
+  "item_zero": "אין פריטים",
+  "item_one": "פריט {{count}}",
+  "item_two": "{{count}} פריטים",
+  "item_other": "{{count}} פריטים",
+  "greeting": "שלום, <strong>{{name}}</strong>!",
+  "lastUpdated": "עודכן לאחרונה {{date, datetime}}"
+}

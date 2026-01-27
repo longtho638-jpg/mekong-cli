@@ -4,11 +4,12 @@ TypeScript Project Diagnostic Script
 Analyzes TypeScript projects for configuration, performance, and common issues.
 """
 
+import json
+import os
 import subprocess
 import sys
-import os
-import json
 from pathlib import Path
+
 
 def run_cmd(cmd: str) -> str:
     """Run shell command and return output."""

@@ -6,12 +6,12 @@ Handles verification, event routing, and idempotency.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
+from backend.core.licensing.generator import LicenseGenerator
+from backend.core.payments.invoice_manager import InvoiceManager
 from backend.core.payments.stripe_client import StripeClient
 from backend.core.payments.subscription_manager import SubscriptionManager
-from backend.core.payments.invoice_manager import InvoiceManager
-from backend.core.licensing.generator import LicenseGenerator
 from backend.services.provisioning_service import ProvisioningService
 
 logger = logging.getLogger(__name__)

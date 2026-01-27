@@ -179,6 +179,22 @@ class Settings(BaseSettings):
     max_string_length: int = Field(default=DEFAULT_MAX_STRING_LENGTH, description="Max string field length")
 
     # ========================================
+    # Audit & Compliance
+    # ========================================
+    audit_retention_days: int = Field(default=365, description="Days to retain audit logs in hot storage")
+    splunk_hec_url: Optional[str] = Field(default=None, description="Splunk HEC Endpoint")
+    splunk_token: Optional[str] = Field(default=None, description="Splunk HEC Token")
+    datadog_api_key: Optional[str] = Field(default=None, description="Datadog API Key")
+
+    # ========================================
+    # AWS / Storage Configuration
+    # ========================================
+    aws_access_key_id: Optional[str] = Field(default=None, description="AWS Access Key ID")
+    aws_secret_access_key: Optional[str] = Field(default=None, description="AWS Secret Access Key")
+    aws_region: str = Field(default="us-east-1", description="AWS Region")
+    s3_bucket_name: str = Field(default="agencyos-exports", description="S3 Bucket for exports")
+
+    # ========================================
     # Computed Properties
     # ========================================
     @property

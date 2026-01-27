@@ -3,8 +3,9 @@ Example 3: Async Task Server
 Demonstrates async operations and non-blocking behavior.
 """
 import asyncio
-from typing import Any, Dict, List
 from antigravity.mcp.base import BaseMCPServer
+from typing import Any, Dict, List
+
 
 class AsyncTaskMCPServer(BaseMCPServer):
     def __init__(self):

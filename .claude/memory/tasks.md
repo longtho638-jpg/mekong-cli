@@ -6,6 +6,440 @@
 ---
 
 ## Active Tasks
+
+- [ ] **TASK-12debc47** 🔔 RUNNING
+    - Description: IPO-023-Webhooks-V2: Advanced webhooks. Retry policies, dead letter queue, signature verification. Ch.9 行軍
+    - Assigned: backend-developer
+    - Status: running (Agent: a34791a)
+    - Priority: high
+    - Created: 2026-01-27T12:40:00+0700
+    - Note: This extends IPO-017-Webhook (TASK-8d8a462f) with advanced enterprise features
+    - Scope:
+        - Advanced retry policies (exponential backoff with jitter, circuit breaker pattern)
+        - Dead letter queue (DLQ) management (store, inspect, replay, discard failed webhooks)
+        - Enhanced signature verification (HMAC SHA-256/SHA-512, Ed25519, RSA)
+        - Webhook delivery guarantees (at-least-once, exactly-once with idempotency keys)
+        - Rate limiting per webhook endpoint (burst protection, token bucket algorithm)
+        - Webhook transformation (request/response mapping, data filtering)
+        - Conditional delivery (filter events by criteria before sending)
+        - Batch webhook delivery (aggregate multiple events into single request)
+        - Webhook health monitoring (success rate, latency, error patterns)
+        - Webhook versioning (API version negotiation, backward compatibility)
+    - Deliverables:
+        - Backend: backend/services/advanced_webhook_service.py (Retry policies, DLQ, delivery guarantees)
+        - Backend: backend/services/signature_service.py (Multi-algorithm signature verification)
+        - Backend: backend/services/webhook_transformer.py (Request/response transformation)
+        - Backend: backend/api/routers/dlq.py (DLQ management API - inspect, replay, discard)
+        - Frontend: apps/admin/app/webhooks/dlq/page.tsx (DLQ viewer with replay controls)
+        - Frontend: apps/admin/app/webhooks/health/page.tsx (Webhook health dashboard)
+        - Database migration: webhook_delivery_attempts, dlq_entries tables
+        - Configuration: config/advanced-webhook-config.yaml (Retry policies, rate limits, DLQ settings)
+        - Worker: workers/webhook_retry_worker.py (Background retry processing)
+        - Comprehensive tests (retry logic, DLQ operations, signature verification, idempotency)
+        - Documentation: docs/advanced-webhooks-guide.md (Enterprise webhook patterns, DLQ management)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready webhook infrastructure, enterprise-grade reliability
+        - 🏢 AGENCY: Advanced webhook expertise, production-ready patterns
+        - 🚀 CLIENT: Zero data loss, guaranteed delivery, operational visibility
+    - **Binh Pháp Ch.9 行軍 (Xing Jun - Marching):**
+        - Strategy: Reliable movement of data (webhooks = supply lines in warfare)
+        - Tactics: Multiple fallbacks → Guaranteed delivery → No data loss
+        - Principle: "行軍必因地利" (When marching, take advantage of the terrain)
+        - Webhooks = Supply Lines: Resilient, monitored, never interrupted
+
+
+- [ ] **TASK-09ea8ba2** 🎯 RUNNING
+    - Description: IPO-022-Landing: Landing page builder. Marketing pages, A/B testing, conversion optimization. Ch.7 軍爭
+    - Assigned: fullstack-developer
+    - Status: running (Agent: ad720c6)
+    - Priority: high
+    - Created: 2026-01-27T12:37:00+0700
+    - Scope:
+        - Landing page builder (drag-and-drop, WYSIWYG editor)
+        - Marketing page templates (SaaS, E-commerce, Lead Gen, Product Launch)
+        - A/B testing framework (variant creation, traffic splitting, winner selection)
+        - Conversion optimization (heatmaps, session recording, funnel analysis)
+        - SEO optimization (meta tags, Open Graph, Twitter Cards, schema markup)
+        - Mobile-first responsive design (MD3 compliance)
+        - Dynamic content personalization (geo-targeting, user segments)
+        - Form builder with validation (leads, signups, surveys)
+        - Analytics integration (Google Analytics 4, Mixpanel, custom events)
+        - Performance optimization (Lighthouse score >90, Core Web Vitals)
+    - Deliverables:
+        - Frontend: apps/landing/app/builder/page.tsx (Landing page builder UI)
+        - Frontend: apps/landing/components/editor/ (Drag-and-drop editor components)
+        - Frontend: apps/landing/templates/ (Pre-built marketing templates)
+        - Backend: backend/api/routers/landing_pages.py (CRUD API for pages)
+        - Backend: backend/services/ab_testing_service.py (A/B test management)
+        - Backend: backend/services/analytics_service.py (Event tracking, funnel analysis)
+        - Database migrations for landing_pages, ab_tests, conversion_events tables
+        - Frontend: Analytics dashboard (conversion rates, funnel visualization)
+        - Configuration: config/landing-config.yaml (Templates, A/B testing settings)
+        - Comprehensive tests (builder UI, A/B testing, conversion tracking)
+        - Documentation: docs/landing-page-guide.md (Builder usage, A/B testing best practices)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready marketing infrastructure, conversion optimization tools
+        - 🏢 AGENCY: Reusable landing page system for all clients
+        - 🚀 CLIENT: Marketing agility, data-driven optimization, higher conversions
+    - **Binh Pháp Ch.7 軍爭 (Jun Zheng - Competing for Advantage):**
+        - Strategy: Speed to market (rapid page creation) + strategic positioning (conversion optimization)
+        - Tactics: A/B testing → Data-driven decisions → Continuous improvement
+        - Principle: "軍爭為利，軍爭為危" (Competing for advantage brings both opportunity and danger)
+        - Landing Pages = Competitive Advantage: Fastest to market, highest conversion, data-informed strategy
+
+
+- [ ] **TASK-0daebfa5** ✅ COMPLETED
+    - Description: IPO-021-Audit: Audit logging. User actions, data access tracking, compliance logging. Ch.13 用間
+    - Assigned: backend-developer
+    - Status: completed (Agent: a2db4c2)
+    - Priority: critical
+    - Created: 2026-01-27T12:35:00+0700
+    - Scope:
+        - User action audit logging (login, logout, CRUD operations, permission changes)
+        - Data access tracking (who accessed what, when, from where)
+        - Compliance logging (GDPR, HIPAA, SOC2 requirements)
+        - Immutable audit trail (append-only, tamper-proof)
+        - Structured audit logs (JSON format with metadata)
+        - Audit log retention policies (configurable, default 7 years)
+        - Audit log search and filtering (by user, action, resource, time range)
+        - Real-time audit event streaming (for monitoring and alerting)
+        - Audit log export (CSV, JSON for compliance reports)
+        - Integration with SIEM systems (Splunk, ELK, Datadog)
+    - Deliverables:
+        - Backend: backend/services/audit_service.py (Core audit logging service)
+        - Backend: backend/middleware/audit_middleware.py (Request/response logging)
+        - Backend: backend/models/audit_log.py (SQLAlchemy model for audit logs)
+        - Backend: backend/api/routers/audit.py (Audit log query API)
+        - Frontend: apps/admin/app/audit/page.tsx (Audit log viewer UI)
+        - Database migration for audit_logs table (id, user_id, action, resource_type, resource_id, ip_address, user_agent, metadata, timestamp)
+        - Configuration: config/audit-config.yaml (Retention policies, log levels, SIEM integration)
+        - Worker: workers/audit_processor.py (Async audit log processing)
+        - Comprehensive tests (audit log creation, search, retention, immutability)
+        - Documentation (audit logging guide, compliance requirements)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready compliance infrastructure, regulatory audit trails
+        - 🏢 AGENCY: Reusable audit system for all products
+        - 🚀 CLIENT: Compliance readiness (GDPR, HIPAA, SOC2), security transparency
+    - **Binh Pháp Ch.13 用間 (Yong Jian - Using Spies):**
+        - Strategy: Intelligence through observation (audit logs = intelligence gathering)
+        - Tactics: Comprehensive monitoring → Complete visibility → Informed decisions
+        - Principle: "知彼知己，百戰不殆" (Know the enemy and yourself, never in danger)
+        - Audit = Strategic Intelligence: Every action recorded, patterns revealed, threats detected
+
+
+- [ ] **TASK-abf0526f** 🚀 COMPLETED
+    - Description: IPO-020-CDN: CDN and caching. Asset optimization, edge caching, Cloudflare integration. Ch.12 火攻
+    - Assigned: devops-engineer
+    - Status: completed (Agent: a3eece7)
+    - Priority: high
+    - Created: 2026-01-27T12:29:16+0700
+    - Scope:
+        - Cloudflare CDN integration (global edge network)
+        - Asset optimization (image compression, minification, bundling)
+        - Edge caching (static assets, API responses)
+        - Cache invalidation strategies (purge on deploy, selective invalidation)
+        - HTTP/2 and HTTP/3 support
+        - Brotli compression for text assets
+        - Image optimization (WebP, AVIF formats, lazy loading)
+        - Frontend build optimization (code splitting, tree shaking)
+        - Redis caching layer (API response caching)
+        - Cache-Control headers configuration
+    - Deliverables:
+        - Infrastructure: terraform/cdn/cloudflare.tf (Cloudflare config)
+        - Backend: backend/middleware/cache_middleware.py (Cache headers)
+        - Backend: backend/services/cache_service.py (Redis caching logic)
+        - Frontend: next.config.js (Next.js optimization settings)
+        - Scripts: scripts/cdn/purge-cache.sh (Cache invalidation script)
+        - Configuration: config/cdn-config.yaml (CDN settings, cache policies)
+        - Documentation: docs/cdn-caching-guide.md (CDN usage guide)
+        - Monitoring: Grafana dashboard for cache hit rates, CDN performance
+        - Comprehensive tests (cache invalidation, performance benchmarks)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready global performance, reduced infrastructure costs
+        - 🏢 AGENCY: Reusable CDN setup for all products
+        - 🚀 CLIENT: Lightning-fast load times, improved SEO, better UX
+    - **Binh Pháp Ch.12 火攻 (Huo Gong - Attack by Fire):**
+        - Strategy: Strike with overwhelming speed (edge caching = instant delivery)
+        - Tactics: Cache everything cacheable → Minimize origin load → Unstoppable performance
+        - Principle: "火攻有五" (Five ways of attacking with fire) - Static assets, API responses, Images, HTML pages, Database queries
+        - CDN = Fire Attack: Speed multiplier, burn through competition with performance
+
+
+- [ ] **TASK-c6dbcd6e** ⚙️ RUNNING
+    - Description: IPO-019-Queue: Job queue system. Background tasks, workers, scheduling, retry logic. Ch.11 九地
+    - Assigned: backend-developer
+    - Status: running (Agent: a1a6cef)
+    - Priority: critical
+    - Created: 2026-01-27T12:26:39+0700
+    - Scope:
+        - Redis-based job queue (Bull/BullMQ or Python RQ)
+        - Background worker processes (multi-worker support)
+        - Job scheduling (cron-like, delayed jobs)
+        - Exponential backoff retry logic (3-5 attempts configurable)
+        - Job priority system (high, normal, low)
+        - Dead letter queue for permanently failed jobs
+        - Job monitoring dashboard (queue depth, processing rate, failures)
+        - Graceful shutdown (finish current jobs before exit)
+        - Worker health checks and auto-restart
+        - Common job types: email sending, report generation, data export, webhook delivery
+    - Deliverables:
+        - Backend: backend/services/queue_service.py (Queue management)
+        - Backend: backend/workers/worker_base.py (Base worker class)
+        - Backend: backend/workers/email_worker.py (Email job worker)
+        - Backend: backend/workers/report_worker.py (Report generation worker)
+        - Backend: backend/workers/export_worker.py (Data export worker)
+        - Backend: backend/api/routers/jobs.py (Job management API)
+        - Frontend: apps/admin/app/jobs/page.tsx (Job monitoring UI)
+        - Configuration: config/queue-config.yaml (Worker settings, retry policies)
+        - Scripts: scripts/workers/start-workers.sh (Worker startup script)
+        - Database migration for jobs, job_results tables
+        - Comprehensive tests (job execution, retry logic, scheduling)
+        - Documentation (job queue guide, worker development)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready async infrastructure, scalable background processing
+        - 🏢 AGENCY: Reusable job queue for all products
+        - 🚀 CLIENT: Reliable async operations, improved UX (no blocking)
+    - **Binh Pháp Ch.11 九地 (Jiu Di - Nine Terrains):**
+        - Strategy: Master all terrains (job types) through adaptable workers
+        - Tactics: Distribute workload → Multiple terrains → Never overwhelmed
+        - Principle: "投之亡地然後存" (Place troops in desperate terrain, then survive)
+        - Queue = Nine Terrains: Heavy terrain (retry), Death terrain (DLQ), Encircled terrain (high load), Frontier terrain (priority), Accessible terrain (simple jobs)
+
+
+- [ ] **TASK-ab8ca634** 🔐 RUNNING
+    - Description: IPO-018-OAuth: OAuth 2.0 provider. JWT tokens, refresh flow, client credentials. Ch.8 九變
+    - Assigned: backend-developer
+    - Status: running (Agent: afd6b51)
+    - Priority: critical
+    - Created: 2026-01-27T12:24:03+0700
+    - Scope:
+        - OAuth 2.0 Authorization Server (RFC 6749 compliant)
+        - Authorization Code Flow (with PKCE for security)
+        - Client Credentials Flow (machine-to-machine auth)
+        - Refresh Token Flow (long-lived sessions)
+        - JWT access tokens (stateless, self-contained)
+        - Token introspection endpoint (validate tokens)
+        - Token revocation endpoint (logout, security)
+        - OAuth client management (register, rotate secrets)
+        - Scope-based permissions (read, write, admin)
+        - Integration with existing auth system (Supabase)
+    - Deliverables:
+        - Backend: backend/api/routers/oauth.py (OAuth endpoints)
+        - Backend: backend/services/oauth_service.py (OAuth logic)
+        - Backend: backend/services/jwt_service.py (JWT generation/validation)
+        - Backend: backend/services/token_service.py (Token lifecycle management)
+        - Backend: backend/middleware/oauth_middleware.py (Bearer token validation)
+        - Frontend: apps/developers/app/oauth/page.tsx (OAuth client management UI)
+        - Database migration for oauth_clients, oauth_tokens, oauth_grants tables
+        - Configuration: config/oauth-config.yaml (Token TTL, scopes, secrets)
+        - Comprehensive tests (authorization flow, token validation, refresh)
+        - Documentation (OAuth integration guide, API reference)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready OAuth infrastructure, enterprise SSO capability
+        - 🏢 AGENCY: Reusable OAuth server for all products
+        - 🚀 CLIENT: Secure API access, third-party integrations, developer ecosystem
+    - **Binh Pháp Ch.8 九變 (Jiu Bian - Nine Variations):**
+        - Strategy: Adapt to all situations through flexible authentication
+        - Tactics: Multiple auth flows → Cover all use cases → Universal access
+        - Principle: "智者之慮，必雜於利害" (Wise leaders consider both advantage and danger)
+        - OAuth = Nine Variations: Authorization Code, Client Credentials, Refresh Token, PKCE, Implicit (deprecated), Password (legacy), Device Code, JWT Bearer, SAML Bridge
+
+
+- [ ] **TASK-8d8a462f** 🔔 RUNNING
+    - Description: IPO-017-Webhook: Webhook management. Incoming webhooks, outgoing notifications, retry logic. Ch.6 虛實
+    - Assigned: backend-developer
+    - Status: running (Agent: a54074d)
+    - Priority: high
+    - Created: 2026-01-27T12:20:46+0700
+    - Scope:
+        - Incoming webhook receiver (GitHub, Stripe, PayPal, etc.)
+        - Webhook signature verification (HMAC SHA-256)
+        - Outgoing webhook delivery system (notify external services)
+        - Exponential backoff retry logic (3 attempts: 1s, 2s, 4s)
+        - Webhook event queue (Redis-based for reliability)
+        - Dead letter queue for failed webhooks
+        - Webhook management UI (view, test, replay)
+        - Event logging and debugging tools
+        - Rate limiting for incoming webhooks
+        - Integration with Public API (TASK-1ea2c3b2)
+    - Deliverables:
+        - Backend: backend/api/routers/webhooks.py (Webhook endpoints)
+        - Backend: backend/services/webhook_receiver.py (Incoming webhook handler)
+        - Backend: backend/services/webhook_sender.py (Outgoing webhook delivery)
+        - Backend: backend/services/webhook_queue.py (Queue management with Redis)
+        - Backend: backend/middleware/webhook_auth.py (Signature verification)
+        - Frontend: apps/admin/app/webhooks/page.tsx (Webhook management UI)
+        - Database migration for webhook_events, webhook_deliveries, webhook_failures tables
+        - Worker: workers/webhook_processor.py (Background webhook processor)
+        - Comprehensive tests (signature verification, retry logic, queue)
+        - Documentation (webhook integration guide, API reference)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready webhook infrastructure, real-time integrations
+        - 🏢 AGENCY: Reusable webhook system for all products
+        - 🚀 CLIENT: Seamless external integrations, reliable event delivery
+    - **Binh Pháp Ch.6 虛實 (Xu Shi - Illusion & Reality):**
+        - Strategy: Appear weak when strong (retry silently), strong when weak (fail loudly)
+        - Tactics: Deception through reliability → Never reveal internal failures to attackers
+        - Principle: "攻其無備，出其不意" (Strike where unprepared, appear where unexpected)
+        - Webhooks = Strategic Deception: External systems see reliability, internal systems see chaos managed
+
+
+- [ ] **TASK-6afcb610** 💾 PENDING
+    - Description: IPO-016-Backup: Database backup system. Scheduled backups, restore functionality, disaster recovery. Ch.10 地形
+    - Assigned: devops-engineer
+    - Status: running (Agent: a9a3933)
+    - Priority: critical
+    - Created: 2026-01-27T12:18:47+0700
+    - Scope:
+        - Automated scheduled backups (daily full, hourly incremental)
+        - Point-in-time recovery (PITR) capability
+        - Backup encryption (AES-256) and compression
+        - Multi-region backup storage (S3/GCS)
+        - Restore functionality (full restore, selective restore)
+        - Backup verification and integrity checks
+        - Disaster recovery runbook and testing
+        - Retention policy management (30-day default, configurable)
+        - Monitoring and alerting for backup failures
+        - Database: PostgreSQL (Supabase) + Redis
+    - Deliverables:
+        - Backend: backend/services/backup_service.py (Backup orchestration)
+        - Backend: backend/services/restore_service.py (Restore logic)
+        - Backend: backend/api/routers/backup.py (Backup management API)
+        - Scripts: scripts/backup/daily-backup.sh (Scheduled backup script)
+        - Scripts: scripts/backup/restore.sh (Restore script)
+        - Infrastructure: terraform/backup/ (Backup infrastructure as code)
+        - Configuration: config/backup-policy.yaml (Retention policies)
+        - Documentation: docs/disaster-recovery.md (DR runbook)
+        - Monitoring: Grafana dashboard for backup metrics
+        - Comprehensive tests (backup/restore validation)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready disaster recovery, zero data loss guarantee
+        - 🏢 AGENCY: Reusable backup infrastructure for all products
+        - 🚀 CLIENT: Business continuity, regulatory compliance, peace of mind
+    - **Binh Pháp Ch.10 地形 (Terrain/Positioning):**
+        - Strategy: Control the terrain (infrastructure) to ensure survival
+        - Tactics: Multiple backup locations → Redundancy → Resilience
+        - Principle: "知地形者，善戰者也" (Those who know the terrain win battles)
+        - DR = Defensive Position: Prepare for worst-case scenarios, never caught off-guard
+
+
+- [ ] **TASK-8abea4d3** 📊 RUNNING
+    - Description: IPO-015-Analytics: Business analytics dashboard. Revenue metrics, user behavior, conversion funnels. Ch.4 形勢
+    - Assigned: fullstack-developer
+    - Status: running (Agent: a0f78ff)
+    - Priority: high
+    - Created: 2026-01-27T12:14:15+0700
+    - Scope:
+        - Business intelligence dashboard with real-time metrics
+        - Revenue analytics (MRR, ARR, churn rate, LTV:CAC)
+        - User behavior tracking (cohort analysis, retention curves)
+        - Conversion funnel visualization (signup → trial → paid)
+        - Product usage analytics (feature adoption, engagement metrics)
+        - Custom report builder (filters, date ranges, exports)
+        - Alert system for metric anomalies
+        - Integration with existing revenue dashboard (TASK-88185347)
+        - Data warehouse setup (ETL pipelines)
+    - Deliverables:
+        - Frontend: apps/analytics/app/page.tsx (Analytics dashboard UI)
+        - Frontend: apps/analytics/app/revenue/page.tsx (Revenue metrics)
+        - Frontend: apps/analytics/app/users/page.tsx (User behavior)
+        - Frontend: apps/analytics/app/funnels/page.tsx (Conversion funnels)
+        - Backend: backend/api/routers/analytics.py (Analytics API endpoints)
+        - Backend: backend/services/analytics_service.py (Business logic)
+        - Backend: backend/services/etl_service.py (Data pipeline)
+        - Database migration for analytics_events, metrics_snapshots tables
+        - Comprehensive tests (unit + integration)
+        - Documentation (analytics guide, API reference)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready analytics infrastructure, data-driven decision making
+        - 🏢 AGENCY: Reusable analytics template for all SaaS products
+        - 🚀 CLIENT: Deep business insights, growth optimization, investor-ready metrics
+    - **Binh Pháp Ch.4 形勢 (Hình Thế - Tactical Dispositions):**
+        - Strategy: Position through superior intelligence and visibility
+        - Tactics: Real-time metrics → Faster decisions → Competitive advantage
+        - Principle: "勝兵先勝而後求戰" (Victorious warriors win first, then go to war)
+        - Data = Strategic Position: Know metrics before competitors, act decisively
+
+
+- [ ] **TASK-1ea2c3b2** 🔌 PENDING
+    - Description: IPO-012-API: Public API for developers. REST endpoints, API keys, rate limiting, docs. Ch.5 兵勢
+    - Assigned: backend-developer
+    - Status: pending → running
+    - Priority: high
+    - Created: 2026-01-27T12:12:30+0700
+    - Agent ID: a7444b5
+    - Output: /private/tmp/claude/-Users-macbookprom1-mekong-cli/tasks/a7444b5.output
+    - Started: 2026-01-27T12:12:45+0700
+    - Scope:
+        - Public REST API design (versioned endpoints: /v1/*)
+        - API key generation and management (create, rotate, revoke)
+        - API authentication middleware (Bearer token validation)
+        - Rate limiting per API key (leverage TASK-acb19d8b implementation)
+        - Usage tracking and quota enforcement
+        - API documentation (OpenAPI/Swagger spec)
+        - Developer portal UI (API key management, usage stats, docs)
+        - Webhook delivery system for async events
+        - SDK generation (Python, Node.js, TypeScript)
+    - Deliverables:
+        - Backend: backend/api/v1/ (Public API endpoints)
+        - Backend: backend/services/api_key_service.py (API key management)
+        - Backend: backend/middleware/api_auth.py (API authentication)
+        - Backend: backend/services/api_usage_tracker.py (Usage tracking)
+        - Frontend: apps/developers/app/page.tsx (Developer portal)
+        - Database migration for api_keys, api_usage tables
+        - OpenAPI specification (openapi.yaml)
+        - Interactive API docs (Swagger UI)
+        - SDK packages (Python, Node.js, TypeScript)
+        - Developer guide documentation
+        - API reference documentation
+        - Comprehensive tests (unit + integration)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready developer ecosystem, platform extensibility
+        - 🏢 AGENCY: Reusable API infrastructure for all SaaS products
+        - 🚀 CLIENT: Developer adoption, integration partnerships, ecosystem growth
+    - **Binh Pháp Ch.5 兵勢 (Momentum/Force):**
+        - Strategy: Create unstoppable momentum through developer ecosystem
+        - Tactics: Easy API access → More integrations → Network effects → Growth
+        - Principle: "勢如破竹" (Momentum like splitting bamboo) - Once started, unstoppable
+        - Force Multiplier: Each API integration brings new users/customers
+
+- [ ] **TASK-870249ba** 👨‍💼 COMPLETED
+    - Description: IPO-011-Admin: Admin dashboard for staff. User management, analytics, system config. Ch.3 謀攻
+    - Assigned: fullstack-developer
+    - Status: completed (Agent: a11e61e)
+    - Priority: high
+    - Created: 2026-01-27T12:10:32+0700
+    - Agent ID: a11e61e
+    - Output: /private/tmp/claude/-Users-macbookprom1-mekong-cli/tasks/a11e61e.output
+    - Started: 2026-01-27T12:10:45+0700
+    - Scope:
+        - Admin authentication and RBAC (role-based access control)
+        - User management UI (CRUD operations, role assignment, suspension)
+        - System analytics dashboard (revenue, users, subscriptions, usage)
+        - System configuration panel (feature flags, environment vars, settings)
+        - Audit log viewer (track admin actions)
+        - Staff permission management (granular access control)
+        - Integration with existing auth system
+        - Real-time metrics display (Grafana integration)
+    - Deliverables:
+        - Frontend: apps/admin/app/page.tsx (Admin dashboard UI)
+        - Frontend: apps/admin/app/users/page.tsx (User management)
+        - Frontend: apps/admin/app/analytics/page.tsx (Analytics dashboard)
+        - Frontend: apps/admin/app/config/page.tsx (System config panel)
+        - Backend: backend/api/routers/admin.py (Admin API endpoints)
+        - Backend: backend/services/admin_service.py (Admin business logic)
+        - Backend: backend/middleware/admin_auth.py (Admin role verification)
+        - Database migration for admin_roles, admin_permissions tables
+        - Comprehensive tests (unit + integration)
+        - Documentation (admin guide, API reference)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready admin infrastructure, operational control
+        - 🏢 AGENCY: Reusable admin template for all SaaS products
+        - 🚀 CLIENT: Professional staff management, system observability
+    - **Binh Pháp Ch.3 謀攻 (Mưu Công - Win-Without-Fighting):**
+        - Strategy: Control without confrontation via superior admin tools
+        - Tactics: Role-based access, audit trails, graceful user management
+        - Principle: Best admin is invisible to end users, powerful for operators
 - [ ] **TASK-2955ce3a** 💳 PENDING
     - Description: IPO-010-Payment: Complete Stripe production integration. Webhook handlers, checkout sessions, subscription lifecycle, payment methods, invoices. Binh Pháp Ch.2 作戰
     - Assigned: payment-integration
@@ -1176,4 +1610,697 @@ _Update timestamp: 2026-01-27T10:29:02+0700_
 - 👑 ANH: IPO-ready payment infrastructure ✅
 - 🏢 AGENCY: Reusable Stripe module for all SaaS projects ✅
 - 🚀 CLIENT: Enterprise-grade PCI-DSS compliant payments ✅
+
+
+- [ ] **TASK-59edb579** 📦 PENDING
+    - Description: IPO-024-Export: Data export system. CSV, JSON, PDF exports. Bulk download functionality. Ch.2 作戰
+    - Assigned: fullstack-developer
+    - Status: running (Agent: a820e3b)
+    - Priority: high
+    - Created: 2026-01-27T12:45:00+0700
+    - Scope:
+        - CSV export (configurable columns, UTF-8 BOM for Excel compatibility)
+        - JSON export (pretty print, JSONL for large datasets)
+        - PDF export (reports, invoices, branded templates with company logo)
+        - Excel export (XLSX with multiple sheets, formulas, styling)
+        - Bulk download (ZIP archives for large datasets, folder structure)
+        - Export queue (async processing for large exports, Redis-based job queue)
+        - Progress tracking (real-time export progress, estimated time remaining)
+        - Export templates (saved export configurations, user-defined templates)
+        - Scheduled exports (cron-like scheduling, daily/weekly/monthly)
+        - Export history (download history, re-download expired exports)
+        - Export filters (date range, user selection, custom criteria)
+        - Email delivery (send export link via email, S3 pre-signed URLs)
+        - Data transformation (currency conversion, timezone adjustments)
+        - Export API (REST endpoints for programmatic exports)
+        - Export limits (quota per user, rate limiting, max file size 500MB)
+    - Deliverables:
+        - Backend: backend/services/export_service.py (Export logic, format generators)
+        - Backend: backend/workers/export_worker.py (Async export processing)
+        - Backend: backend/api/routers/exports.py (Export CRUD API)
+        - Backend: backend/services/pdf_generator.py (PDF generation with WeasyPrint/ReportLab)
+        - Frontend: apps/admin/app/exports/page.tsx (Export UI, template builder)
+        - Frontend: apps/admin/app/exports/history/page.tsx (Export history, re-download)
+        - Frontend: components/export-progress.tsx (Real-time progress indicator)
+        - Database migration for exports, export_templates, export_history tables
+        - Configuration: config/export-config.yaml (Format settings, limits, storage)
+        - Scripts: scripts/exports/cleanup-old-exports.sh (Clean up expired exports after 7 days)
+        - Monitoring: Grafana dashboard for export metrics (queue depth, success rate, avg time)
+        - Comprehensive tests (export generation, format validation, async processing)
+        - Documentation (export usage guide, API reference, template syntax)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready data portability, GDPR compliance (data export rights)
+        - 🏢 AGENCY: Reusable export engine for all products
+        - 🚀 CLIENT: Data ownership, easy migration, reporting capabilities
+    - **Binh Pháp Ch.2 作戰 (Zuo Zhan - Waging War):**
+        - Strategy: Resource management (efficient data extraction = war logistics)
+        - Tactics: Bulk operations → Minimize overhead → Maximum efficiency
+        - Principle: "因糧於敵" (Forage on the enemy - use available resources efficiently)
+        - Export = War Supplies: CSV (field rations), JSON (intelligence reports), PDF (command orders), Excel (strategy maps), Bulk ZIP (supply convoy)
+
+
+- [ ] **TASK-ff758dea** 🌍 PENDING
+    - Description: IPO-025-i18n: Internationalization. Multi-language support, RTL layout, currency formatting. Ch.10 地形
+    - Assigned: fullstack-developer
+    - Status: running (Agent: a13f512)
+    - Priority: high
+    - Created: 2026-01-27T12:50:00+0700
+    - Scope:
+        - Multi-language support (i18n framework: react-i18next, i18next)
+        - Translation management (JSON translation files, namespace organization)
+        - Language detection (browser locale, user preference, URL parameter)
+        - Language switcher UI (dropdown, flag icons, persistent selection)
+        - RTL (Right-to-Left) layout support (Arabic, Hebrew)
+        - Dynamic text direction (dir="rtl" / dir="ltr" switching)
+        - Currency formatting (locale-aware, symbol positioning)
+        - Date/time formatting (locale-aware, timezone support)
+        - Number formatting (thousands separator, decimal point)
+        - Pluralization rules (language-specific plural forms)
+        - Translation interpolation (variables, HTML tags)
+        - Translation validation (missing keys, unused keys)
+        - Fallback languages (primary -> fallback -> default en-US)
+        - Server-side translation (SSR support for Next.js)
+        - Translation extraction (automatic key extraction from code)
+        - Translation platform integration (Crowdin, Lokalise)
+    - Deliverables:
+        - Frontend: i18n configuration (apps/web/lib/i18n.ts, next-i18next.config.js)
+        - Frontend: Translation files (public/locales/{lang}/{namespace}.json)
+        - Frontend: Language switcher component (components/language-switcher.tsx)
+        - Frontend: RTL stylesheet (styles/rtl.css, automatic dir="rtl" injection)
+        - Backend: backend/services/i18n_service.py (Server-side translation)
+        - Backend: backend/api/middleware/locale_middleware.py (Locale detection)
+        - Database migration for user_preferences (preferred_language, preferred_currency)
+        - Configuration: config/i18n-config.yaml (Supported languages, fallbacks)
+        - Scripts: scripts/i18n/extract-keys.sh (Extract translation keys from code)
+        - Scripts: scripts/i18n/validate-translations.sh (Check for missing/unused keys)
+        - Monitoring: Translation coverage dashboard (% translated per language)
+        - Comprehensive tests (RTL rendering, currency formatting, pluralization)
+        - Documentation (i18n usage guide, adding new languages, translation workflow)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready global expansion, international market access
+        - 🏢 AGENCY: Reusable i18n infrastructure for all products
+        - 🚀 CLIENT: Global reach, localized UX, cultural adaptation
+    - **Binh Pháp Ch.10 地形 (Di Xing - Terrain):**
+        - Strategy: Adapt to different terrains (languages = different battlefields)
+        - Tactics: Know the terrain → Control the terrain → Exploit the terrain
+        - Principle: "地形者，兵之助也" (Terrain is the soldier's assistant)
+        - i18n = Terrain Knowledge: Open terrain (Latin), Entangling terrain (RTL), Constricted terrain (CJK), Precipitous terrain (pluralization), Distant terrain (timezones)
+
+
+- [ ] **TASK-8d836c7a** 🔍 PENDING
+    - Description: IPO-026-SEO: SEO optimization. Meta tags, sitemap, schema.org, OpenGraph. Ch.3 謀攻
+    - Assigned: fullstack-developer
+    - Status: running (Agent: a2f0486)
+    - Priority: high
+    - Created: 2026-01-27T12:55:00+0700
+    - Scope:
+        - Meta tags optimization (title, description, keywords, robots)
+        - XML sitemap generation (dynamic, auto-update on content changes)
+        - Schema.org structured data (Organization, Product, Article, FAQPage, BreadcrumbList)
+        - OpenGraph tags (og:title, og:description, og:image, og:url)
+        - Twitter Card tags (twitter:card, twitter:title, twitter:description, twitter:image)
+        - Canonical URLs (prevent duplicate content)
+        - Hreflang tags (multi-language SEO support)
+        - robots.txt generation (crawl directives)
+        - JSON-LD structured data (rich snippets, knowledge graph)
+        - Image optimization (alt tags, lazy loading, WebP)
+        - Core Web Vitals optimization (LCP, FID, CLS)
+        - SEO audit tools integration (Google Search Console, Bing Webmaster)
+        - Performance monitoring (PageSpeed Insights API)
+        - SEO-friendly URLs (slugs, hierarchical structure)
+        - Internal linking strategy (anchor text, link equity distribution)
+    - Deliverables:
+        - Frontend: components/seo/meta-tags.tsx (Dynamic meta tag injection)
+        - Frontend: components/seo/structured-data.tsx (JSON-LD generator)
+        - Frontend: lib/seo/sitemap-generator.ts (XML sitemap generation)
+        - Frontend: lib/seo/robots-generator.ts (robots.txt generation)
+        - Frontend: lib/seo/og-image-generator.ts (Dynamic OG image generation)
+        - Backend: backend/api/routers/seo.py (SEO API endpoints)
+        - Backend: backend/services/seo_service.py (SEO analysis, recommendations)
+        - Backend: backend/workers/sitemap_worker.py (Periodic sitemap regeneration)
+        - Configuration: config/seo-config.yaml (Default meta tags, schema templates)
+        - Scripts: scripts/seo/audit.sh (Run Lighthouse, PageSpeed Insights)
+        - Scripts: scripts/seo/generate-sitemap.sh (Manual sitemap generation)
+        - Monitoring: Grafana dashboard for Core Web Vitals, crawl errors
+        - Comprehensive tests (meta tag rendering, sitemap validation, schema.org validation)
+        - Documentation (SEO best practices guide, schema.org usage, OG image templates)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready organic traffic, search visibility, brand authority
+        - 🏢 AGENCY: Reusable SEO infrastructure for all products
+        - 🚀 CLIENT: Organic growth, reduced CAC (customer acquisition cost), SEO moat
+    - **Binh Pháp Ch.3 謀攻 (Mou Gong - Attack by Stratagem):**
+        - Strategy: Win without fighting (SEO = organic growth, no paid ads)
+        - Tactics: "不戰而屈人之兵" (Subdue enemy without battle)
+        - Principle: "上兵伐謀" (Supreme art = attack enemy's strategy, not army)
+        - SEO = Strategic Attack: Meta tags (reconnaissance), Schema.org (intelligence), Sitemap (supply lines), OG tags (propaganda), Core Web Vitals (troop morale)
+
+
+- [ ] **TASK-ef421e40** 📱 PENDING
+    - Description: IPO-027-Mobile: Mobile responsiveness. Progressive Web App, offline support, push notifications. Ch.4 形
+    - Assigned: fullstack-developer
+    - Status: running (Agent: a5a18c4)
+    - Priority: critical
+    - Created: 2026-01-27T13:00:00+0700
+    - Scope:
+        - Mobile-first responsive design (MD3 breakpoints: xs, sm, md, lg, xl)
+        - Progressive Web App (PWA) implementation (service worker, manifest.json)
+        - Offline support (cache strategies, IndexedDB for offline data)
+        - Push notifications (Web Push API, FCM integration)
+        - Add to Home Screen (A2HS) prompt
+        - App-like experience (splash screen, status bar theming)
+        - Touch gestures (swipe, pinch-to-zoom, long-press)
+        - Mobile navigation (bottom nav, hamburger menu, tab bar)
+        - Viewport optimization (safe area insets, notch support)
+        - Performance optimization (lazy loading, code splitting, image optimization)
+        - Offline detection (network status indicator)
+        - Background sync (sync data when back online)
+        - App shortcuts (quick actions from home screen)
+        - Biometric authentication (Face ID, Touch ID, fingerprint)
+        - Share API (native share sheet)
+    - Deliverables:
+        - Frontend: public/manifest.json (PWA manifest)
+        - Frontend: public/sw.js (Service worker for caching)
+        - Frontend: components/mobile/bottom-nav.tsx (Mobile bottom navigation)
+        - Frontend: components/mobile/splash-screen.tsx (PWA splash screen)
+        - Frontend: components/mobile/offline-indicator.tsx (Network status)
+        - Frontend: lib/pwa/install-prompt.ts (A2HS prompt logic)
+        - Frontend: lib/pwa/push-notifications.ts (Web Push API wrapper)
+        - Frontend: lib/pwa/background-sync.ts (Background sync registration)
+        - Backend: backend/api/routers/push.py (Push notification API)
+        - Backend: backend/services/fcm_service.py (Firebase Cloud Messaging)
+        - Configuration: config/pwa-config.yaml (PWA settings, cache strategies)
+        - Scripts: scripts/pwa/generate-icons.sh (Generate PWA icons 192x192, 512x512)
+        - Monitoring: Grafana dashboard for PWA metrics (install rate, offline usage)
+        - Comprehensive tests (service worker caching, push notifications, offline mode)
+        - Documentation (PWA setup guide, push notifications guide, offline strategies)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready mobile-first platform, PWA = lower CAC (no app store fees)
+        - 🏢 AGENCY: Reusable PWA infrastructure for all products
+        - 🚀 CLIENT: Mobile engagement, offline access, push notifications
+    - **Binh Pháp Ch.4 形 (Xing - Disposition of Army):**
+        - Strategy: Adapt to different devices (mobile, tablet, desktop = different terrains)
+        - Tactics: "善守者，藏於九地之下" (Good defenders hide in the depths - offline mode = resilience)
+        - Principle: "勝兵先勝而後求戰" (Victorious armies win first, then fight - PWA readiness before launch)
+        - Mobile = Disposition: Responsive (flexible army), Offline (fortified defense), PWA (strategic position), Push (intelligence network)
+
+
+- [ ] **TASK-02e84db0** 📊 RUNNING
+    - Description: IPO-028-Dashboard: Dashboard components. Charts, KPIs, data visualization, real-time updates. Ch.5 兵勢
+    - Assigned: fullstack-developer
+    - Status: running
+    - Priority: high
+    - Created: 2026-01-27T13:05:00+0700
+    - Scope:
+        - Chart Components (Line, Bar, Pie, Area, Scatter, Combo charts)
+        - KPI Cards (Metric display with trend indicators, sparklines, comparison to previous period)
+        - Data Visualization (D3.js or Recharts integration, heat maps, tree maps, sankey diagrams)
+        - Real-time Updates (WebSocket integration for live data, auto-refresh intervals, data streaming)
+        - Dashboard Builder (Drag-and-drop grid layout, widget library, save/load dashboard configurations)
+        - Responsive Grid (CSS Grid or React Grid Layout, breakpoint-aware resizing, mobile-first design)
+        - Export Dashboard (PDF export with charts, PNG export for individual widgets, CSV data export)
+        - Filter & Drill-down (Global filters (date range, user segment, geography), drill-down navigation, breadcrumb navigation)
+        - Data Aggregation (Backend aggregation API, time-series rollups, caching layer for heavy queries)
+        - Dashboard Templates (Pre-built dashboards for common use cases, customizable templates, role-based default dashboards)
+        - Performance Optimization (Lazy loading for off-screen charts, virtualized lists for large datasets, memo/useMemo for expensive computations)
+        - Accessibility (ARIA labels for charts, keyboard navigation, screen reader support)
+    - Deliverables:
+        - Frontend: components/dashboard/chart-components.tsx (Line, Bar, Pie, Area charts with Recharts)
+        - Frontend: components/dashboard/kpi-card.tsx (KPI display with trend, sparkline)
+        - Frontend: components/dashboard/dashboard-builder.tsx (Drag-and-drop builder with react-grid-layout)
+        - Frontend: components/dashboard/filter-panel.tsx (Global filters, date range picker)
+        - Frontend: lib/dashboard/data-service.ts (WebSocket connection, real-time data updates)
+        - Frontend: lib/dashboard/export-service.ts (PDF/PNG export with html2canvas, jsPDF)
+        - Backend: backend/api/routers/dashboard.py (Dashboard CRUD, aggregation endpoints)
+        - Backend: backend/services/dashboard_service.py (Data aggregation, time-series rollups)
+        - Backend: backend/services/dashboard_export_service.py (Server-side export generation)
+        - Backend: backend/workers/dashboard_cache_worker.py (Pre-compute dashboard metrics, refresh cache)
+        - Backend: backend/websocket/dashboard_server.py (Real-time data streaming)
+        - Database migration for dashboard_configs, dashboard_widgets tables
+        - Configuration: config/dashboard-config.yaml (Default dashboards, widget library, refresh intervals)
+        - Scripts: scripts/dashboard/generate-sample-data.sh (Generate demo data for testing)
+        - Monitoring: Grafana dashboard for dashboard load times, query performance
+        - Comprehensive tests (chart rendering, real-time updates, export functionality)
+        - Documentation (dashboard usage guide, widget customization, performance tuning)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready data visualization, executive dashboard for investor demos
+        - 🏢 AGENCY: Reusable dashboard framework for all products
+        - 🚀 CLIENT: Real-time insights, data-driven decisions, customizable views
+    - **Binh Pháp Ch.5 兵勢 (Shi - Momentum):**
+        - Strategy: Create strategic momentum through data visibility
+        - Tactics: "勢如彍弩，節如發機" (Momentum like a drawn crossbow, timing like releasing the trigger)
+        - Principle: "善戰者，求之於勢" (Skilled warriors seek victory through momentum)
+        - Dashboard = Momentum Engine: Charts (visualize trends), KPIs (measure velocity), Real-time (capture timing), Drill-down (tactical flexibility), Builder (strategic positioning)
+
+
+- [ ] **TASK-25d2da07** 🧪 RUNNING
+    - Description: IPO-029-Testing: E2E testing framework. Playwright tests, CI integration, visual regression. Ch.6 虛實
+    - Assigned: fullstack-developer
+    - Status: running
+    - Priority: critical
+    - Created: 2026-01-27T13:10:00+0700
+    - Scope:
+        - E2E Testing Framework (Playwright installation and configuration, cross-browser testing - Chrome, Firefox, Safari, mobile emulation - iOS Safari, Android Chrome)
+        - Test Scenarios (User authentication flows - login, signup, password reset, logout, Critical user journeys - checkout flow, payment processing, data export, API testing - REST endpoint validation, GraphQL query testing, Admin workflows - dashboard access, user management, settings)
+        - Visual Regression Testing (Playwright screenshot comparison, Percy.io integration for visual diffs, Baseline management - store approved screenshots, threshold configuration - pixel difference tolerance)
+        - CI/CD Integration (GitHub Actions workflow for test execution, Parallel test execution - split tests across runners, Test reporting - HTML reports, JUnit XML, failure artifacts, Retry logic - flaky test handling with 3 retries)
+        - Test Data Management (Database seeding for test isolation, Factory pattern for test data creation, Cleanup after each test, Mock API responses for external services)
+        - Performance Testing (Lighthouse integration for Core Web Vitals, Load time assertions - page load < 3s, API response time checks - < 500ms, Memory leak detection)
+        - Accessibility Testing (Axe-core integration, WCAG 2.1 AA compliance checks, Keyboard navigation testing, Screen reader compatibility)
+        - Test Organization (Page Object Model (POM) pattern, Shared fixtures and helpers, Test tagging - @smoke, @regression, @critical, Parameterized tests for data-driven scenarios)
+    - Deliverables:
+        - Testing: tests/e2e/ directory structure (auth/, api/, flows/, visual/)
+        - Testing: tests/e2e/config/playwright.config.ts (Cross-browser, viewport, timeout configs)
+        - Testing: tests/e2e/fixtures/ (Auth fixtures, database seeding, mock servers)
+        - Testing: tests/e2e/pages/ (Page Object Models for all pages)
+        - Testing: tests/e2e/auth/login.spec.ts (Login flow tests)
+        - Testing: tests/e2e/flows/checkout.spec.ts (E2E checkout tests)
+        - Testing: tests/e2e/visual/homepage.spec.ts (Visual regression tests)
+        - CI/CD: .github/workflows/e2e-tests.yml (Playwright CI workflow)
+        - CI/CD: .github/workflows/visual-regression.yml (Percy.io workflow)
+        - Scripts: scripts/testing/seed-test-db.sh (Database seeding script)
+        - Scripts: scripts/testing/run-e2e-local.sh (Local test runner with UI mode)
+        - Configuration: config/testing-config.yaml (Test timeouts, retries, parallelism)
+        - Monitoring: Test failure alerts to Slack/Discord
+        - Documentation: E2E testing guide (writing tests, debugging, CI setup)
+        - Comprehensive test coverage (>80% critical paths)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready quality assurance, zero critical bugs in production
+        - 🏢 AGENCY: Reusable E2E testing framework for all products
+        - 🚀 CLIENT: Stable product, fast feature delivery, confidence in releases
+    - **Binh Pháp Ch.6 虛實 (Xu Shi - Illusion and Reality):**
+        - Strategy: Distinguish between appearance (虛 - illusion) and truth (實 - reality)
+        - Tactics: "攻其無備，出其不意" (Attack where unprepared, strike where unexpected)
+        - Principle: "兵無常勢，水無常形" (No fixed position, adapt like water)
+        - Testing = Reality Check: E2E tests (verify real user flows), Visual regression (catch UI illusions), Performance tests (expose hidden bottlenecks), Accessibility (reveal invisible barriers), CI/CD (continuous reality validation)
+
+
+- [ ] **TASK-bd334d31** 📚 RUNNING
+    - Description: IPO-030-Docs: Documentation system. API docs, user guides, changelog automation. Ch.7 軍爭
+    - Assigned: fullstack-developer
+    - Status: running
+    - Priority: high
+    - Created: 2026-01-27T13:15:00+0700
+    - Scope:
+        - API Documentation (OpenAPI/Swagger 3.0 spec generation, Interactive API explorer with try-it-out, Request/response examples for all endpoints, Authentication documentation - OAuth 2.0, JWT, API versioning documentation - v1, v2 migration guides, Rate limiting documentation - quotas, throttling)
+        - User Documentation (User guides - Getting started, core features, advanced usage, Admin guides - system configuration, user management, billing, Developer guides - API integration, webhooks, SDKs, Troubleshooting guides - common issues, error codes, FAQ)
+        - Changelog Automation (Conventional Commits parsing - feat, fix, breaking changes, Automatic version bumping - SemVer compliance, Changelog generation from git history, Release notes with migration guides, Breaking change detection and warnings)
+        - Documentation Site (Docusaurus or VitePress framework, Versioned documentation - 1.0, 2.0, 3.0, Search functionality with Algolia DocSearch, Dark mode support, Mobile-responsive design, Code syntax highlighting with Prism)
+        - Code Documentation (JSDoc/TSDoc comments for all public APIs, README files for each module/package, Architecture Decision Records (ADRs), Inline code comments for complex logic)
+        - Interactive Examples (Runnable code snippets with CodeSandbox, Live API playground with request builder, Step-by-step tutorials with interactive demos, Video walkthroughs for key features)
+        - Localization (Multi-language support - English, Vietnamese, Spanish, French, Translation workflow with Crowdin integration, RTL support for Arabic/Hebrew documentation)
+        - Documentation CI/CD (Auto-deploy on docs changes, Link checking to prevent broken links, Spell checking with Vale linter, Screenshot automation for UI guides, Version compatibility matrix)
+    - Deliverables:
+        - Documentation: docs/ directory with Docusaurus structure
+        - Documentation: docs/api/ (OpenAPI spec, API reference)
+        - Documentation: docs/guides/ (User guides, admin guides, developer guides)
+        - Documentation: docs/tutorials/ (Step-by-step tutorials)
+        - Documentation: docs/changelog.md (Auto-generated from commits)
+        - Documentation: docs/adr/ (Architecture Decision Records)
+        - Backend: backend/api/openapi.py (OpenAPI spec generation)
+        - Backend: backend/api/docs_router.py (Swagger UI, ReDoc endpoints)
+        - Scripts: scripts/docs/generate-api-docs.sh (OpenAPI spec generation)
+        - Scripts: scripts/docs/generate-changelog.sh (Parse commits, generate changelog)
+        - Scripts: scripts/docs/build-docs.sh (Build Docusaurus site)
+        - CI/CD: .github/workflows/docs-deploy.yml (Auto-deploy to GitHub Pages or Vercel)
+        - Configuration: docs/docusaurus.config.js (Site configuration)
+        - Configuration: config/docs-config.yaml (Versioning, search, localization)
+        - Monitoring: Docs site analytics (page views, search queries)
+        - Comprehensive documentation coverage (100% public APIs documented)
+        - Search optimization (indexed by Algolia DocSearch)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready documentation for investors and auditors
+        - 🏢 AGENCY: Reusable documentation framework for all products
+        - 🚀 CLIENT: Self-service support, faster onboarding, reduced support tickets
+    - **Binh Pháp Ch.7 軍爭 (Jun Zheng - Maneuvering):**
+        - Strategy: The race to advantageous position (documentation = competitive advantage)
+        - Tactics: "以迂為直，以患為利" (Make the devious route the direct, turn misfortune to advantage)
+        - Principle: "軍爭為利，軍爭為危" (Maneuvering for advantage is profitable, but also dangerous)
+        - Documentation = Strategic Maneuvering: API docs (direct route to integration), User guides (turn complexity into simplicity), Changelog (navigate version changes safely), Tutorials (shortcut to mastery), Localization (maneuver into global markets)
+
+- [ ] **TASK-73ed23f9** 🔔 RUNNING (Agent: ac5e258)
+    - Description: IPO-031-Notifications: Push notifications. Email, SMS, in-app notifications. Ch.8 九變
+    - Scope: Multi-channel notification system with real-time delivery and user preferences
+    - Deliverables:
+        - **Frontend Components**:
+            - components/mobile/NotificationToast.tsx (Real-time toast notifications)
+            - components/mobile/NotificationCenter.tsx (Notification history panel)
+            - components/mobile/NotificationPreferences.tsx (User settings page)
+        - **Backend Services**:
+            - backend/services/notification_service.py (Notification orchestration)
+            - backend/services/push_notification_service.py (Web Push API + FCM)
+            - backend/services/email_notification_service.py (Transactional + marketing emails)
+            - backend/services/sms_notification_service.py (Twilio + AWS SNS integration)
+        - **Workers**:
+            - backend/workers/notification_worker.py (Async notification delivery)
+        - **API Endpoints**:
+            - backend/api/routers/notifications.py (Send, read, preferences endpoints)
+        - **Database**:
+            - backend/database/migrations/20260127_007_notifications.sql (Notifications schema)
+        - **Templates**:
+            - backend/templates/email/ (Email templates with i18n support)
+            - backend/templates/sms/ (SMS templates)
+        - **Configuration**:
+            - config/notification-config.yaml (Multi-channel settings)
+    - Binh Pháp Ch.8 九變 (Nine Variations - Tactical Adaptation):
+        - **Adapt notification channels** based on user preferences and context (urgent → SMS, non-urgent → email)
+        - **Multi-channel orchestration**: Send same notification across email, SMS, push based on priority
+        - **Template system** with dynamic content and localization (4 languages)
+        - **Rate limiting** to prevent notification fatigue (max 5 push/hour, 10 email/day)
+        - **Delivery tracking**: Read receipts, click tracking, bounce handling
+        - **Fallback strategy**: If push fails → email, if email fails → SMS
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Real-time engagement, multi-channel reach, automated workflows
+        - 🏢 **Agency WIN**: Notification infrastructure reusable across clients, delivery metrics
+        - 🚀 **Startup WIN**: User retention through timely notifications, preference control
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+- [ ] **TASK-cd839edd** 🔍 RUNNING (Agent: a57d917)
+    - Description: IPO-032-Search: Full-text search với Algolia/Meilisearch. Ch.9 行軍
+    - Scope: Enterprise-grade full-text search with typo tolerance, faceted search, and real-time indexing
+    - Deliverables:
+        - **Search Engine Integration**:
+            - backend/services/search_service.py (Algolia/Meilisearch abstraction layer)
+            - backend/services/algolia_service.py (Algolia SDK integration)
+            - backend/services/meilisearch_service.py (Meilisearch SDK integration)
+        - **Indexing Pipeline**:
+            - backend/workers/search_indexer.py (Real-time index updates via queue)
+            - backend/services/search_indexing_service.py (Batch indexing orchestration)
+        - **Frontend Components**:
+            - apps/dashboard/components/SearchBar.tsx (InstantSearch UI)
+            - apps/dashboard/components/SearchResults.tsx (Faceted search UI)
+            - apps/dashboard/components/SearchFilters.tsx (Refinement filters)
+        - **API Endpoints**:
+            - backend/api/routers/search.py (Search, autocomplete, suggestions)
+        - **Database**:
+            - backend/database/migrations/20260127_008_search.sql (Search config schema)
+        - **Configuration**:
+            - config/search-config.yaml (Algolia/Meilisearch settings, indexing rules)
+        - **CLI Commands**:
+            - scripts/search/reindex.sh (Full reindex script)
+            - scripts/search/sync-indexes.sh (Index sync verification)
+    - Binh Pháp Ch.9 行軍 (Marching - Execution Discipline):
+        - **Real-time indexing**: Update search index immediately on entity changes (create/update/delete)
+        - **Typo tolerance**: Fuzzy matching with 1-2 character typos allowed
+        - **Faceted search**: Filter by multiple dimensions (type, status, date range, tags)
+        - **Ranking rules**: Custom relevance (title > description > content, recency boost)
+        - **Multi-index search**: Search across users, transactions, audit logs simultaneously
+        - **Autocomplete**: Instant suggestions with <100ms latency
+        - **Synonyms**: Configure business-specific synonyms (e.g., "payment" = "transaction")
+        - **Stop words**: Remove common words (the, a, is) from indexing
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Lightning-fast search across all data, typo-tolerant queries, instant autocomplete
+        - 🏢 **Agency WIN**: Reusable search infrastructure, multi-tenant support, cost-efficient (Meilisearch self-hosted option)
+        - 🚀 **Startup WIN**: Professional search UX, scalable to millions of records, faceted filtering for power users
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+- [ ] **TASK-d4939101** ⏱️ RUNNING (Agent: a83536f)
+    - Description: IPO-033-Rate-Limiting: Rate limiting API với Redis. Sliding window, token bucket. Ch.10 地形
+    - Scope: Enterprise-grade API rate limiting with Redis backend, multiple algorithms, per-user/per-IP/per-endpoint limits
+    - Deliverables:
+        - **Rate Limiting Engines**:
+            - backend/services/rate_limiter_service.py (Abstraction layer)
+            - backend/services/sliding_window_limiter.py (Sliding window algorithm)
+            - backend/services/token_bucket_limiter.py (Token bucket algorithm)
+            - backend/services/fixed_window_limiter.py (Fixed window algorithm - simple)
+        - **Middleware**:
+            - backend/middleware/rate_limit_middleware.py (FastAPI middleware)
+        - **Redis Integration**:
+            - backend/services/redis_service.py (Redis connection pool)
+        - **API Endpoints**:
+            - backend/api/routers/rate_limits.py (Admin: view/update limits)
+        - **Database**:
+            - backend/database/migrations/20260127_009_rate_limits.sql (Rate limit configs)
+        - **Configuration**:
+            - config/rate-limit-config.yaml (Per-endpoint limits, algorithms)
+        - **Monitoring Dashboard**:
+            - apps/dashboard/app/dashboard/rate-limits/page.tsx (Rate limit analytics)
+        - **CLI Commands**:
+            - scripts/rate-limits/check-limits.sh (Check current rate limit status)
+            - scripts/rate-limits/reset-limits.sh (Reset rate limits for user/IP)
+    - Binh Pháp Ch.10 地形 (Terrain - Know Your Ground):
+        - **Sliding Window**: Smooth traffic control, prevents burst attacks (1000 req/hour = ~16.67/min smoothed)
+        - **Token Bucket**: Allow bursts up to bucket capacity (100 burst, refill 10/sec)
+        - **Fixed Window**: Simple, efficient, but allows double requests at window boundary
+        - **Per-user limits**: Authenticated users (1000 req/hour)
+        - **Per-IP limits**: Anonymous traffic (100 req/hour)
+        - **Per-endpoint limits**: Critical endpoints stricter (login: 5/min, search: 100/min)
+        - **Rate limit headers**: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset (RFC 6585)
+        - **Graceful degradation**: Return 429 Too Many Requests with Retry-After header
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: API protection from abuse, fair usage enforcement, cost control (prevent runaway API costs)
+        - 🏢 **Agency WIN**: Reusable rate limiting infrastructure, Redis-backed for scale, multi-algorithm support
+        - 🚀 **Startup WIN**: Protect against DDoS/abuse, ensure fair resource allocation, professional API behavior (RFC 6585 compliant)
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+- [ ] **TASK-cf63f41b** 🚩 RUNNING (Agent: a6c6e5d)
+    - Description: IPO-034-Feature-Flags: Feature flag system với LaunchDarkly/Unleash. Ch.11 九地
+    - Scope: Enterprise-grade feature flag system with LaunchDarkly (managed SaaS) and Unleash (self-hosted) support, gradual rollouts, A/B testing, user targeting, kill switches
+    - Deliverables:
+        - **Feature Flag Services**:
+            - backend/services/feature_flag_service.py (Abstraction layer)
+            - backend/services/launchdarkly_service.py (LaunchDarkly SDK integration)
+            - backend/services/unleash_service.py (Unleash SDK integration)
+        - **Frontend Components**:
+            - apps/dashboard/components/FeatureFlagProvider.tsx (React context provider)
+            - apps/dashboard/hooks/useFeatureFlag.ts (Feature flag hook)
+            - apps/dashboard/components/admin/FeatureFlagAdmin.tsx (Management UI)
+            - apps/dashboard/components/admin/RolloutControl.tsx (Gradual rollout slider)
+        - **API Endpoints**:
+            - backend/api/routers/feature_flags.py (Admin: list, toggle, create, update, rollout)
+        - **Database**:
+            - backend/database/migrations/20260127_010_feature_flags.sql (Feature flag configs, rollouts, targeting rules)
+        - **Configuration**:
+            - config/feature-flag-config.yaml (LaunchDarkly/Unleash settings, default flags)
+        - **CLI Commands**:
+            - scripts/feature-flags/check-flag.sh (Check flag status for user/environment)
+            - scripts/feature-flags/toggle-flag.sh (Toggle flag globally)
+        - **Monitoring Dashboard**:
+            - apps/dashboard/app/dashboard/feature-flags/page.tsx (Flag usage analytics)
+    - Binh Pháp Ch.11 九地 (Nine Terrains - Strategic Positioning):
+        - **Gradual Rollouts**: 0% → 10% → 25% → 50% → 75% → 100% (phased deployment)
+        - **User Targeting**: By role, email, subscription tier, custom attributes
+        - **Kill Switches**: Instant rollback without deployment (emergency shutdown)
+        - **A/B Testing**: Variant allocation with statistical significance tracking
+        - **Environment Isolation**: Dev/Staging/Prod independent flag states
+        - **Percentage Rollouts**: Deterministic user bucketing (sticky sessions)
+        - **Dependency Management**: Flag prerequisites (require flag A before B)
+        - **Audit Trail**: Track every flag change with user, timestamp, reason
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Risk-free feature deployment, instant rollback capability, data-driven decisions (A/B testing)
+        - 🏢 **Agency WIN**: Reusable feature flag infrastructure, multi-client support, reduce deployment anxiety
+        - 🚀 **Startup WIN**: Ship faster with confidence, test in production safely, gradual rollouts minimize blast radius
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-d938dafa** 🏢 RUNNING (Agent: ab3b3e8)
+    - Description: IPO-035-Multi-Tenancy: Multi-tenant database schema với RLS. Ch.12 火攻
+    - Scope: Enterprise-grade multi-tenant database architecture with Row-Level Security (RLS), tenant isolation, cross-tenant analytics, and tenant lifecycle management
+    - Deliverables:
+        - **Database Architecture**:
+            - backend/db/multi_tenant_base.py (SQLAlchemy multi-tenant base model)
+            - backend/db/tenant_context.py (Tenant context manager)
+            - backend/database/migrations/20260127_011_multi_tenancy.sql (RLS policies, tenant schema)
+        - **Tenant Services**:
+            - backend/services/tenant_service.py (Tenant CRUD, provisioning, deprovisioning)
+            - backend/services/tenant_isolation_service.py (RLS enforcement, data segregation)
+            - backend/services/cross_tenant_analytics_service.py (Superadmin aggregated analytics)
+        - **Middleware**:
+            - backend/middleware/tenant_middleware.py (Auto-inject tenant_id from JWT/subdomain)
+        - **API Endpoints**:
+            - backend/api/routers/tenants.py (Admin: create, update, suspend, delete tenants)
+            - backend/api/routers/tenant_analytics.py (Superadmin: cross-tenant metrics)
+        - **Database Models**:
+            - backend/models/tenant.py (Tenant entity with subscription tier, status, metadata)
+            - All existing models enhanced with tenant_id foreign key
+        - **Configuration**:
+            - config/multi-tenant-config.yaml (Isolation strategy, RLS policies, tenant limits)
+        - **CLI Commands**:
+            - scripts/tenants/create-tenant.sh (Provision new tenant with schema)
+            - scripts/tenants/migrate-tenant.sh (Run migrations for specific tenant)
+            - scripts/tenants/delete-tenant.sh (Soft delete with data archival)
+        - **Admin Dashboard**:
+            - apps/dashboard/app/admin/tenants/page.tsx (Tenant management UI)
+            - apps/dashboard/app/admin/tenant-analytics/page.tsx (Cross-tenant analytics)
+    - Binh Pháp Ch.12 火攻 (Fire Attack - Overwhelming Force):
+        - **RLS Policies**: Database-level isolation (SET LOCAL tenant.id = X before each query)
+        - **Tenant Context**: Thread-local storage for current tenant (FastAPI Depends injection)
+        - **Isolation Strategies**: Row-level (shared tables), Schema-level (separate schemas), Database-level (separate DBs)
+        - **Cross-Tenant Queries**: Superadmin bypass RLS with explicit SECURITY INVOKER functions
+        - **Tenant Lifecycle**: Provisioning (create schema + seed data), Suspension (disable access), Deletion (soft delete + archival)
+        - **Data Segregation**: Foreign key constraints enforce tenant_id consistency
+        - **Performance**: Partitioning by tenant_id for large tables (orders, transactions)
+        - **Backup/Restore**: Per-tenant backup with pg_dump --schema=tenant_X
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Multi-tenant SaaS scalability, revenue per tenant tracking, enterprise-ready architecture
+        - 🏢 **Agency WIN**: Reusable multi-tenant infrastructure, one codebase serves all clients, reduce operational overhead
+        - 🚀 **Startup WIN**: Fast tenant onboarding (<1 min), guaranteed data isolation, compliance-ready (SOC2, GDPR)
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-2d9f7ec1** 💾 PENDING
+    - Description: IPO-036-Caching: Redis caching layer cho API responses. Ch.6 虛實
+    - Scope: Enterprise-grade Redis caching layer with intelligent cache invalidation, TTL management, and performance optimization
+    - Deliverables:
+        - **Redis Integration**:
+            - backend/services/redis_service.py (Redis connection pool with connection retry)
+            - backend/core/cache_config.py (Cache configuration management)
+        - **Cache Services**:
+            - backend/services/cache_service.py (Generic caching interface)
+            - backend/services/api_cache_service.py (API response caching with ETags)
+            - backend/services/query_cache_service.py (Database query result caching)
+        - **Cache Middleware**:
+            - backend/middleware/cache_middleware.py (Automatic response caching)
+        - **Cache Decorators**:
+            - backend/decorators/cached.py (@cached decorator for functions)
+            - backend/decorators/cache_invalidate.py (@cache_invalidate for mutations)
+        - **Database**:
+            - backend/database/migrations/20260127_012_cache_metadata.sql (Cache hit/miss metrics)
+        - **Configuration**:
+            - config/cache-config.yaml (TTL policies, invalidation rules, namespace prefixes)
+        - **CLI Commands**:
+            - scripts/cache/clear-cache.sh (Clear all or specific cache keys)
+            - scripts/cache/cache-stats.sh (View cache hit rates and performance)
+            - scripts/cache/warm-cache.sh (Pre-populate cache with common queries)
+        - **Monitoring Dashboard**:
+            - apps/dashboard/app/dashboard/cache-performance/page.tsx (Cache metrics visualization)
+    - Binh Pháp Ch.6 虛實 (Weak Points and Strong - Deception & Reality):
+        - **Cache-Aside Pattern**: Application checks cache before DB (lazy loading)
+        - **Write-Through**: Update cache immediately on write operations
+        - **Write-Behind**: Async cache updates for high-throughput scenarios
+        - **Cache Warming**: Pre-populate cache for predictable high-traffic endpoints
+        - **TTL Strategy**: Short TTL (5-60s) for dynamic data, Long TTL (1h-24h) for static
+        - **Invalidation**: Tag-based invalidation (e.g., invalidate all user:{id}:* on profile update)
+        - **Namespace Segregation**: Separate cache namespaces (api:, db:, session:)
+        - **Compression**: Gzip large responses before caching (>1KB)
+        - **ETags**: Generate ETag headers for conditional requests (304 Not Modified)
+        - **Stampede Prevention**: Lock-based approach to prevent cache stampede (single request refreshes, others wait)
+        - **Eviction Policy**: LRU (Least Recently Used) with Redis maxmemory-policy
+        - **Performance Metrics**: Cache hit rate, latency reduction, memory usage
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Faster API responses (10x-100x), reduced DB load, lower infrastructure costs
+        - 🏢 **Agency WIN**: Reusable caching infrastructure, proven patterns, scalable to millions of requests
+        - 🚀 **Startup WIN**: Sub-100ms API latency, handle traffic spikes, better user experience (instant page loads)
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+
+- [ ] **TASK-c4252cfa** 🔺 PENDING
+    - Description: IPO-037-GraphQL: GraphQL API layer với Apollo Server, type-safe queries. Ch.7 軍爭
+    - Scope: Enterprise-grade GraphQL API layer with Apollo Server, type-safe schema generation, query optimization, and real-time subscriptions
+    - Deliverables:
+        - **Apollo Server Setup**:
+            - backend/graphql/server.py (Apollo Server integration with FastAPI)
+            - backend/graphql/schema.py (GraphQL schema definition)
+            - backend/graphql/context.py (GraphQL context with auth & dataloaders)
+        - **Type System**:
+            - backend/graphql/types/ (GraphQL object types mapped from SQLAlchemy)
+            - backend/graphql/types/user.py (User type with resolvers)
+            - backend/graphql/types/order.py (Order type with nested relations)
+            - backend/graphql/types/payment.py (Payment type with secure field masking)
+        - **Resolvers**:
+            - backend/graphql/resolvers/query.py (Query resolvers with N+1 prevention)
+            - backend/graphql/resolvers/mutation.py (Mutation resolvers with validation)
+            - backend/graphql/resolvers/subscription.py (Real-time subscriptions via WebSocket)
+        - **DataLoaders**:
+            - backend/graphql/dataloaders.py (Batch loading to prevent N+1 queries)
+        - **Middleware**:
+            - backend/graphql/middleware/auth.py (GraphQL auth middleware)
+            - backend/graphql/middleware/complexity.py (Query complexity limiting)
+            - backend/graphql/middleware/depth.py (Query depth limiting)
+        - **Subscriptions**:
+            - backend/graphql/subscriptions.py (PubSub with Redis backend)
+        - **Database**:
+            - backend/database/migrations/20260127_013_graphql_metadata.sql (Query analytics, caching)
+        - **Configuration**:
+            - config/graphql-config.yaml (Schema introspection, playground settings, complexity limits)
+        - **CLI Commands**:
+            - scripts/graphql/generate-schema.sh (Auto-generate schema from SQLAlchemy models)
+            - scripts/graphql/validate-queries.sh (Validate client queries against schema)
+        - **Frontend Integration**:
+            - apps/dashboard/lib/graphql/client.ts (Apollo Client setup with caching)
+            - apps/dashboard/lib/graphql/queries.ts (Type-safe query definitions)
+            - apps/dashboard/lib/graphql/mutations.ts (Type-safe mutation definitions)
+            - apps/dashboard/hooks/useGraphQL.ts (React hooks for GraphQL operations)
+        - **Playground & Documentation**:
+            - apps/dashboard/app/graphql-playground/page.tsx (Interactive GraphQL playground)
+    - Binh Pháp Ch.7 軍爭 (Maneuvering - Speed & Agility):
+        - **DataLoaders**: Batch and cache database queries to eliminate N+1 problem (速戰速決)
+        - **Query Complexity Analysis**: Calculate query cost before execution to prevent abuse
+        - **Depth Limiting**: Max query depth of 10 to prevent deeply nested attacks
+        - **Persisted Queries**: Pre-registered queries with hash IDs for security + performance
+        - **Automatic Pagination**: Cursor-based pagination for all connection types
+        - **Schema Stitching**: Federate multiple GraphQL services (future-proof for microservices)
+        - **Error Masking**: Sanitize error messages in production (hide stack traces)
+        - **Field-Level Authorization**: Granular permissions per GraphQL field
+        - **Real-Time Subscriptions**: WebSocket subscriptions with Redis PubSub
+        - **Code Generation**: Auto-generate TypeScript types from GraphQL schema
+        - **Caching Strategy**: Apollo Client cache with optimistic updates
+        - **Performance Monitoring**: Track query execution time and N+1 queries
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Type-safe API eliminates runtime errors, faster frontend development
+        - 🏢 **Agency WIN**: Reusable GraphQL infrastructure, modern tech stack, attracts talent
+        - 🚀 **Startup WIN**: Self-documenting API (introspection), rapid prototyping, real-time features
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-298a5938** 💳 PENDING
+    - Description: IPO-038-Payments: Stripe integration với subscriptions, metered billing. Ch.4 軍形
+    - Scope: Enterprise-grade payment infrastructure with Stripe subscriptions, metered billing, usage tracking, invoice generation, and payment recovery
+    - Deliverables:
+        - **Stripe Core Integration**:
+            - backend/services/stripe_service.py (Stripe SDK wrapper with retry logic)
+            - backend/core/payment_config.py (Payment gateway configuration)
+        - **Subscription Management**:
+            - backend/services/subscription_service.py (Create, update, cancel subscriptions)
+            - backend/services/metered_billing_service.py (Usage tracking, metered billing)
+            - backend/services/invoice_service.py (Invoice generation, payment collection)
+        - **Payment Recovery**:
+            - backend/services/dunning_service.py (Failed payment retry with smart scheduling)
+        - **Webhooks**:
+            - backend/api/routers/stripe_webhooks.py (Stripe webhook handlers with signature verification)
+        - **API Endpoints**:
+            - backend/api/routers/subscriptions.py (Subscription CRUD API)
+            - backend/api/routers/billing.py (Billing history, invoice download)
+        - **Database**:
+            - backend/database/migrations/20260127_014_stripe_subscriptions.sql (Subscriptions, usage records, invoices)
+        - **Frontend**:
+            - apps/dashboard/app/billing/subscription/page.tsx (Subscription management UI)
+            - apps/dashboard/app/billing/usage/page.tsx (Usage dashboard with charts)
+            - apps/dashboard/app/billing/invoices/page.tsx (Invoice history)
+            - apps/dashboard/components/StripeCheckout.tsx (Stripe Elements integration)
+        - **Configuration**:
+            - config/stripe-config.yaml (Price IDs, webhook secrets, retry policies)
+        - **CLI Commands**:
+            - scripts/stripe/sync-products.sh (Sync products from Stripe Dashboard)
+            - scripts/stripe/export-invoices.sh (Export invoices for accounting)
+        - **Worker**:
+            - workers/metered_billing_worker.py (Aggregate usage data hourly)
+            - workers/dunning_worker.py (Process failed payments)
+    - Binh Pháp Ch.4 軍形 (Tactical Dispositions - Invincibility):
+        - **Idempotency Keys**: Prevent duplicate charges (軍形 - defensive posture)
+        - **Webhook Signature Verification**: HMAC SHA-256 validation (prevent spoofing)
+        - **3D Secure 2.0**: Strong Customer Authentication for EU compliance
+        - **Smart Retry Logic**: Exponential backoff (1d, 3d, 7d, 14d, 30d) for failed payments
+        - **Usage Aggregation**: Batch usage events (reduce API calls by 90%)
+        - **Proration**: Handle mid-cycle upgrades/downgrades correctly
+        - **Tax Calculation**: Automatic tax via Stripe Tax (VAT, sales tax)
+        - **Subscription Lifecycle**: Trial → Active → Past Due → Canceled flow
+        - **Payment Method Updates**: Card updater service (reduce involuntary churn)
+        - **Invoice Customization**: Logo, business details, custom line items
+        - **Refund Handling**: Partial/full refunds with reason tracking
+        - **Dispute Management**: Chargeback alerts and evidence submission
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Predictable recurring revenue, automatic collections, reduced churn
+        - 🏢 **Agency WIN**: Reusable payment infrastructure, proven SaaS patterns, compliance-ready
+        - 🚀 **Startup WIN**: Fast time-to-revenue, global payment support (135+ currencies), enterprise billing
+    - Agent: payment-integration
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
 

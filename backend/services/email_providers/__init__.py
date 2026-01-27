@@ -1,4 +1,4 @@
-from .base import EmailProvider, EmailMessage
+from .base import EmailMessage, EmailProvider
 from .resend import ResendProvider
 from .sendgrid import SendGridProvider
 from .smtp import SMTPProvider

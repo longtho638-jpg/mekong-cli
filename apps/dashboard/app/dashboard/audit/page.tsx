@@ -1,35 +1,117 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getAuditLogs, type AuditLog } from '@/lib/audit-api'
+import { getAuditLogs, exportAuditLogs, type AuditLog } from '@/lib/audit-api'
 import { useAuth } from '@/lib/auth-context'
-import { Card, CardHeader, CardTitle, CardContent } from '@agencyos/ui'
-import { ShieldCheck, User } from 'lucide-react'
+import { Card, CardHeader, CardTitle, CardContent } from '@agencyos/ui/card'
+import { Button } from '@agencyos/ui/button'
+import { Input } from '@agencyos/ui/input'
+import { ShieldCheck, User, Download, Search, Filter } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@agencyos/ui/select'
 
 export default function AuditPage() {
   const { token } = useAuth()
   const [logs, setLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
+  const [filters, setFilters] = useState({
+    user_id: '',
+    action: '',
+    resource_type: ''
+  })
+
+  const fetchLogs = async () => {
+    if (!token) return
+    setLoading(true)
+    try {
+      const data = await getAuditLogs(token, {
+          user_id: filters.user_id || undefined,
+          action: filters.action || undefined,
+          resource_type: filters.resource_type || undefined,
+          limit: 50
+      })
+      setLogs(data)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    if (token) {
-      getAuditLogs(token).then((data) => {
-        setLogs(data)
-        setLoading(false)
-      })
-    }
+    fetchLogs()
   }, [token])
 
-  if (loading) return <div className="p-8 text-center">Loading audit logs...</div>
+  const handleExport = async (format: 'json' | 'csv') => {
+      if (!token) return;
+      try {
+          const result = await exportAuditLogs(token, format, {
+            user_id: filters.user_id || undefined
+          });
+
+          if (format === 'csv') {
+              const url = window.URL.createObjectURL(result);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `audit-logs-${new Date().toISOString()}.csv`;
+              document.body.appendChild(a);
+              a.click();
+              window.URL.revokeObjectURL(url);
+          } else {
+              const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(result));
+              const a = document.createElement('a');
+              a.href = dataStr;
+              a.download = `audit-logs-${new Date().toISOString()}.json`;
+              document.body.appendChild(a);
+              a.click();
+          }
+      } catch (e) {
+          console.error("Export failed", e);
+      }
+  }
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold flex items-center gap-2">
+        <h1 className="text-3xl font-bold flex items-center gap-2 text-gray-900">
           <ShieldCheck className="w-8 h-8 text-blue-600" />
           System Audit Log
         </h1>
+        <div className="flex gap-2">
+            <Button variant="outline" onClick={() => handleExport('json')}>
+                <Download className="w-4 h-4 mr-2" /> Export JSON
+            </Button>
+            <Button variant="outline" onClick={() => handleExport('csv')}>
+                <Download className="w-4 h-4 mr-2" /> Export CSV
+            </Button>
+        </div>
       </div>
+
+      <Card>
+          <CardHeader>
+              <CardTitle>Filters</CardTitle>
+          </CardHeader>
+          <CardContent>
+              <div className="flex gap-4">
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                      <Input
+                        placeholder="Filter by User ID"
+                        value={filters.user_id}
+                        onChange={(e) => setFilters({...filters, user_id: e.target.value})}
+                      />
+                  </div>
+                  <div className="grid w-full max-w-sm items-center gap-1.5">
+                      <Input
+                        placeholder="Filter by Action"
+                        value={filters.action}
+                        onChange={(e) => setFilters({...filters, action: e.target.value})}
+                      />
+                  </div>
+                  <Button onClick={fetchLogs}>
+                      <Search className="w-4 h-4 mr-2" /> Search
+                  </Button>
+              </div>
+          </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
@@ -40,44 +122,51 @@ export default function AuditPage() {
             <table className="w-full text-sm text-left">
               <thead className="bg-gray-50 border-b">
                 <tr>
-                  <th className="p-4 font-medium">Timestamp</th>
-                  <th className="p-4 font-medium">User</th>
-                  <th className="p-4 font-medium">Action</th>
-                  <th className="p-4 font-medium">Resource</th>
-                  <th className="p-4 font-medium">Status</th>
-                  <th className="p-4 font-medium">Details</th>
+                  <th className="p-4 font-medium text-gray-500">Timestamp</th>
+                  <th className="p-4 font-medium text-gray-500">User</th>
+                  <th className="p-4 font-medium text-gray-500">Action</th>
+                  <th className="p-4 font-medium text-gray-500">Resource</th>
+                  <th className="p-4 font-medium text-gray-500">IP Address</th>
+                  <th className="p-4 font-medium text-gray-500">Details</th>
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {logs.length === 0 && (
+                {loading && (
+                    <tr>
+                        <td colSpan={6} className="p-8 text-center text-gray-500">
+                            Loading logs...
+                        </td>
+                    </tr>
+                )}
+                {!loading && logs.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-4 text-center text-gray-500">
-                      No logs found.
+                    <td colSpan={6} className="p-8 text-center text-gray-500">
+                      No logs found matching your criteria.
                     </td>
                   </tr>
                 )}
-                {logs.map((log, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
+                {logs.map((log) => (
+                  <tr key={log.id} className="hover:bg-gray-50">
                     <td className="p-4 whitespace-nowrap text-gray-500">
                       {new Date(log.timestamp).toLocaleString()}
                     </td>
-                    <td className="p-4 flex items-center gap-2 font-medium">
+                    <td className="p-4 flex items-center gap-2 font-medium text-gray-900">
                       <User className="w-4 h-4 text-gray-400" />
-                      {log.user}
+                      {log.user_id || 'System'}
                     </td>
                     <td className="p-4">
-                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-xs font-bold">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-md text-xs font-bold font-mono">
                         {log.action}
                       </span>
                     </td>
-                    <td className="p-4 font-mono text-xs">{log.resource}</td>
-                    <td className="p-4">
-                      <span className={`px-2 py-1 rounded text-xs ${log.status === 'SUCCESS' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {log.status}
-                      </span>
+                    <td className="p-4 font-mono text-xs text-gray-600">
+                        {log.resource_type ? `${log.resource_type}:${log.resource_id || '*'}` : '-'}
                     </td>
-                    <td className="p-4 text-gray-500 truncate max-w-xs">
-                      {JSON.stringify(log.details)}
+                    <td className="p-4 text-xs font-mono text-gray-500">
+                      {log.ip_address || '-'}
+                    </td>
+                    <td className="p-4 text-gray-500 truncate max-w-xs text-xs font-mono" title={JSON.stringify(log.metadata, null, 2)}>
+                      {log.metadata ? JSON.stringify(log.metadata).substring(0, 50) + (JSON.stringify(log.metadata).length > 50 ? '...' : '') : '-'}
                     </td>
                   </tr>
                 ))}

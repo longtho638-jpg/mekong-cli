@@ -1,0 +1,9 @@
+{
+  "welcome": "AgencyOSへようこそ",
+  "language": "言語",
+  "item_zero": "アイテムなし",
+  "item_one": "{{count}} アイテム",
+  "item_other": "{{count}} アイテム",
+  "greeting": "こんにちは, <strong>{{name}}</strong>!",
+  "lastUpdated": "最終更新 {{date, datetime}}"
+}

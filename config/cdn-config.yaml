@@ -1,0 +1,46 @@
+# CDN and Caching Configuration
+
+cdn:
+  provider: cloudflare
+  zone_id: ${CLOUDFLARE_ZONE_ID}
+  domain: mekong-cli.com
+
+  # Image Optimization settings
+  images:
+    formats: ["webp", "avif"]
+    quality: 85
+    lazy_loading: true
+
+  # Caching Rules (Page Rules)
+  cache_rules:
+    - path: "/static/*"
+      cache_level: "cache_everything"
+      edge_ttl: 31536000 # 1 year
+      browser_ttl: 31536000
+
+    - path: "/api/v1/*"
+      cache_level: "bypass" # Dynamic API, handle via headers
+      edge_ttl: 0
+
+    - path: "/*.html"
+      cache_level: "standard"
+      edge_ttl: 0 # Origin controls cache
+      browser_ttl: 0
+
+redis:
+  host: ${REDIS_HOST}
+  port: ${REDIS_PORT}
+  db: 0
+  default_ttl: 3600
+  key_prefix: "mekong"
+
+  # TTL per service/endpoint type
+  ttls:
+    api_response: 3600
+    user_session: 86400
+    static_config: 604800
+
+http:
+  http2: true
+  http3: true
+  brotli: true

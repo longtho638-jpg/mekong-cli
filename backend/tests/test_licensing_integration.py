@@ -4,14 +4,15 @@ Integration Tests for License System
 Tests the complete flow from generation to validation to renewal.
 """
 
-import pytest
 from datetime import datetime, timedelta
+
+import pytest
 
 from backend.core.licensing import (
     LicenseGenerator,
-    LicenseValidator,
     LicensePlan,
     LicenseStatus,
+    LicenseValidator,
 )
 
 
@@ -82,7 +83,7 @@ class TestEndToEndFlow:
         )
 
         assert renewed_validation.valid
-        print(f"✅ Step 6: Renewed license validated successfully")
+        print("✅ Step 6: Renewed license validated successfully")
 
     def test_domain_binding_enforcement(self):
         """Test: Domain binding prevents usage on wrong domain"""

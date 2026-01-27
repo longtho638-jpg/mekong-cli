@@ -3,10 +3,11 @@ MCP Server Wrapper for Coding Engine.
 Handles JSON-RPC over stdio.
 """
 import asyncio
+from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 
-from antigravity.mcp.base import BaseMCPServer
 from .handlers import CodingHandler
+
 
 class CodingMCPServer(BaseMCPServer):
     def __init__(self):

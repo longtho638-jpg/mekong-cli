@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from backend.api.security.rbac import require_admin, require_viewer
 from backend.api.services.revenue_service import RevenueService
+from backend.services.cache_service import cached
 
 router = APIRouter(prefix="/revenue", tags=["revenue"])
 
@@ -61,6 +62,7 @@ def get_revenue_service() -> RevenueService:
 # --- Endpoints ---
 
 @router.get("/dashboard", response_model=DashboardResponse)
+@cached(ttl=300, prefix="revenue:dashboard")
 async def get_revenue_dashboard(
     tenant_id: Optional[str] = Query(None),
     service: RevenueService = Depends(get_revenue_service)
@@ -131,6 +133,7 @@ async def get_revenue_dashboard(
         )
 
 @router.get("/metrics", response_model=RevenueMetrics)
+@cached(ttl=300, prefix="revenue:metrics")
 async def get_revenue_metrics(
     tenant_id: Optional[str] = Query(None),
     service: RevenueService = Depends(get_revenue_service)
@@ -160,6 +163,7 @@ async def get_revenue_metrics(
         )
 
 @router.get("/trend")
+@cached(ttl=600, prefix="revenue:trend")
 async def get_revenue_trend(
     tenant_id: Optional[str] = Query(None),
     days: int = Query(30, ge=7, le=365),

@@ -3,8 +3,8 @@
 # Attempts: 1
 # Passed: True
 
-from typing import List
 from collections import Counter
+from typing import List
 
 
 def remove_duplicates(numbers: List[int]) -> List[int]:

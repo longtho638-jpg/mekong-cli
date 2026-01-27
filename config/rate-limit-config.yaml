@@ -1,0 +1,54 @@
+rate_limits:
+  default:
+    enabled: true
+    algorithm: sliding_window  # sliding_window, token_bucket, fixed_window
+    per_user_limit: 1000
+    per_ip_limit: 100
+    window_seconds: 3600  # 1 hour
+
+  endpoints:
+    # Authentication (strict - prevent credential stuffing)
+    /api/auth/login:
+      enabled: true
+      algorithm: fixed_window
+      per_user_limit: 5
+      per_ip_limit: 5
+      window_seconds: 60  # 5 attempts per minute
+
+    /api/auth/register:
+      enabled: true
+      algorithm: sliding_window
+      per_ip_limit: 3
+      window_seconds: 3600  # 3 registrations per hour per IP
+
+    # Search (moderate - prevent resource exhaustion)
+    /api/search:
+      enabled: true
+      algorithm: token_bucket
+      per_user_limit: 100  # burst capacity
+      per_ip_limit: 50
+      refill_rate: 10  # 10 requests/second sustained
+
+    # Payments (very strict - prevent fraud)
+    /api/payments:
+      enabled: true
+      algorithm: sliding_window
+      per_user_limit: 10
+      per_ip_limit: 5
+      window_seconds: 3600
+
+    # Webhooks (lenient - external services)
+    /api/webhooks:
+      enabled: true
+      algorithm: token_bucket
+      per_ip_limit: 1000
+      window_seconds: 60
+      refill_rate: 100  # 100/sec sustained, 1000 burst
+
+    # Public API (moderate)
+    /api/v1:
+      enabled: true
+      algorithm: sliding_window
+      per_user_limit: 5000
+      per_ip_limit: 500
+      window_seconds: 3600

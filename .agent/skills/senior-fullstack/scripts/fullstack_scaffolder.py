@@ -4,12 +4,13 @@ Fullstack Scaffolder
 Automated tool for senior fullstack tasks
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 from pathlib import Path
 from typing import Dict, List, Optional
+
 
 class FullstackScaffolder:
     """Main class for fullstack scaffolder functionality"""

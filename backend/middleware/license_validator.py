@@ -4,9 +4,9 @@ License Validator Middleware
 Intercepts requests to ensure a valid license key is present and active.
 """
 import logging
-from typing import Optional, List
+from typing import List, Optional
 
-from fastapi import Request, Response, HTTPException
+from fastapi import HTTPException, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 

@@ -3,9 +3,9 @@ Keyword analysis module for App Store Optimization.
 Analyzes keyword search volume, competition, and relevance for app discovery.
 """
 
-from typing import Dict, List, Any, Optional, Tuple
 import re
 from collections import Counter
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class KeywordAnalyzer:
@@ -186,7 +186,7 @@ class KeywordAnalyzer:
                 'keyword': question_keyword,
                 'pattern': 'question_based',
                 'estimated_competition': 'very_low',
-                'rationale': f"Informational search query"
+                'rationale': "Informational search query"
             })
 
         return long_tail_keywords
