@@ -350,6 +350,70 @@ claude mcp list
 
 ---
 
+## 🚨 ĐIỀU 24: JULES ASYNC TECH DEBT INTEGRATION
+
+> **Jules (Google) = Background janitor | CC CLI = Realtime warrior**
+
+### 🔴 KHÔNG XUNG ĐỘT - BỔ SUNG NHAU:
+
+```yaml
+cc_cli:
+    mode: "Realtime, synchronous"
+    trigger: 'echo "/delegate task" | claude'
+    output: "Immediate terminal output"
+    use_for: "IPO tasks, features, urgent fixes"
+
+jules:
+    mode: "Async, background"
+    trigger: "/jules command in Gemini CLI"
+    output: "GitHub Pull Request"
+    use_for: "Tech debt, tests, docs, deps"
+```
+
+### 🔴 WEEKLY JULES SCHEDULE:
+
+```yaml
+monday: "/jules add unit tests for new files"
+wednesday: "/jules fix TypeScript any types"
+friday: "/jules add docstrings to functions"
+
+monthly:
+    - "/jules update npm dependencies"
+    - "/jules fix security vulnerabilities"
+```
+
+### 🔴 WORKFLOW:
+
+```bash
+# 1. Start Gemini CLI
+gemini
+
+# 2. Run Jules task
+/jules add tests for antigravity/core/
+
+# 3. Check status
+/jules what is the status of my tasks?
+
+# 4. Review PR on GitHub
+```
+
+### 🔴 BEST PRACTICES:
+
+- **Small batches**: Don't ask Jules to fix entire codebase
+- **Review PRs**: Always review Jules PRs before merging
+- **Test first**: Run tests after Jules changes
+- **Document**: Track what Jules changed
+
+### 🔴 BINH PHÁP:
+
+```yaml
+strategy:
+    CC_CLI: "Immediate tactical strikes (攻城掠地)"
+    Jules: "Strategic background maintenance (後勤保障)"
+```
+
+---
+
 ## 📜 ĐIỀU 1: CLAUDEKIT FIRST MANDATE
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
