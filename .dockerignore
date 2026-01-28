@@ -47,12 +47,16 @@ backend/.venv/
 *.swp
 *.swo
 
-# Frontend (Excluded from Backend build)
-frontend/
-apps/
+# Frontend - NOTE: These are now INCLUDED because we build frontend Docker too
+# To revert to backend-only builds, uncomment the lines below
+# apps/
+# packages/
+# package.json
+# pnpm-lock.yaml
+# pnpm-workspace.yaml
+
+# Keep node_modules and yarn excluded
 node_modules/
-package.json
-pnpm-lock.yaml
 yarn.lock
 
 # Documentation
