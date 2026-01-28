@@ -48,10 +48,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Install runtime dependencies (curl for healthcheck)
+# Install runtime dependencies (curl for healthcheck, libpq for postgres)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
+    libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security (UID 1000)
@@ -62,10 +63,12 @@ RUN groupadd -r agencyos && \
 COPY --from=builder /install /usr/local
 
 # Copy application code
-# Assumes build context is project root
+# We copy specific directories to avoid clutter
 COPY --chown=agencyos:agencyos backend /app/backend
 COPY --chown=agencyos:agencyos core /app/core
 COPY --chown=agencyos:agencyos antigravity /app/antigravity
+# Copy agents directory if it exists and is needed
+COPY --chown=agencyos:agencyos agents /app/agents
 COPY --chown=agencyos:agencyos .env.example /app/.env.example
 
 # Set proper permissions
@@ -82,6 +85,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Start Application with Uvicorn (Production Workers)
+# workers=4 is a good default for general purpose
 CMD ["uvicorn", "backend.main:app", \
      "--host", "0.0.0.0", \
      "--port", "8000", \

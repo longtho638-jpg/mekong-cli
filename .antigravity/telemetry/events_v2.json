@@ -2374,5 +2374,93 @@
       "agent_id": "researcher",
       "agent_role": null
     }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T06:41:08.293374",
+    "d": 0.009917000003412113,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T06:41:08.297565",
+    "d": 0.24287500000141904,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T06:46:14.557032",
+    "d": 0.005541000000164331,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T06:46:14.558800",
+    "d": 0.12116699999964453,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T06:52:27.831188",
+    "d": 0.009750000000252612,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T06:52:27.839378",
+    "d": 0.8927919999983658,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T06:54:55.841542",
+    "d": 0.008208000000564653,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T06:54:55.851436",
+    "d": 1.081207999998668,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
   }
 ]

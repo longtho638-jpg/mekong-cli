@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -32,25 +32,30 @@ class TestAuditService:
 
     @pytest.mark.asyncio
     async def test_create_audit_log(self, audit_service, mock_db_session):
-        # Mock previous hash
-        mock_db_session.execute.return_value.scalar_one_or_none.return_value = "prev_hash"
+        # Mock emit_audit_log_created
+        with patch("backend.services.audit_service.emit_audit_log_created", new_callable=AsyncMock) as mock_emit:
+            # Mock previous hash
+            mock_db_session.execute.return_value.scalar_one_or_none.return_value = "prev_hash"
 
-        _ = await audit_service.create_audit_log(
-            db=mock_db_session,
-            action="user.login",
-            user_id="user_1",
-            ip_address="127.0.0.1"
-        )
+            _ = await audit_service.create_audit_log(
+                db=mock_db_session,
+                action="user.login",
+                user_id="user_1",
+                ip_address="127.0.0.1"
+            )
 
-        assert mock_db_session.add.called
-        assert mock_db_session.commit.called
-        assert mock_db_session.refresh.called
+            assert mock_db_session.add.called
+            assert mock_db_session.commit.called
+            assert mock_db_session.refresh.called
 
-        # Check if hash was generated
-        args, _ = mock_db_session.add.call_args
-        created_log = args[0]
-        assert created_log.hash is not None
-        assert created_log.action == "user.login"
+            # Check if hash was generated
+            args, _ = mock_db_session.add.call_args
+            created_log = args[0]
+            assert created_log.hash is not None
+            assert created_log.action == "user.login"
+
+            # Verify emit was called
+            assert mock_emit.called
 
     @pytest.mark.asyncio
     async def test_verify_integrity_valid(self, audit_service, mock_db_session):
