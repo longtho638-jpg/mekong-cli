@@ -16,8 +16,11 @@ RUN pnpm fetch
 # 3. Builder
 FROM base AS builder
 WORKDIR /app
+# Copy pnpm store from deps stage
+COPY --from=deps /pnpm /pnpm
+COPY --from=deps /app/pnpm-lock.yaml ./
 COPY . .
-RUN pnpm install --offline --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter mekong-dashboard build
