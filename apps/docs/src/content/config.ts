@@ -5,6 +5,7 @@ const docsSchema = z.object({
   description: z.string().min(10).max(160), // SEO constraint
   section: z.enum([
     'getting-started',
+    'core-concepts',
     'docs',
     'workflows',
     'tools',

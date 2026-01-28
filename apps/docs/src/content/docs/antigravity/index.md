@@ -161,10 +161,11 @@ Every AgencyOS decision creates **3 WINs**:
 
 ## Next Steps
 
-1. 📖 **[Full-Stack Workflow](/docs/antigravity/full-stack-workflow)** - Complete product guide
-2. 🏯 **[Binh Pháp Mapping](/docs/antigravity/binh-phap-mapping)** - Deep cluster guide
-3. 🤖 **[18 AI Agents](/docs/agents)** - Meet your AI team
-4. ⚡ **[125+ Commands](/commands)** - Full command reference
+1. 📖 **[The Constitution](/docs/antigravity/constitution)** - Supreme laws of the framework
+2. 📖 **[Full-Stack Workflow](/docs/antigravity/full-stack-workflow)** - Complete product guide
+3. 🏯 **[Binh Pháp Mapping](/docs/antigravity/binh-phap-mapping)** - Deep cluster guide
+4. 🤖 **[18 AI Agents](/docs/agents)** - Meet your AI team
+5. ⚡ **[125+ Commands](/commands)** - Full command reference
 
 ---
 

@@ -16,6 +16,7 @@
           "type": "string",
           "enum": [
             "getting-started",
+            "core-concepts",
             "docs",
             "workflows",
             "tools",

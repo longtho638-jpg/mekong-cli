@@ -45,13 +45,25 @@ const IGNORE_ENV_PREFIXES = ['NODE_', 'PATH', 'HOME', 'USER', 'SHELL', 'TERM', '
 const IGNORE_ENV_VARS = new Set(['ARGUMENTS']);
 
 /**
- * Find all markdown files in directory.
+ * Find all markdown files in directory recursively.
  */
 function findMarkdownFiles(dir) {
   if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir)
-    .filter(f => f.endsWith('.md'))
-    .map(f => path.join(dir, f));
+  let results = [];
+  const list = fs.readdirSync(dir);
+
+  list.forEach(file => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+
+    if (stat && stat.isDirectory()) {
+      results = results.concat(findMarkdownFiles(filePath));
+    } else if (file.endsWith('.md') || file.endsWith('.mdx')) {
+      results.push(filePath);
+    }
+  });
+
+  return results;
 }
 
 /**
@@ -158,10 +170,37 @@ function checkCodeRefExists(ref, srcDirs) {
 /**
  * Check if internal link target exists.
  */
-function checkLinkExists(href, sourceFile) {
+function checkLinkExists(href, sourceFile, docsDir) {
+  // Handle absolute paths (e.g. /docs/...) by mapping to docsDir
+  if (href.startsWith('/')) {
+    // Remove /docs/ prefix if present to get file path relative to docs content root
+    // Assuming /docs/ maps to the docsDir
+    const relativePath = href.replace(/^\/docs\//, '');
+
+    // Check .md, .mdx, and /index.md variations
+    const candidates = [
+      path.join(docsDir, relativePath + '.md'),
+      path.join(docsDir, relativePath + '.mdx'),
+      path.join(docsDir, relativePath, 'index.md'),
+      path.join(docsDir, relativePath, 'index.mdx')
+    ];
+
+    return candidates.some(p => fs.existsSync(p));
+  }
+
+  // Handle relative paths
   const sourceDir = path.dirname(sourceFile);
-  const targetPath = path.resolve(sourceDir, href.split('#')[0]);
-  return fs.existsSync(targetPath);
+  const targetBasePath = path.resolve(sourceDir, href.split('#')[0]);
+
+  const candidates = [
+    targetBasePath,
+    targetBasePath + '.md',
+    targetBasePath + '.mdx',
+    path.join(targetBasePath, 'index.md'),
+    path.join(targetBasePath, 'index.mdx')
+  ];
+
+  return candidates.some(p => fs.existsSync(p));
 }
 
 /**
@@ -236,7 +275,8 @@ function validate(docsDir, srcDirs, projectRoot) {
     const links = extractLinks(content, filepath);
     stats.linksChecked += links.length;
     for (const { href, file, line, text } of links) {
-      if (checkLinkExists(href, file)) {
+      // Pass docsDir to checkLinkExists
+      if (checkLinkExists(href, filepath, docsDir)) {
         stats.linksValid++;
       } else {
         issues.links.push({ href, file: relPath, line, text });

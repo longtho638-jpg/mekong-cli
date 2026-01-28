@@ -3899,3 +3899,36 @@ plans/reports/git-manager-260128-2118-task-fix-deploy.md
         - 👑 Owner: Expanded capabilities from existing codebase
         - 🏢 Agency: Maximized ROI from existing infrastructure
         - 🚀 Client: More automation tools available
+
+- [x] **TASK-constitution-agents** ✅ COMPLETED
+    - Description: PHASE CONSTITUTION-AGENTS - Generate Agents & Commands from Constitution Rules
+    - Source: .claude/memory/constitution.md (1669 lines, 43 ĐIỀU)
+    - New Agents (5):
+        1. health-monitor.yml (ĐIỀU 20, 43 - Resource Management)
+        2. factory-line.yml (ĐIỀU 22, 32 - Factory Line Mode)
+        3. go-live-verifier.yml (ĐIỀU 42 - GO-LIVE Loop)
+        4. binh-phap-strategist.yml (Binh Pháp Master Mapping)
+        5. fastsaas-factory.yml (ĐIỀU 41 - FastSaaS Factory)
+    - New Commands (8):
+        1. /health.md - Check Mac resources
+        2. /factory.md - Factory line mode
+        3. /go-live.md - Full verification to production
+        4. /binh-phap.md - Strategic assessment
+        5. /fastsaas.md - Build complete SaaS
+        6. /purge.md - Clear RAM/disk cache
+        7. /monitor.md - Realtime CC CLI monitoring
+        8. /delegate-agent.md - Delegate to specific agent
+    - Requirements:
+        - Create agent YAMLs in .claude/agents/
+        - Create command MDs in .claude/commands/
+        - Commands must be USER-FRIENDLY (simple syntax)
+        - Include examples in each command
+        - Register in QUANTUM_MANIFEST.md
+        - Commit all artifacts
+    - Assigned: skill-creator (agent/command generation)
+    - Status: delegated
+    - Binh Pháp: Ch.4 形勢 Hình Thế - Structure enables victory
+    - WIN-WIN-WIN:
+        - 👑 Owner: Constitution rules operationalized
+        - 🏢 Agency: Framework rules automated
+        - 🚀 Client: User-friendly commands for complex operations

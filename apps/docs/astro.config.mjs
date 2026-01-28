@@ -148,6 +148,7 @@ ${doc.body}
 function generateSectionIndex(docs) {
   const sections = {
     'getting-started': [],
+    'core-concepts': [],
     'docs': [],
     'workflows': [],
     'changelog': [],
