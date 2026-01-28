@@ -3,45 +3,12 @@
 import { PayPalScriptProvider, PayPalButtons, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
-// PayPal SDK Type Definitions
-interface CreateOrderData {
-  paymentSource: string;
-}
-
-interface CreateOrderActions {
-  order: {
-    create: (data: Record<string, unknown>) => Promise<string>;
-  };
-}
-
-interface CreateSubscriptionData {
-  orderID: string;
-}
-
+// Subscription types (not exported by @paypal/react-paypal-js)
+type CreateSubscriptionData = Record<string, unknown>;
 interface CreateSubscriptionActions {
   subscription: {
-    create: (options: { plan_id: string; custom_id?: string; [key: string]: unknown }) => Promise<string>;
+    create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
   };
-}
-
-interface OnApproveData {
-  orderID: string;
-  payerID: string;
-  paymentID?: string;
-  subscriptionID?: string | null;
-  facilitatorAccessToken: string;
-}
-
-interface OnApproveActions {
-  order?: {
-    capture: () => Promise<unknown>;
-  };
-  subscription?: {
-    get: () => Promise<unknown>;
-    activate: () => Promise<unknown>;
-  };
-  restart: () => Promise<void>;
-  redirect: (url: string) => Promise<void>;
 }
 
 interface PayPalSmartButtonProps {
@@ -80,7 +47,7 @@ export default function PayPalSmartButton({
     vault: mode === "subscription",
   };
 
-  const createOrder = async (data: CreateOrderData, actions: CreateOrderActions) => {
+  const createOrder = async (data: any, actions: any) => {
     try {
       const response = await fetch(`${apiBaseUrl}/payments/paypal/create-order`, {
         method: "POST",
@@ -107,7 +74,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (data: CreateSubscriptionData, actions: CreateSubscriptionActions) => {
+  const createSubscription = async (data: any, actions: any) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
@@ -148,7 +115,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
+  const onApprove = async (data: any, actions: any) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
@@ -190,9 +157,9 @@ export default function PayPalSmartButton({
         )}
         <PayPalButtons
           style={{ layout: "vertical", shape: "rect", label: mode === "subscription" ? "subscribe" : "pay" }}
-          createOrder={mode === "payment" ? (createOrder as any) : undefined}
-          createSubscription={mode === "subscription" ? (createSubscription as any) : undefined}
-          onApprove={onApprove as any}
+          createOrder={mode === "payment" ? createOrder : undefined}
+          createSubscription={mode === "subscription" ? createSubscription : undefined}
+          onApprove={onApprove}
           onError={(err) => {
             console.error("PayPal Error:", err);
             setError("An error occurred with PayPal.");

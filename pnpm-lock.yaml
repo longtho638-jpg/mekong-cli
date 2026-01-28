@@ -902,6 +902,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@paypal/paypal-js':
+        specifier: ^9.2.0
+        version: 9.2.0
       '@paypal/react-paypal-js':
         specifier: ^8.9.2
         version: 8.9.2(react-dom@19.2.1)(react@19.2.1)
@@ -15997,7 +16000,7 @@ packages:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3
       eslint: 9.39.2
-      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.1)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2)
+      eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.53.0)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.2)
       get-tsconfig: 4.13.0
       is-bun-module: 2.0.0
       stable-hash: 0.0.5
