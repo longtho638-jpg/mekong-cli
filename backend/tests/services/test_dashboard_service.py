@@ -1,18 +1,20 @@
 """
 Tests for Dashboard Service
 """
-import pytest
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 from uuid import UUID, uuid4
-from datetime import datetime
 
-from backend.services.dashboard_service import DashboardService
+import pytest
+
 from backend.models.dashboard import (
     DashboardConfigCreate,
     DashboardConfigUpdate,
     WidgetConfig,
-    WidgetPosition
+    WidgetPosition,
 )
+from backend.services.dashboard_service import DashboardService
+
 
 @pytest.fixture
 def mock_db_session():

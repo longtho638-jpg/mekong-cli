@@ -1,10 +1,13 @@
 """
 Tests for Analytics Service
 """
-from unittest.mock import MagicMock, patch
-import pytest
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+
+import pytest
+
 from backend.services.analytics_service import AnalyticsService
+
 
 @pytest.fixture
 def mock_db():

@@ -64,6 +64,8 @@ COPY --from=builder /install /usr/local
 # Copy application code
 # Assumes build context is project root
 COPY --chown=agencyos:agencyos backend /app/backend
+COPY --chown=agencyos:agencyos core /app/core
+COPY --chown=agencyos:agencyos antigravity /app/antigravity
 COPY --chown=agencyos:agencyos .env.example /app/.env.example
 
 # Set proper permissions
