@@ -1,101 +1,64 @@
 ---
-description: "🏯 Binh Pháp Auto-Dispatch - Routes tasks to optimal execution system"
+description: 🏯 BINH-PHAP - Strategic assessment using Sun Tzu
 ---
 
-# /binh-phap - Unified Orchestration Dispatcher
+# /binh-phap - Strategic Analysis
 
-## USAGE
+> **"Binh Pháp Sun Tử"** - Art of War for software
 
-```
-/binh-phap [task description]
-```
-
-## AUTO-ROUTING LOGIC
-
-### 1. ANALYZE REQUEST
-
-- Count required agents
-- Check if consensus needed
-- Measure complexity (LOC, components, dependencies)
-
-### 2. ROUTE TO OPTIMAL SYSTEM
-
-| Complexity                | System            | Command                   |
-| ------------------------- | ----------------- | ------------------------- |
-| **Simple** (1 agent)      | CC CLI            | `/delegate "[task]"`      |
-| **Moderate** (2-3 agents) | CC CLI Parallel   | Multiple `/delegate`      |
-| **Complex** (4+ agents)   | Claude Flow Swarm | `claude-flow swarm start` |
-| **Tracking**              | CLEO              | `cleo add "[task]"`       |
-
-### 3. EXECUTE WITH OPTIMAL STRATEGY
-
-**For Product Building:**
+## Usage
 
 ```bash
-/delegate "Create [Product] ($XX) - [features]"
-# Fast, sequential, stable
+/binh-phap [action] [options]
 ```
 
-**For Complex Coordination:**
+## Actions
+
+| Action | Description | Example |
+|--------|-------------|---------|
+| `assess` | Analyze task strategically | `/binh-phap assess --task "Launch product"` |
+| `map` | Map to 13 chapters | `/binh-phap map --task "Fix bug"` |
+| `win3` | WIN-WIN-WIN check | `/binh-phap win3 --decision "Add feature"` |
+| `dispatch` | (Legacy) Route task | `/binh-phap dispatch "Build app"` |
+
+## 13 Chapters
+
+| Chapter | Vietnamese | Use Case |
+|---------|-----------|----------|
+| Ch.1 | 始計 Thỉ Kế | Planning |
+| Ch.2 | 作戰 Tác Chiến | Execution |
+| Ch.3 | 謀攻 Mưu Công | Strategy |
+| Ch.4 | 形勢 Hình Thế | Positioning |
+| Ch.5 | 勢 Thế | Momentum |
+| Ch.6 | 虛實 Hư Thực | Weakness & Strength |
+| Ch.7 | 軍爭 Quân Tranh | Maneuvering |
+| Ch.8 | 九變 Cửu Biến | Variations |
+| Ch.9 | 行軍 Hành Quân | Marching |
+| Ch.10 | 地形 Địa Hình | Terrain |
+| Ch.11 | 九地 Cửu Địa | Nine Situations |
+| Ch.12 | 火攻 Hỏa Công | Attack by Fire |
+| Ch.13 | 用間 Dụng Gián | Intelligence |
+
+## Execution Protocol
+
+1. **Agent**: Delegates to `binh-phap-strategist`.
+2. **Analyze**: Apply Ngũ Sự (5 factors).
+3. **Recommend**: Tactical approach.
+
+## Examples
 
 ```bash
-claude-flow swarm start --objective "[goal]" --strategy development
-# Parallel, multi-agent, consensus
+# Strategic assessment
+/binh-phap assess --task "Enter new market"
+
+# Map to chapter
+/binh-phap map --task "Optimize performance"
+
+# WIN-WIN-WIN check
+/binh-phap win3 --decision "Raise pricing"
 ```
 
-**For Task Tracking:**
-
-```bash
-cleo add "[task]" --priority high
-cleo list --human
-```
-
-## EXAMPLES
-
-### Build Single Product:
-
-```
-/binh-phap Create Image Optimization Kit ($27)
-→ Routes to: /delegate (CC CLI Factory)
-```
-
-### Build Entire System:
-
-```
-/binh-phap Build full e-commerce platform with 15 microservices
-→ Routes to: claude-flow swarm (15-agent mesh)
-```
-
-### Research Task:
-
-```
-/binh-phap Research competitors and document findings
-→ Routes to: CLEO + Web Search + Memory
-```
-
-## DECISION MATRIX
-
-```
-                    ┌─────────────────────────────────────┐
-                    │          TASK COMPLEXITY            │
-                    ├─────────┬───────────┬───────────────┤
-                    │  LOW    │  MEDIUM   │    HIGH       │
-          ┌─────────┼─────────┼───────────┼───────────────┤
-URGENCY   │  HIGH   │ CC CLI  │  CC CLI   │ Claude Flow   │
-          │         │/delegate│  Parallel │   Swarm       │
-          ├─────────┼─────────┼───────────┼───────────────┤
-          │  LOW    │  CLEO   │ CC CLI    │ Claude Flow   │
-          │         │  Queue  │ /delegate │   Swarm       │
-          └─────────┴─────────┴───────────┴───────────────┘
-```
-
-## CURRENT STATE
-
-- CC CLI Factory: ✅ Active (2 agents building)
-- Claude Flow: ✅ Daemon running, Swarm initialized
-- CLEO: ✅ v0.68.0 active
-- Auto-Update: ✅ 10AM daily cron
-
----
-
-**Binh Pháp v7.0 - ĐIỀU 14: Unified Orchestration**
+## Win-Win-Win
+- **Owner**: Strategic clarity.
+- **Agency**: Aligned decisions.
+- **Client**: Optimal outcomes.
