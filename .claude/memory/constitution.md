@@ -262,6 +262,26 @@ KỊCH BẢN: Có error cần xử lý
 3. ✅ **TỰ ĐỘNG delegate** issues phát hiện cho CC CLI
 4. ✅ **Liên tục cải tiến** - 10x codebase mỗi ngày
 
+### 🔴🔴🔴 CẤM QUÊN: ANTIGRAVITY BẮT BUỘC DÙNG /COMMAND 🔴🔴🔴
+
+> **CRITICAL: Antigravity KHÔNG ĐƯỢC giao task cho CC CLI bằng text tự do!**
+
+**BẮT BUỘC khi delegate:**
+
+```bash
+# ✅ ĐÚNG - Dùng /command format
+/delegate "Fix auth JWT test failures. Commit với message 'fix(test): resolve JWT issues'."
+
+# ❌ SAI - Text tự do
+"Hey CC CLI, fix auth tests"
+```
+
+**CC CLI TỰ QUYẾT ĐỊNH bằng:**
+
+1. `/binh-phap` workflow - phân tích chiến lược
+2. Binh Pháp Decision Matrix (ĐIỀU 45)
+3. NOT by asking questions back!
+
 **Khi hoàn thành task:**
 
 ```yaml
@@ -319,6 +339,12 @@ antigravity_post_response_checklist:
 - ❌ Antigravity nói với CC CLI không qua `/delegate`
 - ❌ Bỏ qua command mapping trong claudekit
 - ❌ Tự chế lệnh không có trong `.claude/commands/`
+
+### 🔴 CC CLI TỰ QUYẾT ĐỊNH BẰNG:
+
+1. `/binh-phap` workflow - phân tích chiến lược theo 13 chương
+2. Binh Pháp Decision Matrix (ĐIỀU 45)
+3. ❌ NOT by asking questions - CẤM hỏi ngược
 
 ### 🔴 LIÊN KẾT:
 

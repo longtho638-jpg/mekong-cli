@@ -218,6 +218,9 @@ Both CLAUDE.md and GEMINI.md share:
 
 **FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 45
 
+> 🔴🔴🔴 **CẤM QUÊN:** Antigravity BẮT BUỘC dùng `/command` khi delegate cho CC CLI!
+> CC CLI TỰ QUYẾT ĐỊNH bằng `/binh-phap` workflow - CẤM hỏi ngược!
+
 ---
 
 ## 🚨 ĐIỀU 46: GIAO TIẾP BẰNG /COMMAND - CẤM GIAO TIẾP KHÔNG LỆNH 🚨
@@ -233,3 +236,5 @@ Both CLAUDE.md and GEMINI.md share:
 | `/ship`     | Commit + push + deploy     |
 
 **FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 46
+
+> 🔴 CC CLI TỰ QUYẾT ĐỊNH bằng `/binh-phap` - NOT by asking questions!
