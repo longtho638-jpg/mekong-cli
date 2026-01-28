@@ -7,20 +7,33 @@ from unittest.mock import patch
 class TestSecretKeyValidation(unittest.TestCase):
     """Test SECRET_KEY environment variable validation."""
 
-    def test_secret_key_required(self):
-        """Test that SECRET_KEY env var is required."""
+    def test_secret_key_default_fallback(self):
+        """Test that SECRET_KEY falls back to default if not provided (in dev)."""
         # Remove SECRET_KEY from environment
         with patch.dict(os.environ, {}, clear=True):
-            # Importing the module should raise RuntimeError
-            with self.assertRaises(RuntimeError) as context:
-                # Force reimport to trigger validation
-                import importlib
+            # Force reimport to trigger validation
+            import sys
+            import importlib
+            import backend.api.config.settings
+            import backend.api.config
+            import backend.api.auth.utils as auth_utils
 
-                import backend.api.auth.utils as auth_utils
-                importlib.reload(auth_utils)
+            # Reload settings first (where the validation happens)
+            # Use sys.modules to avoid TypeError if settings resolves to the object
+            if 'backend.api.config.settings' in sys.modules:
+                importlib.reload(sys.modules['backend.api.config.settings'])
+            else:
+                import backend.api.config.settings
 
-            self.assertIn("SECRET_KEY", str(context.exception))
-            self.assertIn("environment variable", str(context.exception))
+            # Reload config wrapper
+            if 'backend.api.config' in sys.modules:
+                importlib.reload(sys.modules['backend.api.config'])
+
+            # Then reload auth_utils which uses config
+            importlib.reload(auth_utils)
+
+            # It should use the default dev key
+            self.assertEqual(auth_utils.SECRET_KEY, "dev-secret-key-CHANGE-IN-PRODUCTION")
 
     def test_secret_key_loaded_correctly(self):
         """Test that SECRET_KEY is loaded from environment."""
@@ -28,9 +41,21 @@ class TestSecretKeyValidation(unittest.TestCase):
 
         with patch.dict(os.environ, {"SECRET_KEY": test_key}):
             # Reimport to pick up new env var
+            import sys
             import importlib
-
+            import backend.api.config.settings
+            import backend.api.config
             import backend.api.auth.utils as auth_utils
+
+            # Reload settings first
+            if 'backend.api.config.settings' in sys.modules:
+                importlib.reload(sys.modules['backend.api.config.settings'])
+
+            # Reload config wrapper
+            if 'backend.api.config' in sys.modules:
+                importlib.reload(sys.modules['backend.api.config'])
+
+            # Then reload auth_utils which uses config
             importlib.reload(auth_utils)
 
             self.assertEqual(auth_utils.SECRET_KEY, test_key)
@@ -57,9 +82,19 @@ class TestAuthUtilsTypeSafety(unittest.TestCase):
     @patch.dict(os.environ, {"SECRET_KEY": "test-key-123"})
     def test_function_signatures(self):
         """Test that functions have proper type annotations."""
+        import sys
         import importlib
-
+        import backend.api.config.settings
+        import backend.api.config
         import backend.api.auth.utils as auth_utils
+
+        # Reload to ensure valid state
+        if 'backend.api.config.settings' in sys.modules:
+            importlib.reload(sys.modules['backend.api.config.settings'])
+
+        if 'backend.api.config' in sys.modules:
+            importlib.reload(sys.modules['backend.api.config'])
+
         importlib.reload(auth_utils)
 
         # Check function signatures

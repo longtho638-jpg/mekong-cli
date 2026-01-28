@@ -38,3 +38,10 @@ rate_limits:
       enabled: true
       limit: 20
       window_seconds: 60
+
+    /chatbot/*:
+      enabled: true
+      limit: 10
+      window_seconds: 60
+      algorithm: token_bucket
+

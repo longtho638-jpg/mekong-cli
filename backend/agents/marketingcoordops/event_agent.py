@@ -6,7 +6,7 @@ Please import from backend.agents.marketingcoordops.event_logic instead.
 """
 import warnings
 
-from .event_logic import EventAgent, EventStatus, EventType
+from .event_logic import Attendee, Event, EventAgent, EventStatus, EventType
 
 # Issue a deprecation warning
 warnings.warn(

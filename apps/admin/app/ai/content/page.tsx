@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { MD3Typography, MD3Button, MD3Card, MD3TextField, MD3Select } from '../../../components/md3';
 import { FileText, Loader2, Copy, Check } from 'lucide-react';
+import { api } from '../../../lib/api';
 
 export default function ContentGenerationPage() {
   const [activeTab, setActiveTab] = useState<'blog' | 'social' | 'seo'>('blog');
@@ -31,15 +32,11 @@ export default function ContentGenerationPage() {
   const generateBlog = async () => {
     setLoading(true);
     try {
-        const res = await fetch('http://localhost:8000/api/llm/content/blog', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer dev-token'},
-            body: JSON.stringify({ topic, keywords, tone })
-        });
-        const data = await res.json();
-        setResult(data.result);
+        const res = await api.post('/llm/content/blog', { topic, keywords, tone });
+        setResult(res.data.result);
     } catch (e) {
         setResult('Error generating content');
+        console.error(e);
     } finally {
         setLoading(false);
     }
@@ -48,15 +45,11 @@ export default function ContentGenerationPage() {
   const generateSocial = async () => {
     setLoading(true);
     try {
-        const res = await fetch('http://localhost:8000/api/llm/content/social', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer dev-token'},
-            body: JSON.stringify({ description: socialDesc, platform })
-        });
-        const data = await res.json();
-        setResult(data.result);
+        const res = await api.post('/llm/content/social', { description: socialDesc, platform });
+        setResult(res.data.result);
     } catch (e) {
         setResult('Error generating content');
+        console.error(e);
     } finally {
         setLoading(false);
     }
@@ -65,15 +58,11 @@ export default function ContentGenerationPage() {
   const generateSEO = async () => {
     setLoading(true);
     try {
-        const res = await fetch('http://localhost:8000/api/llm/content/seo', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer dev-token'},
-            body: JSON.stringify({ content: seoContent })
-        });
-        const data = await res.json();
-        setResult(data.result);
+        const res = await api.post('/llm/content/seo', { content: seoContent });
+        setResult(res.data.result);
     } catch (e) {
         setResult('Error generating content');
+        console.error(e);
     } finally {
         setLoading(false);
     }

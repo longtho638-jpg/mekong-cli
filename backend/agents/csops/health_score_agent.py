@@ -6,7 +6,7 @@ Please import from backend.agents.csops.logic instead.
 """
 import warnings
 
-from .logic import HealthScoreAgent, RiskLevel
+from .logic import HealthScoreAgent, RiskLevel, UserHealth
 
 # Issue a deprecation warning
 warnings.warn(

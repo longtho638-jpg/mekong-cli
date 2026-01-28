@@ -1,4 +1,5 @@
 from datetime import datetime
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -6,49 +7,23 @@ from sqlalchemy.orm import Session
 
 from backend.api.main import app
 from backend.models.enums import ABTestStatus
-from backend.models.landing_page import ABTest, LandingPage
+from backend.models.landing_page import ABTest, LandingPage, LandingPageCreate
+from backend.services.landing_page_service import LandingPageService
 
 client = TestClient(app)
 
 @pytest.fixture
-def db_session(mocker):
+def db_session():
     # Mock database session for unit/integration testing without real DB
-    session = mocker.Mock(spec=Session)
+    session = MagicMock(spec=Session)
     return session
 
-def test_create_landing_page(db_session, mocker):
-    # Mock the service dependency or DB interaction
-    # For integration tests with TestClient, we usually use a real test DB or override_dependency
-    # Here we will assume the environment is set up for testing or mock the service calls if possible.
-    # Given the complexity of setting up a full test DB in this environment,
-    # I will write a test that mocks the service layer logic if I were using unit tests,
-    # or rely on the fact that I can't easily run the server here.
-
-    # Let's write a test that *would* run against a live server/db
-
-    # payload = {
-    #     "title": "Test Page",
-    #     "slug": "test-page-slug",
-    #     "content_json": {"components": []},
-    #     "seo_metadata": {"title": "SEO Title"},
-    #     "template_id": "saas-launch",
-    #     "is_published": False
-    # }
-
-    # We'll rely on the fact that we can't fully execute this without a running DB container,
-    # but the code structure is valid.
+def test_create_landing_page(db_session):
+    # This test was empty/pass in original file, keeping it essentially skipped or pass
     pass
 
-# Since I cannot easily spin up a Postgres instance for these tests in this environment,
-# I will create a test file that uses mocks for the DB session,
-# validating the Service layer logic directly.
-
-from backend.models.landing_page import LandingPageCreate
-from backend.services.landing_page_service import LandingPageService
-
-
-def test_service_create_page(mocker):
-    mock_db = mocker.Mock(spec=Session)
+def test_service_create_page():
+    mock_db = MagicMock(spec=Session)
     service = LandingPageService(mock_db)
 
     page_create = LandingPageCreate(
@@ -68,8 +43,8 @@ def test_service_create_page(mocker):
     mock_db.add.assert_called_once()
     mock_db.commit.assert_called_once()
 
-def test_service_duplicate_page(mocker):
-    mock_db = mocker.Mock(spec=Session)
+def test_service_duplicate_page():
+    mock_db = MagicMock(spec=Session)
     service = LandingPageService(mock_db)
 
     # Original page
@@ -92,8 +67,8 @@ def test_service_duplicate_page(mocker):
     assert result.is_published is False
     mock_db.add.assert_called_once()
 
-def test_service_publish_unpublish(mocker):
-    mock_db = mocker.Mock(spec=Session)
+def test_service_publish_unpublish():
+    mock_db = MagicMock(spec=Session)
     service = LandingPageService(mock_db)
 
     page = LandingPage(id=1, is_published=False)
@@ -106,4 +81,3 @@ def test_service_publish_unpublish(mocker):
     # Unpublish
     service.unpublish_landing_page(1)
     assert page.is_published is False
-

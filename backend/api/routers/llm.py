@@ -1,12 +1,15 @@
-from typing import AsyncGenerator, Dict, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 from backend.api.auth.dependencies import get_current_active_superuser
+from backend.api.deps import get_db
 from backend.services.llm.content import ContentService
 from backend.services.llm.service import LLMService
+from backend.services.rag.service import RAGService
 
 router = APIRouter(prefix="/llm", tags=["AI/LLM"])
 
@@ -43,6 +46,14 @@ class SocialRequest(BaseModel):
 
 class SEORequest(BaseModel):
     content: str
+
+class RAGIngestRequest(BaseModel):
+    documents: List[str]
+    metadatas: Optional[List[Dict[str, Any]]] = None
+
+class RAGQueryRequest(BaseModel):
+    question: str
+    max_results: Optional[int] = 3
 
 # --- Endpoints ---
 
@@ -110,13 +121,17 @@ async def stream_text(request: GenerateRequest):
     return StreamingResponse(event_generator(), media_type="text/plain")
 
 @router.post("/content/blog", dependencies=[Depends(get_current_active_superuser)])
-async def generate_blog_post(request: BlogPostRequest):
+async def generate_blog_post(
+    request: BlogPostRequest,
+    db: Session = Depends(get_db)
+):
     """
     Generate a blog post.
     """
     try:
         service = ContentService()
         result = await service.generate_blog_post(
+            db=db,
             topic=request.topic,
             keywords=request.keywords,
             tone=request.tone or "professional",
@@ -127,13 +142,17 @@ async def generate_blog_post(request: BlogPostRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/content/social", dependencies=[Depends(get_current_active_superuser)])
-async def generate_social_caption(request: SocialRequest):
+async def generate_social_caption(
+    request: SocialRequest,
+    db: Session = Depends(get_db)
+):
     """
     Generate a social media caption.
     """
     try:
         service = ContentService()
         result = await service.generate_social_media_caption(
+            db=db,
             content_description=request.description,
             platform=request.platform or "linkedin"
         )
@@ -142,13 +161,49 @@ async def generate_social_caption(request: SocialRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/content/seo", dependencies=[Depends(get_current_active_superuser)])
-async def optimize_seo(request: SEORequest):
+async def optimize_seo(
+    request: SEORequest,
+    db: Session = Depends(get_db)
+):
     """
     Optimize content for SEO.
     """
     try:
         service = ContentService()
-        result = await service.optimize_seo(content=request.content)
+        result = await service.optimize_seo(
+            db=db,
+            content=request.content
+        )
         return {"result": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/rag/ingest", dependencies=[Depends(get_current_active_superuser)])
+async def rag_ingest(request: RAGIngestRequest):
+    """
+    Ingest documents into the RAG vector store.
+    """
+    try:
+        service = RAGService()
+        await service.ingest_documents(
+            documents=request.documents,
+            metadatas=request.metadatas
+        )
+        return {"status": "success", "message": f"Ingested {len(request.documents)} documents"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/rag/query", dependencies=[Depends(get_current_active_superuser)])
+async def rag_query(request: RAGQueryRequest):
+    """
+    Query the RAG system.
+    """
+    try:
+        service = RAGService()
+        answer = await service.query(
+            question=request.question,
+            max_results=request.max_results or 3
+        )
+        return {"answer": answer}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -4,7 +4,7 @@ Recruitment + Employee
 """
 
 from .employee_agent import Department, Employee, EmployeeAgent, EmployeeStatus
-from .recruitment_agent import Candidate, CandidateStage, Job, JobStatus, RecruitmentAgent
+from .logic import Candidate, CandidateStage, Job, JobStatus, RecruitmentAgent
 
 __all__ = [
     # Recruitment

@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MD3Typography, MD3Button, MD3Card, MD3TextField } from '../../../components/md3';
 import { Send, User, Bot, Loader2 } from 'lucide-react';
+import { api } from '../../../lib/api';
 
 interface Message {
   role: 'user' | 'model';
@@ -32,32 +33,18 @@ export default function AIChatPage() {
     setLoading(true);
 
     try {
-      // Assuming a proxy or middleware handles the actual API URL mapping in Next.js
-      // If running standalone, this might need the full backend URL or a proxy config.
-      // For Admin dashboard usually served via Next.js which proxies /api calls.
-      const response = await fetch('http://localhost:8000/api/llm/chat', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // Auth headers would be injected by an interceptor or session provider in a real app
-            // For now we assume the user has a valid session cookie or token is handled
-            'Authorization': 'Bearer dev-token' // Placeholder if needed, or rely on cookie
-        },
-        body: JSON.stringify({
-            messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
-            provider: 'gemini'
-        })
+      const response = await api.post('/llm/chat', {
+          messages: [...messages, userMsg].map(m => ({ role: m.role, content: m.content })),
+          provider: 'gemini'
       });
 
-      if (!response.ok) throw new Error('Failed to send message');
-
-      const data = await response.json();
+      const data = response.data;
       const botMsg: Message = { role: 'model', content: data.result };
       setMessages(prev => [...prev, botMsg]);
 
     } catch (error) {
         console.error(error);
-        setMessages(prev => [...prev, { role: 'model', content: 'Error: Could not get response from AI. Ensure backend is running and keys are configured.' }]);
+        setMessages(prev => [...prev, { role: 'model', content: 'Error: Could not get response from AI. Ensure backend is running.' }]);
     } finally {
         setLoading(false);
     }

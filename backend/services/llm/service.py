@@ -2,6 +2,7 @@ from typing import AsyncGenerator, Dict, List, Optional
 
 from backend.api.config.settings import settings
 from backend.services.llm.provider import GeminiProvider, LLMProvider, OpenAIProvider
+from backend.services.llm.usage import llm_usage_tracker
 
 
 class LLMService:
@@ -58,13 +59,23 @@ class LLMService:
         """
         llm = self._get_provider(provider)
         target_model = model or settings.default_llm_model
-        return await llm.generate_text(
+        response = await llm.generate_text(
             prompt=prompt,
             model=target_model,
             max_tokens=max_tokens,
             temperature=temperature,
             system_instruction=system_instruction
         )
+
+        # Track usage
+        await llm_usage_tracker.track_usage(
+            provider=provider or settings.default_llm_provider,
+            model=target_model,
+            usage=response.get('usage'),
+            request_type="generate_text"
+        )
+
+        return response['content']
 
     async def generate_stream(
         self,
@@ -102,9 +113,19 @@ class LLMService:
         """
         llm = self._get_provider(provider)
         target_model = model or settings.default_llm_model
-        return await llm.chat(
+        response = await llm.chat(
             messages=messages,
             model=target_model,
             max_tokens=max_tokens,
             temperature=temperature
         )
+
+        # Track usage
+        await llm_usage_tracker.track_usage(
+            provider=provider or settings.default_llm_provider,
+            model=target_model,
+            usage=response.get('usage'),
+            request_type="chat"
+        )
+
+        return response['content']

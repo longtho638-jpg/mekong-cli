@@ -6,7 +6,7 @@ Please import from backend.agents.finops.logic instead.
 """
 import warnings
 
-from .logic import AlertLevel, BudgetManagerAgent
+from .logic import Alert, AlertLevel, Budget, BudgetManagerAgent
 
 # Issue a deprecation warning
 warnings.warn(

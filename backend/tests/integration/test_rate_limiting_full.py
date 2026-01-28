@@ -58,8 +58,12 @@ def mock_ip_blocker():
 def client(mock_rate_limiter_service, mock_rate_limit_monitor, mock_ip_blocker):
     app = FastAPI()
 
-    # Patch the config load to return our mock config
-    with patch('backend.middleware.rate_limiter.RateLimitMiddleware._load_config', return_value=MOCK_CONFIG['rate_limits']):
+    # Patch the config load to return our mock config AND enable rate limiting in settings
+    from backend.api.config.settings import settings
+
+    with patch('backend.middleware.rate_limiter.RateLimitMiddleware._load_config', return_value=MOCK_CONFIG['rate_limits']), \
+         patch.object(settings, 'enable_rate_limiting', True):
+
         app.add_middleware(RateLimitMiddleware)
 
         @app.get("/api/test")

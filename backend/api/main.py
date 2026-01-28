@@ -42,6 +42,9 @@ from backend.api.routers import (
     binh_phap as binh_phap_router,
 )
 from backend.api.routers import (
+    chatbot as chatbot_router,  # Added
+)
+from backend.api.routers import (
     cdn as cdn_router,  # CDN Integration
 )
 from backend.api.routers import (
@@ -93,6 +96,9 @@ from backend.api.routers import (
 )
 from backend.api.routers import (
     push_subscriptions as push_subscriptions_router,
+)
+from backend.api.routers import (
+    prompts as prompts_router, # Added
 )
 from backend.api.routers import (
     rate_limits as rate_limits_router,
@@ -197,8 +203,10 @@ app.include_router(notifications_router.router)
 app.include_router(notification_preferences_router.router)
 app.include_router(push_subscriptions_router.router)
 app.include_router(notification_templates_router.router)
+app.include_router(prompts_router.router)
 app.include_router(rate_limits_router.router)
 app.include_router(binh_phap_router.router)
+app.include_router(chatbot_router.router)
 app.include_router(executive_router.router)
 
 # Payment Integration

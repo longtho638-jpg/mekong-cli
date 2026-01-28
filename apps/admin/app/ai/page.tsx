@@ -52,22 +52,24 @@ export default function AIHubPage() {
             </MD3Card>
         </Link>
 
-        {/* Future: Prompt Management */}
-        <div className="block opacity-75">
-            <MD3Card className="p-6 h-full border-dashed border-2">
+        <Link href="/ai/prompts" className="block">
+            <MD3Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full">
                  <div className="flex flex-col h-full space-y-4">
                     <div className="p-3 bg-gray-100 w-fit rounded-lg">
-                        <Settings className="w-6 h-6 text-gray-500" />
+                        <Settings className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
                         <MD3Typography variant="headline-small" className="mb-2">Prompt Library</MD3Typography>
                         <MD3Typography variant="body-medium" className="text-gray-500">
-                            Manage system prompts and fine-tuning templates. (Coming Soon)
+                            Manage system prompts and fine-tuning templates.
                         </MD3Typography>
+                    </div>
+                    <div className="mt-auto pt-4">
+                         <MD3Button variant="text" color="secondary" endIcon={<span className="ml-1">→</span>}>Manage Prompts</MD3Button>
                     </div>
                 </div>
             </MD3Card>
-        </div>
+        </Link>
       </div>
     </div>
   );

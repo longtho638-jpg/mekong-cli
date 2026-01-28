@@ -13,7 +13,7 @@ from backend.api.utils.endpoint_categorization import (
     should_skip_rate_limit,
 )
 
-from ..multitenant import get_current_tenant
+from backend.api.middleware.multitenant import get_current_tenant
 
 logger = logging.getLogger(__name__)
 

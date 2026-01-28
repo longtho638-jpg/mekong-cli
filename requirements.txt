@@ -13,7 +13,7 @@ questionary>=2.0.0
 
 # HTTP & API
 requests>=2.32.3
-httpx>=0.27.0
+httpx>=0.27.0,<0.28.0
 urllib3>=2.6.0
 aiohttp>=3.9.0
 
@@ -94,3 +94,6 @@ meilisearch>=0.28.0
 jinja2>=3.1.0
 jsonpath-ng>=1.6.0
 croniter>=2.0.0
+openai>=1.0.0
+loguru>=0.7.0
+chromadb>=0.4.0

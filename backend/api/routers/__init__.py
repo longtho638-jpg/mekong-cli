@@ -14,6 +14,7 @@ from . import (
     backup,
     binh_phap,
     campaigns,
+    chatbot,  # Added
     commands,
     crm,
     dlq,  # Added
@@ -26,6 +27,7 @@ from . import (
     jobs,  # Added
     kanban,
     license_production,
+    llm,  # Added
     monitor,
     notification_preferences,
     notification_templates,
@@ -33,6 +35,7 @@ from . import (
     ops,
     payments,
     paypal_webhooks,
+    prompts,  # Added
     push_subscriptions,
     rate_limits,
     router,
@@ -54,6 +57,7 @@ __all__ = [
     "analytics",
     "analytics_realtime", # Added
     "campaigns",
+    "chatbot", # Added
     "commands",
     "crm",
     "franchise",
@@ -69,6 +73,7 @@ __all__ = [
     "vibes",
     "vietnam",
     "license_production",
+    "llm",
     "monitor",
     "workflow",
     "agents_creator",
@@ -78,6 +83,7 @@ __all__ = [
     "paypal_webhooks",
     "stripe_webhooks",
     "gumroad_webhooks",
+    "prompts",  # Added
     "kanban",
     "ops",
     "webhook_health", # Added

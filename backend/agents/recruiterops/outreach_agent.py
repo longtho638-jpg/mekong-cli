@@ -6,7 +6,7 @@ Please import from backend.agents.recruiterops.logic instead.
 """
 import warnings
 
-from .logic import OutreachAgent, OutreachStatus, SequenceStep
+from .logic import OutreachAgent, OutreachCampaign, OutreachStatus, SequenceStep
 
 # Issue a deprecation warning
 warnings.warn(

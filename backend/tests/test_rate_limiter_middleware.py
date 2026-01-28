@@ -13,9 +13,13 @@ def mock_app():
 @pytest.fixture
 def middleware(mock_app):
     # We patch the module where RateLimitMiddleware is defined to intercept imports
+    # AND we must patch settings.enable_rate_limiting to True, otherwise dispatch returns early
+    from backend.api.config.settings import settings
+
     with patch('backend.middleware.rate_limiter.RateLimiterService') as MockService, \
          patch('backend.middleware.rate_limiter.ip_blocker') as mock_ip_blocker, \
-         patch('backend.middleware.rate_limiter.rate_limit_monitor') as mock_monitor:
+         patch('backend.middleware.rate_limiter.rate_limit_monitor') as mock_monitor, \
+         patch.object(settings, 'enable_rate_limiting', True):
 
         # Ensure mocks are AsyncMock where appropriate
         mock_ip_blocker.is_blocked = AsyncMock(return_value=False)

@@ -6,7 +6,7 @@ Please import from backend.agents.adminops.task_logic instead.
 """
 import warnings
 
-from .task_logic import TaskManagerAgent, TaskPriority, TaskStatus
+from .task_logic import Project, Task, TaskManagerAgent, TaskPriority, TaskStatus
 
 # Issue a deprecation warning
 warnings.warn(

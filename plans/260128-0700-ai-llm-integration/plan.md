@@ -25,10 +25,12 @@
     - `chat/page.tsx`: Chat interface.
 
 ## Implementation Steps
-1.  [ ] **Phase 1: Backend Services** - `LLMService`, `ProviderFactory`.
-2.  [ ] **Phase 2: API Layer** - Router with streaming support.
-3.  [ ] **Phase 3: Frontend UI** - Admin Dashboard for AI.
-4.  [ ] **Phase 4: Testing & Documentation**.
+1.  [x] **Phase 1: Backend Services** - `LLMService`, `ProviderFactory`.
+2.  [x] **Phase 2: API Layer** - Router with streaming support.
+3.  [x] **Phase 3: Frontend UI** - Admin Dashboard for AI.
+    - [x] Prompt Management (DB + UI)
+    - [x] RAG UI Integration
+4.  [x] **Phase 4: Testing & Documentation**.
 
 ## Dependencies
 - `google-genai` (already in env)

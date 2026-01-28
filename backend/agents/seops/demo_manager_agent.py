@@ -6,7 +6,7 @@ Please import from backend.agents.seops.logic instead.
 """
 import warnings
 
-from .logic import DemoManagerAgent, DemoOutcome, DemoType
+from .logic import Demo, DemoManagerAgent, DemoOutcome, DemoType
 
 # Issue a deprecation warning
 warnings.warn(

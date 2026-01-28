@@ -9,7 +9,7 @@ import time
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
-from cache_service import CacheService, InMemoryCache, api_cache, cached, session_cache, user_cache
+from backend.services.cache_service import CacheService, InMemoryCache, api_cache, cached, session_cache, user_cache
 
 
 class TestInMemoryCache:

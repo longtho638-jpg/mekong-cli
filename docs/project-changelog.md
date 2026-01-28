@@ -4,6 +4,16 @@
 
 ---
 
+## [5.8.0] - 2026-01-28
+
+### AI/LLM Integration & Prompt Management (IPO-058)
+- **Dynamic Prompt Engine**: Implemented `PromptService` and database-backed prompt management, allowing runtime updates to system prompts without code deployment.
+- **RAG Architecture**: Established `RAGService` with document ingestion (`/rag/ingest`) and querying (`/rag/query`) capabilities using vector embeddings.
+- **Content Generation API**: Unified `ContentService` for generating Blog Posts, Social Media Captions, and SEO optimization with swappable LLM providers (Gemini/OpenAI).
+- **Prompt Management UI**: Launched a comprehensive Admin Dashboard (`/ai/prompts`) for creating, editing, and testing system prompts.
+- **Resilient Fallback**: Implemented smart fallback logic where the system defaults to hardcoded `PromptTemplates` if database prompts are missing or the DB is unreachable.
+- **Unified Chat Interface**: Refactored the AI Chat UI to use the centralized API client and support the new dynamic prompt backend.
+
 ## [5.7.0] - 2026-01-28
 
 ### Executive Dashboard & Reporting (IPO-059)

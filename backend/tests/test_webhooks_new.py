@@ -9,7 +9,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 from backend.api.routers.webhooks.models import DeliveryStatus, WebhookProvider
-from backend.models.webhooks import DeliveryStatus as DeliveryStatusModel
 from backend.models.webhooks import WebhookConfig, WebhookDelivery
 from backend.services.webhook_queue import WebhookQueueService
 from backend.services.webhook_sender import WebhookSenderService

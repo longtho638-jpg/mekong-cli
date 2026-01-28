@@ -24,11 +24,40 @@ Router at `backend/api/routers/llm.py` exposes endpoints:
 - `POST /api/v1/llm/generate`: Simple text generation.
 - `POST /api/v1/llm/chat`: Chat with history.
 - `POST /api/v1/llm/stream`: Server-Sent Events (SSE) stream.
-- `POST /api/v1/llm/content/blog`: Generate blog posts.
-- `POST /api/v1/llm/content/social`: Generate social captions.
-- `POST /api/v1/llm/content/seo`: Optimize content.
+- `POST /api/v1/llm/content/blog`: Generate blog posts (supports dynamic prompts).
+- `POST /api/v1/llm/content/social`: Generate social captions (supports dynamic prompts).
+- `POST /api/v1/llm/content/seo`: Optimize content (supports dynamic prompts).
+- `POST /api/v1/llm/rag/ingest`: Ingest documents for RAG.
+- `POST /api/v1/llm/rag/query`: Query the RAG system.
+
+Router at `backend/api/routers/prompts.py` exposes endpoints for managing prompts:
+- `GET /api/v1/prompts/`: List all prompts.
+- `POST /api/v1/prompts/`: Create a new prompt.
+- `GET /api/v1/prompts/{slug}`: Get a specific prompt.
+- `PUT /api/v1/prompts/{prompt_id}`: Update a prompt.
+- `DELETE /api/v1/prompts/{prompt_id}`: Delete a prompt.
+
+### 4. RAG Architecture (Retrieval-Augmented Generation)
+Located at `backend/services/rag/service.py`:
+- **Embeddings**: Uses `GeminiEmbeddings` or `OpenAIEmbeddings` to vectorize text.
+- **Vector Store**: Currently uses `InMemoryVectorStore` (extensible to Chroma/Pinecone).
+- **Flow**:
+  1. **Ingest**: Text -> Embeddings -> Vector Store.
+  2. **Query**: User Question -> Embed -> Similarity Search -> Context.
+  3. **Generate**: Context + Question -> LLM -> Answer.
+
+### 5. Dynamic Prompt Management
+Located at `backend/services/llm/prompt_service.py`:
+- Allows changing system prompts without code deployment.
+- **Database**: Stores prompts in `prompts` table with versioning.
+- **Fallback**: `ContentService` checks DB for a prompt (by slug). If not found, it falls back to hardcoded `PromptTemplates` in `backend/services/llm/prompts.py`.
+- **Supported Slugs**:
+  - `blog-post-generator`
+  - `social-media-caption`
+  - `seo-optimizer`
 
 ## Configuration
+
 
 Settings in `backend/api/config/settings.py`:
 
@@ -53,6 +82,7 @@ response = await service.generate_text("Explain quantum computing")
 The Admin Dashboard (`/ai`) provides a UI for:
 - **AI Chat**: Interactive chat interface.
 - **Content Studio**: Form-based content generation.
+- **Prompt Library**: Manage system prompts and templates dynamically.
 
 ## Binh Pháp Integration
 - **Ch.11 九地 (Nine Grounds)**: Adaptation to new terrain. AI allows the agency to adapt content strategy rapidly and scale operations without proportional headcount increase.

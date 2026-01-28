@@ -6,7 +6,7 @@ Please import from backend.agents.marketinganalystops.logic instead.
 """
 import warnings
 
-from .logic import ReportingAgent, ReportStatus, ReportType
+from .logic import Insight, Report, ReportingAgent, ReportStatus, ReportType
 
 # Issue a deprecation warning
 warnings.warn(

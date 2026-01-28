@@ -6,7 +6,7 @@ Please import from backend.agents.props.outreach instead.
 """
 import warnings
 
-from .outreach import ContactType, OutreachAgent, PitchStatus
+from .outreach import ContactType, MediaContact, OutreachAgent, Pitch, PitchStatus
 
 # Issue a deprecation warning
 warnings.warn(

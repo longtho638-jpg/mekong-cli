@@ -6,7 +6,7 @@ Please import from backend.agents.seoops.logic instead.
 """
 import warnings
 
-from .logic import IssueSeverity, IssueType, TechnicalSEOAgent
+from .logic import CoreWebVitals, IssueSeverity, IssueType, SEOIssue, TechnicalSEOAgent
 
 # Issue a deprecation warning
 warnings.warn(

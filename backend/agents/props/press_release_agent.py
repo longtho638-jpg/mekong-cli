@@ -6,7 +6,7 @@ Please import from backend.agents.props.press_release instead.
 """
 import warnings
 
-from .press_release import PressReleaseAgent, ReleaseStatus, ReleaseType
+from .press_release import PressRelease, PressReleaseAgent, ReleaseStatus, ReleaseType
 
 # Issue a deprecation warning
 warnings.warn(

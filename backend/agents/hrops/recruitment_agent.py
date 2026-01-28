@@ -6,7 +6,7 @@ Please import from backend.agents.hrops.logic instead.
 """
 import warnings
 
-from .logic import CandidateStage, JobStatus, RecruitmentAgent
+from .logic import Candidate, CandidateStage, Job, JobStatus, RecruitmentAgent
 
 # Issue a deprecation warning
 warnings.warn(

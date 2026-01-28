@@ -75,7 +75,8 @@ def test_invoice_manager_list_invoices():
         assert invoices[0]["id"] == "inv_123"
         assert invoices[0]["amount_due"] == 10.0  # Converted from cents
 
-def test_webhook_handler_checkout_completed():
+@pytest.mark.asyncio
+async def test_webhook_handler_checkout_completed():
     mock_stripe_client = MagicMock()
     mock_stripe_client.construct_event.return_value = {
         "id": "evt_123",
@@ -101,7 +102,7 @@ def test_webhook_handler_checkout_completed():
         from backend.core.payments.webhook_handler import WebhookHandler
         handler = WebhookHandler()
 
-        result = handler.verify_and_process_stripe(b"payload", "sig_header")
+        result = await handler.verify_and_process_stripe(b"payload", "sig_header")
 
         assert result["status"] == "processed"
         assert result["type"] == "checkout.session.completed"

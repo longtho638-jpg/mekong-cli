@@ -6,7 +6,7 @@ Please import from backend.agents.serviceops.chatbot_logic instead.
 """
 import warnings
 
-from .chatbot_logic import Channel, ChatbotAgent, Intent
+from .chatbot_logic import Channel, ChatbotAgent, Conversation, Intent, Message
 
 # Issue a deprecation warning
 warnings.warn(

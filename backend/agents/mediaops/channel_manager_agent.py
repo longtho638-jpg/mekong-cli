@@ -6,7 +6,7 @@ Please import from backend.agents.mediaops.logic instead.
 """
 import warnings
 
-from .logic import ChannelManagerAgent, ChannelStatus, ChannelType
+from .logic import Channel, ChannelManagerAgent, ChannelStatus, ChannelType, Publication
 
 # Issue a deprecation warning
 warnings.warn(

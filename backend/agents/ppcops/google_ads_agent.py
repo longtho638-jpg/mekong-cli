@@ -6,7 +6,7 @@ Please import from backend.agents.ppcops.logic instead.
 """
 import warnings
 
-from .logic import AdType, GoogleAdsAgent, KeywordMatch
+from .logic import AdType, GoogleAdsAgent, GoogleAdsCampaign, KeywordMatch, PPCKeyword
 
 # Issue a deprecation warning
 warnings.warn(

@@ -55,7 +55,8 @@ async def test_orchestrator_sends_email_if_enabled(mock_db, mock_email_service, 
 
     # Assert
     assert results["email"] == "sent"
-    assert results["push"] == "skipped_pref"
+    # When using default resolution, disabled channels are excluded from the list, so they are not in results
+    assert "push" not in results
     mock_email_service.send_email.assert_called_once()
     mock_push_service.send.assert_not_called()
 
@@ -84,6 +85,7 @@ async def test_orchestrator_sends_push_if_enabled(mock_db, mock_email_service, m
 
     # Assert
     assert results["push"] == "sent"
-    assert results["email"] == "skipped_pref"
+    # When using default resolution, disabled channels are excluded from the list
+    assert "email" not in results
     mock_push_service.send.assert_called_once()
     mock_email_service.send_email.assert_not_called()

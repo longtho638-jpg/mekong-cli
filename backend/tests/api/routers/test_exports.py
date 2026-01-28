@@ -9,7 +9,9 @@ from backend.main import app
 from backend.services.queue_service import QueueService
 from core.infrastructure.database import Database
 
-client = TestClient(app)
+@pytest.fixture
+def client():
+    return TestClient(app)
 
 # Mock dependencies
 @pytest.fixture
@@ -33,18 +35,21 @@ def mock_db():
 def override_auth():
     # Mock authentication to return a test user
     from backend.api.auth.dependencies import get_current_user_id
-    app.dependency_overrides[get_current_user_id] = lambda: "test-user-id"
-    yield
+    user_id = str(uuid4())
+    app.dependency_overrides[get_current_user_id] = lambda: user_id
+    yield user_id
     app.dependency_overrides = {}
 
-def test_create_export(mock_queue_service, mock_db, override_auth):
+def test_create_export(client, mock_queue_service, mock_db, override_auth):
+    user_id = override_auth
     # Setup DB mock
     mock_db.table.return_value.insert.return_value.execute.return_value.data = [{
         "id": str(uuid4()),
-        "user_id": "test-user-id",
+        "user_id": user_id,
         "format": "csv",
         "status": "pending",
-        "progress": 0
+        "progress": 0,
+        "created_at": datetime.utcnow().isoformat()
     }]
 
     # Setup Queue mock
@@ -62,7 +67,7 @@ def test_create_export(mock_queue_service, mock_db, override_auth):
     assert response.status_code == 201
     data = response.json()
     assert data["status"] == "pending"
-    assert data["user_id"] == "test-user-id"
+    assert data["user_id"] == user_id
 
     # Verify queue call
     mock_queue_service.enqueue_job.assert_called_once()
@@ -70,14 +75,16 @@ def test_create_export(mock_queue_service, mock_db, override_auth):
     assert call_args[1]["job_type"] == "export_data"
     assert call_args[1]["payload"]["format"] == "csv"
 
-def test_list_exports(mock_db, override_auth):
+def test_list_exports(client, mock_db, override_auth):
+    user_id = override_auth
     # Setup DB mock
     mock_exports = [
         {
             "id": str(uuid4()),
-            "user_id": "test-user-id",
+            "user_id": user_id,
             "format": "csv",
             "status": "completed",
+            "progress": 100,
             "created_at": datetime.utcnow().isoformat()
         }
     ]
@@ -90,14 +97,16 @@ def test_list_exports(mock_db, override_auth):
     assert len(data) == 1
     assert data[0]["format"] == "csv"
 
-def test_get_export(mock_db, mock_storage_service, override_auth):
+def test_get_export(client, mock_db, mock_storage_service, override_auth):
+    user_id = override_auth
     export_id = str(uuid4())
     # Setup DB mock
     mock_export = {
         "id": export_id,
-        "user_id": "test-user-id",
+        "user_id": user_id,
         "format": "csv",
         "status": "completed",
+        "progress": 100,
         "file_url": "exports/test.csv",
         "created_at": datetime.utcnow().isoformat()
     }
@@ -113,16 +122,20 @@ def test_get_export(mock_db, mock_storage_service, override_auth):
     assert data["id"] == export_id
     assert data["file_url"] == "https://s3.example.com/signed-url"
 
-def test_create_template(mock_db, override_auth):
+def test_create_template(client, mock_db, override_auth):
+    user_id = override_auth
     # Setup DB mock
     mock_db.table.return_value.insert.return_value.execute.return_value.data = [{
         "id": str(uuid4()),
         "name": "My Template",
-        "user_id": "test-user-id",
+        "user_id": user_id,
         "format": "json",
         "resource_type": "invoices",
         "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat()
+        "updated_at": datetime.utcnow().isoformat(),
+        "is_shared": False,
+        "columns": ["id", "amount"],
+        "filters": None
     }]
 
     payload = {

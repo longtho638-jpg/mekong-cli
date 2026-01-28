@@ -6,7 +6,7 @@ Please import from backend.agents.serviceops.logic instead.
 """
 import warnings
 
-from .logic import Priority, TicketManagerAgent, TicketStatus
+from .logic import Priority, Ticket, TicketManagerAgent, TicketStatus
 
 # Issue a deprecation warning
 warnings.warn(

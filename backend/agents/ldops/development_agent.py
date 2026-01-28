@@ -6,7 +6,7 @@ Please import from backend.agents.ldops.logic instead.
 """
 import warnings
 
-from .logic import CareerTrack, DevelopmentAgent, SkillLevel
+from .logic import CareerTrack, DevelopmentAgent, DevelopmentPlan, Skill, SkillLevel
 
 # Issue a deprecation warning
 warnings.warn(

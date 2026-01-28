@@ -43,6 +43,7 @@ from .landing_page import (
     LandingPageUpdate,
 )
 from .project import Project
+from .prompt import Prompt
 from .router import RouterRequest, RouterResponse
 from .task import Task
 from .vibe import VibeRequest, VibeResponse
@@ -68,6 +69,7 @@ __all__ = [
     "TaskPriority",
     "Project",
     "ProjectStatus",
+    "Prompt",  # AI Prompts
     "Client",
     "ClientStatus",
     "Agency",

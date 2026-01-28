@@ -44,8 +44,7 @@ def get_subscription_manager():
     db = get_db()
     return SubscriptionManager(db)
 
-def get_webhook_handler():
-    db = get_db()
+def get_webhook_handler(db=Depends(get_db)):
     return WebhookHandler(db)
 
 @router.post("/checkout", response_model=Dict[str, Any])
@@ -105,7 +104,7 @@ async def stripe_webhook(
 
     try:
         payload = await request.body()
-        result = handler.verify_and_process_stripe(payload, stripe_signature)
+        result = await handler.verify_and_process_stripe(payload, stripe_signature)
         return result
     except ValueError as e:
         # Signature verification failed

@@ -6,7 +6,7 @@ Please import from backend.agents.adminops.logic instead.
 """
 import warnings
 
-from .logic import ReportFormat, ReportGeneratorAgent, ReportType
+from .logic import Report, ReportFormat, ReportGeneratorAgent, ReportType
 
 # Issue a deprecation warning
 warnings.warn(

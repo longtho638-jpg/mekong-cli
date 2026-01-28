@@ -52,6 +52,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return {}
 
     async def dispatch(self, request: Request, call_next):
+        # Check global disable flag
+        if not settings.enable_rate_limiting:
+            return await call_next(request)
+
         # Skip rate limiting for health checks and metrics
         if request.url.path in ['/health', '/metrics', '/', '/docs', '/openapi.json', '/redoc']:
             return await call_next(request)

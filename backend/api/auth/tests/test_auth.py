@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from backend.api.auth.router import fake_users_db
+from backend.api.auth.router import get_fake_users_db
 from backend.api.auth.utils import create_access_token, get_password_hash
 from backend.main import app
 

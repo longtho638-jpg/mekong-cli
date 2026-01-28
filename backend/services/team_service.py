@@ -106,8 +106,9 @@ class Team:
         self.members.append(owner)
 
     def get_active_member_count(self) -> int:
-        """Get count of active members (excluding invited/removed)"""
-        return len([m for m in self.members if m.status == TeamMemberStatus.ACTIVE])
+        """Get count of active and invited members"""
+        # Count both ACTIVE and INVITED members as occupying a seat
+        return len([m for m in self.members if m.status in [TeamMemberStatus.ACTIVE, TeamMemberStatus.INVITED]])
 
     def get_available_seats(self) -> int:
         """

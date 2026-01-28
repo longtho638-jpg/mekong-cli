@@ -22,6 +22,11 @@ os.environ.setdefault("STRIPE_WEBHOOK_SECRET", "test-stripe-webhook-secret-for-t
 # Database (if needed)
 os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 
+# Disable external services for tests
+os.environ.setdefault("ENABLE_RATE_LIMITING", "False")
+os.environ.setdefault("ENABLE_METRICS", "False")
+os.environ.setdefault("ENABLE_MULTITENANT", "False") # Optional, simplify if needed
+
 # Ensure backend package is importable from root
 root_dir = Path(__file__).parent.parent.parent  # mekong-cli root
 if str(root_dir) not in sys.path:
@@ -29,7 +34,7 @@ if str(root_dir) not in sys.path:
 
 import asyncio
 from typing import Generator
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -45,6 +50,90 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
 
 
 # ========== Mock Fixtures ==========
+
+
+@pytest.fixture(autouse=True)
+def mock_redis():
+    """Mock Redis client globally to prevent connection errors."""
+    # Sync Redis Mock
+    sync_redis = MagicMock()
+    sync_redis.get.return_value = None
+    sync_redis.set.return_value = True
+    sync_redis.setex.return_value = True
+    sync_redis.delete.return_value = 1
+    sync_redis.incr.return_value = 1
+    sync_redis.expire.return_value = True
+    sync_redis.ttl.return_value = 3600
+    sync_redis.exists.return_value = 0
+    sync_redis.keys.return_value = []
+    sync_redis.mget.return_value = []
+    sync_redis.pipeline.return_value = sync_redis
+    sync_redis.execute.return_value = []
+    sync_redis.ping.return_value = True
+    sync_redis.llen.return_value = 0
+    sync_redis.lpush.return_value = 1
+    sync_redis.rpush.return_value = 1
+    sync_redis.lpop.return_value = None
+    sync_redis.rpop.return_value = None
+    sync_redis.zadd.return_value = 1
+    sync_redis.zrange.return_value = []
+    sync_redis.zrem.return_value = 1
+    sync_redis.hget.return_value = None
+    sync_redis.hset.return_value = 1
+    sync_redis.hgetall.return_value = {}
+
+    # Async Redis Mock
+    async_redis = AsyncMock()
+    async_redis.get.return_value = None
+    async_redis.set.return_value = True
+    async_redis.setex.return_value = True
+    async_redis.delete.return_value = 1
+    async_redis.incr.return_value = 1
+    async_redis.expire.return_value = True
+    async_redis.ttl.return_value = 3600
+    async_redis.exists.return_value = 0
+    async_redis.keys.return_value = []
+    async_redis.mget.return_value = []
+    async_redis.pipeline.return_value = async_redis
+    async_redis.execute.return_value = []
+    async_redis.ping.return_value = True
+    async_redis.llen.return_value = 0
+    async_redis.lpush.return_value = 1
+    async_redis.rpush.return_value = 1
+    async_redis.lpop.return_value = None
+    async_redis.rpop.return_value = None
+    async_redis.zadd.return_value = 1
+    async_redis.zrange.return_value = []
+    async_redis.zrem.return_value = 1
+    async_redis.hget.return_value = None
+    async_redis.hset.return_value = 1
+    async_redis.hgetall.return_value = {}
+
+    # Handle context manager for async pipeline
+    async def async_pipeline_context():
+        return async_redis
+    async_redis.pipeline.return_value.__aenter__ = async_pipeline_context
+    async_redis.pipeline.return_value.__aexit__ = AsyncMock()
+
+    # Patch redis module
+    with patch("redis.Redis", return_value=sync_redis), \
+         patch("redis.from_url", return_value=sync_redis), \
+         patch("redis.asyncio.Redis", return_value=async_redis), \
+         patch("redis.asyncio.from_url", return_value=async_redis), \
+         patch("backend.core.infrastructure.redis.redis_client", async_redis), \
+         patch("backend.services.redis_client.redis_service._client", async_redis), \
+         patch("backend.services.ip_blocker.ip_blocker.redis", async_redis), \
+         patch("backend.services.rate_limit_monitor.rate_limit_monitor.redis", async_redis), \
+         patch("backend.services.rate_limiter_service.RateLimiterService.check_sliding_window", new_callable=AsyncMock, return_value=(True, 100)), \
+         patch("backend.services.rate_limiter_service.RateLimiterService.check_token_bucket", new_callable=AsyncMock, return_value=(True, 100)), \
+         patch("backend.services.rate_limiter_service.RateLimiterService.check_fixed_window", new_callable=AsyncMock, return_value=(True, 100)), \
+         patch("backend.services.rate_limiter_service.RateLimiterService.get_reset_time", new_callable=AsyncMock, return_value=1234567890), \
+         patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock, return_value=False), \
+         patch("backend.services.ip_blocker.IpBlocker.block_ip", new_callable=AsyncMock), \
+         patch("backend.services.rate_limit_monitor.RateLimitMonitor.log_violation", new_callable=AsyncMock), \
+         patch("backend.services.rate_limit_monitor.RateLimitMonitor._check_ddos_threshold", new_callable=AsyncMock):
+            yield {"sync": sync_redis, "async": async_redis}
+
 
 
 @pytest.fixture

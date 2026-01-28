@@ -6,7 +6,7 @@ Please import from backend.agents.compbenops.payroll_logic instead.
 """
 import warnings
 
-from .payroll_logic import PayrollAgent, PayrollStatus
+from .payroll_logic import DeductionType, PayrollAgent, PayrollEntry, PayrollRun, PayrollStatus
 
 # Issue a deprecation warning
 warnings.warn(

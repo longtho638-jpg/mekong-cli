@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, AsyncGenerator, Dict, List, Optional
-
+from typing import AsyncGenerator, Dict, List, Optional
+from backend.services.llm.types import LLMResponse, TokenUsage
 
 class LLMProvider(ABC):
     """
@@ -16,7 +16,7 @@ class LLMProvider(ABC):
         max_tokens: Optional[int] = None,
         temperature: float = 0.7,
         system_instruction: Optional[str] = None
-    ) -> str:
+    ) -> LLMResponse:
         """Generate text from a prompt."""
         pass
 
@@ -39,7 +39,7 @@ class LLMProvider(ABC):
         model: Optional[str] = None,
         max_tokens: Optional[int] = None,
         temperature: float = 0.7
-    ) -> str:
+    ) -> LLMResponse:
         """Chat with history."""
         pass
 
@@ -60,20 +60,12 @@ class GeminiProvider(LLMProvider):
         max_tokens: Optional[int] = None,
         temperature: float = 0.7,
         system_instruction: Optional[str] = None
-    ) -> str:
+    ) -> LLMResponse:
         model_name = model or "gemini-1.5-flash"
-        # Note: Gemini python SDK might use different param names
-        # generation_config = genai.types.GenerationConfig(
-        #     candidate_count=1,
-        #     max_output_tokens=max_tokens,
-        #     temperature=temperature,
-        # )
 
-        # System instruction in Gemini is usually passed at model init or as part of prompt
-        # For simplicity in this adapter, we prepend system instruction if provided
         full_prompt = prompt
+        m = None
         if system_instruction:
-            # Better approach for Gemini 1.5: use system_instruction arg in GenerativeModel
             m = self.genai.GenerativeModel(
                 model_name=model_name,
                 system_instruction=system_instruction
@@ -88,7 +80,16 @@ class GeminiProvider(LLMProvider):
                 temperature=temperature
             )
         )
-        return response.text
+
+        usage = None
+        if response.usage_metadata:
+             usage = TokenUsage(
+                 prompt_tokens=response.usage_metadata.prompt_token_count,
+                 completion_tokens=response.usage_metadata.candidates_token_count,
+                 total_tokens=response.usage_metadata.total_token_count
+             )
+
+        return LLMResponse(content=response.text, usage=usage)
 
     async def generate_stream(
         self,
@@ -127,13 +128,9 @@ class GeminiProvider(LLMProvider):
         model: Optional[str] = None,
         max_tokens: Optional[int] = None,
         temperature: float = 0.7
-    ) -> str:
+    ) -> LLMResponse:
         model_name = model or "gemini-1.5-flash"
         m = self.genai.GenerativeModel(model_name)
-
-        # Convert standard messages to Gemini history format
-        # Standard: [{"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]
-        # Gemini: history=[{"role": "user", "parts": ["..."]}, {"role": "model", "parts": ["..."]}]
 
         history = []
         last_message = None
@@ -152,7 +149,16 @@ class GeminiProvider(LLMProvider):
                 temperature=temperature
             )
         )
-        return response.text
+
+        usage = None
+        if response.usage_metadata:
+             usage = TokenUsage(
+                 prompt_tokens=response.usage_metadata.prompt_token_count,
+                 completion_tokens=response.usage_metadata.candidates_token_count,
+                 total_tokens=response.usage_metadata.total_token_count
+             )
+
+        return LLMResponse(content=response.text, usage=usage)
 
 class OpenAIProvider(LLMProvider):
     """OpenAI Provider (Placeholder - requires openai package)."""
@@ -165,7 +171,7 @@ class OpenAIProvider(LLMProvider):
         except ImportError:
             self.client = None
 
-    async def generate_text(self, prompt: str, model: Optional[str] = None, max_tokens: Optional[int] = None, temperature: float = 0.7, system_instruction: Optional[str] = None) -> str:
+    async def generate_text(self, prompt: str, model: Optional[str] = None, max_tokens: Optional[int] = None, temperature: float = 0.7, system_instruction: Optional[str] = None) -> LLMResponse:
         if not self.client:
             raise ImportError("openai package not installed")
 
@@ -181,7 +187,16 @@ class OpenAIProvider(LLMProvider):
             max_tokens=max_tokens,
             temperature=temperature
         )
-        return response.choices[0].message.content or ""
+
+        usage = None
+        if response.usage:
+            usage = TokenUsage(
+                prompt_tokens=response.usage.prompt_tokens,
+                completion_tokens=response.usage.completion_tokens,
+                total_tokens=response.usage.total_tokens
+            )
+
+        return LLMResponse(content=response.choices[0].message.content or "", usage=usage)
 
     async def generate_stream(self, prompt: str, model: Optional[str] = None, max_tokens: Optional[int] = None, temperature: float = 0.7, system_instruction: Optional[str] = None) -> AsyncGenerator[str, None]:
         if not self.client:
@@ -206,7 +221,7 @@ class OpenAIProvider(LLMProvider):
             if content:
                 yield content
 
-    async def chat(self, messages: List[Dict[str, str]], model: Optional[str] = None, max_tokens: Optional[int] = None, temperature: float = 0.7) -> str:
+    async def chat(self, messages: List[Dict[str, str]], model: Optional[str] = None, max_tokens: Optional[int] = None, temperature: float = 0.7) -> LLMResponse:
         if not self.client:
             raise ImportError("openai package not installed")
 
@@ -217,4 +232,13 @@ class OpenAIProvider(LLMProvider):
             max_tokens=max_tokens,
             temperature=temperature
         )
-        return response.choices[0].message.content or ""
+
+        usage = None
+        if response.usage:
+            usage = TokenUsage(
+                prompt_tokens=response.usage.prompt_tokens,
+                completion_tokens=response.usage.completion_tokens,
+                total_tokens=response.usage.total_tokens
+            )
+
+        return LLMResponse(content=response.choices[0].message.content or "", usage=usage)

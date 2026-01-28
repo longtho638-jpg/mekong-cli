@@ -162,5 +162,6 @@ def test_delete_product_enqueues_indexing_job(mock_queue_service):
             assert call_args.kwargs["payload"]["index"] == "products"
             assert call_args.kwargs["payload"]["document_id"] == product_id
 
-# Clean up
-del app.dependency_overrides[get_queue_service]
+    # Clean up dependency override
+    if get_queue_service in app.dependency_overrides:
+        del app.dependency_overrides[get_queue_service]

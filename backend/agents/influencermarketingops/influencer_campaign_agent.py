@@ -6,7 +6,7 @@ Please import from backend.agents.influencermarketingops.logic instead.
 """
 import warnings
 
-from .logic import CampaignStatus, ContentType, InfluencerCampaignAgent
+from .logic import CampaignStatus, ContentType, Deliverable, InfluencerCampaign, InfluencerCampaignAgent
 
 # Issue a deprecation warning
 warnings.warn(

@@ -4,7 +4,7 @@ Payroll Agent Facade.
 from typing import Dict
 
 from .engine import PayrollEngine
-from .models import PayrollEntry, PayrollRun, PayrollStatus
+from .models import DeductionType, PayrollEntry, PayrollRun, PayrollStatus
 
 
 class PayrollAgent(PayrollEngine):
@@ -17,4 +17,4 @@ class PayrollAgent(PayrollEngine):
     def get_stats(self) -> Dict:
         return {"total_runs": len(self.runs), "total_paid": sum(r.total_net for r in self.runs.values() if r.status == PayrollStatus.PAID)}
 
-__all__ = ['PayrollAgent', 'PayrollStatus', 'PayrollEntry', 'PayrollRun']
+__all__ = ['PayrollAgent', 'PayrollStatus', 'PayrollEntry', 'PayrollRun', 'DeductionType']

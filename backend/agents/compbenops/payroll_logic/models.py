@@ -13,6 +13,13 @@ class PayrollStatus(Enum):
     COMPLETED = "completed"
     PAID = "paid"
 
+class DeductionType(Enum):
+    TAX = "tax"
+    INSURANCE = "insurance"
+    BENEFITS = "benefits"
+    RETIREMENT = "retirement"
+    OTHER = "other"
+
 @dataclass
 class PayrollEntry:
     id: str

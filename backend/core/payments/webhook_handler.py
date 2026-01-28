@@ -25,7 +25,7 @@ class WebhookHandler:
         self.licensing = LicenseGenerator()
         self.provisioning = ProvisioningService()
 
-    def verify_and_process_stripe(self, payload: bytes, sig_header: str) -> Dict[str, Any]:
+    async def verify_and_process_stripe(self, payload: bytes, sig_header: str) -> Dict[str, Any]:
         """
         Verify signature and process the Stripe event.
         """
@@ -35,9 +35,9 @@ class WebhookHandler:
             logger.error(f"Webhook verification failed: {e}")
             raise
 
-        return self.process_stripe_event(event)
+        return await self.process_stripe_event(event)
 
-    def process_stripe_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
+    async def process_stripe_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
         """
         Route verified Stripe event to appropriate handler.
         """
@@ -56,9 +56,9 @@ class WebhookHandler:
             if event_type == 'checkout.session.completed':
                 return self._handle_checkout_completed(data)
             elif event_type == 'invoice.payment_succeeded':
-                return self.invoice_manager.handle_payment_succeeded(data)
+                return await self.invoice_manager.handle_payment_succeeded(data)
             elif event_type == 'invoice.payment_failed':
-                return self.invoice_manager.handle_payment_failed(data)
+                return await self.invoice_manager.handle_payment_failed(data)
             elif event_type == 'customer.subscription.created':
                 return self._handle_subscription_created(data)
             elif event_type == 'customer.subscription.updated':
