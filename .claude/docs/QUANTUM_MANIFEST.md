@@ -848,7 +848,6 @@
 
 ```yaml
 # These commands are safe to auto-run (// turbo annotation)
-- /context-prime # Load full context
 - /test # Run test suite
 - /scout # Codebase reconnaissance
 - /cook # Development mode
