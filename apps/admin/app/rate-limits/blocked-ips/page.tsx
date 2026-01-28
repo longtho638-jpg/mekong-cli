@@ -26,7 +26,7 @@ export default function BlockedIPsPage() {
     const [blockForm, setBlockForm] = useState({ ip: '', reason: '', duration: '3600' });
 
     // Fetch Blocked IPs
-    const { data: blockedIpsData, isLoading } = useQuery({
+    const { data: blockedIpsData, isLoading } = useQuery<BlockedIPRow[]>({
         queryKey: ['blocked-ips'],
         queryFn: async () => {
             const res = await api.get('/api/v1/admin/rate-limits/blocked-ips');

@@ -20,7 +20,7 @@ interface SettingRow {
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
-  const { data: settings, isLoading } = useQuery({
+  const { data: settings, isLoading } = useQuery<SettingRow[]>({
     queryKey: ['admin-settings'],
     queryFn: async () => {
       const res = await api.get('/admin/settings');
@@ -28,7 +28,7 @@ export default function SettingsPage() {
     }
   });
 
-  const { data: flags } = useQuery({
+  const { data: flags } = useQuery<FeatureFlagRow[]>({
       queryKey: ['admin-feature-flags'],
       queryFn: async () => {
           const res = await api.get('/admin/settings/feature-flags');

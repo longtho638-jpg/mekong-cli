@@ -23,7 +23,7 @@ interface RateLimitRow {
 
 export default function RateLimitsPage() {
     // Fetch Recent Violations
-    const { data: violationsData, isLoading: isLoadingViolations } = useQuery({
+    const { data: violationsData, isLoading: isLoadingViolations } = useQuery<RateLimitRow[]>({
         queryKey: ['rate-limit-violations'],
         queryFn: async () => {
             const res = await api.get('/api/v1/admin/rate-limits/violations?limit=50');
@@ -32,7 +32,7 @@ export default function RateLimitsPage() {
     });
 
     // Fetch Top Violators
-    const { data: topUsersData, isLoading: isLoadingTopUsers } = useQuery({
+    const { data: topUsersData, isLoading: isLoadingTopUsers } = useQuery<{ top_users: unknown[] }>({
         queryKey: ['rate-limit-top-users'],
         queryFn: async () => {
             const res = await api.get('/api/v1/admin/rate-limits/top-users?limit=10');
