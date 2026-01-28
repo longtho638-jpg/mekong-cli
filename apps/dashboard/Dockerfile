@@ -1,5 +1,6 @@
-# Frontend Dockerfile (Next.js)
+# Frontend Dockerfile (Next.js) - Monorepo Build
 # Multi-stage build for production
+# Build context: project root
 
 # 1. Base
 FROM node:20-alpine AS base
@@ -10,17 +11,20 @@ RUN corepack enable
 # 2. Dependencies
 FROM base AS deps
 WORKDIR /app
+# Copy minimal files needed for pnpm install
 COPY pnpm-lock.yaml ./
-RUN pnpm fetch
+COPY package.json ./
+COPY pnpm-workspace.yaml ./
+COPY apps/dashboard/package.json ./apps/dashboard/
+COPY packages/ ./packages/
+RUN pnpm install --frozen-lockfile
 
 # 3. Builder
 FROM base AS builder
 WORKDIR /app
-# Copy pnpm store from deps stage
-COPY --from=deps /pnpm /pnpm
-COPY --from=deps /app/pnpm-lock.yaml ./
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/apps/dashboard/node_modules ./apps/dashboard/node_modules
 COPY . .
-RUN pnpm install --frozen-lockfile
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter mekong-dashboard build
