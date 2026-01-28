@@ -253,6 +253,25 @@ KỊCH BẢN: Có error cần xử lý
 - ❌ Không monitor CC CLI background agents
 - ❌ Bỏ qua tasks đang pending trong tasks.md
 
+### 🔴 KHÔNG CÓ ĐIỂM DỪNG (NO STOP PRINCIPLE):
+
+> **"Chiến tranh không có điểm dừng - luôn tìm cách tiến công"**
+
+1. ✅ **LUÔN tham chiếu `/binh-phap`** để tìm vấn đề hệ thống
+2. ✅ **KHÔNG BAO GIỜ idle** - nếu không có task → scan hệ thống
+3. ✅ **TỰ ĐỘNG delegate** issues phát hiện cho CC CLI
+4. ✅ **Liên tục cải tiến** - 10x codebase mỗi ngày
+
+**Khi hoàn thành task:**
+
+```yaml
+after_task_complete:
+  - [ ] Run: grep -rn "TODO\|FIXME\|HACK" . | head -20
+  - [ ] Run: /binh-phap để phân tích chiến lược
+  - [ ] Delegate found issues → CC CLI
+  - [ ] NEVER say "Xong rồi" - always continue
+```
+
 ### 🔴 HÀNH ĐỘNG SAU MỖI RESPONSE:
 
 ```yaml
