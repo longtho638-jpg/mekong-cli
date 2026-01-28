@@ -37,6 +37,11 @@ COPY --from=deps /app ./
 COPY --from=pruner /app/out/full/ .
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
+# Provide placeholder env vars for build (required by Next.js page data collection)
+# Real values will be injected at runtime via Cloud Run env vars
+ENV NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-key
+ENV NEXT_PUBLIC_API_URL=http://localhost:8000
 RUN pnpm --filter mekong-dashboard build
 
 # 5. Runner
