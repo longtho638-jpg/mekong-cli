@@ -31,8 +31,8 @@ RUN pnpm install --frozen-lockfile --no-optional
 # 4. Builder
 FROM base AS builder
 WORKDIR /app
-# Copy installed node_modules
-COPY --from=deps /app/node_modules ./node_modules
+# Copy entire workspace from deps to preserve nested node_modules
+COPY --from=deps /app ./
 # Copy pruned source code
 COPY --from=pruner /app/out/full/ .
 # Build specific app
