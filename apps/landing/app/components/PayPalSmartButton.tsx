@@ -3,11 +3,42 @@
 import { PayPalScriptProvider, PayPalButtons, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
-// Subscription types (not exported by @paypal/react-paypal-js)
-type CreateSubscriptionData = Record<string, unknown>;
+// PayPal SDK Type Definitions (based on @paypal/paypal-js)
+interface CreateOrderData {
+  paymentSource?: string;
+  [key: string]: unknown;
+}
+
+interface CreateOrderActions {
+  order: {
+    create: (options: unknown) => Promise<string>;
+  };
+}
+
+interface CreateSubscriptionData {
+  paymentSource?: string;
+  [key: string]: unknown;
+}
+
 interface CreateSubscriptionActions {
   subscription: {
     create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
+  };
+}
+
+interface OnApproveData {
+  orderID: string;
+  subscriptionID?: string | null;
+  facilitatorAccessToken: string;
+  [key: string]: unknown;
+}
+
+interface OnApproveActions {
+  order?: {
+    capture: () => Promise<unknown>;
+  };
+  subscription?: {
+    get: () => Promise<unknown>;
   };
 }
 
@@ -47,7 +78,7 @@ export default function PayPalSmartButton({
     vault: mode === "subscription",
   };
 
-  const createOrder = async (data: any, actions: any) => {
+  const createOrder = async (data: CreateOrderData, actions: CreateOrderActions) => {
     try {
       const response = await fetch(`${apiBaseUrl}/payments/paypal/create-order`, {
         method: "POST",
@@ -74,7 +105,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (data: any, actions: any) => {
+  const createSubscription = async (data: CreateSubscriptionData, actions: CreateSubscriptionActions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
@@ -115,7 +146,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: any, actions: any) => {
+  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
