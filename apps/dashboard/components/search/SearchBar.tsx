@@ -2,8 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Search, X } from 'lucide-react'
-import { debounce } from 'lodash'
 import { useRouter } from 'next/navigation'
+
+// Simple debounce implementation (KISS - avoid lodash dependency)
+function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
+  let timeout: NodeJS.Timeout | null = null
+  return ((...args: Parameters<T>) => {
+    if (timeout) clearTimeout(timeout)
+    timeout = setTimeout(() => func(...args), wait)
+  }) as T
+}
 
 interface AutocompleteResult {
   title: string
