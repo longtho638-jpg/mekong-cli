@@ -1,44 +1,53 @@
 ---
-description: 📜 PLAN - Create a strategic implementation plan (Binh Pháp: Mưu Công)
-argument-hint: [mục tiêu chiến lược]
+description: 📜 PLAN - Strategic planning and task breakdown (Binh Pháp: Kế Hoạch)
+argument-hint: [objective]
 ---
 
-Bạn là **Planner**, đang thực hiện lệnh `/plan` cho mục tiêu:
-<objective>$ARGUMENTS</objective>
+# /plan - Planner
 
-Sử dụng **Manus Pattern** và **Binh Pháp: Mưu Công** để thiết kế bản đồ chiến thắng.
+> **"Thượng binh phạt mưu"** - The supreme art of war is to subdue the enemy without fighting (Winning by plan).
 
-## 🏛️ Quy trình lập kế hoạch
+## Usage
 
-1.  **🔍 Nghiên cứu (Research):**
-    - Sử dụng `researcher` để tìm hiểu các giải pháp tốt nhất.
-    - Dùng `antigravity.core.moat_engine` để xem xét tác động đến các Hào bảo vệ.
+```bash
+/plan [action] [options]
+```
 
-2.  **📐 Thiết kế (Design):**
-    - Chia mục tiêu lớn thành các Giai đoạn (Phases).
-    - Đảm bảo mỗi giai đoạn đều tạo ra giá trị **WIN-WIN-WIN**.
+## Actions/Options
 
-3.  **📂 Khởi tạo (Scaffold):**
-    - Tạo thư mục kế hoạch: `plans/{yymmdd}-{slug}/`.
-    - Tạo file `plan.md` với Frontmatter chuẩn.
-    - Khởi tạo các thư mục `research/` và `reports/`.
+| Action/Option | Description | Example |
+|--------------|-------------|---------|
+| `create` | Create new plan | `/plan create "Feature X"` |
+| `update` | Update existing plan | `/plan update "Phase 2"` |
+| `status` | Check plan status | `/plan status` |
+| `--scaffold` | Create folder structure | `/plan create --scaffold` |
 
-4.  **💂 Phân quân (Delegation):**
-    - Xác định các Agent Crew cần thiết cho từng task.
-    - Định nghĩa các chuỗi thực thi (Chains) trong `antigravity.core.agent_chains`.
+## Execution Protocol
 
-## 📜 Tiêu chuẩn file `plan.md`
+1. **Agent**: Delegates to `planner`.
+2. **Process**:
+   - Research (via `/research`).
+   - Break down into Phases (1-N).
+   - Create `plans/{date}-{slug}/plan.md`.
+3. **Output**: Detailed Implementation Plan.
 
-Phải bao gồm đầy đủ các mục:
-- **Status:** `pending`, `in-progress`, `completed`.
-- **Priority:** `P1` (Cao), `P2` (Trung bình), `P3` (Thấp).
-- **Phases:** Danh sách các giai đoạn với checkbox `- [ ]`.
-- **Risks:** Đánh giá rủi ro và phương án dự phòng.
+## Examples
 
-## 🚀 Hành động tiếp theo
+```bash
+# Create a plan for a new module
+/plan create "Implement Payment Gateway Integration"
 
-Sau khi tạo xong kế hoạch, hãy báo cáo cho người dùng và gợi ý lệnh tiếp theo:
-- `vibe cook` để bắt đầu thực hiện phase 1.
-- `vibe test` để kiểm tra các giả định.
+# Check current plan status
+/plan status
+```
 
-> 🏯 **"Thượng binh phạt mưu"** - Kế hoạch tốt là một nửa chiến thắng.
+## Binh Pháp Mapping
+- **Chapter 1**: Kế Hoạch (Planning) - Calculations before battle.
+
+## Constitution Reference
+- **Primary Workflow**: Planning is Step 0.
+
+## Win-Win-Win
+- **Owner**: Clarity & Roadmap.
+- **Agency**: Scope control.
+- **Client**: Predictable delivery.

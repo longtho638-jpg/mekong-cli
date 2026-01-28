@@ -3932,3 +3932,26 @@ plans/reports/git-manager-260128-2118-task-fix-deploy.md
         - 👑 Owner: Constitution rules operationalized
         - 🏢 Agency: Framework rules automated
         - 🚀 Client: User-friendly commands for complex operations
+
+- [ ] **TASK-agent-commands**
+    - Description: PHASE AGENT-COMMANDS - Generate Commands for Existing Agents
+    - User Request: Sinh command cho các agent đang có, với Constitution DNA và /binh-phap mapping
+    - Mission:
+        1. SCAN .claude/agents/ → list all agents without corresponding commands
+        2. GROUP agents by Binh Pháp chapters (13 groups)
+        3. CREATE COMMANDS for TOP 20 most useful agents:
+           /plan, /research, /architect, /test, /security, /devops, /frontend, /backend, /fullstack,
+           /git, /pr, /scout, /analyze, /market, /content, /refactor, /perf, /incident, /api, /docs
+        4. Each command must:
+           - USER-FRIENDLY syntax (simple examples)
+           - Map to Constitution ĐIỀU
+           - Reference Binh Pháp chapter
+    - Output: New command MDs + Report
+    - Assigned: fullstack-developer (comprehensive command generation)
+    - Status: delegated → running
+    - Created: 2026-01-28 22:41
+    - Binh Pháp: Ch.4 形勢 Hình Thế - Structure enables mass deployment
+    - WIN-WIN-WIN:
+        - 👑 Owner: 20 new user-friendly commands from existing agents
+        - 🏢 Agency: Better agent discoverability and usability
+        - 🚀 Client: Simple CLI interface for complex operations
