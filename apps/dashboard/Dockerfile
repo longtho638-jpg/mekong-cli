@@ -24,9 +24,9 @@ RUN apk add --no-cache python3 make g++ gcc py3-setuptools
 # Copy only the pruned package.json's and lockfile
 COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./
-# Install dependencies (skip optional deps that fail: puppeteer, cpu-features, ssh2)
+# Install dependencies (skip puppeteer download via env var, allow other optional deps like @parcel/watcher)
 ENV PUPPETEER_SKIP_DOWNLOAD=true
-RUN pnpm install --frozen-lockfile --no-optional
+RUN pnpm install --frozen-lockfile
 
 # 4. Builder
 FROM base AS builder
