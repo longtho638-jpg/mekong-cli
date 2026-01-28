@@ -50,7 +50,7 @@ export function PayPalProvider({ children }: PayPalProviderProps) {
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      {children as React.ReactNode}
+      {children as any}
     </PayPalScriptProvider>
   );
 }

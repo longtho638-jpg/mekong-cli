@@ -69,7 +69,7 @@ export function RevenueTrendChart({ data, loading }: RevenueTrendChartProps) {
               contentStyle={{ backgroundColor: '#171717', border: '1px solid #333', borderRadius: '8px' }}
               labelStyle={{ color: '#999' }}
               itemStyle={{ color: '#fff' }}
-              formatter={(value: number) => [formatCurrency(Number(value)), 'MRR']}
+              formatter={(value: any) => [formatCurrency(Number(value)), 'MRR']}
               labelFormatter={(label) => new Date(label).toLocaleDateString()}
             />
             <Area

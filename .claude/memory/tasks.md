@@ -3933,7 +3933,7 @@ plans/reports/git-manager-260128-2118-task-fix-deploy.md
         - 🏢 Agency: Framework rules automated
         - 🚀 Client: User-friendly commands for complex operations
 
-- [ ] **TASK-agent-commands**
+- [x] **TASK-agent-commands** ✅ COMPLETED
     - Description: PHASE AGENT-COMMANDS - Generate Commands for Existing Agents
     - User Request: Sinh command cho các agent đang có, với Constitution DNA và /binh-phap mapping
     - Mission:
@@ -3955,3 +3955,100 @@ plans/reports/git-manager-260128-2118-task-fix-deploy.md
         - 👑 Owner: 20 new user-friendly commands from existing agents
         - 🏢 Agency: Better agent discoverability and usability
         - 🚀 Client: Simple CLI interface for complex operations
+    - Completed: 2026-01-28 22:45
+    - Agent ID: a0bb7dd
+    - Result: 20 new commands created successfully
+    - Artifacts:
+        * 20 command files in .claude/commands/
+        * Report: plans/reports/fullstack-developer-260128-2241-agent-commands.md
+        * QUANTUM_MANIFEST.md updated
+        * Git commit: feat(commands): generate 20 new agent commands aligned with Binh Phap strategy
+
+- [ ] **TASK-mega-execution**
+    - Description: PHASE MEGA-EXECUTION - Verify Docs + Tech Debt + IPO Resume
+    - User Request: Làm hết việc còn lại - đừng lười! (Do all remaining work - don't be lazy!)
+    - Mission Sequence (Factory Line Mode - ĐIỀU 22):
+        * PHASE 0: VERIFY DOCS GO-LIVE (CRITICAL - User waiting!)
+          - Test docs site accessible at https://agencyos.dev/docs
+          - Verify core pages: /docs/commands, /docs/agents, /docs/constitution
+          - Run Playwright browser test on docs
+          - Report: WORKING or NOT WORKING
+        * PHASE 1: TECH DEBT P1 - PayPal Types (~10 min)
+          - Fix : any types in PayPalSmartButton.tsx (landing + web)
+          - Proper PayPal SDK types
+          - Run pnpm typecheck
+        * PHASE 2: TECH DEBT P2 - UI Components (~15 min)
+          - Fix : any in apps/landing/components/ (blocks, tracker, builder)
+        * PHASE 3: TECH DEBT P3 - Admin Tables (~20 min)
+          - Fix : any in apps/admin/ (rate-limits, settings, seo)
+        * PHASE 4: VERIFY ZERO TECH DEBT
+          - grep count = 0
+          - pnpm build SUCCESS
+        * PHASE 5: IPO-001 RESUME - Docker Production Build
+          - Per IPO_UPGRADE_PLAN.md
+    - Output: Docs verification report, Tech debt = 0 confirmation, IPO-001 started
+    - Assigned: fullstack-developer (comprehensive multi-phase execution)
+    - Status: delegated → running
+    - Created: 2026-01-28 22:54
+    - Binh Pháp: Ch.5 勢 Thế Trận - Build momentum through sequential wins
+    - WIN-WIN-WIN:
+        - 👑 Owner: All remaining critical work completed
+        - 🏢 Agency: Zero tech debt, production-ready
+        - 🚀 Client: Verified docs + stable codebase
+    - Agent ID: aa4574f
+    - Execution Mode: Background (Factory Line - sequential phases)
+    - Output File: /private/tmp/claude/-Users-macbookprom1-mekong-cli/tasks/aa4574f.output
+    - Status: Running in background
+    - Started: 2026-01-28 22:54
+
+
+- [ ] **TASK-tech-debt-verification**
+    - Description: VERIFICATION - Tech Debt Zero Confirmation & Final Commit
+    - Mission: Verify agent aa4574f completed tech debt elimination (Phases 1-3), run final checks, commit if green
+    - Dependencies: TASK-mega-execution (agent aa4574f)
+    - Tasks:
+        1. Wait/check for agent aa4574f completion signal
+        2. Run: grep -rn ': any' apps/ --include='*.ts' --include='*.tsx' | grep -v node_modules | grep -v '.d.ts' | wc -l
+           Expected: 0 (zero tech debt)
+        3. Run: pnpm typecheck
+           Expected: All apps pass type checking
+        4. Run: pnpm build
+           Expected: Build succeeds without errors
+        5. If all checks PASS:
+           - Commit with message: 'fix(types): zero tech debt - all :any eliminated'
+           - Update TASK-mega-execution status
+        6. If any checks FAIL:
+           - Document failures in verification report
+           - Alert for manual intervention
+    - Assigned: code-reviewer (verification specialist)
+    - Status: pending → waiting for aa4574f
+    - Priority: high (blocking final commit)
+    - Created: 2026-01-28 23:11
+    - Binh Pháp: Ch.6 虛實 Hư Thực - Verify defenses are solid
+    - WIN-WIN-WIN:
+        - 👑 Owner: Confidence in zero tech debt (type-safe codebase)
+        - 🏢 Agency: Quality gates enforced (verification before commit)
+        - 🚀 Client: Production-ready code (no TypeScript :any)
+    - Output: Verification report + Commit (if green) or Alert (if red)
+
+
+- [ ] **TASK-ipo-001-docker**
+    - Description: IPO-001 - Docker Production Build
+    - Mission: Build production-ready Docker image for mekong-cli deployment
+    - Tasks:
+        1. Navigate to ~/mekong-cli directory
+        2. Build Docker image: docker build -t mekong-cli:production .
+        3. Verify image builds successfully (check exit code, image size)
+        4. Tag as latest: docker tag mekong-cli:production mekong-cli:latest
+        5. Test image: docker run --rm mekong-cli:latest --version
+        6. Report build status and image details
+    - Assigned: devops-engineer (Docker specialist)
+    - Status: pending → ready to start
+    - Priority: high (IPO readiness)
+    - Created: 2026-01-28 23:17
+    - Binh Pháp: Ch.12 火攻 Hỏa Công (Fire Attack) - Launch/Deploy with force
+    - WIN-WIN-WIN:
+        - 👑 Owner: Production-ready deployment infrastructure
+        - 🏢 Agency: Automated build pipeline, containerized deployment
+        - 🚀 Client: Reliable infrastructure, scalable deployment
+    - Output: Docker build report + Image tags + Deployment readiness confirmation
