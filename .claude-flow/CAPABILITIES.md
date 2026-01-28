@@ -62,6 +62,20 @@ Claude Flow V3 is a domain-driven design architecture for multi-agent AI coordin
 
 **Version:** `ba7b3edd` | **Sync:** `npx claudekit-engineer install`
 
+### 🚨 ĐIỀU 46: GIAO TIẾP BẰNG /COMMAND - CẤM GIAO TIẾP KHÔNG LỆNH
+
+> **All swarm agents MUST communicate via /command from claudekit. Free-form text PROHIBITED.**
+
+| Command     | Purpose      | Claudekit Path                 |
+| ----------- | ------------ | ------------------------------ |
+| `/delegate` | Assign task  | `.claude/commands/delegate.md` |
+| `/plan`     | Create plan  | `.claude/commands/plan.md`     |
+| `/code`     | Execute code | `.claude/commands/code.md`     |
+| `/verify`   | Run tests    | `.claude/commands/verify.md`   |
+| `/ship`     | Deploy       | `.claude/commands/ship.md`     |
+
+**FULL RULE:** See `.claude/memory/constitution.md` ĐIỀU 46
+
 ---
 
 ## Swarm Orchestration

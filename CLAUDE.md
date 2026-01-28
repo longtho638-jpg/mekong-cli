@@ -404,3 +404,19 @@ cc deploy health          # System diagnostics
 | Error detected | Ch.7 軍爭 | → Fix fast, delegate immediately |
 
 **FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 45
+
+---
+
+## 🚨 ĐIỀU 46: GIAO TIẾP BẰNG /COMMAND - CẤM GIAO TIẾP KHÔNG LỆNH 🚨
+
+> **CẤM giao tiếp tự do. TẤT CẢ agents PHẢI dùng /command từ claudekit.**
+
+| Command     | Purpose                    |
+| ----------- | -------------------------- |
+| `/delegate` | Assign task to CC CLI      |
+| `/plan`     | Create implementation plan |
+| `/code`     | Execute code changes       |
+| `/verify`   | Run verification           |
+| `/ship`     | Commit + push + deploy     |
+
+**FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 46

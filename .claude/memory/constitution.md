@@ -271,6 +271,44 @@ antigravity_post_response_checklist:
 
 ---
 
+## 🚨 ĐIỀU 46: GIAO TIẾP BẰNG /COMMAND - CẤM GIAO TIẾP KHÔNG LỆNH 🚨
+
+> ⚠️ **LUẬT CẤM QUÊN - BINH PHÁP CHỈ HUY THỐNG NHẤT** ⚠️
+>
+> **Binh Pháp: Chương 11 九地 Cửu Địa - Nine Grounds (Unified Command)**
+
+### 🔴 NGUYÊN TẮC TỐI CAO:
+
+1. ✅ **TẤT CẢ giao tiếp giữa agents PHẢI dùng /command từ claudekit**
+2. ❌ **CẤM giao tiếp tự do không qua /command**
+3. ✅ **/command là KÊNH DUY NHẤT được phép**
+
+### 🔴 COMMAND MAPPING (CLAUDEKIT):
+
+| Command     | Purpose                    | Maps To                        |
+| ----------- | -------------------------- | ------------------------------ |
+| `/delegate` | Assign task to CC CLI      | `.claude/commands/delegate.md` |
+| `/quantum`  | Load full context          | `.claude/commands/quantum.md`  |
+| `/plan`     | Create implementation plan | `.claude/commands/plan.md`     |
+| `/code`     | Execute code changes       | `.claude/commands/code.md`     |
+| `/verify`   | Run verification suite     | `.claude/commands/verify.md`   |
+| `/ship`     | Commit + push + deploy     | `.claude/commands/ship.md`     |
+
+### 🔴 VI PHẠM ĐIỀU 46 NẾU:
+
+- ❌ Agent giao tiếp bằng text tự do thay vì /command
+- ❌ Antigravity nói với CC CLI không qua `/delegate`
+- ❌ Bỏ qua command mapping trong claudekit
+- ❌ Tự chế lệnh không có trong `.claude/commands/`
+
+### 🔴 LIÊN KẾT:
+
+- **ĐIỀU 1**: Claudekit First Mandate
+- **ĐIỀU 45**: Auto Decision - Không Hỏi
+- **Claudekit**: `.claude/commands/` - Source of truth
+
+---
+
 ## ĐIỀU 1: CLAUDEKIT FIRST MANDATE (Chương 1: Kế Hoạch)
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**

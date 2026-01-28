@@ -29,6 +29,20 @@ Use `ct` (alias for `cleo`) for all task operations. Full docs: `~/.cleo/docs/TO
 
 **Version:** `ba7b3edd` | **Upgrade:** `npx claudekit-engineer install`
 
+## 🚨 ĐIỀU 46: GIAO TIẾP BẰNG /COMMAND - CẤM GIAO TIẾP KHÔNG LỆNH
+
+> **CẤM giao tiếp tự do. TẤT CẢ agents PHẢI dùng /command từ claudekit.**
+
+| Command     | Purpose                    |
+| ----------- | -------------------------- |
+| `/delegate` | Assign task to other agent |
+| `/plan`     | Create implementation plan |
+| `/code`     | Execute code changes       |
+| `/verify`   | Run verification           |
+| `/ship`     | Commit + push + deploy     |
+
+**FULL RULE:** See `.claude/memory/constitution.md` ĐIỀU 46
+
 ### CRITICAL: Error Handling
 
 **NEVER ignore exit codes. Failed commands mean tasks were NOT created/updated.**
