@@ -113,6 +113,14 @@ class Settings(BaseSettings):
     fcm_credentials_path: Optional[str] = Field(default=None, description="Path to FCM service account JSON")
 
     # ========================================
+    # CAPTCHA Configuration
+    # ========================================
+    captcha_secret_key: Optional[str] = Field(default=None, description="CAPTCHA Secret Key")
+    captcha_site_key: Optional[str] = Field(default=None, description="CAPTCHA Site Key")
+    captcha_provider: str = Field(default="hcaptcha", description="CAPTCHA Provider (hcaptcha/recaptcha)")
+    enable_captcha_login: bool = Field(default=False, description="Enable CAPTCHA on login")
+
+    # ========================================
     # Database Configuration
     # ========================================
     database_url: str = Field(
@@ -130,6 +138,18 @@ class Settings(BaseSettings):
     tenant_db_path: str = Field(
         default="./data/tenants",
         description="Path for tenant databases"
+    )
+
+    # ========================================
+    # Search Engine Configuration (Meilisearch)
+    # ========================================
+    meilisearch_url: str = Field(
+        default="http://localhost:7700",
+        description="Meilisearch URL"
+    )
+    meilisearch_master_key: str = Field(
+        default="masterKey",
+        description="Meilisearch Master Key"
     )
 
     # ========================================
@@ -203,6 +223,24 @@ class Settings(BaseSettings):
     aws_secret_access_key: Optional[str] = Field(default=None, description="AWS Secret Access Key")
     aws_region: str = Field(default="us-east-1", description="AWS Region")
     s3_bucket_name: str = Field(default="agencyos-exports", description="S3 Bucket for exports")
+
+    # ========================================
+    # CDN Configuration
+    # ========================================
+    cdn_provider: str = Field(default="cloudflare", description="CDN Provider (cloudflare/fastly)")
+    cloudflare_api_token: Optional[str] = Field(default=None, description="Cloudflare API Token")
+    cloudflare_zone_id: Optional[str] = Field(default=None, description="Cloudflare Zone ID")
+    fastly_api_token: Optional[str] = Field(default=None, description="Fastly API Token")
+    fastly_service_id: Optional[str] = Field(default=None, description="Fastly Service ID")
+
+    # ========================================
+    # AI / LLM Configuration
+    # ========================================
+    google_api_key: Optional[str] = Field(default=None, description="Google Gemini API Key")
+    openai_api_key: Optional[str] = Field(default=None, description="OpenAI API Key")
+    anthropic_api_key: Optional[str] = Field(default=None, description="Anthropic Claude API Key")
+    default_llm_provider: str = Field(default="gemini", description="Default LLM Provider (gemini/openai/anthropic)")
+    default_llm_model: str = Field(default="gemini-1.5-flash", description="Default LLM Model")
 
     # ========================================
     # Computed Properties

@@ -21,8 +21,8 @@ from backend.api.middleware.metrics import setup_metrics
 
 # Import middleware
 from backend.api.middleware.multitenant import MultiTenantMiddleware, setup_tenant_routes
-from backend.api.middleware.security import SecurityMiddleware
-from backend.api.middleware.validation import ValidationMiddleware
+from backend.middleware.security import SecurityMiddleware
+from backend.middleware.validation import ValidationMiddleware
 from backend.api.routers import (
     admin as admin_router,
 )
@@ -30,6 +30,7 @@ from backend.api.routers import (
 # Import Routers
 from backend.api.routers import (
     agents as agent_router,
+    analytics as analytics_router,
 )
 from backend.api.routers import (
     backup as backup_router,  # Backup & DR
@@ -38,12 +39,16 @@ from backend.api.routers import (
     binh_phap as binh_phap_router,
 )
 from backend.api.routers import (
+    executive as executive_router,
+)
+from backend.api.routers import (
     code as code_router,
 )
 from backend.api.routers import (
     crm,
     franchise,
     i18n,
+    inventory,
     kanban,
     paypal_checkout,  # PayPal payment integration
     scheduler,
@@ -99,11 +104,21 @@ from backend.api.routers import (
     webhook_health as webhook_health_router,
 )
 from backend.api.routers import (
+    cdn as cdn_router,  # CDN Integration
+)
+from backend.api.routers import (
+    llm as llm_router,  # AI/LLM Integration
+)
+from backend.api.routers import (
     webhooks as webhooks_router,
+)
+from backend.api.routers import (
+    analytics_realtime as analytics_realtime_router,
 )
 from backend.api.routers.router import router as hybrid_router
 from backend.middleware.cache_middleware import CacheControlMiddleware
 from backend.middleware.jwt_rotation import JWTRotationMiddleware
+from backend.services.cdn.utils import load_cdn_config, map_cache_rules_to_middleware
 
 # from backend.api.middleware.rate_limiting import setup_rate_limit_routes, setup_rate_limiting # DEPRECATED
 from backend.middleware.rate_limiter import RateLimitMiddleware
@@ -141,7 +156,14 @@ if settings.enable_validation:
     app.add_middleware(ValidationMiddleware)
 
 # Cache Control & Server-Side Caching (Phase 7 - IPO-055)
-app.add_middleware(CacheControlMiddleware)
+# Load custom rules from CDN config if available
+try:
+    cdn_config = load_cdn_config()
+    custom_cache_rules = map_cache_rules_to_middleware(cdn_config)
+except Exception:
+    custom_cache_rules = None
+
+app.add_middleware(CacheControlMiddleware, cache_rules=custom_cache_rules)
 
 if settings.enable_multitenant:
     app.add_middleware(MultiTenantMiddleware)
@@ -160,12 +182,14 @@ app.include_router(swarm_router.router)
 app.include_router(revenue_router.router)
 app.include_router(ops_router.router)
 app.include_router(crm.router)
+app.include_router(inventory.router)
 app.include_router(kanban.router)
 app.include_router(dashboard_router.router)
 app.include_router(license_router.router)
 app.include_router(team_router.router)
 app.include_router(admin_router.router)
 app.include_router(agent_router.router)
+app.include_router(analytics_router.router)
 app.include_router(landing_pages_router.router)
 app.include_router(notifications_router.router)
 app.include_router(notification_preferences_router.router)
@@ -173,6 +197,7 @@ app.include_router(push_subscriptions_router.router)
 app.include_router(notification_templates_router.router)
 app.include_router(rate_limits_router.router)
 app.include_router(binh_phap_router.router)
+app.include_router(executive_router.router)
 
 # Payment Integration
 app.include_router(paypal_checkout.router)
@@ -187,9 +212,12 @@ app.include_router(vietnam.router)
 app.include_router(scheduler.router)
 app.include_router(franchise.router)
 app.include_router(code_router.router)
+app.include_router(cdn_router.router)
+app.include_router(llm_router.router)
 app.include_router(webhooks_router.router)
 app.include_router(dlq_router.router)
 app.include_router(webhook_health_router.router)
+app.include_router(analytics_realtime_router.router)
 app.include_router(hybrid_router)
 app.include_router(websocket_router)
 
