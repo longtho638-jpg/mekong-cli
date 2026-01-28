@@ -1,19 +1,47 @@
 "use client";
 
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons, ReactPayPalScriptOptions } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
-// Types for PayPal SDK actions and data
-interface PayPalCreateSubscriptionActions {
-  subscription: {
-    create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
+// PayPal SDK Type Definitions
+interface CreateOrderData {
+  paymentSource: string;
+}
+
+interface CreateOrderActions {
+  order: {
+    create: (data: Record<string, unknown>) => Promise<string>;
   };
 }
 
-interface PayPalOnApproveData {
+interface CreateSubscriptionData {
   orderID: string;
+}
+
+interface CreateSubscriptionActions {
+  subscription: {
+    create: (options: { plan_id: string; custom_id?: string; [key: string]: unknown }) => Promise<string>;
+  };
+}
+
+interface OnApproveData {
+  orderID: string;
+  payerID: string;
+  paymentID?: string;
   subscriptionID?: string | null;
-  facilitatorAccessToken?: string;
+  facilitatorAccessToken: string;
+}
+
+interface OnApproveActions {
+  order?: {
+    capture: () => Promise<unknown>;
+  };
+  subscription?: {
+    get: () => Promise<unknown>;
+    activate: () => Promise<unknown>;
+  };
+  restart: () => Promise<void>;
+  redirect: (url: string) => Promise<void>;
 }
 
 interface PayPalSmartButtonProps {
@@ -45,14 +73,14 @@ export default function PayPalSmartButton({
 
   // Environment variables should be handled safely.
   // In a real app, fetch CLIENT_ID from backend config or env.
-  const initialOptions = {
+  const initialOptions: ReactPayPalScriptOptions = {
     clientId: "test", // Replace with process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID
     currency: currency,
     intent: mode === "subscription" ? "subscription" : "capture",
     vault: mode === "subscription",
   };
 
-  const createOrder = async () => {
+  const createOrder = async (data: CreateOrderData, actions: CreateOrderActions) => {
     try {
       const response = await fetch(`${apiBaseUrl}/payments/paypal/create-order`, {
         method: "POST",
@@ -67,10 +95,10 @@ export default function PayPalSmartButton({
         }),
       });
 
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.detail || "Failed to create order");
+      const resData = await response.json();
+      if (!response.ok) throw new Error(resData.detail || "Failed to create order");
 
-      return data.orderId as string; // Return order ID from backend
+      return resData.orderId as string; // Return order ID from backend
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
       setError(message);
@@ -79,7 +107,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (_data: unknown, actions: PayPalCreateSubscriptionActions) => {
+  const createSubscription = async (data: CreateSubscriptionData, actions: CreateSubscriptionActions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
@@ -120,7 +148,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: PayPalOnApproveData) => {
+  const onApprove = async (data: OnApproveData, actions: OnApproveActions) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
@@ -162,9 +190,9 @@ export default function PayPalSmartButton({
         )}
         <PayPalButtons
           style={{ layout: "vertical", shape: "rect", label: mode === "subscription" ? "subscribe" : "pay" }}
-          createOrder={mode === "payment" ? createOrder : undefined}
-          createSubscription={mode === "subscription" ? createSubscription : undefined}
-          onApprove={onApprove}
+          createOrder={mode === "payment" ? (createOrder as any) : undefined}
+          createSubscription={mode === "subscription" ? (createSubscription as any) : undefined}
+          onApprove={onApprove as any}
           onError={(err) => {
             console.error("PayPal Error:", err);
             setError("An error occurred with PayPal.");
