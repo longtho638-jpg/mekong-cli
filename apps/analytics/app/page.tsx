@@ -44,7 +44,7 @@ function MetricCard({ title, value, change, trend, icon: Icon, delay }: MetricCa
     )
 }
 
-function RevenueChart({ data }: { data: any[] }) {
+function RevenueChart({ data }: { data: DailyMetric[] }) {
     return (
         <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -90,7 +90,7 @@ function RevenueChart({ data }: { data: any[] }) {
     )
 }
 
-function UserGrowthChart({ data }: { data: any[] }) {
+function UserGrowthChart({ data }: { data: DailyMetric[] }) {
     return (
         <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
