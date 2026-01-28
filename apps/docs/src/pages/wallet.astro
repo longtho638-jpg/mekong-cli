@@ -767,7 +767,15 @@ const pageData = (locales[locale] as any).wallet_page;
         return;
       }
 
-      const html = data.transactions.map((tx: any) => {
+      interface Transaction {
+        type: string;
+        amount: number;
+        description: string;
+        created_at: string;
+        to_user_id?: string;
+      }
+
+      const html = data.transactions.map((tx: Transaction) => {
         const isPositive = tx.type === 'earn' || tx.type === 'bonus' || tx.to_user_id;
         return `
           <div class="history-item">

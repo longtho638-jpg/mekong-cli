@@ -9,7 +9,18 @@ const t = useTranslations(locale);
 const title = t('faq_page.title');
 const description = t('faq_page.description');
 
-const faqs = (locales[locale] as any).faq_page.categories;
+interface FaqQuestion {
+  q: string;
+  a: string;
+}
+
+interface FaqCategory {
+  title: string;
+  icon: string;
+  questions: FaqQuestion[];
+}
+
+const faqs = (locales[locale] as any).faq_page.categories as FaqCategory[];
 ---
 
 <LandingLayout title={title} description={description}>
@@ -37,14 +48,14 @@ const faqs = (locales[locale] as any).faq_page.categories;
 
       <!-- FAQ Categories -->
       <div class="faq-content">
-        {faqs.map((category: any, catIndex: number) => (
+        {faqs.map((category, catIndex) => (
           <div class="faq-category" style={`--cat-delay: ${catIndex}`}>
             <div class="category-header">
               <span class="category-icon">{category.icon}</span>
               <h2 class="category-title">{category.title}</h2>
             </div>
             <div class="questions-list">
-              {category.questions.map((item: any, qIndex: number) => (
+              {category.questions.map((item, qIndex) => (
                 <details class="faq-item" style={`--q-delay: ${catIndex * 3 + qIndex}`}>
                   <summary class="faq-question">
                     <span class="question-text">{item.q}</span>

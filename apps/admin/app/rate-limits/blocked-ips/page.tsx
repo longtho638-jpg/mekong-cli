@@ -18,6 +18,7 @@ interface BlockedIPRow {
     reason: string;
     blocked_at: string;
     expires_at: string | null;
+    [key: string]: unknown;
 }
 
 export default function BlockedIPsPage() {
@@ -72,7 +73,10 @@ export default function BlockedIPsPage() {
         {
             header: 'IP Address',
             accessor: 'ip_address',
-            render: (row: BlockedIPRow) => <span className="font-mono font-bold">{row.ip_address}</span>
+            render: (data: unknown) => {
+                const row = data as BlockedIPRow;
+                return <span className="font-mono font-bold">{row.ip_address}</span>;
+            }
         },
         {
             header: 'Reason',
@@ -81,31 +85,40 @@ export default function BlockedIPsPage() {
         {
             header: 'Blocked At',
             accessor: 'blocked_at',
-            render: (row: BlockedIPRow) => new Date(row.blocked_at).toLocaleString()
+            render: (data: unknown) => {
+                const row = data as BlockedIPRow;
+                return new Date(row.blocked_at).toLocaleString();
+            }
         },
         {
             header: 'Expires At',
             accessor: 'expires_at',
-            render: (row: BlockedIPRow) => row.expires_at ? new Date(row.expires_at).toLocaleString() : 'Permanent'
+            render: (data: unknown) => {
+                const row = data as BlockedIPRow;
+                return row.expires_at ? new Date(row.expires_at).toLocaleString() : 'Permanent';
+            }
         },
         {
             header: 'Actions',
             accessor: 'actions',
-            render: (row: BlockedIPRow) => (
-                <MD3Button
-                    variant="text"
-                    color="error"
-                    size="small"
-                    startIcon={<Trash2 size={16} />}
-                    onClick={() => {
-                        if (confirm(`Unblock IP ${row.ip_address}?`)) {
-                            unblockIpMutation.mutate(row.ip_address);
-                        }
-                    }}
-                >
-                    Unblock
-                </MD3Button>
-            )
+            render: (data: unknown) => {
+                const row = data as BlockedIPRow;
+                return (
+                    <MD3Button
+                        variant="text"
+                        color="error"
+                        size="small"
+                        startIcon={<Trash2 size={16} />}
+                        onClick={() => {
+                            if (confirm(`Unblock IP ${row.ip_address}?`)) {
+                                unblockIpMutation.mutate(row.ip_address);
+                            }
+                        }}
+                    >
+                        Unblock
+                    </MD3Button>
+                );
+            }
         }
     ];
 

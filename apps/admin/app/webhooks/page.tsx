@@ -13,12 +13,14 @@ interface WebhookConfigRow {
   description: string;
   event_types: string[];
   is_active: boolean;
+  [key: string]: unknown;
 }
 
 interface WebhookEventRow {
   event_type: string;
   status: 'success' | 'failed';
   created_at: string;
+  [key: string]: unknown;
 }
 
 export default function WebhooksPage() {
@@ -47,39 +49,51 @@ export default function WebhooksPage() {
     {
         header: 'URL',
         accessor: 'url',
-        render: (row: WebhookConfigRow) => (
-            <div className="font-medium text-gray-900 truncate max-w-xs" title={row.url}>{row.url}</div>
-        )
+        render: (data: unknown) => {
+            const row = data as WebhookConfigRow;
+            return (
+                <div className="font-medium text-gray-900 truncate max-w-xs" title={row.url}>{row.url}</div>
+            );
+        }
     },
     { header: 'Description', accessor: 'description' },
     {
         header: 'Events',
         accessor: 'event_types',
-        render: (row: WebhookConfigRow) => (
-            <div className="flex gap-1 flex-wrap">
-                {row.event_types.map((type: string) => (
-                    <span key={type} className="px-2 py-0.5 bg-gray-100 rounded text-xs text-gray-600 font-mono">{type}</span>
-                ))}
-            </div>
-        )
+        render: (data: unknown) => {
+            const row = data as WebhookConfigRow;
+            return (
+                <div className="flex gap-1 flex-wrap">
+                    {row.event_types.map((type: string) => (
+                        <span key={type} className="px-2 py-0.5 bg-gray-100 rounded text-xs text-gray-600 font-mono">{type}</span>
+                    ))}
+                </div>
+            );
+        }
     },
     {
         header: 'Status',
         accessor: 'is_active',
-        render: (row: WebhookConfigRow) => (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                {row.is_active ? 'Active' : 'Inactive'}
-            </span>
-        )
+        render: (data: unknown) => {
+            const row = data as WebhookConfigRow;
+            return (
+                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                    {row.is_active ? 'Active' : 'Inactive'}
+                </span>
+            );
+        }
     },
     {
         header: 'Actions',
         accessor: 'id',
-        render: (row: WebhookConfigRow) => (
-            <div className="flex gap-2">
-                <MD3Button variant="text" size="small" startIcon={<Edit size={14} />}>Edit</MD3Button>
-            </div>
-        )
+        render: (data: unknown) => {
+            const row = data as WebhookConfigRow;
+            return (
+                <div className="flex gap-2">
+                    <MD3Button variant="text" size="small" startIcon={<Edit size={14} />}>Edit</MD3Button>
+                </div>
+            );
+        }
     }
   ];
 
@@ -87,18 +101,24 @@ export default function WebhooksPage() {
       {
           header: 'Event',
           accessor: 'event_type',
-          render: (row: WebhookEventRow) => <span className="font-mono text-sm">{row.event_type}</span>
+          render: (data: unknown) => {
+              const row = data as WebhookEventRow;
+              return <span className="font-mono text-sm">{row.event_type}</span>;
+          }
       },
       {
           header: 'Status',
           accessor: 'status',
-          render: (row: WebhookEventRow) => (
-            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                {row.status}
-            </span>
-          )
+          render: (data: unknown) => {
+            const row = data as WebhookEventRow;
+            return (
+                <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                    {row.status}
+                </span>
+            );
+          }
       },
-      { header: 'Time', accessor: 'created_at', render: (row: WebhookEventRow) => new Date(row.created_at).toLocaleString() }
+      { header: 'Time', accessor: 'created_at', render: (data: unknown) => { const row = data as WebhookEventRow; return new Date(row.created_at).toLocaleString(); } }
   ];
 
   return (
@@ -128,8 +148,8 @@ export default function WebhooksPage() {
                 {isLoadingConfigs ? (
                     <div className="p-8 text-center">Loading configs...</div>
                 ) : (
-                    <MD3DataTable
-                        columns={columns}
+                    <MD3DataTable<WebhookConfigRow>
+                        columns={columns as any}
                         data={configs || []}
                     />
                 )}
@@ -145,8 +165,8 @@ export default function WebhooksPage() {
                      {isLoadingEvents ? (
                         <div className="p-8 text-center">Loading events...</div>
                     ) : (
-                        <MD3DataTable
-                            columns={eventColumns}
+                        <MD3DataTable<WebhookEventRow>
+                            columns={eventColumns as any}
                             data={recentEvents?.items || []}
                         />
                     )}

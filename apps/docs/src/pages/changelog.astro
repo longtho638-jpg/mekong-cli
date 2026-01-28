@@ -9,7 +9,15 @@ const t = useTranslations(locale);
 const title = t('changelog_page.title');
 const description = t('changelog_page.description');
 
+interface ChangeLogRelease {
+  version: string;
+  tag?: string;
+  date: string;
+  changes: [string, string][];
+}
+
 const pageData = (locales[locale] as any).changelog_page;
+const releases = pageData.releases as ChangeLogRelease[];
 ---
 
 <LandingLayout title={title} description={description}>
@@ -24,7 +32,7 @@ const pageData = (locales[locale] as any).changelog_page;
       </div>
 
       <div class="releases">
-        {pageData.releases.map((release: any) => (
+        {releases.map((release) => (
           <div class="release">
             <div class="release-header">
               <div class="version-info">
@@ -35,7 +43,7 @@ const pageData = (locales[locale] as any).changelog_page;
             </div>
 
             <ul class="changes">
-              {release.changes.map((change: [string, string]) => (
+              {release.changes.map((change) => (
                 <li class={`change ${change[0]}`}>
                   <span class="change-type">{pageData.types[change[0]]}</span>
                   {change[1]}

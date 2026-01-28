@@ -19,7 +19,7 @@ interface MetricCardProps {
 
 // Metric Card Component
 function MetricCard({ title, value, change, icon: Icon, prefix = "" }: MetricCardProps) {
-    const isPositive = change >= 0;
+    const isPositive = (change ?? 0) >= 0;
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
             <div className="flex justify-between items-start mb-4">

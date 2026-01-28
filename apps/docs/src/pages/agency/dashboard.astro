@@ -1072,12 +1072,12 @@ const pageData = (locales[locale] as any).agency_dashboard;
     try {
       const response = await fetch('/api/agency/stats');
       const data = await response.json();
-      
+
       if (!response.ok) {
         console.error('API Error:', data);
         return null;
       }
-      
+
       return data;
     } catch (error) {
       console.error('Failed to fetch agency stats:', error);
@@ -1085,10 +1085,21 @@ const pageData = (locales[locale] as any).agency_dashboard;
     }
   }
 
+  interface AgencyStats {
+    metrics: {
+      revenue_mtd: number;
+      active_clients: number;
+      profit_margin: number;
+      utilization: number;
+      nps_score: number;
+      pipeline: number;
+    }
+  }
+
   // Render metrics with animation
-  function renderMetrics(data: any) {
+  function renderMetrics(data: AgencyStats) {
     const metrics = data.metrics;
-    
+
     animateValue('revenue-value', 0, metrics.revenue_mtd || 0, 2000, '$', '');
     animateValue('clients-value', 0, metrics.active_clients || 0, 2000);
     animateValue('margin-value', 0, metrics.profit_margin || 0, 2000, '', '%');

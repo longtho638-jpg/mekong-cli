@@ -1,0 +1,85 @@
+/* =====================================================
+   MD3 Layout Tokens
+   Material Design 3 - Layout Architecture
+   Reference: m3.material.io/foundations/layout
+   
+   RESPONSIVE SAFE MARGINS:
+   - Uses vw (viewport width) for truly responsive padding
+   - Ensures content never touches screen edges
+   ===================================================== */
+
+:root {
+    /* ========== Margin Tokens (Window Size Classes) ========== */
+    --md-sys-layout-margin-compact: 16px;
+    /* <600dp */
+    --md-sys-layout-margin-medium: 24px;
+    /* 600-839dp */
+    --md-sys-layout-margin-expanded: 24px;
+    /* >=840dp */
+
+    /* ========== Pane Width Tokens ========== */
+    --md-sys-layout-pane-fixed-width: 360px;
+    /* Supporting pane */
+    --md-sys-layout-pane-rail-width: 80px;
+    /* Navigation Rail */
+    --md-sys-layout-pane-drawer-width: 360px;
+    /* Navigation Drawer */
+
+    /* ========== Spacer Tokens ========== */
+    --md-sys-layout-spacer-pane: 24px;
+    /* Between panes (Expanded) */
+
+    /* ========== Active Margin (Responsive) ========== */
+    --md-sys-layout-margin: var(--md-sys-layout-margin-expanded);
+
+    /* ========== App Shell Content Offset ========== */
+    /* This ensures main content clears the Navigation Rail */
+    --md-app-shell-content-offset: 0px;
+    /* Default: no offset (mobile) */
+}
+
+/* ========== Responsive Breakpoints ========== */
+
+/* Compact: 0 - 599px (Mobile) */
+@media (max-width: 599px) {
+    :root {
+        --md-sys-layout-margin: var(--md-sys-layout-margin-compact);
+        --md-sys-layout-pane-fixed-width: 100%;
+        --md-sys-layout-spacer-pane: 16px;
+        --md-app-shell-content-offset: 0px;
+        /* No rail on mobile */
+    }
+}
+
+/* Medium: 600 - 839px (Tablet Portrait) */
+@media (min-width: 600px) and (max-width: 839px) {
+    :root {
+        --md-sys-layout-margin: var(--md-sys-layout-margin-medium);
+        --md-sys-layout-pane-fixed-width: 320px;
+        --md-sys-layout-spacer-pane: 24px;
+        --md-app-shell-content-offset: 0px;
+        /* No rail on tablet */
+    }
+}
+
+/* Expanded: 840px - 1199px (Small Desktop) */
+@media (min-width: 840px) and (max-width: 1199px) {
+    :root {
+        --md-sys-layout-margin: 24px;
+        --md-sys-layout-pane-fixed-width: 360px;
+        --md-sys-layout-spacer-pane: 24px;
+        --md-app-shell-content-offset: 80px;
+        /* Rail width offset */
+    }
+}
+
+/* Large: 1200px+ (Full Desktop) */
+@media (min-width: 1200px) {
+    :root {
+        --md-sys-layout-margin: 32px;
+        --md-sys-layout-pane-fixed-width: 412px;
+        --md-sys-layout-spacer-pane: 32px;
+        --md-app-shell-content-offset: 80px;
+        /* Rail width offset */
+    }
+}

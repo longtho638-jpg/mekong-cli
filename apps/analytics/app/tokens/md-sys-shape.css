@@ -1,0 +1,39 @@
+/* =====================================================
+   MD3 Shape System - Official M3 Tokens
+   Reference: m3.material.io/styles/shape
+   
+   KEY RULE: padding ≥ corner-radius to prevent text clipping
+   ===================================================== */
+
+:root {
+    /* ========== CORNER RADIUS ========== */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 9999px;
+
+    /* ========== SAFE PADDING (corner + 8dp for robust safety) ========== */
+    /* These ensure text NEVER touches the curved corners */
+    --md-sys-shape-padding-none: 0px;
+    --md-sys-shape-padding-extra-small: 12px;
+    /* 4 + 8 */
+    --md-sys-shape-padding-small: 16px;
+    /* 8 + 8 */
+    --md-sys-shape-padding-medium: 20px;
+    /* 12 + 8 */
+    --md-sys-shape-padding-large: 24px;
+    /* 16 + 8 */
+    --md-sys-shape-padding-extra-large: 36px;
+    /* 28 + 8 */
+    --md-sys-shape-padding-full: 28px;
+    /* pill buttons */
+
+    /* ========== MINIMUM CONTENT INSET ========== */
+    /* For when you need padding inside already-padded containers */
+    --md-sys-shape-inset-small: 8px;
+    --md-sys-shape-inset-medium: 12px;
+    --md-sys-shape-inset-large: 16px;
+}

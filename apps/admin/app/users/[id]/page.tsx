@@ -12,6 +12,7 @@ interface UserActivityRow {
   action: string;
   ip: string;
   date: string;
+  [key: string]: unknown;
 }
 
 export default function UserDetailPage({ params }: { params: { id: string } }) {
@@ -42,9 +43,23 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   if (!user) return <div className="p-8 text-center">User not found</div>;
 
   const activityColumns = [
-      { header: 'Action', accessor: 'action', render: (row: UserActivityRow) => <span className="font-medium capitalize">{row.action.replace('_', ' ')}</span> },
+      {
+          header: 'Action',
+          accessor: 'action',
+          render: (data: unknown) => {
+              const row = data as UserActivityRow;
+              return <span className="font-medium capitalize">{row.action.replace('_', ' ')}</span>;
+          }
+      },
       { header: 'IP Address', accessor: 'ip' },
-      { header: 'Date', accessor: 'date', render: (row: UserActivityRow) => new Date(row.date).toLocaleString() }
+      {
+          header: 'Date',
+          accessor: 'date',
+          render: (data: unknown) => {
+              const row = data as UserActivityRow;
+              return new Date(row.date).toLocaleString();
+          }
+      }
   ];
 
   return (
@@ -105,7 +120,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                 <div className="p-4 border-b border-gray-200">
                     <MD3Typography variant="title-large">Recent Activity</MD3Typography>
                 </div>
-                <MD3DataTable columns={activityColumns} data={activity || []} />
+                <MD3DataTable<UserActivityRow> columns={activityColumns as any} data={activity || []} />
             </MD3Card>
 
             <MD3Card variant="elevated" className="p-6">

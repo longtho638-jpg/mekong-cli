@@ -13,6 +13,7 @@ interface AuditLogRow {
   user_id: string;
   ip_address: string;
   timestamp: string;
+  [key: string]: unknown;
 }
 
 export default function AuditPage() {
@@ -28,24 +29,42 @@ export default function AuditPage() {
     {
         header: 'Action',
         accessor: 'action',
-        render: (row: AuditLogRow) => (
-            <span className="font-medium text-gray-900">{row.action}</span>
-        )
+        render: (data: unknown) => {
+            const row = data as AuditLogRow;
+            return <span className="font-medium text-gray-900">{row.action}</span>;
+        }
     },
     {
         header: 'Resource',
         accessor: 'resource_type',
-        render: (row: AuditLogRow) => (
-            <div className="flex items-center gap-1 text-sm">
-                <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-600 font-mono text-xs">{row.resource_type}</span>
-                <span className="text-gray-400">/</span>
-                <span className="font-mono text-xs text-gray-500">{row.resource_id}</span>
-            </div>
-        )
+        render: (data: unknown) => {
+            const row = data as AuditLogRow;
+            return (
+                <div className="flex items-center gap-1 text-sm">
+                    <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-600 font-mono text-xs">{row.resource_type}</span>
+                    <span className="text-gray-400">/</span>
+                    <span className="font-mono text-xs text-gray-500">{row.resource_id}</span>
+                </div>
+            );
+        }
     },
-    { header: 'User', accessor: 'user_id', render: (row: AuditLogRow) => <span className="text-sm text-gray-600">{row.user_id}</span> },
+    {
+        header: 'User',
+        accessor: 'user_id',
+        render: (data: unknown) => {
+            const row = data as AuditLogRow;
+            return <span className="text-sm text-gray-600">{row.user_id}</span>;
+        }
+    },
     { header: 'IP Address', accessor: 'ip_address' },
-    { header: 'Time', accessor: 'timestamp', render: (row: AuditLogRow) => new Date(row.timestamp).toLocaleString() },
+    {
+        header: 'Time',
+        accessor: 'timestamp',
+        render: (data: unknown) => {
+            const row = data as AuditLogRow;
+            return new Date(row.timestamp).toLocaleString();
+        }
+    },
   ];
 
   return (

@@ -74,7 +74,7 @@ function RevenueChart({ data }: { data: DailyMetric[] }) {
                     <Tooltip
                         contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
                         itemStyle={{ color: '#fff' }}
-                        formatter={(value: number) => [`$${value}`, 'Revenue']}
+                        formatter={(value: number | undefined) => [`$${value ?? 0}`, 'Revenue']}
                     />
                     <Area
                         type="monotone"

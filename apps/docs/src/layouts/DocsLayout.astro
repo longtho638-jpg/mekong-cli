@@ -14,13 +14,23 @@ interface Heading {
   slug: string;
 }
 
+interface DocsContent {
+  data: {
+    title: string;
+    description: string;
+    section?: string;
+    category?: string;
+  };
+  body: string;
+}
+
 export interface Props {
   title?: string;
   description?: string;
   locale?: Locale;
   slug?: string;
   headings?: Heading[];
-  content?: any;
+  content?: DocsContent;
 }
 
 const { title, description, locale = 'en', slug = '', headings = [], content } = Astro.props;

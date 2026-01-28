@@ -18,6 +18,7 @@ interface WebhookDLQRow {
   error_message: string;
   retry_count: number;
   stored_at: string;
+  [key: string]: unknown;
 }
 
 export default function DLQPage() {
@@ -70,44 +71,53 @@ export default function DLQPage() {
     {
       header: 'Error',
       accessor: 'error_message',
-      render: (row: WebhookDLQRow) => (
-        <span className="text-red-500 text-sm truncate max-w-xs block" title={row.error_message}>
-          {row.error_message}
-        </span>
-      )
+      render: (data: unknown) => {
+        const row = data as WebhookDLQRow;
+        return (
+            <span className="text-red-500 text-sm truncate max-w-xs block" title={row.error_message}>
+            {row.error_message}
+            </span>
+        );
+      }
     },
     { header: 'Retries', accessor: 'retry_count' },
     {
       header: 'Stored At',
       accessor: 'stored_at',
-      render: (row: WebhookDLQRow) => new Date(row.stored_at).toLocaleString()
+      render: (data: unknown) => {
+        const row = data as WebhookDLQRow;
+        return new Date(row.stored_at).toLocaleString();
+      }
     },
     {
       header: 'Actions',
       accessor: 'actions',
-      render: (row: WebhookDLQRow) => (
-        <div className="flex gap-2">
-          <MD3Button
-            variant="text"
-            size="small"
-            onClick={() => handleReplay(row.id)}
-            disabled={replayMutation.isPending}
-            startIcon={<RefreshCw size={14} />}
-          >
-            Replay
-          </MD3Button>
-          <MD3Button
-            variant="text"
-            size="small"
-            color="error"
-            onClick={() => handleDiscard(row.id)}
-            disabled={discardMutation.isPending}
-            startIcon={<Trash2 size={14} />}
-          >
-            Discard
-          </MD3Button>
-        </div>
-      )
+      render: (data: unknown) => {
+        const row = data as WebhookDLQRow;
+        return (
+            <div className="flex gap-2">
+            <MD3Button
+                variant="text"
+                size="small"
+                onClick={() => handleReplay(row.id)}
+                disabled={replayMutation.isPending}
+                startIcon={<RefreshCw size={14} />}
+            >
+                Replay
+            </MD3Button>
+            <MD3Button
+                variant="text"
+                size="small"
+                color="error"
+                onClick={() => handleDiscard(row.id)}
+                disabled={discardMutation.isPending}
+                startIcon={<Trash2 size={14} />}
+            >
+                Discard
+            </MD3Button>
+            </div>
+        );
+      }
     }
   ];
 
@@ -137,8 +147,8 @@ export default function DLQPage() {
         {isLoading ? (
           <div className="p-8 text-center">Loading DLQ...</div>
         ) : entries && entries.length > 0 ? (
-          <MD3DataTable
-            columns={columns}
+          <MD3DataTable<WebhookDLQRow>
+            columns={columns as any}
             data={entries}
             selectable
             onSelectionChange={setSelectedEntries}

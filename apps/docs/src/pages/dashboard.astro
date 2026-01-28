@@ -430,9 +430,16 @@ const description = t('dashboard_page.description');
     if (authRequired) authRequired.classList.remove('hidden');
   }
 
-  function showDashboard(user: any) {
+  interface User {
+    name?: string;
+    email?: string;
+    plan?: string;
+    timestamp?: string;
+  }
+
+  function showDashboard(user: User) {
     if (dashboardContent) dashboardContent.classList.remove('hidden');
-    
+
     // Populate user info
     if (userName && user.name) {
       userName.textContent = user.name.split(' ')[0]; // First name only

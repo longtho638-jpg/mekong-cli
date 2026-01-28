@@ -6,6 +6,7 @@ import { MD3Card } from '@/components/md3/MD3Card'
 import 'swagger-ui-react/swagger-ui.css'
 
 // Dynamically import SwaggerUI to avoid SSR issues (it uses window object)
+// @ts-expect-error - SwaggerUI types are tricky with next/dynamic
 const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false })
 
 export default function DocsPage() {
@@ -29,6 +30,7 @@ export default function DocsPage() {
                 </div>
             </MD3Card>
 
+            {/* @ts-expect-error - Styled JSX types are not properly picked up in this setup */}
             <style jsx global>{`
                 /* Custom styling to make Swagger UI fit better with Dark Mode/MD3 */
                 .swagger-wrapper {

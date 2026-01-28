@@ -5,8 +5,14 @@ import { locales } from '@agencyos/i18n/locales';
 const locale = getLocaleFromUrl(Astro.url);
 const t = useTranslations(locale);
 
+interface TestimonialItem {
+  quote: string;
+  name: string;
+  role: string;
+}
+
 const testimonials = (locales[locale] as any).landing.testimonials_grid;
-const items = Object.values(testimonials.items);
+const items = Object.values(testimonials.items) as TestimonialItem[];
 ---
 <section class="py-16">
   <div class="mx-auto max-w-content px-4 sm:px-6 lg:px-8">
@@ -27,7 +33,7 @@ const items = Object.values(testimonials.items);
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-      {items.map((item: any, index) => (
+      {items.map((item, index) => (
         <div class="p-6 rounded-xl bg-[var(--color-bg-secondary)] border border-[var(--color-border)] relative hover:border-[var(--color-accent-green)] transition-all">
           <div class="text-2xl mb-3">⭐⭐⭐⭐⭐</div>
           <p class="text-[var(--color-text-secondary)] mb-4 italic text-sm">

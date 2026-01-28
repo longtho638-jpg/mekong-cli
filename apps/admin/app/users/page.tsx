@@ -13,6 +13,7 @@ interface UserRow {
   role?: string;
   is_active: boolean;
   created_at: string;
+  [key: string]: unknown;
 }
 
 export default function UsersPage() {
@@ -47,7 +48,9 @@ export default function UsersPage() {
     {
         header: 'User',
         accessor: 'name',
-        render: (row: UserRow) => (
+        render: (data: unknown) => {
+            const row = data as UserRow;
+            return (
             <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
                     {row.name ? row.name.charAt(0).toUpperCase() : 'U'}
@@ -57,24 +60,31 @@ export default function UsersPage() {
                     <div className="text-gray-500 text-xs">{row.email}</div>
                 </div>
             </div>
-        )
+            );
+        }
     },
-    { header: 'Role', accessor: 'role', render: (row: UserRow) => <MD3Chip label={row.role || 'user'} size="small" /> },
-    { header: 'Status', accessor: 'status', render: (row: UserRow) => (
+    { header: 'Role', accessor: 'role', render: (data: unknown) => { const row = data as UserRow; return <MD3Chip label={row.role || 'user'} size="small" />; } },
+    { header: 'Status', accessor: 'status', render: (data: unknown) => {
+        const row = data as UserRow;
+        return (
         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
             {row.is_active ? 'Active' : 'Inactive'}
         </span>
-    )},
-    { header: 'Joined', accessor: 'created_at', render: (row: UserRow) => new Date(row.created_at).toLocaleDateString() },
+        );
+    }},
+    { header: 'Joined', accessor: 'created_at', render: (data: unknown) => { const row = data as UserRow; return new Date(row.created_at).toLocaleDateString(); } },
     {
         header: 'Actions',
         accessor: 'id',
-        render: (row: UserRow) => (
+        render: (data: unknown) => {
+            const row = data as UserRow;
+            return (
             <div className="flex gap-2">
                 <MD3Button variant="text" size="small" onClick={() => {}} startIcon={<Edit size={14} />}>Edit</MD3Button>
                 <MD3Button variant="text" size="small" color="error" onClick={() => handleBan(row.id)} startIcon={<Ban size={14} />}>Ban</MD3Button>
             </div>
-        )
+            );
+        }
     }
   ];
 
@@ -106,8 +116,8 @@ export default function UsersPage() {
         {isLoading ? (
             <div className="p-8 text-center">Loading users...</div>
         ) : (
-            <MD3DataTable
-                columns={columns}
+            <MD3DataTable<UserRow>
+                columns={columns as any}
                 data={usersData?.items || []}
                 selectable
             />

@@ -26,6 +26,7 @@ interface Prompt {
     version: number;
     created_at: string;
     updated_at: string;
+    [key: string]: unknown;
 }
 
 interface PromptFormData {
@@ -179,35 +180,45 @@ export default function PromptsPage() {
         {
             header: "Name / Slug",
             accessor: "name",
-            render: (row: Prompt) => (
-                <div>
-                    <div className="font-medium text-gray-900">{row.name}</div>
-                    <div className="text-xs text-gray-500 font-mono">{row.slug}</div>
-                </div>
-            )
+            render: (data: unknown) => {
+                const row = data as Prompt;
+                return (
+                    <div>
+                        <div className="font-medium text-gray-900">{row.name}</div>
+                        <div className="text-xs text-gray-500 font-mono">{row.slug}</div>
+                    </div>
+                );
+            }
         },
         {
             header: "Version",
             accessor: "version",
-            render: (row: Prompt) => (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    v{row.version}
-                </span>
-            )
+            render: (data: unknown) => {
+                const row = data as Prompt;
+                return (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                        v{row.version}
+                    </span>
+                );
+            }
         },
         {
             header: "Status",
             accessor: "is_active",
-            render: (row: Prompt) => (
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {row.is_active ? 'Active' : 'Inactive'}
-                </span>
-            )
+            render: (data: unknown) => {
+                const row = data as Prompt;
+                return (
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
+                        {row.is_active ? 'Active' : 'Inactive'}
+                    </span>
+                );
+            }
         },
         {
             header: "Variables",
             accessor: "input_variables",
-            render: (row: Prompt) => {
+            render: (data: unknown) => {
+                const row = data as Prompt;
                 let vars = [];
                 try {
                      // Handle both stringified list and actual list depending on what API returns/Schema
@@ -230,16 +241,19 @@ export default function PromptsPage() {
         {
             header: "Actions",
             accessor: "actions",
-            render: (row: Prompt) => (
-                <div className="flex justify-end gap-2">
-                    <button onClick={() => handleOpenEdit(row)} className="text-gray-400 hover:text-blue-600 transition-colors">
-                        <Edit size={16} />
-                    </button>
-                    <button onClick={() => handleDelete(row.id)} className="text-gray-400 hover:text-red-600 transition-colors">
-                        <Trash2 size={16} />
-                    </button>
-                </div>
-            )
+            render: (data: unknown) => {
+                const row = data as Prompt;
+                return (
+                    <div className="flex justify-end gap-2">
+                        <button onClick={() => handleOpenEdit(row)} className="text-gray-400 hover:text-blue-600 transition-colors">
+                            <Edit size={16} />
+                        </button>
+                        <button onClick={() => handleDelete(row.id)} className="text-gray-400 hover:text-red-600 transition-colors">
+                            <Trash2 size={16} />
+                        </button>
+                    </div>
+                );
+            }
         }
     ];
 

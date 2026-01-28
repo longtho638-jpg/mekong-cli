@@ -1,0 +1,49 @@
+/* =====================================================
+   MD3 Spacing System - Official M3 Tokens
+   Reference: m3.material.io/foundations/layout/spacing
+   
+   CRITICAL: These are the minimum safe spacing values
+   to prevent visual violations in the design system
+   ===================================================== */
+
+:root {
+    /* ========== ICON-TEXT SPACING ========== */
+    /* M3 Spec: Minimum 12dp between icon and text */
+    --md-sys-spacing-icon-text-compact: 8px;
+    /* Only for dense UIs */
+    --md-sys-spacing-icon-text-default: 12px;
+    /* Standard */
+    --md-sys-spacing-icon-text-comfortable: 16px;
+    /* Comfortable */
+
+    /* ========== INTERNAL CONTENT SPACING ========== */
+    /* Inside cards, lists, and containers */
+    --md-sys-spacing-content-compact: 8px;
+    --md-sys-spacing-content-default: 12px;
+    --md-sys-spacing-content-comfortable: 16px;
+
+    /* ========== ELEMENT GAPS ========== */
+    /* Between sibling elements */
+    --md-sys-spacing-gap-xs: 4px;
+    --md-sys-spacing-gap-sm: 8px;
+    --md-sys-spacing-gap-md: 12px;
+    --md-sys-spacing-gap-lg: 16px;
+    --md-sys-spacing-gap-xl: 24px;
+    --md-sys-spacing-gap-2xl: 32px;
+
+    /* ========== DECORATIVE BORDER INSET ========== */
+    /* When using colored borders, content must be inset from border */
+    --md-sys-spacing-border-inset: 12px;
+    /* Min distance from decorative border to content */
+
+    /* ========== SECTION SPACING ========== */
+    --md-sys-spacing-section-gap: 24px;
+    /* Between major sections */
+    --md-sys-spacing-card-gap: 16px;
+    /* Between cards in a grid */
+
+    /* ========== INTERACTIVE TARGET ========== */
+    /* M3 requires minimum 48dp touch targets */
+    --md-sys-spacing-touch-target: 48px;
+    --md-sys-spacing-dense-target: 40px;
+}

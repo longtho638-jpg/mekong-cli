@@ -14,6 +14,7 @@ interface PaymentRow {
   user: string;
   date: string;
   method: string;
+  [key: string]: unknown;
 }
 
 export default function PaymentsPage() {
@@ -36,30 +37,39 @@ export default function PaymentsPage() {
     {
         header: 'ID',
         accessor: 'id',
-        render: (row: PaymentRow) => <span className="font-mono text-xs">{row.id}</span>
+        render: (data: unknown) => {
+            const row = data as PaymentRow;
+            return <span className="font-mono text-xs">{row.id}</span>;
+        }
     },
     {
         header: 'Amount',
         accessor: 'amount',
-        render: (row: PaymentRow) => (
-            <span className="font-bold">
-                {(row.amount / 100).toLocaleString('en-US', { style: 'currency', currency: row.currency })}
-            </span>
-        )
+        render: (data: unknown) => {
+            const row = data as PaymentRow;
+            return (
+                <span className="font-bold">
+                    {(row.amount / 100).toLocaleString('en-US', { style: 'currency', currency: row.currency })}
+                </span>
+            );
+        }
     },
     { header: 'User', accessor: 'user' },
     {
         header: 'Status',
         accessor: 'status',
-        render: (row: PaymentRow) => (
-            <MD3Chip
-                label={row.status}
-                className={row.status === 'succeeded' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
-            />
-        )
+        render: (data: unknown) => {
+            const row = data as PaymentRow;
+            return (
+                <MD3Chip
+                    label={row.status}
+                    className={row.status === 'succeeded' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+                />
+            );
+        }
     },
-    { header: 'Method', accessor: 'method', render: (row: PaymentRow) => <span className="uppercase text-xs font-bold">{row.method}</span> },
-    { header: 'Date', accessor: 'date', render: (row: PaymentRow) => new Date(row.date).toLocaleString() },
+    { header: 'Method', accessor: 'method', render: (data: unknown) => { const row = data as PaymentRow; return <span className="uppercase text-xs font-bold">{row.method}</span>; } },
+    { header: 'Date', accessor: 'date', render: (data: unknown) => { const row = data as PaymentRow; return new Date(row.date).toLocaleString(); } },
   ];
 
   return (
@@ -87,8 +97,8 @@ export default function PaymentsPage() {
         {isLoading ? (
             <div className="p-8 text-center">Loading payments...</div>
         ) : (
-            <MD3DataTable
-                columns={columns}
+            <MD3DataTable<PaymentRow>
+                columns={columns as any}
                 data={payments || []}
             />
         )}
