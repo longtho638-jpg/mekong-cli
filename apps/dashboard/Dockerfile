@@ -1,4 +1,4 @@
-# Frontend Dockerfile (Next.js) - Monorepo Build
+# Frontend Dockerfile (Next.js) - Monorepo Build with Turbo Prune
 # Multi-stage build for production
 # Build context: project root
 
@@ -7,33 +7,39 @@ FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+RUN apk add --no-cache libc6-compat
 
-# 2. Dependencies
+# 2. Pruner - isolates the dashboard and its dependencies
+FROM base AS pruner
+WORKDIR /app
+RUN npm install -g turbo
+COPY . .
+RUN turbo prune --scope=mekong-dashboard --docker
+
+# 3. Dependencies
 FROM base AS deps
 WORKDIR /app
-# Install build dependencies for native modules (ssh2, cpu-features)
-RUN apk add --no-cache python3 make g++ gcc
-# Copy all files needed for pnpm install
-COPY pnpm-lock.yaml ./
-COPY package.json ./
-COPY pnpm-workspace.yaml ./
-COPY apps/dashboard/package.json ./apps/dashboard/
-COPY packages/ ./packages/
-# Install all dependencies
-RUN pnpm install --frozen-lockfile --ignore-scripts || pnpm install --frozen-lockfile
+# Install build dependencies for native modules (ssh2, cpu-features) + distutils for Python 3.12
+RUN apk add --no-cache python3 make g++ gcc py3-setuptools
+# Copy only the pruned package.json's and lockfile
+COPY --from=pruner /app/out/json/ .
+COPY --from=pruner /app/out/pnpm-lock.yaml ./
+# Install dependencies (skip optional deps that fail: puppeteer, cpu-features, ssh2)
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+RUN pnpm install --frozen-lockfile --no-optional
 
-# 3. Builder
+# 4. Builder
 FROM base AS builder
 WORKDIR /app
-# Copy entire deps workspace (with node_modules)
-COPY --from=deps /app ./
-# Copy source code on top (overlay, preserving node_modules)
-COPY apps/dashboard/ ./apps/dashboard/
+# Copy installed node_modules
+COPY --from=deps /app/node_modules ./node_modules
+# Copy pruned source code
+COPY --from=pruner /app/out/full/ .
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter mekong-dashboard build
 
-# 4. Runner
+# 5. Runner
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production

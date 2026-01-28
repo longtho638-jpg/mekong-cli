@@ -11,14 +11,17 @@ Refactored for IPO-051 (Database-backed).
 """
 
 import logging
-from typing import Dict, List, Optional, Any
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
-from sqlalchemy import select, func, update, and_
+from sqlalchemy import and_, func, select, update
 from sqlalchemy.orm import Session
 
 from backend.models.notification import Notification
-from backend.services.notification_orchestrator import get_notification_orchestrator, NotificationPriority
+from backend.services.notification_orchestrator import (
+    NotificationPriority,
+    get_notification_orchestrator,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +29,7 @@ logger = logging.getLogger(__name__)
 # The previous service had its own Enum. We should align with the codebase.
 # For now, we'll keep the Enum here for compatibility or move it to a shared location.
 from enum import Enum
+
 
 class NotificationType(Enum):
     WELCOME = "welcome"
@@ -58,7 +62,7 @@ class NotificationService:
         """
         # Orchestrator handles creation of DB record and dispatching
         # We pass the 'type' as string value of the Enum
-        result = await self.orchestrator.send_notification(
+        await self.orchestrator.send_notification(
             db=db,
             user_id=user_id,
             type=notification_type.value,

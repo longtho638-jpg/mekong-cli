@@ -1,14 +1,16 @@
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException
 
-from backend.models.prompt import Prompt
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
+
 from backend.api.schemas.prompt import PromptCreate, PromptUpdate
+from backend.models.prompt import Prompt
+
 
 class PromptService:
     def get_prompt_by_slug(self, db: Session, slug: str) -> Optional[Prompt]:
-        return db.query(Prompt).filter(Prompt.slug == slug, Prompt.is_active == True).first()
+        return db.query(Prompt).filter(Prompt.slug == slug, Prompt.is_active).first()
 
     def list_prompts(self, db: Session, skip: int = 0, limit: int = 100) -> List[Prompt]:
         return db.query(Prompt).offset(skip).limit(limit).all()
