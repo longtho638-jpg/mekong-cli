@@ -55,12 +55,12 @@ def test_server_import_and_instantiation():
             # Try instantiating
             # Most servers initialize with name and optional tools
             try:
-                server_instance = server_class()
+                _ = server_class()
                 results[server_name] = "PASS"
             except Exception as e:
                 # Some might require args, try with simple name if that fails
                 try:
-                    server_instance = server_class(name=server_name)
+                    _ = server_class(name=server_name)
                     results[server_name] = "PASS"
                 except Exception:
                     results[server_name] = f"FAIL: Instantiation error: {str(e)}"

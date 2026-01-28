@@ -1,0 +1,38 @@
+# CDN Configuration
+# Integration with Cloudflare/Fastly
+
+provider: "cloudflare"
+enabled: true
+
+cloudflare:
+  zone_id: "${CLOUDFLARE_ZONE_ID}"
+  api_token: "${CLOUDFLARE_API_TOKEN}"
+  domain: "${DOMAIN_NAME}"
+
+caching_rules:
+  static_assets:
+    patterns:
+      - "/static/*"
+      - "/assets/*"
+      - "/*.js"
+      - "/*.css"
+      - "/*.png"
+      - "/*.jpg"
+      - "/*.woff2"
+    cache_level: "aggressive"
+    edge_ttl: 31536000
+    browser_ttl: 31536000
+
+  api_public:
+    patterns:
+      - "/api/v1/public/*"
+    cache_level: "standard"
+    edge_ttl: 300
+    browser_ttl: 300
+    query_string: "ignore"
+
+purge:
+  enabled: true
+  hooks:
+    - "deploy_success"
+    - "content_update"

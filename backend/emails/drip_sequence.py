@@ -14,7 +14,9 @@ Templates: backend/emails/templates/
 """
 
 from datetime import timedelta
-from typing import List, TypedDict
+from typing import List
+
+from typing_extensions import TypedDict
 
 
 class DripEmail(TypedDict):

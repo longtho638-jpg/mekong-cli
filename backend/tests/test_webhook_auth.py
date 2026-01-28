@@ -362,7 +362,7 @@ class TestWebhookAuthError:
     def test_webhook_auth_error_logs_on_creation(self, mock_logger):
         """Test that WebhookAuthError logs error on creation."""
         # Act
-        error = WebhookAuthError(
+        _ = WebhookAuthError(
             detail="Test error",
             provider="gumroad"
         )

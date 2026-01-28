@@ -3,10 +3,11 @@ CDN Utilities
 Helpers for loading configuration and mapping rules.
 """
 
-import os
-import yaml
 import logging
-from typing import List, Dict, Any
+import os
+from typing import Any, Dict, List
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ def map_cache_rules_to_middleware(cdn_config: Dict[str, Any]) -> List[Dict[str, 
         cache_level = rule.get("cache_level", "standard")
 
         cache_control = "no-store"
-        server_ttl = None
+        # server_ttl = None
 
         if cache_level == "bypass":
             cache_control = "no-store, no-cache, private"

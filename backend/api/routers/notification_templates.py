@@ -10,7 +10,7 @@ from backend.api.deps import get_current_user, get_db
 from backend.models.notification import NotificationTemplate
 from backend.models.user import User
 
-router = APIRouter(prefix="/notifications/templates", tags=["Notifications"])
+router = APIRouter(prefix="/api/v1/notifications/templates", tags=["Notifications"])
 
 class TemplateCreate(BaseModel):
     name: str
@@ -46,8 +46,9 @@ async def list_templates(
     db: Session = Depends(get_db)
 ):
     """List all notification templates (Admin only)."""
-    # TODO: Check admin permissions
-    # if not current_user.is_superuser: ...
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     result = db.execute(select(NotificationTemplate).order_by(NotificationTemplate.name))
     templates = result.scalars().all()
     return [t.to_dict() for t in templates]
@@ -59,6 +60,9 @@ async def create_template(
     db: Session = Depends(get_db)
 ):
     """Create a new notification template."""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     # Check if exists
     existing = db.execute(select(NotificationTemplate).where(NotificationTemplate.name == template.name)).scalar_one_or_none()
     if existing:
@@ -103,6 +107,9 @@ async def update_template(
     db: Session = Depends(get_db)
 ):
     """Update a template."""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     try:
         uuid_id = UUID(template_id)
     except ValueError:
@@ -132,6 +139,9 @@ async def delete_template(
     db: Session = Depends(get_db)
 ):
     """Delete a template."""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     try:
         uuid_id = UUID(template_id)
     except ValueError:

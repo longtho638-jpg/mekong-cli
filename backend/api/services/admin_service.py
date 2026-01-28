@@ -9,8 +9,19 @@ import os
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
-from gotrue.errors import AuthApiError
+try:
+    from gotrue.errors import AuthApiError
+except ImportError:
+    try:
+        from supabase_auth.errors import AuthApiError
+    except ImportError:
+        # Fallback dummy exception if imports fail, to allow code to load
+        class AuthApiError(Exception):
+            pass
 
+import redis
+
+from backend.api.config.settings import settings
 from backend.models.admin import (
     AdminAuditLog,
     AdminUser,
@@ -20,6 +31,8 @@ from backend.models.admin import (
     SystemSetting,
     SystemSettingUpdate,
 )
+from backend.services.cache.decorators import cache
+from backend.services.cache.invalidation import SyncCacheInvalidator
 from supabase import Client, create_client
 
 logger = logging.getLogger(__name__)
@@ -37,8 +50,18 @@ class AdminService:
 
         self.client: Client = create_client(supabase_url, supabase_key)
 
+        # Initialize sync redis for cache invalidation
+        self.redis_client = redis.from_url(settings.redis_url, decode_responses=True)
+        self.invalidator = SyncCacheInvalidator(self.redis_client, prefix="admin")
+
     # --- User Management ---
 
+    @cache(
+        ttl=60,
+        prefix="admin",
+        key_func=lambda self, page=1, per_page=50: f"users:{page}:{per_page}",
+        tags=["users"]
+    )
     def list_users(self, page: int = 1, per_page: int = 50) -> Dict[str, Any]:
         """
         List users with pagination using Supabase Auth Admin API.
@@ -108,7 +131,7 @@ class AdminService:
         duration: 'forever' or None for indefinite, or ISO timestamp string.
         """
         try:
-            ban_duration = "none"
+            # ban_duration = "none"
             if duration == "forever" or duration is None:
                 # Ban until year 9999
                 ban_until = datetime(9999, 12, 31).isoformat()
@@ -121,6 +144,11 @@ class AdminService:
                 user_id,
                 {"ban_duration": ban_until} # Note: Check exact API parameter for ban
             )
+
+            # Invalidate cache
+            self.invalidator.invalidate_pattern("users:*")
+            self.invalidator.invalidate_key("system_stats")
+
             return True
         except Exception as e:
             logger.error(f"Error banning user {user_id}: {e}")
@@ -139,6 +167,10 @@ class AdminService:
                 user_id,
                 {"app_metadata": {"role": role}}
             )
+
+            # Invalidate cache
+            self.invalidator.invalidate_pattern("users:*")
+
             return True
         except Exception as e:
             logger.error(f"Error updating user role {user_id}: {e}")
@@ -196,6 +228,10 @@ class AdminService:
 
     def update_setting(self, key: str, updates: SystemSettingUpdate, user_id: str) -> SystemSetting:
         """Update a system setting."""
+        # Invalidate cache if we cache settings later
+        # self.cache.delete(f"setting:{key}")
+        # self.cache.invalidate_pattern("settings:*")
+
         data = updates.dict(exclude_unset=True)
         data["updated_at"] = datetime.now().isoformat()
         data["updated_by"] = user_id
@@ -223,6 +259,7 @@ class AdminService:
 
         return [AdminAuditLog(**item) for item in result.data]
 
+    @cache(ttl=300, prefix="admin", key_func=lambda self: "system_stats", tags=["stats"])
     def get_system_stats(self) -> Dict[str, Any]:
         """Get aggregated system statistics."""
         # This aggregates data from multiple sources
@@ -239,7 +276,7 @@ class AdminService:
         # We can re-use logic from RevenueService if needed, but let's keep it simple here
         # or fetch from revenue_snapshots latest
 
-        revenue_data = {"mrr": 0, "arr": 0, "active_subs": 0}
+        # revenue_data = {"mrr": 0, "arr": 0, "active_subs": 0}
         try:
              # Try to get latest system-wide snapshot if implemented,
              # otherwise sum up from tenants (might be slow)
@@ -272,3 +309,21 @@ class AdminService:
             "service_status": "active" if redis_health else "degraded",
             "timestamp": datetime.now().isoformat()
         }
+
+    # --- Cache Management ---
+
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """Get cache statistics."""
+        try:
+            info = self.redis_client.info()
+            return {
+                "used_memory_human": info.get("used_memory_human"),
+                "connected_clients": info.get("connected_clients"),
+                "keys": self.redis_client.dbsize()
+            }
+        except Exception as e:
+            return {"error": str(e)}
+
+    def clear_cache(self) -> bool:
+        """Clear the entire cache."""
+        return self.invalidator.invalidate_pattern("*") >= 0

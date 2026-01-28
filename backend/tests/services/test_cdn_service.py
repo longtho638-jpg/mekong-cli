@@ -1,9 +1,12 @@
 """
 Tests for CDN Service
 """
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
+
 from backend.services.cdn.purge import CloudflareProvider, FastlyProvider
+
 
 class MockResponse:
     def __init__(self, json_data, status_code=200):

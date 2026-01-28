@@ -66,7 +66,7 @@ class ConnectionManager:
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            user_data = verify_token(token, credentials_exception)
+            user_data = await verify_token(token, credentials_exception)
 
             await websocket.accept()
             self._connection_count += 1

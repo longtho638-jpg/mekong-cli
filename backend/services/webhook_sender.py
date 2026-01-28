@@ -64,7 +64,7 @@ class WebhookSenderService:
             # Fetch all active endpoints.
             # Ideally we'd filter by event_types in DB, but JSON containment queries vary by DB (SQLite vs PG).
             # Fetching active configs is usually safe unless there are thousands.
-            endpoints = db.query(WebhookConfig).filter(WebhookConfig.is_active == True).all()
+            endpoints = db.query(WebhookConfig).filter(WebhookConfig.is_active).all()
 
             for endpoint in endpoints:
                 # Convert SQLAlchemy model to dict for internal use if needed, or use attributes directly

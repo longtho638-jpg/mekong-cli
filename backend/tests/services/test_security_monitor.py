@@ -1,4 +1,10 @@
-from unittest.mock import AsyncMock, Mock, patch
+import sys
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
+
+# Mock problematic dependencies before they are imported
+sys.modules["supabase"] = MagicMock()
+sys.modules["gotrue"] = MagicMock()
+sys.modules["backend.services.audit_service"] = MagicMock()  # This might import supabase indirectly
 
 import pytest
 
@@ -31,6 +37,22 @@ async def test_monitor_logs_event(monitor):
         # Verify Redis increment
         monitor.redis.incr.assert_any_call("security:monitor:failed_login:ip:1.2.3.4")
         monitor.redis.incr.assert_any_call("security:monitor:failed_login:user:user_123")
+
+@pytest.mark.asyncio
+async def test_monitor_logs_permission_denied(monitor):
+    monitor.redis = Mock()
+    monitor.redis.incr.return_value = 1
+
+    with patch('backend.services.security_monitor.logger') as _:
+        await monitor.log_security_event(
+            event_type="permission_denied",
+            actor_id="user_456",
+            ip_address="5.6.7.8"
+        )
+
+        # Verify Redis increment for permission denied
+        monitor.redis.incr.assert_any_call("security:monitor:api_violation:ip:5.6.7.8")
+        monitor.redis.incr.assert_any_call("security:monitor:api_violation:user:user_456")
 
 @pytest.mark.asyncio
 async def test_monitor_triggers_alert(monitor):

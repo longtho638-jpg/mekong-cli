@@ -14,11 +14,11 @@
 ## 2. Usage in Code
 
 ### Require a Role
-Use the dependency factories in `backend/core/security/rbac.py`.
+Use the dependency factories in `backend/core/permissions/rbac.py`.
 
 ```python
 from fastapi import APIRouter, Depends
-from backend.core.security.rbac import require_admin, require_viewer
+from backend.core.permissions.rbac import require_admin, require_viewer
 
 router = APIRouter()
 
@@ -38,7 +38,7 @@ def get_stats(
 
 ### Check Permissions Dynamically
 ```python
-from backend.core.security.rbac import Role, ROLE_HIERARCHY
+from backend.core.permissions.rbac import Role, ROLE_HIERARCHY
 
 def check_custom_perm(user):
     if Role(user.role) not in ROLE_HIERARCHY[Role.ADMIN]:
@@ -46,7 +46,7 @@ def check_custom_perm(user):
 ```
 
 ## 3. Adding New Roles
-1. Update `Role` Enum in `backend/core/security/rbac.py`.
+1. Update `Role` Enum in `backend/core/permissions/rbac.py`.
 2. Update `ROLE_HIERARCHY` dictionary.
 3. Create a convenience dependency `require_newrole`.
 

@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 
 from backend.api.config import settings
+from backend.services.captcha_service import captcha_service
 from backend.services.jwt_service import jwt_service
 
 from .utils import Token, get_password_hash, verify_password
@@ -35,7 +36,27 @@ def get_fake_users_db() -> Dict[str, Dict[str, str]]:
 
 
 @router.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    captcha_token: Optional[str] = Header(None, alias="X-Captcha-Token")
+):
+    # 0. Verify CAPTCHA if enabled
+    if settings.enable_captcha_login:
+        if not captcha_token:
+             raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="CAPTCHA token required",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        is_valid = await captcha_service.verify_token(captcha_token)
+        if not is_valid:
+             raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid CAPTCHA token",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
     user = get_fake_users_db().get(form_data.username)
     if not user or not verify_password(form_data.password, user["hashed_password"]):
         raise HTTPException(

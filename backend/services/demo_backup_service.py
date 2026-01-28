@@ -162,7 +162,7 @@ def demo_custom_config():
     print(f"  Compression: {config.enable_compression}")
     print(f"  Auto-verify: {config.verify_on_backup}")
 
-    service = BackupService(config)
+    _ = BackupService(config)
     print("\n✅ Service initialized with custom config")
 
 

@@ -3,6 +3,9 @@ import GridLayout, { Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { DashboardChart, ChartProps } from './chart-components';
+
+// @ts-ignore - React Grid Layout types mismatch
+const Grid = GridLayout as any;
 import { KPICard, KPIProps } from './kpi-card';
 import { GripVertical } from 'lucide-react';
 
@@ -75,7 +78,7 @@ export function DashboardBuilder({
   onLayoutChange,
   isEditable = false
 }: DashboardBuilderProps) {
-  const [layout, setLayout] = useState<Layout[]>(config.layout);
+  const [layout, setLayout] = useState<any[]>(config.layout);
   const [width, setWidth] = useState(1200);
 
   // Responsive width handling
@@ -94,7 +97,7 @@ export function DashboardBuilder({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLayoutChange = (newLayout: Layout[]) => {
+  const handleLayoutChange = (newLayout: any) => {
     setLayout(newLayout);
     if (onLayoutChange) {
       onLayoutChange(newLayout);
@@ -103,13 +106,15 @@ export function DashboardBuilder({
 
   return (
     <div id="dashboard-grid-container" className="w-full min-h-screen pb-20">
-      <GridLayout
+      <Grid
         className="layout"
         layout={layout}
         cols={12}
         rowHeight={60}
         width={width}
+        // @ts-ignore - React Grid Layout types mismatch
         isDraggable={isEditable}
+        // @ts-ignore - React Grid Layout types mismatch
         isResizable={isEditable}
         onLayoutChange={handleLayoutChange}
         margin={[16, 16]}
@@ -134,7 +139,7 @@ export function DashboardBuilder({
             </div>
           );
         })}
-      </GridLayout>
+      </Grid>
     </div>
   );
 }

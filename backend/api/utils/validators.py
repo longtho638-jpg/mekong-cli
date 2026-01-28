@@ -6,7 +6,7 @@ Please import from backend.api.utils.validation_logic instead.
 """
 import warnings
 
-from .validation_logic import (
+from backend.core.validators import (
     sanitize_filename,
     sanitize_html,
     sanitize_sql,

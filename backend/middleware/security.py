@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from backend.api.auth.utils import TokenData, verify_token
-from backend.core.security.audit import audit_logger
+from backend.core.audit_logger import audit_logger
 from backend.db.session import SessionLocal
 
 logger = logging.getLogger(__name__)

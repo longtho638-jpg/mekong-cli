@@ -6,7 +6,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from backend.api.auth.dependencies import get_current_user_id
-from backend.core.security.rbac import require_role
+from backend.core.permissions.rbac import require_role
 from backend.services.queue_service import QueueService
 
 router = APIRouter(

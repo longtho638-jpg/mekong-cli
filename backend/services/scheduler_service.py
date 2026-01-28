@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import redis
-from croniter import croniter
+# from croniter import croniter # Lazy import to avoid pre-commit errors
 
 from backend.api.config import settings
 from backend.services.queue_service import QueueService
@@ -83,6 +83,7 @@ class SchedulerService:
             self._process_schedule(schedule, now)
 
     def _process_schedule(self, schedule: Dict[str, Any], now: datetime):
+        from croniter import croniter
         name = schedule["name"]
         cron_expression = schedule["cron"]
 

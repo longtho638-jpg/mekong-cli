@@ -1,528 +1,1358 @@
 ============================= test session starts ==============================
-platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Library/Developer/CommandLineTools/usr/bin/python3
+platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0 -- /Users/macbookprom1/mekong-cli/.venv/bin/python
 cachedir: .pytest_cache
-rootdir: /Users/macbookprom1/mekong-cli
-configfile: pyproject.toml
-plugins: asyncio-1.2.0, anyio-4.11.0, cov-7.0.0
-asyncio: mode=strict, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
-collecting ... collected 379 items
+rootdir: /Users/macbookprom1/mekong-cli/backend
+configfile: pytest.ini
+plugins: anyio-4.12.1, mock-3.15.1, asyncio-1.2.0, cov-7.0.0
+asyncio: mode=auto, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 1 item
 
-tests/integration/test_api_crm.py::test_get_crm_summary_success PASSED   [  0%]
-tests/integration/test_api_crm.py::test_get_crm_deals PASSED             [  0%]
-tests/integration/test_api_crm.py::test_get_crm_contacts PASSED          [  0%]
-tests/integration/test_api_crm.py::test_get_crm_unavailable PASSED       [  1%]
-tests/integration/test_api_franchise.py::test_get_franchise_stats PASSED [  1%]
-tests/integration/test_api_franchise.py::test_get_hq_revenue PASSED      [  1%]
-tests/integration/test_api_franchise.py::test_get_territories PASSED     [  1%]
-tests/integration/test_api_franchise.py::test_get_franchisees PASSED     [  2%]
-tests/integration/test_api_franchise.py::test_franchise_unavailable PASSED [  2%]
-tests/integration/test_api_monitor.py::test_get_monitor_status_success PASSED [  2%]
-tests/integration/test_api_monitor.py::test_get_monitor_status_with_anomalies PASSED [  2%]
-tests/integration/test_api_monitor.py::test_get_monitor_status_error PASSED [  3%]
-tests/integration/test_refactored.py::test_ai_wingman PASSED             [  3%]
-tests/integration/test_refactored.py::test_client_portal PASSED          [  3%]
-tests/integration/test_refactored.py::test_analytics PASSED              [  3%]
-tests/integration/test_services.py::test_service_imports PASSED          [  4%]
-tests/integration/test_services.py::test_repository_imports PASSED       [  4%]
-tests/integration/test_services.py::test_presenter_imports PASSED        [  4%]
-tests/integration/test_services.py::test_basic_functionality PASSED      [  5%]
-tests/regression/test_golden_agents.py::TestRevenueCalculations::test_basic_profit_calculation PASSED [  5%]
-tests/regression/test_golden_agents.py::TestRevenueCalculations::test_zero_expenses PASSED [  5%]
-tests/regression/test_golden_agents.py::TestRevenueCalculations::test_loss_scenario PASSED [  5%]
-tests/regression/test_golden_agents.py::TestLeadScoring::test_high_value_tech_lead PASSED [  6%]
-tests/regression/test_golden_agents.py::TestLeadScoring::test_low_budget_lead PASSED [  6%]
-tests/regression/test_golden_agents.py::TestContentVirality::test_high_virality_keywords PASSED [  6%]
-tests/test_ab_testing.py::TestModuleImports::test_legacy_import_path PASSED [  6%]
-tests/test_ab_testing.py::TestModuleImports::test_modular_import_path PASSED [  7%]
-tests/test_ab_testing.py::TestModuleImports::test_import_paths_resolve_to_same_objects PASSED [  7%]
-tests/test_ab_testing.py::TestEnums::test_test_result_enum_values PASSED [  7%]
-tests/test_ab_testing.py::TestEnums::test_allocation_strategy_enum_values PASSED [  7%]
-tests/test_ab_testing.py::TestModels::test_ab_variant_creation PASSED    [  8%]
-tests/test_ab_testing.py::TestModels::test_statistical_test_creation PASSED [  8%]
-tests/test_ab_testing.py::TestABTestEngine::test_engine_initialization PASSED [  8%]
-tests/test_ab_testing.py::TestABTestEngine::test_create_multivariate_test PASSED [  8%]
-tests/test_ab_testing.py::TestABTestEngine::test_update_test_metrics_conversion PASSED [  9%]
-tests/test_ab_testing.py::TestABTestEngine::test_update_test_metrics_no_conversion PASSED [  9%]
-tests/test_ab_testing.py::TestABTestEngine::test_update_nonexistent_test_no_error PASSED [  9%]
-tests/test_ab_testing.py::TestABTestEngine::test_get_test_analytics_active_test PASSED [ 10%]
-tests/test_ab_testing.py::TestABTestEngine::test_get_test_analytics_not_found PASSED [ 10%]
-tests/test_ab_testing.py::TestABTestEngine::test_get_active_tests_summary PASSED [ 10%]
-tests/test_ab_testing.py::TestConvenienceFunctions::test_create_multivariate_test_function PASSED [ 10%]
-tests/test_ab_testing.py::TestConvenienceFunctions::test_update_test_metrics_function PASSED [ 11%]
-tests/test_ab_testing.py::TestConvenienceFunctions::test_get_test_analytics_function PASSED [ 11%]
-tests/test_ab_testing.py::TestConvenienceFunctions::test_get_active_tests_summary_function PASSED [ 11%]
-tests/test_ab_testing.py::TestIntegration::test_complete_ab_test_workflow PASSED [ 11%]
-tests/test_ab_testing.py::TestIntegration::test_multiple_concurrent_tests PASSED [ 12%]
-tests/test_agency_dna.py::TestAgencyDNA::test_service_initialization PASSED [ 12%]
-tests/test_agency_dna.py::TestAgencyDNA::test_agency_dna_tagline PASSED  [ 12%]
-tests/test_agency_dna.py::TestAgencyDNA::test_add_service PASSED         [ 12%]
-tests/test_agency_dna.py::TestAgencyDNA::test_to_dict PASSED             [ 13%]
-tests/test_agent_chains.py::TestAgentChains::test_inventory_structure PASSED [ 13%]
-tests/test_agent_chains.py::TestAgentChains::test_chains_structure PASSED [ 13%]
-tests/test_agent_chains.py::TestAgentChains::test_get_chain PASSED       [ 13%]
-tests/test_agent_chains.py::TestAgentChains::test_get_chain_summary PASSED [ 14%]
-tests/test_agent_crews.py::TestAgentCrews::test_crew_definitions PASSED  [ 14%]
-tests/test_agent_crews.py::TestAgentCrews::test_get_crew PASSED          [ 14%]
-tests/test_agent_crews.py::TestAgentCrews::test_get_crew_summary PASSED  [ 15%]
-tests/test_agent_crews.py::TestAgentCrews::test_run_crew_simulation PASSED [ 15%]
-tests/test_agent_memory.py::TestAgentMemory::test_remember_and_recall PASSED [ 15%]
-tests/test_agent_memory.py::TestAgentMemory::test_pattern_learning PASSED [ 15%]
-tests/test_agent_memory.py::TestAgentMemory::test_persistence PASSED     [ 16%]
-tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_run_valid_chain PASSED [ 16%]
-tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_run_invalid_chain PASSED [ 16%]
-tests/test_agent_orchestrator.py::TestAgentOrchestrator::test_orchestrator_stats PASSED [ 16%]
-tests/test_agent_swarm.py::test_agent_registration PASSED                [ 17%]
-tests/test_agent_swarm.py::test_task_submission PASSED                   [ 17%]
-tests/test_agent_swarm.py::test_task_execution PASSED                    [ 17%]
-tests/test_agent_swarm.py::test_priority_scheduling PASSED               [ 17%]
-tests/test_algorithm_core.py::test_initialization PASSED                 [ 18%]
-tests/test_algorithm_core.py::test_calculate_optimized_price_defaults PASSED [ 18%]
-tests/test_algorithm_core.py::test_calculate_traditional_viral PASSED    [ 18%]
-tests/test_algorithm_core.py::test_calculate_penetration_pricing PASSED  [ 18%]
-tests/test_algorithm_core.py::test_track_conversion PASSED               [ 19%]
-tests/test_algorithm_core.py::test_analytics_integration PASSED          [ 19%]
-tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_set_goal_and_planning PASSED [ 19%]
-tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_execute_simulation PASSED [ 20%]
-tests/test_autonomous_mode.py::TestAutonomousOrchestrator::test_status_tracking PASSED [ 20%]
-tests/test_base.py::TestBase::test_base_model_serialization PASSED       [ 20%]
-tests/test_base.py::TestBase::test_base_engine_storage PASSED            [ 20%]
-tests/test_cashflow_engine.py::TestCashflowEngine::test_add_revenue PASSED [ 21%]
-tests/test_cashflow_engine.py::TestCashflowEngine::test_currency_conversion PASSED [ 21%]
-tests/test_cashflow_engine.py::TestCashflowEngine::test_required_growth PASSED [ 21%]
-tests/test_checkpointing.py::TestCheckpointing::test_save_and_list PASSED [ 21%]
-tests/test_checkpointing.py::TestCheckpointing::test_restore PASSED      [ 22%]
-tests/test_checkpointing.py::TestCheckpointing::test_delete PASSED       [ 22%]
-tests/test_checkpointing.py::TestCheckpointing::test_persistence PASSED  [ 22%]
-tests/test_client_magnet.py::TestClientMagnet::test_add_lead PASSED      [ 22%]
-tests/test_client_magnet.py::TestClientMagnet::test_qualify_lead PASSED  [ 23%]
-tests/test_client_magnet.py::TestClientMagnet::test_convert_client PASSED [ 23%]
-tests/test_client_magnet.py::TestClientMagnet::test_pipeline_stats PASSED [ 23%]
-tests/test_code_guardian.py::test_security_scanning PASSED               [ 24%]
-tests/test_code_guardian.py::test_performance_monitoring PASSED          [ 24%]
-tests/test_code_guardian.py::test_rollback_points PASSED                 [ 24%]
-tests/test_code_guardian.py::test_guarded_decorator PASSED               [ 24%]
-tests/test_coding_level.py::TestCodingLevel::test_levels_configuration PASSED [ 25%]
-tests/test_coding_level.py::TestCodingLevel::test_set_get_level PASSED   [ 25%]
-tests/test_coding_level.py::TestCodingLevel::test_invalid_level PASSED   [ 25%]
-tests/test_coding_level.py::TestCodingLevel::test_get_level_prompt PASSED [ 25%]
-tests/test_coding_level.py::TestCodingLevel::test_load_level_style PASSED [ 26%]
-tests/test_config.py::TestConfig::test_currency_enums PASSED             [ 26%]
-tests/test_config.py::TestConfig::test_pricing_tiers PASSED              [ 26%]
-tests/test_config.py::TestConfig::test_conversion_helpers PASSED         [ 26%]
-tests/test_content_factory.py::TestContentFactory::test_generate_ideas PASSED [ 27%]
-tests/test_content_factory.py::TestContentFactory::test_create_post PASSED [ 27%]
-tests/test_content_factory.py::TestContentFactory::test_calendar_generation PASSED [ 27%]
-tests/test_contract_gen.py::test_contract_template_model PASSED          [ 27%]
-tests/test_contract_gen.py::test_generate_markdown_content PASSED        [ 28%]
-tests/test_contract_gen.py::test_loader PASSED                           [ 28%]
-tests/test_core_modules.py::TestCRM::test_crm_initialization FAILED      [ 28%]
-tests/test_core_modules.py::TestCRM::test_crm_add_contact FAILED         [ 29%]
-tests/test_core_modules.py::TestCRM::test_crm_get_hot_leads FAILED       [ 29%]
-tests/test_core_modules.py::TestCRM::test_crm_forecast_revenue FAILED    [ 29%]
-tests/test_core_modules.py::TestCRM::test_crm_get_summary FAILED         [ 29%]
-tests/test_core_modules.py::TestCRMPresenter::test_format_pipeline_text FAILED [ 30%]
-tests/test_core_modules.py::TestAnalytics::test_analytics_initialization PASSED [ 30%]
-tests/test_data_moat.py::TestDataMoat::test_record_success PASSED        [ 30%]
-tests/test_data_moat.py::TestDataMoat::test_add_insight PASSED           [ 30%]
-tests/test_data_moat.py::TestDataMoat::test_get_best_practices PASSED    [ 31%]
-tests/test_data_moat.py::TestDataMoat::test_get_moat_strength PASSED     [ 31%]
-tests/test_distributed_queue.py::test_job_defaults PASSED                [ 31%]
-tests/test_distributed_queue.py::test_job_serialization PASSED           [ 31%]
-tests/test_distributed_queue.py::test_memory_submit_and_get PASSED       [ 32%]
-tests/test_distributed_queue.py::test_memory_priority PASSED             [ 32%]
-tests/test_distributed_queue.py::test_memory_completion PASSED           [ 32%]
-tests/test_distributed_queue.py::test_manager_fallback PASSED            [ 32%]
-tests/test_distributed_queue.py::test_manager_no_fallback PASSED         [ 33%]
-tests/test_distributed_queue.py::test_manager_flow PASSED                [ 33%]
-tests/test_distributed_queue.py::test_manager_retry_flow PASSED          [ 33%]
-tests/test_distributed_queue.py::test_facade_methods PASSED              [ 34%]
-tests/test_distributed_queue.py::test_facade_legacy_completion PASSED    [ 34%]
-tests/test_errors.py::TestErrors::test_base_error PASSED                 [ 34%]
-tests/test_errors.py::TestErrors::test_validation_error PASSED           [ 34%]
-tests/test_errors.py::TestErrors::test_win3_error PASSED                 [ 35%]
-tests/test_ez_pr.py::TestEzPR::test_help_command PASSED                  [ 35%]
-tests/test_ez_pr.py::TestEzPR::test_check_empty PASSED                   [ 35%]
-tests/test_ez_pr.py::TestEzPR::test_check_with_prs PASSED                [ 35%]
-tests/test_franchise_manager.py::TestFranchiseManager::test_add_franchisee PASSED [ 36%]
-tests/test_franchise_manager.py::TestFranchiseManager::test_record_revenue PASSED [ 36%]
-tests/test_franchise_manager.py::TestFranchiseManager::test_get_network_stats PASSED [ 36%]
-tests/test_headless.py::TestHeadless::test_prompt_execution PASSED       [ 36%]
-tests/test_headless.py::TestHeadless::test_slash_command_routing PASSED  [ 37%]
-tests/test_headless.py::TestHeadless::test_json_output_format PASSED     [ 37%]
-tests/test_hooks_manager.py::TestHooksManager::test_hook_structure PASSED [ 37%]
-tests/test_hooks_manager.py::TestHooksManager::test_hooks_for_suite PASSED [ 37%]
-tests/test_hooks_manager.py::TestHooksManager::test_privacy_block PASSED [ 38%]
-tests/test_hooks_manager.py::TestHooksManager::test_win3_gate PASSED     [ 38%]
-tests/test_infrastructure.py::TestInfrastructure::test_stack_initialization PASSED [ 38%]
-tests/test_infrastructure.py::TestInfrastructure::test_health_score PASSED [ 39%]
-tests/test_infrastructure.py::TestInfrastructure::test_layer_update PASSED [ 39%]
-tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_dry_run PASSED [ 39%]
-tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_success PASSED [ 39%]
-tests/test_jules_integration.py::TestJulesIntegration::test_run_jules_task_unknown PASSED [ 40%]
-tests/test_jules_integration.py::TestJulesIntegration::test_run_weekly_tasks_monday PASSED [ 40%]
-tests/test_jules_runner.py::TestJulesRunner::test_task_registry PASSED   [ 40%]
-tests/test_jules_runner.py::TestJulesRunner::test_run_task_dry PASSED    [ 40%]
-tests/test_jules_runner.py::TestJulesRunner::test_invalid_task PASSED    [ 41%]
-tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_tier_progression PASSED [ 41%]
-tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_savings_calculation PASSED [ 41%]
-tests/test_loyalty_rewards.py::TestLoyaltyRewards::test_next_tier_info PASSED [ 41%]
-tests/test_master_dashboard.py::TestMasterDashboard::test_summary_aggregation PASSED [ 42%]
-tests/test_master_dashboard.py::TestMasterDashboard::test_platform_score PASSED [ 42%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_main_class_import PASSED [ 42%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_global_instance_import PASSED [ 43%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_convenience_functions_import PASSED [ 43%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_dataclasses_import PASSED [ 43%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_availability_flags_import PASSED [ 43%]
-tests/test_ml_optimizer.py::TestMLOptimizerFacadeImports::test_direct_ml_module_import PASSED [ 44%]
-tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_instantiation_succeeds PASSED [ 44%]
-tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_models_attribute PASSED [ 44%]
-tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_game_changing_metrics PASSED [ 44%]
-tests/test_ml_optimizer.py::TestMLOptimizerInstantiation::test_has_core_methods PASSED [ 45%]
-tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_calculate_ai_optimized_price_returns_result PASSED [ 45%]
-tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_optimal_price_is_positive PASSED [ 45%]
-tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_confidence_score_in_valid_range PASSED [ 45%]
-tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_strategy_used_is_string PASSED [ 46%]
-tests/test_ml_optimizer.py::TestMLOptimizerCoreMethods::test_optimization_features_is_list PASSED [ 46%]
-tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_global_instance_is_mloptimizer PASSED [ 46%]
-tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_get_game_changing_analytics_returns_dict PASSED [ 46%]
-tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_analytics_has_required_keys PASSED [ 47%]
-tests/test_ml_optimizer.py::TestMLOptimizerGlobalInstance::test_convenience_function_calculate_price PASSED [ 47%]
-tests/test_ml_optimizer.py::TestMLOptimizerMissingDependencies::test_works_without_sklearn PASSED [ 47%]
-tests/test_ml_optimizer.py::TestMLOptimizerMissingDependencies::test_fallback_strategy_when_no_ml PASSED [ 48%]
-tests/test_ml_optimizer.py::TestMLOptimizerEnums::test_pricing_mode_values PASSED [ 48%]
-tests/test_ml_optimizer.py::TestMLOptimizerEnums::test_game_changing_feature_values PASSED [ 48%]
-tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_game_changing_metrics_viral PASSED [ 48%]
-tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_game_changing_metrics_quantum PASSED [ 49%]
-tests/test_ml_optimizer.py::TestMLOptimizerUpdateMetrics::test_update_increments_total_predictions PASSED [ 49%]
-tests/test_moat_engine.py::test_initialization PASSED                    [ 49%]
-tests/test_moat_engine.py::test_add_data_point PASSED                    [ 49%]
-tests/test_moat_engine.py::test_record_learning PASSED                   [ 50%]
-tests/test_moat_engine.py::test_add_workflow PASSED                      [ 50%]
-tests/test_moat_engine.py::test_calculate_switching_cost PASSED          [ 50%]
-tests/test_moat_engine.py::test_persistence PASSED                       [ 50%]
-tests/test_moat_engine.py::test_global_instance PASSED                   [ 51%]
-tests/test_money_maker.py::TestMoneyMaker::test_generate_quote PASSED    [ 51%]
-tests/test_money_maker.py::TestMoneyMaker::test_validate_win3 PASSED     [ 51%]
-tests/test_money_maker.py::TestMoneyMaker::test_auto_qualify PASSED      [ 51%]
-tests/test_opentelemetry.py::TestTracerConfig::test_default_values PASSED [ 52%]
-tests/test_opentelemetry.py::TestTracerConfig::test_custom_values PASSED [ 52%]
-tests/test_opentelemetry.py::TestExporterConfig::test_required_endpoint PASSED [ 52%]
-tests/test_opentelemetry.py::TestExporterConfig::test_custom_headers PASSED [ 53%]
-tests/test_opentelemetry.py::TestAgentConfig::test_agent_config_creation PASSED [ 53%]
-tests/test_opentelemetry.py::TestTraceId::test_auto_generated_trace_id PASSED [ 53%]
-tests/test_opentelemetry.py::TestTraceId::test_with_parent_id PASSED     [ 53%]
-tests/test_opentelemetry.py::TestTraceId::test_to_dict PASSED            [ 54%]
-tests/test_opentelemetry.py::TestTraceId::test_str_representation PASSED [ 54%]
-tests/test_opentelemetry.py::TestSpanKind::test_span_kinds PASSED        [ 54%]
-tests/test_opentelemetry.py::TestSpanStatus::test_span_statuses PASSED   [ 54%]
-tests/test_opentelemetry.py::TestEvent::test_event_creation PASSED       [ 55%]
-tests/test_opentelemetry.py::TestEvent::test_event_with_attributes PASSED [ 55%]
-tests/test_opentelemetry.py::TestEvent::test_event_to_dict PASSED        [ 55%]
-tests/test_opentelemetry.py::TestMetric::test_metric_creation PASSED     [ 55%]
-tests/test_opentelemetry.py::TestMetric::test_metric_to_dict PASSED      [ 56%]
-tests/test_opentelemetry.py::TestSpan::test_span_creation PASSED         [ 56%]
-tests/test_opentelemetry.py::TestSpan::test_span_start PASSED            [ 56%]
-tests/test_opentelemetry.py::TestSpan::test_span_finish PASSED           [ 56%]
-tests/test_opentelemetry.py::TestSpan::test_span_finish_with_error PASSED [ 57%]
-tests/test_opentelemetry.py::TestSpan::test_span_add_event PASSED        [ 57%]
-tests/test_opentelemetry.py::TestSpan::test_span_add_tag PASSED          [ 57%]
-tests/test_opentelemetry.py::TestSpan::test_span_add_attribute PASSED    [ 58%]
-tests/test_opentelemetry.py::TestSpan::test_span_set_parent PASSED       [ 58%]
-tests/test_opentelemetry.py::TestSpan::test_span_get_duration PASSED     [ 58%]
-tests/test_opentelemetry.py::TestSpan::test_span_to_dict PASSED          [ 58%]
-tests/test_opentelemetry.py::TestTracingAgent::test_agent_creation PASSED [ 59%]
-tests/test_opentelemetry.py::TestTracingAgent::test_is_critical_operation PASSED [ 59%]
-tests/test_opentelemetry.py::TestTracingAgent::test_is_supported_operation PASSED [ 59%]
-tests/test_opentelemetry.py::TestTracingAgent::test_record_operation PASSED [ 59%]
-tests/test_opentelemetry.py::TestTracingAgent::test_register_and_unregister_span PASSED [ 60%]
-tests/test_opentelemetry.py::TestTracingAgent::test_get_health_status PASSED [ 60%]
-tests/test_opentelemetry.py::TestTracingAgent::test_activate_deactivate PASSED [ 60%]
-tests/test_opentelemetry.py::TestTracingAgent::test_shutdown PASSED      [ 60%]
-tests/test_opentelemetry.py::TestTracingAgent::test_to_dict PASSED       [ 61%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_tracer_initialization_without_background_processors PASSED [ 61%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_tracer_custom_endpoints PASSED [ 61%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_create_span PASSED [ 62%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_create_span_with_parent PASSED [ 62%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_trace_request PASSED [ 62%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_trace_ai_operation PASSED [ 62%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_finish_span PASSED [ 63%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_create_tracing_agent PASSED [ 63%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_register_tracing_agent PASSED [ 63%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_register_tracing_agent_requires_name PASSED [ 63%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_get_tracing_analytics PASSED [ 64%]
-tests/test_opentelemetry.py::TestDistributedTracer::test_shutdown PASSED [ 64%]
-tests/test_opentelemetry.py::TestSpanProcessor::test_processor_initialization PASSED [ 64%]
-tests/test_opentelemetry.py::TestSpanProcessor::test_process_spans PASSED [ 64%]
-tests/test_opentelemetry.py::TestSpanProcessor::test_processor_start_stop PASSED [ 65%]
-tests/test_opentelemetry.py::TestMetricsProcessor::test_processor_initialization PASSED [ 65%]
-tests/test_opentelemetry.py::TestMetricsProcessor::test_process_metrics PASSED [ 65%]
-tests/test_opentelemetry.py::TestExportLoopProcessor::test_processor_initialization PASSED [ 65%]
-tests/test_opentelemetry.py::TestExportLoopProcessor::test_process_with_mock_callback PASSED [ 66%]
-tests/test_opentelemetry.py::TestPerformanceAnalyzer::test_analyzer_initialization PASSED [ 66%]
-tests/test_opentelemetry.py::TestPerformanceAnalyzer::test_analyze_with_agents PASSED [ 66%]
-tests/test_opentelemetry.py::TestOTLPExporter::test_exporter_initialization PASSED [ 67%]
-tests/test_opentelemetry.py::TestOTLPExporter::test_export_spans_success PASSED [ 67%]
-tests/test_opentelemetry.py::TestOTLPExporter::test_export_spans_failure PASSED [ 67%]
-tests/test_opentelemetry.py::TestOTLPExporter::test_export_empty_spans PASSED [ 67%]
-tests/test_opentelemetry.py::TestOTLPExporter::test_export_metrics_success PASSED [ 68%]
-tests/test_opentelemetry.py::TestJaegerExporter::test_exporter_initialization PASSED [ 68%]
-tests/test_opentelemetry.py::TestJaegerExporter::test_export_spans_success PASSED [ 68%]
-tests/test_opentelemetry.py::TestJaegerExporter::test_convert_tags PASSED [ 68%]
-tests/test_opentelemetry.py::TestJaegerExporter::test_export_metrics_noop PASSED [ 69%]
-tests/test_opentelemetry.py::TestExportProcessor::test_processor_initialization PASSED [ 69%]
-tests/test_opentelemetry.py::TestExportProcessor::test_add_span PASSED   [ 69%]
-tests/test_opentelemetry.py::TestExportProcessor::test_process_export_batch PASSED [ 69%]
-tests/test_opentelemetry.py::TestExportProcessor::test_shutdown PASSED   [ 70%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_distributed_tracer_global_instance PASSED [ 70%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_create_span_function PASSED [ 70%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_trace_request_function PASSED [ 70%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_trace_ai_operation_function PASSED [ 71%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_get_tracing_analytics_function PASSED [ 71%]
-tests/test_opentelemetry.py::TestBackwardCompatibility::test_register_tracing_agent_function PASSED [ 71%]
-tests/test_persistence.py::TestPersistence::test_json_store_operations PASSED [ 72%]
-tests/test_persistence.py::TestPersistence::test_serialization_helpers PASSED [ 72%]
-tests/test_persistence.py::TestPersistence::test_atomic_write_recovery PASSED [ 72%]
-tests/test_pr_manager.py::TestPRManager::test_can_auto_merge_logic PASSED [ 72%]
-tests/test_pr_manager.py::TestPRManager::test_get_open_prs_mock PASSED   [ 73%]
-tests/test_proposal_generator.py::TestProposalGenerator::test_generate_proposal PASSED [ 73%]
-tests/test_proposal_generator.py::TestProposalGenerator::test_quick_proposal PASSED [ 73%]
-tests/test_proposal_generator.py::TestProposalGenerator::test_save_proposal PASSED [ 73%]
-tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_normal PASSED [ 74%]
-tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_warning PASSED [ 74%]
-tests/test_quota_engine.py::TestQuotaModel::test_threshold_level_critical PASSED [ 74%]
-tests/test_quota_engine.py::TestQuotaModel::test_countdown_format_hours PASSED [ 74%]
-tests/test_quota_engine.py::TestQuotaModel::test_countdown_format_minutes_only PASSED [ 75%]
-tests/test_quota_engine.py::TestQuotaModel::test_countdown_ready PASSED  [ 75%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_rocket PASSED [ 75%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_dot PASSED [ 75%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_dot_percent PASSED [ 76%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_percent PASSED [ 76%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_name_percent PASSED [ 76%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_format_full PASSED [ 77%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_emoji_warning PASSED [ 77%]
-tests/test_quota_engine.py::TestQuotaModel::test_status_emoji_critical PASSED [ 77%]
-tests/test_quota_engine.py::TestQuotaPool::test_aggregate_remaining PASSED [ 77%]
-tests/test_quota_engine.py::TestQuotaPool::test_lowest_model PASSED      [ 78%]
-tests/test_quota_engine.py::TestQuotaPool::test_empty_pool PASSED        [ 78%]
-tests/test_quota_engine.py::TestQuotaEngine::test_initialization PASSED  [ 78%]
-tests/test_quota_engine.py::TestQuotaEngine::test_custom_thresholds PASSED [ 78%]
-tests/test_quota_engine.py::TestQuotaEngine::test_get_local_quota_returns_mock PASSED [ 79%]
-tests/test_quota_engine.py::TestQuotaEngine::test_get_current_status_structure PASSED [ 79%]
-tests/test_quota_engine.py::TestQuotaEngine::test_alerts_detection PASSED [ 79%]
-tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_full PASSED [ 79%]
-tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_compact PASSED [ 80%]
-tests/test_quota_engine.py::TestQuotaEngine::test_format_cli_output_json PASSED [ 80%]
-tests/test_quota_engine.py::TestIntegration::test_full_quota_check_workflow PASSED [ 80%]
-tests/test_registry.py::TestRegistry::test_registry_structure PASSED     [ 81%]
-tests/test_registry.py::TestRegistry::test_get_command_module PASSED     [ 81%]
-tests/test_registry.py::TestRegistry::test_resolve_shortcut PASSED       [ 81%]
-tests/test_revenue_engine.py::TestRevenueEngine::test_invoice_lifecycle PASSED [ 81%]
-tests/test_revenue_engine.py::TestRevenueEngine::test_arr_calculation PASSED [ 82%]
-tests/test_revenue_engine.py::TestRevenueEngine::test_goal_tracking PASSED [ 82%]
-tests/test_rules_loader.py::TestRulesLoader::test_rule_mapping_structure PASSED [ 82%]
-tests/test_rules_loader.py::TestRulesLoader::test_get_rules_for_agent PASSED [ 82%]
-tests/test_rules_loader.py::TestRulesLoader::test_get_rules_for_unknown_agent PASSED [ 83%]
-tests/test_rules_loader.py::TestRulesLoader::test_load_rules_content PASSED [ 83%]
-tests/test_sales_pipeline.py::TestSalesPipeline::test_deal_lifecycle PASSED [ 83%]
-tests/test_sales_pipeline.py::TestSalesPipeline::test_pipeline_stats PASSED [ 83%]
-tests/test_skill_loader.py::TestSkillLoader::test_skill_mapping_structure PASSED [ 84%]
-tests/test_skill_loader.py::TestSkillLoader::test_get_skills_for_agent PASSED [ 84%]
-tests/test_skill_loader.py::TestSkillLoader::test_load_skills_content PASSED [ 84%]
-tests/test_telemetry.py::TestTelemetry::test_track_event PASSED          [ 84%]
-tests/test_telemetry.py::TestTelemetry::test_usage_stats PASSED          [ 85%]
-tests/test_telemetry.py::TestTelemetry::test_persistence PASSED          [ 85%]
-tests/test_unified_dashboard.py::TestUnifiedDashboard::test_get_stats PASSED [ 85%]
-tests/test_unified_dashboard.py::TestUnifiedDashboard::test_integration_score PASSED [ 86%]
-tests/test_vc_metrics.py::TestVCMetrics::test_initialization PASSED      [ 86%]
-tests/test_vc_metrics.py::TestVCMetrics::test_ltv_cac_ratio PASSED       [ 86%]
-tests/test_vc_metrics.py::TestVCMetrics::test_rule_of_40 PASSED          [ 86%]
-tests/test_vc_metrics.py::TestVCMetrics::test_readiness_score PASSED     [ 87%]
-tests/test_vc_metrics.py::TestVCMetrics::test_stage_recommendation PASSED [ 87%]
-tests/test_vibe_ide.py::TestVIBEIDE::test_create_plan PASSED             [ 87%]
-tests/test_vibe_ide.py::TestVIBEIDE::test_todo_management PASSED         [ 87%]
-tests/test_vibe_ide.py::TestVIBEIDE::test_list_plans PASSED              [ 88%]
-tests/test_vibe_kanban_bridge.py::test_create_task PASSED                [ 88%]
-tests/test_vibe_kanban_bridge.py::test_list_tasks PASSED                 [ 88%]
-tests/test_vibe_kanban_bridge.py::test_orchestrator_workload PASSED      [ 88%]
-tests/test_vibe_kanban_bridge.py::test_missing_token_raises_error PASSED [ 89%]
-tests/test_vibe_kanban_bridge.py::test_empty_token_raises_error PASSED   [ 89%]
-tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_task_creation PASSED [ 89%]
-tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_sequential_execution PASSED [ 89%]
-tests/test_vibe_orchestrator.py::TestVIBEOrchestrator::test_agent_registration PASSED [ 90%]
-tests/test_vibe_workflow.py::TestVIBEWorkflow::test_plan_detection PASSED [ 90%]
-tests/test_vibe_workflow.py::TestVIBEWorkflow::test_analyze_plan PASSED  [ 90%]
-tests/test_vibe_workflow.py::TestVIBEWorkflow::test_task_management PASSED [ 91%]
-tests/test_vibe_workflow.py::TestVIBEWorkflow::test_stats_aggregation PASSED [ 91%]
-tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_register_agent PASSED [ 91%]
-tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_get_metrics PASSED [ 91%]
-tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_get_status PASSED [ 92%]
-tests/unit/agent_swarm/test_coordinator.py::TestSwarmCoordinator::test_find_best_agent PASSED [ 92%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_swarm_initialization PASSED [ 92%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_register_agent_delegation PASSED [ 92%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_submit_task_delegation PASSED [ 93%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_start_stop PASSED [ 93%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_task_result_delegation PASSED [ 93%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_metrics_delegation PASSED [ 93%]
-tests/unit/agent_swarm/test_engine.py::TestAgentSwarm::test_get_status_delegation PASSED [ 94%]
-tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_find_best_task_worker PASSED [ 94%]
-tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_find_best_task_specialist PASSED [ 94%]
-tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_assign_task PASSED [ 94%]
-tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_execute_task_success PASSED [ 95%]
-tests/unit/agent_swarm/test_executor.py::TestTaskExecutor::test_execute_task_failure PASSED [ 95%]
-tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_register_agent PASSED [ 95%]
-tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_agent PASSED [ 96%]
-tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_all_agents PASSED [ 96%]
-tests/unit/agent_swarm/test_registry.py::TestAgentRegistry::test_get_available_agents PASSED [ 96%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_get_swarm_singleton PASSED [ 96%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_reset_swarm PASSED [ 97%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_register_agent_shortcut PASSED [ 97%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_submit_task_shortcut PASSED [ 97%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_get_task_result_shortcut PASSED [ 97%]
-tests/unit/agent_swarm/test_shortcuts.py::TestShortcuts::test_start_stop_shortcuts PASSED [ 98%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_submit_task PASSED [ 98%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_priority_queueing PASSED [ 98%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_next_task PASSED [ 98%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_pop_next_task PASSED [ 99%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_remove_task_from_queue PASSED [ 99%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_task_result_wait PASSED [ 99%]
-tests/unit/agent_swarm/test_task_manager.py::TestTaskManager::test_get_task_result_timeout PASSED [100%]
+backend/tests/routers/test_executive.py::test_get_executive_dashboard FAILED [100%]
 
 =================================== FAILURES ===================================
-_______________________ TestCRM.test_crm_initialization ________________________
-tests/test_core_modules.py:20: in test_crm_initialization
-    from core.modules.crm import CRM
-E   ModuleNotFoundError: No module named 'core.modules'
-_________________________ TestCRM.test_crm_add_contact _________________________
-tests/test_core_modules.py:29: in test_crm_add_contact
-    from core.modules.crm import CRM
-E   ModuleNotFoundError: No module named 'core.modules'
-________________________ TestCRM.test_crm_get_hot_leads ________________________
-tests/test_core_modules.py:44: in test_crm_get_hot_leads
-    from core.modules.crm import CRM
-E   ModuleNotFoundError: No module named 'core.modules'
-______________________ TestCRM.test_crm_forecast_revenue _______________________
-tests/test_core_modules.py:58: in test_crm_forecast_revenue
-    from core.modules.crm import CRM
-E   ModuleNotFoundError: No module named 'core.modules'
-_________________________ TestCRM.test_crm_get_summary _________________________
-tests/test_core_modules.py:70: in test_crm_get_summary
-    from core.modules.crm import CRM
-E   ModuleNotFoundError: No module named 'core.modules'
-__________________ TestCRMPresenter.test_format_pipeline_text __________________
-tests/test_core_modules.py:84: in test_format_pipeline_text
-    from core.modules.crm import CRM, CRMPresenter
-E   ModuleNotFoundError: No module named 'core.modules'
+_________________________ test_get_executive_dashboard _________________________
+  + Exception Group Traceback (most recent call last):
+  |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/_utils.py", line 79, in collapse_excgroups
+  |     yield
+  |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/base.py", line 196, in __call__
+  |     recv_stream.close()
+  |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/anyio/_backends/_asyncio.py", line 783, in __aexit__
+  |     raise BaseExceptionGroup(
+  | exceptiongroup.ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/runner.py", line 344, in from_call
+    |     result: TResult | None = func()
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/runner.py", line 246, in <lambda>
+    |     lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/logging.py", line 850, in pytest_runtest_call
+    |     yield
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/capture.py", line 900, in pytest_runtest_call
+    |     return (yield)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/skipping.py", line 263, in pytest_runtest_call
+    |     return (yield)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
+    |     item.runtest()
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/python.py", line 1671, in runtest
+    |     self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_hooks.py", line 512, in __call__
+    |     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    |     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 167, in _multicall
+    |     raise exception
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 139, in _multicall
+    |     teardown.throw(exception)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 53, in run_old_style_hookwrapper
+    |     return result.get_result()
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_result.py", line 103, in get_result
+    |     raise exc.with_traceback(tb)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 38, in run_old_style_hookwrapper
+    |     res = yield
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pluggy/_callers.py", line 121, in _multicall
+    |     res = hook_impl.function(*args)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
+    |     result = testfunction(**testargs)
+    |   File "/Users/macbookprom1/mekong-cli/backend/tests/routers/test_executive.py", line 95, in test_get_executive_dashboard
+    |     response = client.get("/executive/dashboard?tenant_id=test_tenant")
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 479, in get
+    |     return super().get(
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 1053, in get
+    |     return self.request(
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 451, in request
+    |     return super().request(
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 825, in request
+    |     return self.send(request, auth=auth, follow_redirects=follow_redirects)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 914, in send
+    |     response = self._send_handling_auth(
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    |     response = self._send_handling_redirects(
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    |     response = self._send_single_request(request)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    |     response = transport.handle_request(request)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 354, in handle_request
+    |     raise exc
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 351, in handle_request
+    |     portal.call(self.app, scope, receive, send)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/anyio/from_thread.py", line 334, in call
+    |     return cast(T_Retval, self.start_task_soon(func, *args).result())
+    |   File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py", line 445, in result
+    |     return self.__get_result()
+    |   File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
+    |     raise self._exception
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/anyio/from_thread.py", line 259, in _call_func
+    |     retval = await retval_or_awaitable
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/fastapi/applications.py", line 1135, in __call__
+    |     await super().__call__(scope, receive, send)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    |     await self.middleware_stack(scope, receive, send)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    |     raise exc
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    |     await self.app(scope, receive, _send)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/base.py", line 196, in __call__
+    |     recv_stream.close()
+    |   File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/contextlib.py", line 135, in __exit__
+    |     self.gen.throw(type, value, traceback)
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    |     raise exc
+    |   File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/base.py", line 193, in __call__
+    |     response = await self.dispatch_func(request, call_next)
+    |   File "/Users/macbookprom1/mekong-cli/backend/api/middleware/metrics_logic/__init__.py", line 17, in metrics_middleware
+    |     metrics.record_request(request, response, time.time() - start_time)
+    |   File "/Users/macbookprom1/mekong-cli/backend/api/middleware/metrics_logic/collector.py", line 33, in record_request
+    |     tenant_id = getattr(request.state, "tenant", {"tenant_id": "unknown"}).tenant_id
+    | AttributeError: 'dict' object has no attribute 'tenant_id'
+    +------------------------------------
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/macbookprom1/mekong-cli/backend/tests/routers/test_executive.py", line 95, in test_get_executive_dashboard
+    response = client.get("/executive/dashboard?tenant_id=test_tenant")
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 479, in get
+    return super().get(
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 1053, in get
+    return self.request(
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 451, in request
+    return super().request(
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/httpx/_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 354, in handle_request
+    raise exc
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/anyio/from_thread.py", line 334, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py", line 445, in result
+    return self.__get_result()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py", line 390, in __get_result
+    raise self._exception
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/anyio/from_thread.py", line 259, in _call_func
+    retval = await retval_or_awaitable
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/applications.py", line 113, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/base.py", line 196, in __call__
+    recv_stream.close()
+  File "/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/contextlib.py", line 135, in __exit__
+    self.gen.throw(type, value, traceback)
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/_utils.py", line 85, in collapse_excgroups
+    raise exc
+  File "/Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/macbookprom1/mekong-cli/backend/api/middleware/metrics_logic/__init__.py", line 17, in metrics_middleware
+    metrics.record_request(request, response, time.time() - start_time)
+  File "/Users/macbookprom1/mekong-cli/backend/api/middleware/metrics_logic/collector.py", line 33, in record_request
+    tenant_id = getattr(request.state, "tenant", {"tenant_id": "unknown"}).tenant_id
+AttributeError: 'dict' object has no attribute 'tenant_id'
+
+During handling of the above exception, another exception occurred:
+
+mock_crm = <MagicMock name='_get_crm_metrics' id='4550332080'>
+mock_rate_limiter = <MagicMock name='RateLimiterService()' id='4550254992'>
+mock_middleware = <AsyncMock name='dispatch' id='4550189888'>
+
+    def test_get_executive_dashboard(mock_crm, mock_rate_limiter, mock_middleware):
+        """Test fetching executive dashboard metrics."""
+        # We must ensure RateLimitMiddleware doesn't block us or fail
+>       response = client.get("/executive/dashboard?tenant_id=test_tenant")
+
+backend/tests/routers/test_executive.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+url = '/executive/dashboard?tenant_id=test_tenant'
+
+    def get(  # type: ignore[override]
+        self,
+        url: httpx._types.URLTypes,
+        *,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+>       return super().get(
+            url,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+.venv/lib/python3.9/site-packages/starlette/testclient.py:479: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+url = '/executive/dashboard?tenant_id=test_tenant'
+
+    def get(
+        self,
+        url: URL | str,
+        *,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Send a `GET` request.
+    
+        **Parameters**: See `httpx.request`.
+        """
+>       return self.request(
+            "GET",
+            url,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:1053: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>, method = 'GET'
+url = URL('http://testserver/executive/dashboard?tenant_id=test_tenant')
+
+    def request(  # type: ignore[override]
+        self,
+        method: str,
+        url: httpx._types.URLTypes,
+        *,
+        content: httpx._types.RequestContent | None = None,
+        data: _RequestData | None = None,
+        files: httpx._types.RequestFiles | None = None,
+        json: Any = None,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+        if timeout is not httpx.USE_CLIENT_DEFAULT:
+            warnings.warn(
+                "You should not use the 'timeout' argument with the TestClient. "
+                "See https://github.com/Kludex/starlette/issues/1108 for more information.",
+                DeprecationWarning,
+            )
+        url = self._merge_url(url)
+>       return super().request(
+            method,
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+.venv/lib/python3.9/site-packages/starlette/testclient.py:451: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>, method = 'GET'
+url = URL('http://testserver/executive/dashboard?tenant_id=test_tenant')
+
+    def request(
+        self,
+        method: str,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        data: RequestData | None = None,
+        files: RequestFiles | None = None,
+        json: typing.Any | None = None,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Build and send a request.
+    
+        Equivalent to:
+    
+        ```python
+        request = client.build_request(...)
+        response = client.send(request, ...)
+        ```
+    
+        See `Client.build_request()`, `Client.send()` and
+        [Merging of configuration][0] for how the various parameters
+        are merged with client-level configuration.
+    
+        [0]: /advanced/clients/#merging-of-configuration
+        """
+        if cookies is not None:
+            message = (
+                "Setting per-request cookies=<...> is being deprecated, because "
+                "the expected behaviour on cookie persistence is ambiguous. Set "
+                "cookies directly on the client instance instead."
+            )
+            warnings.warn(message, DeprecationWarning, stacklevel=2)
+    
+        request = self.build_request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
+        )
+>       return self.send(request, auth=auth, follow_redirects=follow_redirects)
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:825: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+
+    def send(
+        self,
+        request: Request,
+        *,
+        stream: bool = False,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+    ) -> Response:
+        """
+        Send a request.
+    
+        The request is sent as-is, unmodified.
+    
+        Typically you'll want to build one with `Client.build_request()`
+        so that any client-level configuration is merged into the request,
+        but passing an explicit `httpx.Request()` is supported as well.
+    
+        See also: [Request instances][0]
+    
+        [0]: /advanced/clients/#request-instances
+        """
+        if self._state == ClientState.CLOSED:
+            raise RuntimeError("Cannot send a request, as the client has been closed.")
+    
+        self._state = ClientState.OPENED
+        follow_redirects = (
+            self.follow_redirects
+            if isinstance(follow_redirects, UseClientDefault)
+            else follow_redirects
+        )
+    
+        self._set_timeout(request)
+    
+        auth = self._build_request_auth(request, auth)
+    
+>       response = self._send_handling_auth(
+            request,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            history=[],
+        )
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:914: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+auth = <httpx.Auth object at 0x10f366130>, follow_redirects = True, history = []
+
+    def _send_handling_auth(
+        self,
+        request: Request,
+        auth: Auth,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        auth_flow = auth.sync_auth_flow(request)
+        try:
+            request = next(auth_flow)
+    
+            while True:
+>               response = self._send_handling_redirects(
+                    request,
+                    follow_redirects=follow_redirects,
+                    history=history,
+                )
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:942: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+follow_redirects = True, history = []
+
+    def _send_handling_redirects(
+        self,
+        request: Request,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        while True:
+            if len(history) > self.max_redirects:
+                raise TooManyRedirects(
+                    "Exceeded maximum allowed redirects.", request=request
+                )
+    
+            for hook in self._event_hooks["request"]:
+                hook(request)
+    
+>           response = self._send_single_request(request)
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:979: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x10907d3a0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+
+    def _send_single_request(self, request: Request) -> Response:
+        """
+        Sends a single request, without handling any redirections.
+        """
+        transport = self._transport_for_url(request.url)
+        start = time.perf_counter()
+    
+        if not isinstance(request.stream, SyncByteStream):
+            raise RuntimeError(
+                "Attempted to send an async request with a sync Client instance."
+            )
+    
+        with request_context(request=request):
+>           response = transport.handle_request(request)
+
+.venv/lib/python3.9/site-packages/httpx/_client.py:1014: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x10931a7c0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+                portal.call(self.app, scope, receive, send)
+        except BaseException as exc:
+            if self.raise_server_exceptions:
+>               raise exc
+
+.venv/lib/python3.9/site-packages/starlette/testclient.py:354: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x10931a7c0>
+request = <Request('GET', 'http://testserver/executive/dashboard?tenant_id=test_tenant')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+>               portal.call(self.app, scope, receive, send)
+
+.venv/lib/python3.9/site-packages/starlette/testclient.py:351: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x10f3968e0>
+func = <fastapi.applications.FastAPI object at 0x10a34f8b0>
+args = ({'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}, <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>, <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>)
+
+    def call(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        *args: Unpack[PosArgsT],
+    ) -> T_Retval:
+        """
+        Call the given function in the event loop thread.
+    
+        If the callable returns a coroutine object, it is awaited on.
+    
+        :param func: any callable
+        :raises RuntimeError: if the portal is not running or if this method is called
+            from within the event loop thread
+    
+        """
+>       return cast(T_Retval, self.start_task_soon(func, *args).result())
+
+.venv/lib/python3.9/site-packages/anyio/from_thread.py:334: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None, timeout = None
+
+    def result(self, timeout=None):
+        """Return the result of the call that the future represents.
+    
+        Args:
+            timeout: The number of seconds to wait for the result if the future
+                isn't done. If None, then there is no limit on the wait time.
+    
+        Returns:
+            The result of the call that the future represents.
+    
+        Raises:
+            CancelledError: If the future was cancelled.
+            TimeoutError: If the future didn't finish executing before the given
+                timeout.
+            Exception: If the call raised then that exception will be raised.
+        """
+        try:
+            with self._condition:
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+    
+                self._condition.wait(timeout)
+    
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+>                   return self.__get_result()
+
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py:445: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None
+
+    def __get_result(self):
+        if self._exception:
+            try:
+>               raise self._exception
+
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/concurrent/futures/_base.py:390: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x10f3968e0>
+func = <fastapi.applications.FastAPI object at 0x10a34f8b0>
+args = ({'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}, <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>, <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>)
+kwargs = {}
+future = <Future at 0x10f396610 state=finished raised AttributeError>
+
+    async def _call_func(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        args: tuple[Unpack[PosArgsT]],
+        kwargs: dict[str, Any],
+        future: Future[T_Retval],
+    ) -> None:
+        def callback(f: Future[T_Retval]) -> None:
+            if f.cancelled():
+                if self._event_loop_thread_id == get_ident():
+                    scope.cancel("the future was cancelled")
+                elif self._event_loop_thread_id is not None:
+                    self.call(scope.cancel, "the future was cancelled")
+    
+        try:
+            retval_or_awaitable = func(*args, **kwargs)
+            if isawaitable(retval_or_awaitable):
+                with CancelScope() as scope:
+                    future.add_done_callback(callback)
+>                   retval = await retval_or_awaitable
+
+.venv/lib/python3.9/site-packages/anyio/from_thread.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastapi.applications.FastAPI object at 0x10a34f8b0>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if self.root_path:
+            scope["root_path"] = self.root_path
+>       await super().__call__(scope, receive, send)
+
+.venv/lib/python3.9/site-packages/fastapi/applications.py:1135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastapi.applications.FastAPI object at 0x10a34f8b0>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        scope["app"] = self
+        if self.middleware_stack is None:
+            self.middleware_stack = self.build_middleware_stack()
+>       await self.middleware_stack(scope, receive, send)
+
+.venv/lib/python3.9/site-packages/starlette/applications.py:113: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x10f396d90>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+            await self.app(scope, receive, _send)
+        except Exception as exc:
+            request = Request(scope)
+            if self.debug:
+                # In debug mode, return traceback responses.
+                response = self.debug_response(request, exc)
+            elif self.handler is None:
+                # Use our default 500 error handler.
+                response = self.error_response(request, exc)
+            else:
+                # Use an installed 500 error handler.
+                if is_async_callable(self.handler):
+                    response = await self.handler(request, exc)
+                else:
+                    response = await run_in_threadpool(self.handler, request, exc)
+    
+            if not response_started:
+                await response(scope, receive, send)
+    
+            # We always continue to raise the exception.
+            # This allows servers to log the error, or allows test clients
+            # to optionally raise the error within the test case.
+>           raise exc
+
+.venv/lib/python3.9/site-packages/starlette/middleware/errors.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x10f396d90>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x10f35be50>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+>           await self.app(scope, receive, _send)
+
+.venv/lib/python3.9/site-packages/starlette/middleware/errors.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.base.BaseHTTPMiddleware object at 0x10f396df0>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x10f399280>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+        with recv_stream, send_stream, collapse_excgroups():
+            async with anyio.create_task_group() as task_group:
+                response = await self.dispatch_func(request, call_next)
+                await response(scope, wrapped_receive, send)
+                response_sent.set()
+>               recv_stream.close()
+
+.venv/lib/python3.9/site-packages/starlette/middleware/base.py:196: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib._GeneratorContextManager object at 0x10f3bf3a0>
+type = <class 'exceptiongroup.ExceptionGroup'>
+value = ExceptionGroup('unhandled errors in a TaskGroup', [AttributeError("'dict' object has no attribute 'tenant_id'")])
+traceback = <traceback object at 0x10f2bdb40>
+
+    def __exit__(self, type, value, traceback):
+        if type is None:
+            try:
+                next(self.gen)
+            except StopIteration:
+                return False
+            else:
+                raise RuntimeError("generator didn't stop")
+        else:
+            if value is None:
+                # Need to force instantiation so we can reliably
+                # tell if we get the same exception back
+                value = type()
+            try:
+>               self.gen.throw(type, value, traceback)
+
+/Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/contextlib.py:135: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @contextmanager
+    def collapse_excgroups() -> Generator[None, None, None]:
+        try:
+            yield
+        except BaseException as exc:
+            if has_exceptiongroups:  # pragma: no cover
+                while isinstance(exc, BaseExceptionGroup) and len(exc.exceptions) == 1:
+                    exc = exc.exceptions[0]
+    
+>           raise exc
+
+.venv/lib/python3.9/site-packages/starlette/_utils.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.base.BaseHTTPMiddleware object at 0x10f396df0>
+scope = {'app': <fastapi.applications.FastAPI object at 0x10a34f8b0>, 'client': ('testclient', 50000), 'extensions': {'http.response.debug': {}}, 'headers': [(b'host', b'testserver'), (b'accept', b'*/*'), (b'accept-encoding', b'gzip, deflate'), (b'connection', b'keep-alive'), (b'user-agent', b'testclient')], ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x109041dc0>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x10f399280>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+        with recv_stream, send_stream, collapse_excgroups():
+            async with anyio.create_task_group() as task_group:
+>               response = await self.dispatch_func(request, call_next)
+
+.venv/lib/python3.9/site-packages/starlette/middleware/base.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = <starlette.middleware.base._CachedRequest object at 0x10f3bf190>
+call_next = <function BaseHTTPMiddleware.__call__.<locals>.call_next at 0x10f399550>
+
+    async def metrics_middleware(request: Request, call_next):
+        start_time = time.time()
+        response = await call_next(request)
+>       metrics.record_request(request, response, time.time() - start_time)
+
+backend/api/middleware/metrics_logic/__init__.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <backend.api.middleware.metrics_logic.collector.MetricsCollector object at 0x10a40d3d0>
+request = <starlette.middleware.base._CachedRequest object at 0x10f3bf190>
+response = <starlette.middleware.base._StreamingResponse object at 0x10f3bf6a0>
+duration = 0.0020170211791992188
+
+    def record_request(self, request: Request, response: Response, duration: float):
+        method = request.method
+        endpoint = extract_endpoint_name(request.url.path)
+        status_code = str(response.status_code)
+>       tenant_id = getattr(request.state, "tenant", {"tenant_id": "unknown"}).tenant_id
+E       AttributeError: 'dict' object has no attribute 'tenant_id'
+
+backend/api/middleware/metrics_logic/collector.py:33: AttributeError
+------------------------------ Captured log call -------------------------------
+WARNING  backend.middleware.rate_limiter:rate_limiter.py:69 Blocked IP attempted access: testclient
 =============================== warnings summary ===============================
 backend/api/utils/__init__.py:14
   /Users/macbookprom1/mekong-cli/backend/api/utils/__init__.py:14: DeprecationWarning: backend.api.utils.validators is deprecated. Use backend.api.utils.validation_logic instead.
     from .validators import (
 
-backend/api/main.py:22
-  /Users/macbookprom1/mekong-cli/backend/api/main.py:22: DeprecationWarning: backend.api.middleware.metrics is deprecated. Use backend.api.middleware.metrics_logic instead.
+backend/api/main.py:20
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:20: DeprecationWarning: backend.api.middleware.metrics is deprecated. Use backend.api.middleware.metrics_logic instead.
     from backend.api.middleware.metrics import setup_metrics
 
-backend/api/main.py:25
-  /Users/macbookprom1/mekong-cli/backend/api/main.py:25: DeprecationWarning: backend.api.middleware.multitenant is deprecated. Use backend.api.middleware.multitenant_logic instead.
-    from backend.api.middleware.multitenant import (
+backend/api/main.py:23
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:23: DeprecationWarning: backend.api.middleware.multitenant is deprecated. Use backend.api.middleware.multitenant_logic instead.
+    from backend.api.middleware.multitenant import MultiTenantMiddleware, setup_tenant_routes
 
-backend/api/main.py:29
-  /Users/macbookprom1/mekong-cli/backend/api/main.py:29: DeprecationWarning: backend.api.middleware.rate_limiting is deprecated. Use backend.api.middleware.rate_limit instead.
-    from backend.api.middleware.rate_limiting import (
+.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:72
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:72: PyparsingDeprecationWarning: 'enablePackrat' deprecated - use 'enable_packrat'
+    ParserElement.enablePackrat()
 
-backend/api/schemas/vibe.py:39
-  /Users/macbookprom1/mekong-cli/backend/api/schemas/vibe.py:39: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
-    class VibeResponse(BaseModel):
+.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:85
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:85: PyparsingDeprecationWarning: 'escChar' argument is deprecated, use 'esc_char'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
 
-backend/agents/__init__.py:6
-  /Users/macbookprom1/mekong-cli/backend/agents/__init__.py:6: DeprecationWarning: backend.agents.community is deprecated. Use backend.agents.community_logic package instead.
-    from .community import CommunityAgent, Platform, ScheduledPost
+.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:85
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/expressions/parser.py:85: PyparsingDeprecationWarning: 'unquoteResults' argument is deprecated, use 'unquote_results'
+    quoted_identifier = QuotedString('"', escChar="\\", unquoteResults=True)
 
-backend/routes/antigravity/demo.py:11
-  /Users/macbookprom1/mekong-cli/backend/routes/antigravity/demo.py:11: DeprecationWarning: antigravity.vc.metrics is deprecated. Use antigravity.vc.metrics_logic package instead.
-    from antigravity.vc.metrics import FundingStage, VCMetrics
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:366
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:366: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, data: TableMetadataV1) -> TableMetadataV1:
 
-antigravity/core/ab_testing/models.py:30
-  /Users/macbookprom1/mekong-cli/antigravity/core/ab_testing/models.py:30: PytestCollectionWarning: cannot collect test class 'TestResult' because it has a __new__ constructor (from: tests/test_ab_testing.py)
-    class TestResult(Enum):
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:495
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:495: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
 
-../Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/sklearn/utils/fixes.py:20: DeprecationWarning: 
-  Pyarrow will become a required dependency of pandas in the next major release of pandas (pandas 3.0),
-  (to allow more performant data types, such as the Arrow string type, and better interoperability with other libraries)
-  but was not found to be installed on your system.
-  If this would cause problems for you,
-  please provide us feedback at https://github.com/pandas-dev/pandas/issues/54466
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:499
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:499: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:503
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:503: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:507
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:507: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:539
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:539: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_schemas(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:543
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:543: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_partition_specs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:547
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:547: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def check_sort_orders(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:551
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/pyiceberg/table/metadata.py:551: PydanticDeprecatedSince212: Using `@model_validator` with mode='after' on a classmethod is deprecated. Instead, use an instance method. See the documentation at https://docs.pydantic.dev/2.12/concepts/validators/#model-after-validator. Deprecated in Pydantic V2.12 to be removed in V3.0.
+    def construct_refs(cls, table_metadata: TableMetadata) -> TableMetadata:
+
+.venv/lib/python3.9/site-packages/urllib3/__init__.py:35
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+    warnings.warn(
+
+core/licensing/__init__.py:4
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:4: DeprecationWarning: core.licensing.generator is deprecated. Use core.licensing.logic instead.
+    from .generator import LicenseGenerator, generate_license_key, license_generator
+
+core/licensing/__init__.py:5
+  /Users/macbookprom1/mekong-cli/core/licensing/__init__.py:5: DeprecationWarning: core.licensing.validator is deprecated. Use core.licensing.validation instead.
+    from .validator import LicenseTier, LicenseValidator
+
+backend/api/schemas/audit.py:7
+  /Users/macbookprom1/mekong-cli/backend/api/schemas/audit.py:7: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class AuditLogSchema(BaseModel):
+
+backend/api/routers/audit.py:43
+  /Users/macbookprom1/mekong-cli/backend/api/routers/audit.py:43: FastAPIDeprecationWarning: `regex` has been deprecated, please use `pattern` instead
+    format: str = Query("json", regex="^(json|csv)$"),
+
+backend/api/routers/notification_templates.py:29
+  /Users/macbookprom1/mekong-cli/backend/api/routers/notification_templates.py:29: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class TemplateResponse(BaseModel):
+
+backend/api/routers/notifications.py:19
+  /Users/macbookprom1/mekong-cli/backend/api/routers/notifications.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class NotificationResponse(BaseModel):
+
+backend/models/dashboard.py:32
+  /Users/macbookprom1/mekong-cli/backend/models/dashboard.py:32: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class DashboardWidget(DashboardWidgetBase):
+
+backend/models/dashboard.py:58
+  /Users/macbookprom1/mekong-cli/backend/models/dashboard.py:58: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.12/migration/
+    class DashboardConfig(DashboardConfigBase):
+
+backend/api/routers/dashboard.py:96
+  /Users/macbookprom1/mekong-cli/backend/api/routers/dashboard.py:96: FastAPIDeprecationWarning: `regex` has been deprecated, please use `pattern` instead
+    date_range: str = Query("30d", regex="^(today|7d|30d|90d|ytd|custom)$"),
+
+backend/api/main.py:213
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:213: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
           
-    import pandas as pd
+    @app.on_event("startup")
 
-antigravity/infrastructure/distributed_queue/queue_manager.py:10
-  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/distributed_queue/queue_manager.py:10: DeprecationWarning: antigravity.infrastructure.distributed_queue.backends.redis_backend is deprecated. Use antigravity.infrastructure.distributed_queue.backends.redis instead.
-    from .backends.redis_backend import RedisBackend
+.venv/lib/python3.9/site-packages/fastapi/applications.py:4576
+.venv/lib/python3.9/site-packages/fastapi/applications.py:4576
+  /Users/macbookprom1/mekong-cli/.venv/lib/python3.9/site-packages/fastapi/applications.py:4576: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    return self.router.on_event(event_type)
 
-../Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
-    warnings.warn(
-
-antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32
-  /Users/macbookprom1/mekong-cli/antigravity/infrastructure/opentelemetry/tracer/agent_manager.py:32: DeprecationWarning: antigravity.infrastructure.opentelemetry.tracing_agent is deprecated. Use antigravity.infrastructure.opentelemetry.agent_logic instead.
-    from ..tracing_agent import TracingAgent
-
-antigravity/core/registry/__init__.py:24
-  /Users/macbookprom1/mekong-cli/antigravity/core/registry/__init__.py:24: DeprecationWarning: antigravity.core.registry.commands is deprecated. Use antigravity.core.registry.store instead.
-    from .commands import COMMAND_REGISTRY, SHORTCUTS
-
-tests/test_vibe_kanban_bridge.py:5
-  /Users/macbookprom1/mekong-cli/tests/test_vibe_kanban_bridge.py:5: DeprecationWarning: antigravity.vibe_kanban_bridge is deprecated. Use antigravity.bridge package instead.
-    from antigravity.vibe_kanban_bridge import AgentOrchestrator, VibeBoardClient
-
-tests/integration/test_refactored.py::test_ai_wingman
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_ai_wingman returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_refactored.py::test_client_portal
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_client_portal returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_refactored.py::test_analytics
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_refactored.py::test_analytics returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_services.py::test_service_imports
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_service_imports returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_services.py::test_repository_imports
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_repository_imports returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_services.py::test_presenter_imports
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_presenter_imports returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
-
-tests/integration/test_services.py::test_basic_functionality
-  /Users/macbookprom1/Library/Python/3.9/lib/python/site-packages/_pytest/python.py:161: PytestReturnNotNoneWarning: Test functions should return None, but tests/integration/test_services.py::test_basic_functionality returned <class 'bool'>.
-  Did you mean to use `assert` instead of `return`?
-  See https://docs.pytest.org/en/stable/how-to/assert.html#return-not-none for more information.
-    warnings.warn(
+backend/api/main.py:223
+  /Users/macbookprom1/mekong-cli/backend/api/main.py:223: DeprecationWarning: 
+          on_event is deprecated, use lifespan event handlers instead.
+  
+          Read more about it in the
+          [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+          
+    @app.on_event("shutdown")
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
 =========================== short test summary info ============================
-FAILED tests/test_core_modules.py::TestCRM::test_crm_initialization - ModuleN...
-FAILED tests/test_core_modules.py::TestCRM::test_crm_add_contact - ModuleNotF...
-FAILED tests/test_core_modules.py::TestCRM::test_crm_get_hot_leads - ModuleNo...
-FAILED tests/test_core_modules.py::TestCRM::test_crm_forecast_revenue - Modul...
-FAILED tests/test_core_modules.py::TestCRM::test_crm_get_summary - ModuleNotF...
-FAILED tests/test_core_modules.py::TestCRMPresenter::test_format_pipeline_text
-================= 6 failed, 373 passed, 21 warnings in 11.53s ==================
+FAILED backend/tests/routers/test_executive.py::test_get_executive_dashboard - AttributeError: 'dict' object has no attribute 'tenant_id'
+======================== 1 failed, 29 warnings in 4.39s ========================

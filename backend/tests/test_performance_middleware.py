@@ -2,6 +2,7 @@
 Tests for Performance Monitoring Middleware
 """
 
+import asyncio
 import time
 
 import pytest

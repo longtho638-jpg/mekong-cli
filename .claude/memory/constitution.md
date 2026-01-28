@@ -53,14 +53,19 @@ Tài liệu này là **LUẬT TỐI CAO** cho mọi Agent trong hệ sinh thái 
 
 ```yaml
 binh_phap_lookup:
-    planning: [ĐIỀU 0, ĐIỀU 1, ĐIỀU 27] # Chương 1
-    resources: [ĐIỀU 24] # Chương 2
-    attack: [ĐIỀU 23, ĐIỀU 25] # Chương 3
-    structure: [ĐIỀU 2-18] # Chương 4
-    flexibility: [ĐIỀU 20] # Chương 8
-    execution: [ĐIỀU 19, ĐIỀU 22] # Chương 9
-    context: [ĐIỀU 28] # Chương 11
-    intelligence: [ĐIỀU 21, ĐIỀU 26] # Chương 13
+    planning: [ĐIỀU 0, ĐIỀU 1, ĐIỀU 27] # Chương 1: /binh-phap:ke-hoach
+    resources: [ĐIỀU 24] # Chương 2: /binh-phap:tac-chien
+    attack: [ĐIỀU 23, ĐIỀU 25] # Chương 3: /binh-phap:muu-cong
+    structure: [ĐIỀU 2-18] # Chương 4: /binh-phap:hinh-the
+    momentum: [] # Chương 5: /binh-phap:the-tran
+    defense: [ĐIỀU 33] # Chương 6: /binh-phap:hu-thuc
+    speed: [ĐIỀU 8] # Chương 7: /binh-phap:quan-tranh
+    flexibility: [ĐIỀU 20] # Chương 8: /binh-phap:cuu-bien
+    execution: [ĐIỀU 9, ĐIỀU 18, ĐIỀU 19, ĐIỀU 21, ĐIỀU 22, ĐIỀU 29] # Chương 9: /binh-phap:hanh-quan
+    terrain: [ĐIỀU 31, ĐIỀU 34] # Chương 10: /binh-phap:dia-hinh
+    context: [ĐIỀU 28, ĐIỀU 36, ĐIỀU 37] # Chương 11: /binh-phap:cuu-dia
+    disruption: [ĐIỀU 32] # Chương 12: /binh-phap:hoa-cong
+    intelligence: [ĐIỀU 26] # Chương 13: /binh-phap:dung-gian
 ```
 
 ---

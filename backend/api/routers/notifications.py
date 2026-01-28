@@ -14,7 +14,7 @@ from backend.services.notification_orchestrator import (
     get_notification_orchestrator,
 )
 
-router = APIRouter(prefix="/notifications", tags=["Notifications"])
+router = APIRouter(prefix="/api/v1/notifications", tags=["Notifications"])
 
 class NotificationResponse(BaseModel):
     id: str
@@ -104,11 +104,9 @@ async def send_notification(
 ):
     """
     Send a notification (Admin/System only).
-    Ideally this should be restricted to admin users.
     """
-    # TODO: Add admin check check logic here
-    # if not current_user.is_superuser:
-    #     raise HTTPException(status_code=403, detail="Not authorized")
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
 
     results = await orchestrator.send_notification(
         db=db,
@@ -128,7 +126,9 @@ async def get_analytics(
     db: Session = Depends(get_db)
 ):
     """Get notification analytics (Admin only)."""
-    # TODO: Admin check
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized")
+
     from backend.services.notification_analytics import get_notification_analytics_service
     service = get_notification_analytics_service()
 

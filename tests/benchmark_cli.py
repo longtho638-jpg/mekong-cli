@@ -67,7 +67,7 @@ class PerformanceBenchmark:
         for i in range(iterations):
             start = time.perf_counter()
             try:
-                result = subprocess.run(
+                _ = subprocess.run(
                     cmd,
                     capture_output=True,
                     timeout=5,

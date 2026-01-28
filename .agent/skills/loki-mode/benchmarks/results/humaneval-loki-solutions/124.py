@@ -38,7 +38,7 @@ def valid_date(date):
     try:
         month = int(mm)
         day = int(dd)
-        year = int(yyyy)
+        _ = int(yyyy)
     except ValueError:
         return False
     

@@ -1,9 +1,11 @@
 import uuid
 from typing import Any, Dict, List, Optional
 
+import redis
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+from backend.api.config.settings import settings
 from backend.models.enums import AnalyticsEventType
 from backend.models.landing_page import (
     ABTest,
@@ -15,11 +17,14 @@ from backend.models.landing_page import (
     LandingPageCreate,
     LandingPageUpdate,
 )
+from backend.services.cache.invalidation import SyncCacheInvalidator
 
 
 class LandingPageService:
     def __init__(self, db: Session):
         self.db = db
+        self.redis_client = redis.from_url(settings.redis_url, decode_responses=True)
+        self.invalidator = SyncCacheInvalidator(self.redis_client, prefix="landing_pages")
 
     def get_landing_pages(self, skip: int = 0, limit: int = 100) -> List[LandingPage]:
         return self.db.query(LandingPage).offset(skip).limit(limit).all()
@@ -46,6 +51,7 @@ class LandingPageService:
         self.db.add(db_page)
         self.db.commit()
         self.db.refresh(db_page)
+        self.invalidator.invalidate_pattern("list:*")
         return db_page
 
     def update_landing_page(self, page_id: int, page_update: LandingPageUpdate) -> Optional[LandingPage]:
@@ -59,6 +65,11 @@ class LandingPageService:
 
         self.db.commit()
         self.db.refresh(db_page)
+
+        # Invalidate cache
+        self.invalidator.invalidate_key(f"detail:{page_id}")
+        self.invalidator.invalidate_pattern("list:*")
+
         return db_page
 
     def delete_landing_page(self, page_id: int) -> bool:
@@ -67,6 +78,11 @@ class LandingPageService:
             return False
         self.db.delete(db_page)
         self.db.commit()
+
+        # Invalidate cache
+        self.invalidator.invalidate_key(f"detail:{page_id}")
+        self.invalidator.invalidate_pattern("list:*")
+
         return True
 
     def publish_landing_page(self, page_id: int) -> Optional[LandingPage]:
@@ -92,6 +108,9 @@ class LandingPageService:
         self.db.add(new_page)
         self.db.commit()
         self.db.refresh(new_page)
+
+        self.invalidator.invalidate_pattern("list:*")
+
         return new_page
 
 class ABTestingService:

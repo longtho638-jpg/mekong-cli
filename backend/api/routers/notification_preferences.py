@@ -10,7 +10,7 @@ from backend.api.deps import get_current_user, get_db
 from backend.models.notification import UserNotificationPreferences
 from backend.models.user import User
 
-router = APIRouter(prefix="/notifications/preferences", tags=["Notifications"])
+router = APIRouter(prefix="/api/v1/notifications/preferences", tags=["Notifications"])
 
 class PreferencesUpdate(BaseModel):
     email_enabled: Optional[bool] = None

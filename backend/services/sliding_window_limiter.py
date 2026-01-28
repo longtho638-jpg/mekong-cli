@@ -1,6 +1,8 @@
 import time
-from typing import Tuple, Optional
+from typing import Optional, Tuple
+
 import redis.asyncio as redis
+
 
 class SlidingWindowLimiter:
     """

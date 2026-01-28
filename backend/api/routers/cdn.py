@@ -5,12 +5,12 @@ API endpoints for managing CDN cache and assets.
 
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel, HttpUrl
 
 from backend.api.auth.dependencies import get_current_active_superuser
-from backend.services.cdn.manager import CDNManager
 from backend.api.config.settings import settings
+from backend.services.cdn.manager import CDNManager
 
 router = APIRouter(prefix="/cdn", tags=["cdn"])
 

@@ -114,8 +114,7 @@ app.add_middleware(ApiAuthMiddleware, api_key_service=api_key_service)
 
 # Add rate limiting middleware (before CORS)
 app.add_middleware(
-    RateLimitMiddleware,
-    redis_url=settings.redis_url
+    RateLimitMiddleware
 )
 
 # License Validation Middleware (Non-blocking by default, logs usage)

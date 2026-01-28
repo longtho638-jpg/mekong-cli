@@ -166,6 +166,28 @@ services:
     networks:
       - mekong-network
 
+  # ===================================
+  # 7. Meilisearch (Search Engine)
+  # ===================================
+  meilisearch:
+    image: getmeili/meilisearch:v1.6
+    container_name: mekong-meilisearch
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=${MEILISEARCH_MASTER_KEY:-masterKey}
+      - MEILI_NO_ANALYTICS=true
+      - MEILI_ENV=development
+    volumes:
+      - meilisearch_data:/meili_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7700/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - mekong-network
+
 # ===================================
 # Volumes (Persistent Storage)
 # ===================================
@@ -179,6 +201,9 @@ volumes:
   grafana_data:
     driver: local
     name: mekong_grafana_data
+  meilisearch_data:
+    driver: local
+    name: mekong_meilisearch_data
 
 # ===================================
 # Network Configuration

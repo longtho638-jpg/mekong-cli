@@ -103,3 +103,17 @@ class WebhookFailure(Base):
     failed_at = Column(DateTime, default=datetime.utcnow)
     is_resolved = Column(Boolean, default=False)
     resolution_note = Column(Text, nullable=True)
+
+class WebhookDeliveryAttempt(Base):
+    __tablename__ = "webhook_delivery_attempts"
+
+    id = Column(UUID_TYPE, primary_key=True, default=uuid.uuid4)
+    delivery_id = Column(UUID_TYPE, ForeignKey("webhook_deliveries.id"), nullable=False)
+    webhook_config_id = Column(UUID_TYPE, ForeignKey("webhook_configs.id"), nullable=False)
+    attempt_number = Column(Integer, nullable=False)
+    status = Column(String, nullable=False)  # success, failed
+    response_status = Column(Integer, nullable=True)
+    response_body = Column(Text, nullable=True)
+    error_message = Column(Text, nullable=True)
+    duration_ms = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

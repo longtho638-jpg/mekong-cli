@@ -1,14 +1,15 @@
 import asyncio
-import httpx
-import time
-import sys
 import os
+import sys
+import time
+
+import httpx
 
 # Add project root to path
 sys.path.append(os.getcwd())
 
 async def run_load_test():
-    url = "http://localhost:8000/api/health" # This endpoint is usually exempt, let's try a protected one if possible, or we just rely on unit tests for protection logic.
+    # url = "http://localhost:8000/api/health" # This endpoint is usually exempt
     # Actually, the middleware skips /health. Let's use a non-existent endpoint which triggers the global IP limit.
     target_url = "http://localhost:8000/api/load-test-target"
 

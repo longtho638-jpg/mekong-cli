@@ -254,7 +254,7 @@ class AntigravityWizard:
 
     def _run_command(self, cmd: List[str], desc: str):
         try:
-            with console.status(f"[bold green]{desc}...") as status:
+            with console.status(f"[bold green]{desc}...") as _:
                 subprocess.check_call(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             console.print(f"[green]✅ {desc} thành công.[/green]")
         except subprocess.CalledProcessError:

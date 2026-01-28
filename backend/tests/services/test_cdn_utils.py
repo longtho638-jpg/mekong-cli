@@ -2,7 +2,9 @@
 Test CDN Utils
 """
 import pytest
+
 from backend.services.cdn.utils import map_cache_rules_to_middleware
+
 
 def test_map_cache_rules():
     config = {

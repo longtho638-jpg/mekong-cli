@@ -364,7 +364,7 @@
 - [ ] **TASK-1ea2c3b2** 🔌 PENDING
     - Description: IPO-012-API: Public API for developers. REST endpoints, API keys, rate limiting, docs. Ch.5 兵勢
     - Assigned: backend-developer
-    - Status: pending → running
+    - Status: running (Agent: a2c37ca) → running
     - Priority: high
     - Created: 2026-01-27T12:12:30+0700
     - Agent ID: a7444b5
@@ -443,7 +443,7 @@
 - [ ] **TASK-2955ce3a** 💳 PENDING
     - Description: IPO-010-Payment: Complete Stripe production integration. Webhook handlers, checkout sessions, subscription lifecycle, payment methods, invoices. Binh Pháp Ch.2 作戰
     - Assigned: payment-integration
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: critical
     - Created: 2026-01-27T11:45:48+0700
     - Scope:
@@ -477,7 +477,7 @@
 - [ ] **TASK-e91f4c2a** ⚠️ BLOCKED (Quota Exhaustion)
     - Description: Phase-18-LiteLLM: Install LiteLLM universal AI gateway. Setup proxy config. Integrate MCP Gateway with existing tools. Add cost tracking to dashboard. Map to Chương 2 Tác Chiến (Resource Management).
     - Assigned: devops-engineer (Agent ID: ac3254c)
-    - Status: pending → running → **failed** (quota exhaustion)
+    - Status: running (Agent: a2c37ca) → running → **failed** (quota exhaustion)
     - Priority: high
     - Created: 2026-01-27T10:04:54+0700
     - Started: 2026-01-27T10:04:54+0700
@@ -535,7 +535,7 @@
 - [ ] **TASK-IPO-003** 🔐 RUNNING
     - Description: IPO-003: Full security audit. Check CORS, CSRF, XSS, SQLi, auth tokens, secrets management.
     - Assigned: security-engineer (Agent ID: a0a7dce)
-    - Status: pending → running → running → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running → running → running
     - Priority: critical
     - Created: 2026-01-27T08:43:15+0700
     - Started: 2026-01-27T09:02:17+0700
@@ -560,7 +560,7 @@
 - [ ] **TASK-IPO-014**
     - Description: Deploy email automation with Resend. Transactional emails, drip campaigns, segmentation.
     - Assigned: fullstack-developer (Agent ID: a7f339bc)
-    - Status: pending → running → running → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running → running → running
     - Priority: high
     - Created: 2026-01-27T08:30:00+0700
     - Context: IPO 2027 roadmap - Email Marketing Kit enhancement
@@ -996,7 +996,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-acb19d8b** 🛡️ PENDING
     - Description: IPO-004: Implement production rate limiting. Redis-based, per-user quotas, graceful degradation.
     - Assigned: backend-developer
-    - Status: pending → running → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running → running
     - Priority: critical
     - Created: 2026-01-27T09:04:57+0700
     - Scope:
@@ -1022,7 +1022,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-e24241a7** 📊 RUNNING (Agent ID: a2afecd)
     - Description: IPO-005: Set up production monitoring. Sentry for errors, Uptime for availability, Grafana dashboards.
     - Assigned: devops-engineer
-    - Status: pending → running → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running → running
     - Priority: critical
     - Created: 2026-01-27T09:07:00+0700
     - Scope:
@@ -1046,7 +1046,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-4fbe68fc** 💳 PENDING
     - Description: IPO-010: Integrate production payment system. Stripe checkout, webhook handlers, subscription management.
     - Assigned: payment-integration
-    - Status: pending → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running
     - Priority: critical
     - Created: 2026-01-27T09:12:24+0700
     - Scope:
@@ -1074,7 +1074,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-ffd0e698** 🔐 PENDING
     - Description: IPO-011: Implement production license system. Product keys, activation limits, subscription tiers.
     - Assigned: backend-developer
-    - Status: pending → running → running → running
+    - Status: running (Agent: a2c37ca) → running → running → running
     - Priority: critical
     - Created: 2026-01-27T09:16:17+0700
     - Scope:
@@ -1105,7 +1105,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-1aafc61b** 🎯 RUNNING (Agent ID: a512970)
     - Description: IPO-013: Implement affiliate tracking system. Referral codes, commission tracking, payout management.
     - Assigned: fullstack-developer
-    - Status: pending → running → running
+    - Status: running (Agent: a2c37ca) → running → running
     - Priority: high
     - Created: 2026-01-27T09:24:00+0700
     - Scope:
@@ -1162,7 +1162,7 @@ _Last synced: 2026-01-25T22:15:00+0700_
 - [ ] **TASK-0c7e59a7** 📧 RUNNING (Agent ID: a7fa436)
     - Description: IPO-014: Build email automation system. Transactional emails, drip campaigns, SendGrid/Resend integration.
     - Assigned: fullstack-developer
-    - Status: pending → running
+    - Status: running (Agent: a2c37ca) → running
     - Priority: critical
     - Created: 2026-01-27T09:31:52+0700
     - Scope:
@@ -1314,7 +1314,7 @@ Switch to gemini-3-flash or Claude Sonnet for immediate execution.
 - [ ] **TASK-8c0ef955** 📊 PENDING
     - Description: Phase-22-Langfuse: Deploy Langfuse self-hosted Docker. Integrate with LiteLLM gateway. Add to AgencyOS monitoring dashboard. Setup prompt management. Map to Chương 13 Dụng Gián (Intelligence).
     - Assigned: devops-engineer
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: high
     - Created: 2026-01-27T10:07:12+0700
     - Scope:
@@ -1354,7 +1354,7 @@ _Task delegation timestamp: 2026-01-27T10:07:12+0700_
 - [ ] **TASK-d4a2b8e1** ⚡ PENDING
     - Description: Phase-24-VercelAI: Install Vercel AI SDK (npm install ai). Replace ad-hoc LLM calls with SDK patterns. Add structured data generation with Zod. Integrate with AgencyOS UI. Map to Chương 2 Tác Chiến.
     - Assigned: fullstack-developer
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: high
     - Created: 2026-01-27T10:12:14+0700
     - Scope:
@@ -1423,7 +1423,7 @@ _Update timestamp: 2026-01-27T10:13:46+0700_
 - [ ] **TASK-f2cf0650** 🤖 PENDING
     - Description: Phase-13-AutoGen: Install AutoGen in AgencyOS (pip install autogen-agentchat autogen-ext). Create AutoGen skill in .agent/skills/. Integrate MCP with existing tools. Add AutoGen Studio docs. Map to Chương 3 Mưu Công.
     - Assigned: fullstack-developer
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: high
     - Created: 2026-01-27T10:24:30+0700
     - Scope:
@@ -1467,7 +1467,7 @@ _Task delegation timestamp: 2026-01-27T10:24:30+0700_
 - [ ] **TASK-ca847e23** 🐳 PENDING
     - Description: Phase-14-Dify: Setup Dify Docker locally. Create AgencyOS-Dify bridge. Integrate RAG workflows. Export Dify tools to MCP. Map to Chương 9 Hành Quân.
     - Assigned: devops-engineer
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: high
     - Created: 2026-01-27T10:26:45+0700
     - Scope:
@@ -1500,7 +1500,7 @@ _Task delegation timestamp: 2026-01-27T10:26:45+0700_
 - [ ] **TASK-255eb18f** ⚡ PENDING
     - Description: Phase-16-Agno: Install Agno framework. Study CLAUDE.md patterns. Integrate AgentOS with AgencyOS. Migrate slow agents to Agno for 529x faster. Map to Chương 3 Mưu Công.
     - Assigned: fullstack-developer
-    - Status: pending
+    - Status: running (Agent: a2c37ca)
     - Priority: critical
     - Created: 2026-01-27T10:27:30+0700
     - Scope:
@@ -2532,3 +2532,735 @@ _Update timestamp: 2026-01-27T10:29:02+0700_
     - Status: PENDING
     - Context: /Users/macbookprom1/mekong-cli
 
+- [ ] **TASK-9dda309a** 📊 PENDING
+    - Description: IPO-043-Metrics: Prometheus metrics + Grafana dashboards. Ch.13 用間
+    - Scope: Enterprise-grade observability infrastructure with Prometheus metrics collection, Grafana dashboards, alerting, and performance monitoring
+    - Deliverables:
+        - **Prometheus Integration**:
+            - backend/services/metrics_service.py (Prometheus client integration)
+            - backend/middleware/metrics_middleware.py (Request/response metrics auto-collection)
+            - backend/services/custom_metrics.py (Business metrics - revenue, signups, churn)
+            - backend/api/routers/metrics.py (GET /metrics endpoint for Prometheus scraping)
+        - **Grafana Dashboards**:
+            - grafana/dashboards/system-overview.json (CPU, memory, disk, network)
+            - grafana/dashboards/application-performance.json (Request rate, latency, errors)
+            - grafana/dashboards/business-metrics.json (Revenue, signups, active users, churn)
+            - grafana/dashboards/database-performance.json (Query duration, connection pool, slow queries)
+            - grafana/dashboards/cache-performance.json (Hit rate, eviction rate, memory usage)
+        - **Alerting Rules**:
+            - prometheus/alerts/system.yml (High CPU, low disk space, OOM)
+            - prometheus/alerts/application.yml (High error rate, slow response, service down)
+            - prometheus/alerts/business.yml (Revenue drop, high churn, zero signups)
+        - **Configuration**:
+            - config/metrics-config.yaml (Metric collection settings, retention policies)
+            - docker-compose.monitoring.yml (Prometheus + Grafana + Alertmanager stack)
+        - **Documentation**:
+            - docs/metrics-guide.md (Metrics architecture, dashboard usage, alerting rules)
+    - Binh Pháp Ch.13 用間 (Using Spies - Intelligence Gathering):
+        - **Four Golden Signals**: Latency, Traffic, Errors, Saturation
+        - **RED Method**: Rate (requests/sec), Errors (error rate %), Duration (latency distribution)
+        - **USE Method**: Utilization (resource usage %), Saturation (queue depth), Errors
+        - **Metric Types**: Counter (monotonic increase), Gauge (point-in-time value), Histogram (distribution), Summary (quantiles)
+        - **Naming Convention**: `{namespace}_{metric}_{unit}` (e.g., http_requests_total, active_users, request_duration_seconds)
+        - **Labels**: Add context (method, endpoint, status_code) for dimensional analysis
+        - **Scrape Interval**: 15s for high-frequency metrics, 60s for low-frequency
+        - **Retention**: 15d Prometheus (local), 1y Thanos (long-term storage)
+        - **Alerting Strategy**: Page (Critical + Immediate), Ticket (Warning + Non-urgent), Dashboard (Info + FYI)
+        - **SLO Tracking**: 99.9% uptime, p95 latency <200ms, p99 latency <500ms, error rate <0.1%
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Real-time visibility into system health, proactive issue detection, data-driven optimization
+        - 🏢 **Agency WIN**: Reusable observability stack, proven monitoring patterns, reduce MTTR (Mean Time To Resolution)
+        - 🚀 **Startup WIN**: Sub-minute incident detection, performance insights, capacity planning, SLO compliance
+    - Agent: devops-engineer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-50dc392f** 📖 PENDING
+    - Description: IPO-044-OpenAPI: OpenAPI spec generation + SDK client libraries. Ch.4 形勢
+    - Scope: Enterprise-grade OpenAPI 3.1 specification with automatic generation from FastAPI routes, type-safe SDK generation for TypeScript/Python/Go, interactive documentation with Swagger UI/Redoc, and client library publishing
+    - Deliverables:
+        - **OpenAPI Generation**:
+            - backend/api/openapi.py (OpenAPI spec generator from FastAPI app)
+            - backend/api/schemas/ (Pydantic models with OpenAPI metadata)
+            - backend/api/routers/__init__.py (Router tags and descriptions)
+            - backend/middleware/openapi_middleware.py (Enrich spec with examples, security)
+            - scripts/openapi/generate-spec.py (Export spec to openapi.json/openapi.yaml)
+        - **SDK Generation**:
+            - sdks/typescript/ (Auto-generated TypeScript SDK with Axios client)
+            - sdks/python/ (Auto-generated Python SDK with httpx client)
+            - sdks/go/ (Auto-generated Go SDK with net/http client)
+            - scripts/openapi/generate-sdks.sh (OpenAPI Generator wrapper)
+        - **SDK Publishing**:
+            - sdks/typescript/package.json (NPM package config)
+            - sdks/python/setup.py (PyPI package config)
+            - sdks/go/go.mod (Go module config)
+            - .github/workflows/publish-sdks.yml (Auto-publish on release)
+        - **Interactive Documentation**:
+            - apps/developers/app/api-reference/page.tsx (Swagger UI integration)
+            - apps/developers/app/api-reference/redoc/page.tsx (Redoc alternative)
+            - apps/developers/components/APIPlayground.tsx (Try API directly from docs)
+        - **Configuration**:
+            - config/openapi-config.yaml (Spec metadata, servers, security schemes)
+        - **Documentation**:
+            - docs/api-reference.md (API overview, authentication, rate limits)
+            - docs/sdk-quickstart.md (Getting started with SDKs for each language)
+            - sdks/typescript/README.md (TypeScript SDK usage guide)
+            - sdks/python/README.md (Python SDK usage guide)
+            - sdks/go/README.md (Go SDK usage guide)
+    - Binh Pháp Ch.4 形勢 (Tactical Dispositions - Invincibility):
+        - **OpenAPI 3.1 Compliance**: Full spec with security schemes, servers, tags, examples
+        - **Type Safety**: Pydantic models generate accurate schemas with Field(...) metadata
+        - **Schema Validation**: Use Field(examples=[], description="...") for rich documentation
+        - **Security Schemes**: OAuth2 (Authorization Code Flow), API Key (Header), Bearer Token (JWT)
+        - **Server URLs**: Dev (localhost:8000), Staging (staging.api.mekong.dev), Prod (api.mekong.dev)
+        - **SDK Auto-Generation**: Use OpenAPI Generator with custom templates for idiomatic code
+        - **Versioning**: API version in path (/v1/...) and SDK version (semver)
+        - **Breaking Changes**: Use deprecation warnings (deprecated: true) for 6 months before removal
+        - **SDK Features**: Type-safe requests, automatic retries, error handling, pagination helpers
+        - **Publishing Strategy**: Auto-publish on git tag (v1.2.3) → NPM/PyPI/Go Modules
+        - **SDK Testing**: Generate integration tests from OpenAPI examples
+        - **Developer Experience**: Code completion, IntelliSense, docstrings from OpenAPI descriptions
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Self-service API access, reduce support burden, ecosystem growth (3rd-party integrations)
+        - 🏢 **Agency WIN**: Reusable SDK generation pipeline, automated docs, reduce manual client library maintenance
+        - 🚀 **Startup WIN**: Developer-friendly API, faster integrations, professional SDK experience (like Stripe/Twilio)
+    - Agent: api-designer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-3a37ede4** 🧪 PENDING
+    - Description: IPO-045-Testing: E2E tests với Playwright + comprehensive unit tests. Ch.6 虛實
+    - Scope: Enterprise-grade test infrastructure with Playwright E2E tests, pytest unit tests, test coverage reporting, CI integration, visual regression testing, and test data management
+    - Deliverables:
+        - **E2E Testing (Playwright)**:
+            - tests/e2e/auth/ (Login, signup, logout, password reset flows)
+            - tests/e2e/api/ (API endpoint testing with authenticated requests)
+            - tests/e2e/flows/ (Critical user journeys - onboarding, checkout, subscription)
+            - tests/e2e/accessibility/ (WCAG 2.1 AA compliance testing)
+            - tests/e2e/visual/ (Visual regression testing with screenshots)
+            - tests/e2e/performance/ (Core Web Vitals - LCP, FID, CLS)
+            - tests/e2e/config/ (Playwright config for parallel execution, retries)
+            - tests/e2e/fixtures/ (Reusable test fixtures - authenticated user, test data)
+            - tests/e2e/pages/ (Page Object Model - LoginPage, DashboardPage, etc.)
+        - **Unit Testing (Pytest)**:
+            - backend/tests/unit/ (Unit tests for services, models, utils)
+            - backend/tests/integration/ (Integration tests for API endpoints, database)
+            - backend/tests/conftest.py (Pytest fixtures - test DB, test client, mocks)
+            - backend/tests/factories/ (Test data factories with Faker)
+        - **Frontend Unit Testing (Vitest)**:
+            - apps/dashboard/tests/components/ (Component unit tests)
+            - apps/dashboard/tests/hooks/ (React hooks unit tests)
+            - apps/dashboard/tests/utils/ (Utility function unit tests)
+            - apps/dashboard/vitest.config.ts (Vitest configuration)
+        - **Coverage Reporting**:
+            - .coveragerc (pytest-cov configuration - target 80%+ coverage)
+            - backend/tests/coverage/ (HTML coverage reports)
+            - scripts/testing/coverage-report.sh (Generate and display coverage)
+        - **CI Integration**:
+            - .github/workflows/tests.yml (Run all tests on PR)
+            - .github/workflows/e2e-tests.yml (E2E tests with browser matrix)
+            - scripts/testing/run-all-tests.sh (Local test runner matching CI)
+        - **Test Data Management**:
+            - backend/tests/seed_data.py (Seed database with test data)
+            - backend/tests/fixtures/sample_users.json (Sample user data)
+            - backend/tests/fixtures/sample_orders.json (Sample order data)
+        - **Configuration**:
+            - config/testing-config.yaml (Test environment settings, timeouts, retries)
+            - pytest.ini (Pytest configuration - markers, plugins)
+        - **Documentation**:
+            - docs/testing-guide.md (Testing philosophy, running tests, writing tests)
+            - docs/e2e-testing-guide.md (Playwright best practices, debugging E2E tests)
+    - Binh Pháp Ch.6 虛實 (Weak Points and Strong - Deception & Reality):
+        - **Test Pyramid**: 70% Unit, 20% Integration, 10% E2E (fast feedback loop)
+        - **E2E Critical Paths**: Test revenue-generating flows (signup → subscribe → pay)
+        - **Parallel Execution**: Run E2E tests in parallel (4 workers) for speed
+        - **Flakiness Prevention**: Auto-retry flaky tests (max 2 retries), wait for elements
+        - **Visual Regression**: Capture screenshots, diff against baseline with 0.1% threshold
+        - **Accessibility Testing**: Automated axe-core scans, keyboard navigation tests
+        - **Performance Testing**: Core Web Vitals must pass (LCP <2.5s, FID <100ms, CLS <0.1)
+        - **Test Data Isolation**: Each test gets fresh DB state (transactions + rollback)
+        - **Mock External APIs**: Stripe, AWS S3, Email service (use Wiremock/responses)
+        - **Code Coverage**: Minimum 80% line coverage, 70% branch coverage
+        - **Mutation Testing**: Use mutmut to verify test quality (kill 90%+ mutants)
+        - **CI Strategy**: PR triggers all tests, main branch runs nightly comprehensive suite
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Confidence in releases, catch bugs before production, reduce support tickets
+        - 🏢 **Agency WIN**: Reusable test infrastructure, prevent regressions, faster onboarding (tests as documentation)
+        - 🚀 **Startup WIN**: Ship faster with confidence, maintain quality at scale, compliance-ready (SOC2 requires testing)
+    - Agent: tester
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-67e85eba** 💾 PENDING
+    - Description: IPO-046-Backup: Database backup + disaster recovery system. Ch.11 九地
+    - Scope: Enterprise-grade backup and disaster recovery infrastructure with automated PostgreSQL backups, point-in-time recovery, cross-region replication, backup verification, encryption, retention policies, and disaster recovery playbooks
+    - Deliverables:
+        - **Backup Service**:
+            - backend/services/backup/orchestrator.py (Backup orchestrator - schedule, execute, verify)
+            - backend/services/backup/postgres_backup.py (PostgreSQL pg_dump with compression)
+            - backend/services/backup/s3_storage.py (Upload backups to S3 with encryption)
+            - backend/services/backup/verification.py (Backup integrity verification)
+            - backend/services/backup/retention.py (Retention policy enforcement - 7d/30d/90d/1y)
+        - **Point-in-Time Recovery (PITR)**:
+            - backend/services/backup/wal_archiving.py (WAL archiving to S3 for PITR)
+            - backend/services/backup/restore.py (Restore from backup with PITR)
+            - scripts/backup/pitr-restore.sh (PITR restore procedure)
+        - **Cross-Region Replication**:
+            - backend/services/backup/replication.py (Replicate backups to secondary region)
+            - terraform/backup-bucket-replication.tf (S3 cross-region replication)
+        - **Backup Monitoring**:
+            - backend/services/backup/health_check.py (Backup health monitoring)
+            - backend/api/routers/backup.py (Backup status API)
+            - apps/dashboard/app/admin/backups/page.tsx (Backup management UI)
+        - **Disaster Recovery**:
+            - scripts/backup/create-backup.sh (Manual backup trigger)
+            - scripts/backup/restore-backup.sh (Restore from specific backup)
+            - scripts/backup/verify-backup.sh (Test restore in staging)
+            - scripts/backup/failover.sh (Failover to disaster recovery region)
+        - **Backup Encryption**:
+            - backend/services/backup/encryption.py (AES-256 encryption before S3 upload)
+            - backend/services/backup/key_rotation.py (Rotate encryption keys quarterly)
+        - **Configuration**:
+            - config/backup-policy.yaml (Backup schedule, retention, encryption settings)
+            - terraform/backup-infrastructure.tf (S3 buckets, IAM roles, lifecycle policies)
+        - **Automation**:
+            - .github/workflows/backup-verification.yml (Weekly backup restore test)
+            - workers/backup_worker.py (Scheduled backup execution)
+        - **Documentation**:
+            - docs/disaster-recovery.md (DR procedures, RTO/RPO targets, runbooks)
+            - docs/backup-restore-guide.md (Backup creation, restore procedures)
+    - Binh Pháp Ch.11 九地 (Nine Terrains - Strategic Positioning):
+        - **Backup Schedule**: Full backup daily (2 AM UTC), incremental hourly (WAL archiving)
+        - **Retention Policy**: 7 daily backups, 4 weekly backups, 12 monthly backups, 1 yearly backup
+        - **Encryption**: AES-256 encryption at rest (S3-SSE) + in-transit (TLS 1.3)
+        - **Cross-Region**: Primary (us-east-1), Secondary (eu-west-1), Tertiary (ap-southeast-1)
+        - **PITR Window**: Recover to any point in last 7 days (WAL retention)
+        - **RTO Target**: < 1 hour (Recovery Time Objective)
+        - **RPO Target**: < 15 minutes (Recovery Point Objective - via WAL archiving)
+        - **Verification**: Weekly automated restore test in staging environment
+        - **Failover Strategy**: Automated DNS failover to DR region if primary down >5min
+        - **Data Integrity**: Checksum verification (SHA-256) for every backup
+        - **Compression**: gzip compression (reduce storage cost by 70%)
+        - **Lifecycle**: Transition to Glacier after 90 days (cost optimization)
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Business continuity, zero data loss, sleep well at night, compliance (SOC2, GDPR require backups)
+        - 🏢 **Agency WIN**: Reusable backup infrastructure, proven DR procedures, reduce client downtime risk
+        - 🚀 **Startup WIN**: Survive disasters (ransomware, accidental deletion, AWS outage), meet investor/customer trust requirements
+    - Agent: database-admin
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-211464a2** 🌍 PENDING
+    - Description: IPO-047-i18n: Multi-language support i18n framework. Ch.10 地形
+    - Scope: Enterprise-grade internationalization (i18n) framework with next-i18next for frontend, Flask-Babel for backend, translation management, locale detection, RTL support, pluralization, and content localization
+    - Deliverables:
+        - **Frontend i18n (next-i18next)**:
+            - apps/dashboard/lib/i18n.ts (i18next configuration with locale detection)
+            - apps/dashboard/public/locales/ (Translation JSON files per language)
+            - apps/dashboard/public/locales/en/common.json (English translations)
+            - apps/dashboard/public/locales/vi/common.json (Vietnamese translations)
+            - apps/dashboard/public/locales/ja/common.json (Japanese translations)
+            - apps/dashboard/components/LanguageSwitcher.tsx (Language selector dropdown)
+            - apps/dashboard/middleware.ts (Next.js middleware for locale detection)
+        - **Backend i18n (Flask-Babel)**:
+            - backend/i18n/__init__.py (Babel configuration)
+            - backend/locales/en/LC_MESSAGES/messages.po (English backend translations)
+            - backend/locales/vi/LC_MESSAGES/messages.po (Vietnamese backend translations)
+            - backend/locales/ja/LC_MESSAGES/messages.po (Japanese backend translations)
+            - backend/middleware/locale_middleware.py (Detect locale from Accept-Language header)
+            - backend/services/translation_service.py (Dynamic translation service)
+        - **Translation Management**:
+            - scripts/i18n/extract-translations.sh (Extract translatable strings from code)
+            - scripts/i18n/sync-translations.sh (Sync translations between frontend/backend)
+            - scripts/i18n/validate-translations.sh (Check for missing translations)
+            - apps/dashboard/app/admin/translations/page.tsx (Translation management UI)
+        - **Locale Detection**:
+            - backend/services/locale_service.py (Detect locale from user preferences, browser, IP)
+            - apps/dashboard/hooks/useLocale.ts (Client-side locale hook)
+        - **RTL Support**:
+            - apps/dashboard/styles/rtl.css (Right-to-left CSS overrides for Arabic/Hebrew)
+            - apps/dashboard/lib/rtl.ts (RTL detection and CSS injection)
+        - **Pluralization & Formatting**:
+            - backend/utils/formatters.py (Number, date, currency formatting per locale)
+            - apps/dashboard/lib/formatters.ts (Client-side formatters with Intl API)
+        - **Configuration**:
+            - i18next-scanner.config.js (Scan code for translatable strings)
+            - babel.cfg (Flask-Babel extraction config)
+        - **Documentation**:
+            - docs/i18n-guide.md (i18n architecture, adding new languages, translation workflow)
+    - Binh Pháp Ch.10 地形 (Terrain - Know Your Ground):
+        - **Supported Languages**: English (en), Vietnamese (vi), Japanese (ja) - expand as needed
+        - **Locale Detection Priority**: 1. User preference (saved in DB), 2. Browser Accept-Language, 3. IP geolocation, 4. Fallback (en)
+        - **Translation Keys**: Namespaced format - `common.welcome`, `dashboard.title`, `errors.validation.required`
+        - **Fallback Chain**: vi → en (if Vietnamese missing, show English), ja → en
+        - **Dynamic Content**: Database content (product names, descriptions) stored in locale-specific columns
+        - **SEO**: Hreflang tags for multi-language pages, locale-specific URLs (/en/about, /vi/about)
+        - **RTL Languages**: Arabic (ar), Hebrew (he) with CSS direction toggle
+        - **Number Formatting**: 1,000.50 (en), 1.000,50 (de), 1 000,50 (fr)
+        - **Date Formatting**: MM/DD/YYYY (en-US), DD/MM/YYYY (en-GB), YYYY年MM月DD日 (ja)
+        - **Currency**: USD ($1,000.00), VND (1.000.000₫), JPY (¥1,000)
+        - **Pluralization**: Handle complex plural rules (English: 1 item vs 2 items, Russian: 5 different forms)
+        - **Translation Workflow**: Developers → Extract strings → Translators → Import → Deploy
+    - WIN-WIN-WIN Validation:
+        - 👑 **Owner WIN**: Global expansion, reach international markets, increase revenue 3x-10x
+        - 🏢 **Agency WIN**: Reusable i18n infrastructure, multi-language client support, differentiation
+        - 🚀 **Startup WIN**: Enter new markets (Vietnam, Japan, Europe), localized user experience, competitive advantage
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+
+- [ ] **TASK-f21a298d** ⚠️ BLOCKED
+    - Description: IPO-048-Webhooks: Webhook system với retry logic. Ch.12 火攻
+    - Assigned: backend-developer
+    - Status: blocked - gemini-3-pro-high quota exhausted, reset in ~1h47m (Agent: a2c37ca)
+    - Priority: high
+    - Created: 2026-01-27T14:57:46+0700
+    - Note: Extends IPO-023-Webhooks-V2 (TASK-12debc47) with fire attack patterns - aggressive webhook delivery with intelligent retry strategies
+    - Scope:
+        - **Webhook Fire Attack Patterns (Ch.12 火攻)**:
+            - Aggressive retry with exponential backoff (火攻第一式 - First Fire Attack)
+            - Circuit breaker pattern (prevent cascading failures)
+            - Intelligent timeout escalation (火攻第二式 - Second Fire Attack)
+            - Multi-channel fallback (webhook → email → SMS → queue)
+            - Burst protection with token bucket algorithm
+            - Dead letter queue with manual intervention UI
+        - **Core Webhook Engine**:
+            - backend/services/webhook_fire_engine.py (Fire Attack webhook delivery engine)
+            - backend/services/retry_strategy.py (Intelligent retry with jitter, circuit breaker)
+            - backend/services/webhook_circuit_breaker.py (Circuit breaker state machine)
+            - backend/workers/webhook_retry_worker.py (Background retry processing)
+        - **Retry Logic**:
+            - Exponential backoff: 1s → 2s → 4s → 8s → 16s → 32s → 64s (max 7 attempts)
+            - Jitter: Random delay ±20% to prevent thundering herd
+            - Circuit breaker: Open after 5 consecutive failures, half-open after 30s, close after 3 successes
+            - Timeout escalation: 5s → 10s → 20s (longer timeout for retries)
+        - **Dead Letter Queue (DLQ)**:
+            - backend/models/dlq_entry.py (Failed webhook entries)
+            - backend/api/routers/dlq.py (DLQ management - inspect, replay, discard)
+            - apps/admin/app/webhooks/dlq/page.tsx (DLQ viewer with replay controls)
+        - **Monitoring & Alerts**:
+            - backend/services/webhook_metrics.py (Success rate, latency, error patterns)
+            - apps/admin/app/webhooks/health/page.tsx (Webhook health dashboard)
+            - Alerting: Slack/email notification when circuit breaker opens or DLQ threshold exceeded
+        - **Signature Verification**:
+            - backend/services/webhook_signature.py (HMAC SHA-256, SHA-512, Ed25519, RSA)
+            - Fail closed on invalid signature (security-first)
+        - **Configuration**:
+            - config/webhook-fire-config.yaml (Retry policies, circuit breaker thresholds, DLQ settings)
+        - **Database Migrations**:
+            - alembic/versions/XXX_webhook_delivery_attempts.py (Track all delivery attempts)
+            - alembic/versions/XXX_webhook_dlq_entries.py (Dead letter queue storage)
+        - **Tests**:
+            - tests/backend/services/test_webhook_fire_engine.py (Retry logic, circuit breaker, DLQ)
+            - tests/backend/api/test_dlq_endpoints.py (DLQ API operations)
+            - tests/integration/test_webhook_end_to_end.py (Full webhook lifecycle)
+        - **Documentation**:
+            - docs/webhook-fire-attack.md (Fire Attack patterns, retry strategies, operational runbooks)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: Bulletproof webhook infrastructure, zero data loss, enterprise-grade reliability
+        - 🏢 AGENCY: Advanced webhook expertise, production-ready fire attack patterns, differentiation
+        - 🚀 CLIENT: Guaranteed delivery, operational visibility, meet SLA requirements (99.9% uptime)
+    - **Binh Pháp Ch.12 火攻 (Fire Attack - Aggressive Assault):**
+        - Strategy: 以火佐攻 (Use fire to assist attacks) - Aggressive webhook delivery with overwhelming retry force
+        - Tactics: 五火之變 (Five fire attacks):
+            1. 火人 (Burn personnel) → Attack endpoint directly with aggressive retries
+            2. 火積 (Burn supplies) → Exhaust error budget, force endpoint to fix issues
+            3. 火輜 (Burn transport) → Multi-channel fallback (webhook fails → email → SMS)
+            4. 火庫 (Burn storage) → DLQ as last resort, never lose data
+            5. 火隊 (Burn formations) → Circuit breaker prevents cascading failures
+        - Principle: "火攻必因五火之變而應之" (Fire attacks must adapt to the five changes)
+        - Webhooks = Fire Arrows: Fast, relentless, adaptable, but controlled (circuit breaker prevents friendly fire)
+        - Guarantee: At-least-once delivery, exactly-once with idempotency keys
+
+- [ ] **TASK-83370c05** ⚠️ BLOCKED
+    - Description: IPO-049-AdminDashboard: Admin UI với analytics. Ch.5 勢
+    - Assigned: ui-ux-designer
+    - Status: blocked - gemini-3-pro-high quota exhausted, reset in ~1h44m (Agent: a154a83)
+    - Priority: high
+    - Created: 2026-01-27T15:00:01+0700
+    - Note: Strategic UI momentum - Admin dashboard with real-time analytics, leveraging势 (Momentum/Force) principles for maximum impact
+    - Scope:
+        - **勢 (Shi - Momentum) Principles Applied to UI**:
+            - Strategic positioning: Dashboard as command center
+            - Force multiplication: Visualizations amplify data insights
+            - Terrain advantage: Information hierarchy guides decision-making
+            - Timing: Real-time updates create urgency and momentum
+        - **Admin Dashboard Core** (apps/admin):
+            - apps/admin/app/dashboard/page.tsx (Main dashboard with analytics widgets)
+            - apps/admin/app/dashboard/layout.tsx (Admin layout with sidebar navigation)
+            - apps/admin/components/analytics/ (Reusable analytics components)
+        - **Analytics Widgets**:
+            - apps/admin/components/analytics/RevenueChart.tsx (MRR/ARR trends, line chart)
+            - apps/admin/components/analytics/UserGrowthChart.tsx (User acquisition funnel)
+            - apps/admin/components/analytics/WebhookHealthCard.tsx (Webhook success rate, latency)
+            - apps/admin/components/analytics/SystemHealthCard.tsx (CPU, Memory, Disk, uptime)
+            - apps/admin/components/analytics/TopErrorsCard.tsx (Most frequent errors)
+            - apps/admin/components/analytics/RecentActivityFeed.tsx (User actions timeline)
+        - **Data Visualization Libraries**:
+            - Recharts (React charting library - line, bar, area, pie charts)
+            - Tremor (Dashboard UI components with built-in analytics)
+            - Optional: Victory, Nivo (advanced visualizations)
+        - **Real-time Updates**:
+            - apps/admin/hooks/useRealtimeAnalytics.ts (WebSocket or SSE for live data)
+            - backend/services/analytics_stream.py (Server-sent events for metrics)
+        - **Filtering & Time Range**:
+            - apps/admin/components/dashboard/TimeRangeSelector.tsx (Last 24h, 7d, 30d, custom)
+            - apps/admin/components/dashboard/FilterBar.tsx (Filter by tenant, status, etc.)
+        - **Export Functionality**:
+            - apps/admin/components/dashboard/ExportButton.tsx (Export charts as PNG, CSV, PDF)
+            - backend/api/routers/analytics_export.py (Generate export files)
+        - **Backend Analytics API**:
+            - backend/api/routers/analytics.py (Analytics data endpoints)
+            - backend/services/analytics_service.py (Aggregate metrics, time-series data)
+            - backend/models/analytics_snapshot.py (Store daily/hourly metrics snapshots)
+        - **Database Optimization**:
+            - TimescaleDB extension for PostgreSQL (time-series data optimization)
+            - Materialized views for pre-computed aggregations
+            - Indexes on timestamp columns for fast queries
+        - **Caching**:
+            - Redis caching for frequently accessed metrics (5-minute TTL)
+            - Cache invalidation on new data ingestion
+        - **MD3 Design Compliance**:
+            - Material Design 3 color tokens, typography, spacing
+            - Responsive layout (desktop, tablet, mobile)
+            - Dark mode support
+        - **Tests**:
+            - tests/frontend/components/analytics/test-revenue-chart.test.tsx (Chart rendering)
+            - tests/backend/services/test_analytics_service.py (Metrics calculation)
+            - tests/integration/test_analytics_e2e.py (Dashboard load → data fetch → render)
+        - **Configuration**:
+            - config/analytics-config.yaml (Refresh intervals, cache TTL, export limits)
+        - **Documentation**:
+            - docs/admin-dashboard-guide.md (Dashboard overview, analytics widgets, customization)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: Strategic visibility into business metrics, data-driven decisions, IPO-ready reporting
+        - 🏢 AGENCY: Reusable admin dashboard framework, analytics expertise, differentiation
+        - 🚀 CLIENT: Real-time operational visibility, identify issues before they escalate, optimize growth
+    - **Binh Pháp Ch.5 勢 (Shi - Momentum/Strategic Advantage):**
+        - Strategy: "激水之疾，至於漂石者，勢也" (The force of rushing water can move boulders - this is momentum)
+        - Tactics: Dashboard creates momentum through:
+            1. **Visual Impact** - Charts amplify trends, make data compelling
+            2. **Real-time Updates** - Live metrics create urgency
+            3. **Information Hierarchy** - Critical metrics above fold, drill-down below
+            4. **Actionable Insights** - Red/green indicators guide decisions instantly
+        - Principle: "善戰者，求之於勢，不責於人" (Skilled commanders rely on momentum, not just people)
+        - Admin Dashboard = Command Center: Strategic positioning creates information advantage
+        - Analytics = Force Multiplier: Data visualization amplifies decision-making power 10x
+        - Real-time = Timing Advantage: See problems before competitors do
+    - Deliverables:
+        - Fully implemented admin dashboard with analytics
+        - 8+ analytics widgets (revenue, users, webhooks, system health, errors, activity)
+        - Real-time updates via WebSocket/SSE
+        - Time range filtering, export functionality
+        - MD3 design compliance, dark mode support
+        - Backend analytics API with caching
+        - 100% test coverage (Vitest + Pytest)
+        - Documentation (admin-dashboard-guide.md)
+    - Agent: ui-ux-designer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-c02a019c** ⚠️ BLOCKED
+    - Description: IPO-050-SecurityAudit: JWT rotation + audit logging. Ch.6 虛實
+    - Assigned: security-engineer
+    - Status: blocked - gemini-3-pro-high quota exhausted, reset in ~1h41m (Agent: a1a5f3c)
+    - Priority: critical
+    - Created: 2026-01-27T15:03:01+0700
+    - Note: Deception and reality in security - JWT rotation prevents token compromise, audit logging reveals attack patterns
+    - Scope:
+        - **虛實 (Xu Shi - Deception & Reality) Principles**:
+            - Deception (虛): Rotate tokens to make stolen tokens useless
+            - Reality (實): Audit logs reveal true attack patterns
+            - Strategic: Security through unpredictability and visibility
+        - **JWT Rotation Engine**:
+            - backend/services/jwt_rotation.py (Automatic token rotation on refresh)
+            - backend/models/refresh_token.py (Store refresh tokens with expiry)
+            - backend/api/routers/auth_rotation.py (Token refresh endpoints)
+            - Rotation policy: Access tokens 15min, refresh tokens 7 days
+            - Automatic rotation on each refresh request
+            - Revocation list (blacklist) for compromised tokens
+        - **Token Fingerprinting**:
+            - backend/services/token_fingerprint.py (Device fingerprinting)
+            - Detect token theft via IP/User-Agent mismatch
+            - Automatic revocation on suspicious activity
+        - **Audit Logging System**:
+            - backend/services/audit_logger.py (Structured audit logs)
+            - backend/models/audit_log.py (Audit log entries)
+            - backend/api/routers/audit.py (Audit log query API)
+            - apps/admin/app/security/audit-logs/page.tsx (Audit log viewer)
+        - **Log Categories**:
+            - Authentication events (login, logout, token refresh, failures)
+            - Authorization events (permission checks, role changes)
+            - Data access (sensitive data reads, exports)
+            - Configuration changes (system settings, user management)
+            - Security events (suspicious activity, brute force, token theft)
+        - **Log Retention**:
+            - Hot storage: 30 days (PostgreSQL)
+            - Warm storage: 1 year (S3 with compression)
+            - Cold storage: 7 years (S3 Glacier for compliance)
+        - **Real-time Alerting**:
+            - backend/services/security_alerting.py (Real-time threat detection)
+            - Slack/email alerts for critical events (failed logins >5, token theft, privilege escalation)
+            - Integration with PagerDuty for incident response
+        - **Compliance**:
+            - GDPR Article 30 (Record of processing activities)
+            - SOC 2 Type II (Logging and monitoring controls)
+            - HIPAA § 164.312(b) (Audit controls)
+            - PCI-DSS 10.x (Track and monitor access to network resources)
+        - **Audit Log Search & Filtering**:
+            - apps/admin/app/security/audit-logs/page.tsx (Search by user, action, IP, date range)
+            - Elasticsearch integration for fast full-text search (optional)
+            - Export logs as CSV/JSON for external analysis
+        - **Security Metrics Dashboard**:
+            - apps/admin/app/security/dashboard/page.tsx (Failed login trends, suspicious IPs)
+            - backend/services/security_metrics.py (Calculate security KPIs)
+        - **Database Migrations**:
+            - alembic/versions/XXX_refresh_tokens.py (Refresh token storage)
+            - alembic/versions/XXX_audit_logs.py (Audit log table with indexes)
+            - alembic/versions/XXX_token_revocation_list.py (Blacklisted tokens)
+        - **Configuration**:
+            - config/jwt-rotation-config.yaml (Token lifetimes, rotation policies)
+            - config/audit-logging-config.yaml (Log retention, alerting thresholds)
+        - **Tests**:
+            - tests/backend/services/test_jwt_rotation.py (Token rotation, expiry, revocation)
+            - tests/backend/services/test_audit_logger.py (Log creation, filtering, retention)
+            - tests/backend/api/test_auth_rotation_endpoints.py (Refresh flow, error handling)
+            - tests/integration/test_security_e2e.py (Full auth flow with rotation and logging)
+        - **Documentation**:
+            - docs/jwt-rotation-guide.md (Rotation strategy, token lifecycle, revocation)
+            - docs/audit-logging-guide.md (Log categories, retention policy, compliance mapping)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: IPO-ready security posture, compliance (SOC 2, GDPR, HIPAA), reduced breach risk
+        - 🏢 AGENCY: Security expertise, reusable auth infrastructure, differentiation
+        - 🚀 CLIENT: Meet compliance requirements, pass security audits, protect user data
+    - **Binh Pháp Ch.6 虛實 (Xu Shi - Deception & Reality):**
+        - Strategy: "兵形象水，水之形避高而趨下" (Military tactics are like water - avoid strength, attack weakness)
+        - Tactics: Security through deception and visibility:
+            1. **虛 (Deception)** - JWT rotation makes stolen tokens useless (shift defenses constantly)
+            2. **實 (Reality)** - Audit logs reveal true attack patterns (know enemy movements)
+            3. **Know Enemy** - Token fingerprinting detects theft instantly
+            4. **Unpredictability** - Short-lived tokens reduce attack window
+            5. **Visibility** - Comprehensive logging enables forensic analysis
+        - Principle: "出其不意，攻其不備" (Strike when unexpected, attack when unprepared)
+        - JWT Rotation = Deception: Attacker steals token → Already rotated → Useless
+        - Audit Logging = Reality: Reveals attack patterns, enables incident response
+        - Token Fingerprinting = Know Enemy: Detect token theft via device/IP mismatch
+    - Deliverables:
+        - JWT rotation engine (15min access, 7d refresh)
+        - Token revocation list (blacklist compromised tokens)
+        - Token fingerprinting (detect theft)
+        - Comprehensive audit logging (all security events)
+        - Audit log viewer UI (search, filter, export)
+        - Security metrics dashboard
+        - Real-time alerting (Slack, email, PagerDuty)
+        - Compliance documentation (GDPR, SOC 2, HIPAA, PCI-DSS)
+        - 100% test coverage (Pytest)
+        - Documentation (jwt-rotation-guide.md, audit-logging-guide.md)
+    - Agent: security-engineer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-04b28f43** ⚠️ BLOCKED
+    - Description: IPO-051-Notifications: Push notifications + email templates. Ch.9 行軍
+    - Assigned: fullstack-developer
+    - Status: blocked - gemini-3-pro-high quota exhausted despite model=sonnet specified (Agent: ab043d4)
+    - Priority: high
+    - Created: 2026-01-27T15:07:42+0700
+    - Note: Communication logistics - Marching strategy for message delivery across multiple channels
+    - Scope:
+        - **行軍 (Xing Jun - Marching) Principles**:
+            - Strategic movement: Messages reach users across terrain (mobile, email, web)
+            - Supply lines: Reliable delivery infrastructure (no message loss)
+            - Reconnaissance: Track delivery status, engagement metrics
+            - Adaptability: Fallback channels when primary fails
+        - **Push Notification System**:
+            - backend/services/push_notification_service.py (FCM, APNs integration)
+            - backend/models/push_subscription.py (Store device tokens)
+            - backend/api/routers/notifications.py (Send notification API)
+            - apps/dashboard/hooks/usePushNotifications.ts (Client-side notification handling)
+            - Service Worker: apps/dashboard/public/sw.js (Background notifications)
+        - **Email Template Engine**:
+            - backend/services/email_service.py (SendGrid/AWS SES integration)
+            - backend/templates/emails/ (Jinja2 email templates)
+            - backend/templates/emails/welcome.html (Welcome email)
+            - backend/templates/emails/password-reset.html (Password reset)
+            - backend/templates/emails/invoice.html (Invoice notification)
+            - backend/templates/emails/webhook-failure.html (Webhook DLQ alert)
+            - backend/templates/emails/security-alert.html (Security event)
+        - **Multi-Channel Delivery**:
+            - backend/services/notification_orchestrator.py (Route to appropriate channel)
+            - Channel priority: Push → Email → SMS (fallback chain)
+            - User preferences: Allow users to opt-in/out per channel
+        - **Notification Categories**:
+            - Transactional (order confirmation, password reset - always send)
+            - Marketing (newsletters, promotions - respect opt-out)
+            - Security (login alerts, suspicious activity - always send)
+            - System (webhook failures, quota warnings - admin only)
+        - **Push Notification Providers**:
+            - Firebase Cloud Messaging (FCM) for Android/Web
+            - Apple Push Notification Service (APNs) for iOS
+            - Web Push API for browsers
+        - **Email Providers**:
+            - SendGrid (primary - transactional emails)
+            - AWS SES (fallback - cost-effective bulk)
+            - SMTP (dev/testing only)
+        - **Template Management**:
+            - apps/admin/app/notifications/templates/page.tsx (Template editor UI)
+            - backend/api/routers/notification_templates.py (CRUD API)
+            - Jinja2 templates with variables ({{user_name}}, {{action_url}}, etc.)
+            - Preview feature (test templates before sending)
+        - **Delivery Tracking**:
+            - backend/models/notification_log.py (Track all sent notifications)
+            - backend/services/notification_analytics.py (Open rates, click rates)
+            - apps/admin/app/notifications/analytics/page.tsx (Delivery dashboard)
+        - **Rate Limiting & Throttling**:
+            - backend/services/notification_rate_limiter.py (Prevent spam)
+            - Per-user limits (max 10 push/day, 5 emails/day)
+            - Per-channel limits (max 1000 push/min, 100 emails/min)
+        - **Unsubscribe Management**:
+            - backend/api/routers/unsubscribe.py (One-click unsubscribe)
+            - backend/models/notification_preferences.py (User preferences)
+            - CAN-SPAM Act compliance (unsubscribe link in all marketing emails)
+        - **Database Migrations**:
+            - alembic/versions/XXX_push_subscriptions.py (Device tokens)
+            - alembic/versions/XXX_notification_logs.py (Delivery tracking)
+            - alembic/versions/XXX_notification_preferences.py (User opt-in/out)
+        - **Configuration**:
+            - config/notification-config.yaml (Provider credentials, rate limits)
+            - .env: FCM_SERVER_KEY, APNS_KEY_ID, SENDGRID_API_KEY, AWS_SES_*
+        - **Tests**:
+            - tests/backend/services/test_push_notification_service.py (FCM/APNs sending)
+            - tests/backend/services/test_email_service.py (Email rendering, sending)
+            - tests/backend/services/test_notification_orchestrator.py (Multi-channel routing)
+            - tests/integration/test_notifications_e2e.py (Full notification lifecycle)
+        - **Documentation**:
+            - docs/notification-system-guide.md (Architecture, channels, templates)
+            - docs/email-template-guide.md (Jinja2 syntax, variables, styling)
+    - **WIN-WIN-WIN:**
+        - 👑 ANH: User engagement up, churn down, professional communication
+        - 🏢 AGENCY: Reusable notification infrastructure, multi-channel expertise
+        - 🚀 CLIENT: Reach users across all channels, measure engagement, comply with CAN-SPAM
+    - **Binh Pháp Ch.9 行軍 (Xing Jun - Marching/Logistics):**
+        - Strategy: "行軍必因地利" (When marching, take advantage of the terrain)
+        - Tactics: Notification logistics across communication terrain:
+            1. **Scout Terrain** - Detect user's preferred channel (push enabled? email valid?)
+            2. **Secure Supply Lines** - Reliable delivery (FCM, SendGrid, AWS SES)
+            3. **Adapt to Obstacles** - Fallback chain (push fails → email → SMS)
+            4. **Track Movement** - Delivery logs, engagement analytics
+            5. **Maintain Discipline** - Rate limiting prevents spam, respects opt-outs
+        - Principle: "軍無輜重則亡，無糧食則亡" (Army without supplies perishes)
+        - Notifications = Supply Lines: Critical for user engagement, must be reliable
+        - Multi-Channel = Terrain Adaptation: Different routes to reach users
+        - Tracking = Reconnaissance: Know which messages reached destination
+        - Rate Limiting = Discipline: Prevent spam exhaustion (friendly fire)
+    - Deliverables:
+        - Push notification system (FCM, APNs, Web Push)
+        - Email template engine (SendGrid, AWS SES)
+        - 5+ email templates (welcome, password reset, invoice, alerts)
+        - Multi-channel orchestrator with fallback
+        - Notification analytics dashboard
+        - Template editor UI
+        - Unsubscribe management (CAN-SPAM compliant)
+        - Rate limiting & user preferences
+        - 100% test coverage (Pytest)
+        - Documentation (notification-system-guide.md, email-template-guide.md)
+    - Agent: fullstack-developer
+    - Status: PENDING
+    - Context: /Users/macbookprom1/mekong-cli
+
+- [ ] **TASK-ce1550e8** 🔍 PENDING
+    - Description: IPO-052-SearchEngine: Full-text search với Algolia/Meilisearch. Ch.13 用間
+    - Assigned: backend-developer
+    - Status: pending (will queue until quota reset)
+    - Priority: high
+    - Created: 2026-01-27T15:10:16+0700
+    - Note: Intelligence gathering - Ch.13 用間 (Using Spies) applies to search as information reconnaissance
+    - Quota Warning: ALL agents hitting gemini-3-pro-high quota. Recommend waiting ~1h35m for reset or manual implementation
+    - Agent: backend-developer
+    - Context: /Users/macbookprom1/mekong-cli
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 IPO SPRINT BATCH REGISTRATION (2026-01-27)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- [ ] **TASK-a7f3b8c1** 📊 PENDING
+    - Description: IPO-053-Analytics: User behavior tracking, funnels, cohorts. Ch.3 謀攻
+    - Assigned: backend-developer
+    - Priority: high
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.3 謀攻 (Attack by Stratagem) - Know user behavior before optimizing
+    - Scope: Google Analytics, Mixpanel, custom event tracking, funnel analysis, cohort retention
+    - WIN-WIN-WIN: Owner (data-driven decisions) + Agency (analytics expertise) + Client (optimize conversions)
+
+- [ ] **TASK-b4e9d2f5** 🔐 BLOCKED
+    - Description: IPO-054-RateLimiting: API rate limits, DDoS protection. Ch.4 形
+    - Assigned: security-engineer
+    - Priority: critical
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.4 形 (Tactical Dispositions) - Invincible defense position
+    - Scope: Redis-based rate limiting, DDoS mitigation, IP blocking, CAPTCHA integration
+    - WIN-WIN-WIN: Owner (uptime protection) + Agency (security expertise) + Client (service availability)
+
+- [ ] **TASK-c8a1e6d3** 💾 BLOCKED
+    - Description: IPO-055-Caching: Redis caching strategy, CDN integration. Ch.7 軍爭
+    - Assigned: backend-developer
+    - Priority: high
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.7 軍爭 (Maneuvering) - Speed advantage through caching
+    - Scope: Redis cache layers, CDN (Cloudflare/Fastly), cache invalidation, edge caching
+    - WIN-WIN-WIN: Owner (performance) + Agency (scalability expertise) + Client (user experience)
+
+- [ ] **TASK-d5f7a9b2** 📱 PENDING
+    - Description: IPO-056-MobileApp: React Native mobile app scaffold. Ch.8 九變
+    - Assigned: mobile-dev
+    - Priority: medium
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.8 九變 (The Nine Variations) - Adapt to mobile terrain
+    - Scope: React Native setup, iOS/Android builds, push notifications, offline support
+    - WIN-WIN-WIN: Owner (market expansion) + Agency (mobile expertise) + Client (mobile users)
+
+- [ ] **TASK-e2c4b6a8** 🌍 PENDING
+    - Description: IPO-057-CDN: Content delivery network setup. Ch.10 地形
+    - Assigned: devops-engineer
+    - Priority: high
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.10 地形 (Terrain) - Strategic positioning of content
+    - Scope: Cloudflare/Fastly setup, edge caching, geographic routing, asset optimization
+    - WIN-WIN-WIN: Owner (global reach) + Agency (CDN expertise) + Client (fast loading worldwide)
+
+- [ ] **TASK-f9d3e1c7** 🤖 PENDING
+    - Description: IPO-058-AI: LLM integration for chatbot, content generation. Ch.11 九地
+    - Assigned: llm-architect
+    - Priority: high
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.11 九地 (The Nine Situations) - AI for different contexts
+    - Scope: OpenAI/Anthropic integration, chatbot, content generation, embeddings, RAG
+    - WIN-WIN-WIN: Owner (AI differentiation) + Agency (AI expertise) + Client (automation)
+
+- [ ] **TASK-a1b8c5d4** 📈 PENDING
+    - Description: IPO-059-ReportingDashboard: Executive dashboards, scheduled reports. Ch.1 計
+    - Assigned: fullstack-developer
+    - Priority: medium
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.1 計 (Laying Plans) - Strategic visibility for leadership
+    - Scope: Executive KPI dashboards, PDF reports, email scheduling, data visualization
+    - WIN-WIN-WIN: Owner (strategic decisions) + Agency (BI expertise) + Client (investor reports)
+
+- [ ] **TASK-b7e2f9a6** 🔄 PENDING
+    - Description: IPO-060-CI/CD: GitHub Actions pipelines, automated deployment. Ch.2 作戰
+    - Assigned: devops-engineer
+    - Priority: critical
+    - Created: 2026-01-27T15:12:00+0700
+    - Chapter: Ch.2 作戰 (Waging War) - Automated deployment logistics
+    - Scope: GitHub Actions, Docker builds, staging/prod pipelines, rollback, blue-green
+    - WIN-WIN-WIN: Owner (velocity) + Agency (DevOps expertise) + Client (reliability)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 REGISTRATION SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Batch:       IPO-053 to IPO-060 (8 tasks)
+Status:      All PENDING (registered, not spawned)
+Strategy:    Quota preservation - register now, execute later
+Execution:   After quota reset (~1h33m) or model config fix
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

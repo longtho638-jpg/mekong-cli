@@ -98,7 +98,7 @@ async def test_retry_logic_scheduling(sender_service, mock_db_session):
         attempt_count=0,
         status=DeliveryStatus.PENDING.value
     )
-    endpoint = WebhookConfig(id="ep_1", url="http://test.com/1", secret="s1")
+    _ = WebhookConfig(id="ep_1", url="http://test.com/1", secret="s1")
 
     # Mock aiohttp to fail
     with patch("aiohttp.ClientSession.post") as mock_post:

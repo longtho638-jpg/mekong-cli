@@ -10,8 +10,8 @@ from typing import Any, Dict, Optional
 
 from sqlalchemy.orm import Session
 
+from backend.api.dependencies.database import get_db
 from backend.api.routers.webhooks.models import WebhookProvider, WebhookStatus
-from backend.core.infrastructure.database import get_db
 from backend.models.webhooks import WebhookEvent
 
 logger = logging.getLogger(__name__)

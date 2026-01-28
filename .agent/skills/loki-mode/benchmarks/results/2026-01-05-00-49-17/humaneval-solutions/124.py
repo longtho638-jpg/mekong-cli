@@ -33,8 +33,8 @@ def valid_date(date):
         
         month = int(mm)
         day = int(dd)
-        year = int(yyyy)
-        
+        # year = int(yyyy)
+
         if month < 1 or month > 12:
             return False
         

@@ -1,13 +1,15 @@
 """
 Test LLM Router
 """
-import pytest
-from httpx import AsyncClient, ASGITransport
-from backend.api.main import app
 from unittest.mock import AsyncMock, patch
+
+import pytest
+from httpx import ASGITransport, AsyncClient
 
 # Override dependency to allow access without real auth
 from backend.api.auth.dependencies import get_current_active_superuser
+from backend.api.main import app
+
 
 @pytest.fixture
 def override_auth():

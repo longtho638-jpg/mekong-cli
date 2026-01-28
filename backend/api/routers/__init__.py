@@ -9,6 +9,7 @@ from . import (
     agents,
     agents_creator,
     analytics,
+    analytics_realtime,  # Added
     audit,
     backup,
     binh_phap,
@@ -51,6 +52,7 @@ __all__ = [
     "accounting",
     "agents",
     "analytics",
+    "analytics_realtime", # Added
     "campaigns",
     "commands",
     "crm",

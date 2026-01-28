@@ -71,7 +71,7 @@ async def create_export(
             "template_id": str(request.template_id) if request.template_id else None
         }
 
-        job_id = queue_service.enqueue_job(
+        _ = queue_service.enqueue_job(
             job_type="export_data",
             payload=payload,
             priority="normal",

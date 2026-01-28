@@ -135,7 +135,7 @@ def test_usage_stats_chart_data(override_dependencies, mock_db_session):
     # Mock usage query chain
     # This is a bit brittle due to the fluent chain structure of PostgREST client mocking
     # table("api_usage").select("*").in_("api_key_id", ...).gte("created_at", ...).execute()
-    mock_query = MagicMock()
+    _ = MagicMock()
     mock_db_session.table.return_value.select.return_value.in_.return_value.gte.return_value.execute.return_value.data = mock_usage_records
 
     response = client.get("/developers/usage/stats?days=7")

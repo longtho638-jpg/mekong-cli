@@ -2,18 +2,18 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 from uuid import UUID
 
-from backend.core.infrastructure.database import get_db
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
+from backend.api.dependencies.database import get_db
 from backend.api.routers.webhooks.models import WebhookDelivery as WebhookDeliverySchema
 
 # Pydantic Schemas
 from backend.api.routers.webhooks.models import WebhookEndpoint as WebhookEndpointSchema
 from backend.api.routers.webhooks.models import WebhookEndpointCreate, WebhookStatus
 from backend.api.routers.webhooks.models import WebhookEvent as WebhookEventSchema
-from backend.core.security.rbac import require_admin
+from backend.api.security.rbac import require_admin
 
 # SQLAlchemy Models
 from backend.models.webhooks import WebhookConfig, WebhookDelivery, WebhookEvent

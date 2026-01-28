@@ -3,9 +3,9 @@ CDN Optimization Service
 Handles asset optimization (minification, compression) before upload or serving.
 """
 
+import gzip
 import logging
 import os
-import gzip
 import shutil
 from typing import List, Optional
 

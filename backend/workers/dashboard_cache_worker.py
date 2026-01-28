@@ -41,7 +41,7 @@ async def refresh_dashboard_cache():
         try:
             logger.info(f"Computing {metric} for {date_range}...")
             # Simulate computation
-            data = await service.get_metric_data(metric, date_range)
+            _ = await service.get_metric_data(metric, date_range)
 
             # Serialize and store in cache
             cache_key = f"dashboard:cache:{metric}:{date_range}"

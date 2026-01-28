@@ -13,6 +13,7 @@ from fastapi import APIRouter, Body, Depends, Header, HTTPException, Request
 from pydantic import BaseModel
 
 from backend.api.dependencies.database import get_db
+from backend.core.payments.invoice_manager import InvoiceManager
 from backend.core.payments.stripe_client import StripeClient
 from backend.core.payments.subscription_manager import SubscriptionManager
 from backend.core.payments.webhook_handler import WebhookHandler

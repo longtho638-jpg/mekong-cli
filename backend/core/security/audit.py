@@ -16,7 +16,8 @@ from typing import Any, Dict, Optional
 from fastapi import Request
 from typing_extensions import TypedDict
 
-from core.infrastructure.database import get_db
+from backend.db.session import SessionLocal
+from backend.models.audit_log import AuditLog
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,9 @@ class AuditLogger:
     """
 
     def __init__(self):
-        self.db = get_db()
+        # We don't hold a persistent session here because this class is instantiated globally.
+        # Instead, we create a session per log action to ensure thread safety and freshness.
+        pass
 
     async def log(
         self,
@@ -59,32 +62,53 @@ class AuditLogger:
         metadata: Optional[AuditLogMetadataDict] = None,
     ):
         """Records an entry in the audit log."""
-        if not self.db:
-            logger.warning(
-                f"Audit log skipped: DB not available. Actor: {actor_id}, Action: {action}"
-            )
-            return
-
+        db = SessionLocal()
         try:
-            entry: AuditLogEntryDict = {
+            # Validate if actor_id is a valid UUID for the user_id column
+            user_id_val = None
+            if actor_type == "user":
+                try:
+                    import uuid
+                    uuid.UUID(str(actor_id))
+                    user_id_val = str(actor_id)
+                except (ValueError, TypeError):
+                    # If actor_id is not a UUID (e.g. username), store in metadata only
+                    user_id_val = None
+
+            entry_metadata = {
                 "actor_id": actor_id,
                 "actor_type": actor_type,
-                "action": action,
-                "resource": resource,
                 "status": status,
-                "ip_address": ip_address,
-                "user_agent": user_agent,
-                "metadata": metadata or {},
-                "created_at": datetime.utcnow().isoformat(),
+                **(metadata or {})
             }
 
-            # Insert into Supabase (Append-only enforced by RLS)
-            self.db.table("audit_logs").insert(entry).execute()  # type: ignore
+            # Create AuditLog model instance
+            audit_entry = AuditLog(
+                user_id=user_id_val,
+                action=action,
+                resource_type=resource.split(":")[0] if resource and ":" in resource else "resource",
+                resource_id=resource.split(":")[1] if resource and ":" in resource else resource,
+                ip_address=ip_address,
+                user_agent=user_agent,
+                metadata_=entry_metadata
+            )
+
+            # Simple hash generation for integrity (mock implementation)
+            import hashlib
+            payload = f"{actor_id}:{action}:{datetime.utcnow().isoformat()}"
+            audit_entry.hash = hashlib.sha256(payload.encode()).hexdigest()
+
+            db.add(audit_entry)
+            db.commit()
+
             logger.info(
                 f"🛡️ Audit Log: {actor_type}:{actor_id} performed {action} on {resource} [{status}]"
             )
         except Exception as e:
             logger.error(f"❌ Failed to write audit log: {e}")
+            db.rollback()
+        finally:
+            db.close()
 
 
 # Global Instance

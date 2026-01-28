@@ -39,7 +39,7 @@ from backend.api.schemas.kanban import (
     TaskStatus,
     UpdateCardRequest,
 )
-from backend.core.security.rbac import require_editor, require_viewer
+from backend.core.permissions.rbac import require_editor, require_viewer
 from core.infrastructure.database import get_db
 
 router = APIRouter(prefix="/api/kanban", tags=["Kanban"])

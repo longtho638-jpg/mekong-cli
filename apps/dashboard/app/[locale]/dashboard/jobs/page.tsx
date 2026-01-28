@@ -60,7 +60,7 @@ export default function JobsDashboard() {
                     <p className="text-neutral-400 text-sm">Monitor background workers and async tasks</p>
                 </div>
                 <div className="flex gap-2">
-                    <Button variant="outline" size="sm" onClick={refreshData} disabled={isLoading}>
+                    <Button variant="outlined" onClick={refreshData} disabled={isLoading}>
                         <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
                         Refresh
                     </Button>
@@ -118,7 +118,7 @@ export default function JobsDashboard() {
                                             <div className="text-xs text-neutral-400">Duration</div>
                                             <div className="text-sm text-white font-mono">{job.duration}</div>
                                         </div>
-                                        <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Button variant="text" className="opacity-0 group-hover:opacity-100 transition-opacity">
                                             <MoreHorizontal className="w-4 h-4" />
                                         </Button>
                                     </div>
@@ -141,7 +141,7 @@ export default function JobsDashboard() {
                                 <div key={worker.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-sm font-medium text-white truncate max-w-[120px]">{worker.id}</span>
-                                        <StatusBadge status={worker.status === 'active' ? 'active' : 'inactive'} />
+                                        <StatusBadge status={(worker.status === 'active' ? 'active' : 'inactive') as any} />
                                     </div>
                                     <div className="flex flex-wrap gap-1 mb-2">
                                         {worker.queues.map(q => (
@@ -162,19 +162,19 @@ export default function JobsDashboard() {
                     <AgencyCard className="p-5">
                         <h3 className="font-bold text-white mb-4">Actions</h3>
                         <div className="space-y-2">
-                            <Button variant="outline" className="w-full justify-start text-xs h-8">
+                            <Button variant="outlined" className="w-full justify-start text-xs h-8">
                                 <Play className="w-3 h-3 mr-2 text-emerald-400" />
                                 Resume All Queues
                             </Button>
-                            <Button variant="outline" className="w-full justify-start text-xs h-8">
+                            <Button variant="outlined" className="w-full justify-start text-xs h-8">
                                 <Pause className="w-3 h-3 mr-2 text-yellow-400" />
                                 Pause Processing
                             </Button>
-                            <Button variant="outline" className="w-full justify-start text-xs h-8">
+                            <Button variant="outlined" className="w-full justify-start text-xs h-8">
                                 <RefreshCw className="w-3 h-3 mr-2 text-blue-400" />
                                 Retry Failed Jobs
                             </Button>
-                            <Button variant="outline" className="w-full justify-start text-xs h-8 text-red-400 hover:text-red-300">
+                            <Button variant="outlined" className="w-full justify-start text-xs h-8 text-red-400 hover:text-red-300">
                                 <XCircle className="w-3 h-3 mr-2" />
                                 Purge Dead Letter Queue
                             </Button>

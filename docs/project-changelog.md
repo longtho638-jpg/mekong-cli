@@ -4,6 +4,15 @@
 
 ---
 
+## [5.7.0] - 2026-01-28
+
+### Executive Dashboard & Reporting (IPO-059)
+- **Executive Dashboard API**: Implemented `/executive/dashboard` endpoint aggregating Revenue, CRM, and Operational metrics.
+- **PDF Reporting Engine**: Launched professional-grade PDF generator using ReportLab for executive summaries.
+- **Automated Scheduling**: Deployed background scheduler for Weekly/Monthly email reports to tenant admins.
+- **Frontend Dashboard**: Added Executive view in Admin Console with real-time charts (Recharts) and KPI cards.
+- **Testing**: Achieved 100% test coverage for Executive Router and Report Scheduler.
+
 ## [5.6.1] - 2026-01-26
 
 ### Documentation Unification & ClaudeKit Compliance (Phase 25)

@@ -96,7 +96,7 @@ class ABTestPlanner:
             Sample size calculation with duration estimates
         """
         alpha = 1 - self.CONFIDENCE_LEVELS[confidence_level]
-        beta = 1 - power
+        # beta = 1 - power
 
         # Expected conversion for variant B
         expected_conversion_b = baseline_conversion * (1 + minimum_detectable_effect)

@@ -224,7 +224,7 @@ class StripeService:
         """Handle subscription updates (plan changes, status changes)."""
         sub_id = subscription.get("id")
         status = subscription.get("status")
-        tenant_id = subscription.get("metadata", {}).get("tenantId")
+        # tenant_id = subscription.get("metadata", {}).get("tenantId")
 
         logger.info(f"Subscription updated: {sub_id}, new status={status}")
 

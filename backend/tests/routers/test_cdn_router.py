@@ -1,12 +1,14 @@
 """
 Tests for CDN Router
 """
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock, MagicMock
-from backend.api.main import app
-from backend.api.config.settings import settings
+
 from backend.api.auth.dependencies import get_current_active_superuser
+from backend.api.config.settings import settings
+from backend.api.main import app
 
 client = TestClient(app)
 

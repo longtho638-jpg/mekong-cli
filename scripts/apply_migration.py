@@ -61,7 +61,7 @@ def apply_migration(file_path: str):
 
     # Method 1: Try RPC 'exec_sql' (common pattern)
     try:
-        response = client.rpc('exec_sql', {'sql_query': sql}).execute()
+        _ = client.rpc('exec_sql', {'sql_query': sql}).execute()
         print("✅ Migration applied via RPC 'exec_sql'")
         return
     except Exception as e:

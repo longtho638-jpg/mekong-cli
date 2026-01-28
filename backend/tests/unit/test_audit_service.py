@@ -35,7 +35,7 @@ class TestAuditService:
         # Mock previous hash
         mock_db_session.execute.return_value.scalar_one_or_none.return_value = "prev_hash"
 
-        log = await audit_service.create_audit_log(
+        _ = await audit_service.create_audit_log(
             db=mock_db_session,
             action="user.login",
             user_id="user_1",
@@ -72,7 +72,7 @@ class TestAuditService:
         mock_db_session.execute.return_value.scalars.return_value.all.return_value = [log1, log2]
 
         # We need to patch _calculate_hash to match our dummy values or setup exact values
-        with patch.object(audit_service, '_calculate_hash', return_value=hash2) as mock_calc:
+        with patch.object(audit_service, '_calculate_hash', return_value=hash2) as _:
             result = await audit_service.verify_integrity(mock_db_session)
             assert result is True
 

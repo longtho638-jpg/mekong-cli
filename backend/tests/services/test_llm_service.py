@@ -1,12 +1,15 @@
 """
 Test LLM Service
 """
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
-from unittest.mock import AsyncMock, patch, MagicMock
-from backend.services.llm.service import LLMService
-from backend.services.llm.provider import GeminiProvider, OpenAIProvider
-from backend.services.llm.content import ContentService
+
 from backend.api.config.settings import settings
+from backend.services.llm.content import ContentService
+from backend.services.llm.provider import GeminiProvider, OpenAIProvider
+from backend.services.llm.service import LLMService
+
 
 @pytest.fixture
 def mock_gemini_provider():

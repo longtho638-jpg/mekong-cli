@@ -1,0 +1,54 @@
+# Cache Configuration
+# Policies per data type and TTLs
+
+default_policy:
+  strategy: "cache_aside"  # cache_aside, write_through, write_behind
+  ttl: 300
+  serialization: "msgpack"
+  compression_threshold: 1024
+
+layers:
+  session:
+    ttl: 86400  # 24h
+    strategy: "write_through"
+    critical: true
+
+  api_response:
+    ttl_public: 300  # 5m
+    ttl_private: 60  # 1m
+    strategy: "cache_aside"
+
+  database_query:
+    ttl: 600  # 10m
+    strategy: "cache_aside"
+    max_keys: 10000
+    eviction: "lru"
+
+  rate_limit:
+    ttl: 3600  # 1h
+    strategy: "write_through"
+
+  static_assets:
+    ttl: 31536000 # 1 year
+    strategy: "cdn"
+
+warming:
+  enabled: true
+  schedule: "0 3 * * *"  # Daily at 3 AM
+  keys:
+    - "product:catalog:top_100"
+    - "config:system:global"
+    - "content:landing_page"
+
+invalidation:
+  events:
+    - model: "Product"
+      action: "update"
+      patterns:
+        - "product:{id}"
+        - "product:catalog:*"
+    - model: "User"
+      action: "update"
+      patterns:
+        - "user:{id}:profile"
+        - "api:response:user:{id}:*"

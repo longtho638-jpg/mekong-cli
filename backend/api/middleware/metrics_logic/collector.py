@@ -3,6 +3,7 @@ Metrics Collector core logic.
 """
 import logging
 import time
+from types import SimpleNamespace
 
 from fastapi import Request, Response
 
@@ -30,7 +31,7 @@ class MetricsCollector:
         method = request.method
         endpoint = extract_endpoint_name(request.url.path)
         status_code = str(response.status_code)
-        tenant_id = getattr(request.state, "tenant", {"tenant_id": "unknown"}).tenant_id
+        tenant_id = getattr(request.state, "tenant", SimpleNamespace(tenant_id="unknown")).tenant_id
 
         http_requests_total.labels(method=method, endpoint=endpoint, status_code=status_code, tenant_id=tenant_id).inc()
         http_request_duration.labels(method=method, endpoint=endpoint, tenant_id=tenant_id).observe(duration)

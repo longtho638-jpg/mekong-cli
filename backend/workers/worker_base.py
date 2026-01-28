@@ -144,7 +144,7 @@ class BaseWorker:
 
             # Execute handler
             start_time = time.time()
-            result = handler(job.payload)
+            _ = handler(job.payload)
             duration = (time.time() - start_time) * 1000
 
             # Success

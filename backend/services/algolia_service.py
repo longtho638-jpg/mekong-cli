@@ -1,7 +1,10 @@
 import os
 from typing import Any, Dict, List, Optional
 
-from algoliasearch.search_client import SearchClient
+try:
+    from algoliasearch.search_client import SearchClient
+except ImportError:
+    SearchClient = None
 
 
 class AlgoliaService:
@@ -9,7 +12,7 @@ class AlgoliaService:
         app_id = os.getenv('ALGOLIA_APP_ID')
         api_key = os.getenv('ALGOLIA_API_KEY')
 
-        if app_id and api_key:
+        if app_id and api_key and SearchClient:
             self.client = SearchClient.create(app_id, api_key)
         else:
             self.client = None

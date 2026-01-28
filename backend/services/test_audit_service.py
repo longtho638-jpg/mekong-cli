@@ -32,7 +32,7 @@ def test_audit_service_initialization():
 
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = os.path.join(tmpdir, "test_audit.db")
-        service = AuditService(db_path=db_path)
+        _ = AuditService(db_path=db_path)
 
         # Verify database file created
         assert Path(db_path).exists(), "Database file should be created"

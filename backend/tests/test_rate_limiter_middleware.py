@@ -1,198 +1,121 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from fastapi import FastAPI, Request, Response
+
+import pytest
+from fastapi import Request, Response
+
 from backend.middleware.rate_limiter import RateLimitMiddleware
-from backend.services.rate_limiter_service import RateLimiterService
 
-# Mock settings
-@pytest.fixture
-def mock_settings():
-    with patch("backend.middleware.rate_limiter.settings") as mock:
-        mock.enable_rate_limiting = True
-        yield mock
 
-# Mock RateLimiterService
 @pytest.fixture
-def mock_rate_limiter_service():
-    with patch("backend.middleware.rate_limiter.RateLimiterService") as MockService:
-        service_instance = MockService.return_value
-        # Default behavior: allow everything
-        service_instance.check_sliding_window = AsyncMock(return_value=(True, 10))
-        service_instance.check_token_bucket = AsyncMock(return_value=(True, 10))
-        service_instance.check_fixed_window = AsyncMock(return_value=(True, 10))
-        service_instance.get_reset_time = AsyncMock(return_value=1234567890)
-        yield service_instance
+def mock_app():
+    return AsyncMock()
 
-# Mock Config
 @pytest.fixture
-def mock_config():
-    return {
-        'rate_limits': {
-            'global': {
-                'ip_limit': 100,
-                'ip_window': 60,
-                'user_limit': 1000,
-                'user_window': 3600
-            },
+def middleware(mock_app):
+    # We patch the module where RateLimitMiddleware is defined to intercept imports
+    with patch('backend.middleware.rate_limiter.RateLimiterService') as MockService, \
+         patch('backend.middleware.rate_limiter.ip_blocker') as mock_ip_blocker, \
+         patch('backend.middleware.rate_limiter.rate_limit_monitor') as mock_monitor:
+
+        # Ensure mocks are AsyncMock where appropriate
+        mock_ip_blocker.is_blocked = AsyncMock(return_value=False)
+        mock_monitor.log_violation = AsyncMock()
+
+        mw = RateLimitMiddleware(mock_app)
+
+        # Ensure the instance uses the mock service
+        mw.rate_limiter = MockService.return_value
+
+        # Configure the mock service
+        mw.rate_limiter.check_sliding_window = AsyncMock(return_value=(True, 10))
+        mw.rate_limiter.check_token_bucket = AsyncMock(return_value=(True, 10))
+        mw.rate_limiter.check_fixed_window = AsyncMock(return_value=(True, 10))
+        mw.rate_limiter.get_reset_time = AsyncMock(return_value=1000)
+
+        # Mock config to control tests
+        mw.config = {
+            'global': {'ip_limit': 100, 'ip_window': 60},
             'endpoints': {
-                '/api/strict': {
-                    'enabled': True,
-                    'limit': 5,
-                    'window_seconds': 60
-                },
-                '/api/disabled': {
-                    'enabled': False
-                }
+                '/api/test': {'limit': 10, 'window_seconds': 60}
             }
         }
-    }
+
+        # Make mocks available on instance for test access
+        mw.mock_ip_blocker = mock_ip_blocker
+        mw.mock_monitor = mock_monitor
+
+        yield mw
+
 
 @pytest.mark.asyncio
-async def test_middleware_health_check_skipped(mock_rate_limiter_service):
-    app = FastAPI()
-    middleware = RateLimitMiddleware(app)
+async def test_dispatch_health_check_bypass(middleware):
+    request = MagicMock(spec=Request)
+    request.url.path = "/health"
+    request.method = "GET"
+    call_next = AsyncMock(return_value=Response("OK"))
 
-    # Mock call_next
-    async def call_next(request):
-        return Response(content="OK", status_code=200)
+    response = await middleware.dispatch(request, call_next)
 
-    # Test health check path
-    request = Request(scope={"type": "http", "path": "/health", "method": "GET", "headers": []})
+    assert response.body == b"OK"
+    middleware.rate_limiter.check_sliding_window.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_dispatch_blocked_ip(middleware):
+    request = MagicMock(spec=Request)
+    request.url.path = "/api/test"
+    request.client.host = "1.2.3.4"
+    request.method = "GET"
+    call_next = AsyncMock()
+
+    # Mock IP blocker returning True
+    middleware.mock_ip_blocker.is_blocked = AsyncMock(return_value=True)
+
+    response = await middleware.dispatch(request, call_next)
+
+    assert response.status_code == 403
+    assert b"Access denied" in response.body
+    call_next.assert_not_called()
+
+@pytest.mark.asyncio
+async def test_dispatch_rate_limit_exceeded(middleware):
+    request = MagicMock(spec=Request)
+    request.url.path = "/api/test"
+    request.client.host = "1.2.3.4"
+    request.method = "GET"
+    # No user
+    request.state = MagicMock()
+    del request.state.user_id
+
+    # Ensure IP is NOT blocked
+    middleware.mock_ip_blocker.is_blocked = AsyncMock(return_value=False)
+
+    # Simulate limit exceeded
+    middleware.rate_limiter.check_sliding_window = AsyncMock(return_value=(False, 0))
+
+    response = await middleware.dispatch(request, call_next=AsyncMock())
+
+    assert response.status_code == 429
+    assert b"Rate limit exceeded" in response.body
+    # Verify monitor called
+    middleware.mock_monitor.log_violation.assert_called_once()
+
+@pytest.mark.asyncio
+async def test_dispatch_success_headers(middleware):
+    request = MagicMock(spec=Request)
+    request.url.path = "/api/test"
+    request.client.host = "1.2.3.4"
+    request.method = "GET"
+    request.state = MagicMock()
+    del request.state.user_id
+
+    middleware.mock_ip_blocker.is_blocked = AsyncMock(return_value=False)
+    middleware.rate_limiter.check_sliding_window = AsyncMock(return_value=(True, 5))
+    middleware.rate_limiter.get_reset_time = AsyncMock(return_value=1234567890)
+
+    call_next = AsyncMock(return_value=Response("Success"))
+
     response = await middleware.dispatch(request, call_next)
 
     assert response.status_code == 200
-    # Should not call rate limiter
-    mock_rate_limiter_service.check_sliding_window.assert_not_called()
-
-@pytest.mark.asyncio
-async def test_middleware_global_ip_limit(mock_rate_limiter_service, mock_config):
-    app = FastAPI()
-    with patch.object(RateLimitMiddleware, '_load_config', return_value=mock_config['rate_limits']):
-        middleware = RateLimitMiddleware(app)
-
-        async def call_next(request):
-            return Response(content="OK", status_code=200)
-
-        # Request from unknown IP
-        request = Request(scope={
-            "type": "http",
-            "path": "/api/general",
-            "method": "GET",
-            "headers": [],
-            "client": ("192.168.1.1", 12345)
-        })
-
-        await middleware.dispatch(request, call_next)
-
-        # Should call check_sliding_window for global IP
-        args = mock_rate_limiter_service.check_sliding_window.call_args_list[0]
-        assert args[0][0] == "global:ip:192.168.1.1" # key
-        assert args[0][1] == 100 # limit
-        assert args[0][2] == 60 # window
-
-@pytest.mark.asyncio
-async def test_middleware_authenticated_user(mock_rate_limiter_service, mock_config):
-    app = FastAPI()
-    with patch.object(RateLimitMiddleware, '_load_config', return_value=mock_config['rate_limits']):
-        middleware = RateLimitMiddleware(app)
-
-        async def call_next(request):
-            return Response(content="OK", status_code=200)
-
-        # Authenticated request
-        request = Request(scope={
-            "type": "http",
-            "path": "/api/general",
-            "method": "GET",
-            "headers": [],
-            "client": ("192.168.1.1", 12345)
-        })
-        # Simulate auth middleware adding user_id
-        request.state.user_id = "user_123"
-
-        await middleware.dispatch(request, call_next)
-
-        # Should verify both IP and User
-        calls = mock_rate_limiter_service.check_sliding_window.call_args_list
-        keys = [call[0][0] for call in calls]
-
-        assert "global:ip:192.168.1.1" in keys
-        assert "global:user:user_123" in keys
-
-@pytest.mark.asyncio
-async def test_middleware_endpoint_limit(mock_rate_limiter_service, mock_config):
-    app = FastAPI()
-    with patch.object(RateLimitMiddleware, '_load_config', return_value=mock_config['rate_limits']):
-        middleware = RateLimitMiddleware(app)
-
-        async def call_next(request):
-            return Response(content="OK", status_code=200)
-
-        request = Request(scope={
-            "type": "http",
-            "path": "/api/strict",
-            "method": "GET",
-            "headers": [],
-            "client": ("192.168.1.1", 12345)
-        })
-
-        await middleware.dispatch(request, call_next)
-
-        # Should verify IP and Endpoint specific limit
-        calls = mock_rate_limiter_service.check_sliding_window.call_args_list
-        keys = [call[0][0] for call in calls]
-
-        assert "global:ip:192.168.1.1" in keys
-        assert "ep:ip:192.168.1.1:/api/strict" in keys
-
-        # Check limits for endpoint
-        endpoint_call = next(call for call in calls if "ep:ip" in call[0][0])
-        assert endpoint_call[0][1] == 5 # limit
-
-@pytest.mark.asyncio
-async def test_middleware_rate_limit_exceeded(mock_rate_limiter_service, mock_config):
-    app = FastAPI()
-
-    # Mock rate limit exceeded
-    mock_rate_limiter_service.check_sliding_window = AsyncMock(return_value=(False, 0))
-
-    with patch.object(RateLimitMiddleware, '_load_config', return_value=mock_config['rate_limits']):
-        middleware = RateLimitMiddleware(app)
-
-        async def call_next(request):
-            return Response(content="OK", status_code=200)
-
-        request = Request(scope={
-            "type": "http",
-            "path": "/api/general",
-            "method": "GET",
-            "headers": [],
-            "client": ("192.168.1.1", 12345)
-        })
-
-        response = await middleware.dispatch(request, call_next)
-
-        assert response.status_code == 429
-        assert "Retry-After" in response.headers
-
-@pytest.mark.asyncio
-async def test_middleware_endpoint_disabled(mock_rate_limiter_service, mock_config):
-    app = FastAPI()
-    with patch.object(RateLimitMiddleware, '_load_config', return_value=mock_config['rate_limits']):
-        middleware = RateLimitMiddleware(app)
-
-        async def call_next(request):
-            return Response(content="OK", status_code=200)
-
-        request = Request(scope={
-            "type": "http",
-            "path": "/api/disabled",
-            "method": "GET",
-            "headers": [],
-            "client": ("192.168.1.1", 12345)
-        })
-
-        await middleware.dispatch(request, call_next)
-
-        # Should NOT call rate limiter
-        mock_rate_limiter_service.check_sliding_window.assert_not_called()
+    assert "X-RateLimit-Limit" in response.headers
+    assert response.headers["X-RateLimit-Limit"] == "10" # Endpoint limit

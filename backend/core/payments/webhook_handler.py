@@ -129,7 +129,7 @@ class WebhookHandler:
 
     def _handle_subscription_updated(self, subscription: Dict[str, Any]):
         logger.info(f"Subscription updated: {subscription.get('id')}")
-        status = subscription.get('status')
+        # status = subscription.get('status')
         # Update DB status
         return {"status": "processed", "type": "customer.subscription.updated"}
 

@@ -1,7 +1,9 @@
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from fastapi import FastAPI, Request, Response
 from fastapi.testclient import TestClient
-from unittest.mock import patch, AsyncMock
+
 from backend.middleware.rate_limiter import RateLimitMiddleware
 
 # Mock Config
@@ -41,7 +43,19 @@ def mock_rate_limiter_service():
         yield service_instance
 
 @pytest.fixture
-def client(mock_rate_limiter_service):
+def mock_rate_limit_monitor():
+    with patch('backend.middleware.rate_limiter.rate_limit_monitor') as mock:
+        mock.log_violation = AsyncMock()
+        yield mock
+
+@pytest.fixture
+def mock_ip_blocker():
+    with patch('backend.middleware.rate_limiter.ip_blocker') as mock:
+        mock.is_blocked = AsyncMock(return_value=False)
+        yield mock
+
+@pytest.fixture
+def client(mock_rate_limiter_service, mock_rate_limit_monitor, mock_ip_blocker):
     app = FastAPI()
 
     # Patch the config load to return our mock config
@@ -76,8 +90,6 @@ def test_integration_global_ip_check(client, mock_rate_limiter_service):
     # Should verify IP global
     calls = mock_rate_limiter_service.check_sliding_window.call_args_list
     # The key format in middleware is f"global:ip:{client_ip}"
-    # TestClient usually uses "testclient" as host or 127.0.0.1 depending on version
-    # We check if any call contains "global:ip"
     assert any("global:ip" in call[0][0] for call in calls)
 
 def test_integration_endpoint_check(client, mock_rate_limiter_service):

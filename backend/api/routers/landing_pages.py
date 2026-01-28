@@ -12,6 +12,7 @@ from backend.models.landing_page import (
     LandingPageResponse,
     LandingPageUpdate,
 )
+from backend.services.cache.decorators import cache
 from backend.services.landing_page_service import ABTestingService, LandingPageService
 
 router = APIRouter(
@@ -23,6 +24,12 @@ router = APIRouter(
 # --- Landing Pages CRUD ---
 
 @router.get("/", response_model=List[LandingPageResponse])
+@cache(
+    ttl=60,
+    prefix="landing_pages",
+    key_func=lambda skip=0, limit=100, **kwargs: f"list:{skip}:{limit}",
+    tags=["landing_pages"]
+)
 def get_landing_pages(
     skip: int = 0,
     limit: int = 100,
@@ -43,6 +50,12 @@ def create_landing_page(
     return service.create_landing_page(page)
 
 @router.get("/{page_id}", response_model=LandingPageResponse)
+@cache(
+    ttl=60,
+    prefix="landing_pages",
+    key_func=lambda page_id, **kwargs: f"detail:{page_id}",
+    tags=["landing_pages"]
+)
 def get_landing_page(
     page_id: int,
     db: Session = Depends(get_db)

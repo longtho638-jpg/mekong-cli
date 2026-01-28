@@ -25,7 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { RefreshCw, Play, AlertCircle, CheckCircle, Clock, Plus, Trash2, Settings } from "lucide-react"
-import { toast } from "sonner" // Assuming sonner is used for toasts, or use existing toast lib
+import { toast } from "@/lib/sonner"
 
 import {
   fetchWebhookEvents,
@@ -122,7 +122,7 @@ function IncomingEvents() {
                   <td className="p-2 font-mono" title={evt.event_id}>{evt.event_type}</td>
                   <td className="p-2 text-muted-foreground">{new Date(evt.created_at).toLocaleString()}</td>
                   <td className="p-2">
-                    <MD3Button variant="text" size="sm" onClick={() => handleReplay(evt.id)}>
+                    <MD3Button variant="text" onClick={() => handleReplay(evt.id)}>
                       <Play className="h-4 w-4 mr-1" /> Replay
                     </MD3Button>
                   </td>
@@ -252,7 +252,7 @@ function WebhookConfigs() {
                   </td>
                   <td className="p-2 text-muted-foreground">{new Date(config.created_at).toLocaleDateString()}</td>
                   <td className="p-2">
-                    <MD3Button variant="text" size="sm" className="text-red-500 hover:text-red-700" onClick={() => handleDelete(config.id)}>
+                    <MD3Button variant="text" className="text-red-500 hover:text-red-700" onClick={() => handleDelete(config.id)}>
                       <Trash2 className="h-4 w-4" />
                     </MD3Button>
                   </td>
@@ -308,7 +308,7 @@ function CreateConfigDialog({ open, onOpenChange, onSuccess }: { open: boolean, 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <MD3Button variant="filled" size="sm">
+        <MD3Button variant="filled">
           <Plus className="h-4 w-4 mr-1" /> Add Endpoint
         </MD3Button>
       </DialogTrigger>

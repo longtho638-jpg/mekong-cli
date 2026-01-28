@@ -21,8 +21,6 @@ from backend.api.middleware.metrics import setup_metrics
 
 # Import middleware
 from backend.api.middleware.multitenant import MultiTenantMiddleware, setup_tenant_routes
-from backend.middleware.security import SecurityMiddleware
-from backend.middleware.validation import ValidationMiddleware
 from backend.api.routers import (
     admin as admin_router,
 )
@@ -30,7 +28,12 @@ from backend.api.routers import (
 # Import Routers
 from backend.api.routers import (
     agents as agent_router,
+)
+from backend.api.routers import (
     analytics as analytics_router,
+)
+from backend.api.routers import (
+    analytics_realtime as analytics_realtime_router,
 )
 from backend.api.routers import (
     backup as backup_router,  # Backup & DR
@@ -39,7 +42,7 @@ from backend.api.routers import (
     binh_phap as binh_phap_router,
 )
 from backend.api.routers import (
-    executive as executive_router,
+    cdn as cdn_router,  # CDN Integration
 )
 from backend.api.routers import (
     code as code_router,
@@ -62,6 +65,9 @@ from backend.api.routers import (
     dlq as dlq_router,
 )
 from backend.api.routers import (
+    executive as executive_router,
+)
+from backend.api.routers import (
     health as health_router,  # Health check & monitoring
 )
 from backend.api.routers import (
@@ -69,6 +75,9 @@ from backend.api.routers import (
 )
 from backend.api.routers import (
     license as license_router,  # License verification
+)
+from backend.api.routers import (
+    llm as llm_router,  # AI/LLM Integration
 )
 from backend.api.routers import (
     notification_preferences as notification_preferences_router,
@@ -104,25 +113,18 @@ from backend.api.routers import (
     webhook_health as webhook_health_router,
 )
 from backend.api.routers import (
-    cdn as cdn_router,  # CDN Integration
-)
-from backend.api.routers import (
-    llm as llm_router,  # AI/LLM Integration
-)
-from backend.api.routers import (
     webhooks as webhooks_router,
-)
-from backend.api.routers import (
-    analytics_realtime as analytics_realtime_router,
 )
 from backend.api.routers.router import router as hybrid_router
 from backend.middleware.cache_middleware import CacheControlMiddleware
 from backend.middleware.jwt_rotation import JWTRotationMiddleware
-from backend.services.cdn.utils import load_cdn_config, map_cache_rules_to_middleware
 
 # from backend.api.middleware.rate_limiting import setup_rate_limit_routes, setup_rate_limiting # DEPRECATED
 from backend.middleware.rate_limiter import RateLimitMiddleware
+from backend.middleware.security import SecurityMiddleware
 from backend.middleware.security_headers import SecurityHeadersMiddleware
+from backend.middleware.validation import ValidationMiddleware
+from backend.services.cdn.utils import load_cdn_config, map_cache_rules_to_middleware
 from backend.websocket.routes import router as websocket_router
 
 # Initialize FastAPI

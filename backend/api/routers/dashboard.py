@@ -25,6 +25,7 @@ from backend.models.dashboard import (
     DashboardConfigUpdate,
     MetricResponse,
 )
+from backend.services.cache.decorators import cache
 from backend.services.dashboard_service import DashboardService
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -84,6 +85,12 @@ async def update_dashboard(
     return await service.update_dashboard(dashboard_id, uid, config)
 
 @router.get("/data/{metric}", response_model=MetricResponse)
+@cache(
+    ttl=300,
+    prefix="dashboard",
+    key_func=lambda metric, date_range="30d", segment=None, **kwargs: f"metrics:{metric}:{date_range}:{segment}",
+    tags=["dashboard"]
+)
 async def get_metric_data(
     metric: str,
     date_range: str = Query("30d", regex="^(today|7d|30d|90d|ytd|custom)$"),
@@ -115,6 +122,11 @@ def load_json_file(filename: str) -> List[dict]:
     return []
 
 @router.get("/revenue", response_model=RevenueMetrics)
+@cache(
+    ttl=600,
+    prefix="dashboard:legacy",
+    tags=["dashboard"]
+)
 async def get_revenue():
     """Get revenue metrics from invoices (Legacy)."""
     invoices = load_json_file("invoices.json")

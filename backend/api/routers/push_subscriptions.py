@@ -9,7 +9,7 @@ from backend.api.deps import get_current_user, get_db
 from backend.models.notification import PushSubscription
 from backend.models.user import User
 
-router = APIRouter(prefix="/notifications/push", tags=["Notifications"])
+router = APIRouter(prefix="/api/v1/notifications/push", tags=["Notifications"])
 
 class PushSubscriptionCreate(BaseModel):
     endpoint: str

@@ -1,11 +1,12 @@
 from typing import AsyncGenerator, Dict, List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from backend.api.auth.dependencies import get_current_active_superuser
-from backend.services.llm.service import LLMService
 from backend.services.llm.content import ContentService
+from backend.services.llm.service import LLMService
 
 router = APIRouter(prefix="/llm", tags=["AI/LLM"])
 

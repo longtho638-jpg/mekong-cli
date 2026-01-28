@@ -1,5 +1,7 @@
 from typing import Dict, Optional
+
 from backend.services.llm.service import LLMService
+
 
 class ContentService:
     """

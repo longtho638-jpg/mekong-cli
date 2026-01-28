@@ -26,14 +26,14 @@ def test_create_landing_page(db_session, mocker):
 
     # Let's write a test that *would* run against a live server/db
 
-    payload = {
-        "title": "Test Page",
-        "slug": "test-page-slug",
-        "content_json": {"components": []},
-        "seo_metadata": {"title": "SEO Title"},
-        "template_id": "saas-launch",
-        "is_published": False
-    }
+    # payload = {
+    #     "title": "Test Page",
+    #     "slug": "test-page-slug",
+    #     "content_json": {"components": []},
+    #     "seo_metadata": {"title": "SEO Title"},
+    #     "template_id": "saas-launch",
+    #     "is_published": False
+    # }
 
     # We'll rely on the fact that we can't fully execute this without a running DB container,
     # but the code structure is valid.

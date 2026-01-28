@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
+from backend.core.permissions.rbac import require_developer, require_viewer
 from backend.core.security.audit import audit_action
-from backend.core.security.rbac import require_developer, require_viewer
 
 router = APIRouter(prefix="/api/crm", tags=["CRM"])
 

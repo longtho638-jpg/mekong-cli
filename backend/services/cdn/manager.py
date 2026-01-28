@@ -4,10 +4,10 @@ Facade for CDN operations.
 """
 
 import logging
-from typing import List, Dict, Optional
+from typing import Dict, List, Optional
 
-from backend.services.cdn.purge import get_purge_provider, CDNPurgeProvider
 from backend.services.cdn.optimization import OptimizationService
+from backend.services.cdn.purge import CDNPurgeProvider, get_purge_provider
 
 logger = logging.getLogger(__name__)
 

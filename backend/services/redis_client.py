@@ -1,7 +1,9 @@
-import redis.asyncio as redis
-from backend.core.infrastructure.redis import redis_client as core_redis_client
-from backend.api.config.settings import settings
 import logging
+
+import redis.asyncio as redis
+
+from backend.api.config.settings import settings
+from backend.core.infrastructure.redis import redis_client as core_redis_client
 
 logger = logging.getLogger(__name__)
 

@@ -1,12 +1,16 @@
-import time
-import yaml
 import logging
 import os
-from typing import Optional, List, Tuple
+import time
+from typing import List, Optional, Tuple
+
+import yaml
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
-from backend.services.rate_limiter_service import RateLimiterService
+
 from backend.api.config.settings import settings
+from backend.services.ip_blocker import ip_blocker
+from backend.services.rate_limit_monitor import rate_limit_monitor
+from backend.services.rate_limiter_service import RateLimiterService
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +18,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     """
     FastAPI middleware for rate limiting.
     Applies multi-layer protection:
+    0. Layer 0: IP Blocklist Check (DDoS protection)
     1. Layer 1: IP-based rate limiting (DDoS protection)
     2. Layer 2: Authenticated User rate limiting
     3. Layer 3: Endpoint-specific limits
@@ -58,6 +63,15 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # Get user ID (if authenticated) and IP
         user_id = getattr(request.state, 'user_id', None)
         client_ip = request.client.host if request.client else "unknown"
+
+        # Layer 0: IP Blocklist Check
+        if await ip_blocker.is_blocked(client_ip):
+            logger.warning(f"Blocked IP attempted access: {client_ip}")
+            return Response(
+                content='{"error": "Access denied. Your IP is blocked due to suspicious activity."}',
+                status_code=403,
+                media_type='application/json'
+            )
 
         # Load Global Config
         global_config = self.config.get('global', {})
@@ -144,6 +158,19 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     retry_after = max(1, reset_time - int(time.time()))
 
                     logger.warning(f"Rate limit exceeded for {key}. Type: {check['type']}")
+
+                    # Async log violation (fire and forget ideally, but here we await for simplicity or spawn task)
+                    # In high throughput, use background task
+                    try:
+                        await rate_limit_monitor.log_violation(
+                            ip_address=client_ip,
+                            violation_type=check['type'],
+                            endpoint=request.url.path,
+                            user_id=str(user_id) if user_id else None,
+                            headers=dict(request.headers)
+                        )
+                    except Exception as ex:
+                        logger.error(f"Error logging violation: {ex}")
 
                     return Response(
                         content='{"error": "Rate limit exceeded. Please try again later.", "type": "' + check['type'] + '"}',

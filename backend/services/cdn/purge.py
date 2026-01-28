@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
 import httpx
+
 from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -142,8 +143,8 @@ class FastlyProvider(CDNPurgeProvider):
         return success_count == len(urls)
 
     async def purge_tags(self, tags: List[str]) -> bool:
-        url = f"{self.base_url}/purge"
-        payload = {"surrogate_keys": tags}
+        # url = f"{self.base_url}/purge"
+        # payload = {"surrogate_keys": tags}
         # Fastly supports purging by surrogate key via POST to /service/{id}/purge with keys in header or body
         # Usually it's POST /service/{service_id}/purge/{surrogate_key} for single
         # For multiple, it depends on API version. Assuming simplified single tag loop or batch if supported.

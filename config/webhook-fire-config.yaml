@@ -1,0 +1,18 @@
+webhook_fire:
+  retry_policy:
+    base_delay: 1.0
+    max_delay: 64.0
+    max_retries: 7
+    jitter_factor: 0.2
+
+  circuit_breaker:
+    failure_threshold: 5
+    reset_timeout: 30
+    success_threshold: 3
+
+  dlq:
+    enabled: true
+    retention_days: 30
+
+  timeouts:
+    tiers: [5, 10, 20]

@@ -188,8 +188,9 @@ class TestPurchaseFlowE2E:
             referrer_url = mock_gumroad_webhook_data.get("referrer", "")
             if referrer_url and "partner" in referrer_url:
                 # Commission should be calculated
-                expected_commission = 39.50  # 10% of $395
+                # expected_commission = 39.50  # 10% of $395
                 # In actual implementation, this would be tracked in the system
+                pass
 
             # Step 5: Customer verifies license via API
             verify_response = client.post(

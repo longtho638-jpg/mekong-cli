@@ -319,7 +319,7 @@ class TestBackupService:
         assert count >= 0
 
         # Test restore_backup
-        target_db = os.path.join(temp_dirs["db_dir"], "restored.db")
+        _ = os.path.join(temp_dirs["db_dir"], "restored.db")
         success, error = restore_backup(metadata.backup_path, config)
         assert success is True
 

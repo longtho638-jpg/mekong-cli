@@ -71,7 +71,7 @@ class InvoiceManager:
         Handle successful invoice payment.
         """
         invoice_id = invoice_obj.get('id')
-        customer_id = invoice_obj.get('customer')
+        # customer_id = invoice_obj.get('customer')
 
         logger.info(f"Payment succeeded for invoice {invoice_id}")
 
