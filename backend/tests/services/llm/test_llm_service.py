@@ -1,12 +1,14 @@
-import pytest
 import sys
 from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 # Mock google.generativeai globally for tests
 sys.modules["google.generativeai"] = MagicMock()
 
 from backend.services.llm.service import LLMService
 from backend.services.llm.types import LLMResponse, TokenUsage
+
 
 @pytest.fixture
 def mock_gemini_provider():

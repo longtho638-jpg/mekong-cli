@@ -141,7 +141,7 @@ export default function JobsDashboard() {
                                 <div key={worker.id} className="p-3 rounded-lg bg-white/5 border border-white/10">
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-sm font-medium text-white truncate max-w-[120px]">{worker.id}</span>
-                                        <StatusBadge status={(worker.status === 'active' ? 'active' : 'inactive') as any} />
+                                        <StatusBadge status={(worker.status === 'active' ? 'active' : 'idle')} />
                                     </div>
                                     <div className="flex flex-wrap gap-1 mb-2">
                                         {worker.queues.map(q => (
@@ -186,7 +186,14 @@ export default function JobsDashboard() {
     )
 }
 
-function MetricCard({ label, value, color, icon: Icon }: any) {
+interface MetricCardProps {
+    label: string;
+    value: number | string;
+    color: string;
+    icon: React.ComponentType<{ className?: string }>;
+}
+
+function MetricCard({ label, value, color, icon: Icon }: MetricCardProps) {
     return (
         <AgencyCard variant="glass" className="p-4 flex flex-col items-center justify-center text-center">
             <Icon className={`w-5 h-5 ${color} mb-2`} />

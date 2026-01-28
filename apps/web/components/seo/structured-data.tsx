@@ -23,7 +23,15 @@ export function OrganizationLD({ name, logo, url, sameAs }: OrganizationSchema) 
   );
 }
 
-export function ProductLD({ name, image, price, currency, availability }: any) {
+interface ProductLDProps {
+  name: string;
+  image: string;
+  price: number | string;
+  currency: string;
+  availability: string;
+}
+
+export function ProductLD({ name, image, price, currency, availability }: ProductLDProps) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Product",

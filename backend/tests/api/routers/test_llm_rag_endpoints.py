@@ -1,13 +1,15 @@
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from fastapi.testclient import TestClient
 import sys
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 
 # Mock external dependencies
 sys.modules["google.generativeai"] = MagicMock()
 
 from backend.api.main import app
 from backend.api.routers.llm import RAGIngestRequest, RAGQueryRequest
+
 
 @pytest.fixture
 def client():

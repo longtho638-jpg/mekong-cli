@@ -1,9 +1,11 @@
-from typing import List, Dict, Any, Optional
-from backend.services.rag.embeddings import GeminiEmbeddings, OpenAIEmbeddings, EmbeddingsProvider
-from backend.services.rag.vector_store import VectorStore, InMemoryVectorStore
-from backend.services.llm.service import LLMService
-from backend.services.llm.prompts import PromptTemplates
+from typing import Any, Dict, List, Optional
+
 from backend.api.config.settings import settings
+from backend.services.llm.prompts import PromptTemplates
+from backend.services.llm.service import LLMService
+from backend.services.rag.embeddings import EmbeddingsProvider, GeminiEmbeddings, OpenAIEmbeddings
+from backend.services.rag.vector_store import InMemoryVectorStore, VectorStore
+
 
 class RAGService:
     """

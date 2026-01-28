@@ -7,6 +7,15 @@ import { api } from '@/lib/api';
 import { ArrowLeft, Globe, Key, Activity, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+interface WebhookDeliveryRow {
+  id: string;
+  event: string;
+  status: 'success' | 'failed';
+  status_code: number;
+  duration: number;
+  date: string;
+}
+
 export default function WebhookDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const configId = params.id;
@@ -35,22 +44,22 @@ export default function WebhookDetailPage({ params }: { params: { id: string } }
   if (!config) return <div className="p-8 text-center">Webhook not found</div>;
 
   const deliveryColumns = [
-      { header: 'Event', accessor: 'event', render: (row: any) => <span className="font-mono text-sm">{row.event}</span> },
+      { header: 'Event', accessor: 'event', render: (row: WebhookDeliveryRow) => <span className="font-mono text-sm">{row.event}</span> },
       {
           header: 'Status',
           accessor: 'status',
-          render: (row: any) => (
+          render: (row: WebhookDeliveryRow) => (
             <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                 {row.status_code} {row.status}
             </span>
           )
       },
-      { header: 'Duration', accessor: 'duration', render: (row: any) => `${row.duration}ms` },
-      { header: 'Time', accessor: 'date', render: (row: any) => new Date(row.date).toLocaleString() },
+      { header: 'Duration', accessor: 'duration', render: (row: WebhookDeliveryRow) => `${row.duration}ms` },
+      { header: 'Time', accessor: 'date', render: (row: WebhookDeliveryRow) => new Date(row.date).toLocaleString() },
       {
           header: 'Actions',
           accessor: 'id',
-          render: (row: any) => (
+          render: (row: WebhookDeliveryRow) => (
               <MD3Button variant="text" size="small" startIcon={<RefreshCw size={14} />}>Replay</MD3Button>
           )
       }

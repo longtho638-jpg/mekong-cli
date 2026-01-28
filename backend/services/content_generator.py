@@ -1,5 +1,7 @@
 from typing import Optional
+
 from backend.services.llm.content import ContentService
+
 
 class ContentGenerator:
     """

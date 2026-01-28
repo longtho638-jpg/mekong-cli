@@ -18,14 +18,21 @@ interface AuditLog {
     resource_type?: string;
     resource_id?: string;
     ip_address?: string;
-    metadata?: any;
+    metadata?: Record<string, unknown>;
 }
 
-const getAuditLogs = async (token: string, filters: any): Promise<AuditLog[]> => {
+interface AuditFilters {
+    user_id?: string;
+    action?: string;
+    resource_type?: string;
+    limit?: number;
+}
+
+const getAuditLogs = async (token: string, filters: AuditFilters): Promise<AuditLog[]> => {
     return [];
 };
 
-const exportAuditLogs = async (token: string, format: string, filters: any): Promise<any> => {
+const exportAuditLogs = async (token: string, format: string, filters: AuditFilters): Promise<Blob | null> => {
     return null;
 };
 
@@ -67,6 +74,11 @@ export default function AuditPage() {
           const result = await exportAuditLogs(token, format, {
             user_id: filters.user_id || undefined
           });
+
+          if (!result) {
+            console.error("Export returned no data");
+            return;
+          }
 
           if (format === 'csv') {
               const url = window.URL.createObjectURL(result);

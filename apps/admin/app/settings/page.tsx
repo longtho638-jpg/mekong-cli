@@ -6,6 +6,18 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Save, RefreshCw } from 'lucide-react';
 
+interface FeatureFlagRow {
+    key: string;
+    description: string;
+    is_enabled: boolean;
+}
+
+interface SettingRow {
+    key: string;
+    value: string;
+    description: string;
+}
+
 export default function SettingsPage() {
   const queryClient = useQueryClient();
   const { data: settings, isLoading } = useQuery({
@@ -44,7 +56,7 @@ export default function SettingsPage() {
                 <div>Loading...</div>
             ) : (
                 <div className="space-y-4">
-                    {flags?.map((flag: any) => (
+                    {flags?.map((flag: FeatureFlagRow) => (
                         <div key={flag.key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                             <div>
                                 <div className="font-medium text-gray-900">{flag.key}</div>
@@ -66,7 +78,7 @@ export default function SettingsPage() {
         <MD3Card variant="elevated" className="p-6">
             <MD3Typography variant="title-large" className="mb-6">System Configuration</MD3Typography>
             <div className="space-y-4">
-                {settings?.map((setting: any) => (
+                {settings?.map((setting: SettingRow) => (
                     <div key={setting.key} className="space-y-1">
                         <label className="text-sm font-medium text-gray-700">{setting.key}</label>
                         <input

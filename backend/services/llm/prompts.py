@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class PromptTemplates(str, Enum):
     # Chatbot
     CHATBOT_SYSTEM = """You are an intelligent assistant for Agency OS.

@@ -7,6 +7,25 @@ import { api } from '@/lib/api';
 import { Trash2, AlertTriangle, Tag, List, Key } from 'lucide-react';
 import Link from 'next/link';
 
+interface InvalidatePayload {
+  key?: string;
+  pattern?: string;
+  tags?: string[];
+}
+
+interface InvalidateResponse {
+  keys_removed: number;
+}
+
+interface ApiError {
+  response?: {
+    data?: {
+      detail?: string;
+    };
+  };
+  message: string;
+}
+
 export default function InvalidateCachePage() {
   const queryClient = useQueryClient();
   const [key, setKey] = useState('');
@@ -15,9 +34,9 @@ export default function InvalidateCachePage() {
   const [result, setResult] = useState<string | null>(null);
 
   const invalidateMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: InvalidatePayload) => {
       const res = await api.post('/admin/cache/invalidate', data);
-      return res.data;
+      return res.data as InvalidateResponse;
     },
     onSuccess: (data) => {
       setResult(`Success! Removed ${data.keys_removed} keys.`);
@@ -26,8 +45,9 @@ export default function InvalidateCachePage() {
       setTags('');
       queryClient.invalidateQueries({ queryKey: ['cache-stats'] });
     },
-    onError: (err: any) => {
-      setResult(`Error: ${err.response?.data?.detail || err.message}`);
+    onError: (err: unknown) => {
+      const error = err as ApiError;
+      setResult(`Error: ${error.response?.data?.detail || error.message}`);
     }
   });
 

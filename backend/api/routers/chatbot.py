@@ -1,10 +1,11 @@
 from typing import List, Optional
+
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from backend.api.auth.dependencies import get_current_user
-from backend.services.llm.service import LLMService
 from backend.services.llm.prompts import PromptTemplates
+from backend.services.llm.service import LLMService
 
 router = APIRouter(prefix="/chatbot", tags=["AI/Chatbot"])
 

@@ -18,7 +18,7 @@ export const Tracker: React.FC<TrackerProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const sendEvent = useCallback(async (eventType: string, metadata: any = {}) => {
+  const sendEvent = useCallback(async (eventType: string, metadata: Record<string, unknown> = {}) => {
     try {
       const payload = {
         landing_page_uuid: landingPageId,

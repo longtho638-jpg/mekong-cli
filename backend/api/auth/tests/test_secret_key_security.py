@@ -12,11 +12,12 @@ class TestSecretKeyValidation(unittest.TestCase):
         # Remove SECRET_KEY from environment
         with patch.dict(os.environ, {}, clear=True):
             # Force reimport to trigger validation
-            import sys
             import importlib
-            import backend.api.config.settings
-            import backend.api.config
+            import sys
+
             import backend.api.auth.utils as auth_utils
+            import backend.api.config
+            import backend.api.config.settings
 
             # Reload settings first (where the validation happens)
             # Use sys.modules to avoid TypeError if settings resolves to the object
@@ -41,11 +42,12 @@ class TestSecretKeyValidation(unittest.TestCase):
 
         with patch.dict(os.environ, {"SECRET_KEY": test_key}):
             # Reimport to pick up new env var
-            import sys
             import importlib
-            import backend.api.config.settings
-            import backend.api.config
+            import sys
+
             import backend.api.auth.utils as auth_utils
+            import backend.api.config
+            import backend.api.config.settings
 
             # Reload settings first
             if 'backend.api.config.settings' in sys.modules:
@@ -82,11 +84,12 @@ class TestAuthUtilsTypeSafety(unittest.TestCase):
     @patch.dict(os.environ, {"SECRET_KEY": "test-key-123"})
     def test_function_signatures(self):
         """Test that functions have proper type annotations."""
-        import sys
         import importlib
-        import backend.api.config.settings
-        import backend.api.config
+        import sys
+
         import backend.api.auth.utils as auth_utils
+        import backend.api.config
+        import backend.api.config.settings
 
         # Reload to ensure valid state
         if 'backend.api.config.settings' in sys.modules:

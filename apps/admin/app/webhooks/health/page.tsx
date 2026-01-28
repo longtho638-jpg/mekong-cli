@@ -4,8 +4,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   MD3Card,
-  MD3Typography,
-  MD3Grid
+  MD3Typography
 } from '@/components/md3';
 import {
   Activity,
@@ -15,8 +14,17 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 
+interface MetricCardProps {
+    title: string;
+    value?: number | string;
+    unit?: string;
+    icon: React.ElementType;
+    trend?: 'up' | 'down' | 'neutral';
+    color?: string;
+}
+
 // Metric Card Component
-const MetricCard = ({ title, value, unit, icon: Icon, trend, color = "primary" }: any) => (
+const MetricCard = ({ title, value, unit, icon: Icon, trend, color = "primary" }: MetricCardProps) => (
   <MD3Card variant="filled" className="p-6">
     <div className="flex justify-between items-start">
       <div>

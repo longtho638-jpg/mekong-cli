@@ -100,8 +100,8 @@ export default function AIChatPage() {
                         label=""
                         placeholder="Type your message..."
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setInput(e.target.value)}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => e.key === 'Enter' && !e.shiftKey && handleSend()}
                         className="mb-0"
                     />
                 </div>

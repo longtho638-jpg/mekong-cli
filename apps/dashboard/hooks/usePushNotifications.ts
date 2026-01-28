@@ -115,9 +115,13 @@ export const usePushNotifications = () => {
             setIsSubscribed(true);
             setSubscription(subscriptionJSON as PushSubscription);
             return true;
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error("Failed to subscribe:", e);
-            setError(e.message);
+            if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError('An unknown error occurred');
+            }
             return false;
         } finally {
             setLoading(false);
@@ -141,9 +145,13 @@ export const usePushNotifications = () => {
                 setIsSubscribed(false);
                 setSubscription(null);
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
             console.error("Failed to unsubscribe:", e);
-            setError(e.message);
+             if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError('An unknown error occurred');
+            }
         } finally {
             setLoading(false);
         }

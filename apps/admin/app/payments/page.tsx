@@ -6,6 +6,16 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { DollarSign, Search, Filter } from 'lucide-react';
 
+interface PaymentRow {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  user: string;
+  date: string;
+  method: string;
+}
+
 export default function PaymentsPage() {
   // Mock data fetching for now, as we haven't implemented specific payment endpoints in admin yet
   // But we have the structure ready
@@ -26,12 +36,12 @@ export default function PaymentsPage() {
     {
         header: 'ID',
         accessor: 'id',
-        render: (row: any) => <span className="font-mono text-xs">{row.id}</span>
+        render: (row: PaymentRow) => <span className="font-mono text-xs">{row.id}</span>
     },
     {
         header: 'Amount',
         accessor: 'amount',
-        render: (row: any) => (
+        render: (row: PaymentRow) => (
             <span className="font-bold">
                 {(row.amount / 100).toLocaleString('en-US', { style: 'currency', currency: row.currency })}
             </span>
@@ -41,15 +51,15 @@ export default function PaymentsPage() {
     {
         header: 'Status',
         accessor: 'status',
-        render: (row: any) => (
+        render: (row: PaymentRow) => (
             <MD3Chip
                 label={row.status}
                 className={row.status === 'succeeded' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
             />
         )
     },
-    { header: 'Method', accessor: 'method', render: (row: any) => <span className="uppercase text-xs font-bold">{row.method}</span> },
-    { header: 'Date', accessor: 'date', render: (row: any) => new Date(row.date).toLocaleString() },
+    { header: 'Method', accessor: 'method', render: (row: PaymentRow) => <span className="uppercase text-xs font-bold">{row.method}</span> },
+    { header: 'Date', accessor: 'date', render: (row: PaymentRow) => new Date(row.date).toLocaleString() },
   ];
 
   return (

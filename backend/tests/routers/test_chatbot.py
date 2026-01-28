@@ -1,11 +1,12 @@
-import pytest
 from unittest.mock import AsyncMock, patch
-from backend.api.routers.chatbot import router
+
+import pytest
 from fastapi.testclient import TestClient
-from backend.api.main import app
 
 # We need to override dependencies
 from backend.api.auth.dependencies import get_current_user
+from backend.api.main import app
+from backend.api.routers.chatbot import router
 from backend.services.llm.types import LLMResponse
 
 client = TestClient(app)

@@ -9,8 +9,16 @@ import { FunnelChart } from '@/components/charts/FunnelChart';
 import { CohortChart } from '@/components/charts/CohortChart';
 import { TrendChart } from '@/components/charts/TrendChart';
 
+interface MetricCardProps {
+    title: string;
+    value?: number | string;
+    change?: number;
+    icon: React.ElementType;
+    prefix?: string;
+}
+
 // Metric Card Component
-function MetricCard({ title, value, change, icon: Icon, prefix = "" }: any) {
+function MetricCard({ title, value, change, icon: Icon, prefix = "" }: MetricCardProps) {
     const isPositive = change >= 0;
     return (
         <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">

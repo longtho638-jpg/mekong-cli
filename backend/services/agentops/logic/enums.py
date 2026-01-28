@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class OpsCategory(str, Enum):
     ABM_OPS = "abmops"
     ADMIN_OPS = "adminops"

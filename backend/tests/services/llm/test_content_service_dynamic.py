@@ -1,11 +1,13 @@
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from sqlalchemy.orm import Session
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
+import pytest
+from sqlalchemy.orm import Session
+
+from backend.models.prompt import Prompt
 from backend.services.llm.content import ContentService
 from backend.services.llm.prompts import PromptTemplates
-from backend.models.prompt import Prompt
+
 
 @pytest.fixture
 def mock_llm_service():

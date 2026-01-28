@@ -5,7 +5,7 @@ import React, { ReactNode } from 'react';
 interface MD3Props {
   children?: ReactNode;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface ButtonProps extends MD3Props {
@@ -25,7 +25,7 @@ interface TypographyProps extends MD3Props {
     | 'title-large' | 'title-medium' | 'title-small'
     | 'body-large' | 'body-medium' | 'body-small'
     | 'label-large' | 'label-medium' | 'label-small';
-  component?: any;
+  component?: React.ElementType;
 }
 
 interface CardProps extends MD3Props {
@@ -39,13 +39,13 @@ interface ChipProps extends MD3Props {
     onDelete?: () => void;
 }
 
-interface DataTableProps {
+interface DataTableProps<T = unknown> {
     columns: {
         header: string;
-        accessor: string;
-        render?: (row: any) => ReactNode;
+        accessor: keyof T | string;
+        render?: (row: T) => ReactNode;
     }[];
-    data: any[];
+    data: T[];
     selectable?: boolean;
     onSelectionChange?: (selectedIds: string[]) => void;
 }
@@ -245,7 +245,7 @@ export const MD3Chip: React.FC<ChipProps> = ({ label, variant = 'assist', classN
     );
 }
 
-export const MD3DataTable: React.FC<DataTableProps> = ({ columns, data, selectable, onSelectionChange }) => {
+export const MD3DataTable = <T extends Record<string, unknown>>({ columns, data, selectable, onSelectionChange }: DataTableProps<T>) => {
     return (
         <div className="overflow-x-auto w-full">
             <table className="w-full text-left text-sm text-gray-500">
@@ -263,7 +263,7 @@ export const MD3DataTable: React.FC<DataTableProps> = ({ columns, data, selectab
                             {selectable && <td className="px-6 py-4"><input type="checkbox" /></td>}
                             {columns.map((col, cIdx) => (
                                 <td key={cIdx} className="px-6 py-4 whitespace-nowrap">
-                                    {col.render ? col.render(row) : row[col.accessor]}
+                                    {col.render ? col.render(row) : String(row[col.accessor as string] ?? '')}
                                 </td>
                             ))}
                         </tr>
@@ -272,4 +272,4 @@ export const MD3DataTable: React.FC<DataTableProps> = ({ columns, data, selectab
             </table>
         </div>
     );
-}
+};

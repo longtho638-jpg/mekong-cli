@@ -67,7 +67,7 @@ export function TrendChart({
             />
             <Tooltip
                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
-                formatter={(val: number) => [`${valuePrefix}${val}`, title]}
+                formatter={(val: number | string | Array<number | string> | undefined) => [`${valuePrefix}${val}`, title]}
             />
             <Area
                 type="monotone"

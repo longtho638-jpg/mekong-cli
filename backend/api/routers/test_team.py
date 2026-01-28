@@ -5,9 +5,11 @@ Tests team creation, member invitations, removals, and seat management.
 """
 
 import os
+from unittest.mock import AsyncMock, MagicMock, patch
+
 import pytest
 from fastapi.testclient import TestClient
-from unittest.mock import patch, MagicMock, AsyncMock
+
 
 # Define fixture to mock Redis for all tests in this module
 @pytest.fixture(scope="module", autouse=True)

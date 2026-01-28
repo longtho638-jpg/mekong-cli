@@ -16,6 +16,19 @@ interface PayPalSmartButtonProps {
   apiBaseUrl?: string; // Allow overriding API base
 }
 
+interface PayPalSubscriptionActions {
+  subscription: {
+    create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
+  };
+}
+
+interface PayPalApproveData {
+  subscriptionID?: string | null;
+  orderID?: string;
+  facilitatorAccessToken?: string;
+  [key: string]: unknown;
+}
+
 export default function PayPalSmartButton({
   amount = "0",
   currency = "USD",
@@ -66,12 +79,12 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (_data: Record<string, unknown>, actions: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const createSubscription = async (_data: Record<string, unknown>, actions: PayPalSubscriptionActions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
       onError?.(err);
-      return;
+      throw err;
     }
 
     try {
@@ -101,7 +114,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: Record<string, any>, _actions: unknown) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const onApprove = async (data: PayPalApproveData, _actions: unknown) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({

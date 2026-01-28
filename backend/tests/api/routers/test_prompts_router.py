@@ -1,13 +1,15 @@
-import pytest
-from unittest.mock import MagicMock, patch
-from fastapi.testclient import TestClient
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+
+import pytest
+from fastapi.testclient import TestClient
 
 from backend.api.main import app
-from backend.models.prompt import Prompt
 
 # Mock dependencies
-from backend.api.schemas.prompt import PromptCreate, PromptUpdate, PromptResponse
+from backend.api.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate
+from backend.models.prompt import Prompt
+
 
 @pytest.fixture
 def client():

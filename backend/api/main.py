@@ -42,10 +42,10 @@ from backend.api.routers import (
     binh_phap as binh_phap_router,
 )
 from backend.api.routers import (
-    chatbot as chatbot_router,  # Added
+    cdn as cdn_router,  # CDN Integration
 )
 from backend.api.routers import (
-    cdn as cdn_router,  # CDN Integration
+    chatbot as chatbot_router,  # Added
 )
 from backend.api.routers import (
     code as code_router,
@@ -95,10 +95,10 @@ from backend.api.routers import (
     ops as ops_router,  # Refactored
 )
 from backend.api.routers import (
-    push_subscriptions as push_subscriptions_router,
+    prompts as prompts_router,  # Added
 )
 from backend.api.routers import (
-    prompts as prompts_router, # Added
+    push_subscriptions as push_subscriptions_router,
 )
 from backend.api.routers import (
     rate_limits as rate_limits_router,

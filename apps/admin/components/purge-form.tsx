@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState } from 'react';
-import { MD3Card, MD3Typography, MD3Button, MD3TextField, MD3Dialog } from '../md3';
+import { MD3Card, MD3Typography, MD3Button, MD3TextField, MD3Dialog } from './md3';
+
+interface PurgePayload {
+    purge_all?: boolean;
+    urls?: string[];
+    tags?: string[];
+}
 
 export default function PurgeForm() {
   const [purgeType, setPurgeType] = useState<'all' | 'urls' | 'tags'>('all');
@@ -13,7 +19,7 @@ export default function PurgeForm() {
   const handlePurge = async () => {
     setLoading(true);
     try {
-      const payload: any = {};
+      const payload: PurgePayload = {};
       if (purgeType === 'all') {
         payload.purge_all = true;
       } else if (purgeType === 'urls') {
@@ -35,8 +41,9 @@ export default function PurgeForm() {
         const err = await res.json();
         setResultMsg(`Error: ${err.detail || 'Unknown error'}`);
       }
-    } catch (error: any) {
-      setResultMsg(`Error: ${error.message}`);
+    } catch (error: unknown) {
+      const err = error as Error;
+      setResultMsg(`Error: ${err.message}`);
     } finally {
       setLoading(false);
       setDialogOpen(true);
@@ -72,7 +79,7 @@ export default function PurgeForm() {
         <MD3TextField
             label={purgeType === 'urls' ? "URLs (one per line)" : "Tags (one per line)"}
             value={inputVal}
-            onChange={(e) => setInputVal(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setInputVal(e.target.value)}
             multiline
             rows={4}
             placeholder={purgeType === 'urls' ? "https://example.com/image.png" : "user-123"}

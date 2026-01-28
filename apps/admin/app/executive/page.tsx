@@ -42,7 +42,17 @@ ChartJS.register(
 
 // --- Components ---
 
-const MetricCard = ({ title, value, subtext, trend, trendValue, icon: Icon, alert }: any) => (
+interface MetricCardProps {
+  title: string;
+  value: string | number;
+  subtext?: string;
+  trend?: 'up' | 'down';
+  trendValue?: number;
+  icon: React.ElementType;
+  alert?: boolean;
+}
+
+const MetricCard = ({ title, value, subtext, trend, trendValue, icon: Icon, alert }: MetricCardProps) => (
   <MD3Card variant="elevated" className={`p-6 relative overflow-hidden ${alert ? 'border-l-4 border-red-500' : ''}`}>
     <div className="flex justify-between items-start mb-4">
       <div className={`p-3 rounded-xl ${alert ? 'bg-red-100 text-red-600' : 'bg-primary-50 text-primary-600'}`}>
@@ -61,7 +71,13 @@ const MetricCard = ({ title, value, subtext, trend, trendValue, icon: Icon, aler
   </MD3Card>
 );
 
-const AlertBanner = ({ alerts }: { alerts: any[] }) => {
+interface Alert {
+  severity: 'critical' | 'warning' | 'info';
+  category: string;
+  message: string;
+}
+
+const AlertBanner = ({ alerts }: { alerts: Alert[] }) => {
   if (!alerts || alerts.length === 0) return null;
 
   return (
@@ -81,6 +97,12 @@ const AlertBanner = ({ alerts }: { alerts: any[] }) => {
   );
 };
 
+interface RevenueTrendData {
+  snapshot_date: string;
+  mrr: number;
+  active_subscribers: number;
+}
+
 export default function ExecutiveDashboardPage() {
   const [reportDays, setReportDays] = useState(30);
 
@@ -96,7 +118,7 @@ export default function ExecutiveDashboardPage() {
     queryKey: ['revenue-trend', reportDays],
     queryFn: async () => {
       const res = await api.get(`/revenue/trend?days=${reportDays}`);
-      return res.data;
+      return res.data as RevenueTrendData[];
     }
   });
 
@@ -121,9 +143,9 @@ export default function ExecutiveDashboardPage() {
   }
 
   // Chart Data Preparation
-  const chartLabels = revenueTrend?.map((d: any) => new Date(d.snapshot_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) || [];
-  const mrrData = revenueTrend?.map((d: any) => d.mrr) || [];
-  const subscribersData = revenueTrend?.map((d: any) => d.active_subscribers) || [];
+  const chartLabels = revenueTrend?.map((d: RevenueTrendData) => new Date(d.snapshot_date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })) || [];
+  const mrrData = revenueTrend?.map((d: RevenueTrendData) => d.mrr) || [];
+  const subscribersData = revenueTrend?.map((d: RevenueTrendData) => d.active_subscribers) || [];
 
   const chartData = {
     labels: chartLabels,

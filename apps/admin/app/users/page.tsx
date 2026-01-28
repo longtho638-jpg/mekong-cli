@@ -6,6 +6,15 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Plus, Search, Filter, MoreVertical, Ban, Shield, Edit } from 'lucide-react';
 
+interface UserRow {
+  id: string;
+  name?: string;
+  email: string;
+  role?: string;
+  is_active: boolean;
+  created_at: string;
+}
+
 export default function UsersPage() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
@@ -38,7 +47,7 @@ export default function UsersPage() {
     {
         header: 'User',
         accessor: 'name',
-        render: (row: any) => (
+        render: (row: UserRow) => (
             <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
                     {row.name ? row.name.charAt(0).toUpperCase() : 'U'}
@@ -50,17 +59,17 @@ export default function UsersPage() {
             </div>
         )
     },
-    { header: 'Role', accessor: 'role', render: (row: any) => <MD3Chip label={row.role || 'user'} size="small" /> },
-    { header: 'Status', accessor: 'status', render: (row: any) => (
+    { header: 'Role', accessor: 'role', render: (row: UserRow) => <MD3Chip label={row.role || 'user'} size="small" /> },
+    { header: 'Status', accessor: 'status', render: (row: UserRow) => (
         <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${row.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
             {row.is_active ? 'Active' : 'Inactive'}
         </span>
     )},
-    { header: 'Joined', accessor: 'created_at', render: (row: any) => new Date(row.created_at).toLocaleDateString() },
+    { header: 'Joined', accessor: 'created_at', render: (row: UserRow) => new Date(row.created_at).toLocaleDateString() },
     {
         header: 'Actions',
         accessor: 'id',
-        render: (row: any) => (
+        render: (row: UserRow) => (
             <div className="flex gap-2">
                 <MD3Button variant="text" size="small" onClick={() => {}} startIcon={<Edit size={14} />}>Edit</MD3Button>
                 <MD3Button variant="text" size="small" color="error" onClick={() => handleBan(row.id)} startIcon={<Ban size={14} />}>Ban</MD3Button>

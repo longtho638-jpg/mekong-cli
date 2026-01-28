@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { LandingComponent } from '../../lib/builder/types';
 import { cn } from '../../lib/utils';
-import { HeroBlock, FeaturesBlock, CtaBlock, TextBlock, ImageBlock, ButtonBlock, FormBlock } from '../blocks';
+import { HeroBlock, FeaturesBlock, CtaBlock, TextBlock, ImageBlock, ButtonBlock, FormBlock, BlockProps } from '../blocks';
 
 interface SortableItemProps {
   component: LandingComponent;
@@ -11,7 +11,7 @@ interface SortableItemProps {
   onSelect: (id: string) => void;
 }
 
-const ComponentMap: Record<string, React.FC<any>> = {
+const ComponentMap: Record<string, React.FC<BlockProps>> = {
   hero: HeroBlock,
   features: FeaturesBlock,
   pricing: TextBlock, // Placeholder

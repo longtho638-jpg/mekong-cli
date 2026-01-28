@@ -11,7 +11,7 @@ export interface WebhookEvent {
   created_at: string
   processed_at?: string
   error_message?: string
-  payload: any
+  payload: Record<string, unknown>
 }
 
 export interface WebhookConfig {

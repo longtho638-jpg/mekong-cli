@@ -1,9 +1,10 @@
 """
 Metrics Collector models and global counters.
 """
-from prometheus_client import Counter, Gauge, Histogram, REGISTRY
+from prometheus_client import REGISTRY, Counter, Gauge, Histogram
 
 from backend.api.config.settings import settings
+
 
 def get_or_create_metric(metric_class, name, documentation, labels=None, **kwargs):
     """

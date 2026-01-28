@@ -7,13 +7,12 @@ from slowapi import Limiter
 from slowapi.util import get_remote_address
 
 from backend.api.config.settings import settings
+from backend.api.middleware.multitenant import get_current_tenant
 from backend.api.utils.endpoint_categorization import (
     categorize_endpoint,
     get_rate_limit_key,
     should_skip_rate_limit,
 )
-
-from backend.api.middleware.multitenant import get_current_tenant
 
 logger = logging.getLogger(__name__)
 

@@ -13,6 +13,13 @@ import {
 } from '@/components/md3';
 import { Trash2, Shield, Plus } from 'lucide-react';
 
+interface BlockedIPRow {
+    ip_address: string;
+    reason: string;
+    blocked_at: string;
+    expires_at: string | null;
+}
+
 export default function BlockedIPsPage() {
     const queryClient = useQueryClient();
     const [isBlockDialogOpen, setIsBlockDialogOpen] = useState(false);
@@ -65,7 +72,7 @@ export default function BlockedIPsPage() {
         {
             header: 'IP Address',
             accessor: 'ip_address',
-            render: (row: any) => <span className="font-mono font-bold">{row.ip_address}</span>
+            render: (row: BlockedIPRow) => <span className="font-mono font-bold">{row.ip_address}</span>
         },
         {
             header: 'Reason',
@@ -74,17 +81,17 @@ export default function BlockedIPsPage() {
         {
             header: 'Blocked At',
             accessor: 'blocked_at',
-            render: (row: any) => new Date(row.blocked_at).toLocaleString()
+            render: (row: BlockedIPRow) => new Date(row.blocked_at).toLocaleString()
         },
         {
             header: 'Expires At',
             accessor: 'expires_at',
-            render: (row: any) => row.expires_at ? new Date(row.expires_at).toLocaleString() : 'Permanent'
+            render: (row: BlockedIPRow) => row.expires_at ? new Date(row.expires_at).toLocaleString() : 'Permanent'
         },
         {
             header: 'Actions',
             accessor: 'actions',
-            render: (row: any) => (
+            render: (row: BlockedIPRow) => (
                 <MD3Button
                     variant="text"
                     color="error"

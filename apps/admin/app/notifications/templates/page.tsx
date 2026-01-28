@@ -38,7 +38,7 @@ export default function NotificationTemplatesPage() {
     });
 
     const createMutation = useMutation({
-        mutationFn: async (data: any) => {
+        mutationFn: async (data: Omit<Template, 'id' | 'updated_at'>) => {
             await api.post('/api/v1/notifications/templates/', data);
         },
         onSuccess: () => {
@@ -80,7 +80,7 @@ export default function NotificationTemplatesPage() {
             header: 'Type',
             accessor: 'type',
             render: (row: Template) => (
-                <MD3Chip label={row.type} size="small" variant={row.type === 'email' ? 'filled' : 'outlined'} />
+                <MD3Chip label={row.type} size="small" variant={row.type === 'email' ? 'input' : 'assist'} />
             )
         },
         {

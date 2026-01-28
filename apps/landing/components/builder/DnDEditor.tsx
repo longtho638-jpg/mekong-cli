@@ -20,7 +20,7 @@ import { PropertyPanel } from './PropertyPanel';
 import { builderReducer, initialState } from '../../lib/builder/reducer';
 import { COMPONENT_DEFINITIONS, ComponentType, LandingComponent } from '../../lib/builder/types';
 import { v4 as uuidv4 } from 'uuid';
-import { HeroBlock, FeaturesBlock, CtaBlock, TextBlock } from '../blocks';
+import { HeroBlock, FeaturesBlock, CtaBlock, TextBlock, BlockProps } from '../blocks';
 import { cn } from '../../lib/utils';
 import { Undo, Redo, Smartphone, Tablet, Monitor, Save, Eye } from 'lucide-react';
 
@@ -34,7 +34,7 @@ const dropAnimation: DropAnimation = {
   }),
 };
 
-const ComponentMap: Record<string, React.FC<any>> = {
+const ComponentMap: Record<string, React.FC<BlockProps>> = {
   hero: HeroBlock,
   features: FeaturesBlock,
   pricing: TextBlock, // Placeholder

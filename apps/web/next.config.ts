@@ -41,7 +41,6 @@ const nextConfig: NextConfig = {
   compress: true,
 
   // Build Optimization
-  swcMinify: true,
   poweredByHeader: false,
 
   // Output standalone for Docker/Container deployments

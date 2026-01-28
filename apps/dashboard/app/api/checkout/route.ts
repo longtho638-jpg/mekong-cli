@@ -29,6 +29,33 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+// PayPal types
+interface PayPalLink {
+  href: string;
+  rel: string;
+  method: string;
+}
+
+interface PayPalOrder {
+  id: string;
+  status: string;
+  links: PayPalLink[];
+}
+
+interface CreateOrderResponse {
+  id: string;
+  approveUrl: string | undefined;
+}
+
+interface CheckoutRequestBody {
+  amount: string;
+  currency?: string;
+  description?: string;
+  plan?: string;
+  customerEmail?: string;
+  tenantId?: string;
+}
+
 // Get PayPal access token
 async function getPayPalAccessToken(): Promise<string> {
   const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_CLIENT_SECRET}`).toString('base64')
@@ -57,7 +84,7 @@ async function createPayPalOrder(
   description: string,
   returnUrl: string,
   cancelUrl: string
-): Promise<{ id: string; approveUrl: string }> {
+): Promise<CreateOrderResponse> {
   const accessToken = await getPayPalAccessToken()
 
   const response = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
@@ -93,8 +120,8 @@ async function createPayPalOrder(
     throw new Error('Failed to create PayPal order')
   }
 
-  const order = await response.json()
-  const approveUrl = order.links.find((link: any) => link.rel === 'approve')?.href
+  const order = await response.json() as PayPalOrder
+  const approveUrl = order.links.find((link: PayPalLink) => link.rel === 'approve')?.href
 
   return {
     id: order.id,
@@ -105,7 +132,7 @@ async function createPayPalOrder(
 // POST handler
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const body = await req.json() as CheckoutRequestBody
     const { amount, currency = 'USD', description, plan, customerEmail, tenantId } = body
 
     // Validate required fields

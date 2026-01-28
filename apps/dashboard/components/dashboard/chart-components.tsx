@@ -23,7 +23,7 @@ import {
 export type ChartType = 'line' | 'bar' | 'pie' | 'area' | 'scatter';
 
 export interface ChartDataPoint {
-  [key: string]: any;
+  [key: string]: string | number;
 }
 
 export interface ChartProps {
@@ -49,12 +49,25 @@ const DEFAULT_COLORS = [
 
 // --- Helper Components ---
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface TooltipPayload {
+  name: string;
+  value: string | number;
+  color: string;
+  payload: ChartDataPoint;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[var(--md-sys-color-surface)] border border-[var(--md-sys-color-outline-variant)] p-3 rounded shadow-lg text-sm">
         <p className="font-semibold mb-1 text-[var(--md-sys-color-on-surface)]">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {payload.map((entry, index: number) => (
           <div key={index} className="flex items-center gap-2" style={{ color: entry.color }}>
             <span className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
             <span>{entry.name}: {entry.value}</span>

@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
 from sqlalchemy.sql import func
+
 from backend.db.base import Base
+
 
 class Prompt(Base):
     """

@@ -9,6 +9,7 @@ from backend.main import app
 from backend.services.queue_service import QueueService
 from core.infrastructure.database import Database
 
+
 @pytest.fixture
 def client():
     return TestClient(app)

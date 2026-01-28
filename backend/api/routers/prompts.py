@@ -1,11 +1,12 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from backend.api.deps import get_db
 from backend.api.auth.dependencies import get_current_active_superuser
+from backend.api.deps import get_db
+from backend.api.schemas.prompt import PromptCreate, PromptResponse, PromptUpdate
 from backend.services.llm.prompt_service import prompt_service
-from backend.api.schemas.prompt import PromptCreate, PromptUpdate, PromptResponse
 
 router = APIRouter(prefix="/prompts", tags=["AI/Prompts"])
 

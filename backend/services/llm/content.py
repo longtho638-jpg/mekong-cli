@@ -1,9 +1,10 @@
 from typing import Dict, Optional
+
 from sqlalchemy.orm import Session
 
-from backend.services.llm.service import LLMService
-from backend.services.llm.prompts import PromptTemplates
 from backend.services.llm.prompt_service import prompt_service
+from backend.services.llm.prompts import PromptTemplates
+from backend.services.llm.service import LLMService
 
 
 class ContentService:

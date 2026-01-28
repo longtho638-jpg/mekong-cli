@@ -32,6 +32,38 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+interface PayPalAmount {
+  value: string;
+  currency_code: string;
+}
+
+interface PayPalLink {
+  href: string;
+  rel: string;
+  method: string;
+}
+
+interface PayPalResource {
+  id: string;
+  status: string;
+  amount: PayPalAmount;
+  supplementary_data?: {
+    related_ids?: {
+      order_id?: string;
+    };
+  };
+  links?: PayPalLink[];
+}
+
+interface PayPalWebhookEvent {
+  id: string;
+  create_time: string;
+  resource_type: string;
+  event_type: string;
+  summary: string;
+  resource: PayPalResource;
+}
+
 // Verify PayPal webhook signature
 async function verifyWebhookSignature(
   headers: Headers,
@@ -80,7 +112,7 @@ async function verifyWebhookSignature(
 }
 
 // Handle PAYMENT.CAPTURE.COMPLETED event
-async function handlePaymentCaptured(event: any) {
+async function handlePaymentCaptured(event: PayPalWebhookEvent) {
   const resource = event.resource
   const orderId = resource.supplementary_data?.related_ids?.order_id
   const captureId = resource.id

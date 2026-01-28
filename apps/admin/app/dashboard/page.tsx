@@ -27,7 +27,15 @@ ChartJS.register(
   Legend
 );
 
-const MetricCard = ({ title, value, change, icon, trend }: any) => (
+interface MetricCardProps {
+  title: string;
+  value: string | number;
+  change: number;
+  icon: React.ReactNode;
+  trend: 'up' | 'down';
+}
+
+const MetricCard = ({ title, value, change, icon, trend }: MetricCardProps) => (
   <MD3Card variant="elevated" className="p-6">
     <div className="flex justify-between items-start mb-4">
       <div className={`p-3 rounded-xl ${trend === 'up' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>

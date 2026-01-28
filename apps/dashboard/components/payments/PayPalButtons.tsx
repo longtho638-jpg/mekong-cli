@@ -15,8 +15,8 @@ interface PayPalButtonsProps {
   amount: string;
   currency?: string;
   description?: string;
-  onSuccess?: (orderId: string, details: any) => void;
-  onError?: (error: any) => void;
+  onSuccess?: (orderId: string, details: unknown) => void;
+  onError?: (error: unknown) => void;
   onCancel?: () => void;
 }
 
@@ -125,7 +125,7 @@ export function PayPalCheckoutButtons({
   /**
    * Handle payment error
    */
-  const handleError = (error: any) => {
+  const handleError = (error: unknown) => {
     console.error('PayPal error:', error);
     if (onError) {
       onError(error);

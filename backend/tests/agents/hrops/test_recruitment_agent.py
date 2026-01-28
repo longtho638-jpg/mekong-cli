@@ -1,5 +1,7 @@
 import pytest
-from backend.agents.hrops.logic import RecruitmentAgent, JobStatus, CandidateStage
+
+from backend.agents.hrops.logic import CandidateStage, JobStatus, RecruitmentAgent
+
 
 class TestRecruitmentAgent:
     def test_initialization(self):

@@ -1,8 +1,8 @@
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
+import fastapi
 import httpx
 import starlette
-import fastapi
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 
 print(f"httpx version: {httpx.__version__}")
 print(f"starlette version: {starlette.__version__}")

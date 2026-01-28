@@ -12,6 +12,14 @@ import { AlertCircle, RefreshCw, Trash2, CheckCircle } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api'; // Assuming standard API client
 
+interface WebhookDLQRow {
+  id: string;
+  event_type: string;
+  error_message: string;
+  retry_count: number;
+  stored_at: string;
+}
+
 export default function DLQPage() {
   const queryClient = useQueryClient();
   const [selectedEntries, setSelectedEntries] = useState<string[]>([]);
@@ -62,7 +70,7 @@ export default function DLQPage() {
     {
       header: 'Error',
       accessor: 'error_message',
-      render: (row: any) => (
+      render: (row: WebhookDLQRow) => (
         <span className="text-red-500 text-sm truncate max-w-xs block" title={row.error_message}>
           {row.error_message}
         </span>
@@ -72,12 +80,12 @@ export default function DLQPage() {
     {
       header: 'Stored At',
       accessor: 'stored_at',
-      render: (row: any) => new Date(row.stored_at).toLocaleString()
+      render: (row: WebhookDLQRow) => new Date(row.stored_at).toLocaleString()
     },
     {
       header: 'Actions',
       accessor: 'actions',
-      render: (row: any) => (
+      render: (row: WebhookDLQRow) => (
         <div className="flex gap-2">
           <MD3Button
             variant="text"

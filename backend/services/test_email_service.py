@@ -4,8 +4,10 @@ Test script for email service
 Run this to verify email functionality works correctly
 """
 import asyncio
+
 import pytest
-from backend.services.email_service import email_service, EmailService
+
+from backend.services.email_service import EmailService, email_service
 
 
 @pytest.mark.asyncio

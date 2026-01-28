@@ -13,7 +13,7 @@ interface DLQEntry {
   id: string;
   webhook_config_id: string;
   event_type: string;
-  event_payload: any;
+  event_payload: Record<string, unknown>;
   error_message: string;
   retry_count: number;
   stored_at: string;

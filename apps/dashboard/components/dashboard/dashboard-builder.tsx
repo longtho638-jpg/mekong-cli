@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import GridLayout, { Layout } from 'react-grid-layout';
+import GridLayout from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { DashboardChart, ChartProps } from './chart-components';
 
-// @ts-ignore - React Grid Layout types mismatch
-const Grid = GridLayout as any;
 import { KPICard, KPIProps } from './kpi-card';
 import { GripVertical } from 'lucide-react';
 
+const Grid = GridLayout as unknown as React.ComponentType<any>;
+
 // --- Types ---
+
+// Define our own Layout item interface to ensure type safety and avoid library type conflicts
+export interface DashboardLayoutItem {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  minW?: number;
+  maxW?: number;
+  minH?: number;
+  maxH?: number;
+  static?: boolean;
+  isDraggable?: boolean;
+  isResizable?: boolean;
+}
 
 export type WidgetType = 'chart' | 'kpi' | 'text';
 
@@ -40,12 +56,12 @@ export interface DashboardConfig {
   id: string;
   name: string;
   widgets: DashboardWidget[];
-  layout: Layout[];
+  layout: DashboardLayoutItem[];
 }
 
 interface DashboardBuilderProps {
   config: DashboardConfig;
-  onLayoutChange?: (layout: Layout[]) => void;
+  onLayoutChange?: (layout: DashboardLayoutItem[]) => void;
   isEditable?: boolean;
 }
 
@@ -78,7 +94,7 @@ export function DashboardBuilder({
   onLayoutChange,
   isEditable = false
 }: DashboardBuilderProps) {
-  const [layout, setLayout] = useState<any[]>(config.layout);
+  const [layout, setLayout] = useState<DashboardLayoutItem[]>(config.layout);
   const [width, setWidth] = useState(1200);
 
   // Responsive width handling
@@ -97,7 +113,7 @@ export function DashboardBuilder({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const handleLayoutChange = (newLayout: any) => {
+  const handleLayoutChange = (newLayout: DashboardLayoutItem[]) => {
     setLayout(newLayout);
     if (onLayoutChange) {
       onLayoutChange(newLayout);
@@ -112,11 +128,9 @@ export function DashboardBuilder({
         cols={12}
         rowHeight={60}
         width={width}
-        // @ts-ignore - React Grid Layout types mismatch
         isDraggable={isEditable}
-        // @ts-ignore - React Grid Layout types mismatch
         isResizable={isEditable}
-        onLayoutChange={handleLayoutChange}
+        onLayoutChange={(l: DashboardLayoutItem[]) => handleLayoutChange(l)}
         margin={[16, 16]}
         draggableHandle=".drag-handle"
       >

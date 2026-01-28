@@ -4,7 +4,7 @@ Admin Ops Report Models.
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, Any
+from typing import Any, Dict, Optional
 
 
 class ReportType(Enum):

@@ -1,5 +1,7 @@
 import pytest
-from backend.agents.hrops.employee_agent import EmployeeAgent, Department, EmployeeStatus
+
+from backend.agents.hrops.employee_agent import Department, EmployeeAgent, EmployeeStatus
+
 
 class TestEmployeeAgent:
     def test_initialization(self):

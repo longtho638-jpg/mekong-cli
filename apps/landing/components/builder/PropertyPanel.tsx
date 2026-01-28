@@ -1,10 +1,10 @@
 import React from 'react';
-import { COMPONENT_DEFINITIONS, LandingComponent } from '../../lib/builder/types';
+import { COMPONENT_DEFINITIONS, LandingComponent, ComponentPropValue } from '../../lib/builder/types';
 import { cn } from '../../lib/utils';
 
 interface PropertyPanelProps {
   selectedComponent: LandingComponent | null;
-  onUpdate: (id: string, props: Record<string, any>) => void;
+  onUpdate: (id: string, props: Record<string, ComponentPropValue>) => void;
   onDelete: (id: string) => void;
 }
 
@@ -19,7 +19,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
 
   const def = COMPONENT_DEFINITIONS[selectedComponent.type];
 
-  const handleChange = (name: string, value: any) => {
+  const handleChange = (name: string, value: ComponentPropValue) => {
     onUpdate(selectedComponent.id, { [name]: value });
   };
 
@@ -46,7 +46,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
             {prop.type === 'text' && (
               <input
                 type="text"
-                value={selectedComponent.props[prop.name] || ''}
+                value={(selectedComponent.props[prop.name] as string) || ''}
                 onChange={(e) => handleChange(prop.name, e.target.value)}
                 className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
@@ -55,7 +55,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
             {prop.type === 'number' && (
               <input
                 type="number"
-                value={selectedComponent.props[prop.name] || 0}
+                value={(selectedComponent.props[prop.name] as number) || 0}
                 onChange={(e) => handleChange(prop.name, Number(e.target.value))}
                 className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
@@ -63,7 +63,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
 
             {prop.type === 'select' && (
               <select
-                value={selectedComponent.props[prop.name] || ''}
+                value={(selectedComponent.props[prop.name] as string) || ''}
                 onChange={(e) => handleChange(prop.name, e.target.value)}
                 className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white"
               >
@@ -79,13 +79,13 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
               <div className="flex gap-2 items-center">
                 <input
                   type="color"
-                  value={selectedComponent.props[prop.name] || '#000000'}
+                  value={(selectedComponent.props[prop.name] as string) || '#000000'}
                   onChange={(e) => handleChange(prop.name, e.target.value)}
                   className="h-8 w-8 rounded cursor-pointer border-0 p-0"
                 />
                 <input
                   type="text"
-                  value={selectedComponent.props[prop.name] || ''}
+                  value={(selectedComponent.props[prop.name] as string) || ''}
                   onChange={(e) => handleChange(prop.name, e.target.value)}
                   className="flex-1 px-3 py-1 border rounded-md text-sm font-mono"
                 />
@@ -96,7 +96,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
                <div className="space-y-2">
                  <input
                     type="text"
-                    value={selectedComponent.props[prop.name] || ''}
+                    value={(selectedComponent.props[prop.name] as string) || ''}
                     onChange={(e) => handleChange(prop.name, e.target.value)}
                     className="w-full px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                     placeholder="https://..."
@@ -104,7 +104,7 @@ export const PropertyPanel: React.FC<PropertyPanelProps> = ({ selectedComponent,
                  {selectedComponent.props[prop.name] && (
                    <div className="relative aspect-video w-full rounded-md overflow-hidden bg-gray-100 border">
                      <img
-                       src={selectedComponent.props[prop.name]}
+                       src={selectedComponent.props[prop.name] as string}
                        alt="Preview"
                        className="object-cover w-full h-full"
                      />

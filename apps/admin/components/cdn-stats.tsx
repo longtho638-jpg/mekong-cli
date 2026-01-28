@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { MD3Card, MD3Typography, MD3Chip } from '../md3';
+import { MD3Card, MD3Typography, MD3Chip } from './md3';
 
 interface CDNConfig {
   provider: string;

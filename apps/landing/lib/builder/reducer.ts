@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { BuilderAction, BuilderState, COMPONENT_DEFINITIONS, LandingComponent } from './types';
+import { BuilderAction, BuilderState, COMPONENT_DEFINITIONS, LandingComponent, ComponentPropValue } from './types';
 
 export const initialState: BuilderState = {
   components: [],
@@ -43,7 +43,7 @@ export function builderReducer(state: BuilderState, action: BuilderAction): Buil
         props: def.properties.reduce((acc, prop) => {
           acc[prop.name] = prop.defaultValue;
           return acc;
-        }, {} as Record<string, any>),
+        }, {} as Record<string, ComponentPropValue>),
       };
 
       const newComponents = [...state.components];

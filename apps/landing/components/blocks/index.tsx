@@ -1,13 +1,15 @@
 import React from 'react';
+import { DraggableAttributes } from '@dnd-kit/core';
+import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { cn } from '../../lib/utils';
-import { LandingComponent } from '../../lib/builder/types';
+import { LandingComponent, FormField } from '../../lib/builder/types';
 
-interface BlockProps {
+export interface BlockProps {
   component: LandingComponent;
   isSelected?: boolean;
   onClick?: () => void;
-  attributes?: any;
-  listeners?: any;
+  attributes?: DraggableAttributes;
+  listeners?: SyntheticListenerMap;
 }
 
 // --- Hero Block ---
@@ -21,7 +23,7 @@ export const HeroBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
         alignment === 'center' ? 'items-center text-center' : 'items-start text-left',
         isSelected ? 'ring-2 ring-primary ring-offset-2' : 'hover:ring-1 hover:ring-primary/50'
       )}
-      style={{ backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined }}
+      style={{ backgroundImage: backgroundImage ? `url(${backgroundImage as string})` : undefined }}
       onClick={onClick}
       {...attributes}
       {...listeners}
@@ -30,17 +32,17 @@ export const HeroBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
       <div className="absolute inset-0 bg-black/10 -z-10" /> {/* Overlay */}
 
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-4 drop-shadow-sm">
-        {title}
+        {title as string}
       </h1>
       <p className="text-xl text-gray-700 mb-8 max-w-2xl drop-shadow-sm">
-        {subtitle}
+        {subtitle as string}
       </p>
       <a
-        href={ctaLink}
+        href={ctaLink as string}
         className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2"
         onClick={(e) => e.preventDefault()} // Prevent navigation in editor
       >
-        {ctaText}
+        {ctaText as string}
       </a>
     </div>
   );
@@ -62,7 +64,7 @@ export const FeaturesBlock: React.FC<BlockProps> = ({ component, isSelected, onC
       {...listeners}
     >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">{title}</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">{title as string}</h2>
         <div className={`grid gap-8 grid-cols-1 md:grid-cols-${cols}`}>
           {Array.from({ length: cols }).map((_, i) => (
             <div key={i} className="p-6 border rounded-lg shadow-sm">
@@ -92,15 +94,15 @@ export const CtaBlock: React.FC<BlockProps> = ({ component, isSelected, onClick,
         "py-16 px-6 text-center",
         isSelected ? 'ring-2 ring-primary ring-offset-2' : 'hover:ring-1 hover:ring-primary/50'
       )}
-      style={{ backgroundColor }}
+      style={{ backgroundColor: backgroundColor as string }}
       onClick={onClick}
       {...attributes}
       {...listeners}
     >
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">{title}</h2>
+        <h2 className="text-3xl font-bold mb-6">{title as string}</h2>
         <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2">
-          {buttonText}
+          {buttonText as string}
         </button>
       </div>
     </div>
@@ -122,7 +124,7 @@ export const PricingBlock: React.FC<BlockProps> = ({ component, isSelected, onCl
       {...listeners}
     >
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">{title}</h2>
+        <h2 className="text-3xl font-bold mb-12">{title as string}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
            {/* Placeholder pricing cards */}
            {[1, 2, 3].map((i) => (
@@ -160,7 +162,7 @@ export const TestimonialsBlock: React.FC<BlockProps> = ({ component, isSelected,
       {...listeners}
     >
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">{title}</h2>
+        <h2 className="text-3xl font-bold mb-12">{title as string}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[1, 2].map((i) => (
             <div key={i} className="p-6 bg-gray-50 rounded-lg">
@@ -202,7 +204,7 @@ export const TextBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
       {...listeners}
     >
       <div className={cn("prose max-w-none text-gray-700", sizeClasses[fontSize as keyof typeof sizeClasses] || 'text-base')}>
-        {content}
+        {content as string}
       </div>
     </div>
   );
@@ -223,8 +225,8 @@ export const ImageBlock: React.FC<BlockProps> = ({ component, isSelected, onClic
       {...listeners}
     >
       <img
-        src={src}
-        alt={alt}
+        src={src as string}
+        alt={alt as string}
         className="max-w-full h-auto rounded-lg shadow-sm"
       />
     </div>
@@ -252,14 +254,14 @@ export const ButtonBlock: React.FC<BlockProps> = ({ component, isSelected, onCli
       {...listeners}
     >
       <a
-        href={link}
+        href={link as string}
         className={cn(
           "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2",
           variantStyles[variant as keyof typeof variantStyles] || variantStyles.primary
         )}
         onClick={(e) => e.preventDefault()}
       >
-        {text}
+        {text as string}
       </a>
     </div>
   );
@@ -280,9 +282,9 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
       {...listeners}
     >
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-sm">
-        <h3 className="text-2xl font-bold text-center mb-6">{title}</h3>
+        <h3 className="text-2xl font-bold text-center mb-6">{title as string}</h3>
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          {Array.isArray(fields) && fields.map((field: any, idx: number) => (
+          {Array.isArray(fields) && (fields as FormField[]).map((field, idx) => (
             <div key={idx} className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 {field.label} {field.required && <span className="text-red-500">*</span>}
@@ -295,7 +297,7 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
               />
             </div>
           ))}
-          {(!fields || fields.length === 0) && (
+          {(!fields || (fields as unknown[]).length === 0) && (
              <div className="text-sm text-gray-500 italic text-center p-4 border border-dashed rounded">
                 No fields configured. Edit properties to add fields.
              </div>
@@ -305,7 +307,7 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md text-sm font-medium transition-colors"
             disabled // Disabled in editor
           >
-            {submitText}
+            {submitText as string}
           </button>
         </form>
       </div>

@@ -7,18 +7,20 @@ export enum AnalyticsEventType {
 
 export type ComponentType = 'hero' | 'features' | 'pricing' | 'cta' | 'testimonials' | 'text' | 'image' | 'button' | 'form';
 
+export type ComponentPropValue = string | number | boolean | Record<string, unknown> | unknown[] | null | undefined;
+
 export interface ComponentProperty {
   name: string;
   type: 'text' | 'color' | 'number' | 'select' | 'boolean' | 'image' | 'json';
   label: string;
   options?: { label: string; value: string }[];
-  defaultValue?: any;
+  defaultValue?: ComponentPropValue;
 }
 
 export interface LandingComponent {
   id: string;
   type: ComponentType;
-  props: Record<string, any>;
+  props: Record<string, ComponentPropValue>;
   children?: LandingComponent[]; // For nested structures if needed, though we might keep it flat for v1
 }
 
@@ -41,7 +43,7 @@ export interface BuilderState {
 export type BuilderAction =
   | { type: 'ADD_COMPONENT'; payload: { type: ComponentType; index?: number } }
   | { type: 'REMOVE_COMPONENT'; payload: { id: string } }
-  | { type: 'UPDATE_COMPONENT'; payload: { id: string; props: Record<string, any> } }
+  | { type: 'UPDATE_COMPONENT'; payload: { id: string; props: Record<string, ComponentPropValue> } }
   | { type: 'SELECT_COMPONENT'; payload: { id: string | null } }
   | { type: 'MOVE_COMPONENT'; payload: { activeId: string; overId: string } }
   | { type: 'SET_DEVICE'; payload: { device: 'desktop' | 'tablet' | 'mobile' } }
@@ -49,6 +51,13 @@ export type BuilderAction =
   | { type: 'UNDO' }
   | { type: 'REDO' }
   | { type: 'LOAD_TEMPLATE'; payload: { components: LandingComponent[] } };
+
+export interface FormField {
+  label: string;
+  required?: boolean;
+  type?: string;
+  placeholder?: string;
+}
 
 export const COMPONENT_DEFINITIONS: Record<ComponentType, { label: string; icon: string; properties: ComponentProperty[] }> = {
   hero: {

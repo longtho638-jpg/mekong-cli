@@ -13,6 +13,14 @@ import {
 import { ShieldAlert, Activity, UserX, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
+interface RateLimitRow {
+    ip_address: string;
+    violation_type: string;
+    endpoint: string;
+    user_id?: string | null;
+    timestamp: string;
+}
+
 export default function RateLimitsPage() {
     // Fetch Recent Violations
     const { data: violationsData, isLoading: isLoadingViolations } = useQuery({
@@ -36,12 +44,12 @@ export default function RateLimitsPage() {
         {
             header: 'IP Address',
             accessor: 'ip_address',
-            render: (row: any) => <span className="font-mono">{row.ip_address}</span>
+            render: (row: RateLimitRow) => <span className="font-mono">{row.ip_address}</span>
         },
         {
             header: 'Type',
             accessor: 'violation_type',
-            render: (row: any) => (
+            render: (row: RateLimitRow) => (
                 <MD3Chip
                     label={row.violation_type}
                     variant="assist"
@@ -52,17 +60,17 @@ export default function RateLimitsPage() {
         {
             header: 'Endpoint',
             accessor: 'endpoint',
-            render: (row: any) => <span className="text-gray-600 text-sm">{row.endpoint}</span>
+            render: (row: RateLimitRow) => <span className="text-gray-600 text-sm">{row.endpoint}</span>
         },
         {
             header: 'User ID',
             accessor: 'user_id',
-            render: (row: any) => row.user_id ? <span className="text-xs text-gray-500">{row.user_id}</span> : '-'
+            render: (row: RateLimitRow) => row.user_id ? <span className="text-xs text-gray-500">{row.user_id}</span> : '-'
         },
         {
             header: 'Time',
             accessor: 'timestamp',
-            render: (row: any) => new Date(row.timestamp).toLocaleString()
+            render: (row: RateLimitRow) => new Date(row.timestamp).toLocaleString()
         }
     ];
 

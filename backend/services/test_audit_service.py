@@ -1,12 +1,13 @@
 import json
 import os
 import uuid
-import pytest
 from datetime import datetime, timezone
-from sqlalchemy import create_engine, text, Column, String, BigInteger, Integer
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.dialects.postgresql import UUID, INET, JSONB
+
+import pytest
+from sqlalchemy import BigInteger, Column, Integer, String, create_engine, text
+from sqlalchemy.dialects.postgresql import INET, JSONB, UUID
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.orm import sessionmaker
 
 from backend.db.base import Base
 from backend.models.audit_log import AuditLog
@@ -16,6 +17,7 @@ from backend.services.audit_service import (
     AuditSeverity,
     get_audit_service,
 )
+
 
 # Fix for SQLite not supporting PostgreSQL specific types
 @compiles(UUID, "sqlite")

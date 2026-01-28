@@ -1,6 +1,9 @@
-import pytest
 from unittest.mock import AsyncMock, patch
+
+import pytest
+
 from backend.services.content_generator import ContentGenerator
+
 
 @pytest.fixture
 def mock_content_service():

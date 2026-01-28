@@ -5,12 +5,12 @@ import { Search, X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 // Simple debounce implementation (KISS - avoid lodash dependency)
-function debounce<T extends (...args: any[]) => any>(func: T, wait: number): T {
+function debounce<T extends (...args: Parameters<T>) => ReturnType<T>>(func: T, wait: number): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null
-  return ((...args: Parameters<T>) => {
+  return (...args: Parameters<T>) => {
     if (timeout) clearTimeout(timeout)
     timeout = setTimeout(() => func(...args), wait)
-  }) as T
+  }
 }
 
 interface AutocompleteResult {

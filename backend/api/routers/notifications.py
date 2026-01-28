@@ -7,7 +7,11 @@ from sqlalchemy.orm import Session
 
 from backend.api.deps import get_current_user, get_db
 from backend.models.user import User
-from backend.services.notification_service import notification_service, NotificationService, NotificationType
+from backend.services.notification_service import (
+    NotificationService,
+    NotificationType,
+    notification_service,
+)
 
 router = APIRouter(prefix="/api/v1/notifications", tags=["Notifications"])
 

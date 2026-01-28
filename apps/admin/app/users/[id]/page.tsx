@@ -7,6 +7,13 @@ import { api } from '@/lib/api';
 import { ArrowLeft, Mail, Calendar, Shield, Ban, CheckCircle, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
+interface UserActivityRow {
+  id: number;
+  action: string;
+  ip: string;
+  date: string;
+}
+
 export default function UserDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
   const userId = params.id;
@@ -35,9 +42,9 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
   if (!user) return <div className="p-8 text-center">User not found</div>;
 
   const activityColumns = [
-      { header: 'Action', accessor: 'action', render: (row: any) => <span className="font-medium capitalize">{row.action.replace('_', ' ')}</span> },
+      { header: 'Action', accessor: 'action', render: (row: UserActivityRow) => <span className="font-medium capitalize">{row.action.replace('_', ' ')}</span> },
       { header: 'IP Address', accessor: 'ip' },
-      { header: 'Date', accessor: 'date', render: (row: any) => new Date(row.date).toLocaleString() }
+      { header: 'Date', accessor: 'date', render: (row: UserActivityRow) => new Date(row.date).toLocaleString() }
   ];
 
   return (

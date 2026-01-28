@@ -1,17 +1,17 @@
 export type WebSocketMessage = {
   type: 'update' | 'error' | 'connected';
-  payload: any;
+  payload: unknown;
 };
 
 export type DashboardSubscription = {
   metric: string;
-  callback: (data: any) => void;
+  callback: (data: unknown) => void;
 };
 
 export class DashboardDataService {
   private ws: WebSocket | null = null;
   private url: string;
-  private subscriptions: Map<string, ((data: any) => void)[]> = new Map();
+  private subscriptions: Map<string, ((data: unknown) => void)[]> = new Map();
   private reconnectInterval: number = 3000;
   private maxReconnectAttempts: number = 5;
   private reconnectAttempts: number = 0;
@@ -61,7 +61,7 @@ export class DashboardDataService {
     }
   }
 
-  public subscribe(metric: string, callback: (data: any) => void) {
+  public subscribe(metric: string, callback: (data: unknown) => void) {
     if (!this.subscriptions.has(metric)) {
       this.subscriptions.set(metric, []);
       // Send subscribe message if connected
@@ -99,10 +99,13 @@ export class DashboardDataService {
 
   private handleMessage(message: WebSocketMessage) {
     if (message.type === 'update') {
-      const { metric, value } = message.payload;
-      const callbacks = this.subscriptions.get(metric);
-      if (callbacks) {
-        callbacks.forEach(cb => cb(value));
+      const payload = message.payload as { metric: string; value: unknown };
+      if (payload && typeof payload === 'object' && 'metric' in payload) {
+        const { metric, value } = payload;
+        const callbacks = this.subscriptions.get(metric);
+        if (callbacks) {
+          callbacks.forEach(cb => cb(value));
+        }
       }
     }
   }

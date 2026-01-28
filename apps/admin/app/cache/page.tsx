@@ -7,7 +7,15 @@ import { api } from '@/lib/api';
 import { Database, Activity, Trash2, RefreshCw, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
-const StatCard = ({ title, value, subtext, icon, color = 'blue' }: any) => (
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  subtext?: string;
+  icon: React.ReactNode;
+  color?: string;
+}
+
+const StatCard = ({ title, value, subtext, icon, color = 'blue' }: StatCardProps) => (
   <MD3Card variant="elevated" className="p-6">
     <div className="flex justify-between items-start mb-4">
       <div className={`p-3 rounded-xl bg-${color}-100 text-${color}-700`}>
@@ -109,10 +117,10 @@ export default function CacheDashboard() {
         <MD3Card variant="elevated" className="p-6">
           <MD3Typography variant="title-large" className="mb-4">Operation Breakdown</MD3Typography>
           <div className="space-y-4">
-            {stats?.ops_breakdown && Object.entries(stats.ops_breakdown).map(([op, count]: [string, any]) => (
+            {stats?.ops_breakdown && Object.entries(stats.ops_breakdown).map(([op, count]) => (
               <div key={op} className="flex justify-between items-center border-b pb-2">
                 <span className="capitalize text-gray-700 font-medium">{op}</span>
-                <span className="text-gray-900">{count.toLocaleString()}</span>
+                <span className="text-gray-900">{(count as number).toLocaleString()}</span>
               </div>
             ))}
           </div>

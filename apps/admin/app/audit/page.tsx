@@ -6,6 +6,15 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Shield, Clock, User, FileText } from 'lucide-react';
 
+interface AuditLogRow {
+  action: string;
+  resource_type: string;
+  resource_id: string;
+  user_id: string;
+  ip_address: string;
+  timestamp: string;
+}
+
 export default function AuditPage() {
   const { data: logs, isLoading } = useQuery({
     queryKey: ['admin-audit'],
@@ -19,14 +28,14 @@ export default function AuditPage() {
     {
         header: 'Action',
         accessor: 'action',
-        render: (row: any) => (
+        render: (row: AuditLogRow) => (
             <span className="font-medium text-gray-900">{row.action}</span>
         )
     },
     {
         header: 'Resource',
         accessor: 'resource_type',
-        render: (row: any) => (
+        render: (row: AuditLogRow) => (
             <div className="flex items-center gap-1 text-sm">
                 <span className="px-2 py-0.5 bg-gray-100 rounded text-gray-600 font-mono text-xs">{row.resource_type}</span>
                 <span className="text-gray-400">/</span>
@@ -34,9 +43,9 @@ export default function AuditPage() {
             </div>
         )
     },
-    { header: 'User', accessor: 'user_id', render: (row: any) => <span className="text-sm text-gray-600">{row.user_id}</span> },
+    { header: 'User', accessor: 'user_id', render: (row: AuditLogRow) => <span className="text-sm text-gray-600">{row.user_id}</span> },
     { header: 'IP Address', accessor: 'ip_address' },
-    { header: 'Time', accessor: 'timestamp', render: (row: any) => new Date(row.timestamp).toLocaleString() },
+    { header: 'Time', accessor: 'timestamp', render: (row: AuditLogRow) => new Date(row.timestamp).toLocaleString() },
   ];
 
   return (

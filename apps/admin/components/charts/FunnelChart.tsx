@@ -42,8 +42,8 @@ export function FunnelChart({ data, title = "Conversion Funnel", className }: Fu
             <XAxis type="number" />
             <YAxis dataKey="step" type="category" width={100} />
             <Tooltip
-              formatter={(value: number, name: string, props: any) => {
-                if (name === 'conversion_rate') return [`${value.toFixed(1)}%`, 'Conversion'];
+              formatter={(value: number | string | Array<number | string> | undefined, name: string | number | undefined, props: unknown) => {
+                if (typeof value === 'number' && name === 'conversion_rate') return [`${value.toFixed(1)}%`, 'Conversion'];
                 return [value, 'Users'];
               }}
               contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}

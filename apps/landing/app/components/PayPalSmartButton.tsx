@@ -3,6 +3,19 @@
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import { useState } from "react";
 
+// Types for PayPal SDK actions and data
+interface PayPalCreateSubscriptionActions {
+  subscription: {
+    create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
+  };
+}
+
+interface PayPalOnApproveData {
+  orderID: string;
+  subscriptionID?: string | null;
+  facilitatorAccessToken?: string;
+}
+
 interface PayPalSmartButtonProps {
   amount?: string;
   currency?: string;
@@ -66,13 +79,12 @@ export default function PayPalSmartButton({
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const createSubscription = async (_data: unknown, actions: any) => {
+  const createSubscription = async (_data: unknown, actions: PayPalCreateSubscriptionActions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
       onError?.(err);
-      return;
+      throw err;
     }
 
     // For subscriptions, we can either call backend to setup (preferred for masking)
@@ -108,8 +120,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const onApprove = async (data: any) => {
+  const onApprove = async (data: PayPalOnApproveData) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
