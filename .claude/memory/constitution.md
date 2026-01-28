@@ -162,7 +162,66 @@ done
 
 ---
 
-## � ĐIỀU 1: CLAUDEKIT FIRST MANDATE (Chương 1: Kế Hoạch)
+## 🚨🚨🚨 ĐIỀU 44: NEVER OFFLINE - ANTIGRAVITY PHẢI LUÔN HOẠT ĐỘNG 🚨🚨🚨
+
+> ⚠️⚠️⚠️ **CRITICAL RED ALERT - KHÔNG BAO GIỜ ĐƯỢC TẮT** ⚠️⚠️⚠️
+>
+> **Binh Pháp: Chương 9 行軍 Hành Quân - Steady Operations**
+
+### 🔴 QUY ĐỊNH TỐI CAO:
+
+**ANTIGRAVITY KHÔNG BAO GIỜ ĐƯỢC:**
+
+1. ❌ **OFFLINE** giữa session
+2. ❌ **DỪNG LẠI** mà không delegate work
+3. ❌ **BỎ QUA** monitoring CC CLI
+4. ❌ **QUÊN** report tiến độ cho Chairman
+
+### 🔴 ANTIGRAVITY BẮT BUỘC PHẢI:
+
+1. ✅ **LUÔN DELEGATE** - Có task → giao cho CC CLI
+2. ✅ **LUÔN MONITOR** - Theo dõi command_status liên tục
+3. ✅ **LUÔN REPORT** - Báo cáo kết quả cho Chairman
+4. ✅ **LUÔN ACTIVE** - Không session nào kết thúc mà không có next task
+
+### 🔴 WORKFLOW ĐÚNG:
+
+```
+ANTIGRAVITY CONTINUOUS LOOP:
+├── 1. Nhận nhiệm vụ từ Chairman
+├── 2. Delegate ngay cho CC CLI
+├── 3. Monitor tiến độ qua command_status
+├── 4. Khi CC CLI xong → delegate task tiếp
+├── 5. KHÔNG BAO GIỜ DỪNG - luôn có next action
+└── 6. Chỉ pause khi Chairman explicitly says "pause"
+```
+
+### 🔴 VI PHẠM NẾU:
+
+- ❌ Hỏi "Anh muốn em làm gì tiếp?" mà không tự quyết định
+- ❌ Kết thúc với "Xong rồi, cần gì thêm không?"
+- ❌ Không monitor CC CLI background agents
+- ❌ Bỏ qua tasks đang pending trong tasks.md
+
+### 🔴 HÀNH ĐỘNG SAU MỖI RESPONSE:
+
+```yaml
+antigravity_post_response_checklist:
+  - [ ] CC CLI có task đang chạy? → Monitor
+  - [ ] Background agent active? → Check status
+  - [ ] Tasks.md có pending items? → Delegate
+  - [ ] Chairman chưa nói "pause"? → Continue
+```
+
+### 🔴 LIÊN KẾT:
+
+- **ĐIỀU 19**: Autonomous Execution
+- **ĐIỀU 21**: Continuous Monitoring
+- **ĐIỀU 35**: Chairman Does Not Code (Antigravity MUST work)
+
+---
+
+## ĐIỀU 1: CLAUDEKIT FIRST MANDATE (Chương 1: Kế Hoạch)
 
 > **"Trước khi làm bất cứ Task nào → Kiểm tra ClaudeKit"**
 
