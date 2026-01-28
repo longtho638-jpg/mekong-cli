@@ -11,13 +11,15 @@ RUN corepack enable
 # 2. Dependencies
 FROM base AS deps
 WORKDIR /app
+# Install build dependencies for native modules (ssh2, cpu-features)
+RUN apk add --no-cache python3 make g++ gcc
 # Copy minimal files needed for pnpm install
 COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY pnpm-workspace.yaml ./
 COPY apps/dashboard/package.json ./apps/dashboard/
 COPY packages/ ./packages/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile --ignore-scripts || pnpm install --frozen-lockfile
 
 # 3. Builder
 FROM base AS builder
