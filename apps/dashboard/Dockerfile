@@ -13,21 +13,22 @@ FROM base AS deps
 WORKDIR /app
 # Install build dependencies for native modules (ssh2, cpu-features)
 RUN apk add --no-cache python3 make g++ gcc
-# Copy minimal files needed for pnpm install
+# Copy all files needed for pnpm install
 COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY pnpm-workspace.yaml ./
 COPY apps/dashboard/package.json ./apps/dashboard/
 COPY packages/ ./packages/
+# Install all dependencies
 RUN pnpm install --frozen-lockfile --ignore-scripts || pnpm install --frozen-lockfile
 
 # 3. Builder
 FROM base AS builder
 WORKDIR /app
-# Copy all node_modules including hoisted packages
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/ ./packages/
-COPY . .
+# Copy entire deps workspace (with node_modules)
+COPY --from=deps /app ./
+# Copy source code on top (overlay, preserving node_modules)
+COPY apps/dashboard/ ./apps/dashboard/
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter mekong-dashboard build
