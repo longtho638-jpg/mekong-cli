@@ -152,7 +152,7 @@ export default function RateLimitsPage() {
                     <div className="text-center py-8 text-gray-500">Loading violations...</div>
                 ) : (
                     <MD3DataTable<RateLimitRow>
-                        columns={columns as any}
+                        columns={columns}
                         data={violationsData || []}
                     />
                 )}
