@@ -15,8 +15,8 @@ from backend.services.llm.service import LLMService
 def mock_gemini_provider():
     with patch("backend.services.llm.service.GeminiProvider") as mock:
         instance = mock.return_value
-        instance.generate_text = AsyncMock(return_value="Gemini response")
-        instance.chat = AsyncMock(return_value="Gemini chat response")
+        instance.generate_text = AsyncMock(return_value={"content": "Gemini response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
+        instance.chat = AsyncMock(return_value={"content": "Gemini chat response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
 
         # Mock streaming response
         async def mock_stream(*args, **kwargs):
@@ -30,7 +30,7 @@ def mock_gemini_provider():
 def mock_openai_provider():
     with patch("backend.services.llm.service.OpenAIProvider") as mock:
         instance = mock.return_value
-        instance.generate_text = AsyncMock(return_value="OpenAI response")
+        instance.generate_text = AsyncMock(return_value={"content": "OpenAI response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
         yield instance
 
 @pytest.mark.asyncio
@@ -67,12 +67,17 @@ async def test_llm_service_gemini_stream(mock_gemini_provider):
 
 @pytest.mark.asyncio
 async def test_content_service_blog():
-    with patch("backend.services.llm.content.LLMService") as MockLLMService:
+    with patch("backend.services.llm.content.LLMService") as MockLLMService, \
+         patch("backend.services.llm.content.prompt_service") as mock_prompt_service:
         mock_llm = MockLLMService.return_value
         mock_llm.generate_text = AsyncMock(return_value="Generated Blog Post")
 
+        # Simulate no prompt in DB to use default template
+        mock_prompt_service.get_prompt_by_slug.return_value = None
+
         service = ContentService()
-        result = await service.generate_blog_post(topic="AI", length="short")
+        mock_db = MagicMock()
+        result = await service.generate_blog_post(db=mock_db, topic="AI", length="short")
 
         assert result == "Generated Blog Post"
         mock_llm.generate_text.assert_called_once()
@@ -82,12 +87,17 @@ async def test_content_service_blog():
 
 @pytest.mark.asyncio
 async def test_content_service_social():
-    with patch("backend.services.llm.content.LLMService") as MockLLMService:
+    with patch("backend.services.llm.content.LLMService") as MockLLMService, \
+         patch("backend.services.llm.content.prompt_service") as mock_prompt_service:
         mock_llm = MockLLMService.return_value
         mock_llm.generate_text = AsyncMock(return_value="#AI #Tech")
 
+        # Simulate no prompt in DB to use default template
+        mock_prompt_service.get_prompt_by_slug.return_value = None
+
         service = ContentService()
-        result = await service.generate_social_media_caption("New AI Feature", platform="twitter")
+        mock_db = MagicMock()
+        result = await service.generate_social_media_caption(db=mock_db, content_description="New AI Feature", platform="twitter")
 
         assert result == "#AI #Tech"
         mock_llm.generate_text.assert_called_once()
