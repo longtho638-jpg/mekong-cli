@@ -6,7 +6,15 @@ import { Filter, ArrowRight } from 'lucide-react'
 
 // --- Components ---
 
-function FunnelStep({ step, label, count, conversion, isLast }: any) {
+interface FunnelStepProps {
+    step: number;
+    label: string;
+    count: number;
+    conversion: number;
+    isLast?: boolean;
+}
+
+function FunnelStep({ step, label, count, conversion, isLast }: FunnelStepProps) {
     // Calculate width based on percentage relative to start (mock logic for visual)
     // Assume step 1 is 100% width
     const widthPercent = Math.max(20, (count / 5000) * 100) // Mock base of 5000

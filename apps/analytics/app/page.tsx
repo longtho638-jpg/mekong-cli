@@ -8,7 +8,16 @@ import { analyticsApi, DashboardMetrics, DailyMetric } from '@/lib/api'
 
 // --- Components ---
 
-function MetricCard({ title, value, change, trend, icon: Icon, delay }: any) {
+interface MetricCardProps {
+    title: string;
+    value: string | number;
+    change?: string;
+    trend?: 'up' | 'down';
+    icon: React.ElementType;
+    delay?: number;
+}
+
+function MetricCard({ title, value, change, trend, icon: Icon, delay }: MetricCardProps) {
     const isPositive = trend === 'up'
 
     return (

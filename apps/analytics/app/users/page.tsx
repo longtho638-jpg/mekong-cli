@@ -11,7 +11,14 @@ import { analyticsApi, DailyMetric } from '@/lib/api'
 
 // --- Components ---
 
-function StatCard({ title, value, subtext, icon: Icon }: any) {
+interface StatCardProps {
+    title: string;
+    value: string | number;
+    subtext?: string;
+    icon: React.ElementType;
+}
+
+function StatCard({ title, value, subtext, icon: Icon }: StatCardProps) {
     return (
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
             <div className="flex items-center gap-4">

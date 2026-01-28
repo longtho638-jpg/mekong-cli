@@ -11,7 +11,15 @@ import { analyticsApi, DailyMetric } from '@/lib/api'
 
 // --- Components ---
 
-function MetricCard({ title, value, change, trend, icon: Icon }: any) {
+interface MetricCardProps {
+    title: string;
+    value: string | number;
+    change?: string;
+    trend?: 'up' | 'down';
+    icon: React.ElementType;
+}
+
+function MetricCard({ title, value, change, trend, icon: Icon }: MetricCardProps) {
     const isPositive = trend === 'up'
     return (
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10">

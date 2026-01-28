@@ -16,6 +16,19 @@ interface PayPalSmartButtonProps {
   apiBaseUrl?: string; // Allow overriding API base
 }
 
+// PayPal SDK Type Definitions
+interface CreateSubscriptionActions {
+  subscription: {
+    create: (options: { plan_id: string; custom_id?: string; [key: string]: unknown }) => Promise<string>;
+  };
+}
+
+interface OnApproveData {
+  orderID: string;
+  subscriptionID?: string | null;
+  facilitatorAccessToken: string;
+}
+
 export default function PayPalSmartButton({
   amount = "0",
   currency = "USD",
@@ -66,7 +79,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (_data: Record<string, unknown>, actions: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const createSubscription = async (_data: Record<string, unknown>, actions: CreateSubscriptionActions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
@@ -101,7 +114,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: Record<string, any>, _actions: unknown) => { // eslint-disable-line @typescript-eslint/no-explicit-any
+  const onApprove = async (data: OnApproveData, _actions: unknown) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
@@ -144,8 +157,8 @@ export default function PayPalSmartButton({
         <PayPalButtons
           style={{ layout: "vertical", shape: "rect", label: mode === "subscription" ? "subscribe" : "pay" }}
           createOrder={mode === "payment" ? createOrder : undefined}
-          createSubscription={mode === "subscription" ? createSubscription : undefined}
-          onApprove={onApprove}
+          createSubscription={mode === "subscription" ? (createSubscription as any) : undefined}
+          onApprove={onApprove as any}
           onError={(err) => {
             console.error("PayPal Error:", err);
             setError("An error occurred with PayPal.");
