@@ -5,10 +5,10 @@
  * Handles PayPal SDK loading and configuration.
  */
 
-'use client';
+"use client";
 
-import React, { ReactNode } from 'react';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import React, { ReactNode } from "react";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 interface PayPalProviderProps {
   children: ReactNode;
@@ -16,17 +16,17 @@ interface PayPalProviderProps {
 
 // PayPal initial options
 const initialOptions = {
-  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '',
-  currency: 'USD',
-  intent: 'capture',
+  clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
+  currency: "USD",
+  intent: "capture",
   // Enable funding sources
-  'enable-funding': 'venmo,paylater',
+  "enable-funding": "venmo,paylater",
   // Disable funding sources (optional)
   // 'disable-funding': 'card',
   // Data attributes for advanced tracking
-  'data-partner-attribution-id': 'AgencyOS_PCP',
+  "data-partner-attribution-id": "AgencyOS_PCP",
   // Components to load
-  components: 'buttons,funding-eligibility',
+  components: "buttons,funding-eligibility",
 } as const;
 
 /**
@@ -42,13 +42,15 @@ const initialOptions = {
 export function PayPalProvider({ children }: PayPalProviderProps) {
   // Validate client ID before rendering
   if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
-    console.error('PayPal Client ID is missing. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID in your environment.');
+    console.error(
+      "PayPal Client ID is missing. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID in your environment.",
+    );
     return <>{children}</>;
   }
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      {children}
+      {children as React.ReactNode}
     </PayPalScriptProvider>
   );
 }

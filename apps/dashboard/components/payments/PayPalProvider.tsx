@@ -5,13 +5,13 @@
  * Handles PayPal SDK loading and configuration.
  */
 
-'use client';
+'use client'
 
-import React, { ReactNode } from 'react';
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import React, { ReactNode } from 'react'
+import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 
 interface PayPalProviderProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 // PayPal initial options
@@ -27,7 +27,7 @@ const initialOptions = {
   'data-partner-attribution-id': 'AgencyOS_PCP',
   // Components to load
   components: 'buttons,funding-eligibility',
-} as const;
+} as const
 
 /**
  * PayPalProvider component
@@ -42,15 +42,17 @@ const initialOptions = {
 export function PayPalProvider({ children }: PayPalProviderProps) {
   // Validate client ID before rendering
   if (!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID) {
-    console.error('PayPal Client ID is missing. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID in your environment.');
-    return <>{children}</>;
+    console.error(
+      'PayPal Client ID is missing. Please set NEXT_PUBLIC_PAYPAL_CLIENT_ID in your environment.'
+    )
+    return <>{children}</>
   }
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      {children}
+      {children as React.ReactNode}
     </PayPalScriptProvider>
-  );
+  )
 }
 
-export default PayPalProvider;
+export default PayPalProvider
