@@ -34,6 +34,7 @@ jobs:
           context: .
           file: backend/Dockerfile
           push: true
+          no-cache: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-backend:${{ github.sha }}
@@ -45,6 +46,7 @@ jobs:
           context: .
           file: apps/dashboard/Dockerfile
           push: true
+          no-cache: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:latest
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-frontend:${{ github.sha }}
