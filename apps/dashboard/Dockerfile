@@ -24,8 +24,9 @@ RUN pnpm install --frozen-lockfile --ignore-scripts || pnpm install --frozen-loc
 # 3. Builder
 FROM base AS builder
 WORKDIR /app
+# Copy all node_modules including hoisted packages
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/dashboard/node_modules ./apps/dashboard/node_modules
+COPY --from=deps /app/packages/ ./packages/
 COPY . .
 # Build specific app
 ENV NEXT_TELEMETRY_DISABLED=1
