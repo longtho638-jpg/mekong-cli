@@ -60,7 +60,7 @@ export const analyticsApi = {
         return res.json()
     },
 
-    async getDailyMetrics(metricName: string, days: int = 30): Promise<DailyMetric[]> {
+    async getDailyMetrics(metricName: string, days: number = 30): Promise<DailyMetric[]> {
         const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
         const token = localStorage.getItem('agencyos_token')
 

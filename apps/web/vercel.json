@@ -1,5 +1,15 @@
 {
   "framework": "nextjs",
+  "rewrites": [
+    {
+      "source": "/docs",
+      "destination": "https://docs.mekongmarketing.com/docs"
+    },
+    {
+      "source": "/docs/:path*",
+      "destination": "https://docs.mekongmarketing.com/docs/:path*"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

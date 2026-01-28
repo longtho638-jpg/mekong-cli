@@ -14,6 +14,7 @@ interface WebhookDeliveryRow {
   status_code: number;
   duration: number;
   date: string;
+  [key: string]: unknown;
 }
 
 export default function WebhookDetailPage({ params }: { params: { id: string } }) {
@@ -28,7 +29,7 @@ export default function WebhookDetailPage({ params }: { params: { id: string } }
     }
   });
 
-  const { data: deliveries } = useQuery({
+      const { data: deliveries } = useQuery<WebhookDeliveryRow[]>({
       queryKey: ['admin-webhook-deliveries', configId],
       queryFn: async () => {
           // Mock deliveries
@@ -36,7 +37,7 @@ export default function WebhookDetailPage({ params }: { params: { id: string } }
               { id: 'del_1', event: 'user.created', status: 'success', status_code: 200, duration: 120, date: '2024-01-27T10:00:00Z' },
               { id: 'del_2', event: 'payment.failed', status: 'failed', status_code: 500, duration: 450, date: '2024-01-27T09:30:00Z' },
               { id: 'del_3', event: 'user.updated', status: 'success', status_code: 200, duration: 95, date: '2024-01-27T09:00:00Z' },
-          ];
+          ] as WebhookDeliveryRow[];
       }
   });
 
@@ -125,7 +126,7 @@ export default function WebhookDetailPage({ params }: { params: { id: string } }
                         <MD3Button variant="outlined" size="small">Test Webhook</MD3Button>
                     </div>
                 </div>
-                <MD3DataTable columns={deliveryColumns} data={deliveries || []} />
+                <MD3DataTable<WebhookDeliveryRow> columns={deliveryColumns as any} data={deliveries || []} />
             </MD3Card>
         </div>
       </div>

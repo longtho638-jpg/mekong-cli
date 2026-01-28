@@ -19,6 +19,7 @@ interface RateLimitRow {
     endpoint: string;
     user_id?: string | null;
     timestamp: string;
+    [key: string]: unknown;
 }
 
 export default function RateLimitsPage() {
@@ -44,33 +45,48 @@ export default function RateLimitsPage() {
         {
             header: 'IP Address',
             accessor: 'ip_address',
-            render: (row: RateLimitRow) => <span className="font-mono">{row.ip_address}</span>
+            render: (data: unknown) => {
+                const row = data as RateLimitRow;
+                return <span className="font-mono">{row.ip_address}</span>;
+            }
         },
         {
             header: 'Type',
             accessor: 'violation_type',
-            render: (row: RateLimitRow) => (
-                <MD3Chip
-                    label={row.violation_type}
-                    variant="assist"
-                    className={row.violation_type === 'global_ip' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}
-                />
-            )
+            render: (data: unknown) => {
+                const row = data as RateLimitRow;
+                return (
+                    <MD3Chip
+                        label={row.violation_type}
+                        variant="assist"
+                        className={row.violation_type === 'global_ip' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}
+                    />
+                );
+            }
         },
         {
             header: 'Endpoint',
             accessor: 'endpoint',
-            render: (row: RateLimitRow) => <span className="text-gray-600 text-sm">{row.endpoint}</span>
+            render: (data: unknown) => {
+                const row = data as RateLimitRow;
+                return <span className="text-gray-600 text-sm">{row.endpoint}</span>;
+            }
         },
         {
             header: 'User ID',
             accessor: 'user_id',
-            render: (row: RateLimitRow) => row.user_id ? <span className="text-xs text-gray-500">{row.user_id}</span> : '-'
+            render: (data: unknown) => {
+                const row = data as RateLimitRow;
+                return row.user_id ? <span className="text-xs text-gray-500">{row.user_id}</span> : '-';
+            }
         },
         {
             header: 'Time',
             accessor: 'timestamp',
-            render: (row: RateLimitRow) => new Date(row.timestamp).toLocaleString()
+            render: (data: unknown) => {
+                const row = data as RateLimitRow;
+                return new Date(row.timestamp).toLocaleString();
+            }
         }
     ];
 
@@ -135,8 +151,8 @@ export default function RateLimitsPage() {
                 {isLoadingViolations ? (
                     <div className="text-center py-8 text-gray-500">Loading violations...</div>
                 ) : (
-                    <MD3DataTable
-                        columns={columns}
+                    <MD3DataTable<RateLimitRow>
+                        columns={columns as any}
                         data={violationsData || []}
                     />
                 )}

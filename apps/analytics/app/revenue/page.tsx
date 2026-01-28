@@ -144,7 +144,7 @@ export default function RevenuePage() {
                             <Tooltip
                                 contentStyle={{ backgroundColor: '#111', borderColor: '#333', borderRadius: '8px' }}
                                 itemStyle={{ color: '#fff' }}
-                                formatter={(value: number) => [formatCurrency(value), 'MRR']}
+                                formatter={(value: number | undefined) => [formatCurrency(value || 0), 'MRR'] as [string, string]}
                             />
                             <Area
                                 type="monotone"

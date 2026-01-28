@@ -15,6 +15,7 @@ interface Template {
     description?: string;
     active: boolean;
     updated_at: string;
+    [key: string]: unknown;
 }
 
 export default function NotificationTemplatesPage() {
@@ -72,53 +73,71 @@ export default function NotificationTemplatesPage() {
         {
             header: 'Name',
             accessor: 'name',
-            render: (row: Template) => (
-                <div className="font-medium text-gray-900">{row.name}</div>
-            )
+            render: (data: unknown) => {
+                const row = data as Template;
+                return (
+                    <div className="font-medium text-gray-900">{row.name}</div>
+                );
+            }
         },
         {
             header: 'Type',
             accessor: 'type',
-            render: (row: Template) => (
-                <MD3Chip label={row.type} size="small" variant={row.type === 'email' ? 'input' : 'assist'} />
-            )
+            render: (data: unknown) => {
+                const row = data as Template;
+                return (
+                    <MD3Chip label={row.type} size="small" variant={row.type === 'email' ? 'input' : 'assist'} />
+                );
+            }
         },
         {
             header: 'Subject',
             accessor: 'subject',
-            render: (row: Template) => <span className="text-gray-500 truncate max-w-xs block">{row.subject || '-'}</span>
+            render: (data: unknown) => {
+                const row = data as Template;
+                return <span className="text-gray-500 truncate max-w-xs block">{row.subject || '-'}</span>;
+            }
         },
         {
             header: 'Status',
             accessor: 'active',
-            render: (row: Template) => (
-                row.active ? <Check className="text-green-500" size={16} /> : <X className="text-red-500" size={16} />
-            )
+            render: (data: unknown) => {
+                const row = data as Template;
+                return (
+                    row.active ? <Check className="text-green-500" size={16} /> : <X className="text-red-500" size={16} />
+                );
+            }
         },
         {
             header: 'Last Updated',
             accessor: 'updated_at',
-            render: (row: Template) => row.updated_at ? new Date(row.updated_at).toLocaleDateString() : '-'
+            render: (data: unknown) => {
+                const row = data as Template;
+                return row.updated_at ? new Date(row.updated_at).toLocaleDateString() : '-';
+            }
         },
         {
             header: 'Actions',
             accessor: 'id',
-            render: (row: Template) => (
-                <div className="flex gap-2">
-                    <MD3Button variant="text" size="small" onClick={() => {}} startIcon={<Edit size={14} />}>Edit</MD3Button>
-                    <MD3Button
-                        variant="text"
-                        size="small"
-                        color="error"
-                        onClick={() => {
-                            if(confirm('Delete template?')) deleteMutation.mutate(row.id)
-                        }}
-                        startIcon={<Trash size={14} />}
-                    >
-                        Delete
-                    </MD3Button>
-                </div>
-            )
+            render: (data: unknown) => {
+                const row = data as Template;
+                return (
+                    <div className="flex gap-2">
+                        <MD3Button variant="text" size="small" onClick={() => {}} startIcon={<Edit size={14} />}>Edit</MD3Button>
+                        <MD3Button
+                            variant="text"
+                            size="small"
+                            color="error"
+                            onClick={() => {
+                                if(confirm('Delete template?')) deleteMutation.mutate(row.id)
+                            }}
+                            startIcon={<Trash size={14} />}
+                        >
+                            Delete
+                        </MD3Button>
+                    </div>
+                );
+            }
         }
     ];
 
@@ -136,8 +155,8 @@ export default function NotificationTemplatesPage() {
                 {isLoading ? (
                     <div className="p-8 text-center">Loading templates...</div>
                 ) : (
-                    <MD3DataTable
-                        columns={columns}
+                    <MD3DataTable<Template>
+                        columns={columns as any}
                         data={templates || []}
                     />
                 )}
