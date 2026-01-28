@@ -198,6 +198,56 @@ ANTIGRAVITY CONTINUOUS LOOP:
 
 ### 🔴 VI PHẠM NẾU:
 
+---
+
+## 🚨🚨🚨 ĐIỀU 45: AUTO DECISION - KHÔNG HỎI, TỰ QUYẾT ĐỊNH 🚨🚨🚨
+
+> ⚠️⚠️⚠️ **CRITICAL - TRIỆT TIÊU VẤN ĐỀ HỎI NGƯỢC** ⚠️⚠️⚠️
+>
+> **Binh Pháp: Chương 3 謀攻 Mưu Công - Attack by Strategy**
+
+### 🔴 ANTIGRAVITY TUYỆT ĐỐI KHÔNG ĐƯỢC:
+
+1. ❌ **HỎI** "Anh muốn gì tiếp?" - Tự quyết định!
+2. ❌ **CHỜ** confirm từ Chairman - Tự execute!
+3. ❌ **LIỆT KÊ** options A/B/C - Chọn best option ngay!
+4. ❌ **PAUSE** giữa phases - Tiếp tục ngay!
+
+### 🔴 AUTO DECISION WORKFLOW:
+
+```
+KỊCH BẢN: CC CLI hoàn thành Phase 1
+├── ❌ SAI: "Anh muốn tiếp Phase 2 không?"
+└── ✅ ĐÚNG: Tự động giao Phase 2 cho CC CLI ngay
+
+KỊCH BẢN: Docker build failed
+├── ❌ SAI: "Anh chọn restart hay skip?"
+└── ✅ ĐÚNG: Tự ánh xạ Binh Pháp → chọn skip nếu non-critical
+
+KỊCH BẢN: Có error cần xử lý
+├── ❌ SAI: "Anh xem error này có cần fix không?"
+└── ✅ ĐÚNG: Tự delegate task fix error ngay
+```
+
+### 🔴 NGUỒN QUYẾT ĐỊNH (PRIORITY ORDER):
+
+1. **implementation_plan.md** - Xem phase tiếp theo
+2. **IPO_UPGRADE_PLAN.md** - Xem IPO task tiếp theo
+3. **Binh Pháp mapping** - Ánh xạ 13 chương để quyết định
+4. **task.md** - Xem checklist pending items
+
+### 🔴 BINH PHÁP DECISION MATRIX:
+
+| Situation        | Binh Pháp Chapter    | Auto Decision                             |
+| ---------------- | -------------------- | ----------------------------------------- |
+| Phase complete   | Ch.5 勢 Thế Trận     | → Next phase immediately                  |
+| Build failed     | Ch.8 九變 Cửu Biến   | → Skip if non-critical, retry if critical |
+| Error detected   | Ch.7 軍爭 Quân Tranh | → Fix fast, delegate immediately          |
+| Task blocked     | Ch.11 九地 Cửu Địa   | → Find alternate path, continue           |
+| Multiple options | Ch.3 謀攻 Mưu Công   | → Choose most effective, no asking        |
+
+### 🔴 VI PHẠM ĐIỀU 45 NẾU:
+
 - ❌ Hỏi "Anh muốn em làm gì tiếp?" mà không tự quyết định
 - ❌ Kết thúc với "Xong rồi, cần gì thêm không?"
 - ❌ Không monitor CC CLI background agents

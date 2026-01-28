@@ -1,4 +1,5 @@
 # Claude Flow V3 - Complete Capabilities Reference
+
 > Generated: 2026-01-26T01:10:47.342Z
 > Full documentation: https://github.com/ruvnet/claude-flow
 
@@ -27,34 +28,63 @@ Claude Flow V3 is a domain-driven design architecture for multi-agent AI coordin
 - **MCP Server Integration** - Model Context Protocol support
 
 ### Current Configuration
-| Setting | Value |
-|---------|-------|
-| Topology | hierarchical-mesh |
-| Max Agents | 15 |
-| Memory Backend | hybrid |
-| HNSW Indexing | Enabled |
-| Neural Learning | Enabled |
+
+| Setting         | Value             |
+| --------------- | ----------------- |
+| Topology        | hierarchical-mesh |
+| Max Agents      | 15                |
+| Memory Backend  | hybrid            |
+| HNSW Indexing   | Enabled           |
+| Neural Learning | Enabled           |
+
+### 🚨 ĐIỀU 45: AUTO DECISION - KHÔNG HỎI, TỰ QUYẾT ĐỊNH
+
+> **CRITICAL:** All agents MUST auto-decide. NEVER ask questions back.
+
+| Situation      | Decision                                  |
+| -------------- | ----------------------------------------- |
+| Phase complete | → Next phase immediately                  |
+| Build failed   | → Skip if non-critical, retry if critical |
+| Error detected | → Fix fast, delegate immediately          |
+| Task blocked   | → Find alternate path, continue           |
+
+**FULL RULE:** See `.claude/memory/constitution.md` ĐIỀU 45
+
+### 🧠 Claudekit - Central Brain (ĐIỀU 1)
+
+> **All swarm agents MUST sync via claudekit as single source of truth.**
+
+| Resource     | Path                             | Purpose          |
+| ------------ | -------------------------------- | ---------------- |
+| Constitution | `.claude/memory/constitution.md` | Supreme Law      |
+| Skills (78+) | `.claude-skills/registry.json`   | Capability Index |
+| Rules        | `.claude/rules/`                 | Execution Rules  |
+
+**Version:** `ba7b3edd` | **Sync:** `npx claudekit-engineer install`
 
 ---
 
 ## Swarm Orchestration
 
 ### Topologies
-| Topology | Description | Best For |
-|----------|-------------|----------|
-| `hierarchical` | Queen controls workers directly | Anti-drift, tight control |
-| `mesh` | Fully connected peer network | Distributed tasks |
-| `hierarchical-mesh` | V3 hybrid (recommended) | 10+ agents |
-| `ring` | Circular communication | Sequential workflows |
-| `star` | Central coordinator | Simple coordination |
-| `adaptive` | Dynamic based on load | Variable workloads |
+
+| Topology            | Description                     | Best For                  |
+| ------------------- | ------------------------------- | ------------------------- |
+| `hierarchical`      | Queen controls workers directly | Anti-drift, tight control |
+| `mesh`              | Fully connected peer network    | Distributed tasks         |
+| `hierarchical-mesh` | V3 hybrid (recommended)         | 10+ agents                |
+| `ring`              | Circular communication          | Sequential workflows      |
+| `star`              | Central coordinator             | Simple coordination       |
+| `adaptive`          | Dynamic based on load           | Variable workloads        |
 
 ### Strategies
+
 - `balanced` - Even distribution across agents
 - `specialized` - Clear roles, no overlap (anti-drift)
 - `adaptive` - Dynamic task routing
 
 ### Quick Commands
+
 ```bash
 # Initialize swarm
 npx @claude-flow/cli@latest swarm init --topology hierarchical --max-agents 8 --strategy specialized
@@ -71,80 +101,93 @@ npx @claude-flow/cli@latest swarm monitor
 ## Available Agents
 
 ### Core Development (5)
+
 `coder`, `reviewer`, `tester`, `planner`, `researcher`
 
 ### V3 Specialized (4)
+
 `security-architect`, `security-auditor`, `memory-specialist`, `performance-engineer`
 
 ### Swarm Coordination (5)
+
 `hierarchical-coordinator`, `mesh-coordinator`, `adaptive-coordinator`, `collective-intelligence-coordinator`, `swarm-memory-manager`
 
 ### Consensus & Distributed (7)
+
 `byzantine-coordinator`, `raft-manager`, `gossip-coordinator`, `consensus-builder`, `crdt-synchronizer`, `quorum-manager`, `security-manager`
 
 ### Performance & Optimization (5)
+
 `perf-analyzer`, `performance-benchmarker`, `task-orchestrator`, `memory-coordinator`, `smart-agent`
 
 ### GitHub & Repository (9)
+
 `github-modes`, `pr-manager`, `code-review-swarm`, `issue-tracker`, `release-manager`, `workflow-automation`, `project-board-sync`, `repo-architect`, `multi-repo-swarm`
 
 ### SPARC Methodology (6)
+
 `sparc-coord`, `sparc-coder`, `specification`, `pseudocode`, `architecture`, `refinement`
 
 ### Specialized Development (8)
+
 `backend-dev`, `mobile-dev`, `ml-developer`, `cicd-engineer`, `api-docs`, `system-architect`, `code-analyzer`, `base-template-generator`
 
 ### Testing & Validation (2)
+
 `tdd-london-swarm`, `production-validator`
 
 ### Agent Routing by Task
-| Task Type | Recommended Agents | Topology |
-|-----------|-------------------|----------|
-| Bug Fix | researcher, coder, tester | mesh |
+
+| Task Type   | Recommended Agents                              | Topology     |
+| ----------- | ----------------------------------------------- | ------------ |
+| Bug Fix     | researcher, coder, tester                       | mesh         |
 | New Feature | coordinator, architect, coder, tester, reviewer | hierarchical |
-| Refactoring | architect, coder, reviewer | mesh |
-| Performance | researcher, perf-engineer, coder | hierarchical |
-| Security | security-architect, auditor, reviewer | hierarchical |
-| Docs | researcher, api-docs | mesh |
+| Refactoring | architect, coder, reviewer                      | mesh         |
+| Performance | researcher, perf-engineer, coder                | hierarchical |
+| Security    | security-architect, auditor, reviewer           | hierarchical |
+| Docs        | researcher, api-docs                            | mesh         |
 
 ---
 
 ## CLI Commands
 
 ### Core Commands (12)
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `init` | 4 | Project initialization |
-| `agent` | 8 | Agent lifecycle management |
-| `swarm` | 6 | Multi-agent coordination |
-| `memory` | 11 | AgentDB with HNSW search |
-| `mcp` | 9 | MCP server management |
-| `task` | 6 | Task assignment |
-| `session` | 7 | Session persistence |
-| `config` | 7 | Configuration |
-| `status` | 3 | System monitoring |
-| `workflow` | 6 | Workflow templates |
-| `hooks` | 17 | Self-learning hooks |
-| `hive-mind` | 6 | Consensus coordination |
+
+| Command     | Subcommands | Description                |
+| ----------- | ----------- | -------------------------- |
+| `init`      | 4           | Project initialization     |
+| `agent`     | 8           | Agent lifecycle management |
+| `swarm`     | 6           | Multi-agent coordination   |
+| `memory`    | 11          | AgentDB with HNSW search   |
+| `mcp`       | 9           | MCP server management      |
+| `task`      | 6           | Task assignment            |
+| `session`   | 7           | Session persistence        |
+| `config`    | 7           | Configuration              |
+| `status`    | 3           | System monitoring          |
+| `workflow`  | 6           | Workflow templates         |
+| `hooks`     | 17          | Self-learning hooks        |
+| `hive-mind` | 6           | Consensus coordination     |
 
 ### Advanced Commands (14)
-| Command | Subcommands | Description |
-|---------|-------------|-------------|
-| `daemon` | 5 | Background workers |
-| `neural` | 5 | Pattern training |
-| `security` | 6 | Security scanning |
-| `performance` | 5 | Profiling & benchmarks |
-| `providers` | 5 | AI provider config |
-| `plugins` | 5 | Plugin management |
-| `deployment` | 5 | Deploy management |
-| `embeddings` | 4 | Vector embeddings |
-| `claims` | 4 | Authorization |
-| `migrate` | 5 | V2→V3 migration |
-| `process` | 4 | Process management |
-| `doctor` | 1 | Health diagnostics |
-| `completions` | 4 | Shell completions |
+
+| Command       | Subcommands | Description            |
+| ------------- | ----------- | ---------------------- |
+| `daemon`      | 5           | Background workers     |
+| `neural`      | 5           | Pattern training       |
+| `security`    | 6           | Security scanning      |
+| `performance` | 5           | Profiling & benchmarks |
+| `providers`   | 5           | AI provider config     |
+| `plugins`     | 5           | Plugin management      |
+| `deployment`  | 5           | Deploy management      |
+| `embeddings`  | 4           | Vector embeddings      |
+| `claims`      | 4           | Authorization          |
+| `migrate`     | 5           | V2→V3 migration        |
+| `process`     | 4           | Process management     |
+| `doctor`      | 1           | Health diagnostics     |
+| `completions` | 4           | Shell completions      |
 
 ### Example Commands
+
 ```bash
 # Initialize
 npx @claude-flow/cli@latest init --wizard
@@ -167,60 +210,66 @@ npx @claude-flow/cli@latest doctor --fix
 ### 27 Available Hooks
 
 #### Core Hooks (6)
-| Hook | Description |
-|------|-------------|
-| `pre-edit` | Context before file edits |
-| `post-edit` | Record edit outcomes |
-| `pre-command` | Risk assessment |
-| `post-command` | Command metrics |
-| `pre-task` | Task start + agent suggestions |
-| `post-task` | Task completion learning |
+
+| Hook           | Description                    |
+| -------------- | ------------------------------ |
+| `pre-edit`     | Context before file edits      |
+| `post-edit`    | Record edit outcomes           |
+| `pre-command`  | Risk assessment                |
+| `post-command` | Command metrics                |
+| `pre-task`     | Task start + agent suggestions |
+| `post-task`    | Task completion learning       |
 
 #### Session Hooks (4)
-| Hook | Description |
-|------|-------------|
-| `session-start` | Start/restore session |
-| `session-end` | Persist state |
-| `session-restore` | Restore previous |
-| `notify` | Cross-agent notifications |
+
+| Hook              | Description               |
+| ----------------- | ------------------------- |
+| `session-start`   | Start/restore session     |
+| `session-end`     | Persist state             |
+| `session-restore` | Restore previous          |
+| `notify`          | Cross-agent notifications |
 
 #### Intelligence Hooks (5)
-| Hook | Description |
-|------|-------------|
-| `route` | Optimal agent routing |
-| `explain` | Routing decisions |
-| `pretrain` | Bootstrap intelligence |
-| `build-agents` | Generate configs |
-| `transfer` | Pattern transfer |
+
+| Hook           | Description            |
+| -------------- | ---------------------- |
+| `route`        | Optimal agent routing  |
+| `explain`      | Routing decisions      |
+| `pretrain`     | Bootstrap intelligence |
+| `build-agents` | Generate configs       |
+| `transfer`     | Pattern transfer       |
 
 #### Coverage Hooks (3)
-| Hook | Description |
-|------|-------------|
-| `coverage-route` | Coverage-based routing |
+
+| Hook               | Description             |
+| ------------------ | ----------------------- |
+| `coverage-route`   | Coverage-based routing  |
 | `coverage-suggest` | Improvement suggestions |
-| `coverage-gaps` | Gap analysis |
+| `coverage-gaps`    | Gap analysis            |
 
 ### 12 Background Workers
-| Worker | Priority | Purpose |
-|--------|----------|---------|
-| `ultralearn` | normal | Deep knowledge |
-| `optimize` | high | Performance |
-| `consolidate` | low | Memory consolidation |
-| `predict` | normal | Predictive preload |
-| `audit` | critical | Security |
-| `map` | normal | Codebase mapping |
-| `preload` | low | Resource preload |
-| `deepdive` | normal | Deep analysis |
-| `document` | normal | Auto-docs |
-| `refactor` | normal | Suggestions |
-| `benchmark` | normal | Benchmarking |
-| `testgaps` | normal | Coverage gaps |
+
+| Worker        | Priority | Purpose              |
+| ------------- | -------- | -------------------- |
+| `ultralearn`  | normal   | Deep knowledge       |
+| `optimize`    | high     | Performance          |
+| `consolidate` | low      | Memory consolidation |
+| `predict`     | normal   | Predictive preload   |
+| `audit`       | critical | Security             |
+| `map`         | normal   | Codebase mapping     |
+| `preload`     | low      | Resource preload     |
+| `deepdive`    | normal   | Deep analysis        |
+| `document`    | normal   | Auto-docs            |
+| `refactor`    | normal   | Suggestions          |
+| `benchmark`   | normal   | Benchmarking         |
+| `testgaps`    | normal   | Coverage gaps        |
 
 ---
 
 ## Memory & Intelligence
 
 ### RuVector Intelligence System
+
 - **SONA**: Self-Optimizing Neural Architecture (<0.05ms)
 - **MoE**: Mixture of Experts routing
 - **HNSW**: 150x-12,500x faster search
@@ -229,12 +278,14 @@ npx @claude-flow/cli@latest doctor --fix
 - **Int8 Quantization**: 3.92x memory reduction
 
 ### 4-Step Intelligence Pipeline
+
 1. **RETRIEVE** - HNSW pattern search
 2. **JUDGE** - Success/failure verdicts
 3. **DISTILL** - LoRA learning extraction
 4. **CONSOLIDATE** - EWC++ preservation
 
 ### Memory Commands
+
 ```bash
 # Store pattern
 npx @claude-flow/cli@latest memory store --key "name" --value "data" --namespace patterns
@@ -254,25 +305,29 @@ npx @claude-flow/cli@latest memory init --force
 ## Hive-Mind Consensus
 
 ### Queen Types
-| Type | Role |
-|------|------|
-| Strategic Queen | Long-term planning |
-| Tactical Queen | Execution coordination |
-| Adaptive Queen | Dynamic optimization |
+
+| Type            | Role                   |
+| --------------- | ---------------------- |
+| Strategic Queen | Long-term planning     |
+| Tactical Queen  | Execution coordination |
+| Adaptive Queen  | Dynamic optimization   |
 
 ### Worker Types (8)
+
 `researcher`, `coder`, `analyst`, `tester`, `architect`, `reviewer`, `optimizer`, `documenter`
 
 ### Consensus Mechanisms
-| Mechanism | Fault Tolerance | Use Case |
-|-----------|-----------------|----------|
-| `byzantine` | f < n/3 faulty | Adversarial |
-| `raft` | f < n/2 failed | Leader-based |
-| `gossip` | Eventually consistent | Large scale |
-| `crdt` | Conflict-free | Distributed |
-| `quorum` | Configurable | Flexible |
+
+| Mechanism   | Fault Tolerance       | Use Case     |
+| ----------- | --------------------- | ------------ |
+| `byzantine` | f < n/3 faulty        | Adversarial  |
+| `raft`      | f < n/2 failed        | Leader-based |
+| `gossip`    | Eventually consistent | Large scale  |
+| `crdt`      | Conflict-free         | Distributed  |
+| `quorum`    | Configurable          | Flexible     |
 
 ### Hive-Mind Commands
+
 ```bash
 # Initialize
 npx @claude-flow/cli@latest hive-mind init --queen-type strategic
@@ -291,36 +346,39 @@ npx @claude-flow/cli@latest hive-mind consensus --propose "task"
 
 ## Performance Targets
 
-| Metric | Target | Status |
-|--------|--------|--------|
-| HNSW Search | 150x-12,500x faster | ✅ Implemented |
-| Memory Reduction | 50-75% | ✅ Implemented (3.92x) |
-| SONA Integration | Pattern learning | ✅ Implemented |
-| Flash Attention | 2.49x-7.47x | 🔄 In Progress |
-| MCP Response | <100ms | ✅ Achieved |
-| CLI Startup | <500ms | ✅ Achieved |
-| SONA Adaptation | <0.05ms | 🔄 In Progress |
+| Metric           | Target              | Status                 |
+| ---------------- | ------------------- | ---------------------- |
+| HNSW Search      | 150x-12,500x faster | ✅ Implemented         |
+| Memory Reduction | 50-75%              | ✅ Implemented (3.92x) |
+| SONA Integration | Pattern learning    | ✅ Implemented         |
+| Flash Attention  | 2.49x-7.47x         | 🔄 In Progress         |
+| MCP Response     | <100ms              | ✅ Achieved            |
+| CLI Startup      | <500ms              | ✅ Achieved            |
+| SONA Adaptation  | <0.05ms             | 🔄 In Progress         |
 
 ---
 
 ## Integration Ecosystem
 
 ### Integrated Packages
-| Package | Version | Purpose |
-|---------|---------|---------|
-| agentic-flow | 2.0.1-alpha | Core coordination |
-| agentdb | 2.0.0-alpha.3.4 | Vector database |
-| @ruvector/attention | 0.1.3 | Flash attention |
-| @ruvector/sona | 0.1.5 | Neural learning |
+
+| Package             | Version         | Purpose           |
+| ------------------- | --------------- | ----------------- |
+| agentic-flow        | 2.0.1-alpha     | Core coordination |
+| agentdb             | 2.0.0-alpha.3.4 | Vector database   |
+| @ruvector/attention | 0.1.3           | Flash attention   |
+| @ruvector/sona      | 0.1.5           | Neural learning   |
 
 ### Optional Integrations
-| Package | Command |
-|---------|---------|
-| ruv-swarm | `npx ruv-swarm mcp start` |
-| flow-nexus | `npx flow-nexus@latest mcp start` |
-| agentic-jujutsu | `npx agentic-jujutsu@latest` |
+
+| Package         | Command                           |
+| --------------- | --------------------------------- |
+| ruv-swarm       | `npx ruv-swarm mcp start`         |
+| flow-nexus      | `npx flow-nexus@latest mcp start` |
+| agentic-jujutsu | `npx agentic-jujutsu@latest`      |
 
 ### MCP Server Setup
+
 ```bash
 # Add Claude Flow MCP
 claude mcp add claude-flow -- npx -y @claude-flow/cli@latest
@@ -335,6 +393,7 @@ claude mcp add flow-nexus -- npx -y flow-nexus@latest mcp start
 ## Quick Reference
 
 ### Essential Commands
+
 ```bash
 # Setup
 npx @claude-flow/cli@latest init --wizard
@@ -358,6 +417,7 @@ npx @claude-flow/cli@latest hooks worker dispatch --trigger optimize
 ```
 
 ### File Structure
+
 ```
 .claude-flow/
 ├── config.yaml      # Runtime configuration

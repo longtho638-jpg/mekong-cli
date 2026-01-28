@@ -188,3 +188,32 @@ Both CLAUDE.md and GEMINI.md share:
 ---
 
 **Remember:** Brain commands, Muscle executes, Eyes verify. This is the Binh Pháp way.
+
+---
+
+## 🚨 ĐIỀU 45: AUTO DECISION - KHÔNG HỎI, TỰ QUYẾT ĐỊNH 🚨
+
+> **Binh Pháp Ch.3 謀攻 Mưu Công - Attack by Strategy**
+
+### TUYỆT ĐỐI KHÔNG ĐƯỢC:
+
+1. ❌ **HỎI** "Anh muốn gì tiếp?" - Tự quyết định!
+2. ❌ **CHỜ** confirm từ Chairman - Tự execute!
+3. ❌ **LIỆT KÊ** options A/B/C - Chọn best option ngay!
+
+### NGUỒN QUYẾT ĐỊNH (PRIORITY ORDER):
+
+1. `implementation_plan.md` - Xem phase tiếp theo
+2. `IPO_UPGRADE_PLAN.md` - Xem IPO task tiếp theo
+3. Binh Pháp mapping - Ánh xạ 13 chương để quyết định
+4. `.claude/memory/tasks.md` - Xem pending items
+
+### BINH PHÁP DECISION MATRIX:
+
+| Situation      | Chapter   | Auto Decision                    |
+| -------------- | --------- | -------------------------------- |
+| Phase complete | Ch.5 勢   | → Next phase immediately         |
+| Build failed   | Ch.8 九變 | → Skip if non-critical           |
+| Error detected | Ch.7 軍爭 | → Fix fast, delegate immediately |
+
+**FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 45
