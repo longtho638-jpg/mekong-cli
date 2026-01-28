@@ -19,7 +19,6 @@ description: 🏯 BINH-PHAP - Strategic assessment using Sun Tzu
 | `assess` | Analyze task strategically | `/binh-phap assess --task "Launch product"` |
 | `map` | Map to 13 chapters | `/binh-phap map --task "Fix bug"` |
 | `win3` | WIN-WIN-WIN check | `/binh-phap win3 --decision "Add feature"` |
-| `dispatch` | (Legacy) Route task | `/binh-phap dispatch "Build app"` |
 
 ## 13 Chapters
 
