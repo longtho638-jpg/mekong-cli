@@ -120,7 +120,7 @@ export default function UserDetailPage({ params }: { params: { id: string } }) {
                 <div className="p-4 border-b border-gray-200">
                     <MD3Typography variant="title-large">Recent Activity</MD3Typography>
                 </div>
-                <MD3DataTable<UserActivityRow> columns={activityColumns as any} data={activity || []} />
+                <MD3DataTable<UserActivityRow> columns={activityColumns} data={activity || []} />
             </MD3Card>
 
             <MD3Card variant="elevated" className="p-6">

@@ -32,18 +32,18 @@ export const trackingClient = {
       type: 'exposure',
       experimentId,
       variantId,
-    } as any);
+    });
   },
 
   /**
    * Track a conversion goal
    */
-  trackConversion(goalId: string, metadata?: Record<string, any>) {
+  trackConversion(goalId: string, metadata?: Record<string, unknown>) {
     return this.track({
       type: 'conversion',
       goalId,
       metadata,
-    } as any);
+    });
   },
 
   /**
@@ -54,18 +54,18 @@ export const trackingClient = {
       type: 'engagement',
       metric,
       value,
-    } as any);
+    });
   },
 
   /**
    * Track user feedback
    */
-  trackFeedback(category: string, content: string, metadata?: Record<string, any>) {
+  trackFeedback(category: string, content: string, metadata?: Record<string, unknown>) {
     return this.track({
       type: 'feedback',
       category,
       content,
       metadata,
-    } as any);
+    });
   }
 };

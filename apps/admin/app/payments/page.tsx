@@ -98,7 +98,7 @@ export default function PaymentsPage() {
             <div className="p-8 text-center">Loading payments...</div>
         ) : (
             <MD3DataTable<PaymentRow>
-                columns={columns as any}
+                columns={columns}
                 data={payments || []}
             />
         )}

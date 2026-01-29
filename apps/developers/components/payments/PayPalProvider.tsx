@@ -50,7 +50,8 @@ export function PayPalProvider({ children }: PayPalProviderProps) {
 
   return (
     <PayPalScriptProvider options={initialOptions}>
-      {children as any}
+      {/* @ts-ignore - React 19 type incompatibility with @paypal/react-paypal-js */}
+      {children}
     </PayPalScriptProvider>
   );
 }

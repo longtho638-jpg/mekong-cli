@@ -9,7 +9,7 @@ export function Providers({ children }: PropsWithChildren) {
   return (
     // @ts-ignore - React 19 type compatibility issue
     <I18nextProvider i18n={i18n}>
-        {children as any}
+        {children}
     </I18nextProvider>
   );
 }

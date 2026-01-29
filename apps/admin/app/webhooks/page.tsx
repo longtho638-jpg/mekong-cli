@@ -149,7 +149,7 @@ export default function WebhooksPage() {
                     <div className="p-8 text-center">Loading configs...</div>
                 ) : (
                     <MD3DataTable<WebhookConfigRow>
-                        columns={columns as any}
+                        columns={columns}
                         data={configs || []}
                     />
                 )}
@@ -166,7 +166,7 @@ export default function WebhooksPage() {
                         <div className="p-8 text-center">Loading events...</div>
                     ) : (
                         <MD3DataTable<WebhookEventRow>
-                            columns={eventColumns as any}
+                            columns={eventColumns}
                             data={recentEvents?.items || []}
                         />
                     )}

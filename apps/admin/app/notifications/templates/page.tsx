@@ -156,7 +156,7 @@ export default function NotificationTemplatesPage() {
                     <div className="p-8 text-center">Loading templates...</div>
                 ) : (
                     <MD3DataTable<Template>
-                        columns={columns as any}
+                        columns={columns}
                         data={templates || []}
                     />
                 )}

@@ -117,7 +117,7 @@ export default function UsersPage() {
             <div className="p-8 text-center">Loading users...</div>
         ) : (
             <MD3DataTable<UserRow>
-                columns={columns as any}
+                columns={columns}
                 data={usersData?.items || []}
                 selectable
             />

@@ -16,18 +16,28 @@ interface PayPalSmartButtonProps {
   apiBaseUrl?: string; // Allow overriding API base
 }
 
-// PayPal SDK Type Definitions
+// PayPal SDK compatible type definitions
 interface CreateSubscriptionActions {
   subscription: {
-    create: (options: { plan_id: string; custom_id?: string; [key: string]: unknown }) => Promise<string>;
+    create: (options: { plan_id: string; custom_id?: string }) => Promise<string>;
   };
 }
 
 interface OnApproveData {
   orderID: string;
   subscriptionID?: string | null;
-  facilitatorAccessToken: string;
+  facilitatorAccessToken?: string;
 }
+
+interface OnApproveActions {
+  order?: {
+    capture: () => Promise<unknown>;
+  };
+}
+
+// Type aliases for PayPal SDK callbacks
+type CreateSubscriptionFunction = (data: Record<string, unknown>, actions: CreateSubscriptionActions) => Promise<string>;
+type OnApproveFunction = (data: OnApproveData, actions: OnApproveActions) => Promise<void>;
 
 export default function PayPalSmartButton({
   amount = "0",
@@ -79,12 +89,12 @@ export default function PayPalSmartButton({
     }
   };
 
-  const createSubscription = async (_data: Record<string, unknown>, actions: CreateSubscriptionActions) => {
+  const createSubscription: CreateSubscriptionFunction = async (_data, actions) => {
     if (!planId) {
       const err = new Error("Plan ID required for subscription");
       setError(err.message);
       onError?.(err);
-      return;
+      throw err; // Must throw to satisfy Promise<string> return type
     }
 
     try {
@@ -114,7 +124,7 @@ export default function PayPalSmartButton({
     }
   };
 
-  const onApprove = async (data: OnApproveData, _actions: unknown) => {
+  const onApprove: OnApproveFunction = async (data, _actions) => {
     if (mode === "subscription") {
       // Subscription approved
       onSuccess?.({
@@ -157,8 +167,8 @@ export default function PayPalSmartButton({
         <PayPalButtons
           style={{ layout: "vertical", shape: "rect", label: mode === "subscription" ? "subscribe" : "pay" }}
           createOrder={mode === "payment" ? createOrder : undefined}
-          createSubscription={mode === "subscription" ? (createSubscription as any) : undefined}
-          onApprove={onApprove as any}
+          createSubscription={mode === "subscription" ? createSubscription : undefined}
+          onApprove={onApprove}
           onError={(err) => {
             console.error("PayPal Error:", err);
             setError("An error occurred with PayPal.");

@@ -126,7 +126,7 @@ export default function WebhookDetailPage({ params }: { params: { id: string } }
                         <MD3Button variant="outlined" size="small">Test Webhook</MD3Button>
                     </div>
                 </div>
-                <MD3DataTable<WebhookDeliveryRow> columns={deliveryColumns as any} data={deliveries || []} />
+                <MD3DataTable<WebhookDeliveryRow> columns={deliveryColumns} data={deliveries || []} />
             </MD3Card>
         </div>
       </div>

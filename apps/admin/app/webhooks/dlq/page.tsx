@@ -148,7 +148,7 @@ export default function DLQPage() {
           <div className="p-8 text-center">Loading DLQ...</div>
         ) : entries && entries.length > 0 ? (
           <MD3DataTable<WebhookDLQRow>
-            columns={columns as any}
+            columns={columns}
             data={entries}
             selectable
             onSelectionChange={setSelectedEntries}
