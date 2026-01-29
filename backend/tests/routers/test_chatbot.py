@@ -1,3 +1,4 @@
+from types import SimpleNamespace
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -9,12 +10,15 @@ from backend.api.main import app
 from backend.api.routers.chatbot import router
 from backend.services.llm.types import LLMResponse
 
-client = TestClient(app)
 
-async def override_get_current_user():
-    return {"id": 1, "email": "test@example.com", "is_active": True, "username": "testuser", "role": "user"}
+@pytest.fixture
+def client():
+    async def override_get_current_user():
+        return SimpleNamespace(id=1, email="test@example.com", is_active=True, username="testuser", role="user")
 
-app.dependency_overrides[get_current_user] = override_get_current_user
+    app.dependency_overrides[get_current_user] = override_get_current_user
+    yield TestClient(app)
+    app.dependency_overrides = {}
 
 @pytest.fixture
 def mock_llm_service():
@@ -23,7 +27,7 @@ def mock_llm_service():
         instance.chat = AsyncMock(return_value="I am a bot")
         yield instance
 
-def test_chat_endpoint(mock_llm_service):
+def test_chat_endpoint(client, mock_llm_service):
     response = client.post(
         "/chatbot/chat",
         json={
@@ -39,7 +43,7 @@ def test_chat_endpoint(mock_llm_service):
     assert data["provider"] == "gemini"
     assert data["model"] == "gemini-1.5-flash"
 
-def test_chat_endpoint_no_messages(mock_llm_service):
+def test_chat_endpoint_no_messages(client, mock_llm_service):
     response = client.post(
         "/chatbot/chat",
         json={

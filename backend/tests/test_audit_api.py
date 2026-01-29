@@ -1,42 +1,53 @@
-from unittest.mock import MagicMock
+from types import SimpleNamespace
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
 
+from backend.api.auth.dependencies import get_current_user
 from backend.main import app
 
-client = TestClient(app)
 
+# Setup client as fixture to ensure fresh dependency overrides and mocks
+@pytest.fixture
+def client():
+    return TestClient(app)
 
-def test_audit_log_endpoint_protected():
+def test_audit_log_endpoint_protected(client):
     response = client.get("/audit/logs")
     assert response.status_code == 401  # No token
 
 
-def test_audit_log_access_denied_for_user():
-    # Login as user
-    login_res = client.post(
-        "/token",
-        data={"username": "user", "password": "password"},
-        headers={"content-type": "application/x-www-form-urlencoded"},
-    )
-    token = login_res.json()["access_token"]
+def test_audit_log_access_denied_for_user(client):
+    # Override get_current_user to return a normal user object (needs attribute access)
+    async def override_get_current_user_user():
+        return SimpleNamespace(id="user1", username="user", role="user", is_superuser=False)
 
-    response = client.get("/audit/logs", headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 403
+    app.dependency_overrides[get_current_user] = override_get_current_user_user
+
+    try:
+        response = client.get("/audit/logs")
+        assert response.status_code == 403
+    finally:
+        app.dependency_overrides = {}
 
 
-def test_audit_log_access_allowed_for_admin():
-    # Login as admin
-    login_res = client.post(
-        "/token",
-        data={"username": "admin", "password": "secret"},
-        headers={"content-type": "application/x-www-form-urlencoded"},
-    )
-    token = login_res.json()["access_token"]
+def test_audit_log_access_allowed_for_admin(client):
+    # Override get_current_user to return an admin object
+    async def override_get_current_user_admin():
+        return SimpleNamespace(id="admin1", username="admin", role="admin", is_superuser=True)
 
-    # We might need to mock file reading if no logs exist,
-    # but the endpoint handles empty logs gracefully.
-    response = client.get("/audit/logs", headers={"Authorization": f"Bearer {token}"})
-    assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    app.dependency_overrides[get_current_user] = override_get_current_user_admin
+
+    # Mock audit_service instance in the router
+    # Note: The router imports 'audit_service' instance, not 'AuditService' class
+    with patch("backend.api.routers.audit.audit_service") as mock_service:
+        mock_service.search_audit_logs = AsyncMock(return_value=[])
+
+        try:
+            response = client.get("/audit/logs")
+            assert response.status_code == 200
+            assert isinstance(response.json(), list)
+        finally:
+            app.dependency_overrides = {}
+

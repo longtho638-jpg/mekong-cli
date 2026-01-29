@@ -51,8 +51,17 @@ def test_get_config():
     settings.cdn_provider = "cloudflare"
     settings.cloudflare_api_token = "test_token"
 
+    # Mock superuser dependency override
+    # Must return an object with attributes, not a dict
+    from types import SimpleNamespace
+    async def override_get_current_active_superuser():
+        return SimpleNamespace(id=1, is_superuser=True, role="admin", email="admin@example.com")
+
+    app.dependency_overrides[get_current_active_superuser] = override_get_current_active_superuser
+
     try:
         response = client.get("/cdn/config")
+
         assert response.status_code == 200
         data = response.json()
         assert data["provider"] == "cloudflare"

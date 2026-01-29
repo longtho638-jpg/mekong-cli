@@ -1,5 +1,5 @@
 from typing import Generator
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -27,15 +27,15 @@ def client(mock_admin_service) -> Generator:
 
 def test_list_users_viewer(client, mock_admin_service):
     """Test listing users with viewer role."""
-    # Setup mock
-    mock_admin_service.list_users.return_value = {
+    # Setup mock - list_users is async
+    mock_admin_service.list_users = AsyncMock(return_value={
         "users": [
             {"id": "u1", "email": "test@example.com", "role": "user", "is_active": True}
         ],
         "total": 1,
         "page": 1,
         "per_page": 50
-    }
+    })
 
     # Override auth
     app.dependency_overrides[require_viewer] = lambda: True
@@ -47,7 +47,8 @@ def test_list_users_viewer(client, mock_admin_service):
         # But for safety in other tests we should manage overrides carefully.
         # Since we set get_admin_service in fixture, we only need to revert auth here.
         # But app.dependency_overrides is a dict, so we can just delete the key.
-        del app.dependency_overrides[require_viewer]
+        if require_viewer in app.dependency_overrides:
+            del app.dependency_overrides[require_viewer]
 
     assert response.status_code == 200
     data = response.json()

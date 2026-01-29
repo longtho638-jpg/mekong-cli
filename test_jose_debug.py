@@ -1,5 +1,6 @@
 
 import sys
+
 import jose.jws
 import jose.jwt
 from jose.constants import ALGORITHMS
