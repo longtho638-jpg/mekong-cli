@@ -2,7 +2,7 @@ import React from 'react';
 import { DraggableAttributes } from '@dnd-kit/core';
 import { SyntheticListenerMap } from '@dnd-kit/core/dist/hooks/utilities';
 import { cn } from '../../lib/utils';
-import { LandingComponent, FormField } from '../../lib/builder/types';
+import { LandingComponent, FormField, ComponentPropValue } from '../../lib/builder/types';
 
 export interface BlockProps {
   component: LandingComponent;
@@ -12,9 +12,31 @@ export interface BlockProps {
   listeners?: SyntheticListenerMap;
 }
 
+// Type-safe prop helpers
+const getString = (value: ComponentPropValue, fallback = ''): string => {
+  return typeof value === 'string' ? value : fallback;
+};
+
+const getNumber = (value: ComponentPropValue, fallback = 0): number => {
+  return typeof value === 'number' ? value : fallback;
+};
+
+const getFormFields = (value: ComponentPropValue): FormField[] => {
+  if (!Array.isArray(value)) return [];
+  return value.filter((item): item is FormField => {
+    return typeof item === 'object' && item !== null && 'label' in item;
+  });
+};
+
 // --- Hero Block ---
 export const HeroBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title, subtitle, ctaText, ctaLink, backgroundImage, alignment } = component.props;
+
+  const bgImage = getString(backgroundImage);
+  const titleText = getString(title);
+  const subtitleText = getString(subtitle);
+  const ctaLinkHref = getString(ctaLink);
+  const ctaTextLabel = getString(ctaText);
 
   return (
     <div
@@ -23,26 +45,26 @@ export const HeroBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
         alignment === 'center' ? 'items-center text-center' : 'items-start text-left',
         isSelected ? 'ring-2 ring-primary ring-offset-2' : 'hover:ring-1 hover:ring-primary/50'
       )}
-      style={{ backgroundImage: backgroundImage ? `url(${backgroundImage as string})` : undefined }}
+      style={{ backgroundImage: bgImage ? `url(${bgImage})` : undefined }}
       onClick={onClick}
       {...attributes}
       {...listeners}
     >
-      {!backgroundImage && <div className="absolute inset-0 bg-gray-100 -z-10" />}
+      {!bgImage && <div className="absolute inset-0 bg-gray-100 -z-10" />}
       <div className="absolute inset-0 bg-black/10 -z-10" /> {/* Overlay */}
 
       <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 mb-4 drop-shadow-sm">
-        {title as string}
+        {titleText}
       </h1>
       <p className="text-xl text-gray-700 mb-8 max-w-2xl drop-shadow-sm">
-        {subtitle as string}
+        {subtitleText}
       </p>
       <a
-        href={ctaLink as string}
+        href={ctaLinkHref}
         className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2"
         onClick={(e) => e.preventDefault()} // Prevent navigation in editor
       >
-        {ctaText as string}
+        {ctaTextLabel}
       </a>
     </div>
   );
@@ -51,7 +73,8 @@ export const HeroBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
 // --- Features Block ---
 export const FeaturesBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title, columns } = component.props;
-  const cols = Number(columns) || 3;
+  const cols = getNumber(columns, 3);
+  const titleText = getString(title);
 
   return (
     <div
@@ -64,7 +87,7 @@ export const FeaturesBlock: React.FC<BlockProps> = ({ component, isSelected, onC
       {...listeners}
     >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">{title as string}</h2>
+        <h2 className="text-3xl font-bold text-center mb-12">{titleText}</h2>
         <div className={`grid gap-8 grid-cols-1 md:grid-cols-${cols}`}>
           {Array.from({ length: cols }).map((_, i) => (
             <div key={i} className="p-6 border rounded-lg shadow-sm">
@@ -87,6 +110,9 @@ export const FeaturesBlock: React.FC<BlockProps> = ({ component, isSelected, onC
 // --- CTA Block ---
 export const CtaBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title, buttonText, backgroundColor } = component.props;
+  const titleText = getString(title);
+  const buttonLabel = getString(buttonText);
+  const bgColor = getString(backgroundColor);
 
   return (
     <div
@@ -94,15 +120,15 @@ export const CtaBlock: React.FC<BlockProps> = ({ component, isSelected, onClick,
         "py-16 px-6 text-center",
         isSelected ? 'ring-2 ring-primary ring-offset-2' : 'hover:ring-1 hover:ring-primary/50'
       )}
-      style={{ backgroundColor: backgroundColor as string }}
+      style={{ backgroundColor: bgColor }}
       onClick={onClick}
       {...attributes}
       {...listeners}
     >
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold mb-6">{title as string}</h2>
+        <h2 className="text-3xl font-bold mb-6">{titleText}</h2>
         <button className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 py-2">
-          {buttonText as string}
+          {buttonLabel}
         </button>
       </div>
     </div>
@@ -112,6 +138,7 @@ export const CtaBlock: React.FC<BlockProps> = ({ component, isSelected, onClick,
 // --- Pricing Block ---
 export const PricingBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title } = component.props;
+  const titleText = getString(title);
 
   return (
     <div
@@ -124,7 +151,7 @@ export const PricingBlock: React.FC<BlockProps> = ({ component, isSelected, onCl
       {...listeners}
     >
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">{title as string}</h2>
+        <h2 className="text-3xl font-bold mb-12">{titleText}</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
            {/* Placeholder pricing cards */}
            {[1, 2, 3].map((i) => (
@@ -150,6 +177,7 @@ export const PricingBlock: React.FC<BlockProps> = ({ component, isSelected, onCl
 // --- Testimonials Block ---
 export const TestimonialsBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title } = component.props;
+  const titleText = getString(title);
 
   return (
     <div
@@ -162,7 +190,7 @@ export const TestimonialsBlock: React.FC<BlockProps> = ({ component, isSelected,
       {...listeners}
     >
       <div className="max-w-7xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">{title as string}</h2>
+        <h2 className="text-3xl font-bold mb-12">{titleText}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {[1, 2].map((i) => (
             <div key={i} className="p-6 bg-gray-50 rounded-lg">
@@ -185,6 +213,8 @@ export const TestimonialsBlock: React.FC<BlockProps> = ({ component, isSelected,
 // --- Text Block ---
 export const TextBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { content, fontSize } = component.props;
+  const contentText = getString(content);
+  const size = getString(fontSize, 'base');
 
   const sizeClasses = {
     sm: 'text-sm',
@@ -192,6 +222,9 @@ export const TextBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
     lg: 'text-lg',
     xl: 'text-xl',
   };
+
+  type FontSize = keyof typeof sizeClasses;
+  const sizeClass = size in sizeClasses ? sizeClasses[size as FontSize] : 'text-base';
 
   return (
     <div
@@ -203,8 +236,8 @@ export const TextBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
       {...attributes}
       {...listeners}
     >
-      <div className={cn("prose max-w-none text-gray-700", sizeClasses[fontSize as keyof typeof sizeClasses] || 'text-base')}>
-        {content as string}
+      <div className={cn("prose max-w-none text-gray-700", sizeClass)}>
+        {contentText}
       </div>
     </div>
   );
@@ -213,6 +246,8 @@ export const TextBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
 // --- Image Block ---
 export const ImageBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { src, alt } = component.props;
+  const srcUrl = getString(src);
+  const altText = getString(alt);
 
   return (
     <div
@@ -225,8 +260,8 @@ export const ImageBlock: React.FC<BlockProps> = ({ component, isSelected, onClic
       {...listeners}
     >
       <img
-        src={src as string}
-        alt={alt as string}
+        src={srcUrl}
+        alt={altText}
         className="max-w-full h-auto rounded-lg shadow-sm"
       />
     </div>
@@ -236,12 +271,18 @@ export const ImageBlock: React.FC<BlockProps> = ({ component, isSelected, onClic
 // --- Button Block ---
 export const ButtonBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { text, link, variant } = component.props;
+  const buttonText = getString(text);
+  const linkHref = getString(link);
+  const variantType = getString(variant, 'primary');
 
   const variantStyles = {
     primary: "bg-primary text-primary-foreground hover:bg-primary/90",
     secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
     outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
   };
+
+  type Variant = keyof typeof variantStyles;
+  const variantClass = variantType in variantStyles ? variantStyles[variantType as Variant] : variantStyles.primary;
 
   return (
     <div
@@ -254,14 +295,14 @@ export const ButtonBlock: React.FC<BlockProps> = ({ component, isSelected, onCli
       {...listeners}
     >
       <a
-        href={link as string}
+        href={linkHref}
         className={cn(
           "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2",
-          variantStyles[variant as keyof typeof variantStyles] || variantStyles.primary
+          variantClass
         )}
         onClick={(e) => e.preventDefault()}
       >
-        {text as string}
+        {buttonText}
       </a>
     </div>
   );
@@ -270,6 +311,9 @@ export const ButtonBlock: React.FC<BlockProps> = ({ component, isSelected, onCli
 // --- Form Block ---
 export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick, attributes, listeners }) => {
   const { title, submitText, fields } = component.props;
+  const titleText = getString(title);
+  const submitLabel = getString(submitText);
+  const formFields = getFormFields(fields);
 
   return (
     <div
@@ -282,9 +326,9 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
       {...listeners}
     >
       <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-sm">
-        <h3 className="text-2xl font-bold text-center mb-6">{title as string}</h3>
+        <h3 className="text-2xl font-bold text-center mb-6">{titleText}</h3>
         <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-          {Array.isArray(fields) && (fields as FormField[]).map((field, idx) => (
+          {formFields.map((field, idx) => (
             <div key={idx} className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 {field.label} {field.required && <span className="text-red-500">*</span>}
@@ -297,7 +341,7 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
               />
             </div>
           ))}
-          {(!fields || (fields as unknown[]).length === 0) && (
+          {formFields.length === 0 && (
              <div className="text-sm text-gray-500 italic text-center p-4 border border-dashed rounded">
                 No fields configured. Edit properties to add fields.
              </div>
@@ -307,7 +351,7 @@ export const FormBlock: React.FC<BlockProps> = ({ component, isSelected, onClick
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 rounded-md text-sm font-medium transition-colors"
             disabled // Disabled in editor
           >
-            {submitText as string}
+            {submitLabel}
           </button>
         </form>
       </div>
