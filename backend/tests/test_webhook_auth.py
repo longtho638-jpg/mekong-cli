@@ -28,18 +28,27 @@ from backend.middleware.webhook_auth import (
     WebhookAuthError,
     log_webhook_verification,
     verify_gumroad_signature,
+    verify_stripe_signature,
     verify_timestamp,
 )
 
-# Mock Stripe module for testing
-mock_stripe = MagicMock()
-mock_stripe.Webhook = MagicMock()
-mock_stripe.error = MagicMock()
-sys.modules['stripe'] = mock_stripe
-sys.modules['stripe.error'] = mock_stripe.error
 
-# Now we can import the function that uses stripe
-from backend.middleware.webhook_auth import verify_stripe_signature
+@pytest.fixture
+def mock_stripe():
+    """Mock the stripe module for tests."""
+    mock = MagicMock()
+    mock.Webhook = MagicMock()
+    mock.error = MagicMock()
+    # Define exception class structure
+    mock.error.SignatureVerificationError = type(
+        'SignatureVerificationError',
+        (Exception,),
+        {}
+    )
+
+    # Patch sys.modules to return our mock when 'stripe' is imported
+    with patch.dict(sys.modules, {'stripe': mock}):
+        yield mock
 
 
 class TestGumroadSignatureVerification:
@@ -125,7 +134,7 @@ class TestGumroadSignatureVerification:
 class TestStripeSignatureVerification:
     """Test Stripe webhook signature verification."""
 
-    def test_valid_stripe_signature(self):
+    def test_valid_stripe_signature(self, mock_stripe):
         """Test verification with valid Stripe signature."""
         # Arrange
         payload = b'{"type": "checkout.session.completed"}'
@@ -150,7 +159,7 @@ class TestStripeSignatureVerification:
             tolerance=300
         )
 
-    def test_invalid_stripe_signature(self):
+    def test_invalid_stripe_signature(self, mock_stripe):
         """Test rejection of invalid Stripe signature."""
         # Arrange
         payload = b'{"type": "checkout.session.completed"}'
@@ -204,7 +213,7 @@ class TestStripeSignatureVerification:
         assert exc_info.value.status_code == 401
         assert "Webhook secret not configured" in str(exc_info.value.detail)
 
-    def test_stripe_signature_with_custom_tolerance(self):
+    def test_stripe_signature_with_custom_tolerance(self, mock_stripe):
         """Test Stripe verification with custom timestamp tolerance."""
         # Arrange
         payload = b'{"type": "checkout.session.completed"}'
@@ -423,7 +432,7 @@ class TestIntegration:
         assert verify_gumroad_signature(payload_bytes, signature, secret) is True
 
     def test_stripe_end_to_end_verification(
-        self, sample_stripe_event
+        self, sample_stripe_event, mock_stripe
     ):
         """Test complete Stripe webhook verification flow."""
         # Arrange

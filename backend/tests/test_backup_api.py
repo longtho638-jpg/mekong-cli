@@ -5,41 +5,56 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-# Mock boto3 and botocore before importing anything that might use them
-mock_boto3 = MagicMock()
-sys.modules["boto3"] = mock_boto3
-mock_botocore = MagicMock()
-sys.modules["botocore"] = mock_botocore
-sys.modules["botocore.exceptions"] = MagicMock()
+# Define fixtures for mocking dependencies BEFORE imports that require them
 
-# Mock missing backend.core.infrastructure module which causes import errors in other routers
-mock_infra = MagicMock()
-sys.modules["backend.core.infrastructure"] = mock_infra
-sys.modules["backend.core.infrastructure.database"] = mock_infra
+@pytest.fixture(scope="module")
+def mock_aws_modules():
+    """Mock boto3 and infrastructure modules globally for this test file."""
+    mock_boto3 = MagicMock()
+    mock_botocore = MagicMock()
+    mock_infra = MagicMock()
 
-# Import the router directly
-from backend.api.auth.dependencies import get_current_active_superuser
-from backend.api.auth.utils import TokenData
-from backend.api.routers.backup import router as backup_router
+    # Create a dictionary of modules to patch
+    modules_to_patch = {
+        "boto3": mock_boto3,
+        "botocore": mock_botocore,
+        "botocore.exceptions": MagicMock(),
+        "backend.core.infrastructure": mock_infra,
+        "backend.core.infrastructure.database": mock_infra
+    }
 
-# Create a standalone app for testing this router
-app = FastAPI()
-app.include_router(backup_router)
+    # Apply patches
+    with patch.dict(sys.modules, modules_to_patch):
+        yield
 
-# Override dependency to bypass auth
-async def mock_superuser():
-    return TokenData(username="admin", role="superuser")
+@pytest.fixture
+def client(mock_aws_modules):
+    # Import router INSIDE fixture to ensure mocks are in place
+    from backend.api.auth.dependencies import get_current_active_superuser
+    from backend.api.auth.utils import TokenData
+    from backend.api.routers.backup import router as backup_router
 
-app.dependency_overrides[get_current_active_superuser] = mock_superuser
+    # Create a standalone app for testing this router
+    app = FastAPI()
+    app.include_router(backup_router)
 
-client = TestClient(app)
+    # Override dependency to bypass auth
+    async def mock_superuser():
+        return TokenData(username="admin", role="superuser")
+
+    app.dependency_overrides[get_current_active_superuser] = mock_superuser
+
+    return TestClient(app)
 
 @pytest.fixture
 def mock_orchestrator():
     with patch("backend.api.routers.backup.get_orchestrator") as mock:
         yield mock
 
-def test_list_backups_endpoint():
+def test_list_backups_endpoint(client):
+    # Re-import inside test or use patch on the module path that was imported
+    # Since we imported inside fixture, we need to patch where it was imported from
+    # But standard patching works on the target module path
     with patch("backend.api.routers.backup.S3StorageAdapter") as mock_storage_cls:
         mock_instance = mock_storage_cls.return_value
         # Async mock for list_backups
@@ -51,7 +66,7 @@ def test_list_backups_endpoint():
         assert response.status_code == 200
         assert response.json() == ["backup1.json", "backup2.json"]
 
-def test_trigger_backup_endpoint(mock_orchestrator):
+def test_trigger_backup_endpoint(client, mock_orchestrator):
     # Mock orchestrator instance
     mock_orch_instance = MagicMock()
     mock_orchestrator.return_value = mock_orch_instance
@@ -60,6 +75,9 @@ def test_trigger_backup_endpoint(mock_orchestrator):
     async def async_backup(*args, **kwargs):
         from datetime import datetime
 
+        # We need to import BackupMetadata.
+        # Since we mocked backend.core.infrastructure, verify imports work.
+        # backend.services.backup.interfaces likely doesn't depend on infra directly.
         from backend.services.backup.interfaces import BackupMetadata
         return BackupMetadata(
             timestamp=datetime.utcnow(),
@@ -79,7 +97,7 @@ def test_trigger_backup_endpoint(mock_orchestrator):
     assert data["backup_id"] == "test-id"
     assert data["status"] == "completed"
 
-def test_restore_backup_endpoint(mock_orchestrator):
+def test_restore_backup_endpoint(client, mock_orchestrator):
     mock_orch_instance = MagicMock()
     mock_orchestrator.return_value = mock_orch_instance
 

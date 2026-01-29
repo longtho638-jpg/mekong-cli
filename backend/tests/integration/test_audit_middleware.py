@@ -1,24 +1,6 @@
 import sys
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-# sys.modules["supabase"] = MagicMock()
-# sys.modules["gotrue"] = MagicMock()
-# sys.modules["cryptography"] = MagicMock()
-# sys.modules["cryptography.exceptions"] = MagicMock()
-# sys.modules["cryptography.fernet"] = MagicMock()
-# sys.modules["cryptography.hazmat"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.asymmetric"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.asymmetric.padding"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.hashes"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.serialization"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.kdf"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.kdf.hkdf"] = MagicMock()
-# sys.modules["cryptography.hazmat.primitives.ciphers"] = MagicMock()
-# sys.modules["cryptography.hazmat.backends"] = MagicMock()
-# sys.modules["backend.services.backup.encryption"] = MagicMock()
-# We also need to mock dependencies that might trigger DB connections or other external calls on import if they cause issues
-# sys.modules["backend.core.infrastructure.redis"] = MagicMock()
 import pytest
 from fastapi.testclient import TestClient
 

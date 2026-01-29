@@ -31,6 +31,7 @@ with patch("redis.asyncio.ConnectionPool.from_url") as mock_pool_from_url, \
     mock_redis_instance.setex = AsyncMock(return_value=True)
     mock_redis_cls.return_value = mock_redis_instance
 
+
     # Also mock sync redis if used anywhere
     with patch("redis.ConnectionPool.from_url"), patch("redis.Redis"):
 
@@ -42,8 +43,6 @@ with patch("redis.asyncio.ConnectionPool.from_url") as mock_pool_from_url, \
 
         from backend.api.main import app
         from backend.api.routers.executive import get_revenue_service
-
-client = TestClient(app)
 
 # Mock RevenueService
 mock_revenue_service = Mock()
@@ -65,8 +64,16 @@ mock_revenue_service.get_revenue_trend.return_value = [
     {"snapshot_date": "2023-01-02", "mrr": 10000.0, "active_subscribers": 100}
 ]
 
-# Override dependency
-app.dependency_overrides[get_revenue_service] = lambda: mock_revenue_service
+@pytest.fixture
+def client():
+    # Override dependency
+    app.dependency_overrides[get_revenue_service] = lambda: mock_revenue_service
+
+    with TestClient(app) as c:
+        yield c
+
+    # Cleanup
+    app.dependency_overrides = {}
 
 @pytest.fixture
 def mock_crm():
@@ -101,7 +108,7 @@ def mock_middleware():
         mock_dispatch.side_effect = dispatch
         yield mock_dispatch
 
-def test_get_executive_dashboard(mock_crm, mock_rate_limiter, mock_middleware):
+def test_get_executive_dashboard(client, mock_crm, mock_rate_limiter, mock_middleware):
     """Test fetching executive dashboard metrics."""
     # We must ensure RateLimitMiddleware doesn't block us or fail
     response = client.get("/executive/dashboard?tenant_id=test_tenant")
@@ -126,7 +133,7 @@ def test_get_executive_dashboard(mock_crm, mock_rate_limiter, mock_middleware):
     # Alerts
     assert isinstance(data["alerts"], list)
 
-def test_download_executive_report(mock_crm, mock_rate_limiter, mock_middleware):
+def test_download_executive_report(client, mock_crm, mock_rate_limiter, mock_middleware):
     """Test PDF report generation endpoint."""
     with patch("backend.services.pdf_generator.pdf_generator.generate_executive_report") as mock_pdf:
         mock_pdf.return_value = b"%PDF-1.4 mock pdf content"

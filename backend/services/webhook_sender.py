@@ -17,7 +17,7 @@ from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from backend.api.routers.webhooks.models import DeliveryStatus
-from backend.core.infrastructure.database import get_db
+from backend.db.session import get_db
 from backend.models.webhooks import WebhookConfig, WebhookDelivery, WebhookFailure
 
 logger = logging.getLogger(__name__)

@@ -3,11 +3,16 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-# Mock google.generativeai globally for tests
-sys.modules["google.generativeai"] = MagicMock()
-
 from backend.services.llm.service import LLMService
 from backend.services.llm.types import LLMResponse, TokenUsage
+
+
+@pytest.fixture(autouse=True)
+def mock_google_genai():
+    """Mock google.generativeai to prevent import errors or side effects."""
+    mock = MagicMock()
+    with patch.dict(sys.modules, {"google.generativeai": mock}):
+        yield mock
 
 
 @pytest.fixture

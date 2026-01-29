@@ -1,11 +1,6 @@
 import sys
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-# Mock problematic dependencies before they are imported
-sys.modules["supabase"] = MagicMock()
-sys.modules["gotrue"] = MagicMock()
-sys.modules["backend.services.audit_service"] = MagicMock()  # This might import supabase indirectly
-
 import pytest
 
 from backend.services.security_monitor import SecurityMonitor
@@ -13,7 +8,9 @@ from backend.services.security_monitor import SecurityMonitor
 
 @pytest.fixture
 def monitor():
-    return SecurityMonitor()
+    # Patch the logger to avoid cluttering output
+    with patch('backend.services.security_monitor.logger'):
+        yield SecurityMonitor()
 
 @pytest.mark.asyncio
 async def test_monitor_logs_event(monitor):

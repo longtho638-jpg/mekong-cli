@@ -3,12 +3,17 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-# Mock google.generativeai globally
-sys.modules["google.generativeai"] = MagicMock()
-
 from backend.services.rag.embeddings import GeminiEmbeddings
 from backend.services.rag.service import RAGService
 from backend.services.rag.vector_store import InMemoryVectorStore
+
+
+@pytest.fixture(autouse=True)
+def mock_google_genai():
+    """Mock google.generativeai to prevent import errors or side effects."""
+    mock = MagicMock()
+    with patch.dict(sys.modules, {"google.generativeai": mock}):
+        yield mock
 
 
 @pytest.fixture

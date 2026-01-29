@@ -4,16 +4,31 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-# Mock external dependencies
-sys.modules["google.generativeai"] = MagicMock()
+# We will patch google.generativeai inside the fixture or test execution if needed
+# But better yet, since we mock RAGService entirely, we might not even need to mock google.generativeai globally
+# if the imports are lazy or if we patch where it is used.
+# However, if the module imports it at top level, we might crash if library not installed.
+# Assuming dev environment has requirements installed or we mock it.
+
+# To be safe and avoid ImportErrors if google-generativeai is missing in test env:
+# We use patch.dict on sys.modules around the imports if necessary, but here we can just rely on mocking the service.
 
 from backend.api.main import app
 from backend.api.routers.llm import RAGIngestRequest, RAGQueryRequest
 
 
 @pytest.fixture
-def client():
+def mock_google_genai():
+    """Mock google.generativeai to prevent import errors or side effects."""
+    mock = MagicMock()
+    with patch.dict(sys.modules, {"google.generativeai": mock}):
+        yield mock
+
+
+@pytest.fixture
+def client(mock_google_genai):
     return TestClient(app)
+
 
 @pytest.fixture
 def mock_rag_service():

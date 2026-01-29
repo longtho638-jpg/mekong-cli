@@ -1,11 +1,6 @@
 import sys
 from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-# Mock problematic dependencies before they are imported
-sys.modules["supabase"] = MagicMock()
-sys.modules["gotrue"] = MagicMock()
-sys.modules["backend.middleware.license_validator"] = MagicMock()
-
 import pytest
 from fastapi import Request, Response
 
@@ -19,7 +14,9 @@ def mock_app():
 
 @pytest.fixture
 def middleware(mock_app):
-    return JWTRotationMiddleware(mock_app)
+    # If license_validator or other dependencies need mocking, do it here with patch
+    with patch("backend.middleware.license_validator"):
+        return JWTRotationMiddleware(mock_app)
 
 @pytest.mark.asyncio
 async def test_jwt_rotation_valid_token(middleware, mock_app):
