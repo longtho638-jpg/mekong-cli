@@ -9,10 +9,8 @@ from fastapi.testclient import TestClient
 # if the imports are lazy or if we patch where it is used.
 # However, if the module imports it at top level, we might crash if library not installed.
 # Assuming dev environment has requirements installed or we mock it.
-
 # To be safe and avoid ImportErrors if google-generativeai is missing in test env:
 # We use patch.dict on sys.modules around the imports if necessary, but here we can just rely on mocking the service.
-
 from backend.api.main import app
 from backend.api.routers.llm import RAGIngestRequest, RAGQueryRequest
 

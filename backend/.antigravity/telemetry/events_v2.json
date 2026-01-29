@@ -1,0 +1,46 @@
+[
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T07:06:51.270859",
+    "d": 0.022624999999720785,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T07:06:51.272825",
+    "d": 0.8015410000012935,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "swarm_on_message",
+    "t": "2026-01-29T07:08:28.211017",
+    "d": 0.025707999999013964,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  },
+  {
+    "c": "agent",
+    "a": "research_search",
+    "t": "2026-01-29T07:08:28.212951",
+    "d": 0.945000000001528,
+    "s": "success",
+    "m": {
+      "agent_id": "researcher",
+      "agent_role": null
+    }
+  }
+]
