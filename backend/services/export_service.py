@@ -16,25 +16,23 @@ try:
 except ImportError:
     HTML = None
 
-ExportFormat = Literal['csv', 'json', 'pdf', 'xlsx']
+ExportFormat = Literal["csv", "json", "pdf", "xlsx"]
 
 logger = logging.getLogger(__name__)
 
+
 class ExportService:
     def export_data(
-        self,
-        data: List[Dict[str, Any]],
-        format: ExportFormat,
-        template_id: Optional[str] = None
+        self, data: List[Dict[str, Any]], format: ExportFormat, template_id: Optional[str] = None
     ) -> BinaryIO:
         """Main export dispatch"""
-        if format == 'csv':
+        if format == "csv":
             return self._export_csv(data)
-        elif format == 'json':
+        elif format == "json":
             return self._export_json(data)
-        elif format == 'pdf':
+        elif format == "pdf":
             return self._export_pdf(data, template_id)
-        elif format == 'xlsx':
+        elif format == "xlsx":
             return self._export_xlsx(data)
         else:
             raise ValueError(f"Unsupported format: {format}")
@@ -42,31 +40,26 @@ class ExportService:
     def _export_csv(self, data: List[Dict[str, Any]]) -> BinaryIO:
         # UTF-8 BOM for Excel compatibility
         output = io.StringIO()
-        output.write('\ufeff')  # BOM
+        output.write("\ufeff")  # BOM
 
         if not data:
-            return io.BytesIO(output.getvalue().encode('utf-8'))
+            return io.BytesIO(output.getvalue().encode("utf-8"))
 
         writer = csv.DictWriter(output, fieldnames=data[0].keys())
         writer.writeheader()
         writer.writerows(data)
 
-        return io.BytesIO(output.getvalue().encode('utf-8'))
+        return io.BytesIO(output.getvalue().encode("utf-8"))
 
     def _export_json(self, data: List[Dict[str, Any]]) -> BinaryIO:
         # Pretty print with default serializer for dates
         def json_serial(obj):
             if isinstance(obj, (datetime, datetime.date)):
                 return obj.isoformat()
-            raise TypeError (f"Type {type(obj)} not serializable")
+            raise TypeError(f"Type {type(obj)} not serializable")
 
-        json_str = json.dumps(
-            data,
-            indent=2,
-            ensure_ascii=False,
-            default=json_serial
-        )
-        return io.BytesIO(json_str.encode('utf-8'))
+        json_str = json.dumps(data, indent=2, ensure_ascii=False, default=json_serial)
+        return io.BytesIO(json_str.encode("utf-8"))
 
     def _export_pdf(self, data: List[Dict[str, Any]], template_id: Optional[str]) -> BinaryIO:
         if HTML is None:
@@ -95,16 +88,16 @@ class ExportService:
             <table>
                 <thead>
                     <tr>
-                        {''.join(f'<th>{h}</th>' for h in headers)}
+                        {"".join(f"<th>{h}</th>" for h in headers)}
                     </tr>
                 </thead>
                 <tbody>
-                    {''.join(
-                        '<tr>' +
-                        ''.join(f'<td>{str(row.get(h, ""))}</td>' for h in headers) +
-                        '</tr>'
-                        for row in data
-                    )}
+                    {
+            "".join(
+                "<tr>" + "".join("<td>" + str(row.get(h, "")) + "</td>" for h in headers) + "</tr>"
+                for row in data
+            )
+        }
                 </tbody>
             </table>
         </body>
