@@ -1,13 +1,37 @@
 # ============================================================================
-# Docker Ignore - Optimized for Backend Build
+# Docker Ignore - Optimized for Monorepo Build
 # ============================================================================
 
-# Git
+# Git & Version Control
 .git/
 .gitignore
 .gitattributes
 
-# Python artifacts
+# Environment & Virtual Envs (Heavy!)
+.env
+.venv/
+venv/
+env/
+backend/.venv/
+.agencyos/
+.antigravity/
+.claude/
+.claude-skills/
+.agent/
+.cleo/
+.mekong/
+.taskmaster/
+
+# Dependencies (Heavy!)
+node_modules/
+**/node_modules/
+backend/.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Python Artifacts
 __pycache__/
 *.py[cod]
 *$py.class
@@ -29,50 +53,20 @@ wheels/
 .installed.cfg
 *.egg
 
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-backend/.venv/
-
-# IDE settings
+# IDE Settings
 .idea/
 .vscode/
-.claude/
-.claude-skills/
-.agent/
-.cleo/
 *.swp
 *.swo
 
-# Frontend - NOTE: These are now INCLUDED because we build frontend Docker too
-# To revert to backend-only builds, uncomment the lines below
-# apps/
-# packages/
-# package.json
-# pnpm-lock.yaml
-# pnpm-workspace.yaml
-
-# Keep node_modules and yarn excluded
-node_modules/
-yarn.lock
-
-# Documentation
+# Large Directories / Other Projects (Exclude to reduce context)
+products/
+external/
+mekong-docs/
+docs-portal/
+newsletter-saas/
 docs/
 plans/
-*.md
-!README.md
-
-# Testing & Coverage
-tests/
-pytest.ini
-.pytest_cache/
-.coverage
-htmlcov/
-.tox/
-.nox/
 
 # Logs & Temp
 *.log
@@ -80,20 +74,34 @@ logs/
 tmp/
 temp/
 
+# Docker Artifacts
+docker-compose*.yml
+Dockerfile*
+!backend/Dockerfile
+!apps/dashboard/Dockerfile
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+cloudbuild.yaml
+
 # Database (Local)
 *.db
 *.sqlite
 *.sqlite3
 data/
+agencyos.db
 
-# Docker artifacts
-docker-compose*.yml
-Dockerfile*
-!backend/Dockerfile
+# Frontend - Ignore all other apps to save context
+apps/*
+!apps/dashboard/
+!apps/dashboard/**
 
-# CI/CD
-.github/
-.gitlab-ci.yml
-
-# Other Products
+# Large Directories / Other Projects (Exclude to reduce context)
 products/
+external/
+mekong-docs/
+docs-portal/
+newsletter-saas/
+docs/
+plans/
