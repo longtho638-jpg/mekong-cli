@@ -2,10 +2,12 @@
 Retry Strategy Service.
 Handles exponential backoff calculations with jitter.
 """
+
 import logging
 import random
 
 logger = logging.getLogger(__name__)
+
 
 class RetryStrategy:
     """
@@ -18,7 +20,9 @@ class RetryStrategy:
     - Max delay: 64s
     """
 
-    def __init__(self, base_delay: float = 1.0, max_delay: float = 64.0, jitter_factor: float = 0.2):
+    def __init__(
+        self, base_delay: float = 1.0, max_delay: float = 64.0, jitter_factor: float = 0.2
+    ):
         self.base_delay = base_delay
         self.max_delay = max_delay
         self.jitter_factor = jitter_factor

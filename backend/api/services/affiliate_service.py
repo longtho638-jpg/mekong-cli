@@ -7,6 +7,7 @@ Handles the core logic for the affiliate system including:
 - Commission calculation
 - Payout generation with Vietnam tax compliance
 """
+
 import os
 import secrets
 import string
@@ -24,6 +25,7 @@ VND_RATE = 25000.0
 VN_TAX_THRESHOLD = 500000000  # 500 million VND (~$20k)
 VN_TAX_RATE_LOW = Decimal("0.005")  # 0.5%
 VN_TAX_RATE_HIGH = Decimal("0.20")  # 20%
+
 
 class AffiliateService:
     """Service for managing affiliate operations."""
@@ -43,7 +45,7 @@ class AffiliateService:
     def _generate_affiliate_code(self, length: int = 8) -> str:
         """Generate a random alphanumeric code."""
         alphabet = string.ascii_uppercase + string.digits
-        return ''.join(secrets.choice(alphabet) for _ in range(length))
+        return "".join(secrets.choice(alphabet) for _ in range(length))
 
     def create_affiliate(
         self,
@@ -51,7 +53,7 @@ class AffiliateService:
         agency_id: str,
         payment_email: str,
         commission_rate: float = 0.20,
-        tax_id: Optional[str] = None
+        tax_id: Optional[str] = None,
     ) -> Affiliate:
         """
         Create a new affiliate profile for a user.
@@ -80,7 +82,7 @@ class AffiliateService:
             "payment_email": payment_email,
             "tax_id": tax_id,
             "status": AffiliateStatus.ACTIVE.value,
-            "settings": {}
+            "settings": {},
         }
 
         result = self.client.table("affiliates").insert(data).execute()
@@ -116,7 +118,7 @@ class AffiliateService:
         amount: float,
         external_id: str,
         currency: str = "USD",
-        metadata: Dict = None
+        metadata: Dict = None,
     ) -> Conversion:
         """
         Record a conversion (sale) and calculate commission.
@@ -147,7 +149,7 @@ class AffiliateService:
             "currency": currency,
             "commission_amount": float(commission_amount),
             "status": ConversionStatus.PENDING.value,
-            "metadata": metadata or {}
+            "metadata": metadata or {},
         }
 
         result = self.client.table("conversions").insert(data).execute()
@@ -165,7 +167,9 @@ class AffiliateService:
             return Conversion(**result.data[0])
         raise Exception("Failed to update conversion")
 
-    def _calculate_vn_tax_rate(self, amount_vnd: Decimal, current_quarter_income_vnd: Decimal) -> Tuple[Decimal, Decimal]:
+    def _calculate_vn_tax_rate(
+        self, amount_vnd: Decimal, current_quarter_income_vnd: Decimal
+    ) -> Tuple[Decimal, Decimal]:
         """
         Calculate tax rate based on Vietnam affiliate tax laws (2026).
 
@@ -200,7 +204,9 @@ class AffiliateService:
         tax_amount = amount_vnd * rate
         return rate, tax_amount
 
-    def generate_payout(self, affiliate_id: str, period_start: date, period_end: date, min_threshold: float = 50.0) -> Optional[Payout]:
+    def generate_payout(
+        self, affiliate_id: str, period_start: date, period_end: date, min_threshold: float = 50.0
+    ) -> Optional[Payout]:
         """
         Generate a payout record for an affiliate for a given period.
         Aggregates all 'PAID' status conversions that haven't been paid out yet.
@@ -272,7 +278,7 @@ class AffiliateService:
             "tax_rate": float(tax_rate),
             "status": PayoutStatus.PENDING.value,
             "period_start": period_start.isoformat(),
-            "period_end": period_end.isoformat()
+            "period_end": period_end.isoformat(),
         }
 
         payout_res = self.client.table("payouts").insert(payout_data).execute()
@@ -283,7 +289,9 @@ class AffiliateService:
 
         # 5. Link conversions to this payout
         conversion_ids = [c["id"] for c in conversions]
-        self.client.table("conversions").update({"payout_id": payout.id}).in_("id", conversion_ids).execute()
+        self.client.table("conversions").update({"payout_id": payout.id}).in_(
+            "id", conversion_ids
+        ).execute()
 
         return payout
 
@@ -292,16 +300,34 @@ class AffiliateService:
         Get aggregated stats for the affiliate dashboard.
         """
         # Total Clicks
-        clicks_result = self.client.table("affiliate_links").select("clicks").eq("affiliate_id", affiliate_id).execute()
+        clicks_result = (
+            self.client.table("affiliate_links")
+            .select("clicks")
+            .eq("affiliate_id", affiliate_id)
+            .execute()
+        )
         total_clicks = sum(item["clicks"] for item in clicks_result.data)
 
         # Conversions
-        conv_result = self.client.table("conversions").select("amount, commission_amount, status").eq("affiliate_id", affiliate_id).execute()
+        conv_result = (
+            self.client.table("conversions")
+            .select("amount, commission_amount, status")
+            .eq("affiliate_id", affiliate_id)
+            .execute()
+        )
         conversions = conv_result.data
 
         total_sales = sum(c["amount"] for c in conversions)
-        total_earnings = sum(c["commission_amount"] for c in conversions if c["status"] != ConversionStatus.REFUNDED.value)
-        pending_payout = sum(c["commission_amount"] for c in conversions if c["status"] == ConversionStatus.PENDING.value)
+        total_earnings = sum(
+            c["commission_amount"]
+            for c in conversions
+            if c["status"] != ConversionStatus.REFUNDED.value
+        )
+        pending_payout = sum(
+            c["commission_amount"]
+            for c in conversions
+            if c["status"] == ConversionStatus.PENDING.value
+        )
         # Note: Logic on 'pending' depends on status definitions.
 
         return {
@@ -309,5 +335,5 @@ class AffiliateService:
             "conversions": len(conversions),
             "total_sales": total_sales,
             "total_earnings": total_earnings,
-            "pending_payout": pending_payout
+            "pending_payout": pending_payout,
         }

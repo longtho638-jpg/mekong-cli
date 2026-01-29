@@ -19,15 +19,27 @@ class POCTrackerAgent:
         self.status = "ready"
         self.pocs: Dict[str, POC] = {}
 
-    def create_poc(self, company: str, contact: str, use_case: str, deal_value: float,
-                   duration_days: int = 14, se_assigned: str = "") -> POC:
+    def create_poc(
+        self,
+        company: str,
+        contact: str,
+        use_case: str,
+        deal_value: float,
+        duration_days: int = 14,
+        se_assigned: str = "",
+    ) -> POC:
         """Create new POC"""
         poc_id = f"poc_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
         poc = POC(
-            id=poc_id, company=company, contact=contact, use_case=use_case,
-            deal_value=deal_value, start_date=datetime.now(),
+            id=poc_id,
+            company=company,
+            contact=contact,
+            use_case=use_case,
+            deal_value=deal_value,
+            start_date=datetime.now(),
             end_date=datetime.now() + timedelta(days=duration_days),
-            se_assigned=se_assigned, stage=POCStage.IN_PROGRESS,
+            se_assigned=se_assigned,
+            stage=POCStage.IN_PROGRESS,
         )
         self.pocs[poc_id] = poc
         return poc
@@ -63,7 +75,9 @@ class POCTrackerAgent:
 
     def get_active(self) -> List[POC]:
         """Get active POCs"""
-        return [p for p in self.pocs.values() if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]]
+        return [
+            p for p in self.pocs.values() if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]
+        ]
 
     def get_stats(self) -> Dict:
         """Get POC statistics"""
@@ -76,6 +90,8 @@ class POCTrackerAgent:
             "won": won,
             "lost": len([p for p in pocs if p.stage == POCStage.LOST]),
             "win_rate": f"{won / closed * 100:.0f}%" if closed > 0 else "0%",
-            "pipeline_value": sum(p.deal_value for p in pocs if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]),
+            "pipeline_value": sum(
+                p.deal_value for p in pocs if p.stage in [POCStage.IN_PROGRESS, POCStage.EVALUATION]
+            ),
             "won_value": sum(p.deal_value for p in pocs if p.stage == POCStage.WON),
         }

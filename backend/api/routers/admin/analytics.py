@@ -7,13 +7,15 @@ from backend.api.services.admin_service import AdminService
 
 router = APIRouter(prefix="/analytics", tags=["admin-analytics"])
 
+
 def get_admin_service() -> AdminService:
     return AdminService()
+
 
 @router.get("/overview", dependencies=[Depends(require_viewer)])
 async def get_analytics_overview(
     period: str = Query("30d", description="Time period (24h, 7d, 30d, 90d)"),
-    service: AdminService = Depends(get_admin_service)
+    service: AdminService = Depends(get_admin_service),
 ) -> Dict[str, Any]:
     """Get analytics overview metrics."""
     # Placeholder for actual analytics implementation
@@ -25,13 +27,14 @@ async def get_analytics_overview(
         "api_requests": 1500000,
         "api_requests_growth": 25.0,
         "success_rate": 99.95,
-        "period": period
+        "period": period,
     }
+
 
 @router.get("/revenue", dependencies=[Depends(require_viewer)])
 async def get_revenue_metrics(
     period: str = Query("30d", description="Time period"),
-    service: AdminService = Depends(get_admin_service)
+    service: AdminService = Depends(get_admin_service),
 ) -> Dict[str, Any]:
     """Get revenue analytics."""
     return {
@@ -40,9 +43,5 @@ async def get_revenue_metrics(
             {"date": "2024-01-02", "amount": 1200},
             {"date": "2024-01-03", "amount": 1100},
         ],
-        "plans_breakdown": {
-            "starter": 40,
-            "pro": 40,
-            "enterprise": 20
-        }
+        "plans_breakdown": {"starter": 40, "pro": 40, "enterprise": 20},
     }

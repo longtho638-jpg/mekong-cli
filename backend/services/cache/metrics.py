@@ -12,6 +12,7 @@ from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class CacheMetrics:
     hits: int = 0
@@ -23,12 +24,12 @@ class CacheMetrics:
     evictions: int = 0
 
     # Track by operation type
-    ops_latency: Dict[str, float] = field(default_factory=lambda: {
-        "get": 0.0, "set": 0.0, "delete": 0.0, "exists": 0.0
-    })
-    ops_count: Dict[str, int] = field(default_factory=lambda: {
-        "get": 0, "set": 0, "delete": 0, "exists": 0
-    })
+    ops_latency: Dict[str, float] = field(
+        default_factory=lambda: {"get": 0.0, "set": 0.0, "delete": 0.0, "exists": 0.0}
+    )
+    ops_count: Dict[str, int] = field(
+        default_factory=lambda: {"get": 0, "set": 0, "delete": 0, "exists": 0}
+    )
 
     def increment_hit(self):
         self.hits += 1
@@ -85,11 +86,13 @@ class CacheMetrics:
             "errors": self.errors,
             "hit_rate_percent": round(self.get_hit_rate(), 2),
             "avg_latency_ms": round(self.get_avg_latency(), 4),
-            "ops_breakdown": self.ops_count
+            "ops_breakdown": self.ops_count,
         }
+
 
 # Global metrics instance
 global_metrics = CacheMetrics()
+
 
 class MetricsContext:
     """Context manager for tracking cache operation latency"""

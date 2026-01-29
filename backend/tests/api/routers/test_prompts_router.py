@@ -15,23 +15,37 @@ from backend.models.prompt import Prompt
 def client():
     return TestClient(app)
 
+
 @pytest.fixture
 def override_auth():
     # Mock auth dependency to bypass security
     from backend.api.auth.dependencies import get_current_active_superuser
-    app.dependency_overrides[get_current_active_superuser] = lambda: {"id": "admin", "is_superuser": True}
+
+    app.dependency_overrides[get_current_active_superuser] = lambda: {
+        "id": "admin",
+        "is_superuser": True,
+    }
     yield
     app.dependency_overrides = {}
+
 
 @pytest.fixture
 def mock_prompt_service():
     with patch("backend.api.routers.prompts.prompt_service") as mock:
         yield mock
 
+
 def test_list_prompts(client, override_auth, mock_prompt_service):
     # Setup mock
     mock_prompt_service.list_prompts.return_value = [
-        Prompt(id=1, name="Test Prompt", slug="test-prompt", content="Content", created_at=datetime.now(), version=1)
+        Prompt(
+            id=1,
+            name="Test Prompt",
+            slug="test-prompt",
+            content="Content",
+            created_at=datetime.now(),
+            version=1,
+        )
     ]
 
     response = client.get("/prompts/")
@@ -42,10 +56,16 @@ def test_list_prompts(client, override_auth, mock_prompt_service):
     assert data[0]["slug"] == "test-prompt"
     mock_prompt_service.list_prompts.assert_called_once()
 
+
 def test_get_prompt_by_slug(client, override_auth, mock_prompt_service):
     # Setup mock
     mock_prompt_service.get_prompt_by_slug.return_value = Prompt(
-        id=1, name="Test Prompt", slug="test-prompt", content="Content", created_at=datetime.now(), version=1
+        id=1,
+        name="Test Prompt",
+        slug="test-prompt",
+        content="Content",
+        created_at=datetime.now(),
+        version=1,
     )
 
     response = client.get("/prompts/test-prompt")
@@ -55,6 +75,7 @@ def test_get_prompt_by_slug(client, override_auth, mock_prompt_service):
     assert data["slug"] == "test-prompt"
     mock_prompt_service.get_prompt_by_slug.assert_called_once()
 
+
 def test_get_prompt_not_found(client, override_auth, mock_prompt_service):
     mock_prompt_service.get_prompt_by_slug.return_value = None
 
@@ -63,16 +84,22 @@ def test_get_prompt_not_found(client, override_auth, mock_prompt_service):
     assert response.status_code == 404
     mock_prompt_service.get_prompt_by_slug.assert_called_once()
 
+
 def test_create_prompt(client, override_auth, mock_prompt_service):
     mock_prompt_service.create_prompt.return_value = Prompt(
-        id=1, name="New Prompt", slug="new-prompt", content="New Content", created_at=datetime.now(), version=1
+        id=1,
+        name="New Prompt",
+        slug="new-prompt",
+        content="New Content",
+        created_at=datetime.now(),
+        version=1,
     )
 
     payload = {
         "name": "New Prompt",
         "slug": "new-prompt",
         "content": "New Content",
-        "input_variables": ["var1"]
+        "input_variables": ["var1"],
     }
 
     response = client.post("/prompts/", json=payload)
@@ -82,9 +109,15 @@ def test_create_prompt(client, override_auth, mock_prompt_service):
     assert data["name"] == "New Prompt"
     mock_prompt_service.create_prompt.assert_called_once()
 
+
 def test_update_prompt(client, override_auth, mock_prompt_service):
     mock_prompt_service.update_prompt.return_value = Prompt(
-        id=1, name="Updated Prompt", slug="test-prompt", content="Updated Content", created_at=datetime.now(), version=2
+        id=1,
+        name="Updated Prompt",
+        slug="test-prompt",
+        content="Updated Content",
+        created_at=datetime.now(),
+        version=2,
     )
 
     payload = {"content": "Updated Content"}
@@ -96,6 +129,7 @@ def test_update_prompt(client, override_auth, mock_prompt_service):
     assert data["content"] == "Updated Content"
     assert data["version"] == 2
     mock_prompt_service.update_prompt.assert_called_once()
+
 
 def test_delete_prompt(client, override_auth, mock_prompt_service):
     mock_prompt_service.delete_prompt.return_value = True

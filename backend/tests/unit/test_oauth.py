@@ -16,22 +16,21 @@ from backend.services.token_service import TokenService
 TEST_SECRET_KEY = "test-secret-key"
 TEST_ISSUER = "test-issuer"
 
+
 @pytest.fixture(scope="session")
 def engine():
     return create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+
 
 @pytest.fixture(scope="session")
 def tables(engine):
     # Only create OAuth tables to avoid Foreign Key errors with missing User table
     # in other models that might be registered in Base
-    target_tables = [
-        OAuthClient.__table__,
-        OAuthGrant.__table__,
-        OAuthToken.__table__
-    ]
+    target_tables = [OAuthClient.__table__, OAuthGrant.__table__, OAuthToken.__table__]
     Base.metadata.create_all(engine, tables=target_tables)
     yield
     Base.metadata.drop_all(engine, tables=target_tables)
+
 
 @pytest.fixture
 def db_session(engine, tables):
@@ -46,9 +45,11 @@ def db_session(engine, tables):
     transaction.rollback()
     connection.close()
 
+
 @pytest.fixture
 def jwt_service(monkeypatch):
     """Mock settings for JWTService"""
+
     class MockSettings:
         secret_key = TEST_SECRET_KEY
         jwt_algorithm = "HS256"
@@ -59,13 +60,16 @@ def jwt_service(monkeypatch):
     monkeypatch.setattr("backend.services.jwt_service.settings", MockSettings())
     return JWTService()
 
+
 @pytest.fixture
 def oauth_service(db_session: Session):
     return OAuthService(db_session)
 
+
 @pytest.fixture
 def token_service(db_session: Session):
     return TokenService(db_session)
+
 
 @pytest.mark.asyncio
 async def test_jwt_generation_validation(jwt_service):
@@ -89,6 +93,7 @@ async def test_jwt_generation_validation(jwt_service):
     # We should patch that too.
 
     from unittest.mock import AsyncMock
+
     jwt_service.redis = AsyncMock()
     jwt_service.redis.exists.return_value = 0
 
@@ -100,6 +105,7 @@ async def test_jwt_generation_validation(jwt_service):
     assert payload["iss"] == TEST_ISSUER
     assert payload["jti"] == jti
 
+
 def test_client_registration(oauth_service):
     """Test OAuth client registration"""
     client_data = OAuthClientCreate(
@@ -107,7 +113,7 @@ def test_client_registration(oauth_service):
         redirect_uris=["http://localhost/cb"],
         grant_types=["authorization_code"],
         scopes=["read"],
-        is_confidential=True
+        is_confidential=True,
     )
 
     client, secret = oauth_service.register_client(client_data)
@@ -119,14 +125,12 @@ def test_client_registration(oauth_service):
     assert len(secret) > 20
     # Hash should be stored
     assert client.client_secret_hash != secret
-    assert len(client.client_secret_hash) == 64 # SHA256 hex digest length
+    assert len(client.client_secret_hash) == 64  # SHA256 hex digest length
+
 
 def test_authenticate_client(oauth_service):
     """Test client authentication"""
-    client_data = OAuthClientCreate(
-        client_name="Test App",
-        redirect_uris=["http://localhost/cb"]
-    )
+    client_data = OAuthClientCreate(client_name="Test App", redirect_uris=["http://localhost/cb"])
     client, secret = oauth_service.register_client(client_data)
 
     # Valid
@@ -142,21 +146,21 @@ def test_authenticate_client(oauth_service):
     auth_client = oauth_service.authenticate_client("wrong-id", secret)
     assert auth_client is None
 
+
 def test_authorization_code_flow(oauth_service, token_service):
     """Test full authorization code flow"""
     # 1. Register Client
     client_data = OAuthClientCreate(
-        client_name="Test App",
-        redirect_uris=["http://localhost/cb"],
-        scopes=["read"]
+        client_name="Test App", redirect_uris=["http://localhost/cb"], scopes=["read"]
     )
     client, _ = oauth_service.register_client(client_data)
 
     # 2. Create Auth Code
     user_id = "user_1"
-    code_verifier = "a" * 43 # Min length 43 for PKCE
+    code_verifier = "a" * 43  # Min length 43 for PKCE
     import base64
     import hashlib
+
     digest = hashlib.sha256(code_verifier.encode("ascii")).digest()
     code_challenge = base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
 
@@ -166,7 +170,7 @@ def test_authorization_code_flow(oauth_service, token_service):
         redirect_uri="http://localhost/cb",
         code_challenge=code_challenge,
         code_challenge_method="S256",
-        scopes=["read"]
+        scopes=["read"],
     )
     assert code is not None
 
@@ -175,7 +179,7 @@ def test_authorization_code_flow(oauth_service, token_service):
         code=code,
         redirect_uri="http://localhost/cb",
         code_verifier=code_verifier,
-        client_id=client.client_id
+        client_id=client.client_id,
     )
 
     assert access_token is not None
@@ -194,11 +198,12 @@ def test_authorization_code_flow(oauth_service, token_service):
             code=code,
             redirect_uri="http://localhost/cb",
             code_verifier=code_verifier,
-            client_id=client.client_id
+            client_id=client.client_id,
         )
         assert False, "Should fail on reused code"
     except ValueError as e:
         assert str(e) == "Authorization code already used"
+
 
 @pytest.mark.asyncio
 async def test_refresh_token_rotation(token_service):
@@ -209,6 +214,7 @@ async def test_refresh_token_rotation(token_service):
 
     # Mock Redis
     from unittest.mock import AsyncMock
+
     token_service.jwt_service.redis = AsyncMock()
     token_service.jwt_service.redis.exists.return_value = 0
     token_service.jwt_service.redis.setex.return_value = True
@@ -225,7 +231,7 @@ async def test_refresh_token_rotation(token_service):
 
     # Old should be revoked
     old_record = token_service.get_token_by_refresh_token(rt)
-    assert old_record is None # get_token filters out revoked
+    assert old_record is None  # get_token filters out revoked
 
     # New should be valid
     new_record = token_service.get_token_by_refresh_token(new_rt)

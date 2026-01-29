@@ -16,6 +16,7 @@ class JSONFormatter(logging.Formatter):
     """
     Formatter that outputs JSON strings after parsing the LogRecord.
     """
+
     def format(self, record: logging.LogRecord) -> str:
         log_record = {
             "timestamp": datetime.utcfromtimestamp(record.created).isoformat() + "Z",
@@ -40,6 +41,7 @@ class JSONFormatter(logging.Formatter):
             log_record["trace_id"] = record.trace_id
 
         return json.dumps(log_record)
+
 
 def setup_logging(level_str: str = "INFO") -> None:
     """

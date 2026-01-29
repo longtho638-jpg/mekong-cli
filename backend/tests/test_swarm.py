@@ -13,6 +13,7 @@ class TestAgent(BaseSwarmAgent):
     def on_message(self, message: AgentMessage):
         self.received.append(message)
 
+
 def test_message_bus():
     bus = MessageBus()
     agent = TestAgent("test-agent", "Test", bus)
@@ -23,6 +24,7 @@ def test_message_bus():
 
     assert len(agent.received) == 1
     assert agent.received[0].content == "Hello"
+
 
 def test_broadcast():
     bus = MessageBus()

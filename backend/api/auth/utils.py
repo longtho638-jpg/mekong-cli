@@ -45,7 +45,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     user_id = data.get("sub")
     # We might need to handle other claims if they exist, but for now we map what we can
     scope = data.get("scope", "read")
-    role = data.get("role", "user") # Not standard in simple create_access_token but good to keep
+    role = data.get("role", "user")  # Not standard in simple create_access_token but good to keep
 
     # Note: jwt_service.create_access_token returns (token, jti, expire)
     # But legacy expects just token string.
@@ -66,8 +66,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     token, _, _ = jwt_service.create_access_token(
         user_id=user_id,
         client_id="legacy_auth",
-        scope=f"{scope} role:{role}", # Embedding role in scope is a common pattern
-        expires_delta=expires_delta
+        scope=f"{scope} role:{role}",  # Embedding role in scope is a common pattern
+        expires_delta=expires_delta,
     )
     return token
 

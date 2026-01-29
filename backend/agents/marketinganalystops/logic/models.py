@@ -1,6 +1,7 @@
 """
 Reporting Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -13,11 +14,13 @@ class ReportType(Enum):
     MONTHLY = "monthly"
     QUARTERLY = "quarterly"
 
+
 class ReportStatus(Enum):
     DRAFT = "draft"
     GENERATING = "generating"
     READY = "ready"
     SENT = "sent"
+
 
 @dataclass
 class Insight:
@@ -27,6 +30,7 @@ class Insight:
     impact: str
     action: str
     created_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class Report:

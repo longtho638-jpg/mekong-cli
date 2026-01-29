@@ -7,6 +7,7 @@ from fastapi.testclient import TestClient
 
 # Define fixtures for mocking dependencies BEFORE imports that require them
 
+
 @pytest.fixture(scope="module")
 def mock_aws_modules():
     """Mock boto3 and infrastructure modules globally for this test file."""
@@ -20,12 +21,13 @@ def mock_aws_modules():
         "botocore": mock_botocore,
         "botocore.exceptions": MagicMock(),
         "backend.core.infrastructure": mock_infra,
-        "backend.core.infrastructure.database": mock_infra
+        "backend.core.infrastructure.database": mock_infra,
     }
 
     # Apply patches
     with patch.dict(sys.modules, modules_to_patch):
         yield
+
 
 @pytest.fixture
 def client(mock_aws_modules):
@@ -46,10 +48,12 @@ def client(mock_aws_modules):
 
     return TestClient(app)
 
+
 @pytest.fixture
 def mock_orchestrator():
     with patch("backend.api.routers.backup.get_orchestrator") as mock:
         yield mock
+
 
 def test_list_backups_endpoint(client):
     # Re-import inside test or use patch on the module path that was imported
@@ -57,14 +61,17 @@ def test_list_backups_endpoint(client):
     # But standard patching works on the target module path
     with patch("backend.api.routers.backup.S3StorageAdapter") as mock_storage_cls:
         mock_instance = mock_storage_cls.return_value
+
         # Async mock for list_backups
         async def async_list():
             return ["backup1.json", "backup2.json"]
+
         mock_instance.list_backups.side_effect = async_list
 
         response = client.get("/backups/")
         assert response.status_code == 200
         assert response.json() == ["backup1.json", "backup2.json"]
+
 
 def test_trigger_backup_endpoint(client, mock_orchestrator):
     # Mock orchestrator instance
@@ -79,6 +86,7 @@ def test_trigger_backup_endpoint(client, mock_orchestrator):
         # Since we mocked backend.core.infrastructure, verify imports work.
         # backend.services.backup.interfaces likely doesn't depend on infra directly.
         from backend.services.backup.interfaces import BackupMetadata
+
         return BackupMetadata(
             timestamp=datetime.utcnow(),
             backup_id="test-id",
@@ -87,8 +95,9 @@ def test_trigger_backup_endpoint(client, mock_orchestrator):
             checksum="abc",
             location="s3://bucket/key",
             encrypted=True,
-            compressed=True
+            compressed=True,
         )
+
     mock_orch_instance.perform_backup.side_effect = async_backup
 
     response = client.post("/backups/trigger")
@@ -97,12 +106,14 @@ def test_trigger_backup_endpoint(client, mock_orchestrator):
     assert data["backup_id"] == "test-id"
     assert data["status"] == "completed"
 
+
 def test_restore_backup_endpoint(client, mock_orchestrator):
     mock_orch_instance = MagicMock()
     mock_orchestrator.return_value = mock_orch_instance
 
     async def async_restore(loc):
         return True
+
     mock_orch_instance.restore_backup.side_effect = async_restore
 
     response = client.post("/backups/restore/s3://bucket/backup.json")

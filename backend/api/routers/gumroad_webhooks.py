@@ -19,11 +19,12 @@ router = APIRouter(prefix="/webhooks/gumroad", tags=["Gumroad Webhooks"])
 # Initialize Unified Service
 payment_service = PaymentService()
 
+
 @router.post("/")
 async def handle_webhook(
     request: Request,
     background_tasks: BackgroundTasks,
-    verified_body: bytes = Depends(verify_gumroad_webhook)
+    verified_body: bytes = Depends(verify_gumroad_webhook),
 ):
     """
     Unified Gumroad webhook handler with signature verification.

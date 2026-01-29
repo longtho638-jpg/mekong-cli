@@ -113,9 +113,7 @@ api_key_service = ApiKeyService()
 app.add_middleware(ApiAuthMiddleware, api_key_service=api_key_service)
 
 # Add rate limiting middleware (before CORS)
-app.add_middleware(
-    RateLimitMiddleware
-)
+app.add_middleware(RateLimitMiddleware)
 
 # License Validation Middleware (Non-blocking by default, logs usage)
 app.add_middleware(LicenseValidatorMiddleware)
@@ -151,24 +149,25 @@ app.include_router(stripe_webhooks.router)
 app.include_router(gumroad_webhooks.router)
 app.include_router(payments.router)
 app.include_router(revenue.router)
-app.include_router(affiliates.router) # Added
+app.include_router(affiliates.router)  # Added
 app.include_router(ops.router)
 app.include_router(swarm.router)
 app.include_router(ws_router)
 app.include_router(dashboard_ws_router)
 app.include_router(auth_router)
-app.include_router(oauth.router) # Added OAuth Router
-app.include_router(jobs.router) # Added Job Queue
-app.include_router(webhook_health.router) # Added Webhook Health
-app.include_router(dlq.router) # Added Webhook DLQ
-app.include_router(notifications.router) # Added Notifications
-app.include_router(notification_preferences.router) # Added Notification Preferences
-app.include_router(notification_templates.router) # Added Notification Templates
-app.include_router(push_subscriptions.router) # Added Push Subscriptions
-app.include_router(user_preferences.router) # Added User Preferences
-app.include_router(exports.router) # Added Data Exports
-app.include_router(rate_limits.router) # Added Rate Limits
-app.include_router(v1_router) # Added Public API V1
+app.include_router(oauth.router)  # Added OAuth Router
+app.include_router(jobs.router)  # Added Job Queue
+app.include_router(webhook_health.router)  # Added Webhook Health
+app.include_router(dlq.router)  # Added Webhook DLQ
+app.include_router(notifications.router)  # Added Notifications
+app.include_router(notification_preferences.router)  # Added Notification Preferences
+app.include_router(notification_templates.router)  # Added Notification Templates
+app.include_router(push_subscriptions.router)  # Added Push Subscriptions
+app.include_router(user_preferences.router)  # Added User Preferences
+app.include_router(exports.router)  # Added Data Exports
+app.include_router(rate_limits.router)  # Added Rate Limits
+app.include_router(v1_router)  # Added Public API V1
+
 
 @app.get("/")
 async def root():
@@ -180,6 +179,7 @@ async def root():
         "architecture": "clean_architecture",
         "tagline": "Deploy Your Agency in 15 Minutes",
     }
+
 
 @app.get("/health")
 async def health():
@@ -195,11 +195,14 @@ async def health():
         },
     }
 
+
 @app.get("/metrics")
 async def metrics():
     """Performance metrics for dashboard"""
     return get_metrics_summary()
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

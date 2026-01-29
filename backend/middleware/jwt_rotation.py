@@ -13,6 +13,7 @@ class JWTRotationMiddleware(BaseHTTPMiddleware):
     Note: Most auth logic happens in Depends(get_current_user), but this
     middleware can catch revoked tokens early or handle automatic header inspection.
     """
+
     def __init__(self, app: ASGIApp):
         super().__init__(app)
 

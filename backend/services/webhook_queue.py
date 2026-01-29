@@ -1,6 +1,7 @@
 """
 Webhook Queue Service (Redis).
 """
+
 import json
 import logging
 import os
@@ -8,11 +9,13 @@ from typing import Any, Dict, Optional
 
 try:
     import redis
+
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
+
 
 class WebhookQueueService:
     def __init__(self):
@@ -95,9 +98,10 @@ class WebhookQueueService:
         try:
             return {
                 "queue_depth": self._client.llen(self.queue_key),
-                "dlq_depth": self._client.llen(self.dlq_key)
+                "dlq_depth": self._client.llen(self.dlq_key),
             }
         except:
             return {"queue_depth": 0, "dlq_depth": 0}
+
 
 webhook_queue = WebhookQueueService()

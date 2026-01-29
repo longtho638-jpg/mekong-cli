@@ -1,6 +1,7 @@
 """
 Tests for CDN Service
 """
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -19,6 +20,7 @@ class MockResponse:
     def raise_for_status(self):
         pass
 
+
 @pytest.mark.asyncio
 async def test_cloudflare_purge_all():
     with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
@@ -34,6 +36,7 @@ async def test_cloudflare_purge_all():
         assert "purge_cache" in args[0]
         assert kwargs["json"] == {"purge_everything": True}
 
+
 @pytest.mark.asyncio
 async def test_cloudflare_purge_urls():
     with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
@@ -47,6 +50,7 @@ async def test_cloudflare_purge_urls():
         args, kwargs = mock_post.call_args
         assert kwargs["json"] == {"files": ["http://example.com/1"]}
 
+
 @pytest.mark.asyncio
 async def test_fastly_purge_all():
     with patch("httpx.AsyncClient.post", new_callable=AsyncMock) as mock_post:
@@ -58,4 +62,3 @@ async def test_fastly_purge_all():
         assert result is True
         mock_post.assert_called_once()
         assert "purge_all" in mock_post.call_args[0][0]
-

@@ -1,6 +1,7 @@
 """
 Channel Manager Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -13,9 +14,11 @@ class ChannelType(Enum):
     TIKTOK = "tiktok"
     ZALO = "zalo"
 
+
 class ChannelStatus(Enum):
     CONNECTED = "connected"
     DISCONNECTED = "disconnected"
+
 
 @dataclass
 class Channel:
@@ -26,6 +29,7 @@ class Channel:
     followers: int = 0
     posts_count: int = 0
     connected_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class Publication:

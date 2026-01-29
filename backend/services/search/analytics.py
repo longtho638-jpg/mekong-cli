@@ -21,10 +21,12 @@ from backend.services.redis_client import redis_service
 
 logger = logging.getLogger(__name__)
 
+
 class SearchAnalyticsService:
     """
     Service to track and retrieve search analytics.
     """
+
     PREFIX = "search:analytics"
     TOP_QUERIES_KEY = f"{PREFIX}:top_queries"
     NO_RESULTS_KEY = f"{PREFIX}:no_results"
@@ -66,7 +68,9 @@ class SearchAnalyticsService:
             items = await self.redis.get_client().zrevrange(
                 self.TOP_QUERIES_KEY, 0, limit - 1, withscores=True
             )
-            return [{"query": member.decode('utf-8'), "count": int(score)} for member, score in items]
+            return [
+                {"query": member.decode("utf-8"), "count": int(score)} for member, score in items
+            ]
         except Exception as e:
             logger.error(f"Error fetching top queries: {e}")
             return []
@@ -77,7 +81,9 @@ class SearchAnalyticsService:
             items = await self.redis.get_client().zrevrange(
                 self.NO_RESULTS_KEY, 0, limit - 1, withscores=True
             )
-            return [{"query": member.decode('utf-8'), "count": int(score)} for member, score in items]
+            return [
+                {"query": member.decode("utf-8"), "count": int(score)} for member, score in items
+            ]
         except Exception as e:
             logger.error(f"Error fetching no-result queries: {e}")
             return []
@@ -102,6 +108,7 @@ class SearchAnalyticsService:
             result[date_str] = int(count) if count else 0
 
         return result
+
 
 def get_search_analytics() -> SearchAnalyticsService:
     """Dependency provider."""

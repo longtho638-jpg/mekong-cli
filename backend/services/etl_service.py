@@ -23,6 +23,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class ETLService:
     """Service for aggregating business metrics."""
 
@@ -45,7 +46,7 @@ class ETLService:
         results = {
             "mrr": self.calculate_mrr(target_date),
             "users": self.calculate_user_growth(target_date),
-            "churn": self.calculate_churn(target_date)
+            "churn": self.calculate_churn(target_date),
         }
 
         logger.info(f"ETL Completed: {results}")
@@ -63,10 +64,12 @@ class ETLService:
             # For MVP, we fetch active subscriptions.
             # For scale, this should be a SQL View or RPC.
 
-            response = self.db.table("subscriptions")\
-                .select("amount_cents, billing_cycle")\
-                .in_("status", ["active", "trialing"])\
+            response = (
+                self.db.table("subscriptions")
+                .select("amount_cents, billing_cycle")
+                .in_("status", ["active", "trialing"])
                 .execute()
+            )
 
             total_mrr_cents = 0
             for sub in response.data:
@@ -81,10 +84,7 @@ class ETLService:
             mrr_value = total_mrr_cents / 100.0
 
             self._save_snapshot(
-                date_obj=target_date,
-                name="mrr",
-                value=mrr_value,
-                dimensions={"currency": "USD"}
+                date_obj=target_date, name="mrr", value=mrr_value, dimensions={"currency": "USD"}
             )
 
             return mrr_value
@@ -99,33 +99,29 @@ class ETLService:
             start_dt = target_date.isoformat()
             end_dt = (target_date + timedelta(days=1)).isoformat()
 
-            response = self.db.table("users")\
-                .select("*", count="exact", head=True)\
-                .gte("created_at", start_dt)\
-                .lt("created_at", end_dt)\
+            response = (
+                self.db.table("users")
+                .select("*", count="exact", head=True)
+                .gte("created_at", start_dt)
+                .lt("created_at", end_dt)
                 .execute()
+            )
 
             new_users = response.count or 0
 
-            self._save_snapshot(
-                date_obj=target_date,
-                name="new_users",
-                value=float(new_users)
-            )
+            self._save_snapshot(date_obj=target_date, name="new_users", value=float(new_users))
 
             # Also get total users
-            total_response = self.db.table("users")\
-                .select("*", count="exact", head=True)\
-                .lt("created_at", end_dt)\
+            total_response = (
+                self.db.table("users")
+                .select("*", count="exact", head=True)
+                .lt("created_at", end_dt)
                 .execute()
+            )
 
             total_users = total_response.count or 0
 
-            self._save_snapshot(
-                date_obj=target_date,
-                name="total_users",
-                value=float(total_users)
-            )
+            self._save_snapshot(date_obj=target_date, name="total_users", value=float(total_users))
 
             return new_users
 
@@ -140,30 +136,38 @@ class ETLService:
             start_dt = target_date.isoformat()
             end_dt = (target_date + timedelta(days=1)).isoformat()
 
-            cancel_response = self.db.table("subscriptions")\
-                .select("*", count="exact", head=True)\
-                .gte("canceled_at", start_dt)\
-                .lt("canceled_at", end_dt)\
+            cancel_response = (
+                self.db.table("subscriptions")
+                .select("*", count="exact", head=True)
+                .gte("canceled_at", start_dt)
+                .lt("canceled_at", end_dt)
                 .execute()
+            )
 
             churned_count = cancel_response.count or 0
 
             # 2. Get active subscriptions count at start of day (approximate with current for MVP or query historic if stored)
             # For simple daily churn: cancellations / (active + cancellations)
-            active_response = self.db.table("subscriptions")\
-                .select("*", count="exact", head=True)\
-                .in_("status", ["active", "trialing"])\
+            active_response = (
+                self.db.table("subscriptions")
+                .select("*", count="exact", head=True)
+                .in_("status", ["active", "trialing"])
                 .execute()
+            )
 
-            active_count = active_response.count or 1 # Avoid div by zero
+            active_count = active_response.count or 1  # Avoid div by zero
 
-            churn_rate = (churned_count / (active_count + churned_count)) * 100 if (active_count + churned_count) > 0 else 0.0
+            churn_rate = (
+                (churned_count / (active_count + churned_count)) * 100
+                if (active_count + churned_count) > 0
+                else 0.0
+            )
 
             self._save_snapshot(
                 date_obj=target_date,
                 name="churn_rate_daily",
                 value=churn_rate,
-                dimensions={"type": "subscription"}
+                dimensions={"type": "subscription"},
             )
 
             return churn_rate
@@ -180,7 +184,7 @@ class ETLService:
                 "metric_name": name,
                 "metric_value": value,
                 "dimensions": dimensions,
-                "created_at": datetime.utcnow().isoformat()
+                "created_at": datetime.utcnow().isoformat(),
             }
 
             # Upsert based on unique constraint (date, metric_name, dimensions)
@@ -190,8 +194,7 @@ class ETLService:
             # We'll use 'on_conflict' param if supported, or just insert and ignore error for MVP
 
             self.db.table("metrics_snapshots").upsert(
-                data,
-                on_conflict="date, metric_name, dimensions"
+                data, on_conflict="date, metric_name, dimensions"
             ).execute()
 
         except Exception as e:

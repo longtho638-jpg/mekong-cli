@@ -17,9 +17,10 @@ class TestStripeService:
     @pytest.fixture
     def stripe_service(self):
         """Create StripeService instance with mocked dependencies."""
-        with patch('backend.services.stripe_service.get_db') as mock_db, \
-             patch('backend.services.stripe_service.LicenseGenerator') as mock_license:
-
+        with (
+            patch("backend.services.stripe_service.get_db") as mock_db,
+            patch("backend.services.stripe_service.LicenseGenerator") as mock_license,
+        ):
             service = StripeService()
             service.db = mock_db.return_value
             service.licensing = mock_license.return_value
@@ -28,30 +29,30 @@ class TestStripeService:
 
     def test_is_configured_returns_true_when_stripe_ready(self, stripe_service):
         """Test is_configured returns True when Stripe is properly configured."""
-        with patch.object(stripe_service.client, 'is_configured', return_value=True):
+        with patch.object(stripe_service.client, "is_configured", return_value=True):
             assert stripe_service.is_configured() is True
 
     def test_is_configured_returns_false_when_stripe_not_ready(self, stripe_service):
         """Test is_configured returns False when Stripe is not configured."""
-        with patch.object(stripe_service.client, 'is_configured', return_value=False):
+        with patch.object(stripe_service.client, "is_configured", return_value=False):
             assert stripe_service.is_configured() is False
 
     def test_create_checkout_session_success(self, stripe_service):
         """Test successful checkout session creation."""
-        mock_session = {
-            "id": "cs_test_123",
-            "url": "https://checkout.stripe.com/pay/cs_test_123"
-        }
+        mock_session = {"id": "cs_test_123", "url": "https://checkout.stripe.com/pay/cs_test_123"}
 
-        with patch.object(stripe_service.client, 'is_configured', return_value=True), \
-             patch.object(stripe_service.client, 'create_checkout_session', return_value=mock_session):
-
+        with (
+            patch.object(stripe_service.client, "is_configured", return_value=True),
+            patch.object(
+                stripe_service.client, "create_checkout_session", return_value=mock_session
+            ),
+        ):
             result = stripe_service.create_checkout_session(
                 tier="pro",
                 customer_email="test@example.com",
                 tenant_id="org_123",
                 success_url="https://example.com/success",
-                cancel_url="https://example.com/cancel"
+                cancel_url="https://example.com/cancel",
             )
 
             assert result["id"] == "cs_test_123"
@@ -60,9 +61,10 @@ class TestStripeService:
 
     def test_create_checkout_session_maps_tier_to_price(self, stripe_service):
         """Test checkout session auto-maps tier to default price ID."""
-        with patch.object(stripe_service.client, 'is_configured', return_value=True), \
-             patch.object(stripe_service.client, 'create_checkout_session') as mock_create:
-
+        with (
+            patch.object(stripe_service.client, "is_configured", return_value=True),
+            patch.object(stripe_service.client, "create_checkout_session") as mock_create,
+        ):
             mock_create.return_value = {"id": "cs_test", "url": "https://example.com"}
 
             stripe_service.create_checkout_session(
@@ -70,7 +72,7 @@ class TestStripeService:
                 customer_email="test@example.com",
                 tenant_id="org_123",
                 success_url="https://example.com/success",
-                cancel_url="https://example.com/cancel"
+                cancel_url="https://example.com/cancel",
             )
 
             # Verify it was called with the correct price_id
@@ -79,28 +81,26 @@ class TestStripeService:
 
     def test_create_checkout_session_invalid_tier_raises_error(self, stripe_service):
         """Test invalid tier raises ValueError."""
-        with patch.object(stripe_service.client, 'is_configured', return_value=True):
-
+        with patch.object(stripe_service.client, "is_configured", return_value=True):
             with pytest.raises(ValueError, match="Invalid tier"):
                 stripe_service.create_checkout_session(
                     tier="invalid_tier",
                     customer_email="test@example.com",
                     tenant_id="org_123",
                     success_url="https://example.com/success",
-                    cancel_url="https://example.com/cancel"
+                    cancel_url="https://example.com/cancel",
                 )
 
     def test_create_checkout_session_not_configured_raises_error(self, stripe_service):
         """Test checkout session creation fails when Stripe not configured."""
-        with patch.object(stripe_service.client, 'is_configured', return_value=False):
-
+        with patch.object(stripe_service.client, "is_configured", return_value=False):
             with pytest.raises(ValueError, match="Stripe is not configured"):
                 stripe_service.create_checkout_session(
                     tier="pro",
                     customer_email="test@example.com",
                     tenant_id="org_123",
                     success_url="https://example.com/success",
-                    cancel_url="https://example.com/cancel"
+                    cancel_url="https://example.com/cancel",
                 )
 
     def test_handle_checkout_completed_event(self, stripe_service):
@@ -113,14 +113,15 @@ class TestStripeService:
                     "subscription": "sub_123",
                     "customer": "cus_123",
                     "customer_details": {"email": "test@example.com"},
-                    "metadata": {"tenantId": "org_123"}
+                    "metadata": {"tenantId": "org_123"},
                 }
-            }
+            },
         }
 
-        with patch.object(stripe_service, '_extract_tier_from_session', return_value="pro"), \
-             patch.object(stripe_service, '_generate_and_store_license') as mock_generate:
-
+        with (
+            patch.object(stripe_service, "_extract_tier_from_session", return_value="pro"),
+            patch.object(stripe_service, "_generate_and_store_license") as mock_generate,
+        ):
             result = stripe_service.handle_webhook_event(event)
 
             assert result["status"] == "success"
@@ -130,12 +131,7 @@ class TestStripeService:
         """Test customer.subscription.deleted webhook processing."""
         event = {
             "type": "customer.subscription.deleted",
-            "data": {
-                "object": {
-                    "id": "sub_123",
-                    "metadata": {"tenantId": "org_123"}
-                }
-            }
+            "data": {"object": {"id": "sub_123", "metadata": {"tenantId": "org_123"}}},
         }
 
         mock_table = MagicMock()
@@ -152,9 +148,10 @@ class TestStripeService:
         """Test successful subscription cancellation."""
         mock_result = {"id": "sub_123", "status": "canceled"}
 
-        with patch.object(stripe_service.client, 'is_configured', return_value=True), \
-             patch.object(stripe_service.client, 'cancel_subscription', return_value=mock_result):
-
+        with (
+            patch.object(stripe_service.client, "is_configured", return_value=True),
+            patch.object(stripe_service.client, "cancel_subscription", return_value=mock_result),
+        ):
             mock_table = MagicMock()
             stripe_service.db.table.return_value = mock_table
             mock_table.update.return_value = mock_table
@@ -173,14 +170,13 @@ class TestStripeService:
             "current_period_end": 1234567890,
             "cancel_at_period_end": False,
             "customer": "cus_123",
-            "items": {
-                "data": [{"price": {"id": "price_pro_monthly"}}]
-            }
+            "items": {"data": [{"price": {"id": "price_pro_monthly"}}]},
         }
 
-        with patch.object(stripe_service.client, 'is_configured', return_value=True), \
-             patch.object(stripe_service.client, 'get_subscription', return_value=mock_subscription):
-
+        with (
+            patch.object(stripe_service.client, "is_configured", return_value=True),
+            patch.object(stripe_service.client, "get_subscription", return_value=mock_subscription),
+        ):
             result = stripe_service.get_subscription_status("sub_123")
 
             assert result["id"] == "sub_123"
@@ -216,13 +212,11 @@ class TestStripeService:
             email="test@example.com",
             tier="pro",
             tenant_id="org_123",
-            stripe_subscription_id="sub_123"
+            stripe_subscription_id="sub_123",
         )
 
         stripe_service.licensing.generate.assert_called_once_with(
-            format="agencyos",
-            tier="pro",
-            email="test@example.com"
+            format="agencyos", tier="pro", email="test@example.com"
         )
 
         stripe_service.db.table.assert_called_with("licenses")

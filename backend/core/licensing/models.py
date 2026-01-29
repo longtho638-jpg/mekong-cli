@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class LicenseStatus(str, Enum):
     """License status enumeration"""
+
     ACTIVE = "active"
     EXPIRED = "expired"
     REVOKED = "revoked"
@@ -21,8 +22,9 @@ class LicenseStatus(str, Enum):
 
 class LicensePlan(str, Enum):
     """License plan tiers"""
-    SOLO = "solo"          # $395/year - 1 user, 3 agents
-    TEAM = "team"          # $995/year - 5 users, 10 agents
+
+    SOLO = "solo"  # $395/year - 1 user, 3 agents
+    TEAM = "team"  # $995/year - 5 users, 10 agents
     ENTERPRISE = "enterprise"  # Custom - unlimited
 
 

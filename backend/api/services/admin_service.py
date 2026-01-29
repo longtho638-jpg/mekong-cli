@@ -4,6 +4,7 @@ Admin Service - System administration and management logic.
 Handles user management, system configuration, and audit logging.
 Connects to Supabase using the service role key for elevated privileges.
 """
+
 import logging
 import os
 from datetime import datetime, timedelta
@@ -18,6 +19,7 @@ except ImportError:
         # Fallback dummy exception if imports fail, to allow code to load
         class AuthApiError(Exception):
             pass
+
 
 import redis
 
@@ -36,6 +38,7 @@ from backend.services.cache.invalidation import SyncCacheInvalidator
 from supabase import Client, create_client
 
 logger = logging.getLogger(__name__)
+
 
 class AdminService:
     """Service for system administration."""
@@ -60,7 +63,7 @@ class AdminService:
         ttl=60,
         prefix="admin",
         key_func=lambda self, page=1, per_page=50: f"users:{page}:{per_page}",
-        tags=["users"]
+        tags=["users"],
     )
     def list_users(self, page: int = 1, per_page: int = 50) -> Dict[str, Any]:
         """
@@ -73,30 +76,37 @@ class AdminService:
             # Calculate offset/limit if supported, otherwise just fetch generic list
             # gotrue-py list_users takes (page, per_page)
             # The result object typically has 'users' and 'total'
-            response = self.client.auth.admin.list_users(
-                page=page,
-                per_page=per_page
-            )
+            response = self.client.auth.admin.list_users(page=page, per_page=per_page)
 
             # Map to AdminUser model
             users = []
             for u in response.users:
-                users.append(AdminUser(
-                    id=u.id,
-                    email=u.email or "",
-                    role=u.role or "user",
-                    created_at=datetime.fromisoformat(u.created_at.replace('Z', '+00:00')) if u.created_at else datetime.now(),
-                    last_sign_in_at=datetime.fromisoformat(u.last_sign_in_at.replace('Z', '+00:00')) if u.last_sign_in_at else None,
-                    app_metadata=u.app_metadata or {},
-                    user_metadata=u.user_metadata or {},
-                    banned_until=datetime.fromisoformat(u.banned_until.replace('Z', '+00:00')) if hasattr(u, 'banned_until') and u.banned_until else None
-                ))
+                users.append(
+                    AdminUser(
+                        id=u.id,
+                        email=u.email or "",
+                        role=u.role or "user",
+                        created_at=datetime.fromisoformat(u.created_at.replace("Z", "+00:00"))
+                        if u.created_at
+                        else datetime.now(),
+                        last_sign_in_at=datetime.fromisoformat(
+                            u.last_sign_in_at.replace("Z", "+00:00")
+                        )
+                        if u.last_sign_in_at
+                        else None,
+                        app_metadata=u.app_metadata or {},
+                        user_metadata=u.user_metadata or {},
+                        banned_until=datetime.fromisoformat(u.banned_until.replace("Z", "+00:00"))
+                        if hasattr(u, "banned_until") and u.banned_until
+                        else None,
+                    )
+                )
 
             return {
                 "users": users,
-                "total": getattr(response, 'total', len(users)), # Fallback if total not provided
+                "total": getattr(response, "total", len(users)),  # Fallback if total not provided
                 "page": page,
-                "per_page": per_page
+                "per_page": per_page,
             }
         except Exception as e:
             logger.error(f"Error listing users: {e}")
@@ -113,11 +123,17 @@ class AdminService:
                 id=u.id,
                 email=u.email or "",
                 role=u.role or "user",
-                created_at=datetime.fromisoformat(u.created_at.replace('Z', '+00:00')) if u.created_at else datetime.now(),
-                last_sign_in_at=datetime.fromisoformat(u.last_sign_in_at.replace('Z', '+00:00')) if u.last_sign_in_at else None,
+                created_at=datetime.fromisoformat(u.created_at.replace("Z", "+00:00"))
+                if u.created_at
+                else datetime.now(),
+                last_sign_in_at=datetime.fromisoformat(u.last_sign_in_at.replace("Z", "+00:00"))
+                if u.last_sign_in_at
+                else None,
                 app_metadata=u.app_metadata or {},
                 user_metadata=u.user_metadata or {},
-                banned_until=datetime.fromisoformat(u.banned_until.replace('Z', '+00:00')) if hasattr(u, 'banned_until') and u.banned_until else None
+                banned_until=datetime.fromisoformat(u.banned_until.replace("Z", "+00:00"))
+                if hasattr(u, "banned_until") and u.banned_until
+                else None,
             )
         except AuthApiError:
             return None
@@ -136,13 +152,13 @@ class AdminService:
                 # Ban until year 9999
                 ban_until = datetime(9999, 12, 31).isoformat()
             elif duration == "none":
-                 ban_until = None # Unban
+                ban_until = None  # Unban
             else:
-                ban_until = duration # Assume ISO format
+                ban_until = duration  # Assume ISO format
 
             self.client.auth.admin.update_user_by_id(
                 user_id,
-                {"ban_duration": ban_until} # Note: Check exact API parameter for ban
+                {"ban_duration": ban_until},  # Note: Check exact API parameter for ban
             )
 
             # Invalidate cache
@@ -163,10 +179,7 @@ class AdminService:
     def update_user_role(self, user_id: str, role: str) -> bool:
         """Update user role in app_metadata."""
         try:
-            self.client.auth.admin.update_user_by_id(
-                user_id,
-                {"app_metadata": {"role": role}}
-            )
+            self.client.auth.admin.update_user_by_id(user_id, {"app_metadata": {"role": role}})
 
             # Invalidate cache
             self.invalidator.invalidate_pattern("users:*")
@@ -251,11 +264,13 @@ class AdminService:
     def get_audit_logs(self, limit: int = 50, offset: int = 0) -> List[AdminAuditLog]:
         """Get system audit logs."""
         # Use system_audit_logs table
-        result = self.client.table("system_audit_logs")\
-            .select("*")\
-            .order("created_at", desc=True)\
-            .range(offset, offset + limit - 1)\
+        result = (
+            self.client.table("system_audit_logs")
+            .select("*")
+            .order("created_at", desc=True)
+            .range(offset, offset + limit - 1)
             .execute()
+        )
 
         return [AdminAuditLog(**item) for item in result.data]
 
@@ -266,7 +281,7 @@ class AdminService:
 
         # 1. Total Users
         users_resp = self.client.auth.admin.list_users(per_page=1)
-        total_users = getattr(users_resp, 'total', 0)
+        total_users = getattr(users_resp, "total", 0)
 
         # 2. Total Tenants
         tenants_resp = self.client.table("tenants").select("id", count="exact").limit(1).execute()
@@ -278,23 +293,24 @@ class AdminService:
 
         # revenue_data = {"mrr": 0, "arr": 0, "active_subs": 0}
         try:
-             # Try to get latest system-wide snapshot if implemented,
-             # otherwise sum up from tenants (might be slow)
-             # For now, return 0 placeholders or query specific tables
-             pass
+            # Try to get latest system-wide snapshot if implemented,
+            # otherwise sum up from tenants (might be slow)
+            # For now, return 0 placeholders or query specific tables
+            pass
         except:
             pass
 
         return {
             "total_users": total_users,
             "total_tenants": total_tenants,
-            "system_health": "healthy", # Placeholder
-            "version": "1.0.0"
+            "system_health": "healthy",  # Placeholder
+            "version": "1.0.0",
         }
 
     async def get_rate_limit_status(self) -> Dict[str, Any]:
         """Get current rate limit status."""
         from backend.services.rate_limiter_service import RateLimiterService
+
         rate_limiter = RateLimiterService()
 
         # In a real scenario, we might want to scan for active keys
@@ -307,7 +323,7 @@ class AdminService:
         return {
             "redis_connected": redis_health,
             "service_status": "active" if redis_health else "degraded",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     # --- Cache Management ---
@@ -319,7 +335,7 @@ class AdminService:
             return {
                 "used_memory_human": info.get("used_memory_human"),
                 "connected_clients": info.get("connected_clients"),
-                "keys": self.redis_client.dbsize()
+                "keys": self.redis_client.dbsize(),
             }
         except Exception as e:
             return {"error": str(e)}

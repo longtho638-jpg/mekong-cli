@@ -8,7 +8,9 @@ import os
 import sys
 
 # Add project root to path
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+)
 
 from backend.services.team_service import team_service
 
@@ -32,7 +34,7 @@ def test_team_creation():
     print(f"  Active members: {result['team']['active_members']}")
     print(f"  Available seats: {result['team']['available_seats']}")
 
-    return result['team']['team_id']
+    return result["team"]["team_id"]
 
 
 def test_member_invitation(team_id):
@@ -58,7 +60,7 @@ def test_seat_limit(team_id):
     # Try to invite third member (should fail - only 3 seats, 1 owner + 2 invited)
     result = team_service.invite_member(team_id, "member3@test.com")
 
-    if result['success']:
+    if result["success"]:
         print("✗ ERROR: Should have failed (no seats available)")
     else:
         print(f"✓ Correctly rejected: {result['message']}")
@@ -73,7 +75,7 @@ def test_list_members(team_id):
     print(f"  Active members: {result['active_members']}")
     print(f"  Total members: {len(result['members'])}")
 
-    for member in result['members']:
+    for member in result["members"]:
         print(f"  - {member['email']} ({member['role']}, {member['status']})")
 
 
@@ -111,7 +113,7 @@ def test_enterprise_unlimited():
         license_tier="enterprise",
     )
 
-    team_id = result['team']['team_id']
+    team_id = result["team"]["team_id"]
     print(f"✓ Enterprise team created: {team_id}")
     print(f"  Max seats: {result['team']['max_seats']} (unlimited)")
 
@@ -159,4 +161,5 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n✗ Test failed: {e}")
         import traceback
+
         traceback.print_exc()

@@ -11,11 +11,13 @@ from backend.services.ip_blocker import IpBlocker
 def mock_redis():
     return AsyncMock()
 
+
 @pytest.fixture
 def ip_blocker(mock_redis):
     blocker = IpBlocker()
     blocker.redis = mock_redis
     return blocker
+
 
 @pytest.mark.asyncio
 async def test_is_blocked_redis_hit(ip_blocker, mock_redis):
@@ -24,15 +26,17 @@ async def test_is_blocked_redis_hit(ip_blocker, mock_redis):
     assert await ip_blocker.is_blocked("1.2.3.4") is True
     mock_redis.get.assert_called_with("rate_limit:blocked_ip:1.2.3.4")
 
+
 @pytest.mark.asyncio
 async def test_is_blocked_redis_miss(ip_blocker, mock_redis):
     mock_redis.get.return_value = None
 
     assert await ip_blocker.is_blocked("1.2.3.4") is False
 
+
 @pytest.mark.asyncio
 async def test_block_ip(ip_blocker, mock_redis):
-    with patch('backend.services.ip_blocker.SessionLocal') as MockSession:
+    with patch("backend.services.ip_blocker.SessionLocal") as MockSession:
         db = MockSession.return_value.__enter__.return_value
         # Mock scalar_one_or_none for existing check
         db.execute.return_value.scalar_one_or_none.return_value = None
@@ -46,9 +50,10 @@ async def test_block_ip(ip_blocker, mock_redis):
         assert db.add.called
         assert db.commit.called
 
+
 @pytest.mark.asyncio
 async def test_unblock_ip(ip_blocker, mock_redis):
-    with patch('backend.services.ip_blocker.SessionLocal') as MockSession:
+    with patch("backend.services.ip_blocker.SessionLocal") as MockSession:
         db = MockSession.return_value.__enter__.return_value
         # Mock existing record
         mock_record = MagicMock(spec=IpBlocklist)

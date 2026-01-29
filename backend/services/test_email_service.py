@@ -3,6 +3,7 @@ Test script for email service
 
 Run this to verify email functionality works correctly
 """
+
 import asyncio
 
 import pytest
@@ -13,9 +14,9 @@ from backend.services.email_service import EmailService, email_service
 @pytest.mark.asyncio
 async def test_mock_email():
     """Test email service in mock mode"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Testing Email Service (Mock Mode)")
-    print("="*60)
+    print("=" * 60)
 
     # Test data
     test_email = "customer@example.com"
@@ -39,9 +40,9 @@ async def test_mock_email():
 @pytest.mark.asyncio
 async def test_custom_service():
     """Test email service with custom configuration"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Testing Custom Email Service Configuration")
-    print("="*60)
+    print("=" * 60)
 
     # Create custom service instance
     service = EmailService()
@@ -68,9 +69,9 @@ async def test_custom_service():
 
 def main():
     """Run all tests"""
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("EMAIL SERVICE TEST SUITE")
-    print("="*60)
+    print("=" * 60)
 
     # Helper to run async tests synchronously
     async def run_tests():
@@ -93,13 +94,13 @@ def main():
                 failed += 1
 
         # Summary
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("TEST SUMMARY")
-        print("="*60)
+        print("=" * 60)
         print(f"✅ Passed: {passed}")
         print(f"❌ Failed: {failed}")
         print(f"Total: {passed + failed}")
-        print("="*60 + "\n")
+        print("=" * 60 + "\n")
 
         return failed == 0
 

@@ -41,10 +41,7 @@ class TokenBucket:
         """Refill tokens based on time elapsed"""
         now = time.time()
         elapsed = now - self.last_refill
-        self.tokens = min(
-            self.capacity,
-            self.tokens + (elapsed * self.refill_rate)
-        )
+        self.tokens = min(self.capacity, self.tokens + (elapsed * self.refill_rate))
         self.last_refill = now
 
     def consume(self, tokens: int = 1) -> bool:
@@ -147,17 +144,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         bucket = TokenBucket(
             capacity=limit,
-            refill_rate=limit / 60.0  # Requests per second
+            refill_rate=limit / 60.0,  # Requests per second
         )
         self.buckets[identifier] = (tier, bucket)
         return bucket
 
-    def _add_rate_limit_headers(
-        self,
-        response: Response,
-        bucket: TokenBucket,
-        tier: str
-    ) -> None:
+    def _add_rate_limit_headers(self, response: Response, bucket: TokenBucket, tier: str) -> None:
         """Add rate limit headers to response"""
         limit = TIER_LIMITS.get(tier, TIER_LIMITS["free"])
 
@@ -197,8 +189,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                     "error": "Rate limit exceeded",
                     "message": f"Too many requests. Limit: {TIER_LIMITS[tier]} requests/minute for {tier} tier",
                     "tier": tier,
-                    "retry_after": bucket.get_reset_time()
-                }
+                    "retry_after": bucket.get_reset_time(),
+                },
             )
             self._add_rate_limit_headers(response, bucket, tier)
             response.headers["Retry-After"] = str(bucket.get_reset_time())
@@ -215,9 +207,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 # Convenience function for manual rate limit checking in routes
 def check_rate_limit(
-    identifier: str,
-    tier: str = "free",
-    middleware: Optional[RateLimitMiddleware] = None
+    identifier: str, tier: str = "free", middleware: Optional[RateLimitMiddleware] = None
 ) -> Tuple[bool, int]:
     """
     Manually check rate limit for an identifier
@@ -233,6 +223,7 @@ def check_rate_limit(
     if middleware is None:
         # Create temporary middleware for checking
         from fastapi import FastAPI
+
         temp_app = FastAPI()
         middleware = RateLimitMiddleware(temp_app)
 

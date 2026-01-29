@@ -13,6 +13,7 @@ from backend.services.queue_service import QueueService
 
 logger = logging.getLogger(__name__)
 
+
 class SchedulerService:
     """
     Handles recurring jobs based on cron schedules.
@@ -30,24 +31,24 @@ class SchedulerService:
         self.schedules = [
             {
                 "name": "daily_backup",
-                "cron": "0 2 * * *", # 2 AM daily
+                "cron": "0 2 * * *",  # 2 AM daily
                 "job_type": "backup_system",
                 "payload": {"type": "full"},
-                "priority": "normal"
+                "priority": "normal",
             },
             {
                 "name": "weekly_report",
-                "cron": "0 9 * * 1", # 9 AM Monday
+                "cron": "0 9 * * 1",  # 9 AM Monday
                 "job_type": "generate_report",
                 "payload": {"report_type": "weekly_summary"},
-                "priority": "low"
+                "priority": "low",
             },
             {
                 "name": "monthly_cleanup",
-                "cron": "0 3 1 * *", # 3 AM 1st of month
+                "cron": "0 3 1 * *",  # 3 AM 1st of month
                 "job_type": "cleanup_old_data",
                 "payload": {"retention_days": 30},
-                "priority": "low"
+                "priority": "low",
             },
             # Test schedule: Every minute (for demo)
             # {
@@ -84,6 +85,7 @@ class SchedulerService:
 
     def _process_schedule(self, schedule: Dict[str, Any], now: datetime):
         from croniter import croniter
+
         name = schedule["name"]
         cron_expression = schedule["cron"]
 
@@ -113,11 +115,12 @@ class SchedulerService:
             self.queue_service.enqueue_job(
                 job_type=schedule["job_type"],
                 payload=schedule.get("payload", {}),
-                priority=schedule.get("priority", "normal")
+                priority=schedule.get("priority", "normal"),
             )
 
             # Update last run time to NOW (to prevent double runs if we are slightly behind)
             self.redis.set(last_run_key, now.timestamp())
+
 
 if __name__ == "__main__":
     # Standalone execution

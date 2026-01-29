@@ -12,10 +12,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 print("Testing license router import...")
 try:
     from backend.api.routers import license
+
     print("✓ Successfully imported license router")
 
     # Check router exists
-    assert hasattr(license, 'router'), "Router object not found"
+    assert hasattr(license, "router"), "Router object not found"
     print("✓ Router object exists")
 
     # Check endpoints exist
@@ -29,7 +30,7 @@ try:
         "/api/license/verify",
         "/api/license/features/{tier}",
         "/api/license/activate",
-        "/api/license/health"
+        "/api/license/health",
     ]
 
     for expected in expected_routes:
@@ -52,10 +53,12 @@ try:
 except ImportError as e:
     print(f"✗ Failed to import license router: {e}")
     import traceback
+
     traceback.print_exc()
     sys.exit(1)
 except Exception as e:
     print(f"✗ Error: {e}")
     import traceback
+
     traceback.print_exc()
     sys.exit(1)

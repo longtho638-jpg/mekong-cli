@@ -1,6 +1,7 @@
 """
 Google Ads Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import List
@@ -11,10 +12,12 @@ class AdType(Enum):
     DISPLAY = "display"
     VIDEO = "video"
 
+
 class KeywordMatch(Enum):
     BROAD = "broad"
     PHRASE = "phrase"
     EXACT = "exact"
+
 
 @dataclass
 class PPCKeyword:
@@ -25,6 +28,7 @@ class PPCKeyword:
     impressions: int = 0
     clicks: int = 0
     conversions: int = 0
+
 
 @dataclass
 class GoogleAdsCampaign:

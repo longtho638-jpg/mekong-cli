@@ -18,16 +18,19 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     def __init__(self, app, content_security_policy: str = None):
         super().__init__(app)
         # Default CSP if not provided - strictly limit sources
-        self.csp = content_security_policy or (
-            "default-src 'self'; "
-            "img-src 'self' data: https:; "
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "  # unsafe-eval often needed for some JS frameworks, unsafe-inline for quick hacks. Harden for prod.
-            "style-src 'self' 'unsafe-inline' https:; "
-            "font-src 'self' data: https:; "
-            "object-src 'none'; "
-            "frame-ancestors 'none'; "  # Prevent clickjacking
-            "base-uri 'self'; "
-            "form-action 'self';"
+        self.csp = (
+            content_security_policy
+            or (
+                "default-src 'self'; "
+                "img-src 'self' data: https:; "
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "  # unsafe-eval often needed for some JS frameworks, unsafe-inline for quick hacks. Harden for prod.
+                "style-src 'self' 'unsafe-inline' https:; "
+                "font-src 'self' data: https:; "
+                "object-src 'none'; "
+                "frame-ancestors 'none'; "  # Prevent clickjacking
+                "base-uri 'self'; "
+                "form-action 'self';"
+            )
         )
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
@@ -40,7 +43,9 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         # 2. Strict-Transport-Security (HSTS)
         # Enforces HTTPS connections. Max-age is set to 1 year (31536000 seconds).
         # includeSubDomains ensures subdomains are also protected.
-        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains; preload"
+        response.headers["Strict-Transport-Security"] = (
+            "max-age=31536000; includeSubDomains; preload"
+        )
 
         # 3. X-Content-Type-Options
         # Prevents MIME-sniffing attacks.

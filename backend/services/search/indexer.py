@@ -15,10 +15,12 @@ from backend.services.search.meilisearch_client import get_meilisearch_client
 
 logger = logging.getLogger(__name__)
 
+
 class SearchIndexer:
     """
     Service to handle indexing operations.
     """
+
     def __init__(self):
         self.client = get_meilisearch_client().client
 
@@ -31,7 +33,7 @@ class SearchIndexer:
 
         try:
             # Create index (get_or_create logic)
-            self.client.create_index(config.name, {'primaryKey': config.primary_key})
+            self.client.create_index(config.name, {"primaryKey": config.primary_key})
 
             # Update settings
             index = self.client.index(config.name)
@@ -72,7 +74,9 @@ class SearchIndexer:
         try:
             index = self.client.index(index_name)
             task = index.update_documents(documents)
-            logger.info(f"Updated {len(documents)} docs in '{index_name}'. Task UID: {task.task_uid}")
+            logger.info(
+                f"Updated {len(documents)} docs in '{index_name}'. Task UID: {task.task_uid}"
+            )
             return {"task_uid": task.task_uid, "status": "enqueued"}
         except MeilisearchError as e:
             logger.error(f"Error updating documents in '{index_name}': {e}")
@@ -97,7 +101,9 @@ class SearchIndexer:
         try:
             index = self.client.index(index_name)
             task = index.delete_documents(document_ids)
-            logger.info(f"Deleted {len(document_ids)} docs from '{index_name}'. Task UID: {task.task_uid}")
+            logger.info(
+                f"Deleted {len(document_ids)} docs from '{index_name}'. Task UID: {task.task_uid}"
+            )
             return {"task_uid": task.task_uid, "status": "enqueued"}
         except MeilisearchError as e:
             logger.error(f"Error deleting documents from '{index_name}': {e}")
@@ -126,11 +132,12 @@ class SearchIndexer:
                 "enqueued_at": str(task.enqueued_at),
                 "started_at": str(task.started_at) if task.started_at else None,
                 "finished_at": str(task.finished_at) if task.finished_at else None,
-                "error": task.error
+                "error": task.error,
             }
         except MeilisearchError as e:
             logger.error(f"Error getting task {task_uid}: {e}")
             raise
+
 
 def get_search_indexer() -> SearchIndexer:
     """Dependency provider for SearchIndexer."""

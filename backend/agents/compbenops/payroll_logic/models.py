@@ -1,6 +1,7 @@
 """
 Payroll Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -13,12 +14,14 @@ class PayrollStatus(Enum):
     COMPLETED = "completed"
     PAID = "paid"
 
+
 class DeductionType(Enum):
     TAX = "tax"
     INSURANCE = "insurance"
     BENEFITS = "benefits"
     RETIREMENT = "retirement"
     OTHER = "other"
+
 
 @dataclass
 class PayrollEntry:
@@ -33,6 +36,7 @@ class PayrollEntry:
 
     def calculate_net(self):
         self.net_pay = self.gross_pay - sum(self.deductions.values())
+
 
 @dataclass
 class PayrollRun:

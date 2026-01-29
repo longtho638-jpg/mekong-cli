@@ -23,7 +23,9 @@ class JWTService:
         self.issuer = settings.backend_url
         self.redis: Redis = redis_client
 
-    def create_access_token(self, user_id: str, client_id: str, scope: str, expires_delta: Optional[timedelta] = None) -> Tuple[str, str, datetime]:
+    def create_access_token(
+        self, user_id: str, client_id: str, scope: str, expires_delta: Optional[timedelta] = None
+    ) -> Tuple[str, str, datetime]:
         """
         Create a JWT access token.
         Returns: (token, jti, expire_at)
@@ -31,7 +33,9 @@ class JWTService:
         if expires_delta:
             expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.now(timezone.utc) + timedelta(minutes=self.access_token_expire_minutes)
+            expire = datetime.now(timezone.utc) + timedelta(
+                minutes=self.access_token_expire_minutes
+            )
 
         jti = str(uuid.uuid4())
         issued_at = datetime.now(timezone.utc)
@@ -43,13 +47,15 @@ class JWTService:
             exp=int(expire.timestamp()),
             iat=int(issued_at.timestamp()),
             jti=jti,
-            scope=scope
+            scope=scope,
         )
 
         encoded_jwt = jwt.encode(payload.model_dump(), self.secret_key, algorithm=self.algorithm)
         return encoded_jwt, jti, expire
 
-    def create_refresh_token(self, user_id: str, client_id: str, scope: str) -> Tuple[str, str, datetime]:
+    def create_refresh_token(
+        self, user_id: str, client_id: str, scope: str
+    ) -> Tuple[str, str, datetime]:
         """
         Create a JWT refresh token.
         """
@@ -66,7 +72,7 @@ class JWTService:
             exp=int(expire.timestamp()),
             iat=int(issued_at.timestamp()),
             jti=jti,
-            scope=scope
+            scope=scope,
         ).model_dump()
 
         payload_dict["type"] = "refresh"
@@ -89,20 +95,24 @@ class JWTService:
                 raise JWTError("Token is blacklisted")
 
             options = {"verify_aud": False, "verify_exp": verify_exp}
-            payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm], options=options)
+            payload = jwt.decode(
+                token, self.secret_key, algorithms=[self.algorithm], options=options
+            )
 
             return payload
         except JWTError:
             # print(f"JWT Decode Error: {e}")
             return None
 
-    def validate_token_claims(self, payload: Dict[str, Any], required_scopes: Optional[list] = None) -> bool:
+    def validate_token_claims(
+        self, payload: Dict[str, Any], required_scopes: Optional[list] = None
+    ) -> bool:
         """
         Validate standard claims and optional scopes.
         """
         if payload.get("iss") != self.issuer:
-             # Strict check in prod, maybe logging warning in dev
-             pass
+            # Strict check in prod, maybe logging warning in dev
+            pass
 
         if required_scopes:
             token_scopes = payload.get("scope", "").split(" ")
@@ -124,6 +134,7 @@ class JWTService:
         Check if a token JTI is in the blacklist.
         """
         return await self.redis.exists(f"blacklist:{jti}") > 0
+
 
 # Singleton instance
 jwt_service = JWTService()

@@ -19,25 +19,35 @@ if is_sqlite:
     class GUID(TypeDecorator):
         impl = CHAR
         cache_ok = True
+
         def load_dialect_impl(self, dialect):
             return dialect.type_descriptor(CHAR(36))
+
         def process_bind_param(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return str(value)
+
         def process_result_value(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return uuid.UUID(value)
 
     class JSONType(TypeDecorator):
         impl = Text
         cache_ok = True
+
         def load_dialect_impl(self, dialect):
             return dialect.type_descriptor(Text)
+
         def process_bind_param(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return json.dumps(value)
+
         def process_result_value(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return json.loads(value)
 
     UUID_TYPE = GUID
@@ -63,6 +73,7 @@ class WebhookEvent(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     processed_at = Column(DateTime, nullable=True)
 
+
 class WebhookConfig(Base):
     __tablename__ = "webhook_configs"
 
@@ -75,6 +86,7 @@ class WebhookConfig(Base):
     api_key_id = Column(UUID_TYPE, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 class WebhookDelivery(Base):
     __tablename__ = "webhook_deliveries"
@@ -91,6 +103,7 @@ class WebhookDelivery(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
 class WebhookFailure(Base):
     __tablename__ = "webhook_failures"
 
@@ -103,6 +116,7 @@ class WebhookFailure(Base):
     failed_at = Column(DateTime, default=datetime.utcnow)
     is_resolved = Column(Boolean, default=False)
     resolution_note = Column(Text, nullable=True)
+
 
 class WebhookDeliveryAttempt(Base):
     __tablename__ = "webhook_delivery_attempts"

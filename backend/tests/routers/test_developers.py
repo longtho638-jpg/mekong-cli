@@ -21,13 +21,16 @@ client = TestClient(app)
 MOCK_USER_ID = str(uuid4())
 MOCK_USER = {"id": MOCK_USER_ID, "username": "testuser", "role": "user"}
 
+
 @pytest.fixture
 def mock_db_session():
     return MagicMock()
 
+
 @pytest.fixture
 def mock_api_key_service():
     return MagicMock(spec=ApiKeyService)
+
 
 @pytest.fixture
 def override_dependencies(mock_db_session, mock_api_key_service):
@@ -36,6 +39,7 @@ def override_dependencies(mock_db_session, mock_api_key_service):
     app.dependency_overrides[get_api_key_service] = lambda: mock_api_key_service
     yield
     app.dependency_overrides = {}
+
 
 def test_list_api_keys(override_dependencies, mock_api_key_service):
     mock_keys = [
@@ -47,7 +51,7 @@ def test_list_api_keys(override_dependencies, mock_api_key_service):
             "scopes": ["read"],
             "tier": "free",
             "status": "active",
-            "created_at": datetime.utcnow()
+            "created_at": datetime.utcnow(),
         }
     ]
     mock_api_key_service.list_api_keys.return_value = mock_keys
@@ -60,6 +64,7 @@ def test_list_api_keys(override_dependencies, mock_api_key_service):
     assert data[0]["name"] == "Test Key"
     mock_api_key_service.list_api_keys.assert_called_once_with(MOCK_USER_ID)
 
+
 def test_create_api_key(override_dependencies, mock_api_key_service):
     key_data = {"name": "New Key", "scopes": ["full_access"]}
     mock_response = {
@@ -71,7 +76,7 @@ def test_create_api_key(override_dependencies, mock_api_key_service):
         "tier": "free",
         "status": "active",
         "created_at": datetime.utcnow(),
-        "key": "aky_live_full_secret_key"
+        "key": "aky_live_full_secret_key",
     }
     mock_api_key_service.generate_api_key.return_value = mock_response
 
@@ -83,6 +88,7 @@ def test_create_api_key(override_dependencies, mock_api_key_service):
     assert data["key"] == "aky_live_full_secret_key"
     mock_api_key_service.generate_api_key.assert_called_once()
 
+
 def test_revoke_api_key(override_dependencies, mock_api_key_service):
     key_id = "some-key-id"
     mock_api_key_service.revoke_api_key.return_value = True
@@ -92,6 +98,7 @@ def test_revoke_api_key(override_dependencies, mock_api_key_service):
     assert response.status_code == 200
     assert response.json() == {"status": "revoked"}
     mock_api_key_service.revoke_api_key.assert_called_once_with(key_id, MOCK_USER_ID)
+
 
 def test_rotate_api_key(override_dependencies, mock_api_key_service):
     key_id = "some-key-id"
@@ -104,7 +111,7 @@ def test_rotate_api_key(override_dependencies, mock_api_key_service):
         "tier": "free",
         "status": "active",
         "created_at": datetime.utcnow(),
-        "key": "aky_live_new_secret_key"
+        "key": "aky_live_new_secret_key",
     }
     mock_api_key_service.rotate_api_key.return_value = mock_response
 
@@ -115,10 +122,13 @@ def test_rotate_api_key(override_dependencies, mock_api_key_service):
     assert data["key"] == "aky_live_new_secret_key"
     mock_api_key_service.rotate_api_key.assert_called_once_with(key_id, MOCK_USER_ID)
 
+
 def test_usage_stats_chart_data(override_dependencies, mock_db_session):
     # Mock finding API keys for user
     mock_key_id = str(uuid4())
-    mock_db_session.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"id": mock_key_id}]
+    mock_db_session.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [
+        {"id": mock_key_id}
+    ]
 
     # Mock usage data
     now = datetime.utcnow()
@@ -126,10 +136,25 @@ def test_usage_stats_chart_data(override_dependencies, mock_db_session):
 
     mock_usage_records = [
         # Today: 1 success, 1 error
-        {"endpoint": "/api/v1/test", "status_code": 200, "response_time_ms": 100, "created_at": now.isoformat()},
-        {"endpoint": "/api/v1/test", "status_code": 500, "response_time_ms": 50, "created_at": now.isoformat()},
+        {
+            "endpoint": "/api/v1/test",
+            "status_code": 200,
+            "response_time_ms": 100,
+            "created_at": now.isoformat(),
+        },
+        {
+            "endpoint": "/api/v1/test",
+            "status_code": 500,
+            "response_time_ms": 50,
+            "created_at": now.isoformat(),
+        },
         # Yesterday: 1 success
-        {"endpoint": "/api/v1/test", "status_code": 200, "response_time_ms": 120, "created_at": yesterday.isoformat()},
+        {
+            "endpoint": "/api/v1/test",
+            "status_code": 200,
+            "response_time_ms": 120,
+            "created_at": yesterday.isoformat(),
+        },
     ]
 
     # Mock usage query chain
@@ -149,7 +174,7 @@ def test_usage_stats_chart_data(override_dependencies, mock_db_session):
 
     # Check chart data
     assert "chart_data" in data
-    assert len(data["chart_data"]) == 7 # requested 7 days
+    assert len(data["chart_data"]) == 7  # requested 7 days
 
     today_str = now.strftime("%Y-%m-%d")
     yesterday_str = yesterday.strftime("%Y-%m-%d")
@@ -162,29 +187,31 @@ def test_usage_stats_chart_data(override_dependencies, mock_db_session):
     assert yesterday_stats["requests"] == 1
     assert yesterday_stats["errors"] == 0
 
+
 def test_create_webhook(override_dependencies, mock_db_session):
     # Mock user owning the API key
     key_id = str(uuid4())
-    mock_db_session.table.return_value.select.return_value.eq.return_value.eq.return_value.execute.return_value.data = [{"id": key_id}]
+    mock_db_session.table.return_value.select.return_value.eq.return_value.eq.return_value.execute.return_value.data = [
+        {"id": key_id}
+    ]
 
     # Mock insert response
     new_webhook_id = str(uuid4())
-    mock_db_session.table.return_value.insert.return_value.execute.return_value.data = [{
-        "id": new_webhook_id,
-        "url": "https://example.com/webhook",
-        "events": ["*"],
-        "status": "active",
-        "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat(),
-        "secret": "whsec_test"
-    }]
+    mock_db_session.table.return_value.insert.return_value.execute.return_value.data = [
+        {
+            "id": new_webhook_id,
+            "url": "https://example.com/webhook",
+            "events": ["*"],
+            "status": "active",
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+            "secret": "whsec_test",
+        }
+    ]
 
     payload = {
-        "config": {
-            "url": "https://example.com/webhook",
-            "events": ["*"]
-        },
-        "api_key_id": key_id
+        "config": {"url": "https://example.com/webhook", "events": ["*"]},
+        "api_key_id": key_id,
     }
 
     response = client.post("/developers/webhooks", json=payload)

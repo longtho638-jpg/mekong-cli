@@ -1,6 +1,7 @@
 """
 Activity Tracker Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -13,12 +14,14 @@ class ActivityType(Enum):
     LINKEDIN = "linkedin"
     NOTE = "note"
 
+
 class ActivityOutcome(Enum):
     COMPLETED = "completed"
     NO_ANSWER = "no_answer"
     LEFT_VOICEMAIL = "left_voicemail"
     CONNECTED = "connected"
     SCHEDULED = "scheduled"
+
 
 @dataclass
 class Activity:
@@ -30,6 +33,7 @@ class Activity:
     duration_mins: int = 0
     notes: str = ""
     created_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class DailyStats:

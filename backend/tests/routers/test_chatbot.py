@@ -14,11 +14,14 @@ from backend.services.llm.types import LLMResponse
 @pytest.fixture
 def client():
     async def override_get_current_user():
-        return SimpleNamespace(id=1, email="test@example.com", is_active=True, username="testuser", role="user")
+        return SimpleNamespace(
+            id=1, email="test@example.com", is_active=True, username="testuser", role="user"
+        )
 
     app.dependency_overrides[get_current_user] = override_get_current_user
     yield TestClient(app)
     app.dependency_overrides = {}
+
 
 @pytest.fixture
 def mock_llm_service():
@@ -27,14 +30,15 @@ def mock_llm_service():
         instance.chat = AsyncMock(return_value="I am a bot")
         yield instance
 
+
 def test_chat_endpoint(client, mock_llm_service):
     response = client.post(
         "/chatbot/chat",
         json={
             "messages": [{"role": "user", "content": "Hello"}],
             "provider": "gemini",
-            "model": "gemini-1.5-flash"
-        }
+            "model": "gemini-1.5-flash",
+        },
     )
 
     assert response.status_code == 200
@@ -43,11 +47,7 @@ def test_chat_endpoint(client, mock_llm_service):
     assert data["provider"] == "gemini"
     assert data["model"] == "gemini-1.5-flash"
 
+
 def test_chat_endpoint_no_messages(client, mock_llm_service):
-    response = client.post(
-        "/chatbot/chat",
-        json={
-            "messages": []
-        }
-    )
+    response = client.post("/chatbot/chat", json={"messages": []})
     assert response.status_code == 400

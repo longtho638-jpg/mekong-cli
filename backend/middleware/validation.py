@@ -65,8 +65,8 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                             status_code=415,
                             content={
                                 "error": "Unsupported Media Type",
-                                "details": "Content-Type must be application/json or multipart/form-data"
-                            }
+                                "details": "Content-Type must be application/json or multipart/form-data",
+                            },
                         )
 
                 # Validate request size
@@ -77,8 +77,8 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                         status_code=413,
                         content={
                             "error": "Payload Too Large",
-                            "details": f"Request size exceeds {self.max_request_size} bytes"
-                        }
+                            "details": f"Request size exceeds {self.max_request_size} bytes",
+                        },
                     )
 
                 # Validate JSON depth (if JSON content type)
@@ -94,8 +94,8 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                                 status_code=400,
                                 content={
                                     "error": "Bad Request",
-                                    "details": f"JSON nesting exceeds {self.max_json_depth} levels"
-                                }
+                                    "details": f"JSON nesting exceeds {self.max_json_depth} levels",
+                                },
                             )
 
                         # Validate string lengths in JSON
@@ -105,8 +105,8 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                                 status_code=400,
                                 content={
                                     "error": "Bad Request",
-                                    "details": f"String field exceeds {settings.max_string_length} characters"
-                                }
+                                    "details": f"String field exceeds {settings.max_string_length} characters",
+                                },
                             )
 
                     except Exception:
@@ -120,11 +120,7 @@ class ValidationMiddleware(BaseHTTPMiddleware):
         except ValidationError as e:
             logger.warning(f"Validation error: {e}")
             return JSONResponse(
-                status_code=422,
-                content={
-                    "error": "Validation failed",
-                    "details": e.errors()
-                }
+                status_code=422, content={"error": "Validation failed", "details": e.errors()}
             )
 
         except Exception as e:
@@ -133,8 +129,8 @@ class ValidationMiddleware(BaseHTTPMiddleware):
                 status_code=500,
                 content={
                     "error": "Internal server error",
-                    "details": str(e) if settings.debug else "An error occurred"
-                }
+                    "details": str(e) if settings.debug else "An error occurred",
+                },
             )
 
     def _should_skip_validation(self, path: str) -> bool:

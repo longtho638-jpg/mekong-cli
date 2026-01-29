@@ -6,7 +6,9 @@ class VectorStore(ABC):
     """Abstract base class for Vector Store."""
 
     @abstractmethod
-    async def add_documents(self, documents: List[str], metadatas: List[Dict[str, Any]], embeddings: List[List[float]]) -> None:
+    async def add_documents(
+        self, documents: List[str], metadatas: List[Dict[str, Any]], embeddings: List[List[float]]
+    ) -> None:
         """Add documents and their embeddings to the store."""
         pass
 
@@ -15,17 +17,21 @@ class VectorStore(ABC):
         """Search for similar documents by embedding."""
         pass
 
+
 class InMemoryVectorStore(VectorStore):
     """
     Simple In-Memory Vector Store for testing/dev.
     Uses cosine similarity.
     """
+
     def __init__(self):
         self.documents = []
         self.metadatas = []
         self.embeddings = []
 
-    async def add_documents(self, documents: List[str], metadatas: List[Dict[str, Any]], embeddings: List[List[float]]) -> None:
+    async def add_documents(
+        self, documents: List[str], metadatas: List[Dict[str, Any]], embeddings: List[List[float]]
+    ) -> None:
         self.documents.extend(documents)
         self.metadatas.extend(metadatas)
         self.embeddings.extend(embeddings)
@@ -51,10 +57,12 @@ class InMemoryVectorStore(VectorStore):
 
         results = []
         for idx in top_k_indices:
-            results.append({
-                "content": self.documents[idx],
-                "metadata": self.metadatas[idx],
-                "score": float(similarities[idx])
-            })
+            results.append(
+                {
+                    "content": self.documents[idx],
+                    "metadata": self.metadatas[idx],
+                    "score": float(similarities[idx]),
+                }
+            )
 
         return results

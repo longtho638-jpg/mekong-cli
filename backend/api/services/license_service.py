@@ -3,6 +3,7 @@ License Service - Database operations for license management.
 
 Handles persistence, retrieval, and activation tracking using Supabase.
 """
+
 import logging
 import os
 from datetime import datetime
@@ -15,6 +16,7 @@ from supabase import Client, create_client
 
 logger = logging.getLogger(__name__)
 
+
 class LicenseService:
     """Service for managing licenses in Supabase."""
 
@@ -25,7 +27,9 @@ class LicenseService:
 
         if not supabase_url or not supabase_key:
             # Fallback for dev/test if env vars not set, though ideally should raise
-            logger.warning("SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set. LicenseService may fail.")
+            logger.warning(
+                "SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY not set. LicenseService may fail."
+            )
             self.client = None
         else:
             self.client: Client = create_client(supabase_url, supabase_key)
@@ -40,7 +44,7 @@ class LicenseService:
         duration_days: int = 365,
         bound_domain: Optional[str] = None,
         hardware_fingerprint: Optional[str] = None,
-        metadata: Optional[dict] = None
+        metadata: Optional[dict] = None,
     ) -> License:
         """
         Generate and save a new license.
@@ -51,7 +55,7 @@ class LicenseService:
             plan=plan,
             duration_days=duration_days,
             bound_domain=bound_domain,
-            hardware_fingerprint=hardware_fingerprint
+            hardware_fingerprint=hardware_fingerprint,
         )
 
         if metadata:
@@ -86,7 +90,9 @@ class LicenseService:
             return None
 
         try:
-            result = self.client.table("licenses").select("*").eq("license_key", license_key).execute()
+            result = (
+                self.client.table("licenses").select("*").eq("license_key", license_key).execute()
+            )
             if result.data and len(result.data) > 0:
                 return License(**result.data[0])
             return None
@@ -98,7 +104,7 @@ class LicenseService:
         self,
         license_key: str,
         domain: Optional[str] = None,
-        hardware_fingerprint: Optional[str] = None
+        hardware_fingerprint: Optional[str] = None,
     ) -> ValidationResult:
         """
         Full validation pipeline:
@@ -122,7 +128,7 @@ class LicenseService:
             license_key,
             domain=domain,
             hardware_fingerprint=hardware_fingerprint,
-            license_data=license_obj
+            license_data=license_obj,
         )
 
         return full_result
@@ -133,7 +139,7 @@ class LicenseService:
         fingerprint: str,
         hostname: Optional[str] = None,
         ip_address: Optional[str] = None,
-        metadata: Optional[dict] = None
+        metadata: Optional[dict] = None,
     ) -> Tuple[bool, str]:
         """
         Register an activation (seat) for a license.
@@ -153,48 +159,61 @@ class LicenseService:
             # Fetch raw data again to get ID, or assume we can query by license_key join?
             # Ideally License model should have ID, but the Pydantic model might not if it was generated fresh.
             # Let's fetch ID.
-            lic_res = self.client.table("licenses").select("id").eq("license_key", license_key).execute()
+            lic_res = (
+                self.client.table("licenses").select("id").eq("license_key", license_key).execute()
+            )
             if not lic_res.data:
                 return False, "License ID lookup failed"
-            license_id = lic_res.data[0]['id']
+            license_id = lic_res.data[0]["id"]
 
             # Check existing activation
-            existing = self.client.table("license_activations")\
-                .select("*")\
-                .eq("license_id", license_id)\
-                .eq("fingerprint", fingerprint)\
+            existing = (
+                self.client.table("license_activations")
+                .select("*")
+                .eq("license_id", license_id)
+                .eq("fingerprint", fingerprint)
                 .execute()
+            )
 
             if existing.data:
                 # Already activated, update check-in
-                self.client.table("license_activations").update({
-                    "last_check_in": datetime.utcnow().isoformat(),
-                    "ip_address": ip_address,
-                    "hostname": hostname
-                }).eq("id", existing.data[0]['id']).execute()
+                self.client.table("license_activations").update(
+                    {
+                        "last_check_in": datetime.utcnow().isoformat(),
+                        "ip_address": ip_address,
+                        "hostname": hostname,
+                    }
+                ).eq("id", existing.data[0]["id"]).execute()
                 return True, "Activation refreshed"
 
             # Check limit
             # Enterprise unlimited logic handled by max_activations number (e.g. 9999)
 
-            current_count_res = self.client.table("license_activations")\
-                .select("id", count="exact")\
-                .eq("license_id", license_id)\
+            current_count_res = (
+                self.client.table("license_activations")
+                .select("id", count="exact")
+                .eq("license_id", license_id)
                 .execute()
+            )
 
             current_count = current_count_res.count or 0
 
             if current_count >= license_obj.max_activations:
-                return False, f"Activation limit reached ({current_count}/{license_obj.max_activations})"
+                return (
+                    False,
+                    f"Activation limit reached ({current_count}/{license_obj.max_activations})",
+                )
 
             # Create new activation
-            self.client.table("license_activations").insert({
-                "license_id": license_id,
-                "fingerprint": fingerprint,
-                "hostname": hostname,
-                "ip_address": ip_address,
-                "metadata": metadata or {}
-            }).execute()
+            self.client.table("license_activations").insert(
+                {
+                    "license_id": license_id,
+                    "fingerprint": fingerprint,
+                    "hostname": hostname,
+                    "ip_address": ip_address,
+                    "metadata": metadata or {},
+                }
+            ).execute()
 
             return True, "Activated successfully"
 
@@ -210,16 +229,16 @@ class LicenseService:
             return False
 
         try:
-            lic_res = self.client.table("licenses").select("id").eq("license_key", license_key).execute()
+            lic_res = (
+                self.client.table("licenses").select("id").eq("license_key", license_key).execute()
+            )
             if not lic_res.data:
                 return False
-            license_id = lic_res.data[0]['id']
+            license_id = lic_res.data[0]["id"]
 
-            self.client.table("license_activations")\
-                .delete()\
-                .eq("license_id", license_id)\
-                .eq("fingerprint", fingerprint)\
-                .execute()
+            self.client.table("license_activations").delete().eq("license_id", license_id).eq(
+                "fingerprint", fingerprint
+            ).execute()
             return True
         except Exception as e:
             logger.error(f"Deactivation error: {e}")

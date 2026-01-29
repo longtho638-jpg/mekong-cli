@@ -12,11 +12,13 @@ from backend.services.jwt_service import jwt_service
 def mock_app():
     return AsyncMock(return_value=Response("OK"))
 
+
 @pytest.fixture
 def middleware(mock_app):
     # If license_validator or other dependencies need mocking, do it here with patch
     with patch("backend.middleware.license_validator"):
         return JWTRotationMiddleware(mock_app)
+
 
 @pytest.mark.asyncio
 async def test_jwt_rotation_valid_token(middleware, mock_app):
@@ -24,11 +26,14 @@ async def test_jwt_rotation_valid_token(middleware, mock_app):
     request.headers = {"Authorization": "Bearer valid_token"}
 
     # Mock decode to return valid payload
-    with patch.object(jwt_service, 'decode_token', new_callable=AsyncMock, return_value={"sub": "user1"}):
+    with patch.object(
+        jwt_service, "decode_token", new_callable=AsyncMock, return_value={"sub": "user1"}
+    ):
         await middleware.dispatch(request, mock_app)
 
         # Should proceed to next app
         mock_app.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_jwt_rotation_blacklisted_token(middleware, mock_app):
@@ -36,12 +41,13 @@ async def test_jwt_rotation_blacklisted_token(middleware, mock_app):
     request.headers = {"Authorization": "Bearer revoked_token"}
 
     # Mock decode to return None (simulating blacklist/invalid)
-    with patch.object(jwt_service, 'decode_token', new_callable=AsyncMock, return_value=None):
+    with patch.object(jwt_service, "decode_token", new_callable=AsyncMock, return_value=None):
         await middleware.dispatch(request, mock_app)
 
         # Should still proceed (as per code design, strictness handled by dependencies)
         # But we verify it tried to decode
         mock_app.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_jwt_rotation_no_token(middleware, mock_app):

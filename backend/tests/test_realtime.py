@@ -17,10 +17,7 @@ async def test_message_bus_websocket_broadcast():
 
     # Create test message
     msg = AgentMessage(
-        sender="test_sender",
-        recipient="all",
-        content="Test Broadcast",
-        type=MessageType.TASK
+        sender="test_sender", recipient="all", content="Test Broadcast", type=MessageType.TASK
     )
 
     # Publish message

@@ -69,6 +69,7 @@ class AuditLogger:
             if actor_type == "user":
                 try:
                     import uuid
+
                     uuid.UUID(str(actor_id))
                     user_id_val = str(actor_id)
                 except (ValueError, TypeError):
@@ -79,22 +80,25 @@ class AuditLogger:
                 "actor_id": actor_id,
                 "actor_type": actor_type,
                 "status": status,
-                **(metadata or {})
+                **(metadata or {}),
             }
 
             # Create AuditLog model instance
             audit_entry = AuditLog(
                 user_id=user_id_val,
                 action=action,
-                resource_type=resource.split(":")[0] if resource and ":" in resource else "resource",
+                resource_type=resource.split(":")[0]
+                if resource and ":" in resource
+                else "resource",
                 resource_id=resource.split(":")[1] if resource and ":" in resource else resource,
                 ip_address=ip_address,
                 user_agent=user_agent,
-                metadata_=entry_metadata
+                metadata_=entry_metadata,
             )
 
             # Simple hash generation for integrity (mock implementation)
             import hashlib
+
             payload = f"{actor_id}:{action}:{datetime.utcnow().isoformat()}"
             audit_entry.hash = hashlib.sha256(payload.encode()).hexdigest()
 

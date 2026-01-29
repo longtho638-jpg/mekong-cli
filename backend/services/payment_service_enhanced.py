@@ -22,12 +22,11 @@ class EnhancedPaymentService:
         self.config = get_payment_config()
 
         # Initialize orchestrator
-        self.orchestrator = PaymentOrchestrator(
-            provider_order=self.config.provider_order
-        )
+        self.orchestrator = PaymentOrchestrator(provider_order=self.config.provider_order)
 
         # Legacy services (for backward compatibility)
         from backend.services.payment_service import PaymentService
+
         self.legacy = PaymentService()
 
     def create_checkout_session(
@@ -40,7 +39,7 @@ class EnhancedPaymentService:
         cancel_url: str = None,
         customer_email: str = None,
         tenant_id: str = None,
-        mode: str = "subscription"
+        mode: str = "subscription",
     ):
         """
         Create checkout session with automatic failover.
@@ -58,7 +57,7 @@ class EnhancedPaymentService:
                 cancel_url=cancel_url,
                 customer_email=customer_email,
                 tenant_id=tenant_id,
-                mode=mode
+                mode=mode,
             )
 
             # Add metadata for logging
@@ -76,16 +75,13 @@ class EnhancedPaymentService:
                 cancel_url=cancel_url,
                 customer_email=customer_email,
                 tenant_id=tenant_id,
-                mode=mode
+                mode=mode,
             )
 
     def verify_webhook(self, provider: str, headers: dict, body: any, webhook_secret: str = None):
         """Verify webhook using orchestrator"""
         return self.orchestrator.verify_webhook(
-            provider=provider,
-            headers=headers,
-            body=body,
-            webhook_secret=webhook_secret
+            provider=provider, headers=headers, body=body, webhook_secret=webhook_secret
         )
 
     def get_failover_stats(self):
@@ -168,7 +164,7 @@ if __name__ == "__main__":
         result = service.create_checkout_session(
             provider="auto",  # Automatic failover
             amount=99.99,
-            mode="subscription"
+            mode="subscription",
         )
 
         print("✅ Checkout created successfully")

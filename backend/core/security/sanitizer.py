@@ -16,6 +16,7 @@ SENSITIVE_PATTERNS = {
     "connection_string": r"(?i)(mongodb\+srv|postgres|mysql|redis):\/\/[^:]+:[^@]+@[^\/\s]+",
 }
 
+
 class DataDietSanitizer:
     """
     Service for sanitizing data outputs.
@@ -57,8 +58,10 @@ class DataDietSanitizer:
 
         return sanitized
 
+
 # Global Instance
 sanitizer = DataDietSanitizer()
+
 
 def sanitize_output(data: Any) -> Any:
     """Convenience function for sanitization."""

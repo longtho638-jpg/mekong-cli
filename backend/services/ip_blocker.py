@@ -12,6 +12,7 @@ from backend.models.rate_limit import IpBlocklist
 
 logger = logging.getLogger(__name__)
 
+
 class IpBlocker:
     """
     Manages IP blocklist using Redis for high performance and PostgreSQL for persistence.
@@ -45,7 +46,13 @@ class IpBlocker:
 
         return False
 
-    async def block_ip(self, ip_address: str, reason: str = None, duration_seconds: int = 3600, created_by: str = "system"):
+    async def block_ip(
+        self,
+        ip_address: str,
+        reason: str = None,
+        duration_seconds: int = 3600,
+        created_by: str = "system",
+    ):
         """
         Block an IP address.
         """
@@ -62,7 +69,9 @@ class IpBlocker:
             # Assuming sync session for now based on project structure.
             with SessionLocal() as db:
                 # Check if already exists
-                existing = db.execute(select(IpBlocklist).where(IpBlocklist.ip_address == ip_address)).scalar_one_or_none()
+                existing = db.execute(
+                    select(IpBlocklist).where(IpBlocklist.ip_address == ip_address)
+                ).scalar_one_or_none()
 
                 if existing:
                     existing.expires_at = expires_at
@@ -74,7 +83,7 @@ class IpBlocker:
                         reason=reason,
                         expires_at=expires_at,
                         is_active=True,
-                        created_by=created_by
+                        created_by=created_by,
                     )
                     db.add(block)
 
@@ -96,7 +105,9 @@ class IpBlocker:
         # 2. Update DB
         try:
             with SessionLocal() as db:
-                existing = db.execute(select(IpBlocklist).where(IpBlocklist.ip_address == ip_address)).scalar_one_or_none()
+                existing = db.execute(
+                    select(IpBlocklist).where(IpBlocklist.ip_address == ip_address)
+                ).scalar_one_or_none()
                 if existing:
                     existing.is_active = False
                     db.commit()
@@ -113,7 +124,8 @@ class IpBlocker:
                 stmt = select(IpBlocklist).where(
                     and_(
                         IpBlocklist.is_active.is_(True),
-                        (IpBlocklist.expires_at.is_(None)) | (IpBlocklist.expires_at > datetime.utcnow())
+                        (IpBlocklist.expires_at.is_(None))
+                        | (IpBlocklist.expires_at > datetime.utcnow()),
                     )
                 )
                 results = db.execute(stmt).scalars().all()
@@ -122,12 +134,13 @@ class IpBlocker:
                         "ip_address": ip.ip_address,
                         "reason": ip.reason,
                         "blocked_at": ip.blocked_at,
-                        "expires_at": ip.expires_at
+                        "expires_at": ip.expires_at,
                     }
                     for ip in results
                 ]
         except Exception as e:
             logger.error(f"Failed to fetch blocked IPs: {e}")
             return []
+
 
 ip_blocker = IpBlocker()

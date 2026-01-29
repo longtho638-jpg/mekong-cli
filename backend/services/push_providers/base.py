@@ -26,7 +26,9 @@ class PushProvider(ABC):
     """Abstract base class for push notification providers"""
 
     @abstractmethod
-    async def send_push(self, subscription: PushSubscriptionInfo, message: PushMessage) -> Dict[str, Any]:
+    async def send_push(
+        self, subscription: PushSubscriptionInfo, message: PushMessage
+    ) -> Dict[str, Any]:
         """
         Send a push notification.
         Returns provider-specific response dict.

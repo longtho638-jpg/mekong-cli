@@ -1,6 +1,7 @@
 """
 Test LLM Service
 """
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -15,23 +16,41 @@ from backend.services.llm.service import LLMService
 def mock_gemini_provider():
     with patch("backend.services.llm.service.GeminiProvider") as mock:
         instance = mock.return_value
-        instance.generate_text = AsyncMock(return_value={"content": "Gemini response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
-        instance.chat = AsyncMock(return_value={"content": "Gemini chat response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
+        instance.generate_text = AsyncMock(
+            return_value={
+                "content": "Gemini response",
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            }
+        )
+        instance.chat = AsyncMock(
+            return_value={
+                "content": "Gemini chat response",
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            }
+        )
 
         # Mock streaming response
         async def mock_stream(*args, **kwargs):
             yield "Gemini"
             yield " Stream"
+
         instance.generate_stream = mock_stream
 
         yield instance
+
 
 @pytest.fixture
 def mock_openai_provider():
     with patch("backend.services.llm.service.OpenAIProvider") as mock:
         instance = mock.return_value
-        instance.generate_text = AsyncMock(return_value={"content": "OpenAI response", "usage": {"prompt_tokens": 10, "completion_tokens": 5}})
+        instance.generate_text = AsyncMock(
+            return_value={
+                "content": "OpenAI response",
+                "usage": {"prompt_tokens": 10, "completion_tokens": 5},
+            }
+        )
         yield instance
+
 
 @pytest.mark.asyncio
 async def test_llm_service_gemini_text(mock_gemini_provider):
@@ -43,6 +62,7 @@ async def test_llm_service_gemini_text(mock_gemini_provider):
         response = await service.generate_text("Hello")
         assert response == "Gemini response"
 
+
 @pytest.mark.asyncio
 async def test_llm_service_gemini_chat(mock_gemini_provider):
     service = LLMService()
@@ -52,6 +72,7 @@ async def test_llm_service_gemini_chat(mock_gemini_provider):
         messages = [{"role": "user", "content": "Hi"}]
         response = await service.chat(messages)
         assert response == "Gemini chat response"
+
 
 @pytest.mark.asyncio
 async def test_llm_service_gemini_stream(mock_gemini_provider):
@@ -65,10 +86,13 @@ async def test_llm_service_gemini_stream(mock_gemini_provider):
 
         assert "".join(chunks) == "Gemini Stream"
 
+
 @pytest.mark.asyncio
 async def test_content_service_blog():
-    with patch("backend.services.llm.content.LLMService") as MockLLMService, \
-         patch("backend.services.llm.content.prompt_service") as mock_prompt_service:
+    with (
+        patch("backend.services.llm.content.LLMService") as MockLLMService,
+        patch("backend.services.llm.content.prompt_service") as mock_prompt_service,
+    ):
         mock_llm = MockLLMService.return_value
         mock_llm.generate_text = AsyncMock(return_value="Generated Blog Post")
 
@@ -85,10 +109,13 @@ async def test_content_service_blog():
         assert "AI" in call_kwargs["prompt"]
         assert "short" in call_kwargs["system_instruction"]
 
+
 @pytest.mark.asyncio
 async def test_content_service_social():
-    with patch("backend.services.llm.content.LLMService") as MockLLMService, \
-         patch("backend.services.llm.content.prompt_service") as mock_prompt_service:
+    with (
+        patch("backend.services.llm.content.LLMService") as MockLLMService,
+        patch("backend.services.llm.content.prompt_service") as mock_prompt_service,
+    ):
         mock_llm = MockLLMService.return_value
         mock_llm.generate_text = AsyncMock(return_value="#AI #Tech")
 
@@ -97,7 +124,9 @@ async def test_content_service_social():
 
         service = ContentService()
         mock_db = MagicMock()
-        result = await service.generate_social_media_caption(db=mock_db, content_description="New AI Feature", platform="twitter")
+        result = await service.generate_social_media_caption(
+            db=mock_db, content_description="New AI Feature", platform="twitter"
+        )
 
         assert result == "#AI #Tech"
         mock_llm.generate_text.assert_called_once()

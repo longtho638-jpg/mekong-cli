@@ -22,10 +22,17 @@ class ActivityTrackerAgent:
         self.status = "ready"
         self.activities: List[Activity] = []
 
-    def log_call(self, prospect_id: str, prospect_name: str, outcome: ActivityOutcome,
-                 duration_mins: int = 0, notes: str = "") -> Activity:
+    def log_call(
+        self,
+        prospect_id: str,
+        prospect_name: str,
+        outcome: ActivityOutcome,
+        duration_mins: int = 0,
+        notes: str = "",
+    ) -> Activity:
         """Log a call activity"""
         from datetime import datetime
+
         activity = Activity(
             id=f"act_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             activity_type=ActivityType.CALL,
@@ -41,6 +48,7 @@ class ActivityTrackerAgent:
     def log_email(self, prospect_id: str, prospect_name: str, notes: str = "") -> Activity:
         """Log an email activity"""
         from datetime import datetime
+
         activity = Activity(
             id=f"act_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             activity_type=ActivityType.EMAIL,
@@ -52,9 +60,12 @@ class ActivityTrackerAgent:
         self.activities.append(activity)
         return activity
 
-    def log_meeting(self, prospect_id: str, prospect_name: str, duration_mins: int, notes: str = "") -> Activity:
+    def log_meeting(
+        self, prospect_id: str, prospect_name: str, duration_mins: int, notes: str = ""
+    ) -> Activity:
         """Log a meeting activity"""
         from datetime import datetime
+
         activity = Activity(
             id=f"act_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
             activity_type=ActivityType.MEETING,
@@ -89,14 +100,28 @@ class ActivityTrackerAgent:
         """Get progress towards daily goals"""
         stats = self.get_today_stats()
         return {
-            "calls": {"current": stats.calls, "goal": self.DAILY_GOALS["calls"],
-                      "percent": min(100, stats.calls / self.DAILY_GOALS["calls"] * 100)},
-            "emails": {"current": stats.emails, "goal": self.DAILY_GOALS["emails"],
-                       "percent": min(100, stats.emails / self.DAILY_GOALS["emails"] * 100)},
-            "meetings": {"current": stats.meetings, "goal": self.DAILY_GOALS["meetings"],
-                         "percent": min(100, stats.meetings / self.DAILY_GOALS["meetings"] * 100)},
-            "talk_time": {"current": stats.talk_time_mins, "goal": self.DAILY_GOALS["talk_time_mins"],
-                          "percent": min(100, stats.talk_time_mins / self.DAILY_GOALS["talk_time_mins"] * 100)},
+            "calls": {
+                "current": stats.calls,
+                "goal": self.DAILY_GOALS["calls"],
+                "percent": min(100, stats.calls / self.DAILY_GOALS["calls"] * 100),
+            },
+            "emails": {
+                "current": stats.emails,
+                "goal": self.DAILY_GOALS["emails"],
+                "percent": min(100, stats.emails / self.DAILY_GOALS["emails"] * 100),
+            },
+            "meetings": {
+                "current": stats.meetings,
+                "goal": self.DAILY_GOALS["meetings"],
+                "percent": min(100, stats.meetings / self.DAILY_GOALS["meetings"] * 100),
+            },
+            "talk_time": {
+                "current": stats.talk_time_mins,
+                "goal": self.DAILY_GOALS["talk_time_mins"],
+                "percent": min(
+                    100, stats.talk_time_mins / self.DAILY_GOALS["talk_time_mins"] * 100
+                ),
+            },
         }
 
     def get_recent_activities(self, count: int = 10) -> List[Activity]:

@@ -12,6 +12,7 @@ from backend.services.audit_service import audit_service
 
 router = APIRouter(prefix="/audit", tags=["Audit Logs"])
 
+
 @router.get("/logs", response_model=List[AuditLogSchema], dependencies=[Depends(require_admin)])
 async def get_audit_logs(
     user_id: Optional[str] = None,
@@ -21,7 +22,7 @@ async def get_audit_logs(
     end_date: Optional[datetime] = None,
     limit: int = Query(100, le=1000),
     offset: int = 0,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Retrieve audit logs with filtering. Admin only.
@@ -34,9 +35,10 @@ async def get_audit_logs(
         start_date=start_date,
         end_date=end_date,
         limit=limit,
-        offset=offset
+        offset=offset,
     )
     return logs
+
 
 @router.get("/export", dependencies=[Depends(require_admin)])
 async def export_audit_logs(
@@ -44,39 +46,33 @@ async def export_audit_logs(
     user_id: Optional[str] = None,
     start_date: Optional[datetime] = None,
     end_date: Optional[datetime] = None,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """
     Export audit logs to JSON or CSV.
     """
     result = await audit_service.export_logs(
-        db=db,
-        format=format,
-        user_id=user_id,
-        start_date=start_date,
-        end_date=end_date
+        db=db, format=format, user_id=user_id, start_date=start_date, end_date=end_date
     )
 
     if format == "csv":
         from fastapi.responses import Response
+
         return Response(
             content=result,
             media_type="text/csv",
-            headers={"Content-Disposition": f"attachment; filename=audit_logs_{datetime.now().isoformat()}.csv"}
+            headers={
+                "Content-Disposition": f"attachment; filename=audit_logs_{datetime.now().isoformat()}.csv"
+            },
         )
 
     return result
 
+
 @router.get("/verify", dependencies=[Depends(require_admin)])
-async def verify_integrity(
-    limit: int = 1000,
-    db: Session = Depends(get_db)
-):
+async def verify_integrity(limit: int = 1000, db: Session = Depends(get_db)):
     """
     Verify the integrity of the audit log hash chain.
     """
     is_valid = await audit_service.verify_integrity(db, limit)
-    return {
-        "integrity_check": "passed" if is_valid else "failed",
-        "checked_records": limit
-    }
+    return {"integrity_check": "passed" if is_valid else "failed", "checked_records": limit}

@@ -25,6 +25,7 @@ try:
 
     import pyotp
     import qrcode
+
     PYOTP_AVAILABLE = True
 except ImportError:
     PYOTP_AVAILABLE = False
@@ -72,8 +73,7 @@ class TwoFactorService:
 
         if self.mock_mode:
             logger.warning(
-                "TwoFactorService running in MOCK MODE - "
-                "pyotp not available or mock_mode=True"
+                "TwoFactorService running in MOCK MODE - pyotp not available or mock_mode=True"
             )
 
     def generate_secret(self) -> str:

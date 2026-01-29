@@ -1,6 +1,7 @@
 """
 AgentOps Reporting - Logic for listing and summaries
 """
+
 from typing import Any, Dict, List
 
 from typing_extensions import TypedDict
@@ -41,16 +42,39 @@ class OpsReporting:
         """List all AgentOps modules organized by category"""
         ops_registry = self.registry.get_registry()
         categories = {
-            "sales": [], "marketing": [], "creative": [], "hr": [],
-            "finance": [], "engineering": [], "support": [], "legal": [],
-            "admin": [], "ecommerce": [],
+            "sales": [],
+            "marketing": [],
+            "creative": [],
+            "hr": [],
+            "finance": [],
+            "engineering": [],
+            "support": [],
+            "legal": [],
+            "admin": [],
+            "ecommerce": [],
         }
 
         # Categorize ops
         for name, ops in ops_registry.items():
-            if name in ["sdrops", "aeops", "saops", "isrops", "osrops", "bdmops", "sales", "leadgenops"]:
+            if name in [
+                "sdrops",
+                "aeops",
+                "saops",
+                "isrops",
+                "osrops",
+                "bdmops",
+                "sales",
+                "leadgenops",
+            ]:
                 categories["sales"].append(ops)
-            elif name in ["hrops", "recruiterops", "ldops", "hrisops", "hranalystops", "compbenops"]:
+            elif name in [
+                "hrops",
+                "recruiterops",
+                "ldops",
+                "hrisops",
+                "hranalystops",
+                "compbenops",
+            ]:
                 categories["hr"].append(ops)
             elif name in ["finops", "taxops"]:
                 categories["finance"].append(ops)
@@ -74,9 +98,7 @@ class OpsReporting:
         return {
             "total_ops": len(ops_registry),
             "total_agents": total_agents,
-            "categories": {
-                k: [o.model_dump() for o in v] for k, v in categories.items()
-            },
+            "categories": {k: [o.model_dump() for o in v] for k, v in categories.items()},
             "status": "all_ready",
         }
 

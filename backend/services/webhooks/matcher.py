@@ -2,6 +2,7 @@
 Subscription Matcher Service.
 Handles conditional delivery logic (filtering) for webhooks.
 """
+
 import json
 import logging
 import re
@@ -10,18 +11,22 @@ from typing import Any, Dict, List, Union
 # Try importing jsonpath_ng, handle if missing
 try:
     from jsonpath_ng import parse as jsonpath_parse
+
     JSONPATH_AVAILABLE = True
 except ImportError:
     JSONPATH_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
+
 class SubscriptionMatcher:
     """
     Evaluates if an event matches a webhook subscription's criteria.
     """
 
-    def is_match(self, subscription: Dict[str, Any], event_type: str, payload: Dict[str, Any]) -> bool:
+    def is_match(
+        self, subscription: Dict[str, Any], event_type: str, payload: Dict[str, Any]
+    ) -> bool:
         """
         Check if event matches subscription.
         Checks:
@@ -80,7 +85,7 @@ class SubscriptionMatcher:
             if isinstance(filters, str) and filters.startswith("$"):
                 return self._match_jsonpath(filters, payload)
 
-            return True # Default allow if format unknown
+            return True  # Default allow if format unknown
         except Exception as e:
             logger.error(f"Filter matching error: {e}")
             return False
@@ -112,7 +117,7 @@ class SubscriptionMatcher:
         """
         if not JSONPATH_AVAILABLE:
             logger.warning("jsonpath-ng not installed, skipping JSONPath filter")
-            return True # Fail open or closed? Open for now to not break existing.
+            return True  # Fail open or closed? Open for now to not break existing.
 
         try:
             expr = jsonpath_parse(expression)

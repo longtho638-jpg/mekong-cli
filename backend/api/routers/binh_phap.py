@@ -10,10 +10,12 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 class ChapterStats(BaseModel):
     total_tasks: int
     completed_tasks: int
     progress_percentage: float
+
 
 class BinhPhapChapter(BaseModel):
     id: int
@@ -26,10 +28,12 @@ class BinhPhapChapter(BaseModel):
     status: str  # "active", "completed", "pending", "at_risk"
     stats: Optional[ChapterStats] = None
 
+
 class BinhPhapResponse(BaseModel):
     chapters: List[BinhPhapChapter]
     total_progress: float
     updated_at: datetime
+
 
 # Static definition of the 13 chapters based on Binh Pháp reference
 CHAPTERS_DATA = [
@@ -41,7 +45,7 @@ CHAPTERS_DATA = [
         "principle": "Planning",
         "application": "Project initiation, feasibility check",
         "command": "/binh-phap:ke-hoach",
-        "status": "active"
+        "status": "active",
     },
     {
         "id": 2,
@@ -51,7 +55,7 @@ CHAPTERS_DATA = [
         "principle": "Resources",
         "application": "Runway, Budget, Cost optimization",
         "command": "/binh-phap:tac-chien",
-        "status": "completed"  # IPO-010, IPO-038
+        "status": "completed",  # IPO-010, IPO-038
     },
     {
         "id": 3,
@@ -61,7 +65,7 @@ CHAPTERS_DATA = [
         "principle": "Automation",
         "application": "CI/CD, Strategic alliances, Leverage",
         "command": "/binh-phap:muu-cong",
-        "status": "active"  # IPO-013 Running, IPO-042 Completed
+        "status": "active",  # IPO-013 Running, IPO-042 Completed
     },
     {
         "id": 4,
@@ -71,7 +75,7 @@ CHAPTERS_DATA = [
         "principle": "Structure",
         "application": "Architecture, Code standards, Rules",
         "command": "/binh-phap:hinh-the",
-        "status": "completed" # IPO-012, IPO-037
+        "status": "completed",  # IPO-012, IPO-037
     },
     {
         "id": 5,
@@ -81,7 +85,7 @@ CHAPTERS_DATA = [
         "principle": "Force",
         "application": "Growth metrics, KPIs, Viral loops",
         "command": "/binh-phap:the-tran",
-        "status": "pending"
+        "status": "pending",
     },
     {
         "id": 6,
@@ -91,7 +95,7 @@ CHAPTERS_DATA = [
         "principle": "Testing",
         "application": "Security, Rate limiting, Chaos engineering",
         "command": "/binh-phap:hu-thuc",
-        "status": "completed" # IPO-003, IPO-018, IPO-033
+        "status": "completed",  # IPO-003, IPO-018, IPO-033
     },
     {
         "id": 7,
@@ -101,7 +105,7 @@ CHAPTERS_DATA = [
         "principle": "Speed",
         "application": "Caching, CDN, Fast deployments",
         "command": "/binh-phap:quan-tranh",
-        "status": "completed" # IPO-020, IPO-036
+        "status": "completed",  # IPO-020, IPO-036
     },
     {
         "id": 8,
@@ -111,7 +115,7 @@ CHAPTERS_DATA = [
         "principle": "Flexibility",
         "application": "Feature flags, A/B Testing, Pivots",
         "command": "/binh-phap:cuu-bien",
-        "status": "completed" # IPO-034
+        "status": "completed",  # IPO-034
     },
     {
         "id": 9,
@@ -121,7 +125,7 @@ CHAPTERS_DATA = [
         "principle": "Execution",
         "application": "Background jobs, Queues, Monitoring",
         "command": "/binh-phap:hanh-quan",
-        "status": "completed" # IPO-017, IPO-019, IPO-039
+        "status": "completed",  # IPO-017, IPO-019, IPO-039
     },
     {
         "id": 10,
@@ -131,7 +135,7 @@ CHAPTERS_DATA = [
         "principle": "Terrain",
         "application": "Multi-tenancy, Environment handling",
         "command": "/binh-phap:dia-hinh",
-        "status": "completed" # IPO-035, IPO-041
+        "status": "completed",  # IPO-035, IPO-041
     },
     {
         "id": 11,
@@ -141,7 +145,7 @@ CHAPTERS_DATA = [
         "principle": "Context",
         "application": "DR, Backup, 9 situational responses",
         "command": "/binh-phap:cuu-dia",
-        "status": "pending"
+        "status": "pending",
     },
     {
         "id": 12,
@@ -151,7 +155,7 @@ CHAPTERS_DATA = [
         "principle": "Disruption",
         "application": "Marketing, Notifications, Outreach",
         "command": "/binh-phap:hoa-cong",
-        "status": "completed" # IPO-014, IPO-022, IPO-031
+        "status": "completed",  # IPO-014, IPO-022, IPO-031
     },
     {
         "id": 13,
@@ -161,9 +165,10 @@ CHAPTERS_DATA = [
         "principle": "Intel",
         "application": "Logging, Analytics, User tracking",
         "command": "/binh-phap:dung-gian",
-        "status": "completed" # IPO-005, IPO-015, IPO-021, IPO-032, IPO-040
-    }
+        "status": "completed",  # IPO-005, IPO-015, IPO-021, IPO-032, IPO-040
+    },
 ]
+
 
 @router.get("/status", response_model=BinhPhapResponse)
 async def get_binh_phap_status():
@@ -177,10 +182,9 @@ async def get_binh_phap_status():
     total_progress = (completed_count / total_count) * 100 if total_count > 0 else 0
 
     return BinhPhapResponse(
-        chapters=CHAPTERS_DATA,
-        total_progress=round(total_progress, 2),
-        updated_at=datetime.now()
+        chapters=CHAPTERS_DATA, total_progress=round(total_progress, 2), updated_at=datetime.now()
     )
+
 
 @router.get("/chapter/{key}", response_model=BinhPhapChapter)
 async def get_chapter_details(key: str):

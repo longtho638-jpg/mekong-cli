@@ -19,6 +19,7 @@ class IpBlocklist(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_by: Mapped[Optional[str]] = mapped_column(String, nullable=True)  # User ID or "system"
 
+
 class RateLimitViolation(Base):
     __tablename__ = "rate_limit_violations"
 
@@ -26,6 +27,8 @@ class RateLimitViolation(Base):
     ip_address: Mapped[str] = mapped_column(String, index=True, nullable=False)
     user_id: Mapped[Optional[str]] = mapped_column(String, index=True, nullable=True)
     endpoint: Mapped[str] = mapped_column(String, nullable=False)
-    violation_type: Mapped[str] = mapped_column(String, nullable=False)  # e.g., "global_ip", "endpoint_limit"
+    violation_type: Mapped[str] = mapped_column(
+        String, nullable=False
+    )  # e.g., "global_ip", "endpoint_limit"
     request_headers: Mapped[Optional[dict]] = mapped_column(JSON, nullable=True)
     timestamp: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

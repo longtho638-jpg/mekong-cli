@@ -17,7 +17,7 @@ class TestEmployeeAgent:
             email="alice@example.com",
             department=Department.ENGINEERING,
             title="Software Engineer",
-            salary=5000.0
+            salary=5000.0,
         )
 
         assert emp.id in agent.employees
@@ -36,7 +36,9 @@ class TestEmployeeAgent:
 
     def test_performance_management(self):
         agent = EmployeeAgent()
-        emp = agent.add_employee("Charlie", "charlie@example.com", Department.MARKETING, "Marketer", 4000.0)
+        emp = agent.add_employee(
+            "Charlie", "charlie@example.com", Department.MARKETING, "Marketer", 4000.0
+        )
 
         agent.set_performance(emp.id, 4.5)
         assert agent.employees[emp.id].performance_score == 4.5

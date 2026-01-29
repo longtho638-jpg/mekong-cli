@@ -32,13 +32,14 @@ def mock_revenue_service():
         "churned_subscribers": 2,
         "free_users": 50,
         "pro_users": 40,
-        "enterprise_users": 10
+        "enterprise_users": 10,
     }
     service.get_revenue_trend.return_value = [
         {"snapshot_date": "2023-01-01", "mrr": 9000.0},
-        {"snapshot_date": "2023-01-30", "mrr": 10000.0}
+        {"snapshot_date": "2023-01-30", "mrr": 10000.0},
     ]
     return service
+
 
 @pytest.fixture
 def mock_email_service():
@@ -47,11 +48,13 @@ def mock_email_service():
         service.send_email = AsyncMock(return_value={"status": "sent"})
         yield service
 
+
 @pytest.fixture
 def mock_pdf_generator():
     with patch("backend.services.report_scheduler.pdf_generator") as mock:
         mock.generate_executive_report.return_value = b"mock_pdf_content"
         yield mock
+
 
 @pytest.fixture
 def mock_crm_metrics():
@@ -59,23 +62,21 @@ def mock_crm_metrics():
         mock.return_value = {"new_leads": 5, "active_pipeline": 10000}
         yield mock
 
+
 @pytest.mark.asyncio
 async def test_generate_and_send_report(
-    mock_revenue_service,
-    mock_email_service,
-    mock_pdf_generator,
-    mock_crm_metrics
+    mock_revenue_service, mock_email_service, mock_pdf_generator, mock_crm_metrics
 ):
     """Test the full report generation and sending flow."""
 
     # We patch RevenueService in the report_scheduler module to return our mock instance
-    with patch("backend.services.report_scheduler.RevenueService", return_value=mock_revenue_service):
+    with patch(
+        "backend.services.report_scheduler.RevenueService", return_value=mock_revenue_service
+    ):
         scheduler = ReportSchedulerService()
 
         success = await scheduler.generate_and_send_report(
-            tenant_id="test_tenant",
-            report_type="weekly",
-            recipient_email="exec@example.com"
+            tenant_id="test_tenant", report_type="weekly", recipient_email="exec@example.com"
         )
 
         assert success is True
@@ -95,15 +96,17 @@ async def test_generate_and_send_report(
         assert len(kwargs["attachments"]) == 1
         assert kwargs["attachments"][0]["content"] == b"mock_pdf_content"
 
+
 @pytest.mark.asyncio
 async def test_send_report_no_recipient(mock_revenue_service, mock_email_service):
     """Test handling when no recipient email is provided."""
-    with patch("backend.services.report_scheduler.RevenueService", return_value=mock_revenue_service):
+    with patch(
+        "backend.services.report_scheduler.RevenueService", return_value=mock_revenue_service
+    ):
         scheduler = ReportSchedulerService()
 
         success = await scheduler.generate_and_send_report(
-            tenant_id="test_tenant",
-            recipient_email=None
+            tenant_id="test_tenant", recipient_email=None
         )
 
         assert success is False

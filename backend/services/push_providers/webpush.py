@@ -22,7 +22,9 @@ class WebPushProvider(PushProvider):
             return False
         return True
 
-    async def send_push(self, subscription: PushSubscriptionInfo, message: PushMessage) -> Dict[str, Any]:
+    async def send_push(
+        self, subscription: PushSubscriptionInfo, message: PushMessage
+    ) -> Dict[str, Any]:
         """
         Send a web push notification using VAPID.
         """
@@ -34,10 +36,7 @@ class WebPushProvider(PushProvider):
         # WebPush payload standard format
         payload = json.dumps(payload_data)
 
-        subscription_info = {
-            "endpoint": subscription.endpoint,
-            "keys": subscription.keys
-        }
+        subscription_info = {"endpoint": subscription.endpoint, "keys": subscription.keys}
 
         try:
             # webpush is synchronous/blocking in pywebpush.
@@ -47,8 +46,8 @@ class WebPushProvider(PushProvider):
                 subscription_info=subscription_info,
                 data=payload,
                 vapid_private_key=self.private_key,
-                vapid_claims={'sub': self.claims_email},
-                ttl=message.ttl
+                vapid_claims={"sub": self.claims_email},
+                ttl=message.ttl,
             )
             return {"status": "success", "provider": "webpush"}
 

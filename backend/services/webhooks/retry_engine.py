@@ -2,6 +2,7 @@
 Retry Policy Engine.
 Handles exponential backoff calculations and Circuit Breaker pattern.
 """
+
 import logging
 import random
 import time
@@ -12,10 +13,12 @@ import redis
 
 logger = logging.getLogger(__name__)
 
+
 class CircuitState(Enum):
     CLOSED = "CLOSED"
     OPEN = "OPEN"
     HALF_OPEN = "HALF_OPEN"
+
 
 class RetryPolicyEngine:
     """
@@ -27,9 +30,11 @@ class RetryPolicyEngine:
 
         # Circuit Breaker Defaults
         self.failure_threshold = 5
-        self.reset_timeout = 60 # seconds
+        self.reset_timeout = 60  # seconds
 
-    def calculate_backoff(self, attempt: int, base_delay: float = 1.0, max_delay: float = 300.0) -> float:
+    def calculate_backoff(
+        self, attempt: int, base_delay: float = 1.0, max_delay: float = 300.0
+    ) -> float:
         """
         Calculate exponential backoff with jitter.
         """
@@ -55,7 +60,7 @@ class RetryPolicyEngine:
         if not state_str:
             return CircuitState.CLOSED
 
-        state = CircuitState(state_str.decode('utf-8'))
+        state = CircuitState(state_str.decode("utf-8"))
 
         if state == CircuitState.OPEN:
             # Check if cooldown has passed
@@ -80,13 +85,15 @@ class RetryPolicyEngine:
 
         # Increment failure count
         failures = self.redis.incr(key_failures)
-        self.redis.expire(key_failures, self.reset_timeout * 2) # Auto-reset failures if inactive
+        self.redis.expire(key_failures, self.reset_timeout * 2)  # Auto-reset failures if inactive
 
         if failures >= self.failure_threshold:
             # Open Circuit
             self.redis.set(key_state, CircuitState.OPEN.value)
             self.redis.set(f"circuit:{webhook_config_id}:open_ts", time.time())
-            logger.warning(f"Circuit Breaker OPEN for webhook {webhook_config_id} after {failures} failures")
+            logger.warning(
+                f"Circuit Breaker OPEN for webhook {webhook_config_id} after {failures} failures"
+            )
 
     def record_success(self, webhook_config_id: str):
         """

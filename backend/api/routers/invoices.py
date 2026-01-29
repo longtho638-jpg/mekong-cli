@@ -7,6 +7,7 @@ from backend.models.invoice import Invoice, InvoiceStatus
 
 router = APIRouter(prefix="/api/v1/invoices", tags=["invoices"])
 
+
 @router.get("/{invoice_id}", response_model=Invoice)
 async def get_invoice(invoice_id: str):
     """Get invoice by ID"""
@@ -19,8 +20,9 @@ async def get_invoice(invoice_id: str):
         total=110.0,
         currency="USD",
         status=InvoiceStatus.SENT,
-        service_type="consulting"
+        service_type="consulting",
     )
+
 
 @router.get("/", response_model=List[Invoice])
 async def list_invoices():
@@ -33,6 +35,6 @@ async def list_invoices():
             tax=10.0,
             total=110.0,
             currency="USD",
-            status=InvoiceStatus.SENT
+            status=InvoiceStatus.SENT,
         )
     ]

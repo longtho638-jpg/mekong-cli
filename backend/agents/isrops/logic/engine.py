@@ -1,6 +1,7 @@
 """
 Activity Tracker core engine logic.
 """
+
 import random
 from datetime import date, datetime
 from typing import Dict, List
@@ -14,8 +15,24 @@ class ActivityEngine:
     def __init__(self):
         self.activities: List[Activity] = []
 
-    def log_activity(self, a_type: ActivityType, prospect_id: str, name: str, outcome: ActivityOutcome, duration: int = 0, notes: str = "") -> Activity:
-        activity = Activity(id=f"act_{int(datetime.now().timestamp())}_{random.randint(100, 999)}", activity_type=a_type, prospect_id=prospect_id, prospect_name=name, outcome=outcome, duration_mins=duration, notes=notes)
+    def log_activity(
+        self,
+        a_type: ActivityType,
+        prospect_id: str,
+        name: str,
+        outcome: ActivityOutcome,
+        duration: int = 0,
+        notes: str = "",
+    ) -> Activity:
+        activity = Activity(
+            id=f"act_{int(datetime.now().timestamp())}_{random.randint(100, 999)}",
+            activity_type=a_type,
+            prospect_id=prospect_id,
+            prospect_name=name,
+            outcome=outcome,
+            duration_mins=duration,
+            notes=notes,
+        )
         self.activities.append(activity)
         return activity
 
@@ -28,5 +45,5 @@ class ActivityEngine:
             emails=len([a for a in today_acts if a.activity_type == ActivityType.EMAIL]),
             meetings=len([a for a in today_acts if a.activity_type == ActivityType.MEETING]),
             talk_time_mins=sum(a.duration_mins for a in today_acts),
-            connects=len([a for a in today_acts if a.outcome == ActivityOutcome.CONNECTED])
+            connects=len([a for a in today_acts if a.outcome == ActivityOutcome.CONNECTED]),
         )

@@ -60,7 +60,7 @@ class AuditMiddleware(BaseHTTPMiddleware):
             resource_type = "api_endpoint"
             parts = path.strip("/").split("/")
             if len(parts) > 1:
-                resource_type = parts[1] # e.g. /api/users -> users
+                resource_type = parts[1]  # e.g. /api/users -> users
 
             # Extract Metadata
             metadata = {
@@ -68,7 +68,7 @@ class AuditMiddleware(BaseHTTPMiddleware):
                 "path": path,
                 "status_code": status_code,
                 "process_time_ms": round(process_time * 1000, 2),
-                "query_params": str(request.query_params)
+                "query_params": str(request.query_params),
             }
 
             # Async fire-and-forget logging to avoid blocking response?
@@ -82,12 +82,12 @@ class AuditMiddleware(BaseHTTPMiddleware):
                     action=action,
                     user_id=user_id,
                     resource_type=resource_type,
-                    resource_id=None, # Hard to extract generic ID from path without router context
+                    resource_id=None,  # Hard to extract generic ID from path without router context
                     ip_address=request.client.host,
                     user_agent=request.headers.get("user-agent"),
-                    session_id=None, # Add logic if session tracking exists
+                    session_id=None,  # Add logic if session tracking exists
                     request_id=request_id,
-                    metadata=metadata
+                    metadata=metadata,
                 )
                 db.close()
             except Exception as e:

@@ -1,6 +1,7 @@
 """
 Community Agent data models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -13,6 +14,7 @@ class Platform(Enum):
     TIKTOK = "tiktok"
     YOUTUBE = "youtube"
     TWITTER = "twitter"
+
 
 @dataclass
 class ScheduledPost:

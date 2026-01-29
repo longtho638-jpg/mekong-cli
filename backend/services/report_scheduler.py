@@ -17,6 +17,7 @@ from backend.services.pdf_generator import pdf_generator
 
 logger = logging.getLogger(__name__)
 
+
 class ReportSchedulerService:
     """Service to generate and deliver executive reports."""
 
@@ -25,10 +26,7 @@ class ReportSchedulerService:
         self.email_service = get_email_service()
 
     async def generate_and_send_report(
-        self,
-        tenant_id: str,
-        report_type: str = "weekly",
-        recipient_email: str = None
+        self, tenant_id: str, report_type: str = "weekly", recipient_email: str = None
     ) -> bool:
         """
         Generate executive report and email it.
@@ -66,11 +64,17 @@ class ReportSchedulerService:
 
             # Insights
             insights = []
-            if rev_stats['customer_churn_rate'] > 5.0:
-                insights.append(f"CRITICAL: Churn rate is {rev_stats['customer_churn_rate']}%. Action required.")
+            if rev_stats["customer_churn_rate"] > 5.0:
+                insights.append(
+                    f"CRITICAL: Churn rate is {rev_stats['customer_churn_rate']}%. Action required."
+                )
 
             if trends and len(trends) > 1:
-                growth = ((trends[-1]['mrr'] - trends[0]['mrr']) / trends[0]['mrr']) * 100 if trends[0]['mrr'] > 0 else 0
+                growth = (
+                    ((trends[-1]["mrr"] - trends[0]["mrr"]) / trends[0]["mrr"]) * 100
+                    if trends[0]["mrr"] > 0
+                    else 0
+                )
                 insights.append(f"Revenue Growth: {growth:.1f}% in the last {days} days.")
 
             insights.append(f"New Leads: {crm_stats['new_leads']} new leads acquired.")
@@ -81,7 +85,7 @@ class ReportSchedulerService:
                 trends=trends,
                 insights=insights,
                 start_date=start_date,
-                end_date=end_date
+                end_date=end_date,
             )
 
             # 4. Send Email
@@ -96,8 +100,8 @@ class ReportSchedulerService:
             # Prepare attachment
             attachment = {
                 "filename": f"Executive_Report_{end_date}.pdf",
-                "content": pdf_bytes, # Email service needs to handle bytes or base64
-                "content_type": "application/pdf"
+                "content": pdf_bytes,  # Email service needs to handle bytes or base64
+                "content_type": "application/pdf",
             }
 
             # Note: EmailService.send_email signature might need adjustment if it expects base64 encoded content
@@ -109,8 +113,8 @@ class ReportSchedulerService:
             <p>Please find the attached PDF report covering key metrics and insights for the period {start_date} to {end_date}.</p>
             <p><strong>Highlights:</strong></p>
             <ul>
-                <li>MRR: ${rev_stats['mrr']:,.2f}</li>
-                <li>Active Subscribers: {rev_stats['active_subscribers']}</li>
+                <li>MRR: ${rev_stats["mrr"]:,.2f}</li>
+                <li>Active Subscribers: {rev_stats["active_subscribers"]}</li>
             </ul>
             """
 
@@ -118,7 +122,7 @@ class ReportSchedulerService:
                 to_email=recipient_email,
                 subject=subject,
                 html_content=html_content,
-                attachments=[attachment]
+                attachments=[attachment],
             )
 
             logger.info(f"Report sent successfully to {recipient_email}")
@@ -128,8 +132,10 @@ class ReportSchedulerService:
             logger.error(f"Failed to generate/send report: {e}")
             return False
 
+
 # Singleton
 _report_scheduler_service = None
+
 
 def get_report_scheduler_service():
     """Get singleton instance of ReportSchedulerService."""

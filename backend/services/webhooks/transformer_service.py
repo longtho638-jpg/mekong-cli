@@ -2,6 +2,7 @@
 Webhook Transformer Service.
 Handles payload transformation, filtering, and field mapping using Jinja2.
 """
+
 import json
 import logging
 from typing import Any, Dict, Optional
@@ -9,6 +10,7 @@ from typing import Any, Dict, Optional
 from jinja2 import BaseLoader, Environment, TemplateSyntaxError
 
 logger = logging.getLogger(__name__)
+
 
 class WebhookTransformer:
     """
@@ -19,9 +21,11 @@ class WebhookTransformer:
         # Use BaseLoader to allow loading templates from strings
         self.jinja_env = Environment(loader=BaseLoader(), autoescape=True)
         # Register standard filters if needed
-        self.jinja_env.filters['json'] = json.dumps
+        self.jinja_env.filters["json"] = json.dumps
 
-    def transform_payload(self, payload: Dict[str, Any], template_str: Optional[str] = None) -> Dict[str, Any]:
+    def transform_payload(
+        self, payload: Dict[str, Any], template_str: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Transform the payload using a Jinja2 template.
         If no template is provided, returns original payload.
@@ -57,10 +61,11 @@ class WebhookTransformer:
 
         # Deep copy to avoid modifying original
         import copy
+
         filtered_payload = copy.deepcopy(payload)
 
         for field in exclude_fields:
-            self._delete_field(filtered_payload, field.split('.'))
+            self._delete_field(filtered_payload, field.split("."))
 
         return filtered_payload
 

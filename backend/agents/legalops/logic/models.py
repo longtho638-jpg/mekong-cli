@@ -1,6 +1,7 @@
 """
 Compliance Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -13,11 +14,13 @@ class ComplianceStatus(Enum):
     NON_COMPLIANT = "non_compliant"
     UNDER_REVIEW = "under_review"
 
+
 class RiskLevel(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
 
 class RegulationType(Enum):
     GDPR = "gdpr"
@@ -25,6 +28,7 @@ class RegulationType(Enum):
     HIPAA = "hipaa"
     PCI_DSS = "pci_dss"
     LOCAL = "local"
+
 
 @dataclass
 class ComplianceItem:
@@ -41,4 +45,8 @@ class ComplianceItem:
 
     @property
     def is_overdue(self) -> bool:
-        return self.due_date is not None and datetime.now() > self.due_date and self.status != ComplianceStatus.COMPLIANT
+        return (
+            self.due_date is not None
+            and datetime.now() > self.due_date
+            and self.status != ComplianceStatus.COMPLIANT
+        )

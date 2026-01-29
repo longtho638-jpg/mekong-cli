@@ -7,12 +7,14 @@ from backend.core.infrastructure.redis import redis_client as core_redis_client
 
 logger = logging.getLogger(__name__)
 
+
 class RedisService:
     """
     Service wrapper for Redis operations.
     Provides a clean interface for Redis interactions, ensuring singleton access
     and consistent error handling.
     """
+
     def __init__(self):
         self._client = core_redis_client
 
@@ -36,6 +38,7 @@ class RedisService:
 
     async def delete(self, key: str):
         return await self._client.delete(key)
+
 
 # Singleton instance
 redis_service = RedisService()

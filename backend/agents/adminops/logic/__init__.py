@@ -1,6 +1,7 @@
 """
 Report Generator Agent Facade.
 """
+
 from typing import Dict, List
 
 from .engine import ReportEngine
@@ -14,4 +15,7 @@ class ReportGeneratorAgent(ReportEngine):
         self.status = "ready"
 
     def get_stats(self) -> Dict:
-        return {"total_reports": len(self.reports), "this_month": len([r for r in self.reports.values() if r.created_at.month == 1])}
+        return {
+            "total_reports": len(self.reports),
+            "this_month": len([r for r in self.reports.values() if r.created_at.month == 1]),
+        }

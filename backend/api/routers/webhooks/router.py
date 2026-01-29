@@ -19,6 +19,7 @@ router = APIRouter()
 # Dependency: Signature Verification
 # -----------------------------------------------------------------------------
 
+
 async def verify_stripe_signature(request: Request, stripe_signature: str = Header(None)) -> bytes:
     if not stripe_signature:
         raise HTTPException(status_code=400, detail="Missing Stripe-Signature header")
@@ -37,9 +38,8 @@ async def verify_stripe_signature(request: Request, stripe_signature: str = Head
         # In production this should be strict.
         try:
             import stripe
-            stripe.Webhook.construct_event(
-                payload, stripe_signature, secret
-            )
+
+            stripe.Webhook.construct_event(payload, stripe_signature, secret)
         except ImportError:
             logger.warning("Stripe library not installed, skipping strict signature verification")
             pass
@@ -49,7 +49,10 @@ async def verify_stripe_signature(request: Request, stripe_signature: str = Head
 
     return payload
 
-async def verify_github_signature(request: Request, x_hub_signature_256: str = Header(None)) -> bytes:
+
+async def verify_github_signature(
+    request: Request, x_hub_signature_256: str = Header(None)
+) -> bytes:
     if not x_hub_signature_256:
         raise HTTPException(status_code=400, detail="Missing X-Hub-Signature-256 header")
 
@@ -67,9 +70,11 @@ async def verify_github_signature(request: Request, x_hub_signature_256: str = H
 
     return payload
 
+
 # -----------------------------------------------------------------------------
 # Routes
 # -----------------------------------------------------------------------------
+
 
 @router.post("/stripe")
 async def stripe_webhook(
@@ -77,7 +82,7 @@ async def stripe_webhook(
     background_tasks: BackgroundTasks,
     payload_bytes: bytes = Depends(verify_stripe_signature),
     stripe_signature: str = Header(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Handle Stripe webhooks."""
     # Verification handled by dependency
@@ -88,7 +93,7 @@ async def stripe_webhook(
         event_type = payload.get("type")
 
         if not event_id or not event_type:
-             raise HTTPException(status_code=400, detail="Invalid payload")
+            raise HTTPException(status_code=400, detail="Invalid payload")
 
         # Local import to avoid circular dependency
         from backend.services.webhook_queue import webhook_queue
@@ -101,7 +106,7 @@ async def stripe_webhook(
             event_type=event_type,
             payload=payload,
             headers={"Stripe-Signature": stripe_signature},
-            db=db
+            db=db,
         )
 
         if event:
@@ -118,6 +123,7 @@ async def stripe_webhook(
             raise e
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
 @router.post("/paypal")
 async def paypal_webhook(request: Request):
     """Handle PayPal webhooks."""
@@ -131,7 +137,7 @@ async def paypal_webhook(request: Request):
         event_type = payload.get("event_type")
 
         if not event_id or not event_type:
-             raise HTTPException(status_code=400, detail="Invalid payload")
+            raise HTTPException(status_code=400, detail="Invalid payload")
 
         from backend.services.webhook_queue import webhook_queue
         from backend.services.webhook_receiver import webhook_receiver
@@ -141,7 +147,7 @@ async def paypal_webhook(request: Request):
             event_id=event_id,
             event_type=event_type,
             payload=payload,
-            headers=dict(request.headers)
+            headers=dict(request.headers),
         )
 
         if event:
@@ -154,12 +160,13 @@ async def paypal_webhook(request: Request):
             raise e
         raise HTTPException(status_code=500, detail="Internal server error")
 
+
 @router.post("/github")
 async def github_webhook(
     request: Request,
     x_github_event: str = Header(...),
     x_hub_signature_256: str = Header(None),
-    payload_bytes: bytes = Depends(verify_github_signature)
+    payload_bytes: bytes = Depends(verify_github_signature),
 ):
     """Handle GitHub webhooks."""
     # Verification handled by dependency
@@ -171,7 +178,7 @@ async def github_webhook(
         event_id = request.headers.get("X-GitHub-Delivery")
 
         if not event_id:
-             raise HTTPException(status_code=400, detail="Missing delivery ID")
+            raise HTTPException(status_code=400, detail="Missing delivery ID")
 
         from backend.services.webhook_queue import webhook_queue
         from backend.services.webhook_receiver import webhook_receiver
@@ -181,7 +188,7 @@ async def github_webhook(
             event_id=event_id,
             event_type=x_github_event,
             payload=payload,
-            headers={"X-Hub-Signature-256": x_hub_signature_256}
+            headers={"X-Hub-Signature-256": x_hub_signature_256},
         )
 
         if event:

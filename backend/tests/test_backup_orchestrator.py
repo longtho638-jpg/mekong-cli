@@ -25,7 +25,9 @@ async def test_backup_orchestrator_flow():
 
     mock_compression = MagicMock(spec=ICompressionService)
     mock_compression.compress.side_effect = lambda x: io.BytesIO(b"compressed_" + x.read())
-    mock_compression.decompress.side_effect = lambda x: io.BytesIO(x.read().replace(b"compressed_", b""))
+    mock_compression.decompress.side_effect = lambda x: io.BytesIO(
+        x.read().replace(b"compressed_", b"")
+    )
 
     mock_encryption = MagicMock(spec=IEncryptionService)
     mock_encryption.encrypt.side_effect = lambda x: io.BytesIO(b"encrypted_" + x.read())
@@ -36,7 +38,7 @@ async def test_backup_orchestrator_flow():
         strategy=mock_strategy,
         storage=mock_storage,
         compression=mock_compression,
-        encryption=mock_encryption
+        encryption=mock_encryption,
     )
 
     # Execute Backup
@@ -55,10 +57,11 @@ async def test_backup_orchestrator_flow():
     mock_storage.upload.assert_called_once()
 
     # Verification flow checks
-    mock_storage.download.assert_called_once() # Verification triggers download
+    mock_storage.download.assert_called_once()  # Verification triggers download
     mock_encryption.decrypt.assert_called_once()
     mock_compression.decompress.assert_called_once()
     mock_strategy.verify.assert_called_once()
+
 
 @pytest.mark.asyncio
 async def test_backup_orchestrator_restore():
@@ -81,7 +84,7 @@ async def test_backup_orchestrator_restore():
         strategy=mock_strategy,
         storage=mock_storage,
         compression=mock_compression,
-        encryption=mock_encryption
+        encryption=mock_encryption,
     )
 
     result = await orchestrator.restore_backup("s3://bucket/backup.dat")

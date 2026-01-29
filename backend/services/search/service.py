@@ -17,6 +17,7 @@ class SearchService:
     """
     Main entry point for search operations.
     """
+
     def __init__(self):
         self.client = get_meilisearch_client().client
 
@@ -27,7 +28,7 @@ class SearchService:
         filters: Optional[str] = None,
         limit: int = 20,
         offset: int = 0,
-        facets: Optional[List[str]] = None
+        facets: Optional[List[str]] = None,
     ) -> Dict[str, Any]:
         """
         Search across multiple indexes.
@@ -44,11 +45,7 @@ class SearchService:
             return {"results": {}, "total": 0, "query_time_ms": 0}
 
         search_params = build_search_params(
-            query=query,
-            offset=offset,
-            limit=limit,
-            filters=filters,
-            facets=facets
+            query=query, offset=offset, limit=limit, filters=filters, facets=facets
         )
 
         # Meilisearch Multi-Search would be better here if supported by the python client easily
@@ -58,22 +55,18 @@ class SearchService:
         # Let's try to use multi-search if available in the library version,
         # otherwise fallback to loop.
         try:
-             # Construct multi-search query
+            # Construct multi-search query
             queries = []
             for index_uid in valid_indexes:
-                queries.append({
-                    "indexUid": index_uid,
-                    "q": query,
-                    **search_params
-                })
+                queries.append({"indexUid": index_uid, "q": query, **search_params})
 
             response = self.client.multi_search(queries)
 
-            for i, result in enumerate(response['results']):
-                index_name = result['indexUid']
-                results[index_name] = result['hits']
-                total_hits += result.get('estimatedTotalHits', 0)
-                processing_time_ms += result.get('processingTimeMs', 0)
+            for i, result in enumerate(response["results"]):
+                index_name = result["indexUid"]
+                results[index_name] = result["hits"]
+                total_hits += result.get("estimatedTotalHits", 0)
+                processing_time_ms += result.get("processingTimeMs", 0)
 
         except (AttributeError, Exception):
             # Fallback to sequential search
@@ -81,17 +74,13 @@ class SearchService:
                 try:
                     index = self.client.index(index_name)
                     result = index.search(query, search_params)
-                    results[index_name] = result['hits']
-                    total_hits += result.get('estimatedTotalHits', 0)
-                    processing_time_ms += result.get('processingTimeMs', 0)
+                    results[index_name] = result["hits"]
+                    total_hits += result.get("estimatedTotalHits", 0)
+                    processing_time_ms += result.get("processingTimeMs", 0)
                 except Exception:
                     results[index_name] = []
 
-        return {
-            "results": results,
-            "total": total_hits,
-            "query_time_ms": processing_time_ms
-        }
+        return {"results": results, "total": total_hits, "query_time_ms": processing_time_ms}
 
     def autocomplete(self, query: str, index: str, limit: int = 5) -> List[str]:
         """
@@ -105,23 +94,24 @@ class SearchService:
             # Use search parameters optimized for autocomplete
             params = {
                 "limit": limit,
-                "attributesToRetrieve": INDEXES[index].searchable_attributes[:2], # Get top fields
+                "attributesToRetrieve": INDEXES[index].searchable_attributes[:2],  # Get top fields
                 "attributesToHighlight": [],
-                "showMatchesPosition": False
+                "showMatchesPosition": False,
             }
             result = index_obj.search(query, params)
 
             # Extract suggestions (simplistic approach: return titles/names)
             suggestions = []
-            for hit in result['hits']:
+            for hit in result["hits"]:
                 # Heuristic to find a displayable string
-                for attr in ['title', 'name', 'email', 'message']:
+                for attr in ["title", "name", "email", "message"]:
                     if attr in hit:
                         suggestions.append(hit[attr])
                         break
             return suggestions
         except Exception:
             return []
+
 
 def get_search_service() -> SearchService:
     """Dependency provider for SearchService."""

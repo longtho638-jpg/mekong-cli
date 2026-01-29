@@ -16,11 +16,13 @@ from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 class MeilisearchClient:
     """
     Singleton wrapper for Meilisearch client.
     """
-    _instance: Optional['MeilisearchClient'] = None
+
+    _instance: Optional["MeilisearchClient"] = None
     _client: Optional[meilisearch.Client] = None
 
     def __new__(cls):
@@ -33,8 +35,7 @@ class MeilisearchClient:
         """Initialize the Meilisearch client."""
         try:
             self._client = meilisearch.Client(
-                settings.meilisearch_url,
-                settings.meilisearch_master_key
+                settings.meilisearch_url, settings.meilisearch_master_key
             )
             logger.info(f"Initialized Meilisearch client at {settings.meilisearch_url}")
         except Exception as e:
@@ -64,6 +65,7 @@ class MeilisearchClient:
         except Exception as e:
             logger.error(f"Error getting Meilisearch version: {e}")
             return {}
+
 
 def get_meilisearch_client() -> MeilisearchClient:
     """Dependency provider for Meilisearch client."""

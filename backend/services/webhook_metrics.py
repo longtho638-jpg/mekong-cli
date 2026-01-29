@@ -2,6 +2,7 @@
 Webhook Metrics Service.
 Tracks health metrics, success rates, and operational patterns.
 """
+
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
@@ -18,9 +19,11 @@ class WebhookMetricsService:
         """
         since = (datetime.utcnow() - timedelta(hours=24)).isoformat()
 
-        query = self.db.table("webhook_delivery_attempts")\
-            .select("status, duration_ms, created_at")\
+        query = (
+            self.db.table("webhook_delivery_attempts")
+            .select("status, duration_ms, created_at")
             .gte("created_at", since)
+        )
 
         if webhook_config_id:
             query = query.eq("webhook_config_id", webhook_config_id)
@@ -29,12 +32,7 @@ class WebhookMetricsService:
         attempts = res.data or []
 
         if not attempts:
-            return {
-                "success_rate": 0,
-                "avg_latency": 0,
-                "total_events": 0,
-                "hourly_volume": []
-            }
+            return {"success_rate": 0, "avg_latency": 0, "total_events": 0, "hourly_volume": []}
 
         total = len(attempts)
         success_count = sum(1 for a in attempts if a["status"] == "success")
@@ -47,5 +45,5 @@ class WebhookMetricsService:
             "success_rate": round(success_rate, 2),
             "avg_latency": int(avg_latency),
             "total_events": total,
-            "period": "24h"
+            "period": "24h",
         }

@@ -4,16 +4,18 @@ from typing import Any, Dict, List, Literal, Optional
 from backend.services.algolia_service import AlgoliaService
 from backend.services.meilisearch_service import MeilisearchService
 
-SearchProvider = Literal['algolia', 'meilisearch']
+SearchProvider = Literal["algolia", "meilisearch"]
+
 
 class SearchService:
     """
     Abstraction layer for search engines.
     Binh Pháp Ch.9: Discipline in execution - consistent interface regardless of provider.
     """
+
     def __init__(self, provider: Optional[SearchProvider] = None):
-        self.provider = provider or os.getenv('SEARCH_PROVIDER', 'meilisearch')
-        if self.provider == 'algolia':
+        self.provider = provider or os.getenv("SEARCH_PROVIDER", "meilisearch")
+        if self.provider == "algolia":
             self.engine = AlgoliaService()
         else:
             self.engine = MeilisearchService()

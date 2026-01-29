@@ -110,9 +110,7 @@ async def get_franchise_manager() -> Dict[str, Any]:
     stats = demo.demo_franchise.get_network_stats()
     # Get active territories from franchisees
     active_territory_values = set(
-        f.territory.value
-        for f in demo.demo_franchise.franchisees
-        if f.status.value == "active"
+        f.territory.value for f in demo.demo_franchise.franchisees if f.status.value == "active"
     )
 
     return {

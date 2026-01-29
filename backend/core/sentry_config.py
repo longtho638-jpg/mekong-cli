@@ -1,6 +1,7 @@
 """
 Sentry Configuration for Error Tracking and Performance Monitoring
 """
+
 import os
 from typing import Optional
 
@@ -55,7 +56,6 @@ def init_sentry(
         dsn=sentry_dsn,
         environment=env,
         release=version,
-
         # Integrations
         integrations=[
             FastApiIntegration(transaction_style="url"),
@@ -65,18 +65,14 @@ def init_sentry(
                 event_level=None,  # Don't send logs as events (too noisy)
             ),
         ],
-
         # Performance Monitoring
         traces_sample_rate=traces_sample_rate,
-
         # Profiling (requires profiling mode enabled in Sentry project)
         profiles_sample_rate=profiles_sample_rate,
-
         # Additional options
         send_default_pii=False,  # Don't send personally identifiable information
         attach_stacktrace=True,  # Attach stack traces to messages
         max_breadcrumbs=50,  # Keep last 50 breadcrumbs for context
-
         # Before send hook to filter/modify events
         before_send=before_send_hook,
     )
@@ -133,11 +129,13 @@ def set_user_context(user_id: str, email: Optional[str] = None, username: Option
         email: User email (optional, will be redacted if send_default_pii=False)
         username: Username (optional)
     """
-    sentry_sdk.set_user({
-        "id": user_id,
-        "email": email,
-        "username": username,
-    })
+    sentry_sdk.set_user(
+        {
+            "id": user_id,
+            "email": email,
+            "username": username,
+        }
+    )
 
 
 def set_transaction_context(transaction_name: str, **tags):

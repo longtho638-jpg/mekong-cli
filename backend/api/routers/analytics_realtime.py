@@ -16,8 +16,10 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ws/analytics", tags=["analytics", "realtime"])
 
+
 class ConnectionManager:
     """Manages WebSocket connections."""
+
     def __init__(self):
         self.active_connections: List[WebSocket] = []
 
@@ -49,7 +51,9 @@ class ConnectionManager:
         for conn in to_remove:
             self.disconnect(conn)
 
+
 manager = ConnectionManager()
+
 
 @router.websocket("/live")
 async def websocket_endpoint(websocket: WebSocket):
@@ -77,6 +81,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
         manager.disconnect(websocket)
+
 
 # Background task to simulate/push real-time data
 # In production, this would be triggered by an event bus (Redis PubSub)

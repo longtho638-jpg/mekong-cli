@@ -6,6 +6,7 @@ import aiohttp
 
 logger = logging.getLogger(__name__)
 
+
 class AlertingService:
     def __init__(self):
         self.slack_webhook = os.getenv("SLACK_WEBHOOK_URL")
@@ -55,11 +56,11 @@ class AlertingService:
                 "summary": summary,
                 "severity": "critical",
                 "source": "backup-service",
-                "custom_details": {"error": details}
-            }
+                "custom_details": {"error": details},
+            },
         }
         try:
-             async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession() as session:
                 await session.post(url, json=payload)
         except Exception as e:
             logger.error(f"Failed to send PagerDuty alert: {e}")

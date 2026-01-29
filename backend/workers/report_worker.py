@@ -9,6 +9,7 @@ from backend.workers.worker_base import BaseWorker
 
 logger = logging.getLogger(__name__)
 
+
 def generate_report_handler(payload: Dict[str, Any]):
     """
     Handler for 'generate_report' jobs.
@@ -43,13 +44,11 @@ def generate_report_handler(payload: Dict[str, Any]):
         "status": "completed",
         "report_id": report_id,
         "download_url": download_url,
-        "generated_at": time.time()
+        "generated_at": time.time(),
     }
 
+
 if __name__ == "__main__":
-    worker = BaseWorker(
-        queues=["normal"],
-        worker_id=f"report-worker-{int(time.time())}"
-    )
+    worker = BaseWorker(queues=["normal"], worker_id=f"report-worker-{int(time.time())}")
     worker.register_handler("generate_report", generate_report_handler)
     worker.start()

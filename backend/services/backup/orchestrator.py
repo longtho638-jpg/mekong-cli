@@ -14,13 +14,14 @@ from backend.services.backup.interfaces import (
 
 logger = logging.getLogger(__name__)
 
+
 class BackupOrchestrator:
     def __init__(
         self,
         strategy: IBackupStrategy,
         storage: IStorageAdapter,
         compression: Optional[ICompressionService] = None,
-        encryption: Optional[IEncryptionService] = None
+        encryption: Optional[IEncryptionService] = None,
     ):
         self.strategy = strategy
         self.storage = storage
@@ -85,11 +86,11 @@ class BackupOrchestrator:
                 backup_id=backup_id,
                 strategy=self.strategy.__class__.__name__,
                 size_bytes=final_size,
-                checksum="checksum-placeholder", # Implement actual checksum calc
+                checksum="checksum-placeholder",  # Implement actual checksum calc
                 location=location,
                 encrypted=is_encrypted,
                 compressed=is_compressed,
-                metadata={"original_size": original_size}
+                metadata={"original_size": original_size},
             )
 
             logger.info(f"Backup {backup_id} completed successfully")

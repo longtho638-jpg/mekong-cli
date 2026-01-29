@@ -20,6 +20,7 @@ from typing import Any, Dict, List, Optional, Set
 
 class RolloutStrategy(str, Enum):
     """Feature flag rollout strategies"""
+
     ALL = "all"  # Enable for all users
     NONE = "none"  # Disable for all users
     PERCENTAGE = "percentage"  # Gradual rollout by percentage
@@ -32,6 +33,7 @@ class RolloutStrategy(str, Enum):
 @dataclass
 class FeatureFlagConfig:
     """Feature flag configuration"""
+
     name: str
     enabled: bool = False
     strategy: RolloutStrategy = RolloutStrategy.NONE
@@ -76,14 +78,19 @@ class FeatureFlagConfig:
             ab_test_variant=data.get("ab_test_variant"),
             ab_test_allocation=data.get("ab_test_allocation", {}),
             metadata=data.get("metadata", {}),
-            created_at=datetime.fromisoformat(data.get("created_at", datetime.utcnow().isoformat())),
-            updated_at=datetime.fromisoformat(data.get("updated_at", datetime.utcnow().isoformat())),
+            created_at=datetime.fromisoformat(
+                data.get("created_at", datetime.utcnow().isoformat())
+            ),
+            updated_at=datetime.fromisoformat(
+                data.get("updated_at", datetime.utcnow().isoformat())
+            ),
         )
 
 
 @dataclass
 class UserContext:
     """User context for feature flag evaluation"""
+
     user_id: str
     email: Optional[str] = None
     tier: Optional[str] = None  # e.g., "free", "pro", "enterprise"
@@ -133,8 +140,7 @@ class FeatureFlagService:
                 with open(self.storage_path, "r") as f:
                     data = json.load(f)
                     self.flags = {
-                        name: FeatureFlagConfig.from_dict(config)
-                        for name, config in data.items()
+                        name: FeatureFlagConfig.from_dict(config) for name, config in data.items()
                     }
             except (json.JSONDecodeError, KeyError) as e:
                 print(f"Error loading feature flags: {e}")
@@ -151,7 +157,7 @@ class FeatureFlagService:
         name: str,
         enabled: bool = False,
         strategy: RolloutStrategy = RolloutStrategy.NONE,
-        **kwargs
+        **kwargs,
     ) -> FeatureFlagConfig:
         """
         Create or update a feature flag

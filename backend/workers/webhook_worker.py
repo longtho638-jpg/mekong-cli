@@ -10,6 +10,7 @@ from backend.workers.worker_base import BaseWorker
 
 logger = logging.getLogger(__name__)
 
+
 def process_webhook_handler(payload: Dict[str, Any]):
     """
     Handler for 'process_webhook' jobs.
@@ -34,19 +35,17 @@ def process_webhook_handler(payload: Dict[str, Any]):
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    json=body,
-                    timeout=10
+                    method=method, url=url, headers=headers, json=body, timeout=10
                 ) as response:
                     response_text = await response.text()
                     if response.status >= 400:
-                        raise Exception(f"Webhook failed with status {response.status}: {response_text}")
+                        raise Exception(
+                            f"Webhook failed with status {response.status}: {response_text}"
+                        )
 
                     return {
                         "status": response.status,
-                        "response": response_text[:200] # Truncate log
+                        "response": response_text[:200],  # Truncate log
                     }
             except Exception as e:
                 logger.error(f"Webhook delivery failed: {str(e)}")
@@ -61,10 +60,11 @@ def process_webhook_handler(payload: Dict[str, Any]):
         # Rethrow to trigger worker retry logic
         raise e
 
+
 if __name__ == "__main__":
     worker = BaseWorker(
-        queues=["normal"], # Webhooks are normal priority
-        worker_id=f"webhook-worker-{int(time.time())}"
+        queues=["normal"],  # Webhooks are normal priority
+        worker_id=f"webhook-worker-{int(time.time())}",
     )
     worker.register_handler("process_webhook", process_webhook_handler)
     worker.start()

@@ -22,6 +22,7 @@ from backend.api.main import app
 # Create test client
 client = TestClient(app)
 
+
 def test_health_check():
     """Test the license health endpoint."""
     print("\n1. Testing GET /api/license/health")
@@ -48,9 +49,7 @@ def test_verify_license_free():
 def test_verify_license_pro():
     """Test license verification with pro key."""
     print("\n3. Testing POST /api/license/verify (pro tier)")
-    response = client.post("/api/license/verify", json={
-        "license_key": "BP-PRO-ABC123"
-    })
+    response = client.post("/api/license/verify", json={"license_key": "BP-PRO-ABC123"})
     print(f"   Status: {response.status_code}")
     data = response.json()
     print(f"   Response: {json.dumps(data, indent=2)}")
@@ -64,9 +63,7 @@ def test_verify_license_pro():
 def test_verify_license_invalid():
     """Test license verification with invalid key."""
     print("\n4. Testing POST /api/license/verify (invalid key)")
-    response = client.post("/api/license/verify", json={
-        "license_key": "INVALID-KEY-123"
-    })
+    response = client.post("/api/license/verify", json={"license_key": "INVALID-KEY-123"})
     print(f"   Status: {response.status_code}")
     data = response.json()
     print(f"   Response: {json.dumps(data, indent=2)}")
@@ -117,10 +114,9 @@ def test_get_tier_features_invalid():
 def test_activate_license_valid():
     """Test license activation with valid key."""
     print("\n8. Testing POST /api/license/activate (valid key)")
-    response = client.post("/api/license/activate", json={
-        "license_key": "BP-PRO-ABC123",
-        "email": "test@example.com"
-    })
+    response = client.post(
+        "/api/license/activate", json={"license_key": "BP-PRO-ABC123", "email": "test@example.com"}
+    )
     print(f"   Status: {response.status_code}")
     data = response.json()
     print(f"   Response: {json.dumps(data, indent=2)}")
@@ -134,9 +130,7 @@ def test_activate_license_valid():
 def test_activate_license_invalid():
     """Test license activation with invalid key."""
     print("\n9. Testing POST /api/license/activate (invalid key)")
-    response = client.post("/api/license/activate", json={
-        "license_key": "INVALID-KEY"
-    })
+    response = client.post("/api/license/activate", json={"license_key": "INVALID-KEY"})
     print(f"   Status: {response.status_code}")
     print(f"   Response: {json.dumps(response.json(), indent=2)}")
     assert response.status_code == 400
@@ -170,6 +164,7 @@ def run_all_tests():
     except Exception as e:
         print(f"\n❌ ERROR: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 

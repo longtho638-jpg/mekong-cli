@@ -16,12 +16,14 @@ logger = logging.getLogger(__name__)
 
 class AgentInfo(TypedDict):
     """Information about an available agent"""
+
     name: str
     status: str
 
 
 class AgentListResponse(TypedDict):
     """Response structure for listing agents"""
+
     quad_agents: List[AgentInfo]
     mekong_agents: List[AgentInfo]
     total: int

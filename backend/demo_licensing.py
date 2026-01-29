@@ -48,9 +48,7 @@ def demo_generate_licenses():
     print(f"   Bound Domain: {team_license.bound_domain}")
 
     # Enterprise license
-    enterprise_license = generator.generate(
-        "customer_enterprise_001", LicensePlan.ENTERPRISE, 365
-    )
+    enterprise_license = generator.generate("customer_enterprise_001", LicensePlan.ENTERPRISE, 365)
     print("\n✅ Enterprise License Generated:")
     print(f"   Key: {enterprise_license.license_key}")
     print(f"   Max Users: {enterprise_license.max_users}")
@@ -74,9 +72,7 @@ def demo_validation(license, domain=None):
     print(f"   Reason: {result.reason}")
 
     # Full validation with license data
-    result = validator.validate(
-        license.license_key, domain=domain, license_data=license
-    )
+    result = validator.validate(license.license_key, domain=domain, license_data=license)
     print("\nFull Validation:")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")
@@ -144,16 +140,12 @@ def demo_domain_binding():
     print(f"License bound to: {license.bound_domain}")
 
     # Valid domain
-    result = validator.validate(
-        license.license_key, domain="example.com", license_data=license
-    )
+    result = validator.validate(license.license_key, domain="example.com", license_data=license)
     print("\nValidation with correct domain (example.com):")
     print(f"   Valid: {result.valid}")
 
     # Invalid domain
-    result = validator.validate(
-        license.license_key, domain="wrong.com", license_data=license
-    )
+    result = validator.validate(license.license_key, domain="wrong.com", license_data=license)
     print("\nValidation with wrong domain (wrong.com):")
     print(f"   Valid: {result.valid}")
     print(f"   Reason: {result.reason}")

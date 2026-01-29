@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 security = HTTPBearer()
 
+
 class ApiAuthMiddleware(BaseHTTPMiddleware):
     """
     Middleware for Public API Authentication.
@@ -41,8 +42,7 @@ class ApiAuthMiddleware(BaseHTTPMiddleware):
             auth_header = request.headers.get("Authorization")
             if not auth_header or not auth_header.startswith("Bearer "):
                 return JSONResponse(
-                    status_code=401,
-                    content={"error": "Missing or invalid Authorization header"}
+                    status_code=401, content={"error": "Missing or invalid Authorization header"}
                 )
 
             token = auth_header.split(" ")[1]
@@ -53,10 +53,7 @@ class ApiAuthMiddleware(BaseHTTPMiddleware):
             api_key_record = self.api_key_service.verify_api_key(token)
 
             if not api_key_record:
-                return JSONResponse(
-                    status_code=401,
-                    content={"error": "Invalid API Key"}
-                )
+                return JSONResponse(status_code=401, content={"error": "Invalid API Key"})
 
             # 3. Attach User/Key info to Request state
             request.state.api_key = api_key_record
@@ -79,17 +76,15 @@ class ApiAuthMiddleware(BaseHTTPMiddleware):
                 status_code=response.status_code,
                 response_time_ms=int(process_time),
                 ip_address=request.client.host,
-                user_agent=request.headers.get("User-Agent")
+                user_agent=request.headers.get("User-Agent"),
             )
 
             return response
 
         except Exception as e:
             logger.error(f"API Auth Middleware Error: {e}")
-            return JSONResponse(
-                status_code=500,
-                content={"error": "Internal Server Error"}
-            )
+            return JSONResponse(status_code=500, content={"error": "Internal Server Error"})
+
 
 # Dependency for route protection (if needed per-route)
 def require_scope(scope: str):
@@ -99,7 +94,9 @@ def require_scope(scope: str):
         if scope not in request.state.scopes:
             raise HTTPException(status_code=403, detail=f"Missing required scope: {scope}")
         return True
+
     return dependency
+
 
 def get_current_api_key(request: Request):
     if not hasattr(request.state, "api_key"):

@@ -19,25 +19,35 @@ if is_sqlite:
     class GUID(TypeDecorator):
         impl = CHAR
         cache_ok = True
+
         def load_dialect_impl(self, dialect):
             return dialect.type_descriptor(CHAR(36))
+
         def process_bind_param(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return str(value)
+
         def process_result_value(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return uuid.UUID(value)
 
     class JSONType(TypeDecorator):
         impl = Text
         cache_ok = True
+
         def load_dialect_impl(self, dialect):
             return dialect.type_descriptor(Text)
+
         def process_bind_param(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return json.dumps(value)
+
         def process_result_value(self, value, dialect):
-            if value is None: return None
+            if value is None:
+                return None
             return json.loads(value)
 
     UUID_TYPE = GUID
@@ -46,11 +56,13 @@ else:
     UUID_TYPE = UUID(as_uuid=True)
     JSON_TYPE = JSONB
 
+
 class DLQEntry(Base):
     """
     Dead Letter Queue Entry for failed webhooks.
     Stores payloads that failed after all retry attempts.
     """
+
     __tablename__ = "dlq_entries"
 
     id = Column(UUID_TYPE, primary_key=True, default=uuid.uuid4)

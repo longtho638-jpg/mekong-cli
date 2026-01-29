@@ -2,6 +2,7 @@
 Webhook Circuit Breaker Service.
 Implements the Circuit Breaker pattern to prevent cascading failures.
 """
+
 import logging
 import time
 from enum import Enum
@@ -10,10 +11,12 @@ import redis
 
 logger = logging.getLogger(__name__)
 
+
 class CircuitState(Enum):
     CLOSED = "CLOSED"
     OPEN = "OPEN"
     HALF_OPEN = "HALF_OPEN"
+
 
 class WebhookCircuitBreaker:
     """
@@ -31,7 +34,7 @@ class WebhookCircuitBreaker:
         # Configuration
         self.failure_threshold = 5
         self.reset_timeout = 30  # seconds (cooldown)
-        self.success_threshold = 3 # successes to close circuit from half-open
+        self.success_threshold = 3  # successes to close circuit from half-open
 
     def _get_key_state(self, config_id: str) -> str:
         return f"circuit:{config_id}:state"
@@ -56,7 +59,7 @@ class WebhookCircuitBreaker:
         if not state_str:
             return CircuitState.CLOSED
 
-        state = CircuitState(state_str.decode('utf-8'))
+        state = CircuitState(state_str.decode("utf-8"))
 
         if state == CircuitState.OPEN:
             # Check if cooldown has passed
@@ -67,7 +70,9 @@ class WebhookCircuitBreaker:
                 elapsed = time.time() - float(open_ts)
                 if elapsed > self.reset_timeout:
                     # Transition to HALF_OPEN
-                    logger.info(f"Circuit {webhook_config_id} cooldown passed. Transitioning OPEN -> HALF_OPEN")
+                    logger.info(
+                        f"Circuit {webhook_config_id} cooldown passed. Transitioning OPEN -> HALF_OPEN"
+                    )
                     self.redis.set(key_state, CircuitState.HALF_OPEN.value)
                     return CircuitState.HALF_OPEN
 
@@ -85,7 +90,9 @@ class WebhookCircuitBreaker:
 
         if state == CircuitState.HALF_OPEN:
             # Failed in probe state -> Open immediately
-            logger.warning(f"Circuit {webhook_config_id} probe failed. Transitioning HALF_OPEN -> OPEN")
+            logger.warning(
+                f"Circuit {webhook_config_id} probe failed. Transitioning HALF_OPEN -> OPEN"
+            )
             self._open_circuit(webhook_config_id)
             return
 
@@ -95,7 +102,9 @@ class WebhookCircuitBreaker:
         self.redis.expire(key_failures, self.reset_timeout * 2)
 
         if failures >= self.failure_threshold:
-            logger.warning(f"Circuit {webhook_config_id} failure threshold ({self.failure_threshold}) reached. Transitioning CLOSED -> OPEN")
+            logger.warning(
+                f"Circuit {webhook_config_id} failure threshold ({self.failure_threshold}) reached. Transitioning CLOSED -> OPEN"
+            )
             self._open_circuit(webhook_config_id)
 
     def record_success(self, webhook_config_id: str):
@@ -113,7 +122,9 @@ class WebhookCircuitBreaker:
             successes = self.redis.incr(key_successes)
 
             if successes >= self.success_threshold:
-                logger.info(f"Circuit {webhook_config_id} recovered. Transitioning HALF_OPEN -> CLOSED")
+                logger.info(
+                    f"Circuit {webhook_config_id} recovered. Transitioning HALF_OPEN -> CLOSED"
+                )
                 self._close_circuit(webhook_config_id)
 
         elif state == CircuitState.CLOSED:

@@ -15,6 +15,7 @@ router = APIRouter(prefix="/llm", tags=["AI/LLM"])
 
 # --- Request Models ---
 
+
 class GenerateRequest(BaseModel):
     prompt: str
     provider: Optional[str] = None
@@ -23,9 +24,11 @@ class GenerateRequest(BaseModel):
     temperature: Optional[float] = 0.7
     system_instruction: Optional[str] = None
 
+
 class ChatMessage(BaseModel):
     role: str
     content: str
+
 
 class ChatRequest(BaseModel):
     messages: List[ChatMessage]
@@ -34,28 +37,35 @@ class ChatRequest(BaseModel):
     max_tokens: Optional[int] = 1000
     temperature: Optional[float] = 0.7
 
+
 class BlogPostRequest(BaseModel):
     topic: str
     keywords: Optional[str] = None
     tone: Optional[str] = "professional"
     length: Optional[str] = "medium"
 
+
 class SocialRequest(BaseModel):
     description: str
     platform: Optional[str] = "linkedin"
 
+
 class SEORequest(BaseModel):
     content: str
+
 
 class RAGIngestRequest(BaseModel):
     documents: List[str]
     metadatas: Optional[List[Dict[str, Any]]] = None
 
+
 class RAGQueryRequest(BaseModel):
     question: str
     max_results: Optional[int] = 3
 
+
 # --- Endpoints ---
+
 
 @router.post("/generate", dependencies=[Depends(get_current_active_superuser)])
 async def generate_text(request: GenerateRequest):
@@ -70,11 +80,12 @@ async def generate_text(request: GenerateRequest):
             model=request.model,
             max_tokens=request.max_tokens or 1000,
             temperature=request.temperature or 0.7,
-            system_instruction=request.system_instruction
+            system_instruction=request.system_instruction,
         )
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/chat", dependencies=[Depends(get_current_active_superuser)])
 async def chat(request: ChatRequest):
@@ -91,11 +102,12 @@ async def chat(request: ChatRequest):
             provider=request.provider,
             model=request.model,
             max_tokens=request.max_tokens or 1000,
-            temperature=request.temperature or 0.7
+            temperature=request.temperature or 0.7,
         )
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/stream", dependencies=[Depends(get_current_active_superuser)])
 async def stream_text(request: GenerateRequest):
@@ -112,7 +124,7 @@ async def stream_text(request: GenerateRequest):
                 model=request.model,
                 max_tokens=request.max_tokens or 1000,
                 temperature=request.temperature or 0.7,
-                system_instruction=request.system_instruction
+                system_instruction=request.system_instruction,
             ):
                 yield chunk
         except Exception as e:
@@ -120,11 +132,9 @@ async def stream_text(request: GenerateRequest):
 
     return StreamingResponse(event_generator(), media_type="text/plain")
 
+
 @router.post("/content/blog", dependencies=[Depends(get_current_active_superuser)])
-async def generate_blog_post(
-    request: BlogPostRequest,
-    db: Session = Depends(get_db)
-):
+async def generate_blog_post(request: BlogPostRequest, db: Session = Depends(get_db)):
     """
     Generate a blog post.
     """
@@ -135,48 +145,40 @@ async def generate_blog_post(
             topic=request.topic,
             keywords=request.keywords,
             tone=request.tone or "professional",
-            length=request.length or "medium"
+            length=request.length or "medium",
         )
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/content/social", dependencies=[Depends(get_current_active_superuser)])
-async def generate_social_caption(
-    request: SocialRequest,
-    db: Session = Depends(get_db)
-):
+async def generate_social_caption(request: SocialRequest, db: Session = Depends(get_db)):
     """
     Generate a social media caption.
     """
     try:
         service = ContentService()
         result = await service.generate_social_media_caption(
-            db=db,
-            content_description=request.description,
-            platform=request.platform or "linkedin"
+            db=db, content_description=request.description, platform=request.platform or "linkedin"
         )
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.post("/content/seo", dependencies=[Depends(get_current_active_superuser)])
-async def optimize_seo(
-    request: SEORequest,
-    db: Session = Depends(get_db)
-):
+async def optimize_seo(request: SEORequest, db: Session = Depends(get_db)):
     """
     Optimize content for SEO.
     """
     try:
         service = ContentService()
-        result = await service.optimize_seo(
-            db=db,
-            content=request.content
-        )
+        result = await service.optimize_seo(db=db, content=request.content)
         return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/rag/ingest", dependencies=[Depends(get_current_active_superuser)])
 async def rag_ingest(request: RAGIngestRequest):
@@ -185,13 +187,11 @@ async def rag_ingest(request: RAGIngestRequest):
     """
     try:
         service = RAGService()
-        await service.ingest_documents(
-            documents=request.documents,
-            metadatas=request.metadatas
-        )
+        await service.ingest_documents(documents=request.documents, metadatas=request.metadatas)
         return {"status": "success", "message": f"Ingested {len(request.documents)} documents"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.post("/rag/query", dependencies=[Depends(get_current_active_superuser)])
 async def rag_query(request: RAGQueryRequest):
@@ -201,8 +201,7 @@ async def rag_query(request: RAGQueryRequest):
     try:
         service = RAGService()
         answer = await service.query(
-            question=request.question,
-            max_results=request.max_results or 3
+            question=request.question, max_results=request.max_results or 3
         )
         return {"answer": answer}
     except Exception as e:

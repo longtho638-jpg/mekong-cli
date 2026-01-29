@@ -125,5 +125,17 @@
     "tasks": [],
     "budget": 5000.0,
     "spent": 0.0
+  },
+  "PRJ-B0E6F3BE": {
+    "id": "PRJ-B0E6F3BE",
+    "client_id": "CLI-1366996B",
+    "name": "Website Redesign",
+    "description": "Complete website overhaul",
+    "status": "in_progress",
+    "start_date": "2026-01-29T13:26:23.601984",
+    "end_date": "2026-02-26T13:26:23.601987",
+    "tasks": [],
+    "budget": 5000.0,
+    "spent": 0.0
   }
 }

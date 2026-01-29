@@ -1,6 +1,7 @@
 """
 Ops API Router - Handles system operations, health monitoring and approvals.
 """
+
 from antigravity.core.ops import OpsEngine
 from typing import List, Optional
 
@@ -13,23 +14,29 @@ router = APIRouter(prefix="/ops", tags=["ops"])
 
 # --- Schemas ---
 
+
 class ServiceHealth(BaseModel):
     name: str
     status: str
     last_check: float
     message: Optional[str] = None
 
+
 class QuotaStatus(BaseModel):
     total_usage: float
     limit: float
     reset_in: float
 
+
 # --- Dependencies ---
+
 
 def get_ops_engine() -> OpsEngine:
     return OpsEngine()
 
+
 # --- Endpoints ---
+
 
 @router.get("/status", response_model=List[ServiceHealth], dependencies=[Depends(require_operator)])
 async def get_ops_status(engine: OpsEngine = Depends(get_ops_engine)):
@@ -48,16 +55,19 @@ async def get_ops_status(engine: OpsEngine = Depends(get_ops_engine)):
         ServiceHealth(name="Database", status="healthy", last_check=0.0),
     ]
 
+
 @router.get("/quota", response_model=QuotaStatus, dependencies=[Depends(require_operator)])
 async def get_quota(engine: OpsEngine = Depends(get_ops_engine)):
     """Get current quota usage."""
     # engine.get_quota_status() prints. We need data.
     # Ideally OpsEngine delegates to quota_service
     from antigravity.core.quota_service import quota_service
-    _ = quota_service.get_status() # Assuming this exists or similar
+
+    _ = quota_service.get_status()  # Assuming this exists or similar
 
     # Mocking for now as QuotaService might return text
     return QuotaStatus(total_usage=150.0, limit=1000.0, reset_in=3600.0)
+
 
 # Approvals were in the previous file but relied on a generic 'container'.
 # We will deprecate them for now until we have a dedicated ApprovalService in Core.

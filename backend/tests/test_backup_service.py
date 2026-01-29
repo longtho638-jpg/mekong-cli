@@ -27,8 +27,7 @@ from backend.services.backup_service import (
 @pytest.fixture
 def temp_dirs():
     """Create temporary directories for testing"""
-    with tempfile.TemporaryDirectory() as db_dir, \
-         tempfile.TemporaryDirectory() as backup_dir:
+    with tempfile.TemporaryDirectory() as db_dir, tempfile.TemporaryDirectory() as backup_dir:
         yield {
             "db_dir": db_dir,
             "backup_dir": backup_dir,
@@ -65,20 +64,18 @@ def sample_database(temp_dirs):
     # Insert sample data
     cursor.execute(
         "INSERT INTO users (name, email, created_at) VALUES (?, ?, ?)",
-        ("John Doe", "john@example.com", datetime.utcnow().isoformat())
+        ("John Doe", "john@example.com", datetime.utcnow().isoformat()),
     )
     cursor.execute(
         "INSERT INTO users (name, email, created_at) VALUES (?, ?, ?)",
-        ("Jane Smith", "jane@example.com", datetime.utcnow().isoformat())
+        ("Jane Smith", "jane@example.com", datetime.utcnow().isoformat()),
     )
 
     cursor.execute(
-        "INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)",
-        (1, 99.99, "completed")
+        "INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)", (1, 99.99, "completed")
     )
     cursor.execute(
-        "INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)",
-        (2, 149.99, "pending")
+        "INSERT INTO orders (user_id, amount, status) VALUES (?, ?, ?)", (2, 149.99, "pending")
     )
 
     conn.commit()
@@ -94,7 +91,7 @@ def backup_service(temp_dirs, sample_database):
         database_path=sample_database,
         backup_directory=temp_dirs["backup_dir"],
         retention_days=7,
-        verify_on_backup=True
+        verify_on_backup=True,
     )
     return BackupService(config)
 
@@ -124,7 +121,7 @@ class TestBackupService:
         success, metadata = backup_service.create_backup()
         assert success is True
 
-        with open(metadata.backup_path, 'r') as f:
+        with open(metadata.backup_path, "r") as f:
             backup_data = json.load(f)
 
         # Check structure
@@ -150,7 +147,7 @@ class TestBackupService:
         """Test verification fails for invalid JSON"""
         # Create invalid JSON file
         invalid_path = os.path.join(temp_dirs["backup_dir"], "invalid.json")
-        with open(invalid_path, 'w') as f:
+        with open(invalid_path, "w") as f:
             f.write("{ invalid json }")
 
         valid, error = backup_service.verify_backup(invalid_path)
@@ -199,10 +196,7 @@ class TestBackupService:
         assert success is True
 
         # Restore to same database
-        success, error = backup_service.restore_backup(
-            metadata.backup_path,
-            sample_database
-        )
+        success, error = backup_service.restore_backup(metadata.backup_path, sample_database)
         assert success is True
 
         # Check for pre-restore backup
@@ -219,14 +213,14 @@ class TestBackupService:
         old_timestamp = datetime.utcnow() - timedelta(days=9)
         old_filename = f"backup_{old_timestamp.strftime('%Y%m%d_%H%M%S')}.json"
         old_path = backup_dir / old_filename
-        with open(old_path, 'w') as f:
+        with open(old_path, "w") as f:
             json.dump({"metadata": {}, "tables": {}}, f)
 
         # Create recent backup (3 days ago)
         recent_timestamp = datetime.utcnow() - timedelta(days=3)
         recent_filename = f"backup_{recent_timestamp.strftime('%Y%m%d_%H%M%S')}.json"
         recent_path = backup_dir / recent_filename
-        with open(recent_path, 'w') as f:
+        with open(recent_path, "w") as f:
             json.dump({"metadata": {}, "tables": {}}, f)
 
         # Create current backup
@@ -292,10 +286,7 @@ class TestBackupService:
         conn.commit()
         conn.close()
 
-        config = BackupConfig(
-            database_path=db_path,
-            backup_directory=temp_dirs["backup_dir"]
-        )
+        config = BackupConfig(database_path=db_path, backup_directory=temp_dirs["backup_dir"])
         service = BackupService(config)
 
         success, metadata = service.create_backup()
@@ -306,8 +297,7 @@ class TestBackupService:
     def test_convenience_functions(self, temp_dirs, sample_database):
         """Test convenience functions"""
         config = BackupConfig(
-            database_path=sample_database,
-            backup_directory=temp_dirs["backup_dir"]
+            database_path=sample_database, backup_directory=temp_dirs["backup_dir"]
         )
 
         # Test create_backup
@@ -349,7 +339,7 @@ class TestBackupConfig:
             backup_directory="/custom/backups",
             retention_days=14,
             enable_compression=True,
-            verify_on_backup=False
+            verify_on_backup=False,
         )
         assert config.database_path == "/custom/path.db"
         assert config.backup_directory == "/custom/backups"
@@ -364,8 +354,7 @@ class TestEdgeCases:
     def test_backup_nonexistent_database(self, temp_dirs):
         """Test backup fails gracefully for nonexistent database"""
         config = BackupConfig(
-            database_path="/nonexistent/database.db",
-            backup_directory=temp_dirs["backup_dir"]
+            database_path="/nonexistent/database.db", backup_directory=temp_dirs["backup_dir"]
         )
         service = BackupService(config)
 
@@ -377,7 +366,7 @@ class TestEdgeCases:
         """Test restore fails for corrupted backup"""
         # Create corrupted backup
         corrupted_path = os.path.join(temp_dirs["backup_dir"], "corrupted.json")
-        with open(corrupted_path, 'w') as f:
+        with open(corrupted_path, "w") as f:
             json.dump({"metadata": {}, "tables": {"bad": "data"}}, f)
 
         success, error = backup_service.restore_backup(corrupted_path)
@@ -394,7 +383,7 @@ class TestEdgeCases:
         assert os.path.exists(meta_path)
 
         # Load and verify metadata
-        with open(meta_path, 'r') as f:
+        with open(meta_path, "r") as f:
             loaded_meta = json.load(f)
 
         assert loaded_meta["checksum"] == metadata.checksum

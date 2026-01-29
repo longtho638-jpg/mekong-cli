@@ -8,6 +8,7 @@ from backend.workers.worker_base import BaseWorker
 
 logger = logging.getLogger(__name__)
 
+
 def export_data_handler(payload: Dict[str, Any]):
     """
     Handler for 'export_data' jobs.
@@ -37,8 +38,9 @@ def export_data_handler(payload: Dict[str, Any]):
         "status": "completed",
         "export_id": export_id,
         "download_url": download_url,
-        "size_bytes": 1024 * 1024 * 5  # 5MB
+        "size_bytes": 1024 * 1024 * 5,  # 5MB
     }
+
 
 def cleanup_old_data_handler(payload: Dict[str, Any]):
     """
@@ -53,10 +55,11 @@ def cleanup_old_data_handler(payload: Dict[str, Any]):
     logger.info("Cleanup completed. Removed 142 items.")
     return {"status": "completed", "items_removed": 142}
 
+
 if __name__ == "__main__":
     worker = BaseWorker(
-        queues=["low"], # Exports and cleanup are low priority
-        worker_id=f"export-worker-{int(time.time())}"
+        queues=["low"],  # Exports and cleanup are low priority
+        worker_id=f"export-worker-{int(time.time())}",
     )
     worker.register_handler("export_data", export_data_handler)
     worker.register_handler("cleanup_old_data", cleanup_old_data_handler)

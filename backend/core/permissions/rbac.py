@@ -21,6 +21,7 @@ class Role(str, Enum):
     VIEWER = "viewer"
     AGENT = "agent"
 
+
 # Hierarchical permissions (Owner > Admin > Developer > Viewer)
 ROLE_HIERARCHY = {
     Role.OWNER: [Role.OWNER, Role.ADMIN, Role.DEVELOPER, Role.VIEWER, Role.AGENT],
@@ -32,6 +33,7 @@ ROLE_HIERARCHY = {
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
+
 async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
     """Validate token and return user data."""
     credentials_exception = HTTPException(
@@ -40,6 +42,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> TokenData:
         headers={"WWW-Authenticate": "Bearer"},
     )
     return await verify_token(token, credentials_exception)
+
 
 class RoleChecker:
     """Dependency factory for role-based access checks."""
@@ -50,8 +53,7 @@ class RoleChecker:
     def __call__(self, user: TokenData = Depends(get_current_user)):
         if not user.role:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="User has no assigned role"
+                status_code=status.HTTP_403_FORBIDDEN, detail="User has no assigned role"
             )
 
         user_role = Role(user.role)
@@ -69,10 +71,11 @@ class RoleChecker:
             if not has_permission:
                 raise HTTPException(
                     status_code=status.HTTP_403_FORBIDDEN,
-                    detail=f"Operation not permitted for role: {user.role}"
+                    detail=f"Operation not permitted for role: {user.role}",
                 )
 
         return user
+
 
 # Convenience dependencies
 require_owner = RoleChecker([Role.OWNER])
@@ -81,6 +84,7 @@ require_developer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER])
 require_editor = require_developer
 require_viewer = RoleChecker([Role.OWNER, Role.ADMIN, Role.DEVELOPER, Role.VIEWER])
 require_agent = RoleChecker([Role.OWNER, Role.AGENT])
+
 
 def require_role(role_name: str):
     """Factory to require a specific single role."""

@@ -1,6 +1,7 @@
 """
 Compliance Models
 """
+
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -13,11 +14,13 @@ class ComplianceStatus(Enum):
     NON_COMPLIANT = "non_compliant"
     UNDER_REVIEW = "under_review"
 
+
 class RiskLevel(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
 
 class RegulationType(Enum):
     GDPR = "gdpr"
@@ -27,9 +30,11 @@ class RegulationType(Enum):
     ISO_27001 = "iso_27001"
     LOCAL = "local"
 
+
 @dataclass
 class ComplianceItem:
     """Compliance requirement"""
+
     id: str
     name: str
     regulation: RegulationType

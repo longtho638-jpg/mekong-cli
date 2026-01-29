@@ -17,7 +17,7 @@ from backend.api.config.settings import settings as new_settings
 warnings.warn(
     "backend.api.config is deprecated. Use backend.api.config.settings instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 
@@ -54,4 +54,3 @@ class Settings:
 
 
 settings = Settings()
-

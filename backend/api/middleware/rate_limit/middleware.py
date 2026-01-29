@@ -1,6 +1,7 @@
 """
 Rate limiting middleware and decorators.
 """
+
 from fastapi import Request
 
 from .core import get_tenant_limit, limiter
@@ -8,6 +9,7 @@ from .core import get_tenant_limit, limiter
 
 def rate_limit(limit: str = None):
     """Rate limit decorator that respects tenant plans."""
+
     def decorator(func):
         def wrapper(*args, **kwargs):
             request = None
@@ -22,8 +24,11 @@ def rate_limit(limit: str = None):
             else:
                 fallback_limit = limit or "60/minute"
                 return limiter.limit(fallback_limit)(func)(*args, **kwargs)
+
         return wrapper
+
     return decorator
+
 
 @limiter.limit("60/minute")
 async def rate_limiter_middleware(request: Request, call_next):

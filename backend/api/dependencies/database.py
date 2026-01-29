@@ -15,4 +15,5 @@ def get_sqlalchemy_db() -> Generator[Session, None, None]:
     finally:
         db.close()
 
+
 get_db = get_sqlalchemy_db

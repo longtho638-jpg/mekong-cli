@@ -9,6 +9,7 @@ import time
 # Test imports
 try:
     import psutil
+
     print("✅ psutil imported successfully")
 except ImportError as e:
     print(f"❌ Failed to import psutil: {e}")
@@ -18,6 +19,7 @@ except ImportError as e:
 # Test health router
 try:
     from backend.api.routers import health
+
     print("✅ health router imported successfully")
 except Exception as e:
     print(f"❌ Failed to import health router: {e}")
@@ -52,33 +54,30 @@ print(f"✅ Filesystem check: {fs_health.status} - {fs_health.message}")
 # Test models
 print("\n📋 Testing response models...\n")
 
-basic_health = health.HealthStatus(
-    status="healthy",
-    uptime_seconds=uptime
-)
+basic_health = health.HealthStatus(status="healthy", uptime_seconds=uptime)
 print(f"✅ HealthStatus model: {basic_health.status}")
 
 detailed_health = health.DetailedHealthStatus(
     status="healthy",
     uptime_seconds=uptime,
     services=[db_health, redis_health, fs_health],
-    system=metrics
+    system=metrics,
 )
 print(f"✅ DetailedHealthStatus model: {detailed_health.status}")
 print(f"   Services: {len(detailed_health.services)}")
 
 prom_metrics = health.PrometheusMetrics(
     uptime_seconds=uptime,
-    cpu_percent=metrics.get('cpu_percent', 0),
-    memory_percent=metrics.get('memory', {}).get('percent', 0),
-    memory_used_mb=metrics.get('memory', {}).get('used_mb', 0),
-    memory_available_mb=metrics.get('memory', {}).get('available_mb', 0),
-    disk_percent=metrics.get('disk', {}).get('percent', 0),
-    disk_used_gb=metrics.get('disk', {}).get('used_gb', 0),
-    disk_free_gb=metrics.get('disk', {}).get('free_gb', 0),
-    process_cpu_percent=metrics.get('process', {}).get('cpu_percent', 0),
-    process_memory_mb=metrics.get('process', {}).get('memory_mb', 0),
-    timestamp=time.time()
+    cpu_percent=metrics.get("cpu_percent", 0),
+    memory_percent=metrics.get("memory", {}).get("percent", 0),
+    memory_used_mb=metrics.get("memory", {}).get("used_mb", 0),
+    memory_available_mb=metrics.get("memory", {}).get("available_mb", 0),
+    disk_percent=metrics.get("disk", {}).get("percent", 0),
+    disk_used_gb=metrics.get("disk", {}).get("used_gb", 0),
+    disk_free_gb=metrics.get("disk", {}).get("free_gb", 0),
+    process_cpu_percent=metrics.get("process", {}).get("cpu_percent", 0),
+    process_memory_mb=metrics.get("process", {}).get("memory_mb", 0),
+    timestamp=time.time(),
 )
 print(f"✅ PrometheusMetrics model: uptime={prom_metrics.uptime_seconds:.2f}s")
 

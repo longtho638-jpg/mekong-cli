@@ -90,9 +90,7 @@ def extract_affiliate_code(purchase: GumroadPurchase) -> Optional[str]:
 
 
 def create_affiliate_referral(
-    purchase: GumroadPurchase,
-    affiliate_code: str,
-    affiliates_store: dict
+    purchase: GumroadPurchase, affiliate_code: str, affiliates_store: dict
 ) -> AffiliateReferral:
     """
     Create affiliate referral record with 20% commission.
@@ -130,7 +128,7 @@ def create_affiliate_referral(
             "total_sales": 0.0,
             "total_commission_pending": 0.0,
             "total_commission_paid": 0.0,
-            "referrals": []
+            "referrals": [],
         }
 
     # Add to affiliate's referrals
@@ -151,7 +149,7 @@ async def process_purchase(
     purchase: GumroadPurchase,
     customers_store: dict,
     purchases_list: list,
-    affiliates_store: Optional[dict] = None
+    affiliates_store: Optional[dict] = None,
 ):
     """Process Gumroad purchase and create platform account."""
     logger.info(f"💰 Processing purchase: {purchase.email} bought {purchase.product_name}")
@@ -196,16 +194,16 @@ async def process_purchase(
     # Send purchase confirmation email with license key
     try:
         email_sent = send_purchase_email(
-            email=purchase.email,
-            license_key=license_key,
-            product_name=purchase.product_name
+            email=purchase.email, license_key=license_key, product_name=purchase.product_name
         )
         if email_sent:
             logger.info(f"📧 Purchase email sent successfully to {purchase.email}")
         else:
             logger.warning(f"⚠️ Failed to send purchase email to {purchase.email}")
     except Exception as e:
-        logger.error(f"❌ Error sending purchase email to {purchase.email}: {str(e)}", exc_info=True)
+        logger.error(
+            f"❌ Error sending purchase email to {purchase.email}: {str(e)}", exc_info=True
+        )
 
     # Trigger Workflow Engine
     try:

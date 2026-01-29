@@ -40,16 +40,14 @@ def handle_purchase_webhook(webhook_data: dict) -> dict:
         license_key = generate_license_key(
             product_name=product_name,
             customer_email=customer_email,
-            tier="pro"  # Could be extracted from product variant
+            tier="pro",  # Could be extracted from product variant
         )
 
         logger.info(f"Generated license key {license_key} for {customer_email}")
 
         # Send welcome email with license key
         email_sent = send_purchase_email(
-            email=customer_email,
-            license_key=license_key,
-            product_name=product_name
+            email=customer_email, license_key=license_key, product_name=product_name
         )
 
         if email_sent:
@@ -58,7 +56,7 @@ def handle_purchase_webhook(webhook_data: dict) -> dict:
                 "success": True,
                 "email_sent": True,
                 "license_key": license_key,
-                "customer_email": customer_email
+                "customer_email": customer_email,
             }
         else:
             logger.warning(f"Failed to send email to {customer_email}, but license generated")
@@ -67,7 +65,7 @@ def handle_purchase_webhook(webhook_data: dict) -> dict:
                 "email_sent": False,
                 "license_key": license_key,
                 "customer_email": customer_email,
-                "warning": "Email delivery failed, but license is valid"
+                "warning": "Email delivery failed, but license is valid",
             }
 
     except Exception as e:
@@ -91,9 +89,7 @@ def resend_purchase_email(customer_email: str, license_key: str, product_name: s
         logger.info(f"Resending purchase email to {customer_email}")
 
         success = send_purchase_email(
-            email=customer_email,
-            license_key=license_key,
-            product_name=product_name
+            email=customer_email, license_key=license_key, product_name=product_name
         )
 
         if success:

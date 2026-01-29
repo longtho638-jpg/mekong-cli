@@ -11,11 +11,13 @@ from backend.services.notification_orchestrator import NotificationChannel, Noti
 def mock_db():
     return MagicMock(spec=Session)
 
+
 @pytest.fixture
 def mock_email_service():
     service = AsyncMock()
     service.send_email = AsyncMock(return_value={"status": "sent"})
     return service
+
 
 @pytest.fixture
 def mock_push_service():
@@ -23,14 +25,18 @@ def mock_push_service():
     service.send = AsyncMock(return_value={"success": 1})
     return service
 
+
 @pytest.fixture
 def mock_template_service():
     service = MagicMock()
     service.render_template = MagicMock(return_value="<html>Rendered</html>")
     return service
 
+
 @pytest.mark.asyncio
-async def test_orchestrator_sends_email_if_enabled(mock_db, mock_email_service, mock_push_service, mock_template_service):
+async def test_orchestrator_sends_email_if_enabled(
+    mock_db, mock_email_service, mock_push_service, mock_template_service
+):
     # Setup
     orchestrator = NotificationOrchestrator()
     orchestrator.email_service = mock_email_service
@@ -50,7 +56,7 @@ async def test_orchestrator_sends_email_if_enabled(mock_db, mock_email_service, 
         type="test",
         title="Test",
         message="Hello",
-        data={"email": "test@example.com"}
+        data={"email": "test@example.com"},
     )
 
     # Assert
@@ -60,8 +66,11 @@ async def test_orchestrator_sends_email_if_enabled(mock_db, mock_email_service, 
     mock_email_service.send_email.assert_called_once()
     mock_push_service.send.assert_not_called()
 
+
 @pytest.mark.asyncio
-async def test_orchestrator_sends_push_if_enabled(mock_db, mock_email_service, mock_push_service, mock_template_service):
+async def test_orchestrator_sends_push_if_enabled(
+    mock_db, mock_email_service, mock_push_service, mock_template_service
+):
     # Setup
     orchestrator = NotificationOrchestrator()
     orchestrator.email_service = mock_email_service
@@ -75,12 +84,7 @@ async def test_orchestrator_sends_push_if_enabled(mock_db, mock_email_service, m
 
     # Act
     results = await orchestrator.send_notification(
-        db=mock_db,
-        user_id="user-123",
-        type="test",
-        title="Test",
-        message="Hello",
-        data={}
+        db=mock_db, user_id="user-123", type="test", title="Test", message="Hello", data={}
     )
 
     # Assert

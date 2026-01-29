@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 
 class ProvisioningResponse(TypedDict, total=False):
     """Standard response from provisioning operations"""
+
     success: bool
     tenant_id: str
     plan: str
@@ -44,7 +45,7 @@ class ProvisioningService:
         provider: str,
         subscription_id: str,
         customer_id: str = None,
-        period_end: datetime = None
+        period_end: datetime = None,
     ) -> ProvisioningResponse:
         """
         Activates a subscription for a tenant.
@@ -61,7 +62,7 @@ class ProvisioningService:
             "plan": plan.upper(),
             "status": "active",
             "currency": "USD",
-            "updated_at": datetime.now().isoformat()
+            "updated_at": datetime.now().isoformat(),
         }
 
         if provider == "stripe":
@@ -79,7 +80,9 @@ class ProvisioningService:
         # Execute Upsert on subscriptions
         try:
             # Check if subscription exists
-            existing = self.db.table("subscriptions").select("*").eq("tenant_id", tenant_id).execute()
+            existing = (
+                self.db.table("subscriptions").select("*").eq("tenant_id", tenant_id).execute()
+            )
 
             if existing.data:
                 self.db.table("subscriptions").update(sub_data).eq("tenant_id", tenant_id).execute()
@@ -92,8 +95,8 @@ class ProvisioningService:
 
         # 2. Sync legacy organizations table
         org_data = {
-            "plan": plan.lower(), # legacy uses lowercase
-            "updated_at": datetime.now().isoformat()
+            "plan": plan.lower(),  # legacy uses lowercase
+            "updated_at": datetime.now().isoformat(),
         }
 
         if provider == "paypal":
@@ -109,7 +112,9 @@ class ProvisioningService:
 
         return {"success": True, "tenant_id": tenant_id, "plan": plan}
 
-    def cancel_subscription(self, provider_subscription_id: str, provider: str) -> ProvisioningResponse:
+    def cancel_subscription(
+        self, provider_subscription_id: str, provider: str
+    ) -> ProvisioningResponse:
         """
         Downgrades a tenant to FREE upon cancellation.
         """
@@ -123,23 +128,40 @@ class ProvisioningService:
 
         try:
             if provider == "stripe":
-                result = self.db.table("subscriptions").select("tenant_id").eq("stripe_subscription_id", provider_subscription_id).execute()
+                result = (
+                    self.db.table("subscriptions")
+                    .select("tenant_id")
+                    .eq("stripe_subscription_id", provider_subscription_id)
+                    .execute()
+                )
             elif provider == "paypal":
                 # First try unified subscriptions table
-                result = self.db.table("subscriptions").select("tenant_id").eq("paypal_subscription_id", provider_subscription_id).execute()
+                result = (
+                    self.db.table("subscriptions")
+                    .select("tenant_id")
+                    .eq("paypal_subscription_id", provider_subscription_id)
+                    .execute()
+                )
 
                 # Fallback to legacy organizations if not found
                 if not result.data:
-                    logger.info(f"Subscription {provider_subscription_id} not found in subscriptions, checking legacy organizations")
-                    result = self.db.table("organizations").select("id").eq("paypal_subscription_id", provider_subscription_id).execute()
+                    logger.info(
+                        f"Subscription {provider_subscription_id} not found in subscriptions, checking legacy organizations"
+                    )
+                    result = (
+                        self.db.table("organizations")
+                        .select("id")
+                        .eq("paypal_subscription_id", provider_subscription_id)
+                        .execute()
+                    )
                     if result.data:
-                        result.data[0]['tenant_id'] = result.data[0]['id']
+                        result.data[0]["tenant_id"] = result.data[0]["id"]
 
             if not result.data:
                 logger.warning(f"Subscription {provider_subscription_id} not found")
                 return {"error": "Subscription not found"}
 
-            tenant_id = result.data[0]['tenant_id']
+            tenant_id = result.data[0]["tenant_id"]
 
         except Exception as e:
             logger.error(f"Lookup failed: {e}")
@@ -151,7 +173,7 @@ class ProvisioningService:
             plan="FREE",
             provider=provider,
             subscription_id="",
-            period_end=datetime.now()
+            period_end=datetime.now(),
         )
 
     def record_payment(
@@ -161,7 +183,7 @@ class ProvisioningService:
         currency: str,
         provider: str,
         transaction_id: str,
-        invoice_id: str = None
+        invoice_id: str = None,
     ) -> ProvisioningResponse:
         """
         Records a payment in the `payments` table and updates `last_payment_at` in organizations.
@@ -177,7 +199,7 @@ class ProvisioningService:
             "currency": currency,
             "status": "succeeded",
             "paid_at": datetime.now().isoformat(),
-            "payment_method": provider
+            "payment_method": provider,
         }
 
         if provider == "stripe":
@@ -190,10 +212,9 @@ class ProvisioningService:
             self.db.table("payments").insert(payment_data).execute()
 
             # Update legacy org for compatibility
-            self.db.table("organizations").update({
-                "last_payment_at": datetime.now().isoformat(),
-                "last_payment_amount": amount
-            }).eq("id", tenant_id).execute()
+            self.db.table("organizations").update(
+                {"last_payment_at": datetime.now().isoformat(), "last_payment_amount": amount}
+            ).eq("id", tenant_id).execute()
 
             return {"success": True}
         except Exception as e:

@@ -147,7 +147,9 @@ class ProductLaunchAgent:
                     if lead.status in [LaunchStatus.PLANNING, LaunchStatus.PRE_LAUNCH]
                 ]
             ),
-            "avg_progress": sum(lead.progress for lead in launches) / len(launches) if launches else 0,
+            "avg_progress": sum(lead.progress for lead in launches) / len(launches)
+            if launches
+            else 0,
         }
 
 

@@ -3,10 +3,11 @@ import os
 try:
     import boto3
     from botocore.exceptions import ClientError
+
     BOTO3_AVAILABLE = True
 except ImportError:
     BOTO3_AVAILABLE = False
-    ClientError = Exception # fallback
+    ClientError = Exception  # fallback
 
 import io
 import logging
@@ -16,6 +17,7 @@ from backend.services.backup.interfaces import IStorageAdapter
 
 logger = logging.getLogger(__name__)
 
+
 class S3StorageAdapter(IStorageAdapter):
     def __init__(self, bucket_name: str, region_name: str = "us-east-1"):
         if not BOTO3_AVAILABLE:
@@ -24,7 +26,7 @@ class S3StorageAdapter(IStorageAdapter):
             return
 
         self.bucket_name = bucket_name
-        self.s3_client = boto3.client('s3', region_name=region_name)
+        self.s3_client = boto3.client("s3", region_name=region_name)
 
     async def upload(self, file_obj: BinaryIO, destination: str) -> str:
         """
@@ -63,9 +65,9 @@ class S3StorageAdapter(IStorageAdapter):
 
         try:
             response = self.s3_client.list_objects_v2(Bucket=self.bucket_name, Prefix=prefix)
-            if 'Contents' not in response:
+            if "Contents" not in response:
                 return []
-            return [obj['Key'] for obj in response['Contents']]
+            return [obj["Key"] for obj in response["Contents"]]
         except ClientError as e:
             logger.error(f"Failed to list S3 objects: {e}")
             raise

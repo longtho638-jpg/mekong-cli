@@ -22,6 +22,7 @@ import uuid
 
 try:
     import boto3
+
     BOTO3_AVAILABLE = True
 except ImportError:
     BOTO3_AVAILABLE = False
@@ -62,10 +63,12 @@ class AuditService:
     def __init__(self):
         self.s3_client = None
         if settings.is_production:
-             # Initialize S3 client for archival if needed (mock for now or use env vars)
-             pass
+            # Initialize S3 client for archival if needed (mock for now or use env vars)
+            pass
 
-    def _calculate_hash(self, timestamp: datetime, user_id: Optional[str], action: str, previous_hash: str) -> str:
+    def _calculate_hash(
+        self, timestamp: datetime, user_id: Optional[str], action: str, previous_hash: str
+    ) -> str:
         """
         Calculate SHA-256 hash for the log entry to ensure integrity.
         Formula: SHA256(timestamp_iso + user_id + action + previous_hash)
@@ -87,7 +90,7 @@ class AuditService:
         ip_address: Optional[str],
         user_agent: Optional[str],
         success: bool,
-        error: Optional[str] = None
+        error: Optional[str] = None,
     ) -> AuditLog:
         """Log user login event"""
         event_type = AuditEventType.USER_LOGIN if success else AuditEventType.SECURITY_LOGIN_FAILED
@@ -106,8 +109,8 @@ class AuditService:
                 "event_type": event_type,
                 "severity": severity,
                 "result": "success" if success else "failure",
-                "error": error
-            }
+                "error": error,
+            },
         )
 
     async def log_purchase(
@@ -120,7 +123,7 @@ class AuditService:
         transaction_id: str,
         success: bool,
         ip_address: Optional[str] = None,
-        error: Optional[str] = None
+        error: Optional[str] = None,
     ) -> AuditLog:
         """Log purchase event"""
         action = f"Purchase {'successful' if success else 'failed'}: {product_id}"
@@ -140,8 +143,8 @@ class AuditService:
                 "currency": currency,
                 "product_id": product_id,
                 "result": "success" if success else "failure",
-                "error": error
-            }
+                "error": error,
+            },
         )
 
     async def log_api_call(
@@ -153,7 +156,7 @@ class AuditService:
         method: str,
         status_code: int,
         response_time_ms: float,
-        user_agent: Optional[str] = None
+        user_agent: Optional[str] = None,
     ) -> AuditLog:
         """Log API call"""
         severity = AuditSeverity.INFO
@@ -174,8 +177,8 @@ class AuditService:
                 "event_type": AuditEventType.API_CALL,
                 "severity": severity,
                 "status_code": status_code,
-                "response_time_ms": response_time_ms
-            }
+                "response_time_ms": response_time_ms,
+            },
         )
 
     async def log_admin_action(
@@ -186,7 +189,7 @@ class AuditService:
         action_description: str,
         ip_address: Optional[str] = None,
         target_user_id: Optional[str] = None,
-        changes: Optional[Dict[str, Any]] = None
+        changes: Optional[Dict[str, Any]] = None,
     ) -> AuditLog:
         """Log admin action"""
         return await self.create_audit_log(
@@ -199,8 +202,8 @@ class AuditService:
             metadata={
                 "event_type": action_type,
                 "severity": AuditSeverity.WARNING,
-                "changes": changes
-            }
+                "changes": changes,
+            },
         )
 
     async def get_logs(self, db: Session, **kwargs) -> List[Dict[str, Any]]:
@@ -214,9 +217,11 @@ class AuditService:
         total = db.query(func.count(AuditLog.id)).scalar()
 
         # Last 24 hours
-        last_24h = db.query(func.count(AuditLog.id)).filter(
-            AuditLog.timestamp >= datetime.now(timezone.utc) - timedelta(hours=24)
-        ).scalar()
+        last_24h = (
+            db.query(func.count(AuditLog.id))
+            .filter(AuditLog.timestamp >= datetime.now(timezone.utc) - timedelta(hours=24))
+            .scalar()
+        )
 
         # By event type (using metadata->>'event_type')
         # Note: This depends on DB support for JSON path. For SQLite (test), we might need logic.
@@ -278,14 +283,18 @@ class AuditService:
         session_id_obj = None
         if session_id:
             try:
-                session_id_obj = uuid.UUID(session_id) if isinstance(session_id, str) else session_id
+                session_id_obj = (
+                    uuid.UUID(session_id) if isinstance(session_id, str) else session_id
+                )
             except ValueError:
                 pass
 
         request_id_obj = None
         if request_id:
             try:
-                request_id_obj = uuid.UUID(request_id) if isinstance(request_id, str) else request_id
+                request_id_obj = (
+                    uuid.UUID(request_id) if isinstance(request_id, str) else request_id
+                )
             except ValueError:
                 pass
 
@@ -300,7 +309,7 @@ class AuditService:
             request_id=request_id_obj,
             metadata_=metadata,
             timestamp=timestamp,
-            hash=current_hash
+            hash=current_hash,
         )
 
         db.add(audit_log)
@@ -325,7 +334,7 @@ class AuditService:
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
         limit: int = 100,
-        offset: int = 0
+        offset: int = 0,
     ) -> List[AuditLog]:
         """
         Search audit logs with filters.
@@ -360,7 +369,7 @@ class AuditService:
         format: str = "json",
         user_id: Optional[str] = None,
         start_date: Optional[datetime] = None,
-        end_date: Optional[datetime] = None
+        end_date: Optional[datetime] = None,
     ) -> Union[str, Dict]:
         """
         Export logs to CSV string or JSON list.
@@ -375,24 +384,32 @@ class AuditService:
             output = io.StringIO()
             writer = csv.writer(output)
             headers = [
-                "id", "timestamp", "user_id", "action", "resource_type",
-                "resource_id", "ip_address", "hash"
+                "id",
+                "timestamp",
+                "user_id",
+                "action",
+                "resource_type",
+                "resource_id",
+                "ip_address",
+                "hash",
             ]
             writer.writerow(headers)
             for log in logs:
-                writer.writerow([
-                    log.id,
-                    log.timestamp.isoformat(),
-                    str(log.user_id) if log.user_id else "",
-                    log.action,
-                    log.resource_type or "",
-                    log.resource_id or "",
-                    str(log.ip_address) if log.ip_address else "",
-                    log.hash
-                ])
+                writer.writerow(
+                    [
+                        log.id,
+                        log.timestamp.isoformat(),
+                        str(log.user_id) if log.user_id else "",
+                        log.action,
+                        log.resource_type or "",
+                        log.resource_id or "",
+                        str(log.ip_address) if log.ip_address else "",
+                        log.hash,
+                    ]
+                )
             return output.getvalue()
 
-        else: # json
+        else:  # json
             return [log.to_dict() for log in logs]
 
     async def archive_old_logs(self, db: Session, retention_days: int = 365):
@@ -417,9 +434,7 @@ class AuditService:
         Verify the hash chain integrity for the last N records.
         Returns True if valid, False if tampering detected.
         """
-        logs = db.execute(
-            select(AuditLog).order_by(AuditLog.id).limit(limit)
-        ).scalars().all()
+        logs = db.execute(select(AuditLog).order_by(AuditLog.id).limit(limit)).scalars().all()
 
         if not logs:
             return True
@@ -429,14 +444,11 @@ class AuditService:
         # Here we just check internal consistency of the fetched block if we assume logical continuity
 
         for i in range(1, len(logs)):
-            prev = logs[i-1]
+            prev = logs[i - 1]
             curr = logs[i]
 
             expected_hash = self._calculate_hash(
-                curr.timestamp,
-                str(curr.user_id) if curr.user_id else None,
-                curr.action,
-                prev.hash
+                curr.timestamp, str(curr.user_id) if curr.user_id else None, curr.action, prev.hash
             )
 
             if curr.hash != expected_hash:
@@ -444,8 +456,10 @@ class AuditService:
 
         return True
 
+
 # Singleton instance
 audit_service = AuditService()
+
 
 def get_audit_service() -> AuditService:
     return audit_service

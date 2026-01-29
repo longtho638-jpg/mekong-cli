@@ -16,6 +16,7 @@ class OAuthService:
     """
     Service for OAuth flow orchestration and Client management.
     """
+
     def __init__(self, db: Session):
         self.db = db
         self.token_service = TokenService(db)
@@ -40,7 +41,7 @@ class OAuthService:
             redirect_uris=client_data.redirect_uris,
             scopes=client_data.scopes,
             grant_types=client_data.grant_types,
-            is_confidential=client_data.is_confidential
+            is_confidential=client_data.is_confidential,
         )
         self.db.add(client)
         self.db.commit()
@@ -48,7 +49,9 @@ class OAuthService:
 
         return client, client_secret
 
-    def authenticate_client(self, client_id: str, client_secret: Optional[str]) -> Optional[OAuthClient]:
+    def authenticate_client(
+        self, client_id: str, client_secret: Optional[str]
+    ) -> Optional[OAuthClient]:
         """
         Validate client credentials.
         """
@@ -74,13 +77,13 @@ class OAuthService:
         redirect_uri: str,
         code_challenge: str,
         code_challenge_method: str,
-        scopes: List[str]
+        scopes: List[str],
     ) -> str:
         """
         Create a short-lived authorization code.
         """
         code = secrets.token_urlsafe(32)
-        expires_at = datetime.now(timezone.utc) + timedelta(minutes=10) # 10 min TTL
+        expires_at = datetime.now(timezone.utc) + timedelta(minutes=10)  # 10 min TTL
 
         grant = OAuthGrant(
             code=code,
@@ -91,18 +94,14 @@ class OAuthService:
             code_challenge_method=code_challenge_method,
             scopes=scopes,
             expires_at=expires_at,
-            used=False
+            used=False,
         )
         self.db.add(grant)
         self.db.commit()
         return code
 
     def exchange_authorization_code(
-        self,
-        code: str,
-        redirect_uri: str,
-        code_verifier: str,
-        client_id: str
+        self, code: str, redirect_uri: str, code_verifier: str, client_id: str
     ) -> Tuple[str, str, int]:
         """
         Exchange auth code for tokens (with PKCE verification).
@@ -141,9 +140,7 @@ class OAuthService:
 
         # Issue Tokens
         return self.token_service.create_tokens(
-            user_id=grant.user_id,
-            client_id=grant.client_id,
-            scope=" ".join(grant.scopes)
+            user_id=grant.user_id, client_id=grant.client_id, scope=" ".join(grant.scopes)
         )
 
     def _verify_pkce(self, verifier: str, challenge: str, method: str) -> bool:
@@ -157,7 +154,7 @@ class OAuthService:
         elif method == "plain":
             return verifier == challenge
         else:
-            return False # Unsupported method
+            return False  # Unsupported method
 
     def get_client(self, client_id: str) -> Optional[OAuthClient]:
         query = select(OAuthClient).where(OAuthClient.client_id == client_id)

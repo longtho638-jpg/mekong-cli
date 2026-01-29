@@ -10,6 +10,7 @@ from backend.models.rate_limit import RateLimitViolation
 
 logger = logging.getLogger(__name__)
 
+
 class RateLimitMonitor:
     """
     Monitors rate limit violations, logs them, and detects DDoS patterns.
@@ -24,7 +25,7 @@ class RateLimitMonitor:
         violation_type: str,
         endpoint: str,
         user_id: Optional[str] = None,
-        headers: Optional[Dict[str, Any]] = None
+        headers: Optional[Dict[str, Any]] = None,
     ):
         """
         Log a rate limit violation to DB and check for blocking triggers.
@@ -37,7 +38,7 @@ class RateLimitMonitor:
                     user_id=user_id,
                     endpoint=endpoint,
                     violation_type=violation_type,
-                    request_headers=headers
+                    request_headers=headers,
                 )
                 db.add(violation)
                 db.commit()
@@ -61,22 +62,24 @@ class RateLimitMonitor:
 
         # Set expiry on first increment (e.g., 5 minutes window)
         if count == 1:
-            await self.redis.expire(key, 300) # 5 minutes
+            await self.redis.expire(key, 300)  # 5 minutes
 
         # Thresholds
-        BLOCK_THRESHOLD = 50 # 50 violations in 5 minutes
+        BLOCK_THRESHOLD = 50  # 50 violations in 5 minutes
 
         if count >= BLOCK_THRESHOLD:
             from backend.services.ip_blocker import ip_blocker
 
             # Check if already blocked to avoid redundant DB writes
             if not await ip_blocker.is_blocked(ip_address):
-                logger.warning(f"AUTO-BLOCKING IP {ip_address} due to excessive rate limit violations ({count}).")
+                logger.warning(
+                    f"AUTO-BLOCKING IP {ip_address} due to excessive rate limit violations ({count})."
+                )
                 await ip_blocker.block_ip(
                     ip_address=ip_address,
                     reason="Excessive rate limit violations (DDoS protection)",
-                    duration_seconds=3600, # Block for 1 hour
-                    created_by="system_monitor"
+                    duration_seconds=3600,  # Block for 1 hour
+                    created_by="system_monitor",
                 )
 
     async def get_recent_violations(self, limit: int = 100):
@@ -85,11 +88,16 @@ class RateLimitMonitor:
         """
         try:
             with SessionLocal() as db:
-                stmt = select(RateLimitViolation).order_by(desc(RateLimitViolation.timestamp)).limit(limit)
+                stmt = (
+                    select(RateLimitViolation)
+                    .order_by(desc(RateLimitViolation.timestamp))
+                    .limit(limit)
+                )
                 results = db.execute(stmt).scalars().all()
                 return results
         except Exception as e:
             logger.error(f"Failed to fetch violations: {e}")
             return []
+
 
 rate_limit_monitor = RateLimitMonitor()

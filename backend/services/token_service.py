@@ -14,6 +14,7 @@ class TokenService:
     """
     Service for managing OAuth tokens lifecycle and persistence.
     """
+
     def __init__(self, db: Session):
         self.db = db
         self.jwt_service = JWTService()
@@ -28,7 +29,7 @@ class TokenService:
         client_id: str,
         scope: str,
         access_token_ttl: Optional[timedelta] = None,
-        refresh_token_ttl: timedelta = timedelta(days=30)
+        refresh_token_ttl: timedelta = timedelta(days=30),
     ) -> Tuple[str, str, int]:
         """
         Create access token (JWT) and refresh token (Opaque).
@@ -36,10 +37,7 @@ class TokenService:
         """
         # 1. Create Access Token (JWT)
         access_token, jti, access_expiry = self.jwt_service.create_access_token(
-            user_id=user_id,
-            client_id=client_id,
-            scope=scope,
-            expires_delta=access_token_ttl
+            user_id=user_id, client_id=client_id, scope=scope, expires_delta=access_token_ttl
         )
 
         # 2. Create Refresh Token (Opaque)
@@ -56,7 +54,7 @@ class TokenService:
             scopes=scope.split(" "),
             access_token_expires_at=access_expiry,
             refresh_token_expires_at=refresh_expiry,
-            revoked=False
+            revoked=False,
         )
         self.db.add(db_token)
         self.db.commit()
@@ -72,7 +70,7 @@ class TokenService:
         query = select(OAuthToken).where(
             OAuthToken.refresh_token_hash == token_hash,
             OAuthToken.revoked.is_(False),
-            OAuthToken.refresh_token_expires_at > datetime.now(timezone.utc)
+            OAuthToken.refresh_token_expires_at > datetime.now(timezone.utc),
         )
         result = self.db.execute(query)
         return result.scalar_one_or_none()
@@ -153,5 +151,5 @@ class TokenService:
         return self.create_tokens(
             user_id=old_token_record.user_id,
             client_id=old_token_record.client_id,
-            scope=" ".join(old_token_record.scopes)
+            scope=" ".join(old_token_record.scopes),
         )

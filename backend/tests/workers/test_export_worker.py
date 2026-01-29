@@ -8,17 +8,14 @@ from workers.export_worker import ExportWorker
 
 @pytest.fixture
 def mock_dependencies():
-    with patch("workers.export_worker.QueueService") as MockQueue, \
-         patch("workers.export_worker.ExportService") as MockExport, \
-         patch("workers.export_worker.StorageService") as MockStorage, \
-         patch("workers.export_worker.get_db") as MockDB:
+    with (
+        patch("workers.export_worker.QueueService") as MockQueue,
+        patch("workers.export_worker.ExportService") as MockExport,
+        patch("workers.export_worker.StorageService") as MockStorage,
+        patch("workers.export_worker.get_db") as MockDB,
+    ):
+        yield {"queue": MockQueue, "export": MockExport, "storage": MockStorage, "db": MockDB}
 
-        yield {
-            "queue": MockQueue,
-            "export": MockExport,
-            "storage": MockStorage,
-            "db": MockDB
-        }
 
 @pytest.mark.asyncio
 async def test_process_job_export(mock_dependencies):
@@ -34,7 +31,7 @@ async def test_process_job_export(mock_dependencies):
         "export_id": "test-export-id",
         "user_id": "test-user",
         "resource_type": "users",
-        "format": "csv"
+        "format": "csv",
     }
     queue_instance.get_job.return_value = mock_job
 
@@ -52,7 +49,9 @@ async def test_process_job_export(mock_dependencies):
     db_instance = mock_dependencies["db"].return_value
     # Mock chain: db.table().select()... or db.table().update().eq().execute()
     # Mock fetch data
-    db_instance.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{"id": 1}]
+    db_instance.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [
+        {"id": 1}
+    ]
 
     # Execute
     await worker.process_job("job-123")
@@ -66,6 +65,7 @@ async def test_process_job_export(mock_dependencies):
 
     # Verify DB update calls (rough check)
     assert db_instance.table.called
+
 
 @pytest.mark.asyncio
 async def test_process_job_unknown_type(mock_dependencies):

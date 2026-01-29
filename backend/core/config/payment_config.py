@@ -21,10 +21,13 @@ from pydantic import BaseModel, Field
 
 class PayPalConfig(BaseModel):
     """PayPal API configuration"""
+
     client_id: str = Field(..., description="PayPal Client ID")
     client_secret: str = Field(..., description="PayPal Client Secret")
     mode: str = Field(default="sandbox", description="PayPal mode (sandbox/live)")
-    webhook_id: Optional[str] = Field(default=None, description="PayPal Webhook ID for verification")
+    webhook_id: Optional[str] = Field(
+        default=None, description="PayPal Webhook ID for verification"
+    )
 
     @classmethod
     def from_env(cls) -> "PayPalConfig":
@@ -33,7 +36,7 @@ class PayPalConfig(BaseModel):
             client_id=os.getenv("PAYPAL_CLIENT_ID", ""),
             client_secret=os.getenv("PAYPAL_CLIENT_SECRET", ""),
             mode=os.getenv("PAYPAL_MODE", "sandbox"),
-            webhook_id=os.getenv("PAYPAL_WEBHOOK_ID")
+            webhook_id=os.getenv("PAYPAL_WEBHOOK_ID"),
         )
 
     def is_configured(self) -> bool:
@@ -43,6 +46,7 @@ class PayPalConfig(BaseModel):
 
 class StripeConfig(BaseModel):
     """Stripe API configuration"""
+
     secret_key: str = Field(..., description="Stripe Secret Key")
     publishable_key: str = Field(..., description="Stripe Publishable Key")
     webhook_secret: Optional[str] = Field(default=None, description="Stripe Webhook Secret")
@@ -57,7 +61,7 @@ class StripeConfig(BaseModel):
             publishable_key=os.getenv("STRIPE_PUBLISHABLE_KEY", ""),
             webhook_secret=os.getenv("STRIPE_WEBHOOK_SECRET"),
             price_solo=os.getenv("STRIPE_PRICE_SOLO"),
-            price_team=os.getenv("STRIPE_PRICE_TEAM")
+            price_team=os.getenv("STRIPE_PRICE_TEAM"),
         )
 
     def is_configured(self) -> bool:
@@ -67,6 +71,7 @@ class StripeConfig(BaseModel):
 
 class PolarConfig(BaseModel):
     """Polar API configuration"""
+
     api_key: str = Field(..., description="Polar API Key")
     webhook_secret: Optional[str] = Field(default=None, description="Polar webhook signing secret")
     base_url: str = Field(default="https://api.polar.sh", description="Polar API base URL")
@@ -77,7 +82,7 @@ class PolarConfig(BaseModel):
         return cls(
             api_key=os.getenv("POLAR_API_KEY", ""),
             webhook_secret=os.getenv("POLAR_WEBHOOK_SECRET"),
-            base_url=os.getenv("POLAR_BASE_URL", "https://api.polar.sh")
+            base_url=os.getenv("POLAR_BASE_URL", "https://api.polar.sh"),
         )
 
     def is_configured(self) -> bool:
@@ -87,9 +92,9 @@ class PolarConfig(BaseModel):
 
 class PaymentConfig(BaseModel):
     """Unified payment configuration"""
+
     provider_order: List[str] = Field(
-        default=["paypal", "stripe", "polar"],
-        description="Provider priority order for failover"
+        default=["paypal", "stripe", "polar"], description="Provider priority order for failover"
     )
     paypal: PayPalConfig = Field(default_factory=PayPalConfig.from_env)
     stripe: StripeConfig = Field(default_factory=StripeConfig.from_env)
@@ -102,11 +107,11 @@ class PaymentConfig(BaseModel):
     # Vietnam Tax Strategy 2026 - Revenue Thresholds
     revenue_threshold_soft_cap: int = Field(
         default=450_000_000,
-        description="Soft cap threshold (450M VND) - triggers registration alert"
+        description="Soft cap threshold (450M VND) - triggers registration alert",
     )
     revenue_threshold_hard_cap: int = Field(
         default=500_000_000,
-        description="Hard cap threshold (500M VND) - legal registration required"
+        description="Hard cap threshold (500M VND) - legal registration required",
     )
 
     @classmethod
@@ -121,7 +126,7 @@ class PaymentConfig(BaseModel):
             stripe=StripeConfig.from_env(),
             polar=PolarConfig.from_env(),
             max_retries=int(os.getenv("PAYMENT_MAX_RETRIES", "2")),
-            timeout_seconds=int(os.getenv("PAYMENT_TIMEOUT", "30"))
+            timeout_seconds=int(os.getenv("PAYMENT_TIMEOUT", "30")),
         )
 
     def get_available_providers(self) -> List[str]:

@@ -6,16 +6,20 @@ from typing import Dict, List, Optional
 class I18n:
     def __init__(self):
         self._current_locale = "en-US"
-        self._locales = ['en-US', 'vi-VN', 'ar-SA', 'he-IL', 'zh-CN', 'ja-JP', 'es-ES', 'fr-FR', 'de-DE']
+        self._locales = [
+            "en-US",
+            "vi-VN",
+            "ar-SA",
+            "he-IL",
+            "zh-CN",
+            "ja-JP",
+            "es-ES",
+            "fr-FR",
+            "de-DE",
+        ]
         self._translations: Dict[str, Dict[str, str]] = {
-            "en-US": {
-                "welcome": "Welcome",
-                "hello": "Hello"
-            },
-            "vi-VN": {
-                "welcome": "Chào mừng",
-                "hello": "Xin chào"
-            }
+            "en-US": {"welcome": "Welcome", "hello": "Hello"},
+            "vi-VN": {"welcome": "Chào mừng", "hello": "Xin chào"},
         }
 
     def get_available_locales(self) -> List[str]:
@@ -37,7 +41,9 @@ class I18n:
 
         return key
 
+
 i18n = I18n()
+
 
 def t(key: str) -> str:
     return i18n.translate(key)

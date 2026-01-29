@@ -147,7 +147,9 @@ class LeadQualifierAgent:
             "qualified": len([lead for lead in leads if lead.status == LeadStatus.QUALIFIED]),
             "nurturing": len([lead for lead in leads if lead.status == LeadStatus.NURTURING]),
             "avg_score": sum(lead.score for lead in leads) / len(leads) if leads else 0,
-            "by_source": {s.value: len([lead for lead in leads if lead.source == s]) for s in LeadSource},
+            "by_source": {
+                s.value: len([lead for lead in leads if lead.source == s]) for s in LeadSource
+            },
         }
 
 

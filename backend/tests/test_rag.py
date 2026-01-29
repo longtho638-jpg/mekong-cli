@@ -28,7 +28,7 @@ class TestRAG:
         client = VectorClient(host="mock", port=0)
         # Verify safe initialization failure or mock success
         # The constructor has a try/except block
-        assert client.client is None or client.client is not None # Basic check
+        assert client.client is None or client.client is not None  # Basic check
 
     def test_research_agent(self):
         bus = MagicMock()

@@ -24,21 +24,20 @@ router = APIRouter()
 # Webhook Configs (Outgoing Webhooks)
 # -----------------------------------------------------------------------------
 
-@router.get("/configs", response_model=List[WebhookEndpointSchema], dependencies=[Depends(require_admin)])
-async def list_webhook_configs(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
+
+@router.get(
+    "/configs", response_model=List[WebhookEndpointSchema], dependencies=[Depends(require_admin)]
+)
+async def list_webhook_configs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """List all outgoing webhook configurations."""
     configs = db.query(WebhookConfig).offset(skip).limit(limit).all()
     return configs
 
-@router.post("/configs", response_model=WebhookEndpointSchema, dependencies=[Depends(require_admin)])
-async def create_webhook_config(
-    config: WebhookEndpointCreate,
-    db: Session = Depends(get_db)
-):
+
+@router.post(
+    "/configs", response_model=WebhookEndpointSchema, dependencies=[Depends(require_admin)]
+)
+async def create_webhook_config(config: WebhookEndpointCreate, db: Session = Depends(get_db)):
     """Create a new outgoing webhook configuration."""
     data = config.model_dump()
     # Pydantic model dump might not exactly match SQLAlchemy model if fields differ, but usually fine.
@@ -60,11 +59,14 @@ async def create_webhook_config(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to create webhook config: {str(e)}")
 
-@router.put("/configs/{config_id}", response_model=WebhookEndpointSchema, dependencies=[Depends(require_admin)])
+
+@router.put(
+    "/configs/{config_id}",
+    response_model=WebhookEndpointSchema,
+    dependencies=[Depends(require_admin)],
+)
 async def update_webhook_config(
-    config_id: str,
-    config_update: Dict[str, Any],
-    db: Session = Depends(get_db)
+    config_id: str, config_update: Dict[str, Any], db: Session = Depends(get_db)
 ):
     """Update a webhook configuration."""
     config = db.query(WebhookConfig).filter(WebhookConfig.id == config_id).first()
@@ -87,11 +89,13 @@ async def update_webhook_config(
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to update webhook config: {str(e)}")
 
-@router.delete("/configs/{config_id}", status_code=status.HTTP_204_NO_CONTENT, dependencies=[Depends(require_admin)])
-async def delete_webhook_config(
-    config_id: str,
-    db: Session = Depends(get_db)
-):
+
+@router.delete(
+    "/configs/{config_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(require_admin)],
+)
+async def delete_webhook_config(config_id: str, db: Session = Depends(get_db)):
     """Delete a webhook configuration."""
     config = db.query(WebhookConfig).filter(WebhookConfig.id == config_id).first()
     if config:
@@ -99,17 +103,21 @@ async def delete_webhook_config(
         db.commit()
     return None
 
+
 # -----------------------------------------------------------------------------
 # Incoming Events
 # -----------------------------------------------------------------------------
 
-@router.get("/events", response_model=List[WebhookEventSchema], dependencies=[Depends(require_admin)])
+
+@router.get(
+    "/events", response_model=List[WebhookEventSchema], dependencies=[Depends(require_admin)]
+)
 async def list_webhook_events(
     provider: Optional[str] = None,
     status: Optional[str] = None,
     skip: int = 0,
     limit: int = 50,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """List incoming webhook events."""
     query = db.query(WebhookEvent)
@@ -122,22 +130,20 @@ async def list_webhook_events(
     events = query.order_by(desc(WebhookEvent.created_at)).offset(skip).limit(limit).all()
     return events
 
-@router.get("/events/{event_id}", response_model=WebhookEventSchema, dependencies=[Depends(require_admin)])
-async def get_webhook_event(
-    event_id: str,
-    db: Session = Depends(get_db)
-):
+
+@router.get(
+    "/events/{event_id}", response_model=WebhookEventSchema, dependencies=[Depends(require_admin)]
+)
+async def get_webhook_event(event_id: str, db: Session = Depends(get_db)):
     """Get details of a specific webhook event."""
     event = db.query(WebhookEvent).filter(WebhookEvent.id == event_id).first()
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     return event
 
+
 @router.post("/events/{event_id}/replay", dependencies=[Depends(require_admin)])
-async def replay_webhook_event(
-    event_id: str,
-    db: Session = Depends(get_db)
-):
+async def replay_webhook_event(event_id: str, db: Session = Depends(get_db)):
     """
     Replay an incoming webhook event.
     This effectively resets its status to 'pending' so the worker picks it up again.
@@ -155,21 +161,26 @@ async def replay_webhook_event(
     # Enqueue
     # Note: Using str(event.id) because event.id might be a UUID object
     from backend.services.webhook_queue import webhook_queue
+
     webhook_queue.enqueue(str(event.id))
 
     return {"status": "requeued"}
+
 
 # -----------------------------------------------------------------------------
 # Outgoing Deliveries
 # -----------------------------------------------------------------------------
 
-@router.get("/deliveries", response_model=List[WebhookDeliverySchema], dependencies=[Depends(require_admin)])
+
+@router.get(
+    "/deliveries", response_model=List[WebhookDeliverySchema], dependencies=[Depends(require_admin)]
+)
 async def list_webhook_deliveries(
     config_id: Optional[str] = None,
     status: Optional[str] = None,
     skip: int = 0,
     limit: int = 50,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """List outgoing webhook deliveries."""
     query = db.query(WebhookDelivery)

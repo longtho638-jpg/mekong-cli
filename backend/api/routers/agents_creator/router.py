@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 router = APIRouter(prefix="/agents-creator", tags=["agents-creator"])
 
+
 class AgentDefinition(BaseModel):
     name: str
     role: str
@@ -15,14 +16,20 @@ class AgentDefinition(BaseModel):
     tools: List[str]
     model: str = "gemini-1.5-pro"
 
+
 @router.get("/skills")
 async def list_available_skills():
     """List available skills from catalog."""
     # In a real app, read from skill registry
     return [
-        "web_search", "code_analysis", "content_writing",
-        "data_processing", "image_generation", "email_sending"
+        "web_search",
+        "code_analysis",
+        "content_writing",
+        "data_processing",
+        "image_generation",
+        "email_sending",
     ]
+
 
 @router.post("/create")
 async def create_agent(agent: AgentDefinition):

@@ -22,7 +22,7 @@ class PromptService:
             description=prompt_in.description,
             content=prompt_in.content,
             input_variables=str(prompt_in.input_variables) if prompt_in.input_variables else "[]",
-            is_active=prompt_in.is_active
+            is_active=prompt_in.is_active,
         )
         try:
             db.add(db_prompt)
@@ -45,7 +45,7 @@ class PromptService:
         for field, value in update_data.items():
             setattr(db_prompt, field, value)
 
-        db_prompt.version += 1 # Auto-increment version
+        db_prompt.version += 1  # Auto-increment version
 
         db.add(db_prompt)
         db.commit()
@@ -60,5 +60,6 @@ class PromptService:
         db.delete(db_prompt)
         db.commit()
         return True
+
 
 prompt_service = PromptService()

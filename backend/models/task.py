@@ -25,6 +25,7 @@ class Task(BaseModel):
     completed_at: Optional[datetime] = None
     metadata: Dict[str, Any] = {}
 
+
 class KanbanCard(BaseModel):
     id: str
     title: str
@@ -39,12 +40,14 @@ class KanbanCard(BaseModel):
     order: float
     metadata: Dict[str, Any] = {}
 
+
 class KanbanColumn(BaseModel):
     id: str
     title: str
     status: TaskStatus
     order: int
     cards: List[KanbanCard]
+
 
 class KanbanBoard(BaseModel):
     id: str
@@ -54,6 +57,7 @@ class KanbanBoard(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class CreateCardRequest(BaseModel):
     title: str
     description: Optional[str] = None
@@ -62,6 +66,7 @@ class CreateCardRequest(BaseModel):
     assignee_id: Optional[str] = None
     tags: Optional[List[str]] = None
     due_date: Optional[datetime] = None
+
 
 class UpdateCardRequest(BaseModel):
     title: Optional[str] = None

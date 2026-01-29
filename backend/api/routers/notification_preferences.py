@@ -12,6 +12,7 @@ from backend.models.user import User
 
 router = APIRouter(prefix="/api/v1/notifications/preferences", tags=["Notifications"])
 
+
 class PreferencesUpdate(BaseModel):
     email_enabled: Optional[bool] = None
     sms_enabled: Optional[bool] = None
@@ -21,6 +22,7 @@ class PreferencesUpdate(BaseModel):
     quiet_hours_end: Optional[str] = None
     channels: Optional[Dict] = None
 
+
 class PreferencesResponse(BaseModel):
     email_enabled: bool
     sms_enabled: bool
@@ -28,14 +30,16 @@ class PreferencesResponse(BaseModel):
     channels: Dict
     quiet_hours: Dict
 
+
 @router.get("/", response_model=PreferencesResponse)
 async def get_preferences(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     """Get notification preferences."""
     prefs = db.execute(
-        select(UserNotificationPreferences).where(UserNotificationPreferences.user_id == current_user.id)
+        select(UserNotificationPreferences).where(
+            UserNotificationPreferences.user_id == current_user.id
+        )
     ).scalar_one_or_none()
 
     if not prefs:
@@ -47,26 +51,25 @@ async def get_preferences(
             "channels": {
                 "system_updates": ["email", "push"],
                 "payment_alerts": ["email", "sms", "push"],
-                "audit_logs": ["email"]
+                "audit_logs": ["email"],
             },
-            "quiet_hours": {
-                "enabled": False,
-                "start": "22:00",
-                "end": "08:00"
-            }
+            "quiet_hours": {"enabled": False, "start": "22:00", "end": "08:00"},
         }
 
     return prefs.to_dict()
+
 
 @router.put("/", response_model=PreferencesResponse)
 async def update_preferences(
     update: PreferencesUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Update notification preferences."""
     prefs = db.execute(
-        select(UserNotificationPreferences).where(UserNotificationPreferences.user_id == current_user.id)
+        select(UserNotificationPreferences).where(
+            UserNotificationPreferences.user_id == current_user.id
+        )
     ).scalar_one_or_none()
 
     if not prefs:

@@ -4,6 +4,7 @@ from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
+
 class EmailTemplateService:
     """
     Service for managing and rendering email templates.
@@ -16,18 +17,18 @@ class EmailTemplateService:
             "welcome": {
                 "subject": "Welcome to {{ project_name }}!",
                 "body_html": "<h1>Welcome {{ name }}!</h1><p>Thanks for joining {{ project_name }}.</p>",
-                "body_text": "Welcome {{ name }}!\nThanks for joining {{ project_name }}."
+                "body_text": "Welcome {{ name }}!\nThanks for joining {{ project_name }}.",
             },
             "password_reset": {
                 "subject": "Reset your password",
                 "body_html": "<p>Click <a href='{{ reset_link }}'>here</a> to reset your password.</p>",
-                "body_text": "Click here to reset your password: {{ reset_link }}"
+                "body_text": "Click here to reset your password: {{ reset_link }}",
             },
             "invoice": {
                 "subject": "Invoice {{ invoice_id }} from {{ project_name }}",
                 "body_html": "<h1>Invoice {{ invoice_id }}</h1><p>Amount: {{ amount }}</p><p>View invoice: <a href='{{ invoice_link }}'>here</a></p>",
-                "body_text": "Invoice {{ invoice_id }}\nAmount: {{ amount }}\nView: {{ invoice_link }}"
-            }
+                "body_text": "Invoice {{ invoice_id }}\nAmount: {{ amount }}\nView: {{ invoice_link }}",
+            },
         }
 
     def render(self, template_str: str, context: Dict[str, Any]) -> str:
@@ -52,7 +53,9 @@ class EmailTemplateService:
     def get_template(self, template_name: str) -> Optional[Dict[str, str]]:
         return self._templates.get(template_name)
 
-    def render_template(self, template_name: str, context: Dict[str, Any]) -> Optional[Dict[str, str]]:
+    def render_template(
+        self, template_name: str, context: Dict[str, Any]
+    ) -> Optional[Dict[str, str]]:
         """
         Get and render a named template.
         Returns dict with keys: subject, html_content, text_content
@@ -65,8 +68,9 @@ class EmailTemplateService:
         return {
             "subject": self.render(template["subject"], context),
             "html_content": self.render(template["body_html"], context),
-            "text_content": self.render(template["body_text"], context)
+            "text_content": self.render(template["body_text"], context),
         }
+
 
 # Singleton
 email_template_service = EmailTemplateService()

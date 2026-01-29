@@ -16,6 +16,7 @@ router = APIRouter(prefix="/swarm", tags=["swarm"])
 
 # --- Schemas ---
 
+
 class SwarmAgentStatus(BaseModel):
     id: str
     name: str
@@ -64,11 +65,13 @@ class TaskSubmitResponse(BaseModel):
 
 # --- Dependency ---
 
+
 def get_swarm_instance() -> AgentSwarm:
     return get_swarm()
 
 
 # --- Endpoints ---
+
 
 @router.get("/status", response_model=SwarmStatusResponse, dependencies=[Depends(require_viewer)])
 async def get_swarm_status(swarm: AgentSwarm = Depends(get_swarm_instance)) -> SwarmStatusResponse:
@@ -85,35 +88,36 @@ async def get_swarm_status(swarm: AgentSwarm = Depends(get_swarm_instance)) -> S
     agents_list = []
     for agent_id, agent_data in status_dict["agents"].items():
         # Agent data from get_status is a dict
-        agents_list.append(SwarmAgentStatus(
-            id=agent_id,
-            name=agent_data["name"],
-            role=agent_data["role"],
-            is_busy=agent_data["busy"],
-            tasks_completed=agent_data["completed"],
-            tasks_failed=agent_data["failed"],
-            # specialties might not be in the simple get_status dict,
-            # let's check registry if needed, but for now we use what's available
-            specialties=None
-        ))
+        agents_list.append(
+            SwarmAgentStatus(
+                id=agent_id,
+                name=agent_data["name"],
+                role=agent_data["role"],
+                is_busy=agent_data["busy"],
+                tasks_completed=agent_data["completed"],
+                tasks_failed=agent_data["failed"],
+                # specialties might not be in the simple get_status dict,
+                # let's check registry if needed, but for now we use what's available
+                specialties=None,
+            )
+        )
 
     metrics = SwarmMetrics(
         total_tasks=status_dict["metrics"]["total_tasks"],
         completed_tasks=status_dict["metrics"]["completed_tasks"],
         failed_tasks=status_dict["metrics"]["failed_tasks"],
         busy_agents=status_dict["metrics"]["busy_agents"],
-        idle_agents=status_dict["metrics"]["total_agents"] - status_dict["metrics"]["busy_agents"], # Approximate
-        pending_tasks=status_dict["pending_tasks"]
+        idle_agents=status_dict["metrics"]["total_agents"]
+        - status_dict["metrics"]["busy_agents"],  # Approximate
+        pending_tasks=status_dict["pending_tasks"],
     )
 
-    return SwarmStatusResponse(
-        running=status_dict["running"],
-        agents=agents_list,
-        metrics=metrics
-    )
+    return SwarmStatusResponse(running=status_dict["running"], agents=agents_list, metrics=metrics)
 
 
-@router.post("/dispatch", response_model=TaskSubmitResponse, dependencies=[Depends(require_operator)])
+@router.post(
+    "/dispatch", response_model=TaskSubmitResponse, dependencies=[Depends(require_operator)]
+)
 async def dispatch_task(request: TaskSubmitRequest) -> TaskSubmitResponse:
     """
     Submit a task to the Swarm.
@@ -123,16 +127,14 @@ async def dispatch_task(request: TaskSubmitRequest) -> TaskSubmitResponse:
     except KeyError:
         priority_enum = TaskPriority.NORMAL
 
-    task_id = submit_v2_task(
-        name=request.name,
-        payload=request.payload,
-        priority=priority_enum
-    )
+    task_id = submit_v2_task(name=request.name, payload=request.payload, priority=priority_enum)
 
     return TaskSubmitResponse(status="submitted", task_id=task_id)
 
 
-@router.get("/tasks", response_model=List[SwarmTaskResponse], dependencies=[Depends(require_viewer)])
+@router.get(
+    "/tasks", response_model=List[SwarmTaskResponse], dependencies=[Depends(require_viewer)]
+)
 async def list_tasks(swarm: AgentSwarm = Depends(get_swarm_instance)) -> List[SwarmTaskResponse]:
     """
     List active tasks in the Swarm.
@@ -142,15 +144,17 @@ async def list_tasks(swarm: AgentSwarm = Depends(get_swarm_instance)) -> List[Sw
 
     response_list = []
     for t in tasks_data.values():
-        response_list.append(SwarmTaskResponse(
-            id=t.id,
-            name=t.name,
-            status=t.status.value,
-            priority=t.priority.value,
-            assigned_agent=t.assigned_agent,
-            created_at=t.created_at,
-            completed_at=t.completed_at
-        ))
+        response_list.append(
+            SwarmTaskResponse(
+                id=t.id,
+                name=t.name,
+                status=t.status.value,
+                priority=t.priority.value,
+                assigned_agent=t.assigned_agent,
+                created_at=t.created_at,
+                completed_at=t.completed_at,
+            )
+        )
 
     # Sort by created_at desc
     response_list.sort(key=lambda x: x.created_at, reverse=True)

@@ -12,6 +12,7 @@ from backend.models.user import User
 
 router = APIRouter(prefix="/api/v1/notifications/templates", tags=["Notifications"])
 
+
 class TemplateCreate(BaseModel):
     name: str
     type: str
@@ -20,11 +21,13 @@ class TemplateCreate(BaseModel):
     description: Optional[str] = None
     active: bool = True
 
+
 class TemplateUpdate(BaseModel):
     subject: Optional[str] = None
     content: Optional[str] = None
     description: Optional[str] = None
     active: Optional[bool] = None
+
 
 class TemplateResponse(BaseModel):
     id: str
@@ -40,10 +43,10 @@ class TemplateResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 @router.get("/", response_model=List[TemplateResponse])
 async def list_templates(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     """List all notification templates (Admin only)."""
     if current_user.role != "admin":
@@ -53,18 +56,21 @@ async def list_templates(
     templates = result.scalars().all()
     return [t.to_dict() for t in templates]
 
+
 @router.post("/", response_model=TemplateResponse, status_code=status.HTTP_201_CREATED)
 async def create_template(
     template: TemplateCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Create a new notification template."""
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized")
 
     # Check if exists
-    existing = db.execute(select(NotificationTemplate).where(NotificationTemplate.name == template.name)).scalar_one_or_none()
+    existing = db.execute(
+        select(NotificationTemplate).where(NotificationTemplate.name == template.name)
+    ).scalar_one_or_none()
     if existing:
         raise HTTPException(status_code=400, detail="Template with this name already exists")
 
@@ -74,18 +80,17 @@ async def create_template(
         subject=template.subject,
         content=template.content,
         description=template.description,
-        active=template.active
+        active=template.active,
     )
     db.add(new_template)
     db.commit()
     db.refresh(new_template)
     return new_template.to_dict()
 
+
 @router.get("/{template_id}", response_model=TemplateResponse)
 async def get_template(
-    template_id: str,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    template_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     """Get a template by ID."""
     try:
@@ -93,18 +98,21 @@ async def get_template(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID")
 
-    template = db.execute(select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)).scalar_one_or_none()
+    template = db.execute(
+        select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)
+    ).scalar_one_or_none()
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
     return template.to_dict()
+
 
 @router.put("/{template_id}", response_model=TemplateResponse)
 async def update_template(
     template_id: str,
     update: TemplateUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Update a template."""
     if current_user.role != "admin":
@@ -115,7 +123,9 @@ async def update_template(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID")
 
-    template = db.execute(select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)).scalar_one_or_none()
+    template = db.execute(
+        select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)
+    ).scalar_one_or_none()
     if not template:
         raise HTTPException(status_code=404, detail="Template not found")
 
@@ -132,11 +142,10 @@ async def update_template(
     db.refresh(template)
     return template.to_dict()
 
+
 @router.delete("/{template_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_template(
-    template_id: str,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    template_id: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)
 ):
     """Delete a template."""
     if current_user.role != "admin":
@@ -147,7 +156,9 @@ async def delete_template(
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid ID")
 
-    template = db.execute(select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)).scalar_one_or_none()
+    template = db.execute(
+        select(NotificationTemplate).where(NotificationTemplate.id == uuid_id)
+    ).scalar_one_or_none()
     if template:
         db.delete(template)
         db.commit()

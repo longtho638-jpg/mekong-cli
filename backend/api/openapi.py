@@ -47,9 +47,9 @@ Standard rate limits apply:
                             "write:users": "Modify user data",
                             "read:projects": "Read project data",
                             "write:projects": "Modify project data",
-                        }
+                        },
                     }
-                }
+                },
             },
             "BearerAuth": {
                 "type": "http",
@@ -60,8 +60,8 @@ Standard rate limits apply:
                 "type": "apiKey",
                 "in": "header",
                 "name": "X-API-Key",
-                "description": "API Key for server-to-server communication"
-            }
+                "description": "API Key for server-to-server communication",
+            },
         }
 
         # Apply security globally (optional, or per-route)
@@ -69,4 +69,5 @@ Standard rate limits apply:
 
         app.openapi_schema = openapi_schema
         return app.openapi_schema
+
     return openapi

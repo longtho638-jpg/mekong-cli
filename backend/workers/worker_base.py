@@ -17,10 +17,11 @@ from backend.services.queue_service import JobSchema, QueueService
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()],
 )
 logger = logging.getLogger("worker")
+
 
 class BaseWorker:
     """
@@ -28,11 +29,9 @@ class BaseWorker:
     Handles job polling, execution, retries, and graceful shutdown.
     """
 
-    def __init__(self,
-                 queues: List[str] = None,
-                 concurrency: int = 1,
-                 worker_id: Optional[str] = None):
-
+    def __init__(
+        self, queues: List[str] = None, concurrency: int = 1, worker_id: Optional[str] = None
+    ):
         self.worker_id = worker_id or f"worker-{uuid.uuid4().hex[:8]}"
         self.queues = queues or ["high", "normal", "low"]
         self.redis = redis.from_url(settings.redis_url, decode_responses=True)
@@ -86,7 +85,7 @@ class BaseWorker:
             except Exception as e:
                 logger.error(f"Error in worker loop: {e}")
                 traceback.print_exc()
-                time.sleep(5) # Prevent tight loop on Redis error
+                time.sleep(5)  # Prevent tight loop on Redis error
 
         logger.info(f"Worker {self.worker_id} stopped.")
 
@@ -154,7 +153,9 @@ class BaseWorker:
 
             # Clean up job (or keep for history)
             # For now, keep it with status 'completed' and expiry
-            self.redis.setex(f"{self.job_key_prefix}{job_id}", 86400, job.model_dump_json()) # Keep for 24h
+            self.redis.setex(
+                f"{self.job_key_prefix}{job_id}", 86400, job.model_dump_json()
+            )  # Keep for 24h
 
         except Exception as e:
             logger.error(f"Job {job_id} failed: {str(e)}")
@@ -167,7 +168,7 @@ class BaseWorker:
 
         if job.attempts < job.max_retries:
             # Schedule retry
-            delay = 60 # Default
+            delay = 60  # Default
             if job.retry_delay_seconds and len(job.retry_delay_seconds) >= job.attempts:
                 delay = job.retry_delay_seconds[job.attempts - 1]
 
@@ -176,8 +177,10 @@ class BaseWorker:
 
             self.redis.zadd(self.schedule_key, {job.job_id: score})
 
-            job.status = "scheduled" # Or 'retrying'
-            logger.info(f"Scheduled retry for job {job.job_id} in {delay}s (Attempt {job.attempts}/{job.max_retries})")
+            job.status = "scheduled"  # Or 'retrying'
+            logger.info(
+                f"Scheduled retry for job {job.job_id} in {delay}s (Attempt {job.attempts}/{job.max_retries})"
+            )
 
         else:
             # Move to DLQ

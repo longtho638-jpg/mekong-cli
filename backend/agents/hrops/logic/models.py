@@ -1,6 +1,7 @@
 """
 Recruitment Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -15,12 +16,14 @@ class CandidateStage(Enum):
     HIRED = "hired"
     REJECTED = "rejected"
 
+
 class JobStatus(Enum):
     DRAFT = "draft"
     OPEN = "open"
     PAUSED = "paused"
     FILLED = "filled"
     CLOSED = "closed"
+
 
 @dataclass
 class Candidate:
@@ -31,6 +34,7 @@ class Candidate:
     stage: CandidateStage = CandidateStage.APPLIED
     rating: int = 0
     applied_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class Job:

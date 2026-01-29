@@ -68,8 +68,8 @@ async def handle_webhook(
             verify_response = payment_service.verify_webhook(
                 provider="paypal",
                 headers=headers,
-                body=event_data, # SDK expects dict
-                webhook_secret=webhook_id
+                body=event_data,  # SDK expects dict
+                webhook_secret=webhook_id,
             )
 
             if verify_response.get("verification_status") != "SUCCESS":
@@ -97,8 +97,4 @@ async def handle_webhook(
 @router.get("/status")
 async def webhook_status():
     """Check webhook handler status."""
-    return {
-        "status": "active",
-        "provider": "paypal",
-        "unified_service": True
-    }
+    return {"status": "active", "provider": "paypal", "unified_service": True}

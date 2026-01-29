@@ -80,7 +80,11 @@ def categorize_endpoint(path: str, method: str = "GET") -> EndpointCategory:
     if path.startswith("api/code") or path.startswith("code"):
         return EndpointCategory.CODE
 
-    if path.startswith("api/vibe/agent") or path.startswith("vibe/agent") or path.startswith("api/agents"):
+    if (
+        path.startswith("api/vibe/agent")
+        or path.startswith("vibe/agent")
+        or path.startswith("api/agents")
+    ):
         return EndpointCategory.AGENT
 
     if path.startswith("api/vibe") or path.startswith("vibe"):
@@ -180,10 +184,19 @@ def get_rate_limit_key(category: EndpointCategory) -> str:
         return "webhooks"
     elif category == EndpointCategory.CODE:
         return "code"
-    elif category in [EndpointCategory.API, EndpointCategory.AUTH, EndpointCategory.VIBE,
-                      EndpointCategory.AGENT, EndpointCategory.CRM, EndpointCategory.FRANCHISE,
-                      EndpointCategory.SCHEDULER, EndpointCategory.I18N, EndpointCategory.VIETNAM,
-                      EndpointCategory.DASHBOARD, EndpointCategory.BACKEND]:
+    elif category in [
+        EndpointCategory.API,
+        EndpointCategory.AUTH,
+        EndpointCategory.VIBE,
+        EndpointCategory.AGENT,
+        EndpointCategory.CRM,
+        EndpointCategory.FRANCHISE,
+        EndpointCategory.SCHEDULER,
+        EndpointCategory.I18N,
+        EndpointCategory.VIETNAM,
+        EndpointCategory.DASHBOARD,
+        EndpointCategory.BACKEND,
+    ]:
         return "api"
     else:
         return "default"

@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional
 
 class LicenseTier(str, Enum):
     """License tier definitions with seat limits"""
+
     FREE = "free"
     STARTER = "starter"
     PRO = "pro"
@@ -34,12 +35,14 @@ TIER_SEAT_LIMITS = {
 
 class TeamMemberRole(str, Enum):
     """Team member roles"""
+
     OWNER = "owner"
     MEMBER = "member"
 
 
 class TeamMemberStatus(str, Enum):
     """Team member invitation status"""
+
     ACTIVE = "active"
     INVITED = "invited"
     REMOVED = "removed"
@@ -108,7 +111,13 @@ class Team:
     def get_active_member_count(self) -> int:
         """Get count of active and invited members"""
         # Count both ACTIVE and INVITED members as occupying a seat
-        return len([m for m in self.members if m.status in [TeamMemberStatus.ACTIVE, TeamMemberStatus.INVITED]])
+        return len(
+            [
+                m
+                for m in self.members
+                if m.status in [TeamMemberStatus.ACTIVE, TeamMemberStatus.INVITED]
+            ]
+        )
 
     def get_available_seats(self) -> int:
         """

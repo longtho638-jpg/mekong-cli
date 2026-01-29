@@ -1,6 +1,7 @@
 """
 Outreach Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -13,11 +14,13 @@ class OutreachStatus(Enum):
     OPENED = "opened"
     REPLIED = "replied"
 
+
 class SequenceStep(Enum):
     INITIAL = "initial"
     FOLLOW_UP_1 = "follow_up_1"
     FOLLOW_UP_2 = "follow_up_2"
     FINAL = "final"
+
 
 @dataclass
 class OutreachCampaign:

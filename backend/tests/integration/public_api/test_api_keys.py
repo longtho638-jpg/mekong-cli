@@ -11,20 +11,19 @@ from core.infrastructure.database import get_db
 def api_key_service():
     return ApiKeyService()
 
+
 @pytest.fixture
 def test_user_id():
     return str(uuid.uuid4())
 
-class TestApiKeyService:
 
+class TestApiKeyService:
     def test_generate_api_key(self, api_key_service, test_user_id):
         # Mock DB insert
         api_key_service.db = MockDB()
 
         response = api_key_service.generate_api_key(
-            user_id=test_user_id,
-            name="Test Key",
-            scopes=["read:subscriptions"]
+            user_id=test_user_id, name="Test Key", scopes=["read:subscriptions"]
         )
 
         assert response.name == "Test Key"
@@ -71,6 +70,7 @@ class TestApiKeyService:
         # Verify it's revoked in "DB"
         assert mock_db.data["api_keys"][0]["status"] == "revoked"
 
+
 # Minimal Mock DB for testing Service logic without real DB
 import bcrypt
 
@@ -94,15 +94,19 @@ class MockDB:
         # Very simple filtering for test purposes
         if self.current_table == "api_keys":
             if col == "prefix":
-                self.filtered = [r for r in self.data["api_keys"] if r["prefix"] == val and r["status"] == "active"]
+                self.filtered = [
+                    r
+                    for r in self.data["api_keys"]
+                    if r["prefix"] == val and r["status"] == "active"
+                ]
             elif col == "id":
                 self.filtered = [r for r in self.data["api_keys"] if r["id"] == str(val)]
             elif col == "user_id":
-                 # If we already filtered by ID, filter that result
-                 if hasattr(self, 'filtered'):
-                     self.filtered = [r for r in self.filtered if r["user_id"] == val]
-                 else:
-                     self.filtered = [r for r in self.data["api_keys"] if r["user_id"] == val]
+                # If we already filtered by ID, filter that result
+                if hasattr(self, "filtered"):
+                    self.filtered = [r for r in self.filtered if r["user_id"] == val]
+                else:
+                    self.filtered = [r for r in self.data["api_keys"] if r["user_id"] == val]
         return self
 
     def neq(self, col, val):
@@ -113,9 +117,10 @@ class MockDB:
         return self
 
     def execute(self):
-        if hasattr(self, 'pending_insert'):
+        if hasattr(self, "pending_insert"):
             # Simulate insert returning data with ID
             from uuid import uuid4
+
             record = self.pending_insert.copy()
             record["id"] = str(uuid4())
             self.data[self.current_table].append(record)
@@ -125,23 +130,28 @@ class MockDB:
 
             class Result:
                 data = [record]
+
             return Result()
 
-        if hasattr(self, 'update_data') and hasattr(self, 'filtered'):
+        if hasattr(self, "update_data") and hasattr(self, "filtered"):
             updated = []
             for r in self.filtered:
                 r.update(self.update_data)
                 updated.append(r)
+
             class Result:
                 data = updated
+
             return Result()
 
-        if hasattr(self, 'filtered'):
+        if hasattr(self, "filtered"):
             res = self.filtered
             # Reset
             del self.filtered
+
             class Result:
                 data = res
+
             return Result()
 
         return self

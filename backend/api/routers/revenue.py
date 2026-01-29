@@ -3,6 +3,7 @@ Revenue API Router - Financial Metrics and Operations.
 
 Real-time revenue dashboard with MRR, ARR, Churn, and LTV metrics.
 """
+
 from datetime import date, timedelta
 from typing import Dict, List, Optional
 
@@ -17,8 +18,10 @@ router = APIRouter(prefix="/revenue", tags=["revenue"])
 
 # --- Schemas ---
 
+
 class RevenueMetrics(BaseModel):
     """Current revenue metrics."""
+
     mrr: float
     arr: float
     customer_churn_rate: float
@@ -31,8 +34,10 @@ class RevenueMetrics(BaseModel):
     pro_users: int
     enterprise_users: int
 
+
 class PaymentRecord(BaseModel):
     """Payment transaction record."""
+
     id: str
     amount: float
     currency: str
@@ -40,37 +45,44 @@ class PaymentRecord(BaseModel):
     payment_method: Optional[str] = None
     created_at: str
 
+
 class RevenueTrendPoint(BaseModel):
     """Single point in revenue trend chart."""
+
     snapshot_date: str
     total_revenue: float
     mrr: float
     active_subscribers: int
 
+
 class DashboardResponse(BaseModel):
     """Complete revenue dashboard data."""
+
     metrics: RevenueMetrics
     recent_payments: List[PaymentRecord]
     trend: List[RevenueTrendPoint]
 
+
 # --- Dependency ---
+
 
 def get_revenue_service() -> RevenueService:
     """Get RevenueService instance."""
     return RevenueService()
 
+
 # --- Endpoints ---
+
 
 @router.get("/dashboard", response_model=DashboardResponse)
 @cache(
     ttl=300,
     prefix="revenue:dashboard",
     key_func=lambda tenant_id=None, **kwargs: f"tenant:{tenant_id}",
-    tags=["revenue"]
+    tags=["revenue"],
 )
 async def get_revenue_dashboard(
-    tenant_id: Optional[str] = Query(None),
-    service: RevenueService = Depends(get_revenue_service)
+    tenant_id: Optional[str] = Query(None), service: RevenueService = Depends(get_revenue_service)
 ):
     """
     Get complete revenue dashboard data.
@@ -94,7 +106,7 @@ async def get_revenue_dashboard(
                 currency=p["currency"],
                 status=p["status"],
                 payment_method=p.get("payment_method"),
-                created_at=p["created_at"]
+                created_at=p["created_at"],
             )
             for p in payments_data
         ]
@@ -106,16 +118,12 @@ async def get_revenue_dashboard(
                 snapshot_date=t["snapshot_date"],
                 total_revenue=t["total_revenue"],
                 mrr=t["mrr"],
-                active_subscribers=t["active_subscribers"]
+                active_subscribers=t["active_subscribers"],
             )
             for t in trend_data
         ]
 
-        return DashboardResponse(
-            metrics=metrics,
-            recent_payments=recent_payments,
-            trend=trend
-        )
+        return DashboardResponse(metrics=metrics, recent_payments=recent_payments, trend=trend)
     except Exception as e:
         # Log error and return default values
         print(f"Error in revenue dashboard: {e}")
@@ -131,22 +139,22 @@ async def get_revenue_dashboard(
                 churned_subscribers=0,
                 free_users=0,
                 pro_users=0,
-                enterprise_users=0
+                enterprise_users=0,
             ),
             recent_payments=[],
-            trend=[]
+            trend=[],
         )
+
 
 @router.get("/metrics", response_model=RevenueMetrics)
 @cache(
     ttl=300,
     prefix="revenue:metrics",
     key_func=lambda tenant_id=None, **kwargs: f"tenant:{tenant_id}",
-    tags=["revenue"]
+    tags=["revenue"],
 )
 async def get_revenue_metrics(
-    tenant_id: Optional[str] = Query(None),
-    service: RevenueService = Depends(get_revenue_service)
+    tenant_id: Optional[str] = Query(None), service: RevenueService = Depends(get_revenue_service)
 ):
     """
     Get current revenue metrics only.
@@ -169,20 +177,21 @@ async def get_revenue_metrics(
             churned_subscribers=0,
             free_users=0,
             pro_users=0,
-            enterprise_users=0
+            enterprise_users=0,
         )
+
 
 @router.get("/trend")
 @cache(
     ttl=600,
     prefix="revenue:trend",
     key_func=lambda tenant_id=None, days=30, **kwargs: f"tenant:{tenant_id}:days:{days}",
-    tags=["revenue"]
+    tags=["revenue"],
 )
 async def get_revenue_trend(
     tenant_id: Optional[str] = Query(None),
     days: int = Query(30, ge=7, le=365),
-    service: RevenueService = Depends(get_revenue_service)
+    service: RevenueService = Depends(get_revenue_service),
 ):
     """
     Get revenue trend data for charting.
@@ -199,11 +208,12 @@ async def get_revenue_trend(
         print(f"Error fetching trend: {e}")
         return []
 
+
 @router.get("/payments/recent")
 async def get_recent_payments(
     tenant_id: Optional[str] = Query(None),
     limit: int = Query(10, ge=1, le=100),
-    service: RevenueService = Depends(get_revenue_service)
+    service: RevenueService = Depends(get_revenue_service),
 ):
     """
     Get recent payment transactions.
@@ -220,10 +230,10 @@ async def get_recent_payments(
         print(f"Error fetching payments: {e}")
         return []
 
+
 @router.post("/snapshot", dependencies=[Depends(require_admin)])
 async def create_revenue_snapshot(
-    tenant_id: str = Query(...),
-    service: RevenueService = Depends(get_revenue_service)
+    tenant_id: str = Query(...), service: RevenueService = Depends(get_revenue_service)
 ):
     """
     Create a revenue snapshot for today (admin only).
@@ -240,10 +250,10 @@ async def create_revenue_snapshot(
         print(f"Error creating snapshot: {e}")
         return {"status": "error", "message": str(e)}
 
+
 @router.get("/mrr")
 async def get_mrr(
-    tenant_id: Optional[str] = Query(None),
-    service: RevenueService = Depends(get_revenue_service)
+    tenant_id: Optional[str] = Query(None), service: RevenueService = Depends(get_revenue_service)
 ):
     """Get current Monthly Recurring Revenue."""
     try:
@@ -253,10 +263,10 @@ async def get_mrr(
         print(f"Error fetching MRR: {e}")
         return {"mrr": 0}
 
+
 @router.get("/arr")
 async def get_arr(
-    tenant_id: Optional[str] = Query(None),
-    service: RevenueService = Depends(get_revenue_service)
+    tenant_id: Optional[str] = Query(None), service: RevenueService = Depends(get_revenue_service)
 ):
     """Get current Annual Recurring Revenue."""
     try:

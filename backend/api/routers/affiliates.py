@@ -1,6 +1,7 @@
 """
 Affiliate API Router - Management and Tracking endpoints.
 """
+
 from datetime import date, datetime, timedelta
 from typing import List, Optional
 
@@ -24,17 +25,20 @@ from backend.api.services.affiliate_service import AffiliateService
 
 router = APIRouter(prefix="/affiliates", tags=["affiliates"])
 
+
 def get_affiliate_service() -> AffiliateService:
     return AffiliateService()
 
+
 # --- Public Tracking ---
+
 
 @router.get("/track/{code}")
 async def track_click(
     code: str,
     response: Response,
     next_url: Optional[str] = None,
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """
     Track an affiliate click and redirect to destination.
@@ -74,18 +78,20 @@ async def track_click(
         expires=expiration.strftime("%a, %d %b %Y %H:%M:%S GMT"),
         httponly=True,
         secure=settings.is_production,
-        samesite="lax"
+        samesite="lax",
     )
 
     return redirect
 
+
 # --- Affiliate Endpoints ---
+
 
 @router.post("/register", response_model=AffiliateResponse)
 async def register_affiliate(
     data: AffiliateCreate,
     user: TokenData = Depends(get_current_user),
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """Register as an affiliate."""
     # Check if already registered
@@ -105,16 +111,17 @@ async def register_affiliate(
             user_id=str(user.id),
             agency_id=agency_id,
             payment_email=data.payment_email,
-            tax_id=data.tax_id
+            tax_id=data.tax_id,
         )
         return affiliate
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/me", response_model=AffiliateResponse)
 async def get_my_profile(
     user: TokenData = Depends(get_current_user),
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """Get current user's affiliate profile."""
     affiliate = service.get_affiliate_by_user(str(user.id))
@@ -122,10 +129,11 @@ async def get_my_profile(
         raise HTTPException(status_code=404, detail="Affiliate profile not found")
     return affiliate
 
+
 @router.get("/me/stats", response_model=AffiliateStats)
 async def get_my_stats(
     user: TokenData = Depends(get_current_user),
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """Get performance stats for dashboard."""
     affiliate = service.get_affiliate_by_user(str(user.id))
@@ -134,42 +142,51 @@ async def get_my_stats(
 
     return service.get_dashboard_stats(affiliate.id)
 
+
 @router.get("/me/payouts", response_model=List[PayoutResponse])
 async def get_my_payouts(
     user: TokenData = Depends(get_current_user),
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """Get payout history."""
     affiliate = service.get_affiliate_by_user(str(user.id))
     if not affiliate:
         raise HTTPException(status_code=404, detail="Affiliate profile not found")
 
-    result = service.client.table("payouts").select("*").eq("affiliate_id", affiliate.id).order("created_at", desc=True).execute()
+    result = (
+        service.client.table("payouts")
+        .select("*")
+        .eq("affiliate_id", affiliate.id)
+        .order("created_at", desc=True)
+        .execute()
+    )
     return result.data
 
+
 # --- Admin Endpoints ---
+
 
 @router.post("/{affiliate_id}/payout", dependencies=[Depends(require_admin)])
 async def generate_payout(
     affiliate_id: str,
     period_end: date = Query(default_factory=date.today),
     min_threshold: float = 50.0,
-    service: AffiliateService = Depends(get_affiliate_service)
+    service: AffiliateService = Depends(get_affiliate_service),
 ):
     """
     Generate a payout for a specific affiliate.
     """
-    period_start = period_end - timedelta(days=30) # Rough default
+    period_start = period_end - timedelta(days=30)  # Rough default
 
     try:
         payout = service.generate_payout(
             affiliate_id=affiliate_id,
             period_start=period_start,
             period_end=period_end,
-            min_threshold=min_threshold
+            min_threshold=min_threshold,
         )
         if not payout:
-            return Response(status_code=204) # No content / No payout generated
+            return Response(status_code=204)  # No content / No payout generated
         return payout
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

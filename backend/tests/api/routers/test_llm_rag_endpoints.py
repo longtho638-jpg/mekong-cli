@@ -36,21 +36,24 @@ def mock_rag_service():
         instance.query = AsyncMock(return_value="RAG Answer")
         yield instance
 
+
 @pytest.fixture
 def override_auth():
     # Mock auth dependency to bypass security
     from backend.api.auth.dependencies import get_current_active_superuser
-    app.dependency_overrides[get_current_active_superuser] = lambda: {"id": "admin", "is_superuser": True}
+
+    app.dependency_overrides[get_current_active_superuser] = lambda: {
+        "id": "admin",
+        "is_superuser": True,
+    }
     yield
     app.dependency_overrides = {}
+
 
 def test_rag_ingest_endpoint(client, mock_rag_service, override_auth):
     response = client.post(
         "/llm/rag/ingest",
-        json={
-            "documents": ["doc1", "doc2"],
-            "metadatas": [{"source": "web"}, {"source": "file"}]
-        }
+        json={"documents": ["doc1", "doc2"], "metadatas": [{"source": "web"}, {"source": "file"}]},
     )
 
     assert response.status_code == 200
@@ -59,16 +62,13 @@ def test_rag_ingest_endpoint(client, mock_rag_service, override_auth):
 
     # Verify arguments passed to mock
     call_args = mock_rag_service.ingest_documents.call_args
-    assert call_args.kwargs['documents'] == ["doc1", "doc2"]
-    assert call_args.kwargs['metadatas'] == [{"source": "web"}, {"source": "file"}]
+    assert call_args.kwargs["documents"] == ["doc1", "doc2"]
+    assert call_args.kwargs["metadatas"] == [{"source": "web"}, {"source": "file"}]
+
 
 def test_rag_query_endpoint(client, mock_rag_service, override_auth):
     response = client.post(
-        "/llm/rag/query",
-        json={
-            "question": "What is Agency OS?",
-            "max_results": 5
-        }
+        "/llm/rag/query", json={"question": "What is Agency OS?", "max_results": 5}
     )
 
     assert response.status_code == 200
@@ -77,5 +77,5 @@ def test_rag_query_endpoint(client, mock_rag_service, override_auth):
 
     # Verify arguments
     call_args = mock_rag_service.query.call_args
-    assert call_args.kwargs['question'] == "What is Agency OS?"
-    assert call_args.kwargs['max_results'] == 5
+    assert call_args.kwargs["question"] == "What is Agency OS?"
+    assert call_args.kwargs["max_results"] == 5

@@ -8,6 +8,7 @@ from backend.services.queue_service import QueueService
 
 router = APIRouter(prefix="/api/v1/inventory", tags=["inventory"])
 
+
 class Product(BaseModel):
     id: str
     name: str
@@ -16,8 +17,10 @@ class Product(BaseModel):
     description: str = ""
     tags: List[str] = []
 
+
 def get_queue_service() -> QueueService:
     return QueueService()
+
 
 @router.get("/products")
 @cache(ttl=300, prefix="inventory", key_func=lambda: "products_list", tags=["inventory"])
@@ -26,10 +29,10 @@ async def list_products() -> List[Product]:
     # Simulate DB call
     return []
 
+
 @router.post("/products")
 async def create_product(
-    product: Product,
-    queue_service: QueueService = Depends(get_queue_service)
+    product: Product, queue_service: QueueService = Depends(get_queue_service)
 ) -> Product:
     """Add product to inventory and index it in search engine"""
     # In a real implementation, we would save to DB here
@@ -49,12 +52,12 @@ async def create_product(
                     "description": product.description,
                     "price": product.price,
                     "tags": product.tags,
-                    "sku": product.id, # Mapping id to sku for demo
+                    "sku": product.id,  # Mapping id to sku for demo
                     "status": "active",
-                    "created_at": 1234567890 # Placeholder
-                }
+                    "created_at": 1234567890,  # Placeholder
+                },
             },
-            priority="normal"
+            priority="normal",
         )
     except Exception as e:
         # Log error but don't fail the request
@@ -65,11 +68,10 @@ async def create_product(
 
     return product
 
+
 @router.put("/products/{product_id}")
 async def update_product(
-    product_id: str,
-    product: Product,
-    queue_service: QueueService = Depends(get_queue_service)
+    product_id: str, product: Product, queue_service: QueueService = Depends(get_queue_service)
 ) -> Product:
     """Update a product and update index"""
     # Simulate DB update
@@ -92,21 +94,19 @@ async def update_product(
                     "tags": product.tags,
                     "sku": product.id,
                     "status": "active",
-                    "updated_at": 1234567890
-                }
+                    "updated_at": 1234567890,
+                },
             },
-            priority="normal"
+            priority="normal",
         )
     except Exception as e:
         print(f"Failed to enqueue search indexing job: {e}")
 
     return product
 
+
 @router.delete("/products/{product_id}")
-async def delete_product(
-    product_id: str,
-    queue_service: QueueService = Depends(get_queue_service)
-):
+async def delete_product(product_id: str, queue_service: QueueService = Depends(get_queue_service)):
     """Delete a product and remove from index"""
     # Simulate DB delete
     # db.delete(product_id)...
@@ -114,12 +114,8 @@ async def delete_product(
     try:
         queue_service.enqueue_job(
             job_type="search_indexing",
-            payload={
-                "action": "delete",
-                "index": "products",
-                "document_id": product_id
-            },
-            priority="normal"
+            payload={"action": "delete", "index": "products", "document_id": product_id},
+            priority="normal",
         )
     except Exception as e:
         print(f"Failed to enqueue search indexing job: {e}")

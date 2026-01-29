@@ -22,6 +22,7 @@ class AuditLogger:
     Secure Audit Logger for AgencyOS.
     Records critical system actions for compliance and security monitoring.
     """
+
     def __init__(self, log_dir: str = "logs/audit"):
         self.log_dir = Path(log_dir)
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -33,9 +34,7 @@ class AuditLogger:
         # Avoid adding multiple handlers if re-initialized
         if not self.logger.handlers:
             handler = logging.FileHandler(self.log_dir / "audit.log")
-            formatter = logging.Formatter(
-                '%(asctime)s - %(levelname)s - %(message)s'
-            )
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
 
@@ -46,7 +45,7 @@ class AuditLogger:
         action: str,
         resource: str,
         status: str = "SUCCESS",
-        details: Optional[Dict[str, Any]] = None
+        details: Optional[Dict[str, Any]] = None,
     ):
         """
         Log a security or operational event.
@@ -66,11 +65,12 @@ class AuditLogger:
             "action": action,
             "resource": resource,
             "status": status,
-            "details": details or {}
+            "details": details or {},
         }
 
         # Structured log
         self.logger.info(json.dumps(event))
+
 
 # Singleton instance
 audit_logger = AuditLogger()

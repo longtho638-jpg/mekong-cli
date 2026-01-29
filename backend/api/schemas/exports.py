@@ -5,15 +5,19 @@ from uuid import UUID
 from pydantic import BaseModel, Field
 from typing_extensions import Literal
 
-ExportFormat = Literal['csv', 'json', 'pdf', 'xlsx']
-ExportStatus = Literal['pending', 'processing', 'completed', 'failed', 'expired']
+ExportFormat = Literal["csv", "json", "pdf", "xlsx"]
+ExportStatus = Literal["pending", "processing", "completed", "failed", "expired"]
+
 
 class ExportCreateRequest(BaseModel):
     format: ExportFormat
-    resource_type: str = Field(..., description="Type of resource to export (e.g., 'users', 'invoices')")
+    resource_type: str = Field(
+        ..., description="Type of resource to export (e.g., 'users', 'invoices')"
+    )
     filters: Optional[Dict[str, Any]] = Field(default_factory=dict)
     columns: Optional[List[str]] = None
     template_id: Optional[UUID] = None
+
 
 class ExportResponse(BaseModel):
     id: UUID
@@ -27,6 +31,7 @@ class ExportResponse(BaseModel):
     expires_at: Optional[datetime] = None
     error_message: Optional[str] = None
 
+
 class ExportTemplateCreate(BaseModel):
     name: str
     format: ExportFormat
@@ -34,6 +39,7 @@ class ExportTemplateCreate(BaseModel):
     columns: Optional[List[str]] = None
     filters: Optional[Dict[str, Any]] = None
     is_shared: bool = False
+
 
 class ExportTemplateResponse(ExportTemplateCreate):
     id: UUID

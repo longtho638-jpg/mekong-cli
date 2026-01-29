@@ -1,6 +1,7 @@
 """
 Tests for CDN Router
 """
+
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -12,31 +13,50 @@ from backend.api.main import app
 
 client = TestClient(app)
 
+
 # Mock superuser dependency override
 async def override_get_current_active_superuser():
     return {"id": 1, "is_superuser": True}
 
+
 app.dependency_overrides[get_current_active_superuser] = override_get_current_active_superuser
+
 
 # Patch cache factory to avoid Redis connection from CacheControlMiddleware
 @pytest.fixture(autouse=True)
 def mock_cache():
-    with patch("backend.services.cache.cache_factory.get_response_cache", new_callable=AsyncMock) as mock:
+    with patch(
+        "backend.services.cache.cache_factory.get_response_cache", new_callable=AsyncMock
+    ) as mock:
         mock.return_value = None
         yield mock
+
 
 # Patch RateLimiterService methods to avoid Redis connection
 @pytest.fixture(autouse=True)
 def mock_rate_limiter_service():
-    with patch("backend.services.rate_limiter_service.RateLimiterService.check_sliding_window", new_callable=AsyncMock) as mock_sliding:
-        with patch("backend.services.rate_limiter_service.RateLimiterService.check_token_bucket", new_callable=AsyncMock) as mock_token:
-            with patch("backend.services.rate_limiter_service.RateLimiterService.check_fixed_window", new_callable=AsyncMock) as mock_fixed:
-                with patch("backend.services.rate_limiter_service.RateLimiterService.get_reset_time", new_callable=AsyncMock) as mock_reset:
+    with patch(
+        "backend.services.rate_limiter_service.RateLimiterService.check_sliding_window",
+        new_callable=AsyncMock,
+    ) as mock_sliding:
+        with patch(
+            "backend.services.rate_limiter_service.RateLimiterService.check_token_bucket",
+            new_callable=AsyncMock,
+        ) as mock_token:
+            with patch(
+                "backend.services.rate_limiter_service.RateLimiterService.check_fixed_window",
+                new_callable=AsyncMock,
+            ) as mock_fixed:
+                with patch(
+                    "backend.services.rate_limiter_service.RateLimiterService.get_reset_time",
+                    new_callable=AsyncMock,
+                ) as mock_reset:
                     mock_sliding.return_value = (True, 100)
                     mock_token.return_value = (True, 100)
                     mock_fixed.return_value = (True, 100)
                     mock_reset.return_value = 0
                     yield
+
 
 # Patch IpBlocker to avoid Redis connection
 @pytest.fixture(autouse=True)
@@ -44,6 +64,7 @@ def mock_ip_blocker():
     with patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock) as mock:
         mock.return_value = False
         yield mock
+
 
 def test_get_config():
     # Force settings for test
@@ -54,6 +75,7 @@ def test_get_config():
     # Mock superuser dependency override
     # Must return an object with attributes, not a dict
     from types import SimpleNamespace
+
     async def override_get_current_active_superuser():
         return SimpleNamespace(id=1, is_superuser=True, role="admin", email="admin@example.com")
 
@@ -69,7 +91,7 @@ def test_get_config():
     finally:
         settings.cdn_provider = original_provider
 
+
 def test_purge_invalid_request():
     response = client.post("/cdn/purge", json={})
     assert response.status_code == 400
-

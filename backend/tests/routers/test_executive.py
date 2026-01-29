@@ -18,9 +18,10 @@ os.environ["REDIS_URL"] = "redis://localhost:6379/0"
 
 # Mock Redis ConnectionPool BEFORE importing app
 # We need to patch redis.asyncio.ConnectionPool because that's what backend.core.infrastructure.redis uses
-with patch("redis.asyncio.ConnectionPool.from_url") as mock_pool_from_url, \
-     patch("redis.asyncio.Redis") as mock_redis_cls:
-
+with (
+    patch("redis.asyncio.ConnectionPool.from_url") as mock_pool_from_url,
+    patch("redis.asyncio.Redis") as mock_redis_cls,
+):
     # Configure mocks
     mock_pool = MagicMock()
     mock_pool_from_url.return_value = mock_pool
@@ -31,12 +32,11 @@ with patch("redis.asyncio.ConnectionPool.from_url") as mock_pool_from_url, \
     mock_redis_instance.setex = AsyncMock(return_value=True)
     mock_redis_cls.return_value = mock_redis_instance
 
-
     # Also mock sync redis if used anywhere
     with patch("redis.ConnectionPool.from_url"), patch("redis.Redis"):
-
         # Disable rate limiting settings BEFORE importing app
         from backend.api.config.settings import settings
+
         settings.enable_rate_limiting = False
 
         from fastapi.testclient import TestClient
@@ -57,12 +57,13 @@ mock_revenue_service.get_revenue_stats.return_value = {
     "churned_subscribers": 2,
     "free_users": 50,
     "pro_users": 40,
-    "enterprise_users": 10
+    "enterprise_users": 10,
 }
 mock_revenue_service.get_revenue_trend.return_value = [
     {"snapshot_date": "2023-01-01", "mrr": 9000.0, "active_subscribers": 90},
-    {"snapshot_date": "2023-01-02", "mrr": 10000.0, "active_subscribers": 100}
+    {"snapshot_date": "2023-01-02", "mrr": 10000.0, "active_subscribers": 100},
 ]
+
 
 @pytest.fixture
 def client():
@@ -75,14 +76,13 @@ def client():
     # Cleanup
     app.dependency_overrides = {}
 
+
 @pytest.fixture
 def mock_crm():
     with patch("backend.api.routers.executive._get_crm_metrics") as mock:
-        mock.return_value = {
-            "new_leads": 15,
-            "active_pipeline": 50000.0
-        }
+        mock.return_value = {"new_leads": 15, "active_pipeline": 50000.0}
         yield mock
+
 
 @pytest.fixture(autouse=True)
 def mock_rate_limiter():
@@ -98,15 +98,20 @@ def mock_rate_limiter():
         instance.get_reset_time = AsyncMock(return_value=1234567890)
         yield instance
 
+
 @pytest.fixture(autouse=True)
 def mock_middleware():
     """Bypass MultiTenantMiddleware to avoid context issues during tests."""
-    with patch("backend.api.middleware.multitenant_logic.middleware.MultiTenantMiddleware.dispatch") as mock_dispatch:
+    with patch(
+        "backend.api.middleware.multitenant_logic.middleware.MultiTenantMiddleware.dispatch"
+    ) as mock_dispatch:
         # Define async side effect
         async def dispatch(request, call_next):
             return await call_next(request)
+
         mock_dispatch.side_effect = dispatch
         yield mock_dispatch
+
 
 def test_get_executive_dashboard(client, mock_crm, mock_rate_limiter, mock_middleware):
     """Test fetching executive dashboard metrics."""
@@ -133,9 +138,12 @@ def test_get_executive_dashboard(client, mock_crm, mock_rate_limiter, mock_middl
     # Alerts
     assert isinstance(data["alerts"], list)
 
+
 def test_download_executive_report(client, mock_crm, mock_rate_limiter, mock_middleware):
     """Test PDF report generation endpoint."""
-    with patch("backend.services.pdf_generator.pdf_generator.generate_executive_report") as mock_pdf:
+    with patch(
+        "backend.services.pdf_generator.pdf_generator.generate_executive_report"
+    ) as mock_pdf:
         mock_pdf.return_value = b"%PDF-1.4 mock pdf content"
 
         response = client.get("/executive/report/pdf?tenant_id=test_tenant&days=30")

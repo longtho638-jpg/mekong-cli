@@ -17,8 +17,9 @@ def mock_redis():
     # setex returns True
     mock.setex.return_value = True
 
-    with patch.object(jwt_service, 'redis', mock):
+    with patch.object(jwt_service, "redis", mock):
         yield mock
+
 
 @pytest.mark.asyncio
 async def test_security_e2e_lifecycle(mock_redis):
@@ -35,20 +36,15 @@ async def test_security_e2e_lifecycle(mock_redis):
     # But we want to test the flow. We'll assume the service works or mock the redis underlying it.
 
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
-
         # 1. Login (Mocking the auth endpoint logic since we don't have a real DB with users in this test env usually)
         # We'll rely on generating a valid token manually using the service
 
         access_token, _, _ = jwt_service.create_access_token(
-            user_id="test_user",
-            client_id="e2e_test",
-            scope="role:admin"
+            user_id="test_user", client_id="e2e_test", scope="role:admin"
         )
 
         refresh_token, _, _ = jwt_service.create_refresh_token(
-            user_id="test_user",
-            client_id="e2e_test",
-            scope="role:admin"
+            user_id="test_user", client_id="e2e_test", scope="role:admin"
         )
 
         headers = {"Authorization": f"Bearer {access_token}"}
@@ -134,7 +130,9 @@ async def test_security_e2e_lifecycle(mock_redis):
 
         # 5. Input Validation
         # Send a malicious payload
-        response = await ac.post("/api/auth/token", json={"username": "a"*10000, "password": "p"}, headers=headers)
+        response = await ac.post(
+            "/api/auth/token", json={"username": "a" * 10000, "password": "p"}, headers=headers
+        )
         # Should be caught by validation middleware or fastAPI validation
         # Our validation middleware checks content length and string length
         if response.status_code == 413 or response.status_code == 400:
@@ -142,6 +140,7 @@ async def test_security_e2e_lifecycle(mock_redis):
         else:
             # Maybe the endpoint doesn't accept JSON or something else.
             pass
+
 
 @pytest.mark.asyncio
 async def test_security_headers_presence():

@@ -27,17 +27,20 @@ from backend.services.template_service import get_template_service
 
 logger = logging.getLogger(__name__)
 
+
 class NotificationPriority(Enum):
-    LOW = "low"         # Marketing
-    NORMAL = "normal"   # Transactional
-    HIGH = "high"       # Security alerts, OTPs
-    CRITICAL = "critical" # System outage, urgent action
+    LOW = "low"  # Marketing
+    NORMAL = "normal"  # Transactional
+    HIGH = "high"  # Security alerts, OTPs
+    CRITICAL = "critical"  # System outage, urgent action
+
 
 class NotificationChannel(Enum):
     PUSH = "push"
     EMAIL = "email"
     SMS = "sms"
     IN_APP = "in_app"
+
 
 class NotificationOrchestrator:
     def __init__(self):
@@ -57,7 +60,7 @@ class NotificationOrchestrator:
         priority: NotificationPriority = NotificationPriority.NORMAL,
         channels: Optional[List[NotificationChannel]] = None,
         template_name: Optional[str] = None,
-        template_context: Optional[Dict[str, Any]] = None
+        template_context: Optional[Dict[str, Any]] = None,
     ):
         """
         Orchestrate notification delivery.
@@ -113,8 +116,7 @@ class NotificationOrchestrator:
                         email_html = message
                         if template_name:
                             email_html = await self.template_service.render_template(
-                                template_name,
-                                template_context or {}
+                                template_name, template_context or {}
                             )
 
                         # Get user email
@@ -125,19 +127,21 @@ class NotificationOrchestrator:
                             # TODO: Fetch user email from DB using user_id
                             # Currently User model is Pydantic, need SQLAlchemy model for DB lookup
                             # For now, we rely on email being passed in data
-                            logger.warning(f"No email found in data for user {user_id} and DB lookup not implemented")
+                            logger.warning(
+                                f"No email found in data for user {user_id} and DB lookup not implemented"
+                            )
 
                         if user_email:
                             await self.email_service.send_email(
-                                to_email=user_email,
-                                subject=title,
-                                html_content=email_html
+                                to_email=user_email, subject=title, html_content=email_html
                             )
                             self._log_delivery(db, notification_id, "email", "sent")
                             results["email"] = "sent"
                         else:
                             logger.warning(f"No email found for user {user_id}")
-                            self._log_delivery(db, notification_id, "email", "failed", error="no_email_found")
+                            self._log_delivery(
+                                db, notification_id, "email", "failed", error="no_email_found"
+                            )
                             results["email"] = "failed_no_email"
                     else:
                         results["email"] = "skipped_pref"
@@ -183,24 +187,20 @@ class NotificationOrchestrator:
     def _get_user_preferences(self, db: Session, user_id: str) -> UserNotificationPreferences:
         """Fetch user preferences or return defaults."""
         prefs = db.execute(
-            select(UserNotificationPreferences).where(UserNotificationPreferences.user_id == user_id)
+            select(UserNotificationPreferences).where(
+                UserNotificationPreferences.user_id == user_id
+            )
         ).scalar_one_or_none()
 
         if not prefs:
             # Return default preferences object (not saved to DB yet)
             return UserNotificationPreferences(
-                user_id=user_id,
-                email_enabled=True,
-                push_enabled=True,
-                sms_enabled=False
+                user_id=user_id, email_enabled=True, push_enabled=True, sms_enabled=False
             )
         return prefs
 
     def _resolve_channels(
-        self,
-        prefs: UserNotificationPreferences,
-        type: str,
-        priority: NotificationPriority
+        self, prefs: UserNotificationPreferences, type: str, priority: NotificationPriority
     ) -> List[NotificationChannel]:
         """Determine which channels to use based on type and priority."""
 
@@ -222,34 +222,42 @@ class NotificationOrchestrator:
 
         return defaults
 
-    def _create_db_notification(self, db: Session, user_id: str, type: str, title: str, message: str, data: Dict) -> str:
+    def _create_db_notification(
+        self, db: Session, user_id: str, type: str, title: str, message: str, data: Dict
+    ) -> str:
         """Persist notification to database."""
         notification = Notification(
-            user_id=user_id,
-            notification_type=type,
-            title=title,
-            message=message,
-            metadata_=data
+            user_id=user_id, notification_type=type, title=title, message=message, metadata_=data
         )
         db.add(notification)
         db.commit()
         db.refresh(notification)
         return str(notification.id)
 
-    def _log_delivery(self, db: Session, notification_id: str, channel: str, status: str, provider: str = None, error: str = None):
+    def _log_delivery(
+        self,
+        db: Session,
+        notification_id: str,
+        channel: str,
+        status: str,
+        provider: str = None,
+        error: str = None,
+    ):
         """Log delivery attempt."""
         delivery = NotificationDelivery(
             notification_id=notification_id,
             channel=channel,
             status=status,
             provider=provider,
-            error_message=error
+            error_message=error,
         )
         db.add(delivery)
         db.commit()
 
+
 # Global instance
 _orchestrator: Optional[NotificationOrchestrator] = None
+
 
 def get_notification_orchestrator() -> NotificationOrchestrator:
     global _orchestrator

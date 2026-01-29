@@ -10,6 +10,7 @@ class MetricsSnapshot(BaseModel):
     Maps to 'metrics_snapshots' table
     Stores daily aggregated metrics like MRR, Churn, DAU/MAU
     """
+
     id: Optional[str] = None
     date: date
     metric_name: str

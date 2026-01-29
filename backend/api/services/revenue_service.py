@@ -4,6 +4,7 @@ Revenue Service - Real-time calculation of MRR, ARR, Churn, and LTV.
 This service connects to Supabase and uses the database functions
 created in the revenue dashboard schema migration.
 """
+
 import os
 from datetime import date, datetime, timedelta
 from decimal import Decimal
@@ -36,10 +37,7 @@ class RevenueService:
             Current MRR as Decimal
         """
         try:
-            result = self.client.rpc(
-                "calculate_current_mrr",
-                {"p_tenant_id": tenant_id}
-            ).execute()
+            result = self.client.rpc("calculate_current_mrr", {"p_tenant_id": tenant_id}).execute()
 
             return Decimal(str(result.data)) if result.data else Decimal("0")
         except Exception as e:
@@ -57,10 +55,7 @@ class RevenueService:
             Current ARR as Decimal
         """
         try:
-            result = self.client.rpc(
-                "calculate_current_arr",
-                {"p_tenant_id": tenant_id}
-            ).execute()
+            result = self.client.rpc("calculate_current_arr", {"p_tenant_id": tenant_id}).execute()
 
             return Decimal(str(result.data)) if result.data else Decimal("0")
         except Exception as e:
@@ -68,10 +63,7 @@ class RevenueService:
             return Decimal("0")
 
     def get_churn_rate(
-        self,
-        tenant_id: str,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None
+        self, tenant_id: str, start_date: Optional[date] = None, end_date: Optional[date] = None
     ) -> Dict[str, Decimal]:
         """
         Calculate customer and revenue churn rates for a period.
@@ -95,27 +87,21 @@ class RevenueService:
                 {
                     "p_tenant_id": tenant_id,
                     "p_start_date": start_date.isoformat(),
-                    "p_end_date": end_date.isoformat()
-                }
+                    "p_end_date": end_date.isoformat(),
+                },
             ).execute()
 
             if result.data and len(result.data) > 0:
                 row = result.data[0]
                 return {
                     "customer_churn_rate": Decimal(str(row.get("customer_churn_rate", 0))),
-                    "revenue_churn_rate": Decimal(str(row.get("revenue_churn_rate", 0)))
+                    "revenue_churn_rate": Decimal(str(row.get("revenue_churn_rate", 0))),
                 }
 
-            return {
-                "customer_churn_rate": Decimal("0"),
-                "revenue_churn_rate": Decimal("0")
-            }
+            return {"customer_churn_rate": Decimal("0"), "revenue_churn_rate": Decimal("0")}
         except Exception as e:
             print(f"Error calculating churn: {e}")
-            return {
-                "customer_churn_rate": Decimal("0"),
-                "revenue_churn_rate": Decimal("0")
-            }
+            return {"customer_churn_rate": Decimal("0"), "revenue_churn_rate": Decimal("0")}
 
     def get_avg_ltv(self, tenant_id: str) -> Decimal:
         """
@@ -128,10 +114,7 @@ class RevenueService:
             Average LTV as Decimal
         """
         try:
-            result = self.client.rpc(
-                "calculate_avg_ltv",
-                {"p_tenant_id": tenant_id}
-            ).execute()
+            result = self.client.rpc("calculate_avg_ltv", {"p_tenant_id": tenant_id}).execute()
 
             return Decimal(str(result.data)) if result.data else Decimal("0")
         except Exception as e:
@@ -153,10 +136,11 @@ class RevenueService:
         arr = self.get_current_arr(tenant_id)
 
         # Get churn rates (last 30 days)
-        churn = self.get_churn_rate(tenant_id) if tenant_id else {
-            "customer_churn_rate": Decimal("0"),
-            "revenue_churn_rate": Decimal("0")
-        }
+        churn = (
+            self.get_churn_rate(tenant_id)
+            if tenant_id
+            else {"customer_churn_rate": Decimal("0"), "revenue_churn_rate": Decimal("0")}
+        )
 
         # Get LTV
         ltv = self.get_avg_ltv(tenant_id) if tenant_id else Decimal("0")
@@ -178,7 +162,7 @@ class RevenueService:
                     "churned_subscribers": 0,
                     "free_users": 0,
                     "pro_users": 0,
-                    "enterprise_users": 0
+                    "enterprise_users": 0,
                 }
         except Exception as e:
             print(f"Error fetching subscriber stats: {e}")
@@ -188,7 +172,7 @@ class RevenueService:
                 "churned_subscribers": 0,
                 "free_users": 0,
                 "pro_users": 0,
-                "enterprise_users": 0
+                "enterprise_users": 0,
             }
 
         return {
@@ -202,14 +186,10 @@ class RevenueService:
             "churned_subscribers": stats.get("churned_subscribers", 0),
             "free_users": stats.get("free_users", 0),
             "pro_users": stats.get("pro_users", 0),
-            "enterprise_users": stats.get("enterprise_users", 0)
+            "enterprise_users": stats.get("enterprise_users", 0),
         }
 
-    def get_recent_payments(
-        self,
-        tenant_id: Optional[str] = None,
-        limit: int = 10
-    ) -> List[Dict]:
+    def get_recent_payments(self, tenant_id: Optional[str] = None, limit: int = 10) -> List[Dict]:
         """
         Get recent payments for the dashboard.
 
@@ -222,8 +202,7 @@ class RevenueService:
         """
         try:
             query = (
-                self.client
-                .table("payments")
+                self.client.table("payments")
                 .select("*")
                 .order("created_at", desc=True)
                 .limit(limit)
@@ -239,11 +218,7 @@ class RevenueService:
             print(f"Error fetching recent payments: {e}")
             return []
 
-    def get_revenue_trend(
-        self,
-        tenant_id: Optional[str] = None,
-        days: int = 30
-    ) -> List[Dict]:
+    def get_revenue_trend(self, tenant_id: Optional[str] = None, days: int = 30) -> List[Dict]:
         """
         Get revenue trend data for charting.
 
@@ -258,8 +233,7 @@ class RevenueService:
             start_date = date.today() - timedelta(days=days)
 
             query = (
-                self.client
-                .table("revenue_snapshots")
+                self.client.table("revenue_snapshots")
                 .select("snapshot_date, total_revenue, mrr, active_subscribers")
                 .gte("snapshot_date", start_date.isoformat())
                 .order("snapshot_date", desc=False)
@@ -297,7 +271,9 @@ class RevenueService:
                 .eq("status", "succeeded")
             )
             revenue_result = revenue_query.execute()
-            total_revenue = sum(item["amount"] for item in revenue_result.data) if revenue_result.data else 0
+            total_revenue = (
+                sum(item["amount"] for item in revenue_result.data) if revenue_result.data else 0
+            )
 
             # Calculate new subscribers (today)
             today_start = date.today().isoformat()
@@ -321,7 +297,7 @@ class RevenueService:
                 "churned_subscribers": stats["churned_subscribers"],
                 "revenue_churn_rate": float(churn["revenue_churn_rate"]),
                 "customer_churn_rate": float(churn["customer_churn_rate"]),
-                "avg_ltv": stats["avg_ltv"]
+                "avg_ltv": stats["avg_ltv"],
             }
 
             result = self.client.table("revenue_snapshots").upsert(snapshot_data).execute()

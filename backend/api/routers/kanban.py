@@ -52,14 +52,13 @@ DEFAULT_COLUMNS = [
     {"id": "done", "title": "Done", "status": TaskStatus.DONE, "order": 3},
 ]
 
+
 def _get_board_from_db(board_data: KanbanBoardRow, tasks_data: List[KanbanTaskRow]) -> KanbanBoard:
     """Helper to construct Board object from DB rows."""
     columns = []
 
     # Group tasks by status
-    tasks_by_status: Dict[str, List[KanbanCard]] = {
-        status.value: [] for status in TaskStatus
-    }
+    tasks_by_status: Dict[str, List[KanbanCard]] = {status.value: [] for status in TaskStatus}
 
     for task in tasks_data:
         status_val = task.get("status", "todo")
@@ -76,10 +75,14 @@ def _get_board_from_db(board_data: KanbanBoardRow, tasks_data: List[KanbanTaskRo
             assignee_id=task.get("assignee_id"),
             tags=task.get("tags") or [],
             due_date=task.get("due_date"),
-            created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00")) if task.get("created_at") else datetime.now(),
-            updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00")) if task.get("updated_at") else datetime.now(),
+            created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00"))
+            if task.get("created_at")
+            else datetime.now(),
+            updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00"))
+            if task.get("updated_at")
+            else datetime.now(),
             order=float(task.get("order", 0.0)),
-            metadata=task.get("metadata") or {}
+            metadata=task.get("metadata") or {},
         )
         tasks_by_status[status_val].append(card)
 
@@ -89,22 +92,29 @@ def _get_board_from_db(board_data: KanbanBoardRow, tasks_data: List[KanbanTaskRo
 
     # Build columns
     for col_def in DEFAULT_COLUMNS:
-        columns.append(KanbanColumn(
-            id=col_def["id"],
-            title=col_def["title"],
-            status=col_def["status"],
-            order=col_def["order"],
-            cards=tasks_by_status[col_def["status"].value]
-        ))
+        columns.append(
+            KanbanColumn(
+                id=col_def["id"],
+                title=col_def["title"],
+                status=col_def["status"],
+                order=col_def["order"],
+                cards=tasks_by_status[col_def["status"].value],
+            )
+        )
 
     return KanbanBoard(
         id=str(board_data["id"]),
         title=board_data["title"],
         description=board_data.get("description"),
         columns=columns,
-        created_at=datetime.fromisoformat(str(board_data["created_at"]).replace("Z", "+00:00")) if board_data.get("created_at") else datetime.now(),
-        updated_at=datetime.fromisoformat(str(board_data["updated_at"]).replace("Z", "+00:00")) if board_data.get("updated_at") else datetime.now(),
+        created_at=datetime.fromisoformat(str(board_data["created_at"]).replace("Z", "+00:00"))
+        if board_data.get("created_at")
+        else datetime.now(),
+        updated_at=datetime.fromisoformat(str(board_data["updated_at"]).replace("Z", "+00:00"))
+        if board_data.get("updated_at")
+        else datetime.now(),
     )
+
 
 @router.get("/boards", response_model=List[KanbanBoard], dependencies=[Depends(require_viewer)])
 async def list_boards():
@@ -120,14 +130,15 @@ async def list_boards():
         # For API response, just return empty or create default in DB?
         # Let's create a default one if table is empty to maintain MVP behavior
         try:
-            default_board = db.table("kanban_boards").insert({
-                "title": "Main Board",
-                "description": "Default project board"
-            }).execute()
+            default_board = (
+                db.table("kanban_boards")
+                .insert({"title": "Main Board", "description": "Default project board"})
+                .execute()
+            )
             if default_board.data:
                 boards_res.data = default_board.data
         except Exception:
-            pass # Maybe table doesn't exist yet or auth issue
+            pass  # Maybe table doesn't exist yet or auth issue
 
     boards = []
     for b_data in boards_res.data:
@@ -137,7 +148,10 @@ async def list_boards():
 
     return boards
 
-@router.get("/boards/{board_id}", response_model=KanbanBoard, dependencies=[Depends(require_viewer)])
+
+@router.get(
+    "/boards/{board_id}", response_model=KanbanBoard, dependencies=[Depends(require_viewer)]
+)
 async def get_board(board_id: str):
     """Get a specific Kanban board."""
     db = get_db()
@@ -148,11 +162,12 @@ async def get_board(board_id: str):
     if board_id == "default":
         boards_res = db.table("kanban_boards").select("*").limit(1).execute()
         if not boards_res.data:
-             # Create default
-            boards_res = db.table("kanban_boards").insert({
-                "title": "Main Board",
-                "description": "Default project board"
-            }).execute()
+            # Create default
+            boards_res = (
+                db.table("kanban_boards")
+                .insert({"title": "Main Board", "description": "Default project board"})
+                .execute()
+            )
         board_data = boards_res.data[0]
     else:
         board_res = db.table("kanban_boards").select("*").eq("id", board_id).single().execute()
@@ -165,6 +180,7 @@ async def get_board(board_id: str):
 
     return _get_board_from_db(board_data, tasks_res.data)
 
+
 @router.post("/boards", response_model=KanbanBoard, dependencies=[Depends(require_editor)])
 async def create_board(title: str = Body(...), description: str = Body(None)):
     """Create a new Kanban board."""
@@ -172,17 +188,17 @@ async def create_board(title: str = Body(...), description: str = Body(None)):
     if not db:
         raise HTTPException(status_code=503, detail="Database not available")
 
-    res = db.table("kanban_boards").insert({
-        "title": title,
-        "description": description
-    }).execute()
+    res = db.table("kanban_boards").insert({"title": title, "description": description}).execute()
 
     if not res.data:
         raise HTTPException(status_code=500, detail="Failed to create board")
 
     return _get_board_from_db(res.data[0], [])
 
-@router.post("/boards/{board_id}/cards", response_model=KanbanCard, dependencies=[Depends(require_editor)])
+
+@router.post(
+    "/boards/{board_id}/cards", response_model=KanbanCard, dependencies=[Depends(require_editor)]
+)
 async def create_card(board_id: str, card_req: CreateCardRequest):
     """Create a new card in a board."""
     db = get_db()
@@ -196,8 +212,8 @@ async def create_card(board_id: str, card_req: CreateCardRequest):
         if boards_res.data:
             real_board_id = boards_res.data[0]["id"]
         else:
-             # Should create one, but for now error
-             raise HTTPException(status_code=404, detail="Default board not found")
+            # Should create one, but for now error
+            raise HTTPException(status_code=404, detail="Default board not found")
 
     data = {
         "board_id": real_board_id,
@@ -208,7 +224,7 @@ async def create_card(board_id: str, card_req: CreateCardRequest):
         "assignee_id": card_req.assignee_id,
         "tags": card_req.tags or [],
         "due_date": card_req.due_date.isoformat() if card_req.due_date else None,
-        "order": 0.0 # Default order
+        "order": 0.0,  # Default order
         # metadata? tasks table might not have it unless JSONB. Assuming standard fields for now.
     }
 
@@ -227,10 +243,15 @@ async def create_card(board_id: str, card_req: CreateCardRequest):
         assignee_id=task.get("assignee_id"),
         tags=task.get("tags") or [],
         due_date=task.get("due_date"),
-        created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00")) if task.get("created_at") else datetime.now(),
-        updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00")) if task.get("updated_at") else datetime.now(),
-        order=float(task.get("order", 0.0))
+        created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00"))
+        if task.get("created_at")
+        else datetime.now(),
+        updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00"))
+        if task.get("updated_at")
+        else datetime.now(),
+        order=float(task.get("order", 0.0)),
     )
+
 
 @router.put("/cards/{card_id}", response_model=KanbanCard, dependencies=[Depends(require_editor)])
 async def update_card(card_id: str, update_req: UpdateCardRequest):
@@ -273,10 +294,15 @@ async def update_card(card_id: str, update_req: UpdateCardRequest):
         assignee_id=task.get("assignee_id"),
         tags=task.get("tags") or [],
         due_date=task.get("due_date"),
-        created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00")) if task.get("created_at") else datetime.now(),
-        updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00")) if task.get("updated_at") else datetime.now(),
-        order=float(task.get("order", 0.0))
+        created_at=datetime.fromisoformat(str(task["created_at"]).replace("Z", "+00:00"))
+        if task.get("created_at")
+        else datetime.now(),
+        updated_at=datetime.fromisoformat(str(task["updated_at"]).replace("Z", "+00:00"))
+        if task.get("updated_at")
+        else datetime.now(),
+        order=float(task.get("order", 0.0)),
     )
+
 
 @router.delete("/cards/{card_id}", dependencies=[Depends(require_editor)])
 async def delete_card(card_id: str):

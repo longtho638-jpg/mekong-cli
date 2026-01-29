@@ -158,7 +158,7 @@ app.add_middleware(
 # Enterprise Security (Phase 19)
 app.add_middleware(SecurityHeadersMiddleware)  # Security Headers (OWASP)
 app.add_middleware(SecurityMiddleware)
-app.add_middleware(JWTRotationMiddleware) # JWT Rotation & Blacklist Check
+app.add_middleware(JWTRotationMiddleware)  # JWT Rotation & Blacklist Check
 
 if settings.enable_validation:
     app.add_middleware(ValidationMiddleware)
@@ -241,10 +241,12 @@ async def startup_event():
     """Initialize services on startup."""
     # Initialize Cache Warmer
     from backend.services.cache.warming import CacheWarmer
+
     warmer = CacheWarmer()
     await warmer.initialize()
     # Register tasks here if needed, or rely on service-level registration
     # await warmer.warm_up() # Optional: Run in background to not block startup
+
 
 @app.on_event("shutdown")
 async def shutdown_event():
@@ -253,6 +255,7 @@ async def shutdown_event():
 
 
 # --- Root Endpoints ---
+
 
 @app.get("/")
 def root():
@@ -270,4 +273,5 @@ def root():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

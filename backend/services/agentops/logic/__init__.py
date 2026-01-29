@@ -1,6 +1,7 @@
 """
 AgentOps Service Facade.
 """
+
 from typing import Any, Dict
 
 from typing_extensions import TypedDict
@@ -22,6 +23,7 @@ class OpsHealthResponse(TypedDict):
 
 class AgentOpsService(AgentOpsEngine):
     """Refactored AgentOps Service."""
+
     def __init__(self):
         super().__init__()
 

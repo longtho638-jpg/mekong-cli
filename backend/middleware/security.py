@@ -16,6 +16,7 @@ from backend.db.session import SessionLocal
 
 logger = logging.getLogger(__name__)
 
+
 class SecurityMiddleware(BaseHTTPMiddleware):
     """
     Middleware to handle security context and auditing.
@@ -60,13 +61,13 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                             metadata={
                                 "status_code": response.status_code,
                                 "query_params": str(request.query_params),
-                                "actor_type": actor_type
+                                "actor_type": actor_type,
                             },
                             ip_address=request.client.host,
-                            user_agent=request.headers.get("user-agent")
+                            user_agent=request.headers.get("user-agent"),
                         )
                     except Exception as log_error:
-                         logger.error(f"Audit logging failed: {log_error}")
+                        logger.error(f"Audit logging failed: {log_error}")
                     finally:
                         db.close()
 
@@ -83,9 +84,13 @@ class SecurityMiddleware(BaseHTTPMiddleware):
                     action=f"{request.method}:{request.url.path}",
                     user_id=actor_id,
                     resource_type="api_endpoint",
-                    metadata={"error": str(e), "status": "failed", "actor_type": "user" if user else "unknown"},
+                    metadata={
+                        "error": str(e),
+                        "status": "failed",
+                        "actor_type": "user" if user else "unknown",
+                    },
                     ip_address=request.client.host,
-                    user_agent=request.headers.get("user-agent")
+                    user_agent=request.headers.get("user-agent"),
                 )
             except Exception as log_error:
                 logger.error(f"Audit logging failed: {log_error}")

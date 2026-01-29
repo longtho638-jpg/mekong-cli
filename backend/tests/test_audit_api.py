@@ -13,6 +13,7 @@ from backend.main import app
 def client():
     return TestClient(app)
 
+
 def test_audit_log_endpoint_protected(client):
     response = client.get("/audit/logs")
     assert response.status_code == 401  # No token
@@ -50,4 +51,3 @@ def test_audit_log_access_allowed_for_admin(client):
             assert isinstance(response.json(), list)
         finally:
             app.dependency_overrides = {}
-

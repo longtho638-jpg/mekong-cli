@@ -14,6 +14,7 @@ from backend.models.admin import AdminUser
 def mock_admin_service():
     return MagicMock()
 
+
 @pytest.fixture
 def client(mock_admin_service) -> Generator:
     # Override dependencies
@@ -25,17 +26,18 @@ def client(mock_admin_service) -> Generator:
     # Clean up
     app.dependency_overrides = {}
 
+
 def test_list_users_viewer(client, mock_admin_service):
     """Test listing users with viewer role."""
     # Setup mock - list_users is async
-    mock_admin_service.list_users = AsyncMock(return_value={
-        "users": [
-            {"id": "u1", "email": "test@example.com", "role": "user", "is_active": True}
-        ],
-        "total": 1,
-        "page": 1,
-        "per_page": 50
-    })
+    mock_admin_service.list_users = AsyncMock(
+        return_value={
+            "users": [{"id": "u1", "email": "test@example.com", "role": "user", "is_active": True}],
+            "total": 1,
+            "page": 1,
+            "per_page": 50,
+        }
+    )
 
     # Override auth
     app.dependency_overrides[require_viewer] = lambda: True
@@ -56,6 +58,7 @@ def test_list_users_viewer(client, mock_admin_service):
     assert len(data["users"]) == 1
     assert data["users"][0]["email"] == "test@example.com"
 
+
 def test_ban_user_admin(client, mock_admin_service):
     """Test banning user requires admin role."""
     # Setup mock
@@ -72,6 +75,7 @@ def test_ban_user_admin(client, mock_admin_service):
     assert response.status_code == 200
     assert response.json()["status"] == "success"
     mock_admin_service.ban_user.assert_called_with("u1", "forever")
+
 
 def test_update_role_owner(client, mock_admin_service):
     """Test updating role requires owner role."""

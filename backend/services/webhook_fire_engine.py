@@ -3,6 +3,7 @@ Webhook Fire Engine.
 The Core Delivery Engine implementing Fire Attack principles (Ch.12).
 Handles orchestration of retries, circuit breaking, signatures, and DLQ.
 """
+
 import asyncio
 import json
 import logging
@@ -21,6 +22,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class WebhookFireEngine:
     def __init__(self, redis_client):
         self.db = get_db()
@@ -33,9 +35,15 @@ class WebhookFireEngine:
         self.transformer = WebhookTransformer()
 
         # Configuration
-        self.timeout_tiers = [5, 10, 20] # Escalating timeout strategy
+        self.timeout_tiers = [5, 10, 20]  # Escalating timeout strategy
 
-    async def trigger(self, webhook_config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: Optional[str] = None):
+    async def trigger(
+        self,
+        webhook_config_id: str,
+        event_type: str,
+        payload: Dict[str, Any],
+        idempotency_key: Optional[str] = None,
+    ):
         """
         Main entry point to fire a webhook.
         """
@@ -80,7 +88,9 @@ class WebhookFireEngine:
         # For now we spawn a task to execute immediately.
         asyncio.create_task(self.execute_attempt(delivery_id, config, final_payload))
 
-    async def execute_attempt(self, delivery_id: str, config: Dict[str, Any], payload: Dict[str, Any]):
+    async def execute_attempt(
+        self, delivery_id: str, config: Dict[str, Any], payload: Dict[str, Any]
+    ):
         """
         Execute a single delivery attempt with timeout escalation and error handling.
         """
@@ -110,7 +120,7 @@ class WebhookFireEngine:
             "AgencyOS-Event-Id": str(delivery_id),
             "User-Agent": "AgencyOS-FireEngine/1.0",
             "X-AgencyOS-Event": delivery["event_type"],
-            "X-Attempt-Number": str(attempt_number)
+            "X-Attempt-Number": str(attempt_number),
         }
 
         if delivery.get("idempotency_key"):
@@ -125,7 +135,9 @@ class WebhookFireEngine:
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=payload_json, headers=headers, timeout=timeout) as response:
+                async with session.post(
+                    url, data=payload_json, headers=headers, timeout=timeout
+                ) as response:
                     response_status = response.status
                     response_body = await response.text()
 
@@ -146,13 +158,27 @@ class WebhookFireEngine:
 
         # Handle Result
         await self._process_result(
-            delivery, config, attempt_number, success, response_status, response_body, error_msg, duration_ms
+            delivery,
+            config,
+            attempt_number,
+            success,
+            response_status,
+            response_body,
+            error_msg,
+            duration_ms,
         )
 
-    async def _process_result(self, delivery: Dict[str, Any], config: Dict[str, Any],
-                              attempt_number: int, success: bool, response_status: int,
-                              response_body: str, error_msg: str, duration_ms: int):
-
+    async def _process_result(
+        self,
+        delivery: Dict[str, Any],
+        config: Dict[str, Any],
+        attempt_number: int,
+        success: bool,
+        response_status: int,
+        response_body: str,
+        error_msg: str,
+        duration_ms: int,
+    ):
         webhook_id = config["id"]
 
         # 1. Record Attempt
@@ -164,7 +190,7 @@ class WebhookFireEngine:
             "response_status": response_status,
             "response_body": response_body[:5000] if response_body else None,
             "error_message": error_msg,
-            "duration_ms": duration_ms
+            "duration_ms": duration_ms,
         }
         self.db.table("webhook_delivery_attempts").insert(attempt_data).execute()
 
@@ -179,7 +205,7 @@ class WebhookFireEngine:
             "attempt_count": attempt_number,
             "updated_at": datetime.utcnow().isoformat(),
             "response_status": response_status,
-            "response_body": response_body[:2000] if response_body else None
+            "response_body": response_body[:2000] if response_body else None,
         }
 
         if success:
@@ -196,7 +222,9 @@ class WebhookFireEngine:
                 update_data["status"] = "pending"
                 update_data["next_retry_at"] = next_retry.isoformat()
 
-                logger.info(f"Scheduled retry #{attempt_number + 1} for {delivery['id']} in {backoff:.2f}s")
+                logger.info(
+                    f"Scheduled retry #{attempt_number + 1} for {delivery['id']} in {backoff:.2f}s"
+                )
             else:
                 # Exhausted -> DLQ
                 update_data["status"] = "failed"
@@ -213,7 +241,7 @@ class WebhookFireEngine:
             "event_type": delivery["event_type"],
             "event_payload": delivery["payload"],
             "error_message": error,
-            "retry_count": delivery["attempt_count"]
+            "retry_count": delivery["attempt_count"],
         }
         try:
             self.db.table("dlq_entries").insert(dlq_data).execute()
@@ -229,14 +257,16 @@ class WebhookFireEngine:
         res = self.db.table("webhook_deliveries").select("*").eq("id", delivery_id).execute()
         return res.data[0] if res.data else None
 
-    def _create_delivery_record(self, config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: str):
+    def _create_delivery_record(
+        self, config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: str
+    ):
         data = {
             "webhook_config_id": config_id,
             "event_type": event_type,
             "payload": payload,
             "status": "pending",
             "idempotency_key": idempotency_key,
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.utcnow().isoformat(),
         }
         res = self.db.table("webhook_deliveries").insert(data).execute()
         return res.data[0]["id"]

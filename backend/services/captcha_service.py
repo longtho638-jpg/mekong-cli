@@ -7,6 +7,7 @@ from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 class CaptchaService:
     """
     Service for validating CAPTCHA tokens (hCaptcha or reCAPTCHA).
@@ -15,13 +16,13 @@ class CaptchaService:
     def __init__(self):
         self.secret_key = settings.captcha_secret_key
         self.site_key = settings.captcha_site_key
-        self.provider = settings.captcha_provider # 'hcaptcha' or 'recaptcha'
+        self.provider = settings.captcha_provider  # 'hcaptcha' or 'recaptcha'
         self.verify_url = self._get_verify_url()
 
     def _get_verify_url(self) -> str:
-        if self.provider == 'hcaptcha':
+        if self.provider == "hcaptcha":
             return "https://hcaptcha.com/siteverify"
-        elif self.provider == 'recaptcha':
+        elif self.provider == "recaptcha":
             return "https://www.google.com/recaptcha/api/siteverify"
         else:
             # Default to hcaptcha if not specified
@@ -32,7 +33,9 @@ class CaptchaService:
         Verify the CAPTCHA token with the provider.
         """
         if not self.secret_key:
-            logger.warning("CAPTCHA secret key not configured. Skipping validation (allowing request).")
+            logger.warning(
+                "CAPTCHA secret key not configured. Skipping validation (allowing request)."
+            )
             return True
 
         if not token:
@@ -40,10 +43,7 @@ class CaptchaService:
             return False
 
         try:
-            data = {
-                "secret": self.secret_key,
-                "response": token
-            }
+            data = {"secret": self.secret_key, "response": token}
             if remote_ip:
                 data["remoteip"] = remote_ip
 
@@ -64,5 +64,6 @@ class CaptchaService:
             # Usually fail open (allow) if external service is down to avoid blocking legit users,
             # unless under active attack.
             return True
+
 
 captcha_service = CaptchaService()

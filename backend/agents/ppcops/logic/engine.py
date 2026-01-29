@@ -1,6 +1,7 @@
 """
 Google Ads Agent engine logic.
 """
+
 import random
 from typing import Dict, List
 
@@ -17,8 +18,16 @@ class GoogleAdsEngine:
         self.campaigns[cid] = campaign
         return campaign
 
-    def add_keyword(self, campaign_id: str, text: str, match_type: KeywordMatch) -> GoogleAdsCampaign:
-        if campaign_id not in self.campaigns: raise ValueError("Campaign not found")
-        kw = PPCKeyword(text=text, match_type=match_type, quality_score=random.randint(5, 10), cpc=random.uniform(0.5, 5.0))
+    def add_keyword(
+        self, campaign_id: str, text: str, match_type: KeywordMatch
+    ) -> GoogleAdsCampaign:
+        if campaign_id not in self.campaigns:
+            raise ValueError("Campaign not found")
+        kw = PPCKeyword(
+            text=text,
+            match_type=match_type,
+            quality_score=random.randint(5, 10),
+            cpc=random.uniform(0.5, 5.0),
+        )
         self.campaigns[campaign_id].keywords.append(kw)
         return self.campaigns[campaign_id]

@@ -25,7 +25,7 @@ os.environ.setdefault("DATABASE_URL", "sqlite:///:memory:")
 # Disable external services for tests
 os.environ.setdefault("ENABLE_RATE_LIMITING", "False")
 os.environ.setdefault("ENABLE_METRICS", "False")
-os.environ.setdefault("ENABLE_MULTITENANT", "False") # Optional, simplify if needed
+os.environ.setdefault("ENABLE_MULTITENANT", "False")  # Optional, simplify if needed
 
 # Ensure backend package is importable from root
 root_dir = Path(__file__).parent.parent.parent  # mekong-cli root
@@ -112,28 +112,56 @@ def mock_redis():
     # Handle context manager for async pipeline
     async def async_pipeline_context():
         return async_redis
+
     async_redis.pipeline.return_value.__aenter__ = async_pipeline_context
     async_redis.pipeline.return_value.__aexit__ = AsyncMock()
 
     # Patch redis module
-    with patch("redis.Redis", return_value=sync_redis), \
-         patch("redis.from_url", return_value=sync_redis), \
-         patch("redis.asyncio.Redis", return_value=async_redis), \
-         patch("redis.asyncio.from_url", return_value=async_redis), \
-         patch("backend.core.infrastructure.redis.redis_client", async_redis), \
-         patch("backend.services.redis_client.redis_service._client", async_redis), \
-         patch("backend.services.ip_blocker.ip_blocker.redis", async_redis), \
-         patch("backend.services.rate_limit_monitor.rate_limit_monitor.redis", async_redis), \
-         patch("backend.services.rate_limiter_service.RateLimiterService.check_sliding_window", new_callable=AsyncMock, return_value=(True, 100)), \
-         patch("backend.services.rate_limiter_service.RateLimiterService.check_token_bucket", new_callable=AsyncMock, return_value=(True, 100)), \
-         patch("backend.services.rate_limiter_service.RateLimiterService.check_fixed_window", new_callable=AsyncMock, return_value=(True, 100)), \
-         patch("backend.services.rate_limiter_service.RateLimiterService.get_reset_time", new_callable=AsyncMock, return_value=1234567890), \
-         patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock, return_value=False), \
-         patch("backend.services.ip_blocker.IpBlocker.block_ip", new_callable=AsyncMock), \
-         patch("backend.services.rate_limit_monitor.RateLimitMonitor.log_violation", new_callable=AsyncMock), \
-         patch("backend.services.rate_limit_monitor.RateLimitMonitor._check_ddos_threshold", new_callable=AsyncMock):
-            yield {"sync": sync_redis, "async": async_redis}
-
+    with (
+        patch("redis.Redis", return_value=sync_redis),
+        patch("redis.from_url", return_value=sync_redis),
+        patch("redis.asyncio.Redis", return_value=async_redis),
+        patch("redis.asyncio.from_url", return_value=async_redis),
+        patch("backend.core.infrastructure.redis.redis_client", async_redis),
+        patch("backend.services.redis_client.redis_service._client", async_redis),
+        patch("backend.services.ip_blocker.ip_blocker.redis", async_redis),
+        patch("backend.services.rate_limit_monitor.rate_limit_monitor.redis", async_redis),
+        patch(
+            "backend.services.rate_limiter_service.RateLimiterService.check_sliding_window",
+            new_callable=AsyncMock,
+            return_value=(True, 100),
+        ),
+        patch(
+            "backend.services.rate_limiter_service.RateLimiterService.check_token_bucket",
+            new_callable=AsyncMock,
+            return_value=(True, 100),
+        ),
+        patch(
+            "backend.services.rate_limiter_service.RateLimiterService.check_fixed_window",
+            new_callable=AsyncMock,
+            return_value=(True, 100),
+        ),
+        patch(
+            "backend.services.rate_limiter_service.RateLimiterService.get_reset_time",
+            new_callable=AsyncMock,
+            return_value=1234567890,
+        ),
+        patch(
+            "backend.services.ip_blocker.IpBlocker.is_blocked",
+            new_callable=AsyncMock,
+            return_value=False,
+        ),
+        patch("backend.services.ip_blocker.IpBlocker.block_ip", new_callable=AsyncMock),
+        patch(
+            "backend.services.rate_limit_monitor.RateLimitMonitor.log_violation",
+            new_callable=AsyncMock,
+        ),
+        patch(
+            "backend.services.rate_limit_monitor.RateLimitMonitor._check_ddos_threshold",
+            new_callable=AsyncMock,
+        ),
+    ):
+        yield {"sync": sync_redis, "async": async_redis}
 
 
 @pytest.fixture

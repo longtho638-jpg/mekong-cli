@@ -66,15 +66,9 @@ def init_demo_data():
 
     # FranchiseManager
     demo_franchise = FranchiseManager()
-    f1 = demo_franchise.add_franchisee(
-        "Anh Minh", "minh@test.com", territory=Territory.CAN_THO
-    )
-    f2 = demo_franchise.add_franchisee(
-        "Chị Lan", "lan@test.com", territory=Territory.DA_NANG
-    )
-    f3 = demo_franchise.add_franchisee(
-        "Anh Tuấn", "tuan@test.com", territory=Territory.HA_NOI
-    )
+    f1 = demo_franchise.add_franchisee("Anh Minh", "minh@test.com", territory=Territory.CAN_THO)
+    f2 = demo_franchise.add_franchisee("Chị Lan", "lan@test.com", territory=Territory.DA_NANG)
+    f3 = demo_franchise.add_franchisee("Anh Tuấn", "tuan@test.com", territory=Territory.HA_NOI)
     demo_franchise.record_revenue(f1.id, 15000)
     demo_franchise.record_revenue(f2.id, 12000)
     demo_franchise.record_revenue(f3.id, 18000)

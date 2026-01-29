@@ -1,6 +1,7 @@
 """
 Channel Manager engine logic.
 """
+
 import random
 from datetime import datetime
 from typing import Dict, List
@@ -20,9 +21,16 @@ class ChannelEngine:
         return channel
 
     def publish(self, asset_id: str, channel_id: str, caption: str) -> Publication:
-        if channel_id not in self.channels: raise ValueError("Channel not found")
+        if channel_id not in self.channels:
+            raise ValueError("Channel not found")
         pid = f"pub_{int(datetime.now().timestamp())}"
-        pub = Publication(id=pid, asset_id=asset_id, channel_id=channel_id, caption=caption, url=f"https://{self.channels[channel_id].channel_type.value}.com/{pid}")
+        pub = Publication(
+            id=pid,
+            asset_id=asset_id,
+            channel_id=channel_id,
+            caption=caption,
+            url=f"https://{self.channels[channel_id].channel_type.value}.com/{pid}",
+        )
         self.publications[pid] = pub
         self.channels[channel_id].posts_count += 1
         return pub

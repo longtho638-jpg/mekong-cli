@@ -1,6 +1,7 @@
 """
 Demo Manager Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -13,6 +14,7 @@ class DemoType(Enum):
     EXECUTIVE = "executive"
     FINAL = "final"
 
+
 class DemoOutcome(Enum):
     SCHEDULED = "scheduled"
     COMPLETED = "completed"
@@ -20,6 +22,7 @@ class DemoOutcome(Enum):
     NEGATIVE = "negative"
     RESCHEDULED = "rescheduled"
     NO_SHOW = "no_show"
+
 
 @dataclass
 class Demo:

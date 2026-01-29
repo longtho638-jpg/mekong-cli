@@ -1,6 +1,7 @@
 """
 AgentOps Registry - Management of ops and agent counts
 """
+
 import os
 from typing import Dict
 
@@ -36,9 +37,7 @@ class OpsRegistry:
         ops_path = os.path.join(base_path, "backend", "agents", ops_name)
 
         if os.path.exists(ops_path):
-            py_files = [
-                f for f in os.listdir(ops_path) if f.endswith(".py") and f != "__init__.py"
-            ]
+            py_files = [f for f in os.listdir(ops_path) if f.endswith(".py") and f != "__init__.py"]
             return len(py_files)
         return 0
 

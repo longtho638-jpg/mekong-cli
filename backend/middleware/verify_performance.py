@@ -61,15 +61,15 @@ def verify_middleware():
     metrics = get_metrics_summary()
     print(f"  Total requests tracked: {metrics['total_requests']}")
     print(f"  Average response time: {metrics['avg_response_time']:.2f}ms")
-    assert metrics['total_requests'] >= 11, "Requests not tracked!"
+    assert metrics["total_requests"] >= 11, "Requests not tracked!"
 
     # Test 3: Slow query detection
     print("\n✓ Test 3: Slow Query Detection (>500ms)")
     print(f"  Slow queries detected: {metrics['slow_queries_count']}")
-    assert metrics['slow_queries_count'] > 0, "Slow queries not detected!"
+    assert metrics["slow_queries_count"] > 0, "Slow queries not detected!"
 
-    if metrics['slow_queries']:
-        for query in metrics['slow_queries'][:3]:
+    if metrics["slow_queries"]:
+        for query in metrics["slow_queries"][:3]:
             print(f"    - {query['endpoint']}: {query['duration_ms']:.2f}ms")
 
     # Test 4: Percentile calculations
@@ -77,14 +77,16 @@ def verify_middleware():
     print(f"  P50 (median): {metrics['p50']:.2f}ms")
     print(f"  P95: {metrics['p95']:.2f}ms")
     print(f"  P99: {metrics['p99']:.2f}ms")
-    assert metrics['p50'] <= metrics['p95'] <= metrics['p99'], "Percentiles incorrect!"
+    assert metrics["p50"] <= metrics["p95"] <= metrics["p99"], "Percentiles incorrect!"
 
     # Test 5: Endpoint breakdown
     print("\n✓ Test 5: Per-Endpoint Metrics")
-    for endpoint, stats in metrics['endpoint_breakdown'].items():
+    for endpoint, stats in metrics["endpoint_breakdown"].items():
         print(f"  {endpoint}:")
-        print(f"    Count: {stats['count']}, Avg: {stats['avg']:.2f}ms, "
-              f"Min: {stats['min']:.2f}ms, Max: {stats['max']:.2f}ms")
+        print(
+            f"    Count: {stats['count']}, Avg: {stats['avg']:.2f}ms, "
+            f"Min: {stats['min']:.2f}ms, Max: {stats['max']:.2f}ms"
+        )
 
     # Summary
     print("\n" + "=" * 60)

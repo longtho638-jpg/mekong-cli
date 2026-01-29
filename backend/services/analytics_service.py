@@ -22,6 +22,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class AnalyticsService:
     """Service for tracking and analyzing user activity."""
 
@@ -37,7 +38,7 @@ class AnalyticsService:
         event_name: str,
         event_data: Optional[Dict[str, Any]] = None,
         metadata: Optional[Dict[str, Any]] = None,
-        session_id: Optional[str] = None
+        session_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Track a user event.
 
@@ -62,7 +63,7 @@ class AnalyticsService:
                 "event_data": event_data or {},
                 "metadata": metadata or {},
                 "session_id": session_id,
-                "occurred_at": datetime.utcnow().isoformat()
+                "occurred_at": datetime.utcnow().isoformat(),
             }
 
             result = self.db.table("usage_events").insert(data).execute()
@@ -72,11 +73,7 @@ class AnalyticsService:
             logger.error(f"Failed to track event: {e}")
             return {}
 
-    def get_user_stats(
-        self,
-        user_id: str,
-        days: int = 30
-    ) -> Dict[str, Any]:
+    def get_user_stats(self, user_id: str, days: int = 30) -> Dict[str, Any]:
         """Get statistics for a specific user.
 
         Args:
@@ -90,11 +87,13 @@ class AnalyticsService:
 
         try:
             # Fetch events
-            response = self.db.table("usage_events")\
-                .select("*")\
-                .eq("user_id", user_id)\
-                .gte("occurred_at", start_date)\
+            response = (
+                self.db.table("usage_events")
+                .select("*")
+                .eq("user_id", user_id)
+                .gte("occurred_at", start_date)
                 .execute()
+            )
 
             events = response.data
 
@@ -102,7 +101,7 @@ class AnalyticsService:
                 "total_events": len(events),
                 "events_by_type": self._aggregate_by_key(events, "event_type"),
                 "events_by_category": self._aggregate_by_key(events, "event_category"),
-                "recent_activity": events[:10] # Last 10 events
+                "recent_activity": events[:10],  # Last 10 events
             }
         except Exception as e:
             logger.error(f"Failed to get user stats: {e}")
@@ -113,11 +112,13 @@ class AnalyticsService:
         start_date = (datetime.utcnow() - timedelta(days=days)).date().isoformat()
 
         try:
-            response = self.db.table("usage_aggregates_daily")\
-                .select("*")\
-                .gte("date", start_date)\
-                .order("date")\
+            response = (
+                self.db.table("usage_aggregates_daily")
+                .select("*")
+                .gte("date", start_date)
+                .order("date")
                 .execute()
+            )
             return response.data
         except Exception as e:
             logger.error(f"Failed to get daily metrics: {e}")

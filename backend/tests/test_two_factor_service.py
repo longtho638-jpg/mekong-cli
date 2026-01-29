@@ -84,11 +84,7 @@ class TestTwoFactorService:
         secret = "JBSWY3DPEHPK3PXP"
         user = "user@example.com"
 
-        uri = service.get_provisioning_uri(
-            secret,
-            user,
-            issuer_name="CustomIssuer"
-        )
+        uri = service.get_provisioning_uri(secret, user, issuer_name="CustomIssuer")
 
         # Should use custom issuer
         assert "CustomIssuer" in uri
@@ -305,10 +301,7 @@ class TestTwoFactorService:
         service = TwoFactorService()
         custom_secret = "CUSTOMSECRET12345678"
 
-        result = service.enable_2fa_for_user(
-            "user@example.com",
-            secret=custom_secret
-        )
+        result = service.enable_2fa_for_user("user@example.com", secret=custom_secret)
 
         assert result["secret"] == custom_secret
 

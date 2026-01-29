@@ -7,6 +7,7 @@ from backend.services.dashboard_service import DashboardService
 
 logger = logging.getLogger(__name__)
 
+
 # Mock Redis for cache
 class MockRedis:
     def __init__(self):
@@ -19,7 +20,9 @@ class MockRedis:
     def get(self, key):
         return self.store.get(key)
 
+
 redis_client = MockRedis()
+
 
 async def refresh_dashboard_cache():
     """
@@ -31,10 +34,10 @@ async def refresh_dashboard_cache():
 
     # List of expensive metrics to cache
     metrics_to_cache = [
-        ('revenue', '30d'),
-        ('users', '30d'),
-        ('churn_rate', '30d'),
-        ('active_users', 'today')
+        ("revenue", "30d"),
+        ("users", "30d"),
+        ("churn_rate", "30d"),
+        ("active_users", "today"),
     ]
 
     for metric, date_range in metrics_to_cache:
@@ -52,6 +55,7 @@ async def refresh_dashboard_cache():
             logger.error(f"Failed to compute {metric}: {e}")
 
     logger.info("Dashboard cache refresh completed.")
+
 
 if __name__ == "__main__":
     # For testing the worker manually

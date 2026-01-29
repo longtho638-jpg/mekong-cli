@@ -13,6 +13,7 @@ from backend.services.audit_service import audit_service
 
 logger = logging.getLogger(__name__)
 
+
 class AuditProcessor:
     """
     Background worker for audit log processing:
@@ -24,7 +25,7 @@ class AuditProcessor:
     def __init__(self):
         self.is_running = False
         self.batch_size = 100
-        self.siem_enabled = False # Toggle via config
+        self.siem_enabled = False  # Toggle via config
         self.splunk_hec_url = getattr(settings, "SPLUNK_HEC_URL", None)
         self.splunk_token = getattr(settings, "SPLUNK_TOKEN", None)
         self.datadog_api_key = getattr(settings, "DATADOG_API_KEY", None)
@@ -66,7 +67,7 @@ class AuditProcessor:
                 "host": "agency-os-api",
                 "source": "audit-log",
                 "sourcetype": "_json",
-                "event": log
+                "event": log,
             }
             payload += json.dumps(event) + "\n"
 
@@ -99,9 +100,10 @@ class AuditProcessor:
                     # Sleep for 23 hours to avoid repeating same day
                     await asyncio.sleep(23 * 3600)
 
-                await asyncio.sleep(3600) # Check every hour
+                await asyncio.sleep(3600)  # Check every hour
             except Exception as e:
                 logger.error(f"Retention job error: {e}")
                 await asyncio.sleep(3600)
+
 
 audit_processor = AuditProcessor()

@@ -20,14 +20,18 @@ def mock_gemini_provider():
     # Patching where it is used or the class itself
     with patch("backend.services.llm.service.GeminiProvider") as MockProvider:
         instance = MockProvider.return_value
-        instance.generate_text = AsyncMock(return_value=LLMResponse(
-            content="Mocked response",
-            usage={"prompt_tokens": 5, "completion_tokens": 5, "total_tokens": 10}
-        ))
-        instance.chat = AsyncMock(return_value=LLMResponse(
-            content="Mocked chat response",
-            usage={"prompt_tokens": 5, "completion_tokens": 10, "total_tokens": 15}
-        ))
+        instance.generate_text = AsyncMock(
+            return_value=LLMResponse(
+                content="Mocked response",
+                usage={"prompt_tokens": 5, "completion_tokens": 5, "total_tokens": 10},
+            )
+        )
+        instance.chat = AsyncMock(
+            return_value=LLMResponse(
+                content="Mocked chat response",
+                usage={"prompt_tokens": 5, "completion_tokens": 10, "total_tokens": 15},
+            )
+        )
 
         async def mock_stream(*args, **kwargs):
             yield "Mocked"
@@ -40,6 +44,7 @@ def mock_gemini_provider():
 
         yield instance
 
+
 @pytest.mark.asyncio
 async def test_generate_text(mock_gemini_provider):
     service = LLMService()
@@ -51,24 +56,26 @@ async def test_generate_text(mock_gemini_provider):
     # So we need to make sure mock_gemini_provider class name starts with gemini
 
     # Alternatively, we can patch _get_provider
-    with patch.object(service, '_get_provider', return_value=mock_gemini_provider):
+    with patch.object(service, "_get_provider", return_value=mock_gemini_provider):
         result = await service.generate_text("Test prompt")
         assert result == "Mocked response"
         mock_gemini_provider.generate_text.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_chat(mock_gemini_provider):
     service = LLMService()
-    with patch.object(service, '_get_provider', return_value=mock_gemini_provider):
+    with patch.object(service, "_get_provider", return_value=mock_gemini_provider):
         messages = [{"role": "user", "content": "Hello"}]
         result = await service.chat(messages)
         assert result == "Mocked chat response"
         mock_gemini_provider.chat.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_generate_stream(mock_gemini_provider):
     service = LLMService()
-    with patch.object(service, '_get_provider', return_value=mock_gemini_provider):
+    with patch.object(service, "_get_provider", return_value=mock_gemini_provider):
         chunks = []
         async for chunk in service.generate_stream("Test prompt"):
             chunks.append(chunk)

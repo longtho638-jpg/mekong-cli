@@ -13,6 +13,7 @@ from backend.services.cache.metrics import MetricsContext, global_metrics
 
 logger = logging.getLogger(__name__)
 
+
 class RateLimitCache:
     def __init__(self, redis_client: redis.Redis, prefix: str = "ratelimit"):
         self.redis = redis_client

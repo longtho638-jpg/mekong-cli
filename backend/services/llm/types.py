@@ -8,6 +8,7 @@ class TokenUsage(TypedDict):
     completion_tokens: int
     total_tokens: int
 
+
 class LLMResponse(TypedDict):
     content: str
     usage: Optional[TokenUsage]

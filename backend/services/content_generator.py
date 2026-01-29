@@ -17,14 +17,12 @@ class ContentGenerator:
         topic: str,
         keywords: Optional[str] = None,
         tone: str = "professional",
-        length: str = "medium"
+        length: str = "medium",
     ) -> str:
         return await self._service.generate_blog_post(topic, keywords, tone, length)
 
     async def generate_social_media_caption(
-        self,
-        content_description: str,
-        platform: str = "linkedin"
+        self, content_description: str, platform: str = "linkedin"
     ) -> str:
         return await self._service.generate_social_media_caption(content_description, platform)
 

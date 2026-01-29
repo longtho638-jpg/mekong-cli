@@ -13,6 +13,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class CohortService:
     """Service for calculating retention cohorts."""
 
@@ -21,8 +22,8 @@ class CohortService:
 
     def analyze_retention(
         self,
-        period_type: str = "weekly", # weekly, monthly
-        periods: int = 8
+        period_type: str = "weekly",  # weekly, monthly
+        periods: int = 8,
     ) -> Dict[str, Any]:
         """
         Calculate retention matrix.
@@ -49,10 +50,12 @@ class CohortService:
 
             # Fetch all events from start date
             # Optimization: Fetch only user_id and occurred_at
-            response = self.db.table("usage_events")\
-                .select("user_id, occurred_at")\
-                .gte("occurred_at", start_date_limit)\
+            response = (
+                self.db.table("usage_events")
+                .select("user_id, occurred_at")
+                .gte("occurred_at", start_date_limit)
                 .execute()
+            )
 
             events = response.data
 
@@ -65,10 +68,11 @@ class CohortService:
             user_activity = {}
 
             for e in events:
-                uid = e['user_id']
-                if not uid: continue
+                uid = e["user_id"]
+                if not uid:
+                    continue
 
-                dt = datetime.fromisoformat(e['occurred_at'].replace('Z', '+00:00'))
+                dt = datetime.fromisoformat(e["occurred_at"].replace("Z", "+00:00"))
 
                 # Determine period key (e.g., Week 1 2026, Month 1 2026)
                 if period_type == "monthly":
@@ -101,10 +105,7 @@ class CohortService:
 
             for uid, cohort_name in user_first_seen.items():
                 if cohort_name not in cohorts:
-                    cohorts[cohort_name] = {
-                        "total_users": 0,
-                        "retention": {}
-                    }
+                    cohorts[cohort_name] = {"total_users": 0, "retention": {}}
 
                 cohorts[cohort_name]["total_users"] += 1
 
@@ -132,17 +133,9 @@ class CohortService:
                 for i in range(periods + 1):
                     count = data["retention"].get(i, 0)
                     percentage = round((count / total) * 100, 1) if total > 0 else 0
-                    retention_list.append({
-                        "period": i,
-                        "count": count,
-                        "percentage": percentage
-                    })
+                    retention_list.append({"period": i, "count": count, "percentage": percentage})
 
-                result_list.append({
-                    "cohort": c_name,
-                    "users": total,
-                    "data": retention_list
-                })
+                result_list.append({"cohort": c_name, "users": total, "data": retention_list})
 
             return {"cohorts": result_list}
 
@@ -157,19 +150,19 @@ class CohortService:
 
         if period_type == "monthly":
             # YYYY-MM
-            y1, m1 = map(int, start.split('-'))
-            y2, m2 = map(int, end.split('-'))
+            y1, m1 = map(int, start.split("-"))
+            y2, m2 = map(int, end.split("-"))
             return (y2 - y1) * 12 + (m2 - m1)
         else:
             # YYYY-Www
             # Approximate logic
-            y1, w1 = map(int, start.split('-W'))
-            y2, w2 = map(int, end.split('-W'))
+            y1, w1 = map(int, start.split("-W"))
+            y2, w2 = map(int, end.split("-W"))
 
             # Simple diff (ignoring week 52/53 boundaries for simplicity in this MVP)
             # Better to convert to date of monday
-            d1 = datetime.strptime(start + '-1', "%G-W%V-%u")
-            d2 = datetime.strptime(end + '-1', "%G-W%V-%u")
+            d1 = datetime.strptime(start + "-1", "%G-W%V-%u")
+            d2 = datetime.strptime(end + "-1", "%G-W%V-%u")
 
             delta = d2 - d1
             return int(delta.days / 7)

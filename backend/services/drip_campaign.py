@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 logger = logging.getLogger(__name__)
 
+
 class DripCampaignService:
     """
     Service for managing drip campaigns.
@@ -23,7 +24,9 @@ class DripCampaignService:
         # Implementation depends on Models
         pass
 
-    async def add_step(self, db: AsyncSession, campaign_id: int, step_type: str, config: Dict[str, Any]):
+    async def add_step(
+        self, db: AsyncSession, campaign_id: int, step_type: str, config: Dict[str, Any]
+    ):
         """Add a step (email/delay) to a campaign"""
         pass
 
@@ -43,6 +46,7 @@ class DripCampaignService:
         #    - Calculate next_run_at (if Delay step, add time; if Email, run immediately/soon)
         #    - If no next step, mark completed
         pass
+
 
 # Singleton
 drip_campaign_service = DripCampaignService()

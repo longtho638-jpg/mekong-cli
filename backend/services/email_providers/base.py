@@ -17,6 +17,7 @@ class EmailMessage(BaseModel):
     attachments: Optional[List[Dict[str, Any]]] = None
     metadata: Optional[Dict[str, Any]] = None
 
+
 class EmailProvider(ABC):
     """Abstract base class for email providers"""
 

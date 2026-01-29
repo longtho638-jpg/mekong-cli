@@ -11,19 +11,12 @@ from backend.models.user import User
 # Mock User objects
 now = datetime.now()
 mock_admin_user = User(
-    id="admin-123",
-    email="admin@example.com",
-    role="admin",
-    created_at=now,
-    updated_at=now
+    id="admin-123", email="admin@example.com", role="admin", created_at=now, updated_at=now
 )
 mock_regular_user = User(
-    id="user-123",
-    email="user@example.com",
-    role="user",
-    created_at=now,
-    updated_at=now
+    id="user-123", email="user@example.com", role="user", created_at=now, updated_at=now
 )
+
 
 @pytest.fixture
 def mock_db_session():
@@ -32,6 +25,7 @@ def mock_db_session():
     session.execute.return_value.scalars.return_value.all.return_value = []
     session.execute.return_value.scalar_one_or_none.return_value = None
     return session
+
 
 @pytest.fixture
 def client(mock_db_session):
@@ -44,6 +38,7 @@ def client(mock_db_session):
     # Cleanup
     app.dependency_overrides = {}
 
+
 class TestNotificationTemplatesAPI:
     def test_list_templates_admin(self, client, mock_db_session):
         # Override auth as admin
@@ -52,10 +47,15 @@ class TestNotificationTemplatesAPI:
         # Mock DB response
         mock_template = MagicMock()
         mock_template.to_dict.return_value = {
-            "id": "temp-1", "name": "Test", "type": "email",
-            "content": "Hi", "active": True,
-            "created_at": "2023-01-01", "updated_at": "2023-01-01",
-            "subject": "Test Subject", "description": "Test Description"
+            "id": "temp-1",
+            "name": "Test",
+            "type": "email",
+            "content": "Hi",
+            "active": True,
+            "created_at": "2023-01-01",
+            "updated_at": "2023-01-01",
+            "subject": "Test Subject",
+            "description": "Test Description",
         }
         mock_db_session.execute.return_value.scalars.return_value.all.return_value = [mock_template]
 
@@ -73,6 +73,7 @@ class TestNotificationTemplatesAPI:
 
         assert response.status_code == 403
 
+
 class TestNotificationAnalyticsAPI:
     def test_get_analytics_admin(self, client, mock_db_session):
         app.dependency_overrides[get_current_user] = lambda: mock_admin_user
@@ -84,9 +85,10 @@ class TestNotificationAnalyticsAPI:
         with pytest.MonkeyPatch.context() as mp:
             mock_service = MagicMock()
             mock_service.get_delivery_stats.return_value = {
-                "total_sent": 100, "success_rate": 95,
+                "total_sent": 100,
+                "success_rate": 95,
                 "channels": {"email": 80, "push": 20},
-                "statuses": {"sent": 95, "failed": 5}
+                "statuses": {"sent": 95, "failed": 5},
             }
             mock_service.get_daily_trends.return_value = []
 
@@ -99,13 +101,17 @@ class TestNotificationAnalyticsAPI:
             # but since it's an inline import in the function body, patching 'backend.services.notification_analytics.get_notification_analytics_service' works.
 
             from backend.services import notification_analytics
-            mp.setattr(notification_analytics, "get_notification_analytics_service", mock_get_service)
+
+            mp.setattr(
+                notification_analytics, "get_notification_analytics_service", mock_get_service
+            )
 
             response = client.get("/api/v1/notifications/analytics")
 
             assert response.status_code == 200
             data = response.json()
             assert data["stats"]["total_sent"] == 100
+
 
 class TestPushSubscriptionsAPI:
     def test_subscribe_success(self, client, mock_db_session):
@@ -115,7 +121,7 @@ class TestPushSubscriptionsAPI:
             "endpoint": "https://fcm.googleapis.com/fcm/send/...",
             "p256dh": "key",
             "auth": "auth_secret",
-            "user_agent": "Mozilla/5.0"
+            "user_agent": "Mozilla/5.0",
         }
 
         # Mock no existing subscription
@@ -135,7 +141,9 @@ class TestPushSubscriptionsAPI:
         mock_sub = MagicMock()
         mock_db_session.execute.return_value.scalar_one_or_none.return_value = mock_sub
 
-        response = client.post("/api/v1/notifications/push/unsubscribe", json={"endpoint": "https://endpoint"})
+        response = client.post(
+            "/api/v1/notifications/push/unsubscribe", json={"endpoint": "https://endpoint"}
+        )
 
         assert response.status_code == 200
         assert response.json()["status"] == "unsubscribed"

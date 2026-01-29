@@ -8,6 +8,7 @@ from backend.services.backup.interfaces import IBackupStrategy
 
 logger = logging.getLogger(__name__)
 
+
 class PostgresBackupStrategy(IBackupStrategy):
     def __init__(self, db_url: str = None):
         """
@@ -33,11 +34,7 @@ class PostgresBackupStrategy(IBackupStrategy):
         cmd = ["pg_dump", "--format=custom", "--no-password", self.db_url]
 
         try:
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
 
             if process.returncode != 0:
@@ -57,16 +54,15 @@ class PostgresBackupStrategy(IBackupStrategy):
 
         try:
             process = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             stdout, stderr = process.communicate(input=source.read())
 
             if process.returncode != 0:
                 # pg_restore often returns warnings as non-zero, check stderr
-                logger.warning(f"pg_restore finished with code {process.returncode}: {stderr.decode()}")
+                logger.warning(
+                    f"pg_restore finished with code {process.returncode}: {stderr.decode()}"
+                )
                 if "error" in stderr.decode().lower():
                     return False
 
@@ -83,14 +79,11 @@ class PostgresBackupStrategy(IBackupStrategy):
 
         try:
             process = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
             stdout, stderr = process.communicate(input=source.read())
 
-            source.seek(0) # Reset stream position
+            source.seek(0)  # Reset stream position
 
             if process.returncode != 0:
                 logger.error(f"Backup verification failed: {stderr.decode()}")

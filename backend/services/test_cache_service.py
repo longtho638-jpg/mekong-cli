@@ -91,7 +91,7 @@ class TestCacheService:
     def cache(self):
         """Create cache service instance for testing."""
         # Force in-memory cache for testing
-        with patch('cache_service.REDIS_AVAILABLE', False):
+        with patch("cache_service.REDIS_AVAILABLE", False):
             service = CacheService(prefix="test", default_ttl=300)
             yield service
             service.clear_all()
@@ -235,11 +235,7 @@ class TestCachedDecorator:
     def test_cached_with_key_func(self):
         call_count = 0
 
-        @cached(
-            key_func=lambda user_id: f"user:{user_id}",
-            prefix="user_lookup",
-            ttl=300
-        )
+        @cached(key_func=lambda user_id: f"user:{user_id}", prefix="user_lookup", ttl=300)
         def get_user(user_id):
             nonlocal call_count
             call_count += 1
@@ -325,8 +321,7 @@ class TestGlobalCacheInstances:
 
 
 @pytest.mark.skipif(
-    not hasattr(pytest, 'redis_available'),
-    reason="Redis not available for integration testing"
+    not hasattr(pytest, "redis_available"), reason="Redis not available for integration testing"
 )
 class TestRedisIntegration:
     """Integration tests with real Redis (if available)."""
@@ -339,7 +334,7 @@ class TestRedisIntegration:
                 prefix="test_redis",
                 host="localhost",
                 port=6379,
-                db=15  # Use separate DB for testing
+                db=15,  # Use separate DB for testing
             )
             if not cache.is_redis_available():
                 pytest.skip("Redis not available")

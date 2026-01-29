@@ -19,10 +19,17 @@ class BidManagerAgent:
         self.strategies: Dict[str, BidStrategy] = {}
         self.insights: Dict[str, List[AuctionInsight]] = {}
 
-    def set_strategy(self, campaign_id: str, strategy_type: BidStrategyType, target_value: float = 0) -> BidStrategy:
+    def set_strategy(
+        self, campaign_id: str, strategy_type: BidStrategyType, target_value: float = 0
+    ) -> BidStrategy:
         """Set bid strategy for campaign"""
         strategy_id = f"bid_{random.randint(100, 999)}"
-        strategy = BidStrategy(id=strategy_id, campaign_id=campaign_id, strategy_type=strategy_type, target_value=target_value)
+        strategy = BidStrategy(
+            id=strategy_id,
+            campaign_id=campaign_id,
+            strategy_type=strategy_type,
+            target_value=target_value,
+        )
         self.strategies[campaign_id] = strategy
         return strategy
 
@@ -34,18 +41,38 @@ class BidManagerAgent:
             recommendation = "Decrease bids (risk of capping)"
         elif pacing < 50:
             recommendation = "Increase bids (under-spending)"
-        return {"pacing_percent": pacing, "spend": current_spend, "budget": daily_budget, "recommendation": recommendation}
+        return {
+            "pacing_percent": pacing,
+            "spend": current_spend,
+            "budget": daily_budget,
+            "recommendation": recommendation,
+        }
 
     def get_auction_insights(self, campaign_id: str) -> List[AuctionInsight]:
         """Get simulated auction insights"""
         competitors = ["competitor-a.com", "big-rival.net", "niche-player.io", "amazon.com"]
-        insights = [AuctionInsight(domain="mekong.io (You)", impression_share=random.uniform(20, 45),
-                                   overlap_rate=100, position_above_rate=0, top_of_page_rate=random.uniform(60, 90))]
+        insights = [
+            AuctionInsight(
+                domain="mekong.io (You)",
+                impression_share=random.uniform(20, 45),
+                overlap_rate=100,
+                position_above_rate=0,
+                top_of_page_rate=random.uniform(60, 90),
+            )
+        ]
         for comp in competitors:
-            insights.append(AuctionInsight(domain=comp, impression_share=random.uniform(10, 30),
-                                           overlap_rate=random.uniform(30, 60), position_above_rate=random.uniform(10, 40),
-                                           top_of_page_rate=random.uniform(40, 80)))
-        self.insights[campaign_id] = sorted(insights, key=lambda x: x.impression_share, reverse=True)
+            insights.append(
+                AuctionInsight(
+                    domain=comp,
+                    impression_share=random.uniform(10, 30),
+                    overlap_rate=random.uniform(30, 60),
+                    position_above_rate=random.uniform(10, 40),
+                    top_of_page_rate=random.uniform(40, 80),
+                )
+            )
+        self.insights[campaign_id] = sorted(
+            insights, key=lambda x: x.impression_share, reverse=True
+        )
         return self.insights[campaign_id]
 
     def optimize(self, campaign_id: str, current_metric: float) -> str:

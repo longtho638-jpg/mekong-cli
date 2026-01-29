@@ -8,6 +8,7 @@ from backend.services.email_providers.base import EmailMessage, EmailProvider
 
 logger = logging.getLogger(__name__)
 
+
 class SMTPProvider(EmailProvider):
     def __init__(self, host: str, port: int, user: str, password: str):
         self.host = host
@@ -18,7 +19,11 @@ class SMTPProvider(EmailProvider):
     async def send_email(self, message: EmailMessage) -> Dict[str, Any]:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = message.subject
-        msg["From"] = f"{message.from_name} <{message.from_email}>" if message.from_name else message.from_email
+        msg["From"] = (
+            f"{message.from_name} <{message.from_email}>"
+            if message.from_name
+            else message.from_email
+        )
         msg["To"] = message.to_email
 
         if message.cc:
@@ -47,7 +52,7 @@ class SMTPProvider(EmailProvider):
             return {
                 "status": "sent",
                 "provider": "smtp",
-                "message_id": None # SMTP doesn't always give an ID easily without parsing response
+                "message_id": None,  # SMTP doesn't always give an ID easily without parsing response
             }
         except Exception as e:
             logger.error(f"Failed to send email via SMTP: {str(e)}")

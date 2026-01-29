@@ -11,8 +11,10 @@ from backend.api.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class JobSchema(BaseModel):
     """Schema for a job in the queue"""
+
     job_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     type: str
     payload: Dict[str, Any] = Field(default_factory=dict)
@@ -24,6 +26,7 @@ class JobSchema(BaseModel):
     created_at: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
     run_at: Optional[str] = None
     tenant_id: Optional[str] = None
+
 
 class QueueService:
     """
@@ -39,17 +42,19 @@ class QueueService:
             "high": f"{self.queue_prefix}high",
             "normal": f"{self.queue_prefix}normal",
             "low": f"{self.queue_prefix}low",
-            "dlq": f"{self.queue_prefix}dlq"
+            "dlq": f"{self.queue_prefix}dlq",
         }
 
-    def enqueue_job(self,
-                   job_type: str,
-                   payload: Dict[str, Any],
-                   priority: str = "normal",
-                   run_at: Optional[datetime] = None,
-                   max_retries: int = 3,
-                   retry_delay_seconds: Optional[List[int]] = None,
-                   tenant_id: Optional[str] = None) -> str:
+    def enqueue_job(
+        self,
+        job_type: str,
+        payload: Dict[str, Any],
+        priority: str = "normal",
+        run_at: Optional[datetime] = None,
+        max_retries: int = 3,
+        retry_delay_seconds: Optional[List[int]] = None,
+        tenant_id: Optional[str] = None,
+    ) -> str:
         """
         Add a job to the queue.
 
@@ -80,13 +85,15 @@ class QueueService:
             retry_delay_seconds=retry_delay_seconds or [60, 300, 900],
             created_at=datetime.utcnow().isoformat(),
             run_at=run_at.isoformat() if run_at else None,
-            tenant_id=tenant_id
+            tenant_id=tenant_id,
         )
 
         job_json = job.model_dump_json()
 
         # Store job details
-        self.redis.setex(f"{self.job_key_prefix}{job_id}", 86400 * 7, job_json)  # Expire after 7 days
+        self.redis.setex(
+            f"{self.job_key_prefix}{job_id}", 86400 * 7, job_json
+        )  # Expire after 7 days
 
         if run_at and run_at > datetime.utcnow():
             # Add to sorted set for delayed execution
@@ -123,18 +130,14 @@ class QueueService:
             "normal": self.redis.llen(self.queues["normal"]),
             "low": self.redis.llen(self.queues["low"]),
             "dlq": self.redis.llen(self.queues["dlq"]),
-            "scheduled": self.redis.zcard(f"{self.queue_prefix}schedule")
+            "scheduled": self.redis.zcard(f"{self.queue_prefix}schedule"),
         }
 
     def register_worker_heartbeat(self, worker_id: str, queues: List[str]):
         """Register worker heartbeat"""
         key = f"agencyos:worker:{worker_id}"
-        data = {
-            "id": worker_id,
-            "queues": queues,
-            "last_heartbeat": datetime.utcnow().isoformat()
-        }
-        self.redis.setex(key, 60, json.dumps(data)) # Expire after 60s
+        data = {"id": worker_id, "queues": queues, "last_heartbeat": datetime.utcnow().isoformat()}
+        self.redis.setex(key, 60, json.dumps(data))  # Expire after 60s
 
     def get_active_workers(self) -> List[Dict[str, Any]]:
         """Get list of active workers"""
@@ -157,7 +160,7 @@ class QueueService:
             return False
 
         job.status = "pending"
-        job.attempts = 0 # Reset attempts? Or keep history? Usually for manual retry we reset.
+        job.attempts = 0  # Reset attempts? Or keep history? Usually for manual retry we reset.
 
         self.redis.set(f"{self.job_key_prefix}{job_id}", job.model_dump_json())
         self.redis.rpush(self.queues[job.priority], job_id)

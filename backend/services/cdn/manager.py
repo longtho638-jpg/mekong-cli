@@ -11,6 +11,7 @@ from backend.services.cdn.purge import CDNPurgeProvider, get_purge_provider
 
 logger = logging.getLogger(__name__)
 
+
 class CDNManager:
     """
     Manager for CDN operations including Purge and Optimization.

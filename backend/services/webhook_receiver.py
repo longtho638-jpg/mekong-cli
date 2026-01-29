@@ -2,6 +2,7 @@
 Incoming Webhook Receiver Service.
 Handles reception, deduplication, and storage of webhook events.
 """
+
 import json
 import logging
 import uuid
@@ -15,6 +16,7 @@ from backend.api.routers.webhooks.models import WebhookProvider, WebhookStatus
 from backend.models.webhooks import WebhookEvent
 
 logger = logging.getLogger(__name__)
+
 
 class WebhookReceiverService:
     def __init__(self):
@@ -35,7 +37,7 @@ class WebhookReceiverService:
         event_type: str,
         payload: Dict[str, Any],
         headers: Optional[Dict[str, Any]] = None,
-        db: Session = None
+        db: Session = None,
     ) -> Optional[Dict[str, Any]]:
         """
         Receive and store a webhook event.
@@ -53,10 +55,11 @@ class WebhookReceiverService:
 
         try:
             # 1. Check for duplicates (Idempotency)
-            existing = db.query(WebhookEvent).filter(
-                WebhookEvent.provider == provider.value,
-                WebhookEvent.event_id == event_id
-            ).first()
+            existing = (
+                db.query(WebhookEvent)
+                .filter(WebhookEvent.provider == provider.value, WebhookEvent.event_id == event_id)
+                .first()
+            )
 
             if existing:
                 logger.info(f"Duplicate webhook event: {provider}:{event_id}")
@@ -67,7 +70,7 @@ class WebhookReceiverService:
                     "event_id": existing.event_id,
                     "event_type": existing.event_type,
                     "payload": existing.payload,
-                    "created_at": existing.created_at.isoformat() if existing.created_at else None
+                    "created_at": existing.created_at.isoformat() if existing.created_at else None,
                 }
 
             # 2. Store event
@@ -78,7 +81,7 @@ class WebhookReceiverService:
                 payload=payload,
                 headers=headers,
                 status=WebhookStatus.PENDING.value,
-                created_at=datetime.utcnow()
+                created_at=datetime.utcnow(),
             )
 
             db.add(new_event)
@@ -95,7 +98,7 @@ class WebhookReceiverService:
                 "event_id": new_event.event_id,
                 "event_type": new_event.event_type,
                 "payload": new_event.payload,
-                "created_at": new_event.created_at.isoformat() if new_event.created_at else None
+                "created_at": new_event.created_at.isoformat() if new_event.created_at else None,
             }
 
         except Exception as e:
@@ -106,7 +109,9 @@ class WebhookReceiverService:
             if local_db:
                 db.close()
 
-    async def update_status(self, event_id: str, status: WebhookStatus, error: Optional[str] = None, db: Session = None):
+    async def update_status(
+        self, event_id: str, status: WebhookStatus, error: Optional[str] = None, db: Session = None
+    ):
         """Update event status."""
         local_db = False
         if db is None:
@@ -131,5 +136,6 @@ class WebhookReceiverService:
         finally:
             if local_db:
                 db.close()
+
 
 webhook_receiver = WebhookReceiverService()

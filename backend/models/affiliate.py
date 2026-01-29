@@ -20,6 +20,7 @@ class Affiliate(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+
 class AffiliateLink(BaseModel):
     id: str = Field(..., description="UUID")
     affiliate_id: str
@@ -29,6 +30,7 @@ class AffiliateLink(BaseModel):
     is_active: bool = True
     created_at: datetime
     updated_at: datetime
+
 
 class Conversion(BaseModel):
     id: str = Field(..., description="UUID")
@@ -43,6 +45,7 @@ class Conversion(BaseModel):
     occurred_at: datetime
     created_at: datetime
     updated_at: datetime
+
 
 class Payout(BaseModel):
     id: str = Field(..., description="UUID")

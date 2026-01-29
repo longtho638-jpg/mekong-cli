@@ -9,6 +9,7 @@ class Prompt(Base):
     Model for storing AI System Prompts and Templates.
     Allows dynamic management of prompts without code changes.
     """
+
     __tablename__ = "prompts"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -16,7 +17,7 @@ class Prompt(Base):
     slug = Column(String, unique=True, index=True, nullable=False)
     description = Column(String, nullable=True)
     content = Column(Text, nullable=False)
-    input_variables = Column(String, nullable=True) # JSON list of strings e.g. ["topic", "tone"]
+    input_variables = Column(String, nullable=True)  # JSON list of strings e.g. ["topic", "tone"]
     is_active = Column(Boolean, default=True)
     version = Column(Integer, default=1)
 

@@ -1,4 +1,3 @@
-
 from datetime import datetime, timedelta
 from decimal import Decimal
 from typing import Any, Dict, List
@@ -12,7 +11,7 @@ from fastapi.testclient import TestClient
 from backend.api.config.settings import settings
 
 settings.enable_rate_limiting = False
-settings.enable_multitenant = False # Disable multitenant to avoid tenant header checks if needed
+settings.enable_multitenant = False  # Disable multitenant to avoid tenant header checks if needed
 settings.enable_metrics = False
 
 from backend.api.auth.dependencies import get_current_user
@@ -25,17 +24,19 @@ client = TestClient(app)
 
 # --- Fixtures ---
 
+
 @pytest.fixture
 def mock_db():
-    with patch("backend.services.funnel_service.get_db") as mock_get_db_funnel, \
-         patch("backend.services.cohort_service.get_db") as mock_get_db_cohort, \
-         patch("backend.services.analytics_service.get_db") as mock_get_db_analytics, \
-         patch("backend.core.audit_logger.audit_logger.log_event") as _, \
-         patch("backend.middleware.rate_limiter.RateLimiterService") as mock_rl_service, \
-         patch("backend.middleware.rate_limiter.ip_blocker") as mock_ip_blocker, \
-         patch("backend.middleware.rate_limiter.rate_limit_monitor") as _, \
-         patch("backend.services.cache.decorators.cache_factory") as mock_cache_factory:
-
+    with (
+        patch("backend.services.funnel_service.get_db") as mock_get_db_funnel,
+        patch("backend.services.cohort_service.get_db") as mock_get_db_cohort,
+        patch("backend.services.analytics_service.get_db") as mock_get_db_analytics,
+        patch("backend.core.audit_logger.audit_logger.log_event") as _,
+        patch("backend.middleware.rate_limiter.RateLimiterService") as mock_rl_service,
+        patch("backend.middleware.rate_limiter.ip_blocker") as mock_ip_blocker,
+        patch("backend.middleware.rate_limiter.rate_limit_monitor") as _,
+        patch("backend.services.cache.decorators.cache_factory") as mock_cache_factory,
+    ):
         # Mock DB Client
         mock_client = MagicMock()
         mock_get_db_funnel.return_value = mock_client
@@ -44,13 +45,14 @@ def mock_db():
 
         # Mock Cache Factory
         mock_query_cache = AsyncMock()
+
         # cached_query executes the query_func
         async def mock_cached_query(key, query_func, ttl, tags):
             return await query_func()
+
         mock_query_cache.cached_query.side_effect = mock_cached_query
 
         mock_cache_factory.get_query_cache = AsyncMock(return_value=mock_query_cache)
-
 
         # Mock Rate Limiter Service methods to avoid Redis
         mock_rl_instance = mock_rl_service.return_value
@@ -65,17 +67,21 @@ def mock_db():
 
         yield mock_client
 
+
 @pytest.fixture
 def funnel_service(mock_db):
     return FunnelService()
+
 
 @pytest.fixture
 def cohort_service(mock_db):
     return CohortService()
 
+
 @pytest.fixture
 def analytics_service(mock_db):
     return AnalyticsService()
+
 
 @pytest.fixture
 def mock_current_user():
@@ -86,6 +92,7 @@ def mock_current_user():
 
 
 # --- Funnel Service Tests ---
+
 
 def test_analyze_funnel_success(funnel_service, mock_db):
     # Setup mock data
@@ -125,20 +132,22 @@ def test_analyze_funnel_success(funnel_service, mock_db):
     # Step 2: onboarding (2 users)
     assert funnel[1]["step"] == "onboarding"
     assert funnel[1]["count"] == 2
-    assert funnel[1]["conversion_rate"] == 66.67 # 2/3
+    assert funnel[1]["conversion_rate"] == 66.67  # 2/3
 
     # Step 3: purchase (1 user)
     assert funnel[2]["step"] == "purchase"
     assert funnel[2]["count"] == 1
-    assert funnel[2]["conversion_rate"] == 50.0 # 1/2
+    assert funnel[2]["conversion_rate"] == 50.0  # 1/2
 
     assert result["total_entries"] == 3
     assert result["overall_conversion"] == 33.33
+
 
 def test_analyze_funnel_empty_steps(funnel_service):
     result = funnel_service.analyze_funnel([], "2026-01-01", "2026-01-31")
     assert "error" in result
     assert result["error"] == "No steps provided"
+
 
 def test_analyze_funnel_db_error(funnel_service, mock_db):
     mock_db.table.side_effect = Exception("DB Connection Failed")
@@ -146,7 +155,9 @@ def test_analyze_funnel_db_error(funnel_service, mock_db):
     assert "error" in result
     assert "DB Connection Failed" in result["error"]
 
+
 # --- Cohort Service Tests ---
+
 
 def test_analyze_retention_weekly(cohort_service, mock_db):
     # Setup mock data for weekly cohort
@@ -168,15 +179,17 @@ def test_analyze_retention_weekly(cohort_service, mock_db):
 
     now = datetime.utcnow()
     w0_date = now.isoformat()
-    w1_date = (now - timedelta(days=7)).isoformat() # Last week
+    w1_date = (now - timedelta(days=7)).isoformat()  # Last week
 
     mock_events = [
-        {"user_id": "u1", "occurred_at": w1_date}, # u1 cohort W-1
-        {"user_id": "u2", "occurred_at": w1_date}, # u2 cohort W-1
-        {"user_id": "u1", "occurred_at": w0_date}, # u1 active W-0 (Retained)
+        {"user_id": "u1", "occurred_at": w1_date},  # u1 cohort W-1
+        {"user_id": "u2", "occurred_at": w1_date},  # u2 cohort W-1
+        {"user_id": "u1", "occurred_at": w0_date},  # u1 active W-0 (Retained)
     ]
 
-    mock_db.table.return_value.select.return_value.gte.return_value.execute.return_value.data = mock_events
+    mock_db.table.return_value.select.return_value.gte.return_value.execute.return_value.data = (
+        mock_events
+    )
 
     # We need to patch datetime in service to control "now" or just rely on relative calc?
     # The service uses: isoyear, isoweek, _ = dt.isocalendar()
@@ -206,12 +219,15 @@ def test_analyze_retention_weekly(cohort_service, mock_db):
     assert p1["count"] == 1
     assert p1["percentage"] == 50.0
 
+
 def test_analyze_retention_no_events(cohort_service, mock_db):
     mock_db.table.return_value.select.return_value.gte.return_value.execute.return_value.data = []
     result = cohort_service.analyze_retention()
     assert result == {"cohorts": []}
 
+
 # --- Router Tests ---
+
 
 def test_track_event_endpoint(mock_current_user, mock_db):
     with patch("backend.api.routers.analytics.AnalyticsService") as MockService:
@@ -222,9 +238,9 @@ def test_track_event_endpoint(mock_current_user, mock_db):
             json={
                 "event_type": "test_event",
                 "event_name": "test_action",
-                "event_data": {"foo": "bar"}
+                "event_data": {"foo": "bar"},
             },
-            headers={"Authorization": "Bearer test_token"}
+            headers={"Authorization": "Bearer test_token"},
         )
 
         assert response.status_code == 200
@@ -236,6 +252,7 @@ def test_track_event_endpoint(mock_current_user, mock_db):
         # But BackgroundTasks run after response.
         # For unit test of router, we assume FastAPI works.
 
+
 def test_analyze_funnel_endpoint(mock_current_user, mock_db):
     with patch("backend.api.routers.analytics.FunnelService") as MockService:
         mock_instance = MockService.return_value
@@ -243,16 +260,13 @@ def test_analyze_funnel_endpoint(mock_current_user, mock_db):
 
         response = client.post(
             "/api/v1/analytics/funnel",
-            json={
-                "steps": ["a", "b"],
-                "start_date": "2026-01-01",
-                "end_date": "2026-01-31"
-            },
-            headers={"Authorization": "Bearer test_token"}
+            json={"steps": ["a", "b"], "start_date": "2026-01-01", "end_date": "2026-01-31"},
+            headers={"Authorization": "Bearer test_token"},
         )
 
         assert response.status_code == 200
         mock_instance.analyze_funnel.assert_called_once()
+
 
 def test_analyze_cohort_endpoint(mock_current_user, mock_db):
     with patch("backend.api.routers.analytics.CohortService") as MockService:
@@ -261,11 +275,12 @@ def test_analyze_cohort_endpoint(mock_current_user, mock_db):
 
         response = client.get(
             "/api/v1/analytics/cohort?period_type=weekly&periods=4",
-            headers={"Authorization": "Bearer test_token"}
+            headers={"Authorization": "Bearer test_token"},
         )
 
         assert response.status_code == 200
         mock_instance.analyze_retention.assert_called_with("weekly", 4)
+
 
 def test_analyze_funnel_unauthorized(mock_db):
     # Override dependency to return non-admin
@@ -276,12 +291,13 @@ def test_analyze_funnel_unauthorized(mock_db):
         response = client.post(
             "/api/v1/analytics/funnel",
             json={"steps": ["a"], "start_date": "x", "end_date": "y"},
-            headers={"Authorization": "Bearer test_token"}
+            headers={"Authorization": "Bearer test_token"},
         )
 
         assert response.status_code == 403
     finally:
         app.dependency_overrides = {}
+
 
 # --- Realtime WebSocket Tests ---
 

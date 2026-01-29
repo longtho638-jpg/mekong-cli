@@ -1,6 +1,7 @@
 """
 Influencer Campaign Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -14,12 +15,14 @@ class CampaignStatus(Enum):
     ACTIVE = "active"
     COMPLETED = "completed"
 
+
 class ContentType(Enum):
     POST = "post"
     STORY = "story"
     REEL = "reel"
     VIDEO = "video"
     LIVE = "live"
+
 
 @dataclass
 class Deliverable:
@@ -31,6 +34,7 @@ class Deliverable:
     engagement: int = 0
     link_clicks: int = 0
     posted_at: Optional[datetime] = None
+
 
 @dataclass
 class InfluencerCampaign:

@@ -17,12 +17,13 @@ from backend.services.cache import cache_factory
 
 logger = logging.getLogger(__name__)
 
+
 class CacheControlMiddleware(BaseHTTPMiddleware):
     def __init__(
         self,
         app: ASGIApp,
         cache_rules: List[Dict[str, str]] = None,
-        enable_server_cache: bool = True
+        enable_server_cache: bool = True,
     ):
         """
         Initialize middleware.
@@ -49,26 +50,26 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
             {
                 "path_regex": r"^/static/.*",
                 "cache_control": "public, max-age=31536000, immutable",
-                "server_ttl": None # Don't server cache static files, CDN does that
+                "server_ttl": None,  # Don't server cache static files, CDN does that
             },
             # Public API endpoints (read-only)
             {
                 "path_regex": r"^/api/v1/public/.*",
                 "cache_control": "public, max-age=300, stale-while-revalidate=60",
-                "server_ttl": 300
+                "server_ttl": 300,
             },
             # Docs
             {
                 "path_regex": r"^/docs.*|^/redoc.*|^/openapi.json",
                 "cache_control": "public, max-age=3600",
-                "server_ttl": 3600
+                "server_ttl": 3600,
             },
             # Default for other API endpoints
             {
                 "path_regex": r"^/api/.*",
                 "cache_control": "no-store, no-cache, must-revalidate, proxy-revalidate",
-                "server_ttl": None
-            }
+                "server_ttl": None,
+            },
         ]
 
     async def dispatch(self, request: Request, call_next):
@@ -102,8 +103,7 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
                     if cached_data:
                         # Return cached response
                         response = JSONResponse(
-                            content=cached_data["content"],
-                            status_code=cached_data["status_code"]
+                            content=cached_data["content"], status_code=cached_data["status_code"]
                         )
                         # Re-apply headers will happen below
                         # But we need to make sure we don't double-apply
@@ -118,13 +118,17 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
                         response.headers["X-Cache"] = "MISS"
 
                         # Only cache if successful and not streaming
-                        if 200 <= response.status_code < 300 and not isinstance(response, StreamingResponse):
+                        if 200 <= response.status_code < 300 and not isinstance(
+                            response, StreamingResponse
+                        ):
                             # We need to read the body to cache it
                             content = b""
                             if hasattr(response, "body"):
                                 content = response.body
                             elif hasattr(response, "body_iterator"):
-                                response_body = [section async for section in response.body_iterator]
+                                response_body = [
+                                    section async for section in response.body_iterator
+                                ]
                                 content = b"".join(response_body)
 
                                 async def async_iterator_wrapper(content_bytes):
@@ -136,15 +140,13 @@ class CacheControlMiddleware(BaseHTTPMiddleware):
                                 try:
                                     # Only cache JSON for now
                                     import json
+
                                     json_content = json.loads(content.decode())
 
                                     # Background task to set cache?
                                     # For strict middleware, we await
                                     await self.response_cache.cache_response(
-                                        cache_key,
-                                        json_content,
-                                        response.status_code,
-                                        server_ttl
+                                        cache_key, json_content, response.status_code, server_ttl
                                     )
                                 except Exception as e:
                                     logger.warning(f"Failed to cache response: {e}")

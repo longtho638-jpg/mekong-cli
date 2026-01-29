@@ -22,7 +22,7 @@ class ContentService:
         topic: str,
         keywords: Optional[str] = None,
         tone: str = "professional",
-        length: str = "medium"
+        length: str = "medium",
     ) -> str:
         """
         Generate a blog post based on parameters.
@@ -32,15 +32,11 @@ class ContentService:
 
         if db_prompt:
             # Use dynamic prompt from DB
-            system_instruction = db_prompt.content.format(
-                tone=tone,
-                length=length
-            )
+            system_instruction = db_prompt.content.format(tone=tone, length=length)
         else:
             # Fallback to hardcoded template
             system_instruction = PromptTemplates.BLOG_POST_SYSTEM.value.format(
-                tone=tone,
-                length=length
+                tone=tone, length=length
             )
 
         prompt = f"Topic: {topic}\n"
@@ -48,16 +44,11 @@ class ContentService:
             prompt += f"Keywords to include: {keywords}\n"
 
         return await self.llm_service.generate_text(
-            prompt=prompt,
-            system_instruction=system_instruction,
-            temperature=0.8
+            prompt=prompt, system_instruction=system_instruction, temperature=0.8
         )
 
     async def generate_social_media_caption(
-        self,
-        db: Session,
-        content_description: str,
-        platform: str = "linkedin"
+        self, db: Session, content_description: str, platform: str = "linkedin"
     ) -> str:
         """
         Generate a social media caption.
@@ -65,9 +56,7 @@ class ContentService:
         db_prompt = prompt_service.get_prompt_by_slug(db, "social-media-caption")
 
         if db_prompt:
-            system_instruction = db_prompt.content.format(
-                platform=platform
-            )
+            system_instruction = db_prompt.content.format(platform=platform)
         else:
             system_instruction = PromptTemplates.SOCIAL_MEDIA_CAPTION.value.format(
                 platform=platform
@@ -76,9 +65,7 @@ class ContentService:
         prompt = f"Content description: {content_description}"
 
         return await self.llm_service.generate_text(
-            prompt=prompt,
-            system_instruction=system_instruction,
-            temperature=0.9
+            prompt=prompt, system_instruction=system_instruction, temperature=0.9
         )
 
     async def optimize_seo(self, db: Session, content: str) -> str:
@@ -95,5 +82,5 @@ class ContentService:
         return await self.llm_service.generate_text(
             prompt=f"Content to optimize:\n{content}",
             system_instruction=system_instruction,
-            temperature=0.5
+            temperature=0.5,
         )

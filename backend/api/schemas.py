@@ -22,7 +22,7 @@ from backend.api.schemas import (
 warnings.warn(
     "backend.api.schemas.py is deprecated. Import from backend.api.schemas (directory) instead.",
     DeprecationWarning,
-    stacklevel=2
+    stacklevel=2,
 )
 
 # Re-export for backward compatibility
@@ -32,4 +32,3 @@ __all__ = [
     "VibeRequest",
     "VibeResponse",
 ]
-

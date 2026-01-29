@@ -9,6 +9,7 @@ from backend.services.audit_service import audit_service
 
 logger = logging.getLogger(__name__)
 
+
 class AuditLogger:
     """
     Core Audit Logger Facade.
@@ -26,7 +27,7 @@ class AuditLogger:
         metadata: Optional[Dict[str, Any]] = None,
         ip_address: Optional[str] = None,
         user_agent: Optional[str] = None,
-        request_id: Optional[str] = None
+        request_id: Optional[str] = None,
     ) -> Optional[AuditLog]:
         """
         Log an event to the audit trail.
@@ -41,7 +42,7 @@ class AuditLogger:
                 metadata=metadata,
                 ip_address=ip_address,
                 user_agent=user_agent,
-                request_id=request_id
+                request_id=request_id,
             )
         except Exception as e:
             logger.error(f"Failed to create audit log: {str(e)}")
@@ -53,7 +54,7 @@ class AuditLogger:
         action: str,
         user_id: Optional[str] = None,
         details: Optional[Dict[str, Any]] = None,
-        ip_address: Optional[str] = None
+        ip_address: Optional[str] = None,
     ):
         """
         Specialized logger for security events (login failures, permission denied).
@@ -67,8 +68,9 @@ class AuditLogger:
             user_id=user_id,
             resource_type="security",
             metadata=metadata,
-            ip_address=ip_address
+            ip_address=ip_address,
         )
+
 
 # Global instance not strictly needed as methods are static, but for consistency
 audit_logger = AuditLogger()

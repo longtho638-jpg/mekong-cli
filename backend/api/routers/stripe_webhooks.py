@@ -19,11 +19,9 @@ router = APIRouter(prefix="/webhooks/stripe", tags=["Stripe Webhooks"])
 # Initialize Unified Service
 payment_service = PaymentService()
 
+
 @router.post("/")
-async def handle_webhook(
-    request: Request,
-    event: dict = Depends(verify_stripe_webhook)
-):
+async def handle_webhook(request: Request, event: dict = Depends(verify_stripe_webhook)):
     """
     Unified Stripe webhook handler with signature verification.
 
@@ -39,14 +37,7 @@ async def handle_webhook(
     # Process event (signature already verified by dependency)
     try:
         payment_service.handle_webhook_event(provider="stripe", event=event)
-        return {
-            "status": "processed",
-            "event": event.get("type"),
-            "verified": True
-        }
+        return {"status": "processed", "event": event.get("type"), "verified": True}
     except Exception as e:
         logger.error(f"❌ Stripe Processing Error: {e}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Processing error: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Processing error: {str(e)}")

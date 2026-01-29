@@ -16,14 +16,17 @@ router = APIRouter(prefix="/cdn", tags=["cdn"])
 
 # --- Models ---
 
+
 class PurgeRequest(BaseModel):
     purge_all: bool = False
     urls: Optional[List[str]] = None
     tags: Optional[List[str]] = None
 
+
 class OptimizationRequest(BaseModel):
     directory: str
     extensions: Optional[List[str]] = None
+
 
 class CDNConfigResponse(BaseModel):
     provider: str
@@ -31,18 +34,19 @@ class CDNConfigResponse(BaseModel):
     zone_id: Optional[str] = None
     service_id: Optional[str] = None
 
+
 # --- Dependencies ---
+
 
 def get_cdn_manager():
     return CDNManager()
 
+
 # --- Endpoints ---
 
+
 @router.post("/purge", dependencies=[Depends(get_current_active_superuser)])
-async def purge_cache(
-    request: PurgeRequest,
-    manager: CDNManager = Depends(get_cdn_manager)
-):
+async def purge_cache(request: PurgeRequest, manager: CDNManager = Depends(get_cdn_manager)):
     """
     Purge CDN cache.
     Requires superuser privileges.
@@ -65,10 +69,16 @@ async def purge_cache(
             raise HTTPException(status_code=500, detail="Failed to purge tags")
         return {"message": f"Purge initiated for {len(request.tags)} tags"}
 
-    raise HTTPException(status_code=400, detail="Invalid purge request: specify purge_all, urls, or tags")
+    raise HTTPException(
+        status_code=400, detail="Invalid purge request: specify purge_all, urls, or tags"
+    )
 
 
-@router.get("/config", response_model=CDNConfigResponse, dependencies=[Depends(get_current_active_superuser)])
+@router.get(
+    "/config",
+    response_model=CDNConfigResponse,
+    dependencies=[Depends(get_current_active_superuser)],
+)
 async def get_cdn_config():
     """
     Get current CDN configuration.
@@ -86,10 +96,7 @@ async def get_cdn_config():
         service_id = settings.fastly_service_id
 
     return CDNConfigResponse(
-        provider=provider,
-        enabled=enabled,
-        zone_id=zone_id,
-        service_id=service_id
+        provider=provider, enabled=enabled, zone_id=zone_id, service_id=service_id
     )
 
 
@@ -97,7 +104,7 @@ async def get_cdn_config():
 async def trigger_optimization(
     request: OptimizationRequest,
     background_tasks: BackgroundTasks,
-    manager: CDNManager = Depends(get_cdn_manager)
+    manager: CDNManager = Depends(get_cdn_manager),
 ):
     """
     Trigger asset optimization in background.

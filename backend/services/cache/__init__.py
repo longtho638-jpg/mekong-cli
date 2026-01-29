@@ -52,5 +52,6 @@ class CacheFactory:
     def get_metrics():
         return global_metrics
 
+
 # Convenience accessor
 cache_factory = CacheFactory()

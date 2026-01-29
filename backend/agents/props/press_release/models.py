@@ -1,6 +1,7 @@
 """
 Press Release Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -14,11 +15,13 @@ class ReleaseType(Enum):
     FUNDING = "funding"
     FEATURE = "feature"
 
+
 class ReleaseStatus(Enum):
     DRAFT = "draft"
     REVIEW = "review"
     APPROVED = "approved"
     DISTRIBUTED = "distributed"
+
 
 @dataclass
 class PressRelease:

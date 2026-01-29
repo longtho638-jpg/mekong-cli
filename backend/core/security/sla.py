@@ -32,6 +32,7 @@ class SLAComplianceDict(TypedDict):
 
 class SLAReportDict(TypedDict, total=False):
     """Detailed SLA performance report"""
+
     period_days: int
     status: str
     metrics: SLAMetricsDict
@@ -84,12 +85,12 @@ class SLAMonitor:
                     "target_uptime": self.target_uptime,
                     "avg_latency_ms": round(avg_latency, 2),
                     "p95_latency_ms": round(p95_latency, 2),
-                    "target_latency_ms": self.target_latency_ms
+                    "target_latency_ms": self.target_latency_ms,
                 },
                 "compliance": {
                     "sla_met": success_rate >= self.target_uptime,
-                    "generated_at": datetime.utcnow().isoformat()
-                }
+                    "generated_at": datetime.utcnow().isoformat(),
+                },
             }
         except Exception as e:
             logger.error(f"SLA Report Generation Failed: {e}")
@@ -101,6 +102,7 @@ class SLAMonitor:
         """
         # Logic to compare recent window vs historical baseline
         return []
+
 
 # Global Instance
 sla_monitor = SLAMonitor()

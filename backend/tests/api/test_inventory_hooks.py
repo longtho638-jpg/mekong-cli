@@ -4,25 +4,30 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 
 # Aggressive mocking of redis to prevent any connection attempts
-with patch("redis.asyncio.Redis") as MockRedis, \
-     patch("redis.asyncio.ConnectionPool") as MockPool, \
-     patch("backend.core.infrastructure.redis.RedisClient.get_instance") as mock_get_instance:
-
+with (
+    patch("redis.asyncio.Redis") as MockRedis,
+    patch("redis.asyncio.ConnectionPool") as MockPool,
+    patch("backend.core.infrastructure.redis.RedisClient.get_instance") as mock_get_instance,
+):
     mock_redis_instance = AsyncMock()
     MockRedis.return_value = mock_redis_instance
     mock_get_instance.return_value = mock_redis_instance
 
     # Also patch the service level redis client
-    with patch("backend.services.redis_client.RedisService.get_client", return_value=mock_redis_instance):
+    with patch(
+        "backend.services.redis_client.RedisService.get_client", return_value=mock_redis_instance
+    ):
         from backend.api.main import app
         from backend.api.routers.inventory import get_queue_service
         from backend.services.queue_service import QueueService
+
 
 @pytest.fixture
 def mock_queue_service():
     service = MagicMock(spec=QueueService)
     service.enqueue_job.return_value = "job-123"
     return service
+
 
 def test_create_product_enqueues_indexing_job(mock_queue_service):
     from fastapi.testclient import TestClient
@@ -32,11 +37,16 @@ def test_create_product_enqueues_indexing_job(mock_queue_service):
 
     # We need to mock RateLimiterService within the app's middleware stack or services
     # because TestClient triggers startup events and middleware init
-    with patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter, \
-         patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter), \
-         patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock), \
-         patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock, return_value=False):
-
+    with (
+        patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter,
+        patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter),
+        patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock),
+        patch(
+            "backend.services.ip_blocker.IpBlocker.is_blocked",
+            new_callable=AsyncMock,
+            return_value=False,
+        ),
+    ):
         # Setup mock rate limiter to allow everything
         mock_limiter = MockRateLimiter.return_value
         mock_limiter.check_sliding_window = AsyncMock(return_value=(True, 100))
@@ -51,7 +61,7 @@ def test_create_product_enqueues_indexing_job(mock_queue_service):
                 "quantity": 10,
                 "price": 99.99,
                 "description": "A new test product",
-                "tags": ["test", "demo"]
+                "tags": ["test", "demo"],
             }
 
             response = client.post("/api/v1/inventory/products", json=payload)
@@ -75,17 +85,23 @@ def test_create_product_enqueues_indexing_job(mock_queue_service):
             assert call_args.kwargs["payload"]["document"]["id"] == payload["id"]
             assert call_args.kwargs["payload"]["document"]["title"] == payload["name"]
 
+
 def test_update_product_enqueues_indexing_job(mock_queue_service):
     from fastapi.testclient import TestClient
 
     # Override dependency
     app.dependency_overrides[get_queue_service] = lambda: mock_queue_service
 
-    with patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter, \
-         patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter), \
-         patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock), \
-         patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock, return_value=False):
-
+    with (
+        patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter,
+        patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter),
+        patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock),
+        patch(
+            "backend.services.ip_blocker.IpBlocker.is_blocked",
+            new_callable=AsyncMock,
+            return_value=False,
+        ),
+    ):
         mock_limiter = MockRateLimiter.return_value
         mock_limiter.check_sliding_window = AsyncMock(return_value=(True, 100))
         mock_limiter.check_token_bucket = AsyncMock(return_value=(True, 100))
@@ -100,7 +116,7 @@ def test_update_product_enqueues_indexing_job(mock_queue_service):
                 "quantity": 20,
                 "price": 149.99,
                 "description": "Updated description",
-                "tags": ["updated"]
+                "tags": ["updated"],
             }
 
             response = client.put(f"/api/v1/inventory/products/{product_id}", json=payload)
@@ -127,17 +143,23 @@ def test_update_product_enqueues_indexing_job(mock_queue_service):
             assert call_args.kwargs["payload"]["document"]["id"] == product_id
             assert call_args.kwargs["payload"]["document"]["title"] == payload["name"]
 
+
 def test_delete_product_enqueues_indexing_job(mock_queue_service):
     from fastapi.testclient import TestClient
 
     # Override dependency
     app.dependency_overrides[get_queue_service] = lambda: mock_queue_service
 
-    with patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter, \
-         patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter), \
-         patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock), \
-         patch("backend.services.ip_blocker.IpBlocker.is_blocked", new_callable=AsyncMock, return_value=False):
-
+    with (
+        patch("backend.services.rate_limiter_service.RateLimiterService") as MockRateLimiter,
+        patch("backend.middleware.rate_limiter.RateLimiterService", new=MockRateLimiter),
+        patch("backend.services.cache.warming.CacheWarmer.initialize", new_callable=AsyncMock),
+        patch(
+            "backend.services.ip_blocker.IpBlocker.is_blocked",
+            new_callable=AsyncMock,
+            return_value=False,
+        ),
+    ):
         mock_limiter = MockRateLimiter.return_value
         mock_limiter.check_sliding_window = AsyncMock(return_value=(True, 100))
         mock_limiter.check_token_bucket = AsyncMock(return_value=(True, 100))

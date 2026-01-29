@@ -9,8 +9,8 @@ except ImportError:
 
 class AlgoliaService:
     def __init__(self):
-        app_id = os.getenv('ALGOLIA_APP_ID')
-        api_key = os.getenv('ALGOLIA_API_KEY')
+        app_id = os.getenv("ALGOLIA_APP_ID")
+        api_key = os.getenv("ALGOLIA_API_KEY")
 
         if app_id and api_key and SearchClient:
             self.client = SearchClient.create(app_id, api_key)
@@ -18,18 +18,20 @@ class AlgoliaService:
             self.client = None
             # Log warning?
 
-    async def multi_index_search(self, query: str, indexes: List[str], filters: Optional[Dict], limit: int, offset: int) -> Dict[str, Any]:
+    async def multi_index_search(
+        self, query: str, indexes: List[str], filters: Optional[Dict], limit: int, offset: int
+    ) -> Dict[str, Any]:
         if not self.client:
-            return {'results': {}, 'total': 0, 'query_time_ms': 0}
+            return {"results": {}, "total": 0, "query_time_ms": 0}
 
         queries = [
             {
-                'indexName': idx,
-                'query': query,
-                'params': {
-                    'filters': self._build_algolia_filters(filters) if filters else '',
-                    'hitsPerPage': limit,
-                    'page': offset // limit if limit > 0 else 0,
+                "indexName": idx,
+                "query": query,
+                "params": {
+                    "filters": self._build_algolia_filters(filters) if filters else "",
+                    "hitsPerPage": limit,
+                    "page": offset // limit if limit > 0 else 0,
                 },
             }
             for idx in indexes
@@ -47,12 +49,9 @@ class AlgoliaService:
         results = self.client.multiple_queries(queries)
 
         return {
-            'results': {
-                r['index']: r['hits']
-                for r in results['results']
-            },
-            'total': sum(r['nbHits'] for r in results['results']),
-            'query_time_ms': sum(r['processingTimeMS'] for r in results['results']),
+            "results": {r["index"]: r["hits"] for r in results["results"]},
+            "total": sum(r["nbHits"] for r in results["results"]),
+            "query_time_ms": sum(r["processingTimeMS"] for r in results["results"]),
         }
 
     async def autocomplete(self, query: str, index: str, limit: int) -> List[str]:
@@ -60,15 +59,17 @@ class AlgoliaService:
             return []
 
         index_obj = self.client.init_index(index)
-        results = index_obj.search(query, {'hitsPerPage': limit, 'attributesToRetrieve': ['title', 'name']})
-        return [hit.get('title') or hit.get('name') for hit in results['hits']]
+        results = index_obj.search(
+            query, {"hitsPerPage": limit, "attributesToRetrieve": ["title", "name"]}
+        )
+        return [hit.get("title") or hit.get("name") for hit in results["hits"]]
 
     async def add_documents(self, index: str, documents: List[Dict]):
         if not self.client:
             return
 
         index_obj = self.client.init_index(index)
-        index_obj.save_objects(documents, {'autoGenerateObjectIDIfNotExist': True})
+        index_obj.save_objects(documents, {"autoGenerateObjectIDIfNotExist": True})
 
     async def delete_document(self, index: str, document_id: str):
         if not self.client:
@@ -78,11 +79,11 @@ class AlgoliaService:
         index_obj.delete_object(document_id)
 
     async def get_stats(self, index: str) -> Dict[str, Any]:
-        return {'provider': 'algolia'}
+        return {"provider": "algolia"}
 
     def _build_algolia_filters(self, filters: Dict) -> str:
         """
         Convert dict to Algolia filter string.
         Example: {'status': 'active', 'type': 'payment'} -> 'status:active AND type:payment'
         """
-        return ' AND '.join(f'{k}:{v}' for k, v in filters.items())
+        return " AND ".join(f"{k}:{v}" for k, v in filters.items())

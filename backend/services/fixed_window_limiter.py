@@ -16,6 +16,7 @@ class FixedWindowLimiter:
     Redis data structure: String (counter)
     Key: rate_limit:fixed:{user_id}:{endpoint}:{window_timestamp}
     """
+
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
 

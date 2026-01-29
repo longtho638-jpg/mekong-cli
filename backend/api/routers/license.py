@@ -81,11 +81,15 @@ FEATURE_DESCRIPTIONS: Dict[str, str] = {
 # Request/Response Models
 class LicenseVerifyRequest(BaseModel):
     """Request model for license verification."""
-    license_key: Optional[str] = Field(None, description="License key to verify (None for free tier)")
+
+    license_key: Optional[str] = Field(
+        None, description="License key to verify (None for free tier)"
+    )
 
 
 class LicenseVerifyResponse(BaseModel):
     """Response model for license verification."""
+
     valid: bool = Field(..., description="Whether the license is valid")
     tier: str = Field(..., description="License tier (free, starter, pro, franchise, enterprise)")
     message: str = Field(..., description="Human-readable validation message")
@@ -94,18 +98,21 @@ class LicenseVerifyResponse(BaseModel):
 
 class FeatureInfo(BaseModel):
     """Feature information model."""
+
     name: str = Field(..., description="Feature identifier")
     description: str = Field(..., description="Feature description")
 
 
 class TierFeaturesResponse(BaseModel):
     """Response model for tier features."""
+
     tier: str = Field(..., description="License tier")
     features: List[FeatureInfo] = Field(..., description="List of features available for this tier")
 
 
 class LicenseActivateRequest(BaseModel):
     """Request model for license activation."""
+
     license_key: str = Field(..., description="License key to activate")
     email: Optional[str] = Field(None, description="User email (optional)")
     product_id: Optional[str] = Field(None, description="Product ID (optional)")
@@ -113,6 +120,7 @@ class LicenseActivateRequest(BaseModel):
 
 class LicenseActivateResponse(BaseModel):
     """Response model for license activation."""
+
     success: bool = Field(..., description="Whether activation was successful")
     tier: str = Field(..., description="Activated license tier")
     activated_at: str = Field(..., description="Activation timestamp (ISO format)")
@@ -120,6 +128,7 @@ class LicenseActivateResponse(BaseModel):
 
 
 # Endpoints
+
 
 @router.post("/verify", response_model=LicenseVerifyResponse)
 async def verify_license(request: LicenseVerifyRequest):
@@ -138,12 +147,7 @@ async def verify_license(request: LicenseVerifyRequest):
     # Get features for the tier
     features = TIER_FEATURES.get(tier, [])
 
-    return LicenseVerifyResponse(
-        valid=is_valid,
-        tier=tier,
-        message=message,
-        features=features
-    )
+    return LicenseVerifyResponse(valid=is_valid, tier=tier, message=message, features=features)
 
 
 @router.get("/features/{tier}", response_model=TierFeaturesResponse)
@@ -166,7 +170,7 @@ async def get_tier_features(tier: str):
     if tier_lower not in TIER_FEATURES:
         raise HTTPException(
             status_code=400,
-            detail=f"Invalid tier: {tier}. Valid tiers are: {', '.join(TIER_FEATURES.keys())}"
+            detail=f"Invalid tier: {tier}. Valid tiers are: {', '.join(TIER_FEATURES.keys())}",
         )
 
     # Get features for the tier
@@ -175,16 +179,12 @@ async def get_tier_features(tier: str):
     # Build feature info list
     features = [
         FeatureInfo(
-            name=feature,
-            description=FEATURE_DESCRIPTIONS.get(feature, f"Feature: {feature}")
+            name=feature, description=FEATURE_DESCRIPTIONS.get(feature, f"Feature: {feature}")
         )
         for feature in feature_list
     ]
 
-    return TierFeaturesResponse(
-        tier=tier_lower,
-        features=features
-    )
+    return TierFeaturesResponse(tier=tier_lower, features=features)
 
 
 @router.post("/activate", response_model=LicenseActivateResponse)
@@ -205,10 +205,7 @@ async def activate_license(request: LicenseActivateRequest):
     is_valid, tier, message = validate_license_key(request.license_key)
 
     if not is_valid:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Invalid license key: {message}"
-        )
+        raise HTTPException(status_code=400, detail=f"Invalid license key: {message}")
 
     # Record activation timestamp
     activated_at = datetime.utcnow().isoformat() + "Z"
@@ -223,7 +220,7 @@ async def activate_license(request: LicenseActivateRequest):
         success=True,
         tier=tier,
         activated_at=activated_at,
-        message=f"License activated successfully for {tier.upper()} tier"
+        message=f"License activated successfully for {tier.upper()} tier",
     )
 
 

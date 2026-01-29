@@ -14,14 +14,31 @@ except ImportError:
 
 # Mock data
 SAMPLE_DATA = [
-    {"id": "1", "name": "User A", "email": "a@example.com", "created_at": datetime(2023, 1, 1, 12, 0, 0)},
-    {"id": "2", "name": "User B", "email": "b@example.com", "created_at": datetime(2023, 1, 2, 12, 0, 0)},
-    {"id": "3", "name": "User C", "email": "c@example.com", "created_at": datetime(2023, 1, 3, 12, 0, 0)},
+    {
+        "id": "1",
+        "name": "User A",
+        "email": "a@example.com",
+        "created_at": datetime(2023, 1, 1, 12, 0, 0),
+    },
+    {
+        "id": "2",
+        "name": "User B",
+        "email": "b@example.com",
+        "created_at": datetime(2023, 1, 2, 12, 0, 0),
+    },
+    {
+        "id": "3",
+        "name": "User C",
+        "email": "c@example.com",
+        "created_at": datetime(2023, 1, 3, 12, 0, 0),
+    },
 ]
+
 
 @pytest.fixture
 def export_service():
     return ExportService()
+
 
 class TestExportService:
     def test_export_csv(self, export_service):
@@ -79,7 +96,7 @@ class TestExportService:
         output = export_service.export_data([], "csv")
         content = output.getvalue().decode("utf-8")
         assert content.startswith("\ufeff")
-        assert len(content) == 1 # Only BOM
+        assert len(content) == 1  # Only BOM
 
     def test_unsupported_format(self, export_service):
         with pytest.raises(ValueError):

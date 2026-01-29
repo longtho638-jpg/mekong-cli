@@ -155,7 +155,9 @@ class SprintAgent:
         return {
             "total_sprints": len(sprints),
             "active": len([s for s in sprints if s.status == SprintStatus.ACTIVE]),
-            "avg_velocity": sum(s.velocity for s in completed) / len(completed) if completed else 0.0,
+            "avg_velocity": sum(s.velocity for s in completed) / len(completed)
+            if completed
+            else 0.0,
             "total_points": sum(s.committed_points for s in sprints),
             "completed_points": sum(s.completed_points for s in sprints),
         }

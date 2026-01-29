@@ -1,6 +1,7 @@
 """
 Webhooks API.
 """
+
 from fastapi import APIRouter
 
 from .management import router as management_router

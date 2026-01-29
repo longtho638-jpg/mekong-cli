@@ -1,6 +1,7 @@
 """
 Tunnel Metrics.
 """
+
 from typing import Dict
 
 
@@ -23,6 +24,8 @@ class TunnelMetrics:
         avg_latency = self.total_latency / self.total_requests if self.total_requests > 0 else 0.0
         return {
             "total_requests": self.total_requests,
-            "success_rate": (self.successful_requests / self.total_requests) * 100 if self.total_requests > 0 else 0.0,
+            "success_rate": (self.successful_requests / self.total_requests) * 100
+            if self.total_requests > 0
+            else 0.0,
             "avg_latency": avg_latency,
         }

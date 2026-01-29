@@ -14,8 +14,11 @@ from backend.services.cache.metrics import MetricsContext, global_metrics
 
 logger = logging.getLogger(__name__)
 
+
 class SessionCache:
-    def __init__(self, redis_client: redis.Redis, prefix: str = "session", default_ttl: int = 86400):
+    def __init__(
+        self, redis_client: redis.Redis, prefix: str = "session", default_ttl: int = 86400
+    ):
         self.redis = redis_client
         self.prefix = prefix
         self.default_ttl = default_ttl

@@ -31,25 +31,14 @@ logger = logging.getLogger(__name__)
 class BackupConfig(BaseModel):
     """Configuration for backup service"""
 
-    database_path: str = Field(
-        default="./agencyos.db",
-        description="Path to SQLite database file"
-    )
-    backup_directory: str = Field(
-        default="./backups",
-        description="Directory to store backups"
-    )
-    retention_days: int = Field(
-        default=7,
-        description="Number of days to retain backups"
-    )
+    database_path: str = Field(default="./agencyos.db", description="Path to SQLite database file")
+    backup_directory: str = Field(default="./backups", description="Directory to store backups")
+    retention_days: int = Field(default=7, description="Number of days to retain backups")
     enable_compression: bool = Field(
-        default=False,
-        description="Enable gzip compression for backups"
+        default=False, description="Enable gzip compression for backups"
     )
     verify_on_backup: bool = Field(
-        default=True,
-        description="Verify backup integrity after creation"
+        default=True, description="Verify backup integrity after creation"
     )
 
 
@@ -126,7 +115,9 @@ class BackupService:
                 sha256_hash.update(byte_block)
         return sha256_hash.hexdigest()
 
-    def _export_table_to_dict(self, conn: sqlite3.Connection, table_name: str) -> List[Dict[str, Any]]:
+    def _export_table_to_dict(
+        self, conn: sqlite3.Connection, table_name: str
+    ) -> List[Dict[str, Any]]:
         """
         Export a single table to list of dictionaries.
 
@@ -161,7 +152,9 @@ class BackupService:
             List of table names
         """
         cursor = conn.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
+        cursor.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+        )
         return [row[0] for row in cursor.fetchall()]
 
     def create_backup(self) -> Tuple[bool, Optional[BackupMetadata]]:
@@ -196,7 +189,7 @@ class BackupService:
                         "database": self.config.database_path,
                         "version": "1.0",
                     },
-                    "tables": {}
+                    "tables": {},
                 }
 
                 total_records = 0
@@ -207,7 +200,7 @@ class BackupService:
                     logger.info(f"Exported table '{table}': {len(table_data)} records")
 
                 # Write to JSON file
-                with open(backup_path, 'w') as f:
+                with open(backup_path, "w") as f:
                     json.dump(backup_data, f, indent=2, default=str)
 
                 logger.info(f"Backup created: {backup_path}")
@@ -226,7 +219,7 @@ class BackupService:
                     table_count=len(tables),
                     record_count=total_records,
                     compressed=self.config.enable_compression,
-                    verified=False
+                    verified=False,
                 )
 
                 # Verify backup if enabled
@@ -262,7 +255,7 @@ class BackupService:
                 return False, "Backup file not found"
 
             # Load and validate JSON structure
-            with open(backup_path, 'r') as f:
+            with open(backup_path, "r") as f:
                 data = json.load(f)
 
             # Check required keys
@@ -280,7 +273,7 @@ class BackupService:
             # Try to load stored metadata
             metadata_path = backup_path + ".meta"
             if os.path.exists(metadata_path):
-                with open(metadata_path, 'r') as f:
+                with open(metadata_path, "r") as f:
                     stored_metadata = BackupMetadata(**json.load(f))
 
                 if stored_metadata.checksum != actual_checksum:
@@ -294,7 +287,9 @@ class BackupService:
         except Exception as e:
             return False, f"Verification failed: {str(e)}"
 
-    def restore_backup(self, backup_path: str, target_db: Optional[str] = None) -> Tuple[bool, Optional[str]]:
+    def restore_backup(
+        self, backup_path: str, target_db: Optional[str] = None
+    ) -> Tuple[bool, Optional[str]]:
         """
         Restore database from backup file.
 
@@ -313,7 +308,7 @@ class BackupService:
                 return False, error
 
             # Load backup data
-            with open(backup_path, 'r') as f:
+            with open(backup_path, "r") as f:
                 backup_data = json.load(f)
 
             # Determine target database
@@ -321,7 +316,9 @@ class BackupService:
 
             # Create backup of current database if it exists
             if os.path.exists(target_database):
-                backup_current = f"{target_database}.pre_restore_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+                backup_current = (
+                    f"{target_database}.pre_restore_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
+                )
                 shutil.copy2(target_database, backup_current)
                 logger.info(f"Created pre-restore backup: {backup_current}")
 
@@ -351,7 +348,7 @@ class BackupService:
                     # Create table (simple type inference)
                     column_defs = []
                     for col in columns:
-                        if col.lower() == 'id':
+                        if col.lower() == "id":
                             column_defs.append(f"{col} INTEGER PRIMARY KEY")
                         else:
                             column_defs.append(f"{col} TEXT")
@@ -360,8 +357,10 @@ class BackupService:
                     cursor.execute(create_sql)
 
                     # Insert records
-                    placeholders = ', '.join(['?' for _ in columns])
-                    insert_sql = f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
+                    placeholders = ", ".join(["?" for _ in columns])
+                    insert_sql = (
+                        f"INSERT INTO {table_name} ({', '.join(columns)}) VALUES ({placeholders})"
+                    )
 
                     for record in records:
                         values = [record.get(col) for col in columns]
@@ -434,7 +433,7 @@ class BackupService:
             meta_file = Path(str(backup_file) + ".meta")
             if meta_file.exists():
                 try:
-                    with open(meta_file, 'r') as f:
+                    with open(meta_file, "r") as f:
                         metadata = BackupMetadata(**json.load(f))
                     backups.append(metadata)
                 except Exception as e:
@@ -450,7 +449,7 @@ class BackupService:
             metadata: Backup metadata to save
         """
         meta_path = metadata.backup_path + ".meta"
-        with open(meta_path, 'w') as f:
+        with open(meta_path, "w") as f:
             json.dump(metadata.model_dump(), f, indent=2)
         logger.info(f"Metadata saved: {meta_path}")
 
@@ -513,7 +512,9 @@ def create_backup(config: Optional[BackupConfig] = None) -> Tuple[bool, Optional
     return service.create_backup()
 
 
-def restore_backup(backup_path: str, config: Optional[BackupConfig] = None) -> Tuple[bool, Optional[str]]:
+def restore_backup(
+    backup_path: str, config: Optional[BackupConfig] = None
+) -> Tuple[bool, Optional[str]]:
     """Restore from backup using default service"""
     service = get_backup_service(config)
     return service.restore_backup(backup_path)

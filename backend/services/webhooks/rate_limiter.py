@@ -2,6 +2,7 @@
 Rate Limiter Service.
 Implements Token Bucket algorithm using Redis.
 """
+
 import logging
 import time
 from typing import Optional
@@ -10,10 +11,12 @@ import redis
 
 logger = logging.getLogger(__name__)
 
+
 class RateLimiter:
     """
     Redis-based Token Bucket Rate Limiter.
     """
+
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
 
@@ -65,15 +68,7 @@ class RateLimiter:
 
             # Use execute_command 'EVAL' to avoid hook flagging .eval() method
             result = self.redis.execute_command(
-                'EVAL',
-                script,
-                2,
-                tokens_key,
-                timestamp_key,
-                rate,
-                burst,
-                now,
-                1
+                "EVAL", script, 2, tokens_key, timestamp_key, rate, burst, now, 1
             )
 
             return bool(result)

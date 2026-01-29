@@ -9,7 +9,6 @@ from backend.services.cache_service import CacheService, InMemoryCache
 
 
 class TestCacheService:
-
     def test_in_memory_basic_ops(self):
         """Test basic operations with InMemoryCache."""
         # Force in-memory
@@ -69,7 +68,7 @@ class TestCacheService:
             captured_value = value
             return original_set(key, value, ex)
 
-        with patch.object(service._client, 'set', side_effect=side_effect_set):
+        with patch.object(service._client, "set", side_effect=side_effect_set):
             service.set("large", large_value)
 
         # Verify it was compressed (ends with .z marker we added)
@@ -125,7 +124,7 @@ class TestCacheService:
         # Mock CacheService to avoid global state issues
         with patch("backend.services.cache_service.CacheService") as MockService:
             mock_instance = MockService.return_value
-            mock_instance.get.return_value = None # Cache miss first
+            mock_instance.get.return_value = None  # Cache miss first
 
             # Define decorated function
             @cached(ttl=60, prefix="test")
@@ -139,6 +138,6 @@ class TestCacheService:
             mock_instance.set.assert_called()
 
             # Second call - hit (simulate by changing mock return)
-            mock_instance.get.return_value = 10 # Fake cached value
+            mock_instance.get.return_value = 10  # Fake cached value
             result = expensive_func(1, 2)
-            assert result == 10 # Should return cached value
+            assert result == 10  # Should return cached value

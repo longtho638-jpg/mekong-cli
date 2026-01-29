@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 print("Testing imports...")
 try:
     from antigravity.core.licensing.validation import validate_license_key
+
     print("✓ Imported antigravity.core.licensing.validation")
 except ImportError as e:
     print(f"✗ Failed to import: {e}")
@@ -22,6 +23,7 @@ except ImportError as e:
 
 try:
     from core.licensing.logic.engine import LicenseGenerator
+
     print("✓ Imported core.licensing.logic.engine")
 except ImportError as e:
     print(f"✗ Failed to import: {e}")

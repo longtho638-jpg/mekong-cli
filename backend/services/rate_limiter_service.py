@@ -14,6 +14,7 @@ class RateLimiterService:
     """
     Service facade for different rate limiting algorithms.
     """
+
     def __init__(self, redis_client: Optional[redis.Redis] = None):
         # Use provided client or default global client service
         if redis_client:
@@ -25,22 +26,30 @@ class RateLimiterService:
         self.token_bucket = TokenBucketLimiter(self.redis)
         self.fixed_window = FixedWindowLimiter(self.redis)
 
-    async def check_sliding_window(self, key: str, limit: int, window_seconds: int) -> Tuple[bool, int]:
+    async def check_sliding_window(
+        self, key: str, limit: int, window_seconds: int
+    ) -> Tuple[bool, int]:
         return await self.sliding_window.check_rate_limit(key, limit, window_seconds)
 
-    async def check_token_bucket(self, key: str, capacity: int, refill_rate: float) -> Tuple[bool, int]:
+    async def check_token_bucket(
+        self, key: str, capacity: int, refill_rate: float
+    ) -> Tuple[bool, int]:
         return await self.token_bucket.check_rate_limit(key, capacity, refill_rate)
 
-    async def check_fixed_window(self, key: str, limit: int, window_seconds: int) -> Tuple[bool, int]:
+    async def check_fixed_window(
+        self, key: str, limit: int, window_seconds: int
+    ) -> Tuple[bool, int]:
         return await self.fixed_window.check_rate_limit(key, limit, window_seconds)
 
-    async def get_reset_time(self, key: str, algorithm: str, window_seconds: int = 3600, refill_rate: float = 1.0) -> int:
+    async def get_reset_time(
+        self, key: str, algorithm: str, window_seconds: int = 3600, refill_rate: float = 1.0
+    ) -> int:
         """
         Get reset time based on algorithm.
         """
-        if algorithm == 'token_bucket':
+        if algorithm == "token_bucket":
             return await self.token_bucket.get_reset_time(key, refill_rate)
-        elif algorithm == 'fixed_window':
+        elif algorithm == "fixed_window":
             return await self.fixed_window.get_reset_time(key, window_seconds)
         else:
             return await self.sliding_window.get_reset_time(key, window_seconds)
@@ -69,7 +78,7 @@ class RateLimiterService:
             "key": key,
             "sliding_window_count": zcard,
             "token_bucket": bucket_data,
-            "fixed_window_keys_count": len(fixed_keys)
+            "fixed_window_keys_count": len(fixed_keys),
         }
 
     async def reset(self, key: str):

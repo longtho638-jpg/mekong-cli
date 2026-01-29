@@ -1,6 +1,7 @@
 """
 Report Generator logic and templates.
 """
+
 import random
 from datetime import datetime, timedelta
 from typing import Dict, List
@@ -18,10 +19,24 @@ class ReportEngine:
         self.reports: Dict[str, Report] = {}
 
     def generate_weekly(self, title: str, metrics: Dict, highlights: List[str] = None) -> Report:
-        end = datetime.now(); start = end - timedelta(days=7)
+        end = datetime.now()
+        start = end - timedelta(days=7)
         ms = "\n".join([f"- **{k}**: {v}" for k, v in metrics.items()])
-        content = self.TEMPLATES[ReportType.WEEKLY].format(title=title, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"), metrics_section=ms)
+        content = self.TEMPLATES[ReportType.WEEKLY].format(
+            title=title,
+            start=start.strftime("%Y-%m-%d"),
+            end=end.strftime("%Y-%m-%d"),
+            metrics_section=ms,
+        )
         rid = f"rep_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
-        r = Report(id=rid, title=title, report_type=ReportType.WEEKLY, period_start=start, period_end=end, content=content, metrics=metrics)
+        r = Report(
+            id=rid,
+            title=title,
+            report_type=ReportType.WEEKLY,
+            period_start=start,
+            period_end=end,
+            content=content,
+            metrics=metrics,
+        )
         self.reports[rid] = r
         return r

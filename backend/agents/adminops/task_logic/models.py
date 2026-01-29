@@ -1,6 +1,7 @@
 """
 Task Manager Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
@@ -13,11 +14,13 @@ class TaskPriority(Enum):
     HIGH = "high"
     URGENT = "urgent"
 
+
 class TaskStatus(Enum):
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
     DONE = "done"
+
 
 @dataclass
 class Task:
@@ -31,6 +34,7 @@ class Task:
     due_date: Optional[datetime] = None
     created_at: datetime = field(default_factory=datetime.now)
     completed_at: Optional[datetime] = None
+
 
 @dataclass
 class Project:

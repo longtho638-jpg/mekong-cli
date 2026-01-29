@@ -33,7 +33,9 @@ class RAGService:
         # Initialize LLM
         self.llm_service = LLMService()
 
-    async def ingest_documents(self, documents: List[str], metadatas: Optional[List[Dict[str, Any]]] = None) -> None:
+    async def ingest_documents(
+        self, documents: List[str], metadatas: Optional[List[Dict[str, Any]]] = None
+    ) -> None:
         """
         Ingest documents into the vector store.
         """
@@ -68,7 +70,7 @@ class RAGService:
 
         answer = await self.llm_service.generate_text(
             prompt=prompt,
-            temperature=0.3 # Low temperature for factual QA
+            temperature=0.3,  # Low temperature for factual QA
         )
 
         return answer

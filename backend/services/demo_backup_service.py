@@ -98,9 +98,9 @@ def demo_backup_stats():
     print(f"Retention: {stats['retention_days']} days")
     print(f"Directory: {stats['backup_directory']}")
 
-    if stats['oldest_backup']:
+    if stats["oldest_backup"]:
         print(f"Oldest: {stats['oldest_backup']}")
-    if stats['newest_backup']:
+    if stats["newest_backup"]:
         print(f"Newest: {stats['newest_backup']}")
 
 
@@ -110,6 +110,7 @@ def demo_restore_backup(backup_path: str):
 
     # Create a test restore target
     import tempfile
+
     test_db = tempfile.mktemp(suffix=".db")
 
     service = get_backup_service()
@@ -124,6 +125,7 @@ def demo_restore_backup(backup_path: str):
 
         # Cleanup test database
         import os
+
         if os.path.exists(test_db):
             os.remove(test_db)
             print("\n   (Test database cleaned up)")
@@ -152,7 +154,7 @@ def demo_custom_config():
         backup_directory="./custom_backups",
         retention_days=14,
         enable_compression=False,
-        verify_on_backup=True
+        verify_on_backup=True,
     )
 
     print("Custom Configuration:")
@@ -206,6 +208,7 @@ def main():
     except Exception as e:
         print(f"\n❌ Error during demo: {str(e)}")
         import traceback
+
         traceback.print_exc()
 
 

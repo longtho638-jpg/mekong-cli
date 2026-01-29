@@ -28,22 +28,26 @@ logger = logging.getLogger(__name__)
 
 class PaymentProviderType(str, Enum):
     """Payment provider identifiers"""
+
     PAYPAL = "paypal"
     POLAR = "polar"
 
 
 class PaymentError(Exception):
     """Base exception for payment errors"""
+
     pass
 
 
 class ProviderUnavailableError(PaymentError):
     """Provider is temporarily unavailable (5xx, timeout)"""
+
     pass
 
 
 class PaymentFailedError(PaymentError):
     """Payment failed permanently (4xx, invalid data)"""
+
     pass
 
 
@@ -75,7 +79,7 @@ class IPaymentProvider(ABC):
         cancel_url: Optional[str] = None,
         customer_email: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        mode: str = "subscription"
+        mode: str = "subscription",
     ) -> Dict[str, Any]:
         """
         Create a checkout session.
@@ -91,10 +95,7 @@ class IPaymentProvider(ABC):
 
     @abstractmethod
     def verify_webhook(
-        self,
-        headers: Dict[str, str],
-        body: Any,
-        webhook_secret: Optional[str] = None
+        self, headers: Dict[str, str], body: Any, webhook_secret: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Verify webhook signature and return parsed event.
@@ -106,9 +107,7 @@ class IPaymentProvider(ABC):
 
     @abstractmethod
     def cancel_subscription(
-        self,
-        subscription_id: str,
-        reason: Optional[str] = None
+        self, subscription_id: str, reason: Optional[str] = None
     ) -> Dict[str, Any]:
         """Cancel a subscription"""
         pass
@@ -119,6 +118,7 @@ class PayPalProvider(IPaymentProvider):
 
     def __init__(self):
         from core.finance.paypal_sdk import PayPalSDK
+
         self.client = PayPalSDK()
 
     def get_name(self) -> str:
@@ -142,7 +142,7 @@ class PayPalProvider(IPaymentProvider):
         cancel_url: Optional[str] = None,
         customer_email: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        mode: str = "subscription"
+        mode: str = "subscription",
     ) -> Dict[str, Any]:
         """Create PayPal checkout session"""
         try:
@@ -154,7 +154,7 @@ class PayPalProvider(IPaymentProvider):
                     plan_id=price_id,
                     custom_id=tenant_id or customer_email,
                     return_url=success_url,
-                    cancel_url=cancel_url
+                    cancel_url=cancel_url,
                 )
             else:
                 # One-time payment
@@ -164,7 +164,7 @@ class PayPalProvider(IPaymentProvider):
                     description=f"Payment for {tenant_id or customer_email or 'User'}",
                     custom_id=tenant_id or customer_email,
                     return_url=success_url,
-                    cancel_url=cancel_url
+                    cancel_url=cancel_url,
                 )
 
             if not result or "id" not in result:
@@ -183,10 +183,7 @@ class PayPalProvider(IPaymentProvider):
             raise PaymentFailedError(f"PayPal payment failed: {e}")
 
     def verify_webhook(
-        self,
-        headers: Dict[str, str],
-        body: Any,
-        webhook_secret: Optional[str] = None
+        self, headers: Dict[str, str], body: Any, webhook_secret: Optional[str] = None
     ) -> Dict[str, Any]:
         """Verify PayPal webhook"""
         try:
@@ -199,21 +196,22 @@ class PayPalProvider(IPaymentProvider):
                     body = json.loads(body)
 
             return self.client.webhooks.verify_signature(
-                transmission_id=headers.get("paypal-transmission-id") or headers.get("PAYPAL-TRANSMISSION-ID"),
-                transmission_time=headers.get("paypal-transmission-time") or headers.get("PAYPAL-TRANSMISSION-TIME"),
+                transmission_id=headers.get("paypal-transmission-id")
+                or headers.get("PAYPAL-TRANSMISSION-ID"),
+                transmission_time=headers.get("paypal-transmission-time")
+                or headers.get("PAYPAL-TRANSMISSION-TIME"),
                 cert_url=headers.get("paypal-cert-url") or headers.get("PAYPAL-CERT-URL"),
                 auth_algo=headers.get("paypal-auth-algo") or headers.get("PAYPAL-AUTH-ALGO"),
-                transmission_sig=headers.get("paypal-transmission-sig") or headers.get("PAYPAL-TRANSMISSION-SIG"),
+                transmission_sig=headers.get("paypal-transmission-sig")
+                or headers.get("PAYPAL-TRANSMISSION-SIG"),
                 webhook_id=webhook_secret,
-                webhook_event=body
+                webhook_event=body,
             )
         except Exception as e:
             raise PaymentError(f"PayPal webhook verification failed: {e}")
 
     def cancel_subscription(
-        self,
-        subscription_id: str,
-        reason: Optional[str] = None
+        self, subscription_id: str, reason: Optional[str] = None
     ) -> Dict[str, Any]:
         """Cancel PayPal subscription"""
         try:
@@ -254,7 +252,7 @@ class PolarProvider(IPaymentProvider):
         cancel_url: Optional[str] = None,
         customer_email: Optional[str] = None,
         tenant_id: Optional[str] = None,
-        mode: str = "subscription"
+        mode: str = "subscription",
     ) -> Dict[str, Any]:
         """Create Polar checkout session"""
         if not self.is_available():
@@ -277,10 +275,7 @@ class PolarProvider(IPaymentProvider):
         raise ProviderUnavailableError("Polar provider unavailable")
 
     def verify_webhook(
-        self,
-        headers: Dict[str, str],
-        body: Any,
-        webhook_secret: Optional[str] = None
+        self, headers: Dict[str, str], body: Any, webhook_secret: Optional[str] = None
     ) -> Dict[str, Any]:
         """Verify Polar webhook"""
         if not self.is_available():
@@ -300,9 +295,7 @@ class PolarProvider(IPaymentProvider):
         raise PaymentError("Polar webhook verification unavailable")
 
     def cancel_subscription(
-        self,
-        subscription_id: str,
-        reason: Optional[str] = None
+        self, subscription_id: str, reason: Optional[str] = None
     ) -> Dict[str, Any]:
         """Cancel Polar subscription"""
         if not self.is_available():
@@ -341,14 +334,14 @@ class PaymentOrchestrator:
         # Initialize providers
         self.providers: Dict[str, IPaymentProvider] = {
             "paypal": PayPalProvider(),
-            "polar": PolarProvider()
+            "polar": PolarProvider(),
         }
 
         # Failover statistics
         self.stats = {
             "total_requests": 0,
             "failovers": 0,
-            "provider_usage": {name: 0 for name in self.providers.keys()}
+            "provider_usage": {name: 0 for name in self.providers.keys()},
         }
 
         logger.info(f"PaymentOrchestrator initialized with order: {self.provider_order}")
@@ -379,7 +372,7 @@ class PaymentOrchestrator:
         customer_email: Optional[str] = None,
         tenant_id: Optional[str] = None,
         mode: str = "subscription",
-        preferred_provider: Optional[str] = None
+        preferred_provider: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Create checkout session with automatic failover.
@@ -405,7 +398,9 @@ class PaymentOrchestrator:
 
         # Determine provider order
         if preferred_provider:
-            order = [preferred_provider] + [p for p in self.provider_order if p != preferred_provider]
+            order = [preferred_provider] + [
+                p for p in self.provider_order if p != preferred_provider
+            ]
         else:
             order = self.provider_order.copy()
 
@@ -420,7 +415,9 @@ class PaymentOrchestrator:
                 continue
 
             try:
-                logger.info(f"Attempting checkout with {provider_name} (attempt {i+1}/{len(order)})")
+                logger.info(
+                    f"Attempting checkout with {provider_name} (attempt {i + 1}/{len(order)})"
+                )
 
                 result = provider.create_checkout_session(
                     amount=amount,
@@ -430,7 +427,7 @@ class PaymentOrchestrator:
                     cancel_url=cancel_url,
                     customer_email=customer_email,
                     tenant_id=tenant_id,
-                    mode=mode
+                    mode=mode,
                 )
 
                 # Success!
@@ -461,16 +458,14 @@ class PaymentOrchestrator:
                 raise
 
         # All providers failed
-        raise PaymentError(
-            f"All payment providers failed. Last error: {last_error}"
-        )
+        raise PaymentError(f"All payment providers failed. Last error: {last_error}")
 
     def verify_webhook(
         self,
         provider: str,
         headers: Dict[str, str],
         body: Any,
-        webhook_secret: Optional[str] = None
+        webhook_secret: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Verify webhook from specific provider.
@@ -491,10 +486,7 @@ class PaymentOrchestrator:
         return provider_instance.verify_webhook(headers, body, webhook_secret)
 
     def cancel_subscription(
-        self,
-        provider: str,
-        subscription_id: str,
-        reason: Optional[str] = None
+        self, provider: str, subscription_id: str, reason: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Cancel subscription with specific provider.
@@ -518,5 +510,5 @@ class PaymentOrchestrator:
                 self.stats["failovers"] / self.stats["total_requests"]
                 if self.stats["total_requests"] > 0
                 else 0
-            )
+            ),
         }

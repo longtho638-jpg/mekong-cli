@@ -23,6 +23,7 @@ router = APIRouter(prefix="/api/licenses", tags=["licenses"])
 
 # --- Request/Response Models ---
 
+
 class GenerateLicenseRequest(BaseModel):
     """Request to generate a new license"""
 
@@ -30,9 +31,7 @@ class GenerateLicenseRequest(BaseModel):
     plan: LicensePlan = Field(LicensePlan.SOLO, description="License plan tier")
     duration_days: int = Field(365, ge=1, le=3650, description="License duration")
     bound_domain: Optional[str] = Field(None, description="Bind to specific domain")
-    hardware_fingerprint: Optional[str] = Field(
-        None, description="Bind to specific hardware"
-    )
+    hardware_fingerprint: Optional[str] = Field(None, description="Bind to specific hardware")
     metadata: Optional[dict] = Field(default_factory=dict, description="Additional metadata")
 
 
@@ -46,6 +45,7 @@ class ValidateLicenseRequest(BaseModel):
 
 class ActivateLicenseRequest(BaseModel):
     """Request to activate a license seat"""
+
     license_key: str = Field(..., description="License key to activate")
     fingerprint: str = Field(..., description="Unique fingerprint of the device/instance")
     hostname: Optional[str] = Field(None, description="Hostname of the device")
@@ -55,6 +55,7 @@ class ActivateLicenseRequest(BaseModel):
 
 class DeactivateLicenseRequest(BaseModel):
     """Request to deactivate a license seat"""
+
     license_key: str = Field(..., description="License key")
     fingerprint: str = Field(..., description="Unique fingerprint to deactivate")
 
@@ -86,11 +87,13 @@ class ValidationResponse(BaseModel):
 
 class ActivationResponse(BaseModel):
     """Activation response"""
+
     success: bool
     message: str
 
 
 # --- Dependencies ---
+
 
 def get_license_service() -> LicenseService:
     """Dependency to get license service instance"""
@@ -108,21 +111,22 @@ async def verify_admin_token(authorization: str = Header(None)):
     # Placeholder validation - replace with real implementation
     # In a real app, check against env var or DB
     if token != "admin_secret_key_replace_me":
-         # Allow "dev-secret-key" for development if configured
-         if token == "dev-secret-key-CHANGE-IN-PRODUCTION":
-             return True
-         raise HTTPException(status_code=403, detail="Invalid admin credentials")
+        # Allow "dev-secret-key" for development if configured
+        if token == "dev-secret-key-CHANGE-IN-PRODUCTION":
+            return True
+        raise HTTPException(status_code=403, detail="Invalid admin credentials")
 
     return True
 
 
 # --- Endpoints ---
 
+
 @router.post("/generate", response_model=LicenseResponse)
 async def generate_license(
     request: GenerateLicenseRequest,
     _admin: bool = Depends(verify_admin_token),
-    service: LicenseService = Depends(get_license_service)
+    service: LicenseService = Depends(get_license_service),
 ):
     """
     Generate a new license key (Admin only).
@@ -134,7 +138,7 @@ async def generate_license(
             duration_days=request.duration_days,
             bound_domain=request.bound_domain,
             hardware_fingerprint=request.hardware_fingerprint,
-            metadata=request.metadata
+            metadata=request.metadata,
         )
 
         # Calculate days remaining
@@ -153,7 +157,7 @@ async def generate_license(
             features=license_obj.features,
             max_activations=license_obj.max_activations,
             bound_domain=license_obj.bound_domain,
-            hardware_fingerprint=license_obj.hardware_fingerprint
+            hardware_fingerprint=license_obj.hardware_fingerprint,
         )
 
     except Exception as e:
@@ -162,8 +166,7 @@ async def generate_license(
 
 @router.post("/validate", response_model=ValidationResponse)
 async def validate_license(
-    request: ValidateLicenseRequest,
-    service: LicenseService = Depends(get_license_service)
+    request: ValidateLicenseRequest, service: LicenseService = Depends(get_license_service)
 ):
     """
     Validate a license key against database and constraints.
@@ -196,7 +199,7 @@ async def validate_license(
                 features=result.license.features,
                 max_activations=result.license.max_activations,
                 bound_domain=result.license.bound_domain,
-                hardware_fingerprint=result.license.hardware_fingerprint
+                hardware_fingerprint=result.license.hardware_fingerprint,
             )
 
         return response
@@ -207,8 +210,7 @@ async def validate_license(
 
 @router.get("/info/{license_key}", response_model=LicenseResponse)
 async def get_license_info(
-    license_key: str,
-    service: LicenseService = Depends(get_license_service)
+    license_key: str, service: LicenseService = Depends(get_license_service)
 ):
     """
     Get public license information.
@@ -237,7 +239,7 @@ async def get_license_info(
             features=license_obj.features,
             max_activations=license_obj.max_activations,
             bound_domain=license_obj.bound_domain,
-            hardware_fingerprint=license_obj.hardware_fingerprint
+            hardware_fingerprint=license_obj.hardware_fingerprint,
         )
 
     except HTTPException:
@@ -248,8 +250,7 @@ async def get_license_info(
 
 @router.post("/activate", response_model=ActivationResponse)
 async def activate_license_seat(
-    request: ActivateLicenseRequest,
-    service: LicenseService = Depends(get_license_service)
+    request: ActivateLicenseRequest, service: LicenseService = Depends(get_license_service)
 ):
     """
     Activate a license seat (register a device/instance).
@@ -259,7 +260,7 @@ async def activate_license_seat(
         fingerprint=request.fingerprint,
         hostname=request.hostname,
         ip_address=request.ip_address,
-        metadata=request.metadata
+        metadata=request.metadata,
     )
 
     if not success:
@@ -276,19 +277,20 @@ async def activate_license_seat(
 
 @router.post("/deactivate", response_model=ActivationResponse)
 async def deactivate_license_seat(
-    request: DeactivateLicenseRequest,
-    service: LicenseService = Depends(get_license_service)
+    request: DeactivateLicenseRequest, service: LicenseService = Depends(get_license_service)
 ):
     """
     Deactivate a license seat.
     """
     success = service.deactivate_license(
-        license_key=request.license_key,
-        fingerprint=request.fingerprint
+        license_key=request.license_key, fingerprint=request.fingerprint
     )
 
     if not success:
-         raise HTTPException(status_code=400, detail="Deactivation failed (license not found or fingerprint mismatch)")
+        raise HTTPException(
+            status_code=400,
+            detail="Deactivation failed (license not found or fingerprint mismatch)",
+        )
 
     return ActivationResponse(success=True, message="Deactivated successfully")
 
@@ -297,7 +299,7 @@ async def deactivate_license_seat(
 async def renew_license(
     license_key: str,
     _admin: bool = Depends(verify_admin_token),
-    service: LicenseService = Depends(get_license_service)
+    service: LicenseService = Depends(get_license_service),
 ):
     """
     Renew an existing license (extend expiration by 365 days).
@@ -305,4 +307,6 @@ async def renew_license(
     # This logic needs to be implemented in Service properly
     # Currently Service doesn't have renew_license method that saves to DB
     # Let's add basic implementation or keep placeholder
-    raise HTTPException(status_code=501, detail="Renew endpoint pending implementation in service layer")
+    raise HTTPException(
+        status_code=501, detail="Renew endpoint pending implementation in service layer"
+    )

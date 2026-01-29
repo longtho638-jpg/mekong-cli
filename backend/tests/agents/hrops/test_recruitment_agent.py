@@ -17,7 +17,7 @@ class TestRecruitmentAgent:
             title="Senior Engineer",
             department="Engineering",
             location="Remote",
-            salary="$120k-$150k"
+            salary="$120k-$150k",
         )
 
         assert job.id in agent.jobs
@@ -28,17 +28,11 @@ class TestRecruitmentAgent:
     def test_add_candidate(self):
         agent = RecruitmentAgent()
         job = agent.create_job(
-            title="Product Manager",
-            department="Product",
-            location="On-site",
-            salary="$100k-$130k"
+            title="Product Manager", department="Product", location="On-site", salary="$100k-$130k"
         )
 
         candidate = agent.add_candidate(
-            name="John Doe",
-            email="john@example.com",
-            job_id=job.id,
-            rating=4
+            name="John Doe", email="john@example.com", job_id=job.id, rating=4
         )
 
         assert candidate.id in agent.candidates

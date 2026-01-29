@@ -34,37 +34,42 @@ logger = logging.getLogger(__name__)
 # Config for legacy
 MEKONG_DIR = Path.home() / ".mekong"
 
+
 # Dependency
 def get_dashboard_service():
     return DashboardService()
 
+
 # --- New Endpoints ---
+
 
 @router.get("/configs", response_model=List[DashboardConfig])
 async def list_dashboards(
-    user_id: Optional[UUID] = None, # In real app, get from auth context
-    service: DashboardService = Depends(get_dashboard_service)
+    user_id: Optional[UUID] = None,  # In real app, get from auth context
+    service: DashboardService = Depends(get_dashboard_service),
 ):
     """List user's saved dashboards."""
     # Mock user_id if not provided (for dev)
     uid = user_id or uuid4()
     return await service.get_dashboards(uid)
 
+
 @router.post("/configs", response_model=DashboardConfig)
 async def create_dashboard(
     config: DashboardConfigCreate,
     user_id: Optional[UUID] = None,
-    service: DashboardService = Depends(get_dashboard_service)
+    service: DashboardService = Depends(get_dashboard_service),
 ):
     """Create a new dashboard configuration."""
     uid = user_id or uuid4()
     return await service.create_dashboard(uid, config)
 
+
 @router.get("/configs/{dashboard_id}", response_model=DashboardConfig)
 async def get_dashboard(
     dashboard_id: UUID,
     user_id: Optional[UUID] = None,
-    service: DashboardService = Depends(get_dashboard_service)
+    service: DashboardService = Depends(get_dashboard_service),
 ):
     """Get a specific dashboard."""
     uid = user_id or uuid4()
@@ -73,35 +78,41 @@ async def get_dashboard(
         raise HTTPException(status_code=404, detail="Dashboard not found")
     return dashboard
 
+
 @router.put("/configs/{dashboard_id}", response_model=DashboardConfig)
 async def update_dashboard(
     dashboard_id: UUID,
     config: DashboardConfigUpdate,
     user_id: Optional[UUID] = None,
-    service: DashboardService = Depends(get_dashboard_service)
+    service: DashboardService = Depends(get_dashboard_service),
 ):
     """Update a dashboard."""
     uid = user_id or uuid4()
     return await service.update_dashboard(dashboard_id, uid, config)
 
+
 @router.get("/data/{metric}", response_model=MetricResponse)
 @cache(
     ttl=300,
     prefix="dashboard",
-    key_func=lambda metric, date_range="30d", segment=None, **kwargs: f"metrics:{metric}:{date_range}:{segment}",
-    tags=["dashboard"]
+    key_func=lambda metric,
+    date_range="30d",
+    segment=None,
+    **kwargs: f"metrics:{metric}:{date_range}:{segment}",
+    tags=["dashboard"],
 )
 async def get_metric_data(
     metric: str,
     date_range: str = Query("30d", regex="^(today|7d|30d|90d|ytd|custom)$"),
     segment: Optional[str] = None,
-    service: DashboardService = Depends(get_dashboard_service)
+    service: DashboardService = Depends(get_dashboard_service),
 ):
     """Get aggregated data for a specific metric."""
     return await service.get_metric_data(metric, date_range, segment)
 
 
 # --- Legacy Endpoints (Maintained for compatibility) ---
+
 
 class RevenueMetrics(BaseModel):
     mrr: float = 0.0
@@ -110,6 +121,7 @@ class RevenueMetrics(BaseModel):
     paid_invoices: float = 0.0
     goal: float = 200000.0
     progress_percent: float = 0.0
+
 
 def load_json_file(filename: str) -> List[dict]:
     filepath = MEKONG_DIR / filename
@@ -121,12 +133,9 @@ def load_json_file(filename: str) -> List[dict]:
             return []
     return []
 
+
 @router.get("/revenue", response_model=RevenueMetrics)
-@cache(
-    ttl=600,
-    prefix="dashboard:legacy",
-    tags=["dashboard"]
-)
+@cache(ttl=600, prefix="dashboard:legacy", tags=["dashboard"])
 async def get_revenue():
     """Get revenue metrics from invoices (Legacy)."""
     invoices = load_json_file("invoices.json")

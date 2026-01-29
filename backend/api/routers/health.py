@@ -140,9 +140,7 @@ def check_database() -> ServiceHealth:
             message="DB not configured (placeholder check)",
         )
     except Exception as e:
-        return ServiceHealth(
-            name="database", status="down", message=f"Database error: {str(e)}"
-        )
+        return ServiceHealth(name="database", status="down", message=f"Database error: {str(e)}")
 
 
 def check_redis() -> ServiceHealth:
@@ -163,9 +161,7 @@ def check_redis() -> ServiceHealth:
             message="Redis not configured (placeholder check)",
         )
     except Exception as e:
-        return ServiceHealth(
-            name="redis", status="down", message=f"Redis error: {str(e)}"
-        )
+        return ServiceHealth(name="redis", status="down", message=f"Redis error: {str(e)}")
 
 
 def check_filesystem() -> ServiceHealth:

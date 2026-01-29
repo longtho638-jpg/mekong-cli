@@ -6,13 +6,15 @@ from pydantic import BaseModel, Field
 
 # --- API Keys ---
 
+
 class ApiKeyCreate(BaseModel):
     name: str = Field(..., description="User-friendly name for the API key")
     scopes: List[str] = Field(default=[], description="List of permissions")
 
+
 class ApiKeyResponse(BaseModel):
     id: UUID
-    user_id: UUID # Added user_id
+    user_id: UUID  # Added user_id
     name: str
     prefix: str
     scopes: List[str]
@@ -25,12 +27,15 @@ class ApiKeyResponse(BaseModel):
     # We only return the full key once upon creation
     key: Optional[str] = None
 
+
 class ApiKeyUpdate(BaseModel):
     name: Optional[str] = None
     scopes: Optional[List[str]] = None
     status: Optional[str] = None
 
+
 # --- Usage ---
+
 
 class ApiUsageRecord(BaseModel):
     endpoint: str
@@ -39,18 +44,22 @@ class ApiUsageRecord(BaseModel):
     response_time_ms: int
     created_at: datetime
 
+
 class ApiUsageStats(BaseModel):
     total_requests: int
     requests_by_endpoint: Dict[str, int]
     requests_by_status: Dict[str, int]
     average_response_time_ms: float
-    chart_data: List[Dict[str, Any]] = [] # [{"date": "2023-10-01", "requests": 10, "errors": 1}]
+    chart_data: List[Dict[str, Any]] = []  # [{"date": "2023-10-01", "requests": 10, "errors": 1}]
+
 
 # --- Webhooks ---
+
 
 class WebhookConfigCreate(BaseModel):
     url: str
     events: List[str]
+
 
 class WebhookConfigResponse(BaseModel):
     id: UUID
@@ -62,10 +71,12 @@ class WebhookConfigResponse(BaseModel):
     # secret is usually returned once or can be retrieved? Usually retrievable.
     secret: str
 
+
 class WebhookConfigUpdate(BaseModel):
     url: Optional[str] = None
     events: Optional[List[str]] = None
     status: Optional[str] = None
+
 
 class WebhookDeliveryLog(BaseModel):
     id: UUID
@@ -75,7 +86,9 @@ class WebhookDeliveryLog(BaseModel):
     attempts: int
     created_at: datetime
 
+
 # --- Public API Domain Models (Subscriptions, Invoices, etc.) ---
+
 
 class SubscriptionPublic(BaseModel):
     id: str
@@ -84,6 +97,7 @@ class SubscriptionPublic(BaseModel):
     current_period_start: datetime
     current_period_end: datetime
     cancel_at_period_end: bool
+
 
 class InvoicePublic(BaseModel):
     id: str

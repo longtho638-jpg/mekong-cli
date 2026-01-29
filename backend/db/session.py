@@ -10,13 +10,10 @@ connect_args = {}
 if is_sqlite:
     connect_args = {"check_same_thread": False}
 
-engine = create_engine(
-    settings.database_url,
-    connect_args=connect_args,
-    pool_pre_ping=True
-)
+engine = create_engine(settings.database_url, connect_args=connect_args, pool_pre_ping=True)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 
 def get_db():
     db = SessionLocal()

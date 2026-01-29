@@ -1,6 +1,7 @@
 """
 Event Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import date, datetime
 from enum import Enum
@@ -15,6 +16,7 @@ class EventType(Enum):
     TRADESHOW = "tradeshow"
     VIRTUAL = "virtual"
 
+
 class EventStatus(Enum):
     PLANNING = "planning"
     REGISTRATION_OPEN = "registration_open"
@@ -23,6 +25,7 @@ class EventStatus(Enum):
     COMPLETED = "completed"
     CANCELLED = "cancelled"
 
+
 @dataclass
 class Attendee:
     id: str
@@ -30,6 +33,7 @@ class Attendee:
     email: str
     company: str = ""
     registered_at: datetime = field(default_factory=datetime.now)
+
 
 @dataclass
 class Event:
@@ -44,7 +48,8 @@ class Event:
     budget: float = 0
 
     @property
-    def registered(self) -> int: return len(self.attendees)
+    def registered(self) -> int:
+        return len(self.attendees)
 
     @property
     def fill_rate(self) -> float:

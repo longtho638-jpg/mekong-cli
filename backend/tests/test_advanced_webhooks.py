@@ -21,10 +21,12 @@ def test_hmac_signature():
     assert SignatureService.verify_hmac_signature(payload, secret, sig)
     assert not SignatureService.verify_hmac_signature(payload, "wrongsecret", sig)
 
+
 def test_timestamp_verification():
     now = int(time.time())
     assert SignatureService.verify_timestamp(now)
-    assert not SignatureService.verify_timestamp(now - 600) # 10 mins ago
+    assert not SignatureService.verify_timestamp(now - 600)  # 10 mins ago
+
 
 # --- Unit Tests: Retry Engine ---
 def test_backoff_calculation():
@@ -36,6 +38,7 @@ def test_backoff_calculation():
     assert 1.5 <= engine.calculate_backoff(2) <= 2.5
     # attempt 3: 2^2 = 4
     assert 3.0 <= engine.calculate_backoff(3) <= 5.0
+
 
 def test_circuit_breaker():
     mock_redis = MagicMock()
@@ -54,6 +57,7 @@ def test_circuit_breaker():
     # Expected: set(key, OPEN)
     assert mock_redis.set.call_count >= 1
 
+
 # --- Unit Tests: Transformer ---
 def test_jinja_transformation():
     transformer = WebhookTransformer()
@@ -64,6 +68,7 @@ def test_jinja_transformation():
     assert result["event_type"] == "created"
     assert result["user_id"] == 1
 
+
 def test_field_filtering():
     transformer = WebhookTransformer()
     payload = {"user": {"password": "secret", "email": "a@b.com"}}
@@ -71,29 +76,32 @@ def test_field_filtering():
     assert "password" not in result["user"]
     assert "email" in result["user"]
 
+
 # --- Integration Tests: Advanced Service ---
 @pytest.mark.asyncio
 async def test_trigger_webhook_flow():
     mock_redis = MagicMock()
-    mock_redis.exists.return_value = False # Idempotency check
-    mock_redis.execute_command.return_value = 1 # Rate limit allowed (1=True)
+    mock_redis.exists.return_value = False  # Idempotency check
+    mock_redis.execute_command.return_value = 1  # Rate limit allowed (1=True)
 
     # Mock Redis GET for Circuit Breaker state
     # First call is rate limiter (lua script via eval/execute_command),
     # but get_circuit_status calls redis.get()
-    mock_redis.get.return_value = None # Default to CLOSED
+    mock_redis.get.return_value = None  # Default to CLOSED
 
     # Mock DB
     mock_db = MagicMock()
 
     # Mock Config
-    mock_db.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{
-        "id": "conf1",
-        "url": "http://example.com",
-        "secret": "sec",
-        "is_active": True,
-        "rate_limit": 100
-    }]
+    mock_db.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [
+        {
+            "id": "conf1",
+            "url": "http://example.com",
+            "secret": "sec",
+            "is_active": True,
+            "rate_limit": 100,
+        }
+    ]
 
     # Mock Delivery Insert
     mock_db.table.return_value.insert.return_value.execute.return_value.data = [{"id": "del1"}]
@@ -108,18 +116,16 @@ async def test_trigger_webhook_flow():
 
         service.execute_delivery_attempt.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_batch_flushing():
     mock_redis = MagicMock()
     mock_db = MagicMock()
 
     # Mock Config
-    mock_db.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [{
-        "id": "conf1",
-        "url": "http://example.com",
-        "secret": "sec",
-        "is_active": True
-    }]
+    mock_db.table.return_value.select.return_value.eq.return_value.execute.return_value.data = [
+        {"id": "conf1", "url": "http://example.com", "secret": "sec", "is_active": True}
+    ]
 
     with patch("backend.services.webhooks.advanced_service.get_db", return_value=mock_db):
         service = AdvancedWebhookService(mock_redis)

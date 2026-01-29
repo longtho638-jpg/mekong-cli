@@ -13,7 +13,7 @@ def cache(
     ttl: int = 300,
     prefix: str = "cache",
     key_func: Optional[Callable] = None,
-    tags: Optional[list] = None
+    tags: Optional[list] = None,
 ):
     """
     Decorator to cache function results using the new CacheFactory infrastructure.
@@ -26,6 +26,7 @@ def cache(
         key_func (Callable): Custom function to generate cache key from args/kwargs.
         tags (list): List of tags for invalidation.
     """
+
     def decorator(func):
         @wraps(func)
         async def wrapper(*args, **kwargs):
@@ -62,11 +63,9 @@ def cache(
 
             # Use cached_query wrapper
             return await query_cache.cached_query(
-                key=full_key,
-                query_func=run_query,
-                ttl=ttl,
-                tags=tags or []
+                key=full_key, query_func=run_query, ttl=ttl, tags=tags or []
             )
 
         return wrapper
+
     return decorator

@@ -11,6 +11,7 @@ import yaml
 
 logger = logging.getLogger(__name__)
 
+
 def load_cdn_config(config_path: str = "config/cdn-config.yaml") -> Dict[str, Any]:
     """
     Load CDN configuration from YAML file.
@@ -25,6 +26,7 @@ def load_cdn_config(config_path: str = "config/cdn-config.yaml") -> Dict[str, An
     except Exception as e:
         logger.error(f"Failed to load CDN config: {e}")
         return {}
+
 
 def map_cache_rules_to_middleware(cdn_config: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
@@ -78,10 +80,12 @@ def map_cache_rules_to_middleware(cdn_config: Dict[str, Any]) -> List[Dict[str, 
         # But generally, if we set browser TTL, we might want server to cache public GETs too.
         # Let's be conservative and only set cache-control headers.
 
-        rules.append({
-            "path_regex": path_regex,
-            "cache_control": cache_control,
-            "server_ttl": None # Managed separately or added to config later
-        })
+        rules.append(
+            {
+                "path_regex": path_regex,
+                "cache_control": cache_control,
+                "server_ttl": None,  # Managed separately or added to config later
+            }
+        )
 
     return rules

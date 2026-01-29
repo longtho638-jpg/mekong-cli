@@ -1,6 +1,7 @@
 """
 Gumroad Webhook Handler (Legacy).
 """
+
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 
 from .models import GumroadPurchase
@@ -14,6 +15,7 @@ _customers = {}
 _purchases = []
 _affiliates = {}
 
+
 @router.post("/gumroad")
 async def gumroad_webhook(request: Request, background_tasks: BackgroundTasks):
     try:
@@ -24,6 +26,7 @@ async def gumroad_webhook(request: Request, background_tasks: BackgroundTasks):
         custom_fields = {}
         if "custom_fields" in data:
             import json
+
             try:
                 custom_fields = json.loads(data.get("custom_fields", "{}"))
             except (json.JSONDecodeError, TypeError):
@@ -43,9 +46,7 @@ async def gumroad_webhook(request: Request, background_tasks: BackgroundTasks):
             purchaser_id=data.get("purchaser_id"),
             custom_fields=custom_fields if custom_fields else None,
         )
-        background_tasks.add_task(
-            process_purchase, purchase, _customers, _purchases, _affiliates
-        )
+        background_tasks.add_task(process_purchase, purchase, _customers, _purchases, _affiliates)
         return {"status": "success", "message": "Purchase received"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -70,7 +71,7 @@ async def list_affiliates():
                 "total_commission_paid": aff["total_commission_paid"],
             }
             for aff in _affiliates.values()
-        ]
+        ],
     }
 
 

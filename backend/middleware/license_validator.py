@@ -3,6 +3,7 @@ License Validator Middleware
 
 Intercepts requests to ensure a valid license key is present and active.
 """
+
 import logging
 from typing import List, Optional
 
@@ -15,6 +16,7 @@ from backend.core.licensing.models import LicenseStatus
 
 logger = logging.getLogger(__name__)
 
+
 class LicenseValidatorMiddleware(BaseHTTPMiddleware):
     """
     Middleware to validate license keys on incoming requests.
@@ -26,7 +28,7 @@ class LicenseValidatorMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         excluded_paths: Optional[List[str]] = None,
-        license_header: str = "X-Agency-License-Key"
+        license_header: str = "X-Agency-License-Key",
     ):
         super().__init__(app)
         self.excluded_paths = excluded_paths or [
@@ -36,9 +38,9 @@ class LicenseValidatorMiddleware(BaseHTTPMiddleware):
             "/redoc",
             "/openapi.json",
             "/api/auth",
-            "/api/licenses/validate", # Allow validating without a valid license header
-            "/api/licenses/info",     # Allow checking info
-            "/metrics"
+            "/api/licenses/validate",  # Allow validating without a valid license header
+            "/api/licenses/info",  # Allow checking info
+            "/metrics",
         ]
         self.license_header = license_header
         # Initialize service lazily or per request to avoid startup issues if DB not ready
@@ -97,7 +99,7 @@ class LicenseValidatorMiddleware(BaseHTTPMiddleware):
             try:
                 # Basic validation first (fast)
                 if not self.service.validator.validate(license_key).valid:
-                     return Response("Invalid License Key Format", status_code=403)
+                    return Response("Invalid License Key Format", status_code=403)
 
                 # Full validation (DB) - simplified for middleware to avoid heavy DB hit every request?
                 # Maybe cache this?

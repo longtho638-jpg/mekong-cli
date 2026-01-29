@@ -25,7 +25,7 @@ class AesEncryptionService(IEncryptionService):
 
     def _get_fernet(self) -> Fernet:
         if not self.key:
-             raise ValueError("Encryption key is required for AesEncryptionService")
+            raise ValueError("Encryption key is required for AesEncryptionService")
 
         # Ensure key is 32 url-safe base64-encoded bytes
         # If the provided key is a password, we should derive a key,
@@ -36,7 +36,7 @@ class AesEncryptionService(IEncryptionService):
             return Fernet(self.key)
         except Exception:
             # Assume it's a password and derive
-            salt = b'agency_os_backup_salt' # In prod, store salt with backup
+            salt = b"agency_os_backup_salt"  # In prod, store salt with backup
             kdf = PBKDF2HMAC(
                 algorithm=hashes.SHA256(),
                 length=32,

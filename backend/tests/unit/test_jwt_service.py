@@ -18,18 +18,18 @@ class MockRedis:
     async def exists(self, key):
         return 1 if key in self.store else 0
 
+
 @pytest.fixture
 def jwt_service_fixture():
     service = JWTService()
     service.redis = MockRedis()
     return service
 
+
 @pytest.mark.asyncio
 async def test_create_access_token(jwt_service_fixture):
     token, jti, expire = jwt_service_fixture.create_access_token(
-        user_id="user123",
-        client_id="client1",
-        scope="read"
+        user_id="user123", client_id="client1", scope="read"
     )
     assert token is not None
     assert jti is not None
@@ -41,35 +41,31 @@ async def test_create_access_token(jwt_service_fixture):
     assert payload["scope"] == "read"
     assert payload["jti"] == jti
 
+
 @pytest.mark.asyncio
 async def test_token_expiration(jwt_service_fixture):
     # Create expired token
     token, _, _ = jwt_service_fixture.create_access_token(
-        user_id="user123",
-        client_id="client1",
-        scope="read",
-        expires_delta=timedelta(seconds=-1)
+        user_id="user123", client_id="client1", scope="read", expires_delta=timedelta(seconds=-1)
     )
 
     payload = await jwt_service_fixture.decode_token(token)
     assert payload is None  # Should fail exp check
 
+
 @pytest.mark.asyncio
 async def test_refresh_token(jwt_service_fixture):
     token, jti, expire = jwt_service_fixture.create_refresh_token(
-        user_id="user123",
-        client_id="client1",
-        scope="read"
+        user_id="user123", client_id="client1", scope="read"
     )
     payload = await jwt_service_fixture.decode_token(token)
     assert payload["type"] == "refresh"
 
+
 @pytest.mark.asyncio
 async def test_revocation(jwt_service_fixture):
     token, jti, expire = jwt_service_fixture.create_access_token(
-        user_id="user123",
-        client_id="client1",
-        scope="read"
+        user_id="user123", client_id="client1", scope="read"
     )
 
     # Verify valid

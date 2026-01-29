@@ -1,6 +1,7 @@
 """
 Admin Ops Report Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -14,11 +15,13 @@ class ReportType(Enum):
     QUARTERLY = "quarterly"
     ON_DEMAND = "on_demand"
 
+
 class ReportFormat(Enum):
     MARKDOWN = "markdown"
     HTML = "html"
     PDF = "pdf"
     JSON = "json"
+
 
 @dataclass
 class Report:

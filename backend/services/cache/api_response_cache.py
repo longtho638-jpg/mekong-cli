@@ -15,12 +15,15 @@ from backend.services.cache.metrics import MetricsContext, global_metrics
 
 logger = logging.getLogger(__name__)
 
+
 class ResponseCache:
     def __init__(self, redis_client: redis.Redis, prefix: str = "api:response"):
         self.redis = redis_client
         self.prefix = prefix
 
-    def _make_key(self, request: Request, user_id: Optional[str] = None, vary_by: list = None) -> str:
+    def _make_key(
+        self, request: Request, user_id: Optional[str] = None, vary_by: list = None
+    ) -> str:
         """
         Generate cache key based on:
         - Method
@@ -43,7 +46,7 @@ class ResponseCache:
                 key_parts.append(f"h:{header}={val}")
 
         key_str = "|".join(key_parts)
-        hash_digest = hashlib.sha256(key_str.encode('utf-8')).hexdigest()
+        hash_digest = hashlib.sha256(key_str.encode("utf-8")).hexdigest()
 
         return f"{self.prefix}:{hash_digest}"
 
@@ -69,7 +72,7 @@ class ResponseCache:
                 payload = {
                     "content": response_data,
                     "status_code": status_code,
-                    "media_type": "application/json"
+                    "media_type": "application/json",
                 }
                 serialized = json.dumps(payload)
                 await self.redis.set(key, serialized, ex=ttl)

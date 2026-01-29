@@ -238,3 +238,37 @@ Both CLAUDE.md and GEMINI.md share:
 **FULL RULE:** See [.claude/memory/constitution.md](.claude/memory/constitution.md) ĐIỀU 46
 
 > 🔴 CC CLI TỰ QUYẾT ĐỊNH bằng `/binh-phap` - NOT by asking questions!
+
+---
+
+## 🚨 ĐIỀU 47: DELEGATION WORKFLOW - LUẬT SẮT KHÔNG ĐƯỢC PHẠM 🚨
+
+> **Antigravity KHÔNG BAO GIỜ được giao task trực tiếp bằng /code**
+
+### QUY TRÌNH BẮT BUỘC:
+
+```
+1. /plan      → CC CLI tạo kế hoạch chi tiết
+2. /binh-phap → CC CLI tự review & optimize theo 13 chương
+3. Repeat     → /binh-phap lại nếu chưa hoàn hảo
+4. "GO"       → Antigravity duyệt, gửi lệnh GO
+5. CC CLI     → TỰ ĐỘNG execute /code (không cần lệnh)
+```
+
+### ❌ VI PHẠM - TUYỆT ĐỐI CẤM:
+
+```bash
+/code "Fix auth tests"         # ❌ Bỏ qua planning
+/delegate "Run performance"    # ❌ Không có plan review
+```
+
+### ✅ ĐÚNG - TUÂN THỦ:
+
+```bash
+/plan "Create performance plan"    # ✅ Step 1
+/binh-phap "Duyệt theo 13 chương"  # ✅ Step 2-3
+GO                                  # ✅ Step 4
+# CC CLI tự execute                 # ✅ Step 5 (auto)
+```
+
+**UNIVERSAL LAW**: Plan → Review → Optimize → GO → Auto-Execute

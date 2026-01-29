@@ -21,6 +21,7 @@ from backend.services.template_service import template_service
 
 logger = logging.getLogger(__name__)
 
+
 class EmailService:
     """
     High-level email service that delegates to specific providers.
@@ -58,7 +59,7 @@ class EmailService:
                     host=settings.smtp_host,
                     port=settings.smtp_port,
                     user=settings.smtp_user,
-                    password=settings.smtp_password
+                    password=settings.smtp_password,
                 )
 
             else:
@@ -79,7 +80,7 @@ class EmailService:
         bcc: Optional[List[str]] = None,
         reply_to: Optional[str] = None,
         attachments: Optional[List[Dict[str, Any]]] = None,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Send an email using the configured provider.
@@ -99,7 +100,7 @@ class EmailService:
             bcc=bcc,
             reply_to=reply_to,
             attachments=attachments,
-            metadata=metadata
+            metadata=metadata,
         )
 
         try:
@@ -115,20 +116,19 @@ class EmailService:
         subject: str,
         template_name: str,
         template_context: Dict[str, Any],
-        **kwargs
+        **kwargs,
     ) -> Dict[str, Any]:
         """
         Send an email using a Jinja2 template.
         """
         try:
-            html_content = await self.template_service.render_template(template_name, template_context)
+            html_content = await self.template_service.render_template(
+                template_name, template_context
+            )
             # Optional: Generate text version from HTML or separate template
 
             return await self.send_email(
-                to_email=to_email,
-                subject=subject,
-                html_content=html_content,
-                **kwargs
+                to_email=to_email, subject=subject, html_content=html_content, **kwargs
             )
         except Exception as e:
             logger.error(f"Failed to render/send template email {template_name}: {e}")
@@ -147,8 +147,8 @@ class EmailService:
             template_context={
                 "user_name": name,
                 "action_url": verify_url,
-                "unsubscribe_url": "#" # TODO: Real unsubscribe link
-            }
+                "unsubscribe_url": "#",  # TODO: Real unsubscribe link
+            },
         )
 
     async def send_purchase_email(self, email: str, license_key: str, product_name: str) -> bool:
@@ -187,17 +187,16 @@ class EmailService:
 
         try:
             await self.send_email(
-                to_email=email,
-                subject=subject,
-                html_content=html_body,
-                text_content=text_body
+                to_email=email, subject=subject, html_content=html_body, text_content=text_body
             )
             return True
         except Exception:
             return False
 
+
 # Global instance
 email_service = EmailService()
+
 
 def get_email_service():
     return email_service

@@ -15,6 +15,7 @@ from backend.api.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class TemplateService:
     def __init__(self, template_dir: Optional[str] = None):
         if not template_dir:
@@ -29,7 +30,7 @@ class TemplateService:
             self.env = Environment(
                 loader=FileSystemLoader(self.template_dir),
                 autoescape=select_autoescape(["html", "xml"]),
-                enable_async=True  # Enable async rendering
+                enable_async=True,  # Enable async rendering
             )
             logger.info(f"TemplateService initialized with dir: {self.template_dir}")
         except Exception as e:
@@ -51,7 +52,7 @@ class TemplateService:
                 "project_name": settings.project_name,
                 "frontend_url": settings.frontend_url,
                 "support_email": settings.default_from_email,
-                **context
+                **context,
             }
 
             return await template.render_async(full_context)
@@ -74,7 +75,7 @@ class TemplateService:
                 "project_name": settings.project_name,
                 "frontend_url": settings.frontend_url,
                 "support_email": settings.default_from_email,
-                **context
+                **context,
             }
 
             return template.render(full_context)
@@ -82,8 +83,10 @@ class TemplateService:
             logger.error(f"Failed to render template {template_name}: {str(e)}")
             raise ValueError(f"Failed to render template {template_name}: {str(e)}")
 
+
 # Singleton instance
 template_service = TemplateService()
+
 
 def get_template_service():
     return template_service

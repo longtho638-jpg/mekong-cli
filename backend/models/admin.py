@@ -13,6 +13,7 @@ class FeatureFlag(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+
 class FeatureFlagCreate(BaseModel):
     key: str
     enabled: bool
@@ -20,10 +21,12 @@ class FeatureFlagCreate(BaseModel):
     environment: str = "production"
     rules: Optional[Dict[str, Any]] = {}
 
+
 class FeatureFlagUpdate(BaseModel):
     enabled: Optional[bool] = None
     description: Optional[str] = None
     rules: Optional[Dict[str, Any]] = None
+
 
 class SystemSetting(BaseModel):
     key: str
@@ -33,9 +36,11 @@ class SystemSetting(BaseModel):
     updated_at: Optional[datetime] = None
     updated_by: Optional[str] = None
 
+
 class SystemSettingUpdate(BaseModel):
     value: Dict[str, Any]
     description: Optional[str] = None
+
 
 class AdminUser(BaseModel):
     id: str
@@ -47,10 +52,12 @@ class AdminUser(BaseModel):
     user_metadata: Dict[str, Any] = {}
     banned_until: Optional[datetime] = None
 
+
 class AdminUserUpdate(BaseModel):
     role: Optional[str] = None
     password: Optional[str] = None
-    ban_duration: Optional[str] = None # e.g. "7d", "forever", "none"
+    ban_duration: Optional[str] = None  # e.g. "7d", "forever", "none"
+
 
 class AdminAuditLog(BaseModel):
     id: str

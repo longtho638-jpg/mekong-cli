@@ -16,13 +16,15 @@ def mock_redis():
 
     # Mock pipeline
     pipeline = AsyncMock()
-    pipeline.execute = AsyncMock(return_value=[1, 1]) # Default success
+    pipeline.execute = AsyncMock(return_value=[1, 1])  # Default success
     mock.pipeline.return_value = pipeline
     return mock
+
 
 @pytest.fixture
 def service(mock_redis):
     return RateLimiterService(redis_client=mock_redis)
+
 
 @pytest.mark.asyncio
 async def test_sliding_window_allow(service, mock_redis):
@@ -43,6 +45,7 @@ async def test_sliding_window_allow(service, mock_redis):
     assert remaining == 9
     service.sliding_window.check_rate_limit.assert_called_with("test:key", 10, 60)
 
+
 @pytest.mark.asyncio
 async def test_token_bucket_allow(service):
     service.token_bucket.check_rate_limit = AsyncMock(return_value=(True, 5))
@@ -52,6 +55,7 @@ async def test_token_bucket_allow(service):
     assert allowed is True
     assert remaining == 5
     service.token_bucket.check_rate_limit.assert_called_with("test:bucket", 10, 1.0)
+
 
 @pytest.mark.asyncio
 async def test_fixed_window_allow(service):
@@ -63,12 +67,14 @@ async def test_fixed_window_allow(service):
     assert remaining == 1
     service.fixed_window.check_rate_limit.assert_called_with("test:fixed", 10, 60)
 
+
 @pytest.mark.asyncio
 async def test_get_reset_time_sliding(service):
     service.sliding_window.get_reset_time = AsyncMock(return_value=1234567890)
 
     reset = await service.get_reset_time("key", "sliding_window", 60)
     assert reset == 1234567890
+
 
 class AsyncIterator:
     def __init__(self, items):
@@ -85,6 +91,7 @@ class AsyncIterator:
         self.idx += 1
         return item
 
+
 @pytest.mark.asyncio
 async def test_reset(service, mock_redis):
     # Mock scan_iter to return an async iterator
@@ -93,4 +100,3 @@ async def test_reset(service, mock_redis):
     await service.reset("key")
 
     assert mock_redis.delete.call_count >= 2
-

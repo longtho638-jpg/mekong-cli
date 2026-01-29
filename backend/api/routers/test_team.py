@@ -50,15 +50,20 @@ def mock_redis_services():
     with p1, p2, p3, p4, p5, p6:
         yield mock_redis
 
+
 # Define fixture to mock CacheWarmer for all tests in this module
 @pytest.fixture(scope="module", autouse=True)
 def mock_cache_warmer():
     with patch("backend.services.cache.warming.CacheWarmer") as MockWarmer:
         # Configure the mock to return an async initialize method that does nothing
         mock_instance = MockWarmer.return_value
-        async def async_init(): return None
+
+        async def async_init():
+            return None
+
         mock_instance.initialize.side_effect = async_init
         yield MockWarmer
+
 
 @pytest.fixture
 def client():
@@ -71,11 +76,17 @@ def client():
         return await call_next(request)
 
     # Patch RateLimitMiddleware.dispatch
-    p_middleware = patch("backend.middleware.rate_limiter.RateLimitMiddleware.dispatch", side_effect=skip_middleware, autospec=True)
+    p_middleware = patch(
+        "backend.middleware.rate_limiter.RateLimitMiddleware.dispatch",
+        side_effect=skip_middleware,
+        autospec=True,
+    )
 
     # Also patch IpBlocker to be safe (it's used in RateLimitMiddleware but we are skipping it,
     # but other things might use it)
-    p_ip_blocker = patch("backend.services.ip_blocker.ip_blocker.is_blocked", new_callable=AsyncMock)
+    p_ip_blocker = patch(
+        "backend.services.ip_blocker.ip_blocker.is_blocked", new_callable=AsyncMock
+    )
     p_ip_blocker.return_value = False
 
     with p_middleware, p_ip_blocker as mock_is_blocked:
@@ -84,6 +95,7 @@ def client():
         # Use context manager to handle startup/shutdown events properly
         with TestClient(app) as c:
             yield c
+
 
 class TestTeamCreation:
     """Test team creation endpoint"""
@@ -332,9 +344,7 @@ class TestMemberListing:
         # Remove a member
         client.delete(f"/api/team/{self.team_id}/member/m1@test.com")
 
-        response = client.get(
-            f"/api/team/{self.team_id}/members", params={"include_removed": True}
-        )
+        response = client.get(f"/api/team/{self.team_id}/members", params={"include_removed": True})
         assert response.status_code == 200
         data = response.json()
         assert len(data["members"]) == 3  # All members including removed
@@ -383,7 +393,6 @@ class TestSeatAvailability:
         assert response.status_code == 200
         data = response.json()
         assert data["available_seats"] == 0  # 3 max - 1 owner - 2 invited = 0
-
 
     def test_check_seats_enterprise_unlimited(self, client):
         """Test enterprise tier shows unlimited seats"""

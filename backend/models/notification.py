@@ -30,19 +30,25 @@ class Notification(Base):
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
 
+
 class UserNotificationPreferences(Base):
     __tablename__ = "user_notification_preferences"
 
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True)
+    user_id = Column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
+    )
     email_enabled = Column(Boolean, default=True)
     sms_enabled = Column(Boolean, default=False)
     push_enabled = Column(Boolean, default=True)
-    channels = Column(JSONB, default=lambda: {
-        "system_updates": ["email", "push"],
-        "payment_alerts": ["email", "sms", "push"],
-        "audit_logs": ["email"]
-    })
+    channels = Column(
+        JSONB,
+        default=lambda: {
+            "system_updates": ["email", "push"],
+            "payment_alerts": ["email", "sms", "push"],
+            "audit_logs": ["email"],
+        },
+    )
     quiet_hours_enabled = Column(Boolean, default=False)
     quiet_hours_start = Column(String(5), default="22:00")
     quiet_hours_end = Column(String(5), default="08:00")
@@ -58,9 +64,10 @@ class UserNotificationPreferences(Base):
             "quiet_hours": {
                 "enabled": self.quiet_hours_enabled,
                 "start": self.quiet_hours_start,
-                "end": self.quiet_hours_end
-            }
+                "end": self.quiet_hours_end,
+            },
         }
+
 
 class PushSubscription(Base):
     __tablename__ = "push_subscriptions"
@@ -73,17 +80,21 @@ class PushSubscription(Base):
     user_agent = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+
 class NotificationDelivery(Base):
     __tablename__ = "notification_deliveries"
 
     id = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
-    notification_id = Column(UUID(as_uuid=True), ForeignKey("notifications.id", ondelete="CASCADE"), nullable=True)
+    notification_id = Column(
+        UUID(as_uuid=True), ForeignKey("notifications.id", ondelete="CASCADE"), nullable=True
+    )
     channel = Column(String(20), nullable=False)
     status = Column(String(20), nullable=False)
     provider = Column(String(50), nullable=True)
     provider_message_id = Column(Text, nullable=True)
     error_message = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
 
 class NotificationTemplate(Base):
     __tablename__ = "notification_templates"

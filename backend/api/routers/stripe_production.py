@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/payments/stripe", tags=["Payments (Stripe)"])
 
+
 # Request Models
 class CheckoutRequest(BaseModel):
     plan_id: str
@@ -31,26 +32,30 @@ class CheckoutRequest(BaseModel):
     customer_email: Optional[str] = None
     trial_days: Optional[int] = None
 
+
 class PortalRequest(BaseModel):
     customer_id: str
     return_url: str
 
+
 class WebhookResponse(BaseModel):
     status: str
     type: str
+
 
 # Dependencies
 def get_subscription_manager():
     db = get_db()
     return SubscriptionManager(db)
 
+
 def get_webhook_handler(db=Depends(get_db)):
     return WebhookHandler(db)
 
+
 @router.post("/checkout", response_model=Dict[str, Any])
 async def create_checkout_session(
-    request: CheckoutRequest,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    request: CheckoutRequest, manager: SubscriptionManager = Depends(get_subscription_manager)
 ):
     """
     Create a Stripe Checkout session for a subscription.
@@ -62,7 +67,7 @@ async def create_checkout_session(
             customer_email=request.customer_email,
             success_url=request.success_url,
             cancel_url=request.cancel_url,
-            trial_days=request.trial_days
+            trial_days=request.trial_days,
         )
         return session
     except ValueError as e:
@@ -71,29 +76,29 @@ async def create_checkout_session(
         logger.error(f"Checkout creation failed: {e}")
         raise HTTPException(status_code=500, detail="Checkout creation failed")
 
+
 @router.post("/portal", response_model=Dict[str, Any])
 async def create_portal_session(
-    request: PortalRequest,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    request: PortalRequest, manager: SubscriptionManager = Depends(get_subscription_manager)
 ):
     """
     Create a Stripe Billing Portal session for customer self-service.
     """
     try:
         session = manager.create_portal_session(
-            customer_id=request.customer_id,
-            return_url=request.return_url
+            customer_id=request.customer_id, return_url=request.return_url
         )
         return session
     except Exception as e:
         logger.error(f"Portal session creation failed: {e}")
         raise HTTPException(status_code=500, detail="Portal session creation failed")
 
+
 @router.post("/webhook")
 async def stripe_webhook(
     request: Request,
     stripe_signature: str = Header(None, alias="Stripe-Signature"),
-    handler: WebhookHandler = Depends(get_webhook_handler)
+    handler: WebhookHandler = Depends(get_webhook_handler),
 ):
     """
     Stripe Webhook Endpoint.
@@ -114,11 +119,12 @@ async def stripe_webhook(
         logger.error(f"Webhook processing error: {e}")
         raise HTTPException(status_code=500, detail="Internal processing error")
 
+
 @router.post("/subscription/{subscription_id}/cancel")
 async def cancel_subscription(
     subscription_id: str,
     immediately: bool = False,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    manager: SubscriptionManager = Depends(get_subscription_manager),
 ):
     """
     Cancel a subscription.
@@ -126,12 +132,12 @@ async def cancel_subscription(
     try:
         return manager.cancel_subscription(subscription_id, immediately)
     except Exception as e:
-         raise HTTPException(status_code=500, detail=f"Cancellation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Cancellation failed: {str(e)}")
+
 
 @router.get("/subscription/{subscription_id}")
 async def get_subscription(
-    subscription_id: str,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    subscription_id: str, manager: SubscriptionManager = Depends(get_subscription_manager)
 ):
     """
     Get subscription details.
@@ -141,10 +147,10 @@ async def get_subscription(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval failed: {str(e)}")
 
+
 @router.get("/customer/{customer_id}/payment_methods")
 async def list_payment_methods(
-    customer_id: str,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    customer_id: str, manager: SubscriptionManager = Depends(get_subscription_manager)
 ):
     """
     List payment methods for a customer.
@@ -154,11 +160,12 @@ async def list_payment_methods(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Listing payment methods failed: {str(e)}")
 
+
 @router.get("/customer/{customer_id}/invoices")
 async def list_invoices(
     customer_id: str,
     limit: int = 10,
-    manager: SubscriptionManager = Depends(get_subscription_manager)
+    manager: SubscriptionManager = Depends(get_subscription_manager),
 ):
     """
     List invoices for a customer.

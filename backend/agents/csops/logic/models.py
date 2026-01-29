@@ -1,6 +1,7 @@
 """
 Health Score Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -11,6 +12,7 @@ class RiskLevel(Enum):
     HEALTHY = "healthy"
     AT_RISK = "at_risk"
     CRITICAL = "critical"
+
 
 @dataclass
 class UserHealth:
@@ -25,10 +27,17 @@ class UserHealth:
 
     @property
     def health_score(self) -> int:
-        return int(self.usage_score * 0.4 + self.engagement_score * 0.3 + self.support_score * 0.2 + self.tenure_score * 0.1)
+        return int(
+            self.usage_score * 0.4
+            + self.engagement_score * 0.3
+            + self.support_score * 0.2
+            + self.tenure_score * 0.1
+        )
 
     @property
     def risk_level(self) -> RiskLevel:
-        if self.health_score >= 70: return RiskLevel.HEALTHY
-        if self.health_score >= 40: return RiskLevel.AT_RISK
+        if self.health_score >= 70:
+            return RiskLevel.HEALTHY
+        if self.health_score >= 40:
+            return RiskLevel.AT_RISK
         return RiskLevel.CRITICAL

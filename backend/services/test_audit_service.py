@@ -24,17 +24,21 @@ from backend.services.audit_service import (
 def compile_uuid(type_, compiler, **kw):
     return "VARCHAR(36)"
 
+
 @compiles(INET, "sqlite")
 def compile_inet(type_, compiler, **kw):
     return "VARCHAR(45)"
+
 
 @compiles(JSONB, "sqlite")
 def compile_jsonb(type_, compiler, **kw):
     return "JSON"
 
+
 @compiles(BigInteger, "sqlite")
 def compile_big_integer(type_, compiler, **kw):
     return "INTEGER"
+
 
 # Define Mock User model to satisfy Foreign Key constraints
 class User(Base):
@@ -42,11 +46,13 @@ class User(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True)
 
+
 # Test Data
 USER_ID_1 = str(uuid.uuid4())
 USER_ID_2 = str(uuid.uuid4())
 ADMIN_ID = str(uuid.uuid4())
 TARGET_USER_ID = str(uuid.uuid4())
+
 
 # Setup fixtures
 @pytest.fixture
@@ -72,10 +78,12 @@ def db_session():
     yield session
     session.close()
 
+
 @pytest.fixture
 def service():
     """Get audit service instance"""
     return AuditService()
+
 
 @pytest.mark.asyncio
 async def test_audit_service_initialization(service):
@@ -83,6 +91,7 @@ async def test_audit_service_initialization(service):
     print("Testing audit service initialization...")
     assert service is not None
     print("✓ Initialization test passed")
+
 
 @pytest.mark.asyncio
 async def test_user_login_logging(service, db_session):
@@ -95,7 +104,7 @@ async def test_user_login_logging(service, db_session):
         user_id=USER_ID_1,
         ip_address="192.168.1.100",
         user_agent="Mozilla/5.0",
-        success=True
+        success=True,
     )
 
     assert log_entry.id is not None, "Should return valid entry with ID"
@@ -108,7 +117,7 @@ async def test_user_login_logging(service, db_session):
         ip_address="192.168.1.200",
         user_agent="Mozilla/5.0",
         success=False,
-        error="Invalid credentials"
+        error="Invalid credentials",
     )
 
     assert failed_log.id is not None
@@ -119,18 +128,19 @@ async def test_user_login_logging(service, db_session):
     assert len(logs) == 2, "Should have 2 log entries"
 
     # Check successful login
-    success_log = next((log for log in logs if str(log['user_id']) == USER_ID_1), None)
+    success_log = next((log for log in logs if str(log["user_id"]) == USER_ID_1), None)
     assert success_log is not None
-    assert success_log['metadata']['result'] == 'success'
-    assert success_log['metadata']['severity'] == 'info'
+    assert success_log["metadata"]["result"] == "success"
+    assert success_log["metadata"]["severity"] == "info"
 
     # Check failed login
-    failed_log_entry = next((log for log in logs if str(log['user_id']) == USER_ID_2), None)
+    failed_log_entry = next((log for log in logs if str(log["user_id"]) == USER_ID_2), None)
     assert failed_log_entry is not None
-    assert failed_log_entry['metadata']['result'] == 'failure'
-    assert failed_log_entry['metadata']['severity'] == 'warning'
+    assert failed_log_entry["metadata"]["result"] == "failure"
+    assert failed_log_entry["metadata"]["severity"] == "warning"
 
     print("✓ User login logging test passed")
+
 
 @pytest.mark.asyncio
 async def test_purchase_logging(service, db_session):
@@ -146,7 +156,7 @@ async def test_purchase_logging(service, db_session):
         currency="USD",
         product_id="prod_pro_license",
         success=True,
-        transaction_id="txn_abc123"
+        transaction_id="txn_abc123",
     )
 
     assert log_entry.id is not None
@@ -156,17 +166,18 @@ async def test_purchase_logging(service, db_session):
     assert len(logs) == 1
 
     purchase_log = logs[0]
-    assert purchase_log['metadata']['event_type'] == AuditEventType.PURCHASE_COMPLETED
-    assert purchase_log['resource_type'] == 'purchase'
-    assert purchase_log['resource_id'] == 'txn_abc123'
+    assert purchase_log["metadata"]["event_type"] == AuditEventType.PURCHASE_COMPLETED
+    assert purchase_log["resource_type"] == "purchase"
+    assert purchase_log["resource_id"] == "txn_abc123"
 
     # Verify metadata
-    metadata = purchase_log['metadata']
-    assert metadata['amount'] == 99.99
-    assert metadata['currency'] == 'USD'
-    assert metadata['product_id'] == 'prod_pro_license'
+    metadata = purchase_log["metadata"]
+    assert metadata["amount"] == 99.99
+    assert metadata["currency"] == "USD"
+    assert metadata["product_id"] == "prod_pro_license"
 
     print("✓ Purchase logging test passed")
+
 
 @pytest.mark.asyncio
 async def test_api_call_logging(service, db_session):
@@ -182,7 +193,7 @@ async def test_api_call_logging(service, db_session):
         method="GET",
         status_code=200,
         response_time_ms=45.2,
-        user_agent="API Client/1.0"
+        user_agent="API Client/1.0",
     )
 
     # Test failed API call
@@ -193,7 +204,7 @@ async def test_api_call_logging(service, db_session):
         endpoint="/api/admin",
         method="POST",
         status_code=403,
-        response_time_ms=12.5
+        response_time_ms=12.5,
     )
 
     # Test server error
@@ -204,23 +215,24 @@ async def test_api_call_logging(service, db_session):
         endpoint="/api/process",
         method="POST",
         status_code=500,
-        response_time_ms=2500.0
+        response_time_ms=2500.0,
     )
 
     logs = await service.get_logs(db_session)
     assert len(logs) == 3
 
     # Check severity levels
-    success_log = next((log for log in logs if log['metadata']['status_code'] == 200), None)
-    assert success_log['metadata']['severity'] == 'info'
+    success_log = next((log for log in logs if log["metadata"]["status_code"] == 200), None)
+    assert success_log["metadata"]["severity"] == "info"
 
-    client_error = next((log for log in logs if log['metadata']['status_code'] == 403), None)
-    assert client_error['metadata']['severity'] == 'warning'
+    client_error = next((log for log in logs if log["metadata"]["status_code"] == 403), None)
+    assert client_error["metadata"]["severity"] == "warning"
 
-    server_error = next((log for log in logs if log['metadata']['status_code'] == 500), None)
-    assert server_error['metadata']['severity'] == 'critical'
+    server_error = next((log for log in logs if log["metadata"]["status_code"] == 500), None)
+    assert server_error["metadata"]["severity"] == "critical"
 
     print("✓ API call logging test passed")
+
 
 @pytest.mark.asyncio
 async def test_admin_action_logging(service, db_session):
@@ -235,10 +247,7 @@ async def test_admin_action_logging(service, db_session):
         action_type=AuditEventType.ADMIN_USER_CREATE,
         action_description="Created new user account",
         target_user_id=TARGET_USER_ID,
-        changes={
-            "email": "newuser@example.com",
-            "role": "member"
-        }
+        changes={"email": "newuser@example.com", "role": "member"},
     )
 
     # Test config change
@@ -248,11 +257,7 @@ async def test_admin_action_logging(service, db_session):
         ip_address="192.168.1.50",
         action_type=AuditEventType.ADMIN_CONFIG_CHANGE,
         action_description="Updated system configuration",
-        changes={
-            "setting": "max_users",
-            "old_value": 100,
-            "new_value": 200
-        }
+        changes={"setting": "max_users", "old_value": 100, "new_value": 200},
     )
 
     logs = await service.get_logs(db_session)
@@ -260,14 +265,18 @@ async def test_admin_action_logging(service, db_session):
 
     # All admin actions should be WARNING severity
     for log in logs:
-        assert log['metadata']['severity'] == 'warning'
+        assert log["metadata"]["severity"] == "warning"
 
     # Check user creation log
-    user_create = next((log for log in logs if log['metadata']['event_type'] == AuditEventType.ADMIN_USER_CREATE), None)
+    user_create = next(
+        (log for log in logs if log["metadata"]["event_type"] == AuditEventType.ADMIN_USER_CREATE),
+        None,
+    )
     assert user_create is not None
-    assert user_create['resource_id'] == TARGET_USER_ID
+    assert user_create["resource_id"] == TARGET_USER_ID
 
     print("✓ Admin action logging test passed")
+
 
 @pytest.mark.asyncio
 async def test_query_filters(service, db_session):
@@ -277,7 +286,9 @@ async def test_query_filters(service, db_session):
     # Create test data
     await service.log_user_login(db_session, USER_ID_1, "192.168.1.1", None, success=True)
     await service.log_user_login(db_session, USER_ID_2, "192.168.1.2", None, success=True)
-    await service.log_user_login(db_session, USER_ID_1, "192.168.1.1", None, success=False, error="Bad password")
+    await service.log_user_login(
+        db_session, USER_ID_1, "192.168.1.1", None, success=False, error="Bad password"
+    )
 
     # Filter by user_id
     user1_logs = await service.get_logs(db_session, user_id=USER_ID_1)
@@ -296,6 +307,7 @@ async def test_query_filters(service, db_session):
 
     print("✓ Query filters test passed")
 
+
 @pytest.mark.asyncio
 async def test_json_export(service, db_session):
     """Test JSON export functionality"""
@@ -311,7 +323,7 @@ async def test_json_export(service, db_session):
         currency="USD",
         product_id="prod_starter",
         success=True,
-        transaction_id="txn_001"
+        transaction_id="txn_001",
     )
 
     # Export to JSON (returns list of dicts)
@@ -321,11 +333,12 @@ async def test_json_export(service, db_session):
     assert len(export_data) == 2
 
     entry = export_data[0]
-    assert 'timestamp' in entry
-    assert 'user_id' in entry
-    assert 'metadata' in entry
+    assert "timestamp" in entry
+    assert "user_id" in entry
+    assert "metadata" in entry
 
     print("✓ JSON export test passed")
+
 
 @pytest.mark.asyncio
 async def test_retention_policy(service, db_session):
@@ -333,6 +346,7 @@ async def test_retention_policy(service, db_session):
     print("\nTesting retention policy...")
     await service.archive_old_logs(db_session, retention_days=90)
     print("✓ Retention policy test passed (Placeholder)")
+
 
 @pytest.mark.asyncio
 async def test_statistics(service, db_session):
@@ -345,10 +359,11 @@ async def test_statistics(service, db_session):
 
     stats = await service.get_statistics(db_session)
 
-    assert stats['total_entries'] == 2
-    assert stats['last_24_hours'] == 2
+    assert stats["total_entries"] == 2
+    assert stats["last_24_hours"] == 2
 
     print("✓ Statistics test passed")
+
 
 def test_singleton_service():
     """Test singleton pattern"""

@@ -14,25 +14,30 @@ from backend.services.funnel_service import FunnelService
 
 router = APIRouter(prefix="/api/v1/analytics", tags=["analytics"])
 
+
 # Dependencies
 def get_analytics_service():
     return AnalyticsService()
 
+
 def get_funnel_service():
     return FunnelService()
+
 
 def get_cohort_service():
     return CohortService()
 
+
 def get_etl_service():
     return ETLService()
+
 
 @router.post("/track")
 async def track_event(
     event_data: Dict[str, Any],
     background_tasks: BackgroundTasks,
-    current_user = Depends(get_current_user),
-    service: AnalyticsService = Depends(get_analytics_service)
+    current_user=Depends(get_current_user),
+    service: AnalyticsService = Depends(get_analytics_service),
 ):
     """
     Track a user event.
@@ -57,18 +62,19 @@ async def track_event(
         event_name=event_name,
         event_data=payload,
         metadata=metadata,
-        session_id=session_id
+        session_id=session_id,
     )
 
     return {"status": "queued"}
+
 
 @router.get("/users/{user_id}/stats")
 @cache(ttl=300, prefix="analytics:user_stats", tags=["analytics"])
 async def get_user_statistics(
     user_id: str,
     days: int = 30,
-    current_user = Depends(get_current_user),
-    service: AnalyticsService = Depends(get_analytics_service)
+    current_user=Depends(get_current_user),
+    service: AnalyticsService = Depends(get_analytics_service),
 ):
     """Get analytics stats for a specific user."""
     # RBAC: Only allow admin or the user themselves
@@ -77,12 +83,13 @@ async def get_user_statistics(
 
     return service.get_user_stats(user_id, days=days)
 
+
 @router.get("/metrics/daily")
 @cache(ttl=3600, prefix="analytics:daily", tags=["analytics"])
 async def get_daily_metrics(
     days: int = 30,
-    current_user = Depends(get_current_user),
-    service: AnalyticsService = Depends(get_analytics_service)
+    current_user=Depends(get_current_user),
+    service: AnalyticsService = Depends(get_analytics_service),
 ):
     """Get daily system-wide metrics (Admin only)."""
     if current_user.get("role") != "admin":
@@ -90,19 +97,22 @@ async def get_daily_metrics(
 
     return service.get_daily_metrics(days=days)
 
+
 # --- Funnel & Cohort Analysis ---
+
 
 class FunnelRequest(BaseModel):
     steps: List[str]
     start_date: str
     end_date: str
 
+
 @router.post("/funnel")
 @cache(ttl=300, prefix="analytics:funnel", tags=["analytics"])
 async def analyze_funnel(
     request: FunnelRequest,
-    current_user = Depends(get_current_user),
-    service: FunnelService = Depends(get_funnel_service)
+    current_user=Depends(get_current_user),
+    service: FunnelService = Depends(get_funnel_service),
 ):
     """
     Analyze conversion funnel.
@@ -113,13 +123,14 @@ async def analyze_funnel(
 
     return service.analyze_funnel(request.steps, request.start_date, request.end_date)
 
+
 @router.get("/cohort")
 @cache(ttl=3600, prefix="analytics:cohort", tags=["analytics"])
 async def analyze_cohort(
     period_type: str = "weekly",
     periods: int = 8,
-    current_user = Depends(get_current_user),
-    service: CohortService = Depends(get_cohort_service)
+    current_user=Depends(get_current_user),
+    service: CohortService = Depends(get_cohort_service),
 ):
     """
     Analyze user retention cohorts.
@@ -130,14 +141,16 @@ async def analyze_cohort(
 
     return service.analyze_retention(period_type, periods)
 
+
 # --- ETL & Reporting Endpoints ---
+
 
 @router.post("/etl/run")
 async def run_etl_job(
     background_tasks: BackgroundTasks,
     target_date: Optional[date] = None,
-    current_user = Depends(get_current_user),
-    service: ETLService = Depends(get_etl_service)
+    current_user=Depends(get_current_user),
+    service: ETLService = Depends(get_etl_service),
 ):
     """Trigger daily ETL job manually (Admin only)."""
     if current_user.get("role") != "admin":
@@ -149,11 +162,11 @@ async def run_etl_job(
     result = service.run_daily_etl(target_date)
     return {"status": "success", "result": result}
 
+
 @router.get("/dashboard/overview")
 @cache(ttl=300, prefix="analytics:overview", tags=["analytics"])
 async def get_dashboard_overview(
-    current_user = Depends(get_current_user),
-    etl_service: ETLService = Depends(get_etl_service)
+    current_user=Depends(get_current_user), etl_service: ETLService = Depends(get_etl_service)
 ):
     """
     Get high-level dashboard metrics (MRR, Users, Churn).
@@ -169,17 +182,19 @@ async def get_dashboard_overview(
 
     # Helper to get latest metric
     def get_latest(metric_name):
-        res = db.table("metrics_snapshots")\
-            .select("metric_value, dimensions, date")\
-            .eq("metric_name", metric_name)\
-            .order("date", desc=True)\
-            .limit(1)\
+        res = (
+            db.table("metrics_snapshots")
+            .select("metric_value, dimensions, date")
+            .eq("metric_name", metric_name)
+            .order("date", desc=True)
+            .limit(1)
             .execute()
+        )
         return res.data[0] if res.data else None
 
     return {
         "mrr": get_latest("mrr"),
         "active_users": get_latest("total_users"),
         "new_users": get_latest("new_users"),
-        "churn_rate": get_latest("churn_rate_daily")
+        "churn_rate": get_latest("churn_rate_daily"),
     }

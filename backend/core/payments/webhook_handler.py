@@ -16,6 +16,7 @@ from backend.services.provisioning_service import ProvisioningService
 
 logger = logging.getLogger(__name__)
 
+
 class WebhookHandler:
     def __init__(self, db_client=None):
         self.stripe = StripeClient()
@@ -41,29 +42,29 @@ class WebhookHandler:
         """
         Route verified Stripe event to appropriate handler.
         """
-        event_type = event.get('type')
-        data = event.get('data', {}).get('object', {})
-        event_id = event.get('id')
+        event_type = event.get("type")
+        data = event.get("data", {}).get("object", {})
+        event_id = event.get("id")
 
         logger.info(f"Processing Stripe event: {event_type} (ID: {event_id})")
 
         # Idempotency check could happen here (check if event_id already processed)
         if self.db:
-             # Check payment_events table
-             pass
+            # Check payment_events table
+            pass
 
         try:
-            if event_type == 'checkout.session.completed':
+            if event_type == "checkout.session.completed":
                 return self._handle_checkout_completed(data)
-            elif event_type == 'invoice.payment_succeeded':
+            elif event_type == "invoice.payment_succeeded":
                 return await self.invoice_manager.handle_payment_succeeded(data)
-            elif event_type == 'invoice.payment_failed':
+            elif event_type == "invoice.payment_failed":
                 return await self.invoice_manager.handle_payment_failed(data)
-            elif event_type == 'customer.subscription.created':
+            elif event_type == "customer.subscription.created":
                 return self._handle_subscription_created(data)
-            elif event_type == 'customer.subscription.updated':
+            elif event_type == "customer.subscription.updated":
                 return self._handle_subscription_updated(data)
-            elif event_type == 'customer.subscription.deleted':
+            elif event_type == "customer.subscription.deleted":
                 return self._handle_subscription_deleted(data)
             else:
                 return {"status": "ignored", "type": event_type}
@@ -86,26 +87,24 @@ class WebhookHandler:
 
         logger.info(f"Checkout completed for tenant {tenant_id}, customer {customer_email}")
 
-        if mode == 'subscription' and tenant_id:
-             # Provisioning logic
-             self.provisioning.activate_subscription(
-                 tenant_id=tenant_id,
-                 plan="PRO", # Should ideally derive from price_id
-                 provider="stripe",
-                 subscription_id=subscription_id,
-                 customer_id=customer_id
-             )
+        if mode == "subscription" and tenant_id:
+            # Provisioning logic
+            self.provisioning.activate_subscription(
+                tenant_id=tenant_id,
+                plan="PRO",  # Should ideally derive from price_id
+                provider="stripe",
+                subscription_id=subscription_id,
+                customer_id=customer_id,
+            )
 
-             # License generation
-             try:
-                 license_key = self.licensing.generate(
-                    format="agencyos",
-                    tier="pro",
-                    email=customer_email
-                 )
-                 # Store license...
-                 if self.db:
-                     license_data = {
+            # License generation
+            try:
+                license_key = self.licensing.generate(
+                    format="agencyos", tier="pro", email=customer_email
+                )
+                # Store license...
+                if self.db:
+                    license_data = {
                         "license_key": license_key,
                         "email": customer_email,
                         "plan": "pro",
@@ -113,12 +112,14 @@ class WebhookHandler:
                         "metadata": {
                             "tenant_id": tenant_id,
                             "stripe_subscription_id": subscription_id,
-                            "stripe_customer_id": customer_id
-                        }
-                     }
-                     self.db.table("licenses").upsert(license_data, on_conflict="license_key").execute()
-             except Exception as e:
-                 logger.error(f"License generation failed: {e}")
+                            "stripe_customer_id": customer_id,
+                        },
+                    }
+                    self.db.table("licenses").upsert(
+                        license_data, on_conflict="license_key"
+                    ).execute()
+            except Exception as e:
+                logger.error(f"License generation failed: {e}")
 
         return {"status": "processed", "type": "checkout.session.completed"}
 
@@ -138,8 +139,7 @@ class WebhookHandler:
         # Update DB status to 'canceled'
         # Provisioning cancellation
         if self.provisioning:
-             self.provisioning.cancel_subscription(
-                 provider_subscription_id=subscription.get('id'),
-                 provider="stripe"
-             )
+            self.provisioning.cancel_subscription(
+                provider_subscription_id=subscription.get("id"), provider="stripe"
+            )
         return {"status": "processed", "type": "customer.subscription.deleted"}

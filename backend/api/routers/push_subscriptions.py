@@ -11,17 +11,19 @@ from backend.models.user import User
 
 router = APIRouter(prefix="/api/v1/notifications/push", tags=["Notifications"])
 
+
 class PushSubscriptionCreate(BaseModel):
     endpoint: str
     p256dh: str
     auth: str
     user_agent: Optional[str] = None
 
+
 @router.post("/subscribe", status_code=status.HTTP_201_CREATED)
 async def subscribe(
     sub_data: PushSubscriptionCreate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Register a new push subscription."""
     # Check if already exists
@@ -41,27 +43,29 @@ async def subscribe(
         endpoint=sub_data.endpoint,
         p256dh=sub_data.p256dh,
         auth=sub_data.auth,
-        user_agent=sub_data.user_agent
+        user_agent=sub_data.user_agent,
     )
     db.add(new_sub)
     db.commit()
 
     return {"status": "subscribed"}
 
+
 class UnsubscribeRequest(BaseModel):
     endpoint: str
+
 
 @router.post("/unsubscribe", status_code=status.HTTP_200_OK)
 async def unsubscribe(
     payload: UnsubscribeRequest,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     """Unsubscribe a specific device."""
     sub = db.execute(
         select(PushSubscription).where(
             PushSubscription.endpoint == payload.endpoint,
-            PushSubscription.user_id == current_user.id
+            PushSubscription.user_id == current_user.id,
         )
     ).scalar_one_or_none()
 

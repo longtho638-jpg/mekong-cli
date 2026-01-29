@@ -19,13 +19,25 @@ class ComplianceAgent:
         self.status = "ready"
         self.items: Dict[str, ComplianceItem] = {}
 
-    def add_requirement(self, name: str, regulation: RegulationType, description: str,
-                        risk_level: RiskLevel = RiskLevel.MEDIUM, due_days: int = 30, owner: str = "") -> ComplianceItem:
+    def add_requirement(
+        self,
+        name: str,
+        regulation: RegulationType,
+        description: str,
+        risk_level: RiskLevel = RiskLevel.MEDIUM,
+        due_days: int = 30,
+        owner: str = "",
+    ) -> ComplianceItem:
         """Add compliance requirement"""
         item_id = f"compliance_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
         item = ComplianceItem(
-            id=item_id, name=name, regulation=regulation, description=description,
-            risk_level=risk_level, due_date=datetime.now() + timedelta(days=due_days), owner=owner,
+            id=item_id,
+            name=name,
+            regulation=regulation,
+            description=description,
+            risk_level=risk_level,
+            due_date=datetime.now() + timedelta(days=due_days),
+            owner=owner,
         )
         self.items[item_id] = item
         return item
@@ -60,7 +72,9 @@ class ComplianceAgent:
 
     def get_high_risk(self) -> List[ComplianceItem]:
         """Get high/critical risk items"""
-        return [i for i in self.items.values() if i.risk_level in [RiskLevel.HIGH, RiskLevel.CRITICAL]]
+        return [
+            i for i in self.items.values() if i.risk_level in [RiskLevel.HIGH, RiskLevel.CRITICAL]
+        ]
 
     def get_stats(self) -> Dict:
         """Get compliance statistics"""

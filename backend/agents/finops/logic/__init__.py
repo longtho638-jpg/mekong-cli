@@ -1,6 +1,7 @@
 """
 Budget Manager Agent Facade.
 """
+
 from typing import Dict
 
 from .engine import BudgetEngine
@@ -15,8 +16,17 @@ class BudgetManagerAgent(BudgetEngine):
 
     def get_summary(self) -> Dict:
         return {
-            "budgets": [{"id": b.id, "name": b.name, "limit": b.limit, "spent": b.spent, "usage_percent": round(b.usage_percent, 1)} for b in self.budgets.values()],
+            "budgets": [
+                {
+                    "id": b.id,
+                    "name": b.name,
+                    "limit": b.limit,
+                    "spent": b.spent,
+                    "usage_percent": round(b.usage_percent, 1),
+                }
+                for b in self.budgets.values()
+            ],
             "total_limit": sum(b.limit for b in self.budgets.values()),
             "total_spent": sum(b.spent for b in self.budgets.values()),
-            "throttled": self.throttled
+            "throttled": self.throttled,
         }

@@ -11,6 +11,7 @@ from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
+
 class OptimizationService:
     """Service for optimizing static assets."""
 
@@ -36,8 +37,8 @@ class OptimizationService:
             output_path = f"{file_path}.gz"
 
         try:
-            with open(file_path, 'rb') as f_in:
-                with gzip.open(output_path, 'wb') as f_out:
+            with open(file_path, "rb") as f_in:
+                with gzip.open(output_path, "wb") as f_out:
                     shutil.copyfileobj(f_in, f_out)
             logger.info(f"Compressed {file_path} to {output_path}")
             return output_path
@@ -57,13 +58,9 @@ class OptimizationService:
             Stats dict with count of processed files.
         """
         if extensions is None:
-            extensions = ['.js', '.css', '.html', '.svg', '.json']
+            extensions = [".js", ".css", ".html", ".svg", ".json"]
 
-        stats = {
-            "processed": 0,
-            "failed": 0,
-            "bytes_saved": 0
-        }
+        stats = {"processed": 0, "failed": 0, "bytes_saved": 0}
 
         for root, _, files in os.walk(directory):
             for file in files:
@@ -77,7 +74,7 @@ class OptimizationService:
                     if compressed_path:
                         compressed_size = os.path.getsize(compressed_path)
                         stats["processed"] += 1
-                        stats["bytes_saved"] += (original_size - compressed_size)
+                        stats["bytes_saved"] += original_size - compressed_size
                     else:
                         stats["failed"] += 1
 

@@ -1,6 +1,7 @@
 """
 Security-focused validation and sanitization logic.
 """
+
 import re
 from typing import Any, Optional
 
@@ -27,6 +28,7 @@ def sanitize_sql(text: str) -> str:
 
 def validate_json_depth(data: Any, max_depth: int = 10) -> bool:
     """Prevent deeply nested JSON (DoS protection)."""
+
     def _depth(obj: Any, current_depth: int = 0) -> bool:
         if current_depth > max_depth:
             return False
@@ -35,6 +37,7 @@ def validate_json_depth(data: Any, max_depth: int = 10) -> bool:
         elif isinstance(obj, list):
             return all(_depth(item, current_depth + 1) for item in obj)
         return True
+
     return _depth(data)
 
 

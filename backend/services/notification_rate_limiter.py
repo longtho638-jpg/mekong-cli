@@ -15,13 +15,14 @@ from backend.services.redis_client import redis_service
 
 logger = logging.getLogger(__name__)
 
+
 class NotificationRateLimiter:
     def __init__(self):
         # Configuration
         self.limits = {
             "email": {"rate": 5, "per": 60},  # 5 emails per minute
             "push": {"rate": 10, "per": 60},  # 10 pushes per minute
-            "sms": {"rate": 1, "per": 60},    # 1 SMS per minute
+            "sms": {"rate": 1, "per": 60},  # 1 SMS per minute
         }
         self.redis = redis_service
 
@@ -33,7 +34,7 @@ class NotificationRateLimiter:
         """
         limit_config = self.limits.get(channel)
         if not limit_config:
-            return True # No limit for this channel
+            return True  # No limit for this channel
 
         rate = limit_config["rate"]
         period = limit_config["per"]
@@ -76,8 +77,10 @@ class NotificationRateLimiter:
             # Fail open to ensure critical notifications still go through if Redis fails
             return True
 
+
 # Global instance
 _rate_limiter = NotificationRateLimiter()
+
 
 def get_notification_rate_limiter():
     return _rate_limiter

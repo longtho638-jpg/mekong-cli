@@ -23,17 +23,20 @@ from backend.services.token_service import TokenService
 
 router = APIRouter(prefix="/oauth", tags=["oauth2"])
 
+
 def get_oauth_service(db: Session = Depends(get_sqlalchemy_db)) -> OAuthService:
     return OAuthService(db)
+
 
 def get_token_service(db: Session = Depends(get_sqlalchemy_db)) -> TokenService:
     return TokenService(db)
 
+
 @router.post("/register", response_model=OAuthClientSecretResponse)
 async def register_client(
     client_data: OAuthClientCreate,
-    user: TokenData = Depends(get_current_user), # Only authenticated users can register clients
-    service: OAuthService = Depends(get_oauth_service)
+    user: TokenData = Depends(get_current_user),  # Only authenticated users can register clients
+    service: OAuthService = Depends(get_oauth_service),
 ):
     """
     Register a new OAuth client.
@@ -48,8 +51,9 @@ async def register_client(
         grant_types=client.grant_types,
         is_confidential=client.is_confidential,
         created_at=client.created_at,
-        client_secret=secret
+        client_secret=secret,
     )
+
 
 @router.get("/authorize")
 async def authorize(
@@ -60,8 +64,10 @@ async def authorize(
     state: Optional[str] = None,
     code_challenge: Optional[str] = None,
     code_challenge_method: Optional[str] = "S256",
-    user: TokenData = Depends(get_current_user), # Assume user is logged in (session cookie or bearer)
-    service: OAuthService = Depends(get_oauth_service)
+    user: TokenData = Depends(
+        get_current_user
+    ),  # Assume user is logged in (session cookie or bearer)
+    service: OAuthService = Depends(get_oauth_service),
 ):
     """
     OAuth 2.0 Authorize Endpoint (GET).
@@ -86,11 +92,11 @@ async def authorize(
     # Generate Auth Code
     code = service.create_authorization_code(
         client_id=client_id,
-        user_id=str(user.username), # Using username as user_id for now based on auth/utils.py
+        user_id=str(user.username),  # Using username as user_id for now based on auth/utils.py
         redirect_uri=redirect_uri,
         code_challenge=code_challenge,
         code_challenge_method=code_challenge_method,
-        scopes=scope.split(" ")
+        scopes=scope.split(" "),
     )
 
     # Redirect back to client
@@ -99,6 +105,7 @@ async def authorize(
         redirect_url += f"&state={state}"
 
     return RedirectResponse(url=redirect_url)
+
 
 @router.post("/token", response_model=OAuth2TokenResponse)
 async def token(
@@ -112,7 +119,7 @@ async def token(
     scope: Optional[str] = Form(None),
     service: OAuthService = Depends(get_oauth_service),
     token_service: TokenService = Depends(get_token_service),
-    authorization: Optional[str] = Header(None) # For Basic Auth header support
+    authorization: Optional[str] = Header(None),  # For Basic Auth header support
 ):
     """
     OAuth 2.0 Token Endpoint.
@@ -123,12 +130,13 @@ async def token(
     # Client can send credentials in body or Authorization header (Basic)
     if authorization and authorization.startswith("Basic "):
         import base64
+
         try:
             encoded = authorization[6:]
             decoded = base64.b64decode(encoded).decode("utf-8")
             client_id, client_secret = decoded.split(":")
         except:
-            pass # Fallback to body params
+            pass  # Fallback to body params
 
     if not client_id:
         raise HTTPException(status_code=400, detail="client_id is required")
@@ -149,40 +157,42 @@ async def token(
     # 2. Handle Grant Types
     if grant_type == "authorization_code":
         if not code or not redirect_uri or not code_verifier:
-             raise HTTPException(status_code=400, detail="Missing required params for authorization_code")
+            raise HTTPException(
+                status_code=400, detail="Missing required params for authorization_code"
+            )
 
         try:
             access_token, refresh_token, expires_in = service.exchange_authorization_code(
                 code=code,
                 redirect_uri=redirect_uri,
                 code_verifier=code_verifier,
-                client_id=client_id
+                client_id=client_id,
             )
             return OAuth2TokenResponse(
                 access_token=access_token,
                 expires_in=expires_in,
                 refresh_token=refresh_token,
-                scope=scope # Should return granted scope
+                scope=scope,  # Should return granted scope
             )
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
 
     elif grant_type == "client_credentials":
         if not client.is_confidential:
-             raise HTTPException(status_code=400, detail="Client credentials flow requires confidential client")
+            raise HTTPException(
+                status_code=400, detail="Client credentials flow requires confidential client"
+            )
 
         # Issue token for client itself (service account)
         # We use client_id as user_id for M2M tokens
         access_token, refresh_token, expires_in = token_service.create_tokens(
-            user_id=client_id,
-            client_id=client_id,
-            scope=scope or " ".join(client.scopes)
+            user_id=client_id, client_id=client_id, scope=scope or " ".join(client.scopes)
         )
         return OAuth2TokenResponse(
             access_token=access_token,
             expires_in=expires_in,
-            refresh_token=refresh_token, # Optional for CC flow, but we can provide it
-            scope=scope
+            refresh_token=refresh_token,  # Optional for CC flow, but we can provide it
+            scope=scope,
         )
 
     elif grant_type == "refresh_token":
@@ -194,20 +204,23 @@ async def token(
             raise HTTPException(status_code=400, detail="Invalid refresh token")
 
         if token_record.client_id != client_id:
-             raise HTTPException(status_code=400, detail="Client mismatch")
+            raise HTTPException(status_code=400, detail="Client mismatch")
 
         # Rotate
-        access_token, new_refresh_token, expires_in = await token_service.rotate_refresh_token(token_record)
+        access_token, new_refresh_token, expires_in = await token_service.rotate_refresh_token(
+            token_record
+        )
 
         return OAuth2TokenResponse(
             access_token=access_token,
             expires_in=expires_in,
             refresh_token=new_refresh_token,
-            scope=" ".join(token_record.scopes)
+            scope=" ".join(token_record.scopes),
         )
 
     else:
         raise HTTPException(status_code=400, detail="Unsupported grant_type")
+
 
 @router.post("/introspect", response_model=OAuth2IntrospectResponse)
 async def introspect(
@@ -215,7 +228,7 @@ async def introspect(
     token: str = Form(...),
     token_type_hint: Optional[str] = Form(None),
     token_service: TokenService = Depends(get_token_service),
-    service: OAuthService = Depends(get_oauth_service)
+    service: OAuthService = Depends(get_oauth_service),
 ):
     """
     RFC 7662 Token Introspection.
@@ -228,6 +241,7 @@ async def introspect(
 
     # Decode Basic Auth
     import base64
+
     try:
         encoded = auth_header[6:]
         decoded = base64.b64decode(encoded).decode("utf-8")
@@ -262,7 +276,7 @@ async def introspect(
                 sub=payload.get("sub"),
                 aud=payload.get("aud"),
                 iss=payload.get("iss"),
-                jti=payload.get("jti")
+                jti=payload.get("jti"),
             )
 
     # Check if it's a refresh token or opaque access token (if we supported that)
@@ -274,10 +288,11 @@ async def introspect(
             client_id=record.client_id,
             username=record.user_id,
             token_type="Refresh",
-            exp=int(record.refresh_token_expires_at.timestamp())
+            exp=int(record.refresh_token_expires_at.timestamp()),
         )
 
     return OAuth2IntrospectResponse(active=False)
+
 
 @router.post("/revoke")
 async def revoke(
@@ -288,7 +303,7 @@ async def revoke(
     # "The client MUST NOT be allowed to revoke tokens issued to other clients"
     # So we should ideally authenticate the client.
     # But for public clients, they might not have secrets.
-    authorization: Optional[str] = Header(None)
+    authorization: Optional[str] = Header(None),
 ):
     """
     RFC 7009 Token Revocation.
@@ -298,4 +313,4 @@ async def revoke(
     # For now, let's just allow revocation if valid token found.
 
     await token_service.revoke_token(token, token_type_hint)
-    return {} # 200 OK
+    return {}  # 200 OK

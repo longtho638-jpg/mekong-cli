@@ -12,6 +12,7 @@ from backend.workers.worker_base import BaseWorker
 
 logger = logging.getLogger(__name__)
 
+
 def backup_system_handler(payload: Dict[str, Any]):
     """
     Handler for 'backup_system' jobs.
@@ -29,7 +30,9 @@ def backup_system_handler(payload: Dict[str, Any]):
         # For now, we instantiate them directly or use mocks if dependencies are missing
         try:
             # Mock setup for demonstration if actual connection strings aren't present
-            strategy = PostgresBackupStrategy(connection_string="postgresql://user:pass@localhost:5432/db")
+            strategy = PostgresBackupStrategy(
+                connection_string="postgresql://user:pass@localhost:5432/db"
+            )
             storage = S3StorageAdapter(bucket="agencyos-backups")
             orchestrator = BackupOrchestrator(strategy=strategy, storage=storage)
 
@@ -58,10 +61,11 @@ def backup_system_handler(payload: Dict[str, Any]):
         logger.error(f"Backup failed: {str(e)}")
         raise
 
+
 if __name__ == "__main__":
     worker = BaseWorker(
-        queues=["normal"], # Backups are normal/maintenance priority
-        worker_id=f"backup-worker-{int(time.time())}"
+        queues=["normal"],  # Backups are normal/maintenance priority
+        worker_id=f"backup-worker-{int(time.time())}",
     )
     worker.register_handler("backup_system", backup_system_handler)
     worker.start()

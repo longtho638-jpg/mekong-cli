@@ -20,7 +20,9 @@ class AuditLog(Base):
     user_agent = Column(String, nullable=True)
     session_id = Column(UUID(as_uuid=True), nullable=True)
     request_id = Column(UUID(as_uuid=True), nullable=True)
-    metadata_ = Column("metadata", JSONB, nullable=True)  # Using metadata_ to avoid conflict with SQLAlchemy metadata
+    metadata_ = Column(
+        "metadata", JSONB, nullable=True
+    )  # Using metadata_ to avoid conflict with SQLAlchemy metadata
     timestamp = Column(DateTime(timezone=True), nullable=False, server_default=func.now())
     hash = Column(String(64), nullable=False)
 
@@ -45,5 +47,5 @@ class AuditLog(Base):
             "request_id": str(self.request_id) if self.request_id else None,
             "metadata": self.metadata_,
             "timestamp": self.timestamp.isoformat() if self.timestamp else None,
-            "hash": self.hash
+            "hash": self.hash,
         }

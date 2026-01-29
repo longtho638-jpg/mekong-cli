@@ -18,12 +18,14 @@ from typing import Any, Dict, List, Optional, Union
 
 try:
     import redis
+
     REDIS_AVAILABLE = True
 except ImportError:
     REDIS_AVAILABLE = False
 
 try:
     import msgpack
+
     MSGPACK_AVAILABLE = True
 except ImportError:
     MSGPACK_AVAILABLE = False
@@ -43,6 +45,7 @@ class InMemoryCache:
     def get(self, key: str) -> Optional[bytes]:
         """Get value from cache."""
         import time
+
         if key in self._cache:
             # Check TTL
             if key in self._ttl and self._ttl[key] < time.time():
@@ -58,6 +61,7 @@ class InMemoryCache:
     def set(self, key: str, value: bytes, ex: Optional[int] = None) -> bool:
         """Set value in cache with optional TTL."""
         import time
+
         self._cache[key] = value
         if ex:
             self._ttl[key] = time.time() + ex
@@ -81,10 +85,11 @@ class InMemoryCache:
         # but technically asking "exists?" is a cache operation.
         # To avoid skewing "get" stats, we can check manually.
         import time
+
         if key in self._cache:
-             if key in self._ttl and self._ttl[key] < time.time():
-                 return False
-             return True
+            if key in self._ttl and self._ttl[key] < time.time():
+                return False
+            return True
         return False
 
     def flushdb(self):
@@ -112,7 +117,9 @@ class InMemoryCache:
             "ttl_keys": len(self._ttl),
             "hits": self._hits,
             "misses": self._misses,
-            "hit_ratio": self._hits / (self._hits + self._misses) if (self._hits + self._misses) > 0 else 0
+            "hit_ratio": self._hits / (self._hits + self._misses)
+            if (self._hits + self._misses) > 0
+            else 0,
         }
 
 
@@ -137,7 +144,7 @@ class CacheService:
         db: int = 0,
         default_ttl: int = 300,
         compress_threshold: int = 1024,  # Compress if larger than 1KB
-        **redis_kwargs
+        **redis_kwargs,
     ):
         """
         Initialize cache service.
@@ -166,10 +173,10 @@ class CacheService:
                     host=host,
                     port=port,
                     db=db,
-                    decode_responses=False, # We handle encoding/decoding for msgpack
+                    decode_responses=False,  # We handle encoding/decoding for msgpack
                     socket_connect_timeout=2,
                     socket_timeout=2,
-                    **redis_kwargs
+                    **redis_kwargs,
                 )
                 # Test connection
                 self._client.ping()
@@ -192,10 +199,10 @@ class CacheService:
             packed = msgpack.packb(value, use_bin_type=True)
         else:
             # Fallback to JSON if msgpack not present
-            packed = json.dumps(value).encode('utf-8')
+            packed = json.dumps(value).encode("utf-8")
 
         if len(packed) > self.compress_threshold:
-            return zlib.compress(packed) + b".z" # Mark as compressed
+            return zlib.compress(packed) + b".z"  # Mark as compressed
         return packed
 
     def _deserialize(self, value: bytes) -> Any:
@@ -216,14 +223,14 @@ class CacheService:
             except Exception:
                 # Might be raw string or JSON from old cache
                 try:
-                    return json.loads(value.decode('utf-8'))
+                    return json.loads(value.decode("utf-8"))
                 except:
-                    return value.decode('utf-8', errors='ignore')
+                    return value.decode("utf-8", errors="ignore")
         else:
             try:
-                return json.loads(value.decode('utf-8'))
+                return json.loads(value.decode("utf-8"))
             except:
-                return value.decode('utf-8', errors='ignore')
+                return value.decode("utf-8", errors="ignore")
 
     def get(self, key: str, default: Any = None) -> Any:
         """
@@ -248,12 +255,7 @@ class CacheService:
             logger.error(f"Cache get error for key '{key}': {e}")
             return default
 
-    def set(
-        self,
-        key: str,
-        value: Any,
-        ttl: Optional[int] = None
-    ) -> bool:
+    def set(self, key: str, value: Any, ttl: Optional[int] = None) -> bool:
         """
         Set value in cache.
 
@@ -391,6 +393,7 @@ class CacheService:
             if not self._use_redis:
                 keys_to_delete = []
                 import fnmatch
+
                 for key in list(self._client._cache.keys()):
                     if fnmatch.fnmatch(key, full_pattern):
                         keys_to_delete.append(key)
@@ -444,7 +447,7 @@ class CacheService:
                     "connected_clients": info.get("connected_clients"),
                     "uptime_in_days": info.get("uptime_in_days"),
                     "keyspace_hits": info.get("keyspace_hits"),
-                    "keyspace_misses": info.get("keyspace_misses")
+                    "keyspace_misses": info.get("keyspace_misses"),
                 }
             else:
                 return self._client.get_stats()
@@ -453,11 +456,7 @@ class CacheService:
             return {"error": str(e)}
 
 
-def cached(
-    key_func=None,
-    ttl: Optional[int] = None,
-    prefix: str = "func"
-):
+def cached(key_func=None, ttl: Optional[int] = None, prefix: str = "func"):
     """
     Decorator to cache function results.
 

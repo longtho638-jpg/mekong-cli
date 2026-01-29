@@ -116,9 +116,7 @@ class LicenseValidator:
 
             if license_data.hardware_fingerprint and hardware_fingerprint:
                 if license_data.hardware_fingerprint != hardware_fingerprint:
-                    return ValidationResult(
-                        False, "License bound to different hardware"
-                    )
+                    return ValidationResult(False, "License bound to different hardware")
 
             # Update validation tracking
             license_data.last_validated_at = datetime.utcnow()

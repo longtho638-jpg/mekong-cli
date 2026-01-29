@@ -35,9 +35,7 @@ class PushNotificationService:
 
     def _get_subscriptions(self, db: Session, user_id: str) -> List[PushSubscription]:
         """Get all push subscriptions for a user."""
-        result = db.execute(
-            select(PushSubscription).where(PushSubscription.user_id == user_id)
-        )
+        result = db.execute(select(PushSubscription).where(PushSubscription.user_id == user_id))
         return result.scalars().all()
 
     def _delete_subscription(self, db: Session, endpoint: str):
@@ -63,18 +61,13 @@ class PushNotificationService:
         message: str,
         data: Optional[Dict] = None,
         icon: Optional[str] = "/icons/icon-192.png",
-        badge: Optional[str] = "/icons/badge-72.png"
+        badge: Optional[str] = "/icons/badge-72.png",
     ) -> Dict[str, Any]:
         """
         Send push notification to all user devices.
         Returns a summary of results.
         """
-        results = {
-            "success": 0,
-            "failure": 0,
-            "removed": 0,
-            "details": []
-        }
+        results = {"success": 0, "failure": 0, "removed": 0, "details": []}
 
         subscriptions = self._get_subscriptions(db, user_id)
         if not subscriptions:
@@ -82,21 +75,13 @@ class PushNotificationService:
 
         # Prepare abstract message
         push_message = PushMessage(
-            title=title,
-            body=message,
-            icon=icon,
-            badge=badge,
-            data=data or {}
+            title=title, body=message, icon=icon, badge=badge, data=data or {}
         )
 
         for sub in subscriptions:
             # Map DB model to Pydantic model
             sub_info = PushSubscriptionInfo(
-                endpoint=sub.endpoint,
-                keys={
-                    "p256dh": sub.p256dh,
-                    "auth": sub.auth
-                }
+                endpoint=sub.endpoint, keys={"p256dh": sub.p256dh, "auth": sub.auth}
             )
 
             try:
@@ -125,6 +110,7 @@ class PushNotificationService:
                 results["details"].append({"status": "error", "error": str(e)})
 
         return results
+
 
 # Global instance
 push_notification_service = PushNotificationService()

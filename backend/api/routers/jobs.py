@@ -15,6 +15,7 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
+
 # Models
 class JobRequest(BaseModel):
     type: str
@@ -22,10 +23,12 @@ class JobRequest(BaseModel):
     priority: str = "normal"
     run_at: Optional[datetime] = None
 
+
 class JobResponse(BaseModel):
     job_id: str
     status: str
     queue: str
+
 
 class QueueMetrics(BaseModel):
     high: int
@@ -34,15 +37,17 @@ class QueueMetrics(BaseModel):
     dlq: int
     scheduled: int
 
+
 # Dependencies
 def get_queue_service():
     return QueueService()
+
 
 @router.post("/", response_model=JobResponse)
 async def enqueue_job(
     job_req: JobRequest,
     current_user: str = Depends(get_current_user_id),
-    queue_service: QueueService = Depends(get_queue_service)
+    queue_service: QueueService = Depends(get_queue_service),
 ):
     """
     Enqueue a new background job.
@@ -54,14 +59,15 @@ async def enqueue_job(
         job_type=job_req.type,
         payload=job_req.payload,
         priority=job_req.priority,
-        run_at=job_req.run_at
+        run_at=job_req.run_at,
     )
 
     return {
         "job_id": job_id,
         "status": "pending" if not job_req.run_at else "scheduled",
-        "queue": job_req.priority
+        "queue": job_req.priority,
     }
+
 
 @router.get("/", response_model=Dict[str, Any])
 async def list_jobs(
@@ -69,7 +75,7 @@ async def list_jobs(
     queue: Optional[str] = None,
     limit: int = 50,
     offset: int = 0,
-    queue_service: QueueService = Depends(get_queue_service)
+    queue_service: QueueService = Depends(get_queue_service),
 ):
     """
     List jobs (fetching from Redis for active/queued, or DB for history).
@@ -93,26 +99,24 @@ async def list_jobs(
                 "type": "send_email",
                 "status": "completed",
                 "priority": "high",
-                "created_at": datetime.utcnow().isoformat()
+                "created_at": datetime.utcnow().isoformat(),
             },
             {
                 "job_id": "mock-2",
                 "type": "generate_report",
                 "status": "processing",
                 "priority": "normal",
-                "created_at": datetime.utcnow().isoformat()
-            }
+                "created_at": datetime.utcnow().isoformat(),
+            },
         ],
         "total": 2,
         "page": 1,
-        "size": limit
+        "size": limit,
     }
 
+
 @router.get("/{job_id}", response_model=Dict[str, Any])
-async def get_job_status(
-    job_id: str,
-    queue_service: QueueService = Depends(get_queue_service)
-):
+async def get_job_status(job_id: str, queue_service: QueueService = Depends(get_queue_service)):
     """
     Get the status of a specific job.
     """
@@ -122,30 +126,28 @@ async def get_job_status(
 
     return job.model_dump()
 
+
 @router.get("/metrics/overview", response_model=QueueMetrics)
 async def get_queue_metrics(
     # current_user: str = Depends(require_role("admin")), # Uncomment when RBAC is fully setup
-    queue_service: QueueService = Depends(get_queue_service)
+    queue_service: QueueService = Depends(get_queue_service),
 ):
     """
     Get current metrics for all queues.
     """
     return queue_service.get_queue_metrics()
 
+
 @router.get("/workers", response_model=List[Dict[str, Any]])
-async def get_active_workers(
-    queue_service: QueueService = Depends(get_queue_service)
-):
+async def get_active_workers(queue_service: QueueService = Depends(get_queue_service)):
     """
     Get list of active workers and their status.
     """
     return queue_service.get_active_workers()
 
+
 @router.post("/{job_id}/retry")
-async def retry_job(
-    job_id: str,
-    queue_service: QueueService = Depends(get_queue_service)
-):
+async def retry_job(job_id: str, queue_service: QueueService = Depends(get_queue_service)):
     """
     Manually retry a failed job.
     """

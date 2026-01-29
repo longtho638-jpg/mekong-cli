@@ -14,9 +14,11 @@ def mock_db_session():
         mock.return_value = session
         yield session
 
+
 @pytest.fixture
 def audit_logger_instance():
     return AuditLogger()
+
 
 @pytest.mark.asyncio
 async def test_audit_logger_log_success(audit_logger_instance, mock_db_session):
@@ -27,7 +29,7 @@ async def test_audit_logger_log_success(audit_logger_instance, mock_db_session):
         action="test.action",
         resource="resource1",
         status="success",
-        ip_address="127.0.0.1"
+        ip_address="127.0.0.1",
     )
 
     # Verify DB insertion
@@ -40,20 +42,18 @@ async def test_audit_logger_log_success(audit_logger_instance, mock_db_session):
     mock_db_session.commit.assert_called()
     mock_db_session.close.assert_called()
 
+
 @pytest.mark.asyncio
 async def test_audit_logger_log_db_failure(audit_logger_instance, mock_db_session):
     """Test logging handles DB errors gracefully."""
     mock_db_session.commit.side_effect = Exception("DB Error")
 
     # Should not raise exception
-    await audit_logger_instance.log(
-        actor_id="user123",
-        actor_type="user",
-        action="test.fail"
-    )
+    await audit_logger_instance.log(actor_id="user123", actor_type="user", action="test.fail")
 
     mock_db_session.rollback.assert_called()
     mock_db_session.close.assert_called()
+
 
 @pytest.mark.asyncio
 async def test_audit_action_decorator_success(mock_db_session):
@@ -81,10 +81,11 @@ async def test_audit_action_decorator_success(mock_db_session):
     entry = args[0]
     assert isinstance(entry, AuditLog)
     assert entry.action == "test_decorator"
-    assert entry.resource_id == "item_99" # Split logic puts this in resource_id if no colon
+    assert entry.resource_id == "item_99"  # Split logic puts this in resource_id if no colon
     assert entry.metadata_["status"] == "success"
 
     mock_db_session.commit.assert_called()
+
 
 @pytest.mark.asyncio
 async def test_audit_action_decorator_failure(mock_db_session):
@@ -110,6 +111,7 @@ async def test_audit_action_decorator_failure(mock_db_session):
 
     mock_db_session.commit.assert_called()
 
+
 @pytest.mark.asyncio
 async def test_audit_action_decorator_no_request(mock_db_session):
     """Test decorator works without request object (system action)."""
@@ -127,23 +129,23 @@ async def test_audit_action_decorator_no_request(mock_db_session):
     assert entry.metadata_["actor_id"] == "system"
     assert entry.metadata_["actor_type"] == "agent"
 
+
 @pytest.mark.asyncio
 async def test_audit_logger_log_valid_uuid(audit_logger_instance, mock_db_session):
     """Test logging with valid UUID actor_id stores it in user_id column."""
     import uuid
+
     valid_uuid = str(uuid.uuid4())
 
     await audit_logger_instance.log(
-        actor_id=valid_uuid,
-        actor_type="user",
-        action="test.uuid",
-        resource="res"
+        actor_id=valid_uuid, actor_type="user", action="test.uuid", resource="res"
     )
 
     mock_db_session.add.assert_called()
     args, _ = mock_db_session.add.call_args
     entry = args[0]
     assert entry.user_id == valid_uuid
+
 
 @pytest.mark.asyncio
 async def test_audit_action_decorator_request_in_args(mock_db_session):
@@ -163,7 +165,7 @@ async def test_audit_action_decorator_request_in_args(mock_db_session):
         "root_path": "",
         "query_string": b"",
         "http_version": "1.1",
-        "method": "GET"
+        "method": "GET",
     }
     request = Request(scope)
 
@@ -180,6 +182,7 @@ async def test_audit_action_decorator_request_in_args(mock_db_session):
     entry = args[0]
     assert entry.ip_address == "1.2.3.4"
     assert entry.metadata_["actor_id"] == "user_in_args"
+
 
 @pytest.mark.asyncio
 async def test_audit_action_decorator_formatting_error(mock_db_session):
@@ -198,6 +201,7 @@ async def test_audit_action_decorator_formatting_error(mock_db_session):
     entry = args[0]
     # Should fallback to unformatted template
     assert "item_{missing_key}" in entry.resource_id or "item_{missing_key}" in entry.resource_type
+
 
 @pytest.mark.asyncio
 async def test_audit_action_decorator_sync_function(mock_db_session):
@@ -223,6 +227,7 @@ async def test_audit_action_decorator_sync_function(mock_db_session):
     entry = args[0]
     assert entry.action == "test_sync"
 
+
 def test_audit_action_decorator_not_callable():
     """Test decorator returns object as-is if not callable."""
     # This covers the check: if hasattr(func, "__call__")
@@ -231,4 +236,3 @@ def test_audit_action_decorator_not_callable():
     decorated = audit_action(action="test")(not_a_func)
 
     assert decorated == "string_obj"
-

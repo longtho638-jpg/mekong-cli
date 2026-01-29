@@ -16,6 +16,7 @@ class BackupMetadata(BaseModel):
     compressed: bool
     metadata: Dict[str, Any] = {}
 
+
 class IEncryptionService(ABC):
     @abstractmethod
     def encrypt(self, data: BinaryIO) -> BinaryIO:
@@ -27,6 +28,7 @@ class IEncryptionService(ABC):
         """Decrypt data stream"""
         pass
 
+
 class ICompressionService(ABC):
     @abstractmethod
     def compress(self, data: BinaryIO) -> BinaryIO:
@@ -37,6 +39,7 @@ class ICompressionService(ABC):
     def decompress(self, data: BinaryIO) -> BinaryIO:
         """Decompress data stream"""
         pass
+
 
 class IStorageAdapter(ABC):
     @abstractmethod
@@ -58,6 +61,7 @@ class IStorageAdapter(ABC):
     async def delete(self, location: str) -> bool:
         """Delete backup file."""
         pass
+
 
 class IBackupStrategy(ABC):
     @abstractmethod

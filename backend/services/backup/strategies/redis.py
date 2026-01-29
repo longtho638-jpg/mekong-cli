@@ -9,6 +9,7 @@ from backend.services.backup.interfaces import IBackupStrategy
 
 logger = logging.getLogger(__name__)
 
+
 class RedisBackupStrategy(IBackupStrategy):
     def __init__(self, host: str = None, port: int = 6379, password: str = None):
         self.host = host or os.getenv("REDIS_HOST", "localhost")
@@ -23,14 +24,10 @@ class RedisBackupStrategy(IBackupStrategy):
         if self.password:
             cmd.extend(["-a", self.password])
 
-        cmd.extend(["--rdb", "-"]) # Output to stdout
+        cmd.extend(["--rdb", "-"])  # Output to stdout
 
         try:
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
 
             if process.returncode != 0:
@@ -52,7 +49,9 @@ class RedisBackupStrategy(IBackupStrategy):
 
         However, `redis-cli --rdb` produces a file. To restore, we typically place it in /data/dump.rdb and restart redis.
         """
-        logger.warning("Redis restore via API is risky. Please stop Redis, place dump.rdb in data directory, and restart.")
+        logger.warning(
+            "Redis restore via API is risky. Please stop Redis, place dump.rdb in data directory, and restart."
+        )
         return False
 
     async def verify(self, source: BinaryIO) -> bool:
@@ -62,17 +61,14 @@ class RedisBackupStrategy(IBackupStrategy):
         """
         # We need to write to a temp file to check
         import tempfile
+
         with tempfile.NamedTemporaryFile() as tmp:
             tmp.write(source.read())
             tmp.flush()
-            source.seek(0) # Reset stream
+            source.seek(0)  # Reset stream
 
             cmd = ["redis-check-rdb", tmp.name]
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
+            process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = process.communicate()
 
             if process.returncode != 0:

@@ -1,4 +1,3 @@
-
 import hashlib
 import hmac
 import json
@@ -17,10 +16,12 @@ from backend.services.webhook_sender import WebhookSenderService
 MOCK_SECRET = "whsec_test123"
 MOCK_PAYLOAD = {"id": "evt_123", "type": "payment.success"}
 
+
 @pytest.fixture
 def mock_db_session():
     session = MagicMock()
     return session
+
 
 @pytest.fixture
 def sender_service(mock_db_session):
@@ -29,11 +30,13 @@ def sender_service(mock_db_session):
     service._get_db = MagicMock(return_value=mock_db_session)
     return service
 
+
 @pytest.fixture
 def queue_service():
     service = WebhookQueueService()
-    service._client = MagicMock() # Mock Redis client
+    service._client = MagicMock()  # Mock Redis client
     return service
+
 
 def test_signature_generation(sender_service):
     """Test HMAC SHA256 signature generation."""
@@ -46,13 +49,10 @@ def test_signature_generation(sender_service):
 
     # Verify manually
     to_sign = f"{timestamp}.{payload_str}"
-    expected_sig = hmac.new(
-        MOCK_SECRET.encode(),
-        to_sign.encode(),
-        hashlib.sha256
-    ).hexdigest()
+    expected_sig = hmac.new(MOCK_SECRET.encode(), to_sign.encode(), hashlib.sha256).hexdigest()
 
     assert signature == f"t={timestamp},v1={expected_sig}"
+
 
 @pytest.mark.asyncio
 async def test_webhook_trigger_subscription_logic(sender_service, mock_db_session):
@@ -60,9 +60,19 @@ async def test_webhook_trigger_subscription_logic(sender_service, mock_db_sessio
 
     # Mock DB response for endpoints
     # WebhookConfig objects
-    ep1 = WebhookConfig(id="ep_1", url="http://test.com/1", secret="s1", event_types=["payment.*"], is_active=True)
-    ep2 = WebhookConfig(id="ep_2", url="http://test.com/2", secret="s2", event_types=["user.created"], is_active=True)
-    ep3 = WebhookConfig(id="ep_3", url="http://test.com/3", secret="s3", event_types=["*"], is_active=True)
+    ep1 = WebhookConfig(
+        id="ep_1", url="http://test.com/1", secret="s1", event_types=["payment.*"], is_active=True
+    )
+    ep2 = WebhookConfig(
+        id="ep_2",
+        url="http://test.com/2",
+        secret="s2",
+        event_types=["user.created"],
+        is_active=True,
+    )
+    ep3 = WebhookConfig(
+        id="ep_3", url="http://test.com/3", secret="s3", event_types=["*"], is_active=True
+    )
 
     mock_endpoints = [ep1, ep2, ep3]
 
@@ -85,6 +95,7 @@ async def test_webhook_trigger_subscription_logic(sender_service, mock_db_sessio
     assert "ep_3" in endpoint_ids
     assert "ep_2" not in endpoint_ids
 
+
 @pytest.mark.asyncio
 async def test_retry_logic_scheduling(sender_service, mock_db_session):
     """Test that failed delivery schedules a retry."""
@@ -95,7 +106,7 @@ async def test_retry_logic_scheduling(sender_service, mock_db_session):
         event_type="test",
         payload=MOCK_PAYLOAD,
         attempt_count=0,
-        status=DeliveryStatus.PENDING.value
+        status=DeliveryStatus.PENDING.value,
     )
     _ = WebhookConfig(id="ep_1", url="http://test.com/1", secret="s1")
 
@@ -105,7 +116,9 @@ async def test_retry_logic_scheduling(sender_service, mock_db_session):
 
         # We call _execute_delivery directly or via schedule, but here we test _update_delivery_status via _execute_delivery logic
         # Or better, just call _update_delivery_status directly
-        await sender_service._update_delivery_status(delivery, False, 0, "Connection refused", mock_db_session)
+        await sender_service._update_delivery_status(
+            delivery, False, 0, "Connection refused", mock_db_session
+        )
 
         # Check DB commit
         mock_db_session.commit.assert_called()
@@ -117,6 +130,7 @@ async def test_retry_logic_scheduling(sender_service, mock_db_session):
         # Verify backoff (should be ~2 seconds for 1st retry if base is 2)
         # We can't easily check exact time, but we can check it's in future
 
+
 @pytest.mark.asyncio
 async def test_dlq_on_max_retries(sender_service, mock_db_session):
     """Test that max retries leads to DLQ."""
@@ -126,7 +140,7 @@ async def test_dlq_on_max_retries(sender_service, mock_db_session):
         webhook_config_id="ep_1",
         event_type="test",
         payload=MOCK_PAYLOAD,
-        attempt_count=sender_service.max_retries # Already at max effectively if we increment
+        attempt_count=sender_service.max_retries,  # Already at max effectively if we increment
     )
     # If attempt_count is max_retries (3), next attempt makes it 4 -> fail
     # Actually logic is: current_attempts = delivery.attempt_count + 1
@@ -140,12 +154,15 @@ async def test_dlq_on_max_retries(sender_service, mock_db_session):
 
     sender_service._send_to_dlq = AsyncMock()
 
-    await sender_service._update_delivery_status(delivery, False, 500, "Server Error", mock_db_session)
+    await sender_service._update_delivery_status(
+        delivery, False, 500, "Server Error", mock_db_session
+    )
 
     assert delivery.status == DeliveryStatus.FAILED.value
     # Should call DLQ
     sender_service._send_to_dlq.assert_called_once()
     mock_db_session.commit.assert_called()
+
 
 def test_queue_operations(queue_service):
     """Test enqueue and dequeue logic."""

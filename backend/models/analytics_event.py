@@ -9,6 +9,7 @@ class AnalyticsEvent(BaseModel):
     Pydantic model for Analytics Event
     Maps to 'usage_events' table
     """
+
     id: Optional[str] = None
     user_id: Optional[str] = None
     license_id: Optional[str] = None
@@ -25,11 +26,13 @@ class AnalyticsEvent(BaseModel):
     created_at: Optional[datetime] = None
     metadata: Dict[str, Any] = {}
 
+
 class UsageAggregateDaily(BaseModel):
     """
     Pydantic model for Daily Usage Aggregate
     Maps to 'usage_aggregates_daily' table
     """
+
     id: Optional[str] = None
     user_id: Optional[str] = None
     license_id: Optional[str] = None
@@ -41,11 +44,13 @@ class UsageAggregateDaily(BaseModel):
     total_duration_seconds: int
     metadata: Dict[str, Any] = {}
 
+
 class FeatureUsage(BaseModel):
     """
     Pydantic model for Feature Usage
     Maps to 'feature_usage' table
     """
+
     id: Optional[str] = None
     user_id: Optional[str] = None
     license_id: Optional[str] = None

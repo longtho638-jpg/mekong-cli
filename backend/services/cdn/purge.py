@@ -13,6 +13,7 @@ from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 class CDNPurgeProvider(ABC):
     """Abstract base class for CDN purge providers."""
 
@@ -134,7 +135,9 @@ class FastlyProvider(CDNPurgeProvider):
             for url in urls:
                 try:
                     # Method PURGE is standard for Fastly
-                    response = await client.request("PURGE", url, headers=self.headers, timeout=10.0)
+                    response = await client.request(
+                        "PURGE", url, headers=self.headers, timeout=10.0
+                    )
                     if response.status_code == 200:
                         success_count += 1
                 except Exception as e:
@@ -171,8 +174,7 @@ def get_purge_provider() -> Optional[CDNPurgeProvider]:
     if provider_name == "cloudflare":
         if settings.cloudflare_api_token and settings.cloudflare_zone_id:
             return CloudflareProvider(
-                api_token=settings.cloudflare_api_token,
-                zone_id=settings.cloudflare_zone_id
+                api_token=settings.cloudflare_api_token, zone_id=settings.cloudflare_zone_id
             )
         else:
             logger.warning("Cloudflare credentials not configured")
@@ -181,8 +183,7 @@ def get_purge_provider() -> Optional[CDNPurgeProvider]:
     elif provider_name == "fastly":
         if settings.fastly_api_token and settings.fastly_service_id:
             return FastlyProvider(
-                api_token=settings.fastly_api_token,
-                service_id=settings.fastly_service_id
+                api_token=settings.fastly_api_token, service_id=settings.fastly_service_id
             )
         else:
             logger.warning("Fastly credentials not configured")

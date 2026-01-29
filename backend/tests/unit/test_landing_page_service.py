@@ -12,25 +12,25 @@ from backend.services.landing_page_service import LandingPageService
 
 client = TestClient(app)
 
+
 @pytest.fixture
 def db_session():
     # Mock database session for unit/integration testing without real DB
     session = MagicMock(spec=Session)
     return session
 
+
 def test_create_landing_page(db_session):
     # This test was empty/pass in original file, keeping it essentially skipped or pass
     pass
+
 
 def test_service_create_page():
     mock_db = MagicMock(spec=Session)
     service = LandingPageService(mock_db)
 
     page_create = LandingPageCreate(
-        title="Test Page",
-        slug="test-slug",
-        content_json={},
-        seo_metadata={}
+        title="Test Page", slug="test-slug", content_json={}, seo_metadata={}
     )
 
     # Mock query returning None (no existing slug)
@@ -43,17 +43,14 @@ def test_service_create_page():
     mock_db.add.assert_called_once()
     mock_db.commit.assert_called_once()
 
+
 def test_service_duplicate_page():
     mock_db = MagicMock(spec=Session)
     service = LandingPageService(mock_db)
 
     # Original page
     original = LandingPage(
-        id=1,
-        title="Original",
-        slug="orig",
-        content_json={"foo": "bar"},
-        template_id="tpl-1"
+        id=1, title="Original", slug="orig", content_json={"foo": "bar"}, template_id="tpl-1"
     )
 
     mock_db.query.return_value.filter.return_value.first.return_value = original
@@ -66,6 +63,7 @@ def test_service_duplicate_page():
     assert result.template_id == "tpl-1"
     assert result.is_published is False
     mock_db.add.assert_called_once()
+
 
 def test_service_publish_unpublish():
     mock_db = MagicMock(spec=Session)

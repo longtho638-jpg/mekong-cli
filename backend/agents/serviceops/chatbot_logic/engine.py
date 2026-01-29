@@ -1,6 +1,7 @@
 """
 Chatbot Agent core logic.
 """
+
 import random
 from typing import Dict, List, Optional
 
@@ -34,7 +35,8 @@ class ChatbotEngine:
     def classify_intent(self, message: str) -> Intent:
         m_lower = message.lower()
         for intent, keywords in self.INTENT_KEYWORDS.items():
-            if any(kw in m_lower for kw in keywords): return intent
+            if any(kw in m_lower for kw in keywords):
+                return intent
         return Intent.UNKNOWN
 
     def generate_reply(self, intent: Intent, customer_name: str = "bạn") -> str:

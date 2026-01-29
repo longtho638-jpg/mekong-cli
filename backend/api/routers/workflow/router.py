@@ -50,15 +50,19 @@ class WorkflowListResponse(BaseModel):
 async def list_workflows():
     """List all workflows."""
     from antigravity.mcp_servers.workflow_server.handlers import WorkflowEngineHandler
+
     handler = WorkflowEngineHandler()
     return handler.list_workflows()  # type: ignore
+
 
 @router.post("/create")
 async def create_workflow(name: str, trigger_type: str):
     """Create a new workflow."""
     from antigravity.mcp_servers.workflow_server.handlers import WorkflowEngineHandler
+
     handler = WorkflowEngineHandler()
     return handler.create_workflow(name, trigger_type)
+
 
 @router.post("/{workflow_id}/save")
 async def save_workflow(workflow_id: str, workflow: Workflow):
@@ -85,12 +89,9 @@ async def save_workflow(workflow_id: str, workflow: Workflow):
             # Fallback or error handling
             action_type = ActionType.API_CALL
 
-        nodes.append(HandlerNode(
-            id=n.id,
-            type=action_type,
-            config=n.config,
-            next_nodes=n.next_nodes
-        ))
+        nodes.append(
+            HandlerNode(id=n.id, type=action_type, config=n.config, next_nodes=n.next_nodes)
+        )
 
     try:
         trigger = TriggerType(workflow.trigger)
@@ -103,14 +104,16 @@ async def save_workflow(workflow_id: str, workflow: Workflow):
         trigger=trigger,
         trigger_config=workflow.trigger_config,
         nodes=nodes,
-        active=workflow.active
+        active=workflow.active,
     )
 
     return handler.save_workflow(handler_wf)
+
 
 @router.post("/{workflow_id}/execute")
 async def execute_workflow(workflow_id: str):
     """Execute a workflow manually."""
     from antigravity.mcp_servers.workflow_server.handlers import WorkflowEngineHandler
+
     handler = WorkflowEngineHandler()
     return handler.execute_workflow(workflow_id)

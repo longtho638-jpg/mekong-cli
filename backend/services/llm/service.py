@@ -30,15 +30,15 @@ class LLMService:
 
         if name == "gemini":
             if not settings.google_api_key:
-                 # Fallback for dev/testing if no key provided, though it will fail on call
-                 # In a real scenario, we might raise error here or use a mock
-                 pass
+                # Fallback for dev/testing if no key provided, though it will fail on call
+                # In a real scenario, we might raise error here or use a mock
+                pass
             self._provider = GeminiProvider(api_key=settings.google_api_key or "")
         elif name == "openai":
             self._provider = OpenAIProvider(api_key=settings.openai_api_key or "")
         elif name == "anthropic":
-             # Placeholder for Claude implementation
-             raise NotImplementedError("Anthropic provider not yet implemented")
+            # Placeholder for Claude implementation
+            raise NotImplementedError("Anthropic provider not yet implemented")
         else:
             # Default to Gemini
             self._provider = GeminiProvider(api_key=settings.google_api_key or "")
@@ -52,7 +52,7 @@ class LLMService:
         model: Optional[str] = None,
         max_tokens: int = 1000,
         temperature: float = 0.7,
-        system_instruction: Optional[str] = None
+        system_instruction: Optional[str] = None,
     ) -> str:
         """
         Generate text using the configured provider.
@@ -64,18 +64,18 @@ class LLMService:
             model=target_model,
             max_tokens=max_tokens,
             temperature=temperature,
-            system_instruction=system_instruction
+            system_instruction=system_instruction,
         )
 
         # Track usage
         await llm_usage_tracker.track_usage(
             provider=provider or settings.default_llm_provider,
             model=target_model,
-            usage=response.get('usage'),
-            request_type="generate_text"
+            usage=response.get("usage"),
+            request_type="generate_text",
         )
 
-        return response['content']
+        return response["content"]
 
     async def generate_stream(
         self,
@@ -84,7 +84,7 @@ class LLMService:
         model: Optional[str] = None,
         max_tokens: int = 1000,
         temperature: float = 0.7,
-        system_instruction: Optional[str] = None
+        system_instruction: Optional[str] = None,
     ) -> AsyncGenerator[str, None]:
         """
         Stream text generation.
@@ -96,7 +96,7 @@ class LLMService:
             model=target_model,
             max_tokens=max_tokens,
             temperature=temperature,
-            system_instruction=system_instruction
+            system_instruction=system_instruction,
         ):
             yield chunk
 
@@ -106,7 +106,7 @@ class LLMService:
         provider: Optional[str] = None,
         model: Optional[str] = None,
         max_tokens: int = 1000,
-        temperature: float = 0.7
+        temperature: float = 0.7,
     ) -> str:
         """
         Chat with history.
@@ -114,18 +114,15 @@ class LLMService:
         llm = self._get_provider(provider)
         target_model = model or settings.default_llm_model
         response = await llm.chat(
-            messages=messages,
-            model=target_model,
-            max_tokens=max_tokens,
-            temperature=temperature
+            messages=messages, model=target_model, max_tokens=max_tokens, temperature=temperature
         )
 
         # Track usage
         await llm_usage_tracker.track_usage(
             provider=provider or settings.default_llm_provider,
             model=target_model,
-            usage=response.get('usage'),
-            request_type="chat"
+            usage=response.get("usage"),
+            request_type="chat",
         )
 
-        return response['content']
+        return response["content"]

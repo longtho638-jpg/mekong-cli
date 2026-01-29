@@ -38,12 +38,12 @@ def get_fake_users_db() -> Dict[str, Dict[str, str]]:
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
-    captcha_token: Optional[str] = Header(None, alias="X-Captcha-Token")
+    captcha_token: Optional[str] = Header(None, alias="X-Captcha-Token"),
 ):
     # 0. Verify CAPTCHA if enabled
     if settings.enable_captcha_login:
         if not captcha_token:
-             raise HTTPException(
+            raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="CAPTCHA token required",
                 headers={"WWW-Authenticate": "Bearer"},
@@ -51,7 +51,7 @@ async def login_for_access_token(
 
         is_valid = await captcha_service.verify_token(captcha_token)
         if not is_valid:
-             raise HTTPException(
+            raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid CAPTCHA token",
                 headers={"WWW-Authenticate": "Bearer"},
@@ -76,17 +76,13 @@ async def login_for_access_token(
         user_id=user["username"],
         client_id="frontend",
         scope=scope,
-        expires_delta=access_token_expires
+        expires_delta=access_token_expires,
     )
 
     # Calculate seconds until expiration for response
     expires_in = int(access_token_expires.total_seconds())
 
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "expires_in": expires_in
-    }
+    return {"access_token": access_token, "token_type": "bearer", "expires_in": expires_in}
 
 
 @router.post("/refresh", response_model=Token)
@@ -101,7 +97,7 @@ async def refresh_token(
         # 1. Decode & Verify Refresh Token
         payload = await jwt_service.decode_token(refresh_token)
         if not payload:
-             raise HTTPException(
+            raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired refresh token",
                 headers={"WWW-Authenticate": "Bearer"},
@@ -109,10 +105,10 @@ async def refresh_token(
 
         # 2. Check token type (if we implemented type claim)
         if payload.get("type") != "refresh":
-             # If we didn't strictly enforce type in create_refresh_token, this might fail on legacy tokens
-             # But for rotation, we should enforce it.
-             # For now, let's assume if it decodes, it's valid, but strictly we should check.
-             pass
+            # If we didn't strictly enforce type in create_refresh_token, this might fail on legacy tokens
+            # But for rotation, we should enforce it.
+            # For now, let's assume if it decodes, it's valid, but strictly we should check.
+            pass
 
         user_id = payload.get("sub")
         scope = payload.get("scope", "")
@@ -133,24 +129,19 @@ async def refresh_token(
         # 4. Create NEW Access & Refresh Tokens
         access_expires = timedelta(minutes=settings.access_token_expire_minutes)
         new_access_token, _, _ = jwt_service.create_access_token(
-            user_id=user_id,
-            client_id=payload.get("aud"),
-            scope=scope,
-            expires_delta=access_expires
+            user_id=user_id, client_id=payload.get("aud"), scope=scope, expires_delta=access_expires
         )
 
         # Create new refresh token (Rotation)
         new_refresh_token, _, _ = jwt_service.create_refresh_token(
-            user_id=user_id,
-            client_id=payload.get("aud"),
-            scope=scope
+            user_id=user_id, client_id=payload.get("aud"), scope=scope
         )
 
         return {
             "access_token": new_access_token,
-            "refresh_token": new_refresh_token, # Send back new refresh token
+            "refresh_token": new_refresh_token,  # Send back new refresh token
             "token_type": "bearer",
-            "expires_in": int(access_expires.total_seconds())
+            "expires_in": int(access_expires.total_seconds()),
         }
 
     except Exception:

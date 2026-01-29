@@ -45,7 +45,7 @@ class Settings(BaseSettings):
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=False,
-        extra="ignore"  # Ignore unknown env vars
+        extra="ignore",  # Ignore unknown env vars
     )
 
     # ========================================
@@ -54,7 +54,9 @@ class Settings(BaseSettings):
     project_name: str = Field(default="Agency OS", description="Project name")
     api_version: str = Field(default="0.2.0", description="API version")
     api_v1_str: str = Field(default="/api", description="API v1 prefix")
-    environment: str = Field(default="development", description="Environment: development/staging/production")
+    environment: str = Field(
+        default="development", description="Environment: development/staging/production"
+    )
     debug: bool = Field(default=False, description="Debug mode")
 
     # ========================================
@@ -62,10 +64,14 @@ class Settings(BaseSettings):
     # ========================================
     secret_key: str = Field(
         default="dev-secret-key-CHANGE-IN-PRODUCTION",  # Dev fallback only
-        description="Secret key for JWT signing (REQUIRED in production)"
+        description="Secret key for JWT signing (REQUIRED in production)",
     )
-    access_token_expire_minutes: int = Field(default=15, description="JWT access token expiration (15 minutes)")
-    refresh_token_expire_minutes: int = Field(default=60 * 24 * 7, description="JWT refresh token expiration (7 days)")
+    access_token_expire_minutes: int = Field(
+        default=15, description="JWT access token expiration (15 minutes)"
+    )
+    refresh_token_expire_minutes: int = Field(
+        default=60 * 24 * 7, description="JWT refresh token expiration (7 days)"
+    )
     jwt_algorithm: str = Field(default="HS256", description="JWT Algorithm")
 
     # Optional webhook secrets
@@ -75,8 +81,7 @@ class Settings(BaseSettings):
     # CORS Configuration
     # ========================================
     allowed_origins: List[str] = Field(
-        default_factory=lambda: DEFAULT_DEV_CORS_ORIGINS,
-        description="CORS allowed origins"
+        default_factory=lambda: DEFAULT_DEV_CORS_ORIGINS, description="CORS allowed origins"
     )
     allowed_hosts: List[str] = Field(default_factory=lambda: ["*"], description="Allowed hosts")
 
@@ -94,7 +99,9 @@ class Settings(BaseSettings):
     email_provider: str = Field(default="smtp", description="Email provider (smtp/resend/sendgrid)")
     resend_api_key: str = Field(default="", description="Resend API Key")
     sendgrid_api_key: str = Field(default="", description="SendGrid API Key")
-    default_from_email: str = Field(default="noreply@binhphap.com", description="Default sender email")
+    default_from_email: str = Field(
+        default="noreply@binhphap.com", description="Default sender email"
+    )
     default_from_name: str = Field(default="AgencyOS", description="Default sender name")
 
     # SMTP Settings (Keep existing)
@@ -109,48 +116,41 @@ class Settings(BaseSettings):
     # ========================================
     vapid_private_key: str = Field(default="", description="VAPID Private Key for WebPush")
     vapid_public_key: str = Field(default="", description="VAPID Public Key for WebPush")
-    vapid_claims_email: str = Field(default="mailto:admin@agencyos.network", description="VAPID Claims Email")
-    fcm_credentials_path: Optional[str] = Field(default=None, description="Path to FCM service account JSON")
+    vapid_claims_email: str = Field(
+        default="mailto:admin@agencyos.network", description="VAPID Claims Email"
+    )
+    fcm_credentials_path: Optional[str] = Field(
+        default=None, description="Path to FCM service account JSON"
+    )
 
     # ========================================
     # CAPTCHA Configuration
     # ========================================
     captcha_secret_key: Optional[str] = Field(default=None, description="CAPTCHA Secret Key")
     captcha_site_key: Optional[str] = Field(default=None, description="CAPTCHA Site Key")
-    captcha_provider: str = Field(default="hcaptcha", description="CAPTCHA Provider (hcaptcha/recaptcha)")
+    captcha_provider: str = Field(
+        default="hcaptcha", description="CAPTCHA Provider (hcaptcha/recaptcha)"
+    )
     enable_captcha_login: bool = Field(default=False, description="Enable CAPTCHA on login")
 
     # ========================================
     # Database Configuration
     # ========================================
     database_url: str = Field(
-        default="sqlite:///./agencyos.db",
-        description="Database connection URL"
+        default="sqlite:///./agencyos.db", description="Database connection URL"
     )
     db_pool_size: int = Field(default=5, description="DB connection pool size")
     db_max_overflow: int = Field(default=10, description="DB connection max overflow")
     db_pool_recycle: int = Field(default=3600, description="DB connection pool recycle (seconds)")
 
-    redis_url: str = Field(
-        default="redis://localhost:6379",
-        description="Redis connection URL"
-    )
-    tenant_db_path: str = Field(
-        default="./data/tenants",
-        description="Path for tenant databases"
-    )
+    redis_url: str = Field(default="redis://localhost:6379", description="Redis connection URL")
+    tenant_db_path: str = Field(default="./data/tenants", description="Path for tenant databases")
 
     # ========================================
     # Search Engine Configuration (Meilisearch)
     # ========================================
-    meilisearch_url: str = Field(
-        default="http://localhost:7700",
-        description="Meilisearch URL"
-    )
-    meilisearch_master_key: str = Field(
-        default="masterKey",
-        description="Meilisearch Master Key"
-    )
+    meilisearch_url: str = Field(default="http://localhost:7700", description="Meilisearch URL")
+    meilisearch_master_key: str = Field(default="masterKey", description="Meilisearch Master Key")
 
     # ========================================
     # Cache & Timeout Configuration
@@ -163,17 +163,22 @@ class Settings(BaseSettings):
     # ========================================
     # Metrics Configuration
     # ========================================
-    slow_request_threshold: float = Field(default=SLOW_REQUEST_THRESHOLD, description="Slow request threshold")
-    fast_response_threshold: float = Field(default=FAST_RESPONSE_THRESHOLD, description="Fast response threshold")
+    slow_request_threshold: float = Field(
+        default=SLOW_REQUEST_THRESHOLD, description="Slow request threshold"
+    )
+    fast_response_threshold: float = Field(
+        default=FAST_RESPONSE_THRESHOLD, description="Fast response threshold"
+    )
     metrics_buckets: List[float] = Field(
-        default_factory=lambda: DEFAULT_METRICS_BUCKETS,
-        description="Prometheus histogram buckets"
+        default_factory=lambda: DEFAULT_METRICS_BUCKETS, description="Prometheus histogram buckets"
     )
 
     # ========================================
     # Webhook & Portal URLs
     # ========================================
-    webhook_portal_url: str = Field(default=DEFAULT_WEBHOOK_PORTAL_URL, description="Webhook redirect portal URL")
+    webhook_portal_url: str = Field(
+        default=DEFAULT_WEBHOOK_PORTAL_URL, description="Webhook redirect portal URL"
+    )
 
     # ========================================
     # Backend & API URLs
@@ -198,20 +203,32 @@ class Settings(BaseSettings):
     # ========================================
     # Rate Limiting Configuration
     # ========================================
-    rate_limit_bypass_key: Optional[str] = Field(default=None, description="Key to bypass rate limits")
-    rate_limit_whitelist_ips: List[str] = Field(default_factory=list, description="Whitelisted IPs for rate limiting")
+    rate_limit_bypass_key: Optional[str] = Field(
+        default=None, description="Key to bypass rate limits"
+    )
+    rate_limit_whitelist_ips: List[str] = Field(
+        default_factory=list, description="Whitelisted IPs for rate limiting"
+    )
 
     # ========================================
     # Input Validation Limits
     # ========================================
-    max_json_depth: int = Field(default=DEFAULT_MAX_JSON_DEPTH, description="Maximum JSON nesting depth")
-    max_request_size: int = Field(default=DEFAULT_MAX_REQUEST_SIZE, description="Max request size in bytes")
-    max_string_length: int = Field(default=DEFAULT_MAX_STRING_LENGTH, description="Max string field length")
+    max_json_depth: int = Field(
+        default=DEFAULT_MAX_JSON_DEPTH, description="Maximum JSON nesting depth"
+    )
+    max_request_size: int = Field(
+        default=DEFAULT_MAX_REQUEST_SIZE, description="Max request size in bytes"
+    )
+    max_string_length: int = Field(
+        default=DEFAULT_MAX_STRING_LENGTH, description="Max string field length"
+    )
 
     # ========================================
     # Audit & Compliance
     # ========================================
-    audit_retention_days: int = Field(default=365, description="Days to retain audit logs in hot storage")
+    audit_retention_days: int = Field(
+        default=365, description="Days to retain audit logs in hot storage"
+    )
     splunk_hec_url: Optional[str] = Field(default=None, description="Splunk HEC Endpoint")
     splunk_token: Optional[str] = Field(default=None, description="Splunk HEC Token")
     datadog_api_key: Optional[str] = Field(default=None, description="Datadog API Key")
@@ -239,7 +256,9 @@ class Settings(BaseSettings):
     google_api_key: Optional[str] = Field(default=None, description="Google Gemini API Key")
     openai_api_key: Optional[str] = Field(default=None, description="OpenAI API Key")
     anthropic_api_key: Optional[str] = Field(default=None, description="Anthropic Claude API Key")
-    default_llm_provider: str = Field(default="gemini", description="Default LLM Provider (gemini/openai/anthropic)")
+    default_llm_provider: str = Field(
+        default="gemini", description="Default LLM Provider (gemini/openai/anthropic)"
+    )
     default_llm_model: str = Field(default="gemini-1.5-flash", description="Default LLM Model")
 
     # ========================================

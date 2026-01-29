@@ -8,17 +8,20 @@ class InvoiceStatus(str, Enum):
     OVERDUE = "overdue"
     CANCELLED = "cancelled"
 
+
 class TaskStatus(str, Enum):
     TODO = "todo"
     IN_PROGRESS = "in_progress"
     REVIEW = "review"
     DONE = "done"
 
+
 class TaskPriority(str, Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     URGENT = "urgent"
+
 
 class ProjectStatus(str, Enum):
     DRAFT = "draft"
@@ -28,6 +31,7 @@ class ProjectStatus(str, Enum):
     ARCHIVED = "archived"
     ON_HOLD = "on_hold"
 
+
 class ClientStatus(str, Enum):
     ACTIVE = "active"
     PENDING = "pending"
@@ -35,10 +39,12 @@ class ClientStatus(str, Enum):
     INACTIVE = "inactive"
     LEAD = "lead"
 
+
 class AffiliateStatus(str, Enum):
     ACTIVE = "active"
     SUSPENDED = "suspended"
     PENDING = "pending"
+
 
 class PayoutStatus(str, Enum):
     PENDING = "pending"
@@ -46,10 +52,12 @@ class PayoutStatus(str, Enum):
     PAID = "paid"
     FAILED = "failed"
 
+
 class ConversionStatus(str, Enum):
     PENDING = "pending"
     PAID = "paid"
     REFUNDED = "refunded"
+
 
 class ABTestStatus(str, Enum):
     DRAFT = "draft"
@@ -57,10 +65,10 @@ class ABTestStatus(str, Enum):
     PAUSED = "paused"
     COMPLETED = "completed"
 
+
 class AnalyticsEventType(str, Enum):
     PAGE_VIEW = "page_view"
     CLICK = "click"
     SCROLL = "scroll"
     FORM_SUBMISSION = "form_submission"
     CUSTOM = "custom"
-

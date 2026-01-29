@@ -53,6 +53,7 @@ class TestGraphClient:
         assert edge.target_name == "target"
         assert edge.relation == "DEPENDS_ON"
 
+
 class TestCodeIngestor:
     def test_ingest_function(self):
         mock_client = MagicMock()
@@ -109,8 +110,9 @@ class TestCodeIngestor:
         with patch("antigravity.core.knowledge.ingestor.ast.walk", return_value=[mock_func]):
             ingestor._ingest_file(Path("/tmp/test.py"))
 
-        assert mock_client.add_node.call_count >= 2 # File node + Function node
+        assert mock_client.add_node.call_count >= 2  # File node + Function node
         assert mock_client.add_edge.called
+
 
 class TestKnowledgeRetriever:
     @patch("antigravity.core.knowledge.rag.get_model")
@@ -128,19 +130,23 @@ class TestKnowledgeRetriever:
     @patch("antigravity.core.knowledge.rag.graph_client")
     def test_search(self, mock_graph_client):
         mock_graph_client._graph = MagicMock()
-        mock_graph_client.query.return_value = [] # Mock empty results for now
+        mock_graph_client.query.return_value = []  # Mock empty results for now
 
         retriever = KnowledgeRetriever()
         results = retriever.search("query")
 
         assert results == []
         mock_graph_client.query.assert_called_once()
-        query_str, params = mock_graph_client.query.call_args[0], mock_graph_client.query.call_args[1].get("params")
+        query_str, params = (
+            mock_graph_client.query.call_args[0],
+            mock_graph_client.query.call_args[1].get("params"),
+        )
         if not params and len(query_str) > 1:
             params = query_str[1]
 
         assert "CONTAINS $query" in query_str[0]
         assert params["query"] == "query"
+
 
 class TestCodeIngestorBatch:
     @patch("antigravity.core.knowledge.ingest.graph_client")
@@ -152,9 +158,7 @@ class TestCodeIngestorBatch:
         ingestor = CodeIngestor()
 
         # Add some mock nodes
-        ingestor.nodes = [
-            KnowledgeNode(id="test.py", type=NodeType.FILE, name="test.py")
-        ]
+        ingestor.nodes = [KnowledgeNode(id="test.py", type=NodeType.FILE, name="test.py")]
 
         ingestor.sync_to_graph()
 

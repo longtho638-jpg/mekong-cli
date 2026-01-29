@@ -60,9 +60,7 @@ class AgentOpsService:
     async def get_health_check(self) -> HealthCheckResponse:
         """Get health check for AgentOps system"""
         ops_registry = self.registry.get_registry()
-        healthy_count = sum(
-            1 for ops in ops_registry.values() if ops.status == "ready"
-        )
+        healthy_count = sum(1 for ops in ops_registry.values() if ops.status == "ready")
 
         return {
             "status": "healthy" if healthy_count == len(ops_registry) else "degraded",

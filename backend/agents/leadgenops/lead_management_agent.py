@@ -137,7 +137,9 @@ class LeadManagementAgent:
                     if lead.status in [LeadStatus.ENRICHED, LeadStatus.ROUTED, LeadStatus.SYNCED]
                 ]
             ),
-            "routed": len([lead for lead in leads if lead.status in [LeadStatus.ROUTED, LeadStatus.SYNCED]]),
+            "routed": len(
+                [lead for lead in leads if lead.status in [LeadStatus.ROUTED, LeadStatus.SYNCED]]
+            ),
             "synced": len([lead for lead in leads if lead.status == LeadStatus.SYNCED]),
             "duplicates": len([lead for lead in leads if lead.status == LeadStatus.DUPLICATE]),
             "avg_score": sum(lead.score for lead in leads) / len(leads) if leads else 0,

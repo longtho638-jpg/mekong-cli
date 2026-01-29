@@ -55,20 +55,20 @@ __all__ = [
     "accounting",
     "agents",
     "analytics",
-    "analytics_realtime", # Added
+    "analytics_realtime",  # Added
     "campaigns",
-    "chatbot", # Added
+    "chatbot",  # Added
     "commands",
     "crm",
     "franchise",
     "hr",
     "i18n",
     "inventory",
-    "jobs", # Added
+    "jobs",  # Added
     "payments",
     "router",
     "scheduler",
-    "search", # Added
+    "search",  # Added
     "stripe_production",
     "vibes",
     "vietnam",
@@ -86,12 +86,12 @@ __all__ = [
     "prompts",  # Added
     "kanban",
     "ops",
-    "webhook_health", # Added
+    "webhook_health",  # Added
     "rate_limits",
     "binh_phap",
-    "dlq", # Added
-    "user_preferences", # Added
-    "exports", # Added
+    "dlq",  # Added
+    "user_preferences",  # Added
+    "exports",  # Added
     "notifications",
     "notification_preferences",
     "notification_templates",

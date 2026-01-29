@@ -18,6 +18,7 @@ from typing_extensions import TypedDict
 
 class VibeConfigDict(TypedDict):
     """Configuration for a specific vibe"""
+
     tone: str
     style: str
     local_words: List[str]
@@ -52,6 +53,4 @@ class VibeResponse(BaseModel):
     detected_vibe: Optional[str] = Field(default=None, description="Auto-detected vibe")
     config: VibeConfigDict = Field(..., description="Vibe configuration")
 
-    model_config = ConfigDict(
-        json_encoders={datetime: lambda v: v.isoformat()}
-    )
+    model_config = ConfigDict(json_encoders={datetime: lambda v: v.isoformat()})

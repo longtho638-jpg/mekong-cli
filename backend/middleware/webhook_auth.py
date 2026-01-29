@@ -32,19 +32,12 @@ class WebhookAuthError(HTTPException):
     """Custom exception for webhook authentication failures."""
 
     def __init__(self, detail: str, provider: str = "unknown"):
-        super().__init__(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=detail
-        )
+        super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail=detail)
         self.provider = provider
         logger.error(f"🚫 Webhook Auth Failed [{provider}]: {detail}")
 
 
-def verify_gumroad_signature(
-    payload: bytes,
-    signature_header: Optional[str],
-    secret: str
-) -> bool:
+def verify_gumroad_signature(payload: bytes, signature_header: Optional[str], secret: str) -> bool:
     """
     Verify Gumroad webhook signature using HMAC-SHA256.
 
@@ -65,31 +58,20 @@ def verify_gumroad_signature(
     """
     if not signature_header:
         logger.warning("⚠️ Gumroad webhook missing signature header")
-        raise WebhookAuthError(
-            detail="Missing X-Gumroad-Signature header",
-            provider="gumroad"
-        )
+        raise WebhookAuthError(detail="Missing X-Gumroad-Signature header", provider="gumroad")
 
     if not secret:
         logger.error("❌ GUMROAD_WEBHOOK_SECRET not configured")
-        raise WebhookAuthError(
-            detail="Webhook secret not configured",
-            provider="gumroad"
-        )
+        raise WebhookAuthError(detail="Webhook secret not configured", provider="gumroad")
 
     try:
         # Compute expected signature
         expected_signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=payload,
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=payload, digestmod=hashlib.sha256
         ).hexdigest()
 
         # Compare signatures using constant-time comparison
-        is_valid = hmac.compare_digest(
-            expected_signature,
-            signature_header.strip()
-        )
+        is_valid = hmac.compare_digest(expected_signature, signature_header.strip())
 
         if is_valid:
             logger.info("✅ Gumroad webhook signature verified")
@@ -100,24 +82,17 @@ def verify_gumroad_signature(
                 f"  Expected: {expected_signature[:16]}...\n"
                 f"  Received: {signature_header[:16]}..."
             )
-            raise WebhookAuthError(
-                detail="Invalid webhook signature",
-                provider="gumroad"
-            )
+            raise WebhookAuthError(detail="Invalid webhook signature", provider="gumroad")
 
     except Exception as e:
         logger.error(f"❌ Gumroad signature verification error: {e}")
         raise WebhookAuthError(
-            detail=f"Signature verification failed: {str(e)}",
-            provider="gumroad"
+            detail=f"Signature verification failed: {str(e)}", provider="gumroad"
         )
 
 
 def verify_stripe_signature(
-    payload: bytes,
-    signature_header: Optional[str],
-    secret: str,
-    tolerance: int = STRIPE_TOLERANCE
+    payload: bytes, signature_header: Optional[str], secret: str, tolerance: int = STRIPE_TOLERANCE
 ) -> dict:
     """
     Verify Stripe webhook signature.
@@ -139,27 +114,18 @@ def verify_stripe_signature(
     """
     if not signature_header:
         logger.warning("⚠️ Stripe webhook missing signature header")
-        raise WebhookAuthError(
-            detail="Missing Stripe-Signature header",
-            provider="stripe"
-        )
+        raise WebhookAuthError(detail="Missing Stripe-Signature header", provider="stripe")
 
     if not secret:
         logger.error("❌ STRIPE_WEBHOOK_SECRET not configured")
-        raise WebhookAuthError(
-            detail="Webhook secret not configured",
-            provider="stripe"
-        )
+        raise WebhookAuthError(detail="Webhook secret not configured", provider="stripe")
 
     try:
         # Use Stripe SDK for verification (more robust)
         import stripe
 
         event = stripe.Webhook.construct_event(
-            payload=payload,
-            sig_header=signature_header,
-            secret=secret,
-            tolerance=tolerance
+            payload=payload, sig_header=signature_header, secret=secret, tolerance=tolerance
         )
 
         logger.info(f"✅ Stripe webhook signature verified: {event.get('type')}")
@@ -167,22 +133,13 @@ def verify_stripe_signature(
 
     except stripe.error.SignatureVerificationError as e:
         logger.warning(f"⚠️ Stripe signature verification failed: {e}")
-        raise WebhookAuthError(
-            detail="Invalid webhook signature",
-            provider="stripe"
-        )
+        raise WebhookAuthError(detail="Invalid webhook signature", provider="stripe")
     except ValueError as e:
         logger.error(f"❌ Stripe webhook payload error: {e}")
-        raise WebhookAuthError(
-            detail=f"Invalid webhook payload: {str(e)}",
-            provider="stripe"
-        )
+        raise WebhookAuthError(detail=f"Invalid webhook payload: {str(e)}", provider="stripe")
     except Exception as e:
         logger.error(f"❌ Stripe signature verification error: {e}")
-        raise WebhookAuthError(
-            detail=f"Signature verification failed: {str(e)}",
-            provider="stripe"
-        )
+        raise WebhookAuthError(detail=f"Signature verification failed: {str(e)}", provider="stripe")
 
 
 def verify_timestamp(timestamp: int, max_age: int = MAX_TIMESTAMP_AGE) -> bool:
@@ -200,9 +157,7 @@ def verify_timestamp(timestamp: int, max_age: int = MAX_TIMESTAMP_AGE) -> bool:
     age = current_time - timestamp
 
     if age > max_age:
-        logger.warning(
-            f"⚠️ Webhook timestamp too old: {age}s (max {max_age}s)"
-        )
+        logger.warning(f"⚠️ Webhook timestamp too old: {age}s (max {max_age}s)")
         return False
 
     if age < -60:  # Allow 1 minute clock skew
@@ -212,10 +167,7 @@ def verify_timestamp(timestamp: int, max_age: int = MAX_TIMESTAMP_AGE) -> bool:
     return True
 
 
-async def gumroad_webhook_auth_middleware(
-    request: Request,
-    call_next
-):
+async def gumroad_webhook_auth_middleware(request: Request, call_next):
     """
     FastAPI middleware for Gumroad webhook signature verification.
 
@@ -243,8 +195,7 @@ async def gumroad_webhook_auth_middleware(
         verify_gumroad_signature(body, signature, secret)
     except WebhookAuthError as e:
         return JSONResponse(
-            status_code=e.status_code,
-            content={"error": e.detail, "provider": "gumroad"}
+            status_code=e.status_code, content={"error": e.detail, "provider": "gumroad"}
         )
 
     # Store verified body for route handler
@@ -253,10 +204,7 @@ async def gumroad_webhook_auth_middleware(
     return await call_next(request)
 
 
-async def stripe_webhook_auth_middleware(
-    request: Request,
-    call_next
-):
+async def stripe_webhook_auth_middleware(request: Request, call_next):
     """
     FastAPI middleware for Stripe webhook signature verification.
 
@@ -286,8 +234,7 @@ async def stripe_webhook_auth_middleware(
         request.state.verified_event = event
     except WebhookAuthError as e:
         return JSONResponse(
-            status_code=e.status_code,
-            content={"error": e.detail, "provider": "stripe"}
+            status_code=e.status_code, content={"error": e.detail, "provider": "stripe"}
         )
 
     return await call_next(request)
@@ -346,10 +293,7 @@ async def verify_stripe_webhook(request: Request) -> dict:
 
 # Logging helper for audit trail
 def log_webhook_verification(
-    provider: str,
-    success: bool,
-    request_id: Optional[str] = None,
-    error: Optional[str] = None
+    provider: str, success: bool, request_id: Optional[str] = None, error: Optional[str] = None
 ):
     """
     Log webhook verification attempts for security audit.

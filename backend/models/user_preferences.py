@@ -17,15 +17,21 @@ class UserPreferencesDB(Base):
     theme = Column(String(20), default="system")
     updated_at = Column(DateTime(timezone=True), onupdate=func.now(), server_default=func.now())
 
+
 # --- Pydantic Models ---
 class UserPreferences(BaseModel):
     user_id: str = Field(..., description="User ID")
-    preferred_language: str = Field(default="en-US", description="Preferred Language Code (e.g. en-US, vi-VN)")
-    preferred_currency: str = Field(default="USD", description="Preferred Currency Code (e.g. USD, VND)")
+    preferred_language: str = Field(
+        default="en-US", description="Preferred Language Code (e.g. en-US, vi-VN)"
+    )
+    preferred_currency: str = Field(
+        default="USD", description="Preferred Currency Code (e.g. USD, VND)"
+    )
     theme: str = Field(default="system", description="Theme preference (light, dark, system)")
     updated_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class UserPreferencesUpdate(BaseModel):
     preferred_language: Optional[str] = None

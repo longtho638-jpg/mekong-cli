@@ -32,6 +32,7 @@ orchestrator = PaymentOrchestrator()
 
 class CreateCheckoutRequest(BaseModel):
     """Request to create PayPal checkout"""
+
     amount: float
     currency: str = "USD"
     price_id: Optional[str] = None  # PayPal Plan ID for subscriptions
@@ -44,6 +45,7 @@ class CreateCheckoutRequest(BaseModel):
 
 class CheckoutResponse(BaseModel):
     """Response from checkout creation"""
+
     checkout_id: str
     approval_url: str
     provider: str
@@ -83,25 +85,23 @@ async def create_paypal_checkout(
             customer_email=request.customer_email,
             tenant_id=request.tenant_id,
             mode=request.mode,
-            preferred_provider="paypal"  # Prefer PayPal, fallback to Polar if needed
+            preferred_provider="paypal",  # Prefer PayPal, fallback to Polar if needed
         )
 
         if not result.get("url"):
             raise HTTPException(
-                status_code=500,
-                detail="PayPal checkout created but no approval URL received"
+                status_code=500, detail="PayPal checkout created but no approval URL received"
             )
 
         logger.info(
-            f"PayPal checkout created: id={result['id']}, "
-            f"provider={result.get('provider')}"
+            f"PayPal checkout created: id={result['id']}, provider={result.get('provider')}"
         )
 
         return CheckoutResponse(
             checkout_id=result["id"],
             approval_url=result["url"],
             provider=result.get("provider", "paypal"),
-            status=result.get("status", "created")
+            status=result.get("status", "created"),
         )
 
     except PaymentError as e:
@@ -110,16 +110,13 @@ async def create_paypal_checkout(
 
     except Exception as e:
         logger.exception("Unexpected error creating PayPal checkout")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to create checkout: {str(e)}"
-        )
+        raise HTTPException(status_code=500, detail=f"Failed to create checkout: {str(e)}")
 
 
 @router.get("/success")
 async def paypal_success(
     token: str = Query(..., description="PayPal token from approval"),
-    PayerID: str = Query(..., description="PayPal payer ID")
+    PayerID: str = Query(..., description="PayPal payer ID"),
 ):
     """
     Handle successful PayPal payment return.
@@ -159,7 +156,7 @@ async def paypal_success(
             "message": "Payment approved successfully",
             "paypal_token": token,
             "payer_id": PayerID,
-            "redirect_url": "/dashboard/billing?payment=success"
+            "redirect_url": "/dashboard/billing?payment=success",
         }
 
     except Exception as e:
@@ -167,14 +164,12 @@ async def paypal_success(
         return {
             "status": "error",
             "message": str(e),
-            "redirect_url": "/dashboard/billing?payment=error"
+            "redirect_url": "/dashboard/billing?payment=error",
         }
 
 
 @router.get("/cancel")
-async def paypal_cancel(
-    token: Optional[str] = Query(None, description="PayPal token")
-):
+async def paypal_cancel(token: Optional[str] = Query(None, description="PayPal token")):
     """
     Handle cancelled PayPal payment.
 
@@ -195,7 +190,7 @@ async def paypal_cancel(
     return {
         "status": "cancelled",
         "message": "Payment was cancelled",
-        "redirect_url": "/dashboard/billing?payment=cancelled"
+        "redirect_url": "/dashboard/billing?payment=cancelled",
     }
 
 
@@ -216,9 +211,8 @@ async def get_payment_stats():
             "status": "ok",
             "stats": stats,
             "providers": {
-                name: provider.is_available()
-                for name, provider in orchestrator.providers.items()
-            }
+                name: provider.is_available() for name, provider in orchestrator.providers.items()
+            },
         }
 
     except Exception as e:

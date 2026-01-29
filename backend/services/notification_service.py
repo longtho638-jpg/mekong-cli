@@ -39,6 +39,7 @@ class NotificationType(Enum):
     FEATURE_ANNOUNCEMENT = "feature_announcement"
     SYSTEM_ALERT = "system_alert"
 
+
 class NotificationService:
     """
     Database-backed Notification Service.
@@ -55,7 +56,7 @@ class NotificationService:
         title: str,
         message: str,
         data: Optional[Dict[str, Any]] = None,
-        priority: NotificationPriority = NotificationPriority.NORMAL
+        priority: NotificationPriority = NotificationPriority.NORMAL,
     ) -> Notification:
         """
         Send a notification via Orchestrator (handles multi-channel delivery & persistence).
@@ -69,7 +70,7 @@ class NotificationService:
             title=title,
             message=message,
             data=data or {},
-            priority=priority
+            priority=priority,
         )
 
         # orchestrator.send_notification returns a dict with status or id?
@@ -85,20 +86,18 @@ class NotificationService:
 
         # For efficiency, let's just return a placeholder or fetch latest.
         # Fetching latest:
-        stmt = select(Notification).where(
-            Notification.user_id == user_id
-        ).order_by(Notification.created_at.desc()).limit(1)
+        stmt = (
+            select(Notification)
+            .where(Notification.user_id == user_id)
+            .order_by(Notification.created_at.desc())
+            .limit(1)
+        )
         notification = db.execute(stmt).scalar_one_or_none()
 
         return notification
 
     def get_user_notifications(
-        self,
-        db: Session,
-        user_id: str,
-        unread_only: bool = False,
-        limit: int = 50,
-        offset: int = 0
+        self, db: Session, user_id: str, unread_only: bool = False, limit: int = 50, offset: int = 0
     ) -> List[Notification]:
         """
         Get notifications for a user from DB.
@@ -116,12 +115,11 @@ class NotificationService:
         """
         Mark a specific notification as read.
         """
-        stmt = update(Notification).where(
-            and_(
-                Notification.id == notification_id,
-                Notification.user_id == user_id
-            )
-        ).values(read=True)
+        stmt = (
+            update(Notification)
+            .where(and_(Notification.id == notification_id, Notification.user_id == user_id))
+            .values(read=True)
+        )
 
         result = db.execute(stmt)
         db.commit()
@@ -132,12 +130,11 @@ class NotificationService:
         """
         Mark all notifications as read for a user.
         """
-        stmt = update(Notification).where(
-            and_(
-                Notification.user_id == user_id,
-                Notification.read.is_(False)
-            )
-        ).values(read=True)
+        stmt = (
+            update(Notification)
+            .where(and_(Notification.user_id == user_id, Notification.read.is_(False)))
+            .values(read=True)
+        )
 
         result = db.execute(stmt)
         db.commit()
@@ -148,17 +145,18 @@ class NotificationService:
         """
         Get count of unread notifications.
         """
-        stmt = select(func.count()).select_from(Notification).where(
-            and_(
-                Notification.user_id == user_id,
-                Notification.read.is_(False)
-            )
+        stmt = (
+            select(func.count())
+            .select_from(Notification)
+            .where(and_(Notification.user_id == user_id, Notification.read.is_(False)))
         )
         return db.execute(stmt).scalar() or 0
 
     # --- High-Level Business Events ---
 
-    async def send_welcome_notification(self, db: Session, user_id: str, username: str) -> Notification:
+    async def send_welcome_notification(
+        self, db: Session, user_id: str, username: str
+    ) -> Notification:
         return await self.send_notification(
             db=db,
             user_id=user_id,
@@ -166,7 +164,7 @@ class NotificationService:
             title="Welcome to Mekong CLI! 🎉",
             message=f"Hi {username}! Thanks for joining us. Get started by exploring our features.",
             data={"username": username},
-            priority=NotificationPriority.HIGH # Welcome is important
+            priority=NotificationPriority.HIGH,  # Welcome is important
         )
 
     async def send_payment_success_notification(
@@ -175,7 +173,7 @@ class NotificationService:
         user_id: str,
         amount: float,
         currency: str = "USD",
-        transaction_id: Optional[str] = None
+        transaction_id: Optional[str] = None,
     ) -> Notification:
         return await self.send_notification(
             db=db,
@@ -183,12 +181,8 @@ class NotificationService:
             notification_type=NotificationType.PAYMENT_SUCCESS,
             title="Payment Successful ✅",
             message=f"Your payment of {currency} {amount:.2f} has been processed successfully.",
-            data={
-                "amount": amount,
-                "currency": currency,
-                "transaction_id": transaction_id
-            },
-            priority=NotificationPriority.HIGH
+            data={"amount": amount, "currency": currency, "transaction_id": transaction_id},
+            priority=NotificationPriority.HIGH,
         )
 
     async def send_payment_failure_notification(
@@ -198,7 +192,7 @@ class NotificationService:
         amount: float,
         currency: str = "USD",
         reason: str = "Unknown error",
-        invoice_url: Optional[str] = None
+        invoice_url: Optional[str] = None,
     ) -> Notification:
         return await self.send_notification(
             db=db,
@@ -210,30 +204,25 @@ class NotificationService:
                 "amount": amount,
                 "currency": currency,
                 "reason": reason,
-                "invoice_url": invoice_url
+                "invoice_url": invoice_url,
             },
-            priority=NotificationPriority.CRITICAL
+            priority=NotificationPriority.CRITICAL,
         )
 
     async def send_license_expiry_warning(
-        self,
-        db: Session,
-        user_id: str,
-        days_remaining: int,
-        license_type: str = "Premium"
+        self, db: Session, user_id: str, days_remaining: int, license_type: str = "Premium"
     ) -> Notification:
-        priority = NotificationPriority.CRITICAL if days_remaining <= 3 else NotificationPriority.HIGH
+        priority = (
+            NotificationPriority.CRITICAL if days_remaining <= 3 else NotificationPriority.HIGH
+        )
         return await self.send_notification(
             db=db,
             user_id=user_id,
             notification_type=NotificationType.LICENSE_EXPIRY_WARNING,
             title="License Expiring Soon ⚠️",
             message=f"Your {license_type} license will expire in {days_remaining} days. Renew now.",
-            data={
-                "days_remaining": days_remaining,
-                "license_type": license_type
-            },
-            priority=priority
+            data={"days_remaining": days_remaining, "license_type": license_type},
+            priority=priority,
         )
 
     async def send_feature_announcement(
@@ -242,7 +231,7 @@ class NotificationService:
         user_id: str,
         feature_name: str,
         feature_description: str,
-        learn_more_url: Optional[str] = None
+        learn_more_url: Optional[str] = None,
     ) -> Notification:
         return await self.send_notification(
             db=db,
@@ -250,12 +239,10 @@ class NotificationService:
             notification_type=NotificationType.FEATURE_ANNOUNCEMENT,
             title=f"New Feature: {feature_name} 🚀",
             message=feature_description,
-            data={
-                "feature_name": feature_name,
-                "learn_more_url": learn_more_url
-            },
-            priority=NotificationPriority.NORMAL # Marketing
+            data={"feature_name": feature_name, "learn_more_url": learn_more_url},
+            priority=NotificationPriority.NORMAL,  # Marketing
         )
+
 
 # Global notification service instance
 notification_service = NotificationService()

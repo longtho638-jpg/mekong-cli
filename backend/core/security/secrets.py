@@ -13,6 +13,7 @@ from backend.api.config.settings import settings
 
 logger = logging.getLogger(__name__)
 
+
 class SecretManager:
     """
     Abstraction for secure secret retrieval.
@@ -56,13 +57,15 @@ class SecretManager:
             # client = hvac.Client(url=os.getenv("VAULT_ADDR"), token=os.getenv("VAULT_TOKEN"))
             # read_response = client.secrets.kv.read_secret_version(path='agencyos-production')
             # return read_response['data']['data'].get(key)
-            return os.getenv(key) # Fallback for now
+            return os.getenv(key)  # Fallback for now
         except Exception as e:
             logger.error(f"Vault retrieval failed for {key}: {e}")
             return None
 
+
 # Global Instance
 secret_manager = SecretManager()
+
 
 def get_secret(key: str, default: Optional[str] = None) -> Optional[str]:
     """Helper function to get a secret."""

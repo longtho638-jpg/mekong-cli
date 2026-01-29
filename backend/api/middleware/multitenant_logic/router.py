@@ -1,6 +1,7 @@
 """
 Tenant management routes and utility functions.
 """
+
 import os
 
 from fastapi import FastAPI, HTTPException, Request
@@ -15,13 +16,14 @@ def get_current_tenant(request: Request):
     tenant = getattr(request.state, "tenant", None)
     if tenant:
         return tenant
-    
+
     # Fallback to looking up by ID from context
     tenant_id = get_tenant_id() or "default"
     if tenant_id in TENANT_STORE:
         return TENANT_STORE[tenant_id]
-        
+
     raise HTTPException(status_code=500, detail="Tenant context not found")
+
 
 def setup_tenant_routes(app: FastAPI):
     """Setup tenant management routes."""

@@ -18,6 +18,7 @@ service = PaymentService()
 
 # --- Request Models ---
 
+
 class CreateOrderRequest(BaseModel):
     amount: Optional[float] = None
     currency: str = "USD"
@@ -46,6 +47,7 @@ class CreateSubscriptionRequest(BaseModel):
 
 # --- Generic Endpoints ---
 
+
 @router.get("/status")
 async def get_payment_status(payment_id: Optional[str] = None) -> Dict[str, Any]:
     """Get payment status or service status"""
@@ -56,11 +58,12 @@ async def get_payment_status(payment_id: Optional[str] = None) -> Dict[str, Any]
         "providers": ["paypal", "stripe"],
         "paypal_mode": service.paypal.mode,
         "stripe_configured": service.stripe.is_configured(),
-        "status": "active"
+        "status": "active",
     }
 
 
 # --- PayPal Specific Endpoints (Matching Frontend) ---
+
 
 @router.post("/paypal/create-order")
 def create_paypal_order(request: CreateOrderRequest):
@@ -71,11 +74,11 @@ def create_paypal_order(request: CreateOrderRequest):
             amount=request.amount,
             currency=request.currency,
             description=request.description,
-            mode="payment" # Default to one-time payment for this endpoint
+            mode="payment",  # Default to one-time payment for this endpoint
         )
         # Verify result structure
         if not result or "id" not in result:
-             raise ValueError("Invalid response from PayPal SDK")
+            raise ValueError("Invalid response from PayPal SDK")
 
         return {"orderId": result["id"], "details": result}
     except Exception as e:
@@ -103,13 +106,13 @@ def create_paypal_subscription(request: CreateSubscriptionRequest):
     try:
         result = service.create_checkout_session(
             provider="paypal",
-            amount=0, # Amount determined by plan
+            amount=0,  # Amount determined by plan
             price_id=request.plan_id,
             success_url=request.return_url,
             cancel_url=request.cancel_url,
             customer_email=request.customer_email,
             tenant_id=request.tenant_id,
-            mode="subscription"
+            mode="subscription",
         )
         return result
     except Exception as e:
@@ -129,11 +132,15 @@ def get_paypal_subscription(subscription_id: str):
 def cancel_paypal_subscription(subscription_id: str, reason: Optional[str] = None):
     """Cancel a PayPal subscription."""
     try:
-        return service.cancel_subscription(provider="paypal", subscription_id=subscription_id, reason=reason)
+        return service.cancel_subscription(
+            provider="paypal", subscription_id=subscription_id, reason=reason
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 # --- Stripe Specific Endpoints ---
+
 
 @router.post("/stripe/create-checkout")
 def create_stripe_checkout(request: CreateOrderRequest):
@@ -144,15 +151,14 @@ def create_stripe_checkout(request: CreateOrderRequest):
     try:
         session = service.create_checkout_session(
             provider="stripe",
-            amount=request.amount, # Not always needed if price_id is set
+            amount=request.amount,  # Not always needed if price_id is set
             price_id=request.price_id,
             success_url=request.success_url,
             cancel_url=request.cancel_url,
             customer_email=request.customer_email,
             tenant_id=request.tenant_id,
-            mode="subscription" # Default to subscription
+            mode="subscription",  # Default to subscription
         )
         return {"sessionId": session.id, "url": session.url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-

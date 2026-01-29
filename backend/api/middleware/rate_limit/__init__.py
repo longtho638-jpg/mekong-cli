@@ -1,6 +1,7 @@
 """
 Rate Limiting Middleware Facade
 """
+
 import logging
 
 from fastapi import FastAPI
@@ -13,6 +14,7 @@ from .routes import setup_rate_limit_routes
 
 logger = logging.getLogger(__name__)
 
+
 def setup_rate_limiting(app: FastAPI):
     """Setup rate limiting for FastAPI app."""
     app.state.limiter = limiter
@@ -20,11 +22,12 @@ def setup_rate_limiting(app: FastAPI):
     app.middleware("http")(rate_limiter_middleware)
     logger.info("Rate limiting configured with tenant-aware limits")
 
+
 __all__ = [
     "limiter",
     "rate_limit",
     "setup_rate_limiting",
     "setup_rate_limit_routes",
     "get_tenant_limit",
-    "DEFAULT_LIMITS"
+    "DEFAULT_LIMITS",
 ]

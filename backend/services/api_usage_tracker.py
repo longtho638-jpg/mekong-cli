@@ -10,6 +10,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class ApiUsageTracker:
     """
     Service to track API usage statistics.
@@ -27,7 +28,7 @@ class ApiUsageTracker:
         status_code: int,
         response_time_ms: int,
         ip_address: Optional[str] = None,
-        user_agent: Optional[str] = None
+        user_agent: Optional[str] = None,
     ):
         """
         Record an API request in the database.
@@ -42,7 +43,7 @@ class ApiUsageTracker:
                 "response_time_ms": response_time_ms,
                 "ip_address": ip_address,
                 "user_agent": user_agent,
-                "created_at": datetime.utcnow().isoformat()
+                "created_at": datetime.utcnow().isoformat(),
             }
 
             # Fire and forget insert
@@ -52,6 +53,7 @@ class ApiUsageTracker:
             # We don't want usage tracking to fail the request if possible,
             # but we definitely want to know if it's failing.
             logger.error(f"Failed to track API usage: {e}")
+
 
 # Global instance
 usage_tracker = ApiUsageTracker()

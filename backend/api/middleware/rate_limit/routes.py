@@ -1,6 +1,7 @@
 """
 Rate limit monitoring routes.
 """
+
 from fastapi import FastAPI, Request
 
 from backend.api.middleware.multitenant import get_current_tenant

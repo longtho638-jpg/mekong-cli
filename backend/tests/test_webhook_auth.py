@@ -40,14 +40,10 @@ def mock_stripe():
     mock.Webhook = MagicMock()
     mock.error = MagicMock()
     # Define exception class structure
-    mock.error.SignatureVerificationError = type(
-        'SignatureVerificationError',
-        (Exception,),
-        {}
-    )
+    mock.error.SignatureVerificationError = type("SignatureVerificationError", (Exception,), {})
 
     # Patch sys.modules to return our mock when 'stripe' is imported
-    with patch.dict(sys.modules, {'stripe': mock}):
+    with patch.dict(sys.modules, {"stripe": mock}):
         yield mock
 
 
@@ -62,9 +58,7 @@ class TestGumroadSignatureVerification:
 
         # Generate valid signature
         expected_signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=payload,
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=payload, digestmod=hashlib.sha256
         ).hexdigest()
 
         # Act & Assert
@@ -118,9 +112,7 @@ class TestGumroadSignatureVerification:
         secret = "test_gumroad_secret_key"
 
         correct_signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=payload,
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=payload, digestmod=hashlib.sha256
         ).hexdigest()
 
         # Create a signature that differs only in last character
@@ -141,10 +133,7 @@ class TestStripeSignatureVerification:
         signature = "t=1234567890,v1=valid_signature"
         secret = "whsec_test_secret"
 
-        expected_event = {
-            "type": "checkout.session.completed",
-            "data": {"object": {}}
-        }
+        expected_event = {"type": "checkout.session.completed", "data": {"object": {}}}
         mock_stripe.Webhook.construct_event.return_value = expected_event
 
         # Act
@@ -153,10 +142,7 @@ class TestStripeSignatureVerification:
         # Assert
         assert result == expected_event
         mock_stripe.Webhook.construct_event.assert_called_once_with(
-            payload=payload,
-            sig_header=signature,
-            secret=secret,
-            tolerance=300
+            payload=payload, sig_header=signature, secret=secret, tolerance=300
         )
 
     def test_invalid_stripe_signature(self, mock_stripe):
@@ -168,9 +154,7 @@ class TestStripeSignatureVerification:
 
         # Mock the SignatureVerificationError
         mock_stripe.error.SignatureVerificationError = type(
-            'SignatureVerificationError',
-            (Exception,),
-            {}
+            "SignatureVerificationError", (Exception,), {}
         )
         mock_stripe.Webhook.construct_event.side_effect = (
             mock_stripe.error.SignatureVerificationError("Invalid signature")
@@ -225,17 +209,12 @@ class TestStripeSignatureVerification:
         mock_stripe.Webhook.construct_event.return_value = expected_event
 
         # Act
-        result = verify_stripe_signature(
-            payload, signature, secret, tolerance=custom_tolerance
-        )
+        result = verify_stripe_signature(payload, signature, secret, tolerance=custom_tolerance)
 
         # Assert
         assert result == expected_event
         mock_stripe.Webhook.construct_event.assert_called_with(
-            payload=payload,
-            sig_header=signature,
-            secret=secret,
-            tolerance=custom_tolerance
+            payload=payload, sig_header=signature, secret=secret, tolerance=custom_tolerance
         )
 
 
@@ -301,15 +280,11 @@ class TestTimestampValidation:
 class TestLogging:
     """Test webhook verification logging."""
 
-    @patch('backend.middleware.webhook_auth.logger')
+    @patch("backend.middleware.webhook_auth.logger")
     def test_log_successful_verification(self, mock_logger):
         """Test logging of successful webhook verification."""
         # Act
-        log_webhook_verification(
-            provider="gumroad",
-            success=True,
-            request_id="req_123"
-        )
+        log_webhook_verification(provider="gumroad", success=True, request_id="req_123")
 
         # Assert
         mock_logger.info.assert_called_once()
@@ -317,15 +292,12 @@ class TestLogging:
         assert "Webhook verified" in call_args
         assert "gumroad" in call_args
 
-    @patch('backend.middleware.webhook_auth.logger')
+    @patch("backend.middleware.webhook_auth.logger")
     def test_log_failed_verification(self, mock_logger):
         """Test logging of failed webhook verification."""
         # Act
         log_webhook_verification(
-            provider="stripe",
-            success=False,
-            request_id="req_456",
-            error="Invalid signature"
+            provider="stripe", success=False, request_id="req_456", error="Invalid signature"
         )
 
         # Assert
@@ -334,16 +306,12 @@ class TestLogging:
         assert "Webhook verification failed" in call_args
         assert "stripe" in call_args
 
-    @patch('backend.middleware.webhook_auth.logger')
+    @patch("backend.middleware.webhook_auth.logger")
     def test_log_includes_error_details(self, mock_logger):
         """Test that error details are included in logs."""
         # Act
         error_message = "Signature mismatch: expected abc, got xyz"
-        log_webhook_verification(
-            provider="gumroad",
-            success=False,
-            error=error_message
-        )
+        log_webhook_verification(provider="gumroad", success=False, error=error_message)
 
         # Assert
         mock_logger.warning.assert_called_once()
@@ -357,24 +325,18 @@ class TestWebhookAuthError:
     def test_webhook_auth_error_attributes(self):
         """Test WebhookAuthError has correct attributes."""
         # Act
-        error = WebhookAuthError(
-            detail="Test error message",
-            provider="test_provider"
-        )
+        error = WebhookAuthError(detail="Test error message", provider="test_provider")
 
         # Assert
         assert error.status_code == 401
         assert error.detail == "Test error message"
         assert error.provider == "test_provider"
 
-    @patch('backend.middleware.webhook_auth.logger')
+    @patch("backend.middleware.webhook_auth.logger")
     def test_webhook_auth_error_logs_on_creation(self, mock_logger):
         """Test that WebhookAuthError logs error on creation."""
         # Act
-        _ = WebhookAuthError(
-            detail="Test error",
-            provider="gumroad"
-        )
+        _ = WebhookAuthError(detail="Test error", provider="gumroad")
 
         # Assert
         mock_logger.error.assert_called_once()
@@ -392,7 +354,7 @@ def sample_gumroad_payload():
         "price": "395.00",
         "email": "test@example.com",
         "sale_id": "test_sale_123",
-        "timestamp": str(int(time.time()))
+        "timestamp": str(int(time.time())),
     }
 
 
@@ -406,9 +368,9 @@ def sample_stripe_event():
                 "id": "cs_test_123",
                 "subscription": "sub_test_123",
                 "customer": "cus_test_123",
-                "metadata": {"tenantId": "tenant_123"}
+                "metadata": {"tenantId": "tenant_123"},
             }
-        }
+        },
     }
 
 
@@ -418,25 +380,21 @@ class TestIntegration:
     def test_gumroad_end_to_end_verification(self, sample_gumroad_payload):
         """Test complete Gumroad webhook verification flow."""
         # Arrange
-        payload_bytes = json.dumps(sample_gumroad_payload).encode('utf-8')
+        payload_bytes = json.dumps(sample_gumroad_payload).encode("utf-8")
         secret = "test_gumroad_webhook_secret"
 
         # Generate valid signature
         signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=payload_bytes,
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=payload_bytes, digestmod=hashlib.sha256
         ).hexdigest()
 
         # Act & Assert
         assert verify_gumroad_signature(payload_bytes, signature, secret) is True
 
-    def test_stripe_end_to_end_verification(
-        self, sample_stripe_event, mock_stripe
-    ):
+    def test_stripe_end_to_end_verification(self, sample_stripe_event, mock_stripe):
         """Test complete Stripe webhook verification flow."""
         # Arrange
-        payload = json.dumps(sample_stripe_event).encode('utf-8')
+        payload = json.dumps(sample_stripe_event).encode("utf-8")
         signature = "t=1234567890,v1=test_signature"
         secret = "whsec_test_secret"
 

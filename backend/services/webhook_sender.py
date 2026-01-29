@@ -2,6 +2,7 @@
 Webhook Sender Service.
 Handles reliable delivery of outgoing webhooks with retries and exponential backoff.
 """
+
 import asyncio
 import hashlib
 import hmac
@@ -21,6 +22,7 @@ from backend.db.session import get_db
 from backend.models.webhooks import WebhookConfig, WebhookDelivery, WebhookFailure
 
 logger = logging.getLogger(__name__)
+
 
 class WebhookSenderService:
     """
@@ -44,9 +46,7 @@ class WebhookSenderService:
         """
         to_sign = f"{timestamp}.{payload}"
         signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=to_sign.encode('utf-8'),
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=to_sign.encode("utf-8"), digestmod=hashlib.sha256
         ).hexdigest()
         return f"t={timestamp},v1={signature}"
 
@@ -93,7 +93,9 @@ class WebhookSenderService:
                 return True
         return False
 
-    async def schedule_delivery(self, endpoint: WebhookConfig, event_type: str, payload: Dict[str, Any], db: Session):
+    async def schedule_delivery(
+        self, endpoint: WebhookConfig, event_type: str, payload: Dict[str, Any], db: Session
+    ):
         """Create delivery record and attempt sending."""
         try:
             new_delivery = WebhookDelivery(
@@ -102,7 +104,7 @@ class WebhookSenderService:
                 payload=payload,
                 status=DeliveryStatus.PENDING.value,
                 attempt_count=0,
-                created_at=datetime.utcnow()
+                created_at=datetime.utcnow(),
             )
 
             db.add(new_delivery)
@@ -116,7 +118,9 @@ class WebhookSenderService:
             db.rollback()
             logger.error(f"Error scheduling webhook delivery: {e}")
 
-    async def _execute_delivery(self, delivery: WebhookDelivery, endpoint: WebhookConfig, db: Session):
+    async def _execute_delivery(
+        self, delivery: WebhookDelivery, endpoint: WebhookConfig, db: Session
+    ):
         """
         Execute the HTTP request.
         """
@@ -133,7 +137,7 @@ class WebhookSenderService:
             "AgencyOS-Signature": signature,
             "AgencyOS-Event-Id": str(delivery.id),
             "User-Agent": "AgencyOS-Webhook/1.0",
-            "X-AgencyOS-Event": delivery.event_type
+            "X-AgencyOS-Event": delivery.event_type,
         }
 
         success = False
@@ -142,7 +146,9 @@ class WebhookSenderService:
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=payload_json, headers=headers, timeout=10) as response:
+                async with session.post(
+                    url, data=payload_json, headers=headers, timeout=10
+                ) as response:
                     response_status = response.status
                     response_body = await response.text()
                     success = 200 <= response_status < 300
@@ -156,7 +162,14 @@ class WebhookSenderService:
         # Update delivery status
         await self._update_delivery_status(delivery, success, response_status, response_body, db)
 
-    async def _update_delivery_status(self, delivery: WebhookDelivery, success: bool, response_status: int, response_body: str, db: Session):
+    async def _update_delivery_status(
+        self,
+        delivery: WebhookDelivery,
+        success: bool,
+        response_status: int,
+        response_body: str,
+        db: Session,
+    ):
         """Update delivery record and schedule retry if needed."""
         try:
             delivery.attempt_count += 1
@@ -169,7 +182,7 @@ class WebhookSenderService:
             else:
                 if delivery.attempt_count < self.max_retries:
                     # Schedule retry
-                    delay = self.backoff_base ** delivery.attempt_count
+                    delay = self.backoff_base**delivery.attempt_count
                     next_retry = datetime.utcnow() + timedelta(seconds=delay)
                     delivery.status = DeliveryStatus.PENDING.value
                     delivery.next_retry_at = next_retry
@@ -194,7 +207,7 @@ class WebhookSenderService:
                 event_type=delivery.event_type,
                 payload=delivery.payload,
                 error_message=error,
-                failed_at=datetime.utcnow()
+                failed_at=datetime.utcnow(),
             )
             db.add(failure)
             # Commit handled by caller (usually) but here we are in a chain.
@@ -218,14 +231,22 @@ class WebhookSenderService:
         try:
             now = datetime.utcnow()
             # Fetch pending deliveries due for retry
-            deliveries = db.query(WebhookDelivery).filter(
-                WebhookDelivery.status == DeliveryStatus.PENDING.value,
-                WebhookDelivery.next_retry_at <= now
-            ).all()
+            deliveries = (
+                db.query(WebhookDelivery)
+                .filter(
+                    WebhookDelivery.status == DeliveryStatus.PENDING.value,
+                    WebhookDelivery.next_retry_at <= now,
+                )
+                .all()
+            )
 
             for delivery in deliveries:
                 # Fetch endpoint details
-                endpoint = db.query(WebhookConfig).filter(WebhookConfig.id == delivery.webhook_config_id).first()
+                endpoint = (
+                    db.query(WebhookConfig)
+                    .filter(WebhookConfig.id == delivery.webhook_config_id)
+                    .first()
+                )
                 if not endpoint:
                     logger.warning(f"Endpoint not found for delivery {delivery.id}")
                     continue
@@ -237,5 +258,6 @@ class WebhookSenderService:
         finally:
             if local_db:
                 db.close()
+
 
 webhook_sender = WebhookSenderService()

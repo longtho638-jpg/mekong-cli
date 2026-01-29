@@ -14,6 +14,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class WebhookDeliveryService:
     """
     Service for reliable webhook delivery.
@@ -23,7 +24,7 @@ class WebhookDeliveryService:
     def __init__(self):
         self.db = get_db()
         self.max_retries = 5
-        self.backoff_factor = 2 # Exponential backoff base
+        self.backoff_factor = 2  # Exponential backoff base
 
     def generate_signature(self, payload: str, secret: str, timestamp: int) -> str:
         """
@@ -32,9 +33,7 @@ class WebhookDeliveryService:
         """
         to_sign = f"{timestamp}.{payload}"
         signature = hmac.new(
-            key=secret.encode('utf-8'),
-            msg=to_sign.encode('utf-8'),
-            digestmod=hashlib.sha256
+            key=secret.encode("utf-8"), msg=to_sign.encode("utf-8"), digestmod=hashlib.sha256
         ).hexdigest()
         return f"t={timestamp},v1={signature}"
 
@@ -44,7 +43,9 @@ class WebhookDeliveryService:
         """
         try:
             # 1. Get Webhook Config
-            result = self.db.table("webhook_configs").select("*").eq("id", config_id).single().execute()
+            result = (
+                self.db.table("webhook_configs").select("*").eq("id", config_id).single().execute()
+            )
             config = result.data
 
             if not config or config["status"] != "active":
@@ -70,7 +71,7 @@ class WebhookDeliveryService:
                 "event_type": event_type,
                 "payload": payload,
                 "status": "pending",
-                "attempts": 0
+                "attempts": 0,
             }
             res = self.db.table("webhook_deliveries").insert(delivery_data).execute()
             if not res.data:
@@ -81,22 +82,27 @@ class WebhookDeliveryService:
 
             # 3. Execute Delivery
             await self._execute_delivery(
-                delivery_id=delivery_id,
-                url=config["url"],
-                secret=config["secret"],
-                payload=payload
+                delivery_id=delivery_id, url=config["url"], secret=config["secret"], payload=payload
             )
 
         except Exception as e:
             logger.error(f"Error preparing webhook delivery: {e}")
 
-    async def _execute_delivery(self, delivery_id: str, url: str, secret: str, payload: Dict[str, Any]):
+    async def _execute_delivery(
+        self, delivery_id: str, url: str, secret: str, payload: Dict[str, Any]
+    ):
         """
         Execute the HTTP request with retries.
         """
         # Get current state
         try:
-            res = self.db.table("webhook_deliveries").select("*").eq("id", delivery_id).single().execute()
+            res = (
+                self.db.table("webhook_deliveries")
+                .select("*")
+                .eq("id", delivery_id)
+                .single()
+                .execute()
+            )
             record = res.data
         except Exception as e:
             logger.error(f"Error fetching delivery record {delivery_id}: {e}")
@@ -110,12 +116,14 @@ class WebhookDeliveryService:
             "Content-Type": "application/json",
             "AgencyOS-Signature": signature,
             "AgencyOS-Event-Id": str(delivery_id),
-            "User-Agent": "AgencyOS-Webhook/1.0"
+            "User-Agent": "AgencyOS-Webhook/1.0",
         }
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=payload_json, headers=headers, timeout=10) as response:
+                async with session.post(
+                    url, data=payload_json, headers=headers, timeout=10
+                ) as response:
                     status_code = response.status
                     response_text = await response.text()
 
@@ -125,21 +133,25 @@ class WebhookDeliveryService:
                     update_data = {
                         "status": "success" if success else "failed",
                         "response_status": status_code,
-                        "response_body": response_text[:1000], # Truncate log
+                        "response_body": response_text[:1000],  # Truncate log
                         "attempts": record["attempts"] + 1,
-                        "updated_at": datetime.utcnow().isoformat()
+                        "updated_at": datetime.utcnow().isoformat(),
                     }
 
                     if not success:
                         # Schedule retry
                         if record["attempts"] + 1 < self.max_retries:
                             retry_delay = self.backoff_factor ** (record["attempts"] + 1)
-                            update_data["next_retry_at"] = (datetime.utcnow() + timedelta(seconds=retry_delay)).isoformat()
-                            update_data["status"] = "pending" # Keep pending if retrying
+                            update_data["next_retry_at"] = (
+                                datetime.utcnow() + timedelta(seconds=retry_delay)
+                            ).isoformat()
+                            update_data["status"] = "pending"  # Keep pending if retrying
                         else:
-                            update_data["status"] = "failed" # Final failure
+                            update_data["status"] = "failed"  # Final failure
 
-                    self.db.table("webhook_deliveries").update(update_data).eq("id", delivery_id).execute()
+                    self.db.table("webhook_deliveries").update(update_data).eq(
+                        "id", delivery_id
+                    ).execute()
 
         except Exception as e:
             logger.error(f"Webhook HTTP error: {e}")
@@ -148,14 +160,16 @@ class WebhookDeliveryService:
                 "status": "pending",
                 "response_body": str(e)[:1000],
                 "attempts": record["attempts"] + 1,
-                "updated_at": datetime.utcnow().isoformat()
+                "updated_at": datetime.utcnow().isoformat(),
             }
 
             if record["attempts"] + 1 < self.max_retries:
-                 retry_delay = self.backoff_factor ** (record["attempts"] + 1)
-                 update_data["next_retry_at"] = (datetime.utcnow() + timedelta(seconds=retry_delay)).isoformat()
+                retry_delay = self.backoff_factor ** (record["attempts"] + 1)
+                update_data["next_retry_at"] = (
+                    datetime.utcnow() + timedelta(seconds=retry_delay)
+                ).isoformat()
             else:
-                 update_data["status"] = "failed"
+                update_data["status"] = "failed"
 
             self.db.table("webhook_deliveries").update(update_data).eq("id", delivery_id).execute()
 
@@ -166,11 +180,13 @@ class WebhookDeliveryService:
         try:
             now = datetime.utcnow().isoformat()
             # Find deliveries due for retry
-            res = self.db.table("webhook_deliveries")\
-                .select("*, webhook_configs(url, secret)")\
-                .eq("status", "pending")\
-                .lte("next_retry_at", now)\
+            res = (
+                self.db.table("webhook_deliveries")
+                .select("*, webhook_configs(url, secret)")
+                .eq("status", "pending")
+                .lte("next_retry_at", now)
                 .execute()
+            )
 
             deliveries = res.data
 
@@ -179,7 +195,13 @@ class WebhookDeliveryService:
                 config = delivery.get("webhook_configs")
                 if not config:
                     # Fetch manually if join syntax varies
-                    config_res = self.db.table("webhook_configs").select("*").eq("id", delivery["webhook_config_id"]).single().execute()
+                    config_res = (
+                        self.db.table("webhook_configs")
+                        .select("*")
+                        .eq("id", delivery["webhook_config_id"])
+                        .single()
+                        .execute()
+                    )
                     config = config_res.data
 
                 if config:
@@ -187,11 +209,12 @@ class WebhookDeliveryService:
                         delivery_id=delivery["id"],
                         url=config["url"],
                         secret=config["secret"],
-                        payload=delivery["payload"]
+                        payload=delivery["payload"],
                     )
 
         except Exception as e:
             logger.error(f"Error processing webhook retries: {e}")
+
 
 # Global instance
 webhook_service = WebhookDeliveryService()

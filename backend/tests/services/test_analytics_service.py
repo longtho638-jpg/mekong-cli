@@ -1,6 +1,7 @@
 """
 Tests for Analytics Service
 """
+
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -15,6 +16,7 @@ def mock_db():
         db_instance = MagicMock()
         mock_get_db.return_value = db_instance
         yield db_instance
+
 
 def test_track_event_success(mock_db):
     service = AnalyticsService()
@@ -33,7 +35,7 @@ def test_track_event_success(mock_db):
         event_type="test",
         event_category="core",
         event_name="test_action",
-        event_data={"foo": "bar"}
+        event_data={"foo": "bar"},
     )
 
     assert result["id"] == "evt_123"
@@ -45,6 +47,7 @@ def test_track_event_success(mock_db):
     assert call_args["user_id"] == "user_123"
     assert call_args["event_name"] == "test_action"
 
+
 def test_track_event_failure(mock_db):
     service = AnalyticsService()
 
@@ -54,6 +57,7 @@ def test_track_event_failure(mock_db):
     result = service.track_event("user_123", "test", "core", "fail")
     assert result == {}
 
+
 def test_get_user_stats(mock_db):
     service = AnalyticsService()
 
@@ -62,7 +66,7 @@ def test_get_user_stats(mock_db):
     mock_query.data = [
         {"event_type": "api_call", "event_category": "billing"},
         {"event_type": "api_call", "event_category": "core"},
-        {"event_type": "login", "event_category": "auth"}
+        {"event_type": "login", "event_category": "auth"},
     ]
 
     mock_db.table.return_value.select.return_value.eq.return_value.gte.return_value.execute.return_value = mock_query
@@ -73,6 +77,7 @@ def test_get_user_stats(mock_db):
     assert stats["events_by_type"]["api_call"] == 2
     assert stats["events_by_type"]["login"] == 1
     assert stats["events_by_category"]["billing"] == 1
+
 
 def test_get_daily_metrics(mock_db):
     service = AnalyticsService()

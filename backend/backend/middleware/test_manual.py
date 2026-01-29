@@ -14,10 +14,10 @@ BASE_URL = "http://localhost:8000"
 
 def test_tier(tier: str, expected_limit: int, test_name: str):
     """Test rate limiting for a specific tier"""
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Testing {test_name}")
     print(f"Expected limit: {expected_limit} requests/minute")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     headers = {}
     if tier != "default":
@@ -33,19 +33,21 @@ def test_tier(tier: str, expected_limit: int, test_name: str):
 
             if response.status_code == 200:
                 successful += 1
-                print(f"✅ Request {i+1}: Success")
-                print(f"   Headers: Limit={response.headers.get('X-RateLimit-Limit')}, "
-                      f"Remaining={response.headers.get('X-RateLimit-Remaining')}, "
-                      f"Tier={response.headers.get('X-RateLimit-Tier')}")
+                print(f"✅ Request {i + 1}: Success")
+                print(
+                    f"   Headers: Limit={response.headers.get('X-RateLimit-Limit')}, "
+                    f"Remaining={response.headers.get('X-RateLimit-Remaining')}, "
+                    f"Tier={response.headers.get('X-RateLimit-Tier')}"
+                )
             elif response.status_code == 429:
                 rate_limited += 1
                 data = response.json()
-                print(f"⛔ Request {i+1}: Rate Limited (429)")
+                print(f"⛔ Request {i + 1}: Rate Limited (429)")
                 print(f"   Message: {data.get('message')}")
                 print(f"   Retry After: {data.get('retry_after')} seconds")
                 break
             else:
-                print(f"❌ Request {i+1}: Unexpected status {response.status_code}")
+                print(f"❌ Request {i + 1}: Unexpected status {response.status_code}")
 
         except requests.exceptions.ConnectionError:
             print(f"❌ Connection failed. Is the server running on {BASE_URL}?")
@@ -67,7 +69,7 @@ def test_tier(tier: str, expected_limit: int, test_name: str):
 def main():
     """Run rate limiting tests"""
     print("\n🚀 Rate Limiting Middleware Test Script")
-    print("="*60)
+    print("=" * 60)
 
     # Check if server is running
     try:
@@ -94,9 +96,9 @@ def main():
         print("\n⏳ Waiting 3 seconds before next test...")
         time.sleep(3)
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("✅ All tests completed!")
-    print("="*60)
+    print("=" * 60)
 
 
 if __name__ == "__main__":

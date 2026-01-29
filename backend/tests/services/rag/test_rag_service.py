@@ -23,6 +23,7 @@ def mock_llm_service():
         instance.generate_text = AsyncMock(return_value="RAG Answer")
         yield instance
 
+
 @pytest.fixture
 def mock_embeddings():
     with patch("backend.services.rag.service.GeminiEmbeddings") as MockEmbeddings:
@@ -30,6 +31,7 @@ def mock_embeddings():
         instance.embed_query = AsyncMock(return_value=[0.1, 0.2, 0.3])
         instance.embed_documents = AsyncMock(return_value=[[0.1, 0.2, 0.3], [0.4, 0.5, 0.6]])
         yield instance
+
 
 @pytest.mark.asyncio
 async def test_rag_ingest_and_query(mock_llm_service, mock_embeddings):

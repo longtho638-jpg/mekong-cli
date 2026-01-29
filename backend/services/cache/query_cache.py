@@ -16,6 +16,7 @@ from backend.services.cache.metrics import MetricsContext, global_metrics
 
 logger = logging.getLogger(__name__)
 
+
 class QueryCache:
     def __init__(self, redis_client: redis.Redis, prefix: str = "query", default_ttl: int = 600):
         self.redis = redis_client
@@ -33,7 +34,7 @@ class QueryCache:
 
         # Create a canonical representation of the query
         query_str = f"{sql}|{str(params)}"
-        hash_digest = hashlib.sha256(query_str.encode('utf-8')).hexdigest()
+        hash_digest = hashlib.sha256(query_str.encode("utf-8")).hexdigest()
         return f"sql:{hash_digest}"
 
     async def get(self, key: str) -> Optional[Any]:

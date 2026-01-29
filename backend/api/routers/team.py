@@ -23,15 +23,20 @@ router = APIRouter(prefix="/api/team", tags=["Team Management"])
 
 # Request/Response Models
 
+
 class TeamCreateRequest(BaseModel):
     """Request model for creating a team."""
+
     name: str = Field(..., description="Team name", min_length=1, max_length=100)
     owner_email: str = Field(..., description="Email of team owner")
-    license_tier: str = Field(..., description="License tier (free, starter, pro, franchise, enterprise)")
+    license_tier: str = Field(
+        ..., description="License tier (free, starter, pro, franchise, enterprise)"
+    )
 
 
 class TeamCreateResponse(BaseModel):
     """Response model for team creation."""
+
     success: bool = Field(..., description="Whether team creation was successful")
     team: dict = Field(..., description="Team details")
     message: str = Field(..., description="Creation message")
@@ -39,11 +44,13 @@ class TeamCreateResponse(BaseModel):
 
 class MemberInviteRequest(BaseModel):
     """Request model for inviting a team member."""
+
     email: str = Field(..., description="Email of member to invite")
 
 
 class MemberInviteResponse(BaseModel):
     """Response model for member invitation."""
+
     success: bool = Field(..., description="Whether invitation was successful")
     member: Optional[dict] = Field(None, description="Member details if successful")
     message: str = Field(..., description="Invitation message")
@@ -52,6 +59,7 @@ class MemberInviteResponse(BaseModel):
 
 class MemberRemoveResponse(BaseModel):
     """Response model for member removal."""
+
     success: bool = Field(..., description="Whether removal was successful")
     message: str = Field(..., description="Removal message")
     available_seats: int = Field(..., description="Remaining available seats")
@@ -59,6 +67,7 @@ class MemberRemoveResponse(BaseModel):
 
 class MemberListResponse(BaseModel):
     """Response model for listing team members."""
+
     success: bool = Field(..., description="Whether operation was successful")
     team_id: str = Field(..., description="Team ID")
     team_name: str = Field(..., description="Team name")
@@ -71,6 +80,7 @@ class MemberListResponse(BaseModel):
 
 class SeatAvailabilityResponse(BaseModel):
     """Response model for seat availability check."""
+
     success: bool = Field(..., description="Whether operation was successful")
     team_id: str = Field(..., description="Team ID")
     license_tier: str = Field(..., description="License tier")
@@ -82,6 +92,7 @@ class SeatAvailabilityResponse(BaseModel):
 
 
 # Endpoints
+
 
 @router.post("/create", response_model=TeamCreateResponse)
 async def create_team(request: TeamCreateRequest):

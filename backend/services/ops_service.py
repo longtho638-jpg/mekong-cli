@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ServiceStatusDict(TypedDict):
     """Status information for a single service"""
+
     name: str
     status: str
     last_check: float
@@ -22,6 +23,7 @@ class ServiceStatusDict(TypedDict):
 
 class ApprovalRequestDict(TypedDict):
     """Data structure for an approval request"""
+
     id: str
     action_name: str
     requester: str
@@ -50,12 +52,14 @@ class OpsService:
         """Get health status of all monitored services."""
         statuses: List[ServiceStatusDict] = []
         for name, svc in self.auto_healer.services.items():
-            statuses.append({
-                "name": name,
-                "status": svc.status.value,
-                "last_check": svc.last_check * 1000,  # Frontend expects ms
-                "message": svc.message
-            })
+            statuses.append(
+                {
+                    "name": name,
+                    "status": svc.status.value,
+                    "last_check": svc.last_check * 1000,  # Frontend expects ms
+                    "message": svc.message,
+                }
+            )
         return statuses
 
     async def get_pending_approvals(self) -> List[ApprovalRequestDict]:
@@ -68,7 +72,7 @@ class OpsService:
                 "requester": req.requester,
                 "payload": req.payload,
                 "created_at": req.created_at * 1000,
-                "status": req.status.value
+                "status": req.status.value,
             }
             for req in requests
         ]
@@ -78,7 +82,9 @@ class OpsService:
         logger.info(f"Approving request {request_id} by {approver}")
         return self.approval_gate.approve(request_id, approver)
 
-    async def reject_request(self, request_id: str, approver: str, reason: Optional[str] = None) -> bool:
+    async def reject_request(
+        self, request_id: str, approver: str, reason: Optional[str] = None
+    ) -> bool:
         """Reject a pending request."""
         logger.info(f"Rejecting request {request_id} by {approver}. Reason: {reason}")
         return self.approval_gate.reject(request_id, approver, reason)

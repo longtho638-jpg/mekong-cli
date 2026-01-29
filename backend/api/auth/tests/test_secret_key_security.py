@@ -1,4 +1,5 @@
 """Tests for SECRET_KEY validation in auth utils."""
+
 import os
 import unittest
 from unittest.mock import patch
@@ -21,14 +22,14 @@ class TestSecretKeyValidation(unittest.TestCase):
 
             # Reload settings first (where the validation happens)
             # Use sys.modules to avoid TypeError if settings resolves to the object
-            if 'backend.api.config.settings' in sys.modules:
-                importlib.reload(sys.modules['backend.api.config.settings'])
+            if "backend.api.config.settings" in sys.modules:
+                importlib.reload(sys.modules["backend.api.config.settings"])
             else:
                 import backend.api.config.settings
 
             # Reload config wrapper
-            if 'backend.api.config' in sys.modules:
-                importlib.reload(sys.modules['backend.api.config'])
+            if "backend.api.config" in sys.modules:
+                importlib.reload(sys.modules["backend.api.config"])
 
             # Then reload auth_utils which uses config
             importlib.reload(auth_utils)
@@ -50,12 +51,12 @@ class TestSecretKeyValidation(unittest.TestCase):
             import backend.api.config.settings
 
             # Reload settings first
-            if 'backend.api.config.settings' in sys.modules:
-                importlib.reload(sys.modules['backend.api.config.settings'])
+            if "backend.api.config.settings" in sys.modules:
+                importlib.reload(sys.modules["backend.api.config.settings"])
 
             # Reload config wrapper
-            if 'backend.api.config' in sys.modules:
-                importlib.reload(sys.modules['backend.api.config'])
+            if "backend.api.config" in sys.modules:
+                importlib.reload(sys.modules["backend.api.config"])
 
             # Then reload auth_utils which uses config
             importlib.reload(auth_utils)
@@ -66,9 +67,10 @@ class TestSecretKeyValidation(unittest.TestCase):
         """Test that there's no hardcoded SECRET_KEY fallback."""
         # Read the source file
         import backend.api.auth.utils
+
         source_file = backend.api.auth.utils.__file__
 
-        with open(source_file, 'r') as f:
+        with open(source_file, "r") as f:
             content = f.read()
 
         # Ensure no hardcoded default value
@@ -92,11 +94,11 @@ class TestAuthUtilsTypeSafety(unittest.TestCase):
         import backend.api.config.settings
 
         # Reload to ensure valid state
-        if 'backend.api.config.settings' in sys.modules:
-            importlib.reload(sys.modules['backend.api.config.settings'])
+        if "backend.api.config.settings" in sys.modules:
+            importlib.reload(sys.modules["backend.api.config.settings"])
 
-        if 'backend.api.config' in sys.modules:
-            importlib.reload(sys.modules['backend.api.config'])
+        if "backend.api.config" in sys.modules:
+            importlib.reload(sys.modules["backend.api.config"])
 
         importlib.reload(auth_utils)
 

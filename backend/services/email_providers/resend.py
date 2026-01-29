@@ -7,6 +7,7 @@ from backend.services.email_providers.base import EmailMessage, EmailProvider
 
 logger = logging.getLogger(__name__)
 
+
 class ResendProvider(EmailProvider):
     def __init__(self, api_key: str):
         self.api_key = api_key
@@ -14,10 +15,12 @@ class ResendProvider(EmailProvider):
 
     async def send_email(self, message: EmailMessage) -> Dict[str, Any]:
         payload = {
-            "from": f"{message.from_name} <{message.from_email}>" if message.from_name and message.from_email else message.from_email,
+            "from": f"{message.from_name} <{message.from_email}>"
+            if message.from_name and message.from_email
+            else message.from_email,
             "to": [message.to_email],
             "subject": message.subject,
-            "html": message.html_content
+            "html": message.html_content,
         }
 
         if message.text_content:
@@ -38,17 +41,12 @@ class ResendProvider(EmailProvider):
         if message.metadata:
             payload["tags"] = [{"name": k, "value": str(v)} for k, v in message.metadata.items()]
 
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
+        headers = {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.post(
-                    f"{self.base_url}/emails",
-                    json=payload,
-                    headers=headers
+                    f"{self.base_url}/emails", json=payload, headers=headers
                 )
 
                 if response.status_code not in [200, 201]:
@@ -56,11 +54,7 @@ class ResendProvider(EmailProvider):
                     raise Exception(f"Resend Error: {response.text}")
 
                 data = response.json()
-                return {
-                    "status": "sent",
-                    "provider": "resend",
-                    "message_id": data.get("id")
-                }
+                return {"status": "sent", "provider": "resend", "message_id": data.get("id")}
             except Exception as e:
                 logger.error(f"Failed to send email via Resend: {str(e)}")
                 raise

@@ -1,6 +1,7 @@
 """
 Test CDN Utils
 """
+
 import pytest
 
 from backend.services.cdn.utils import map_cache_rules_to_middleware
@@ -10,16 +11,8 @@ def test_map_cache_rules():
     config = {
         "cdn": {
             "cache_rules": [
-                {
-                    "path": "/static/*",
-                    "cache_level": "cache_everything",
-                    "browser_ttl": 3600
-                },
-                {
-                    "path": "/api/*",
-                    "cache_level": "bypass",
-                    "browser_ttl": 0
-                }
+                {"path": "/static/*", "cache_level": "cache_everything", "browser_ttl": 3600},
+                {"path": "/api/*", "cache_level": "bypass", "browser_ttl": 0},
             ]
         }
     }

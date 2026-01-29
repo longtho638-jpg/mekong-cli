@@ -11,9 +11,11 @@ from backend.services.audit_service import AuditService
 def mock_db_session():
     return MagicMock()
 
+
 @pytest.fixture
 def audit_service():
     return AuditService()
+
 
 class TestAuditService:
     @pytest.mark.asyncio
@@ -33,15 +35,14 @@ class TestAuditService:
     @pytest.mark.asyncio
     async def test_create_audit_log(self, audit_service, mock_db_session):
         # Mock emit_audit_log_created
-        with patch("backend.services.audit_service.emit_audit_log_created", new_callable=AsyncMock) as mock_emit:
+        with patch(
+            "backend.services.audit_service.emit_audit_log_created", new_callable=AsyncMock
+        ) as mock_emit:
             # Mock previous hash
             mock_db_session.execute.return_value.scalar_one_or_none.return_value = "prev_hash"
 
             _ = await audit_service.create_audit_log(
-                db=mock_db_session,
-                action="user.login",
-                user_id="user_1",
-                ip_address="127.0.0.1"
+                db=mock_db_session, action="user.login", user_id="user_1", ip_address="127.0.0.1"
             )
 
             assert mock_db_session.add.called
@@ -64,9 +65,7 @@ class TestAuditService:
             id=1, timestamp=datetime.now(timezone.utc), user_id="u1", action="a1", hash="hash1"
         )
         # We need to manually calculate hash2 to make it valid for the test logic
-        hash2 = audit_service._calculate_hash(
-            datetime.now(timezone.utc), "u1", "a2", "hash1"
-        )
+        hash2 = audit_service._calculate_hash(datetime.now(timezone.utc), "u1", "a2", "hash1")
         log2 = AuditLog(
             id=2, timestamp=datetime.now(timezone.utc), user_id="u1", action="a2", hash=hash2
         )
@@ -77,17 +76,17 @@ class TestAuditService:
         mock_db_session.execute.return_value.scalars.return_value.all.return_value = [log1, log2]
 
         # We need to patch _calculate_hash to match our dummy values or setup exact values
-        with patch.object(audit_service, '_calculate_hash', return_value=hash2) as _:
+        with patch.object(audit_service, "_calculate_hash", return_value=hash2) as _:
             result = await audit_service.verify_integrity(mock_db_session)
             assert result is True
 
     @pytest.mark.asyncio
     async def test_verify_integrity_tampered(self, audit_service, mock_db_session):
         log1 = AuditLog(id=1, hash="hash1")
-        log2 = AuditLog(id=2, hash="tampered_hash") # Should be hash2
+        log2 = AuditLog(id=2, hash="tampered_hash")  # Should be hash2
 
         mock_db_session.execute.return_value.scalars.return_value.all.return_value = [log1, log2]
 
-        with patch.object(audit_service, '_calculate_hash', return_value="correct_hash"):
+        with patch.object(audit_service, "_calculate_hash", return_value="correct_hash"):
             result = await audit_service.verify_integrity(mock_db_session)
             assert result is False

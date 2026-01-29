@@ -10,17 +10,19 @@ from backend.middleware.rate_limiter import RateLimitMiddleware
 def mock_app():
     return AsyncMock()
 
+
 @pytest.fixture
 def middleware(mock_app):
     # We patch the module where RateLimitMiddleware is defined to intercept imports
     # AND we must patch settings.enable_rate_limiting to True, otherwise dispatch returns early
     from backend.api.config.settings import settings
 
-    with patch('backend.middleware.rate_limiter.RateLimiterService') as MockService, \
-         patch('backend.middleware.rate_limiter.ip_blocker') as mock_ip_blocker, \
-         patch('backend.middleware.rate_limiter.rate_limit_monitor') as mock_monitor, \
-         patch.object(settings, 'enable_rate_limiting', True):
-
+    with (
+        patch("backend.middleware.rate_limiter.RateLimiterService") as MockService,
+        patch("backend.middleware.rate_limiter.ip_blocker") as mock_ip_blocker,
+        patch("backend.middleware.rate_limiter.rate_limit_monitor") as mock_monitor,
+        patch.object(settings, "enable_rate_limiting", True),
+    ):
         # Ensure mocks are AsyncMock where appropriate
         mock_ip_blocker.is_blocked = AsyncMock(return_value=False)
         mock_monitor.log_violation = AsyncMock()
@@ -38,10 +40,8 @@ def middleware(mock_app):
 
         # Mock config to control tests
         mw.config = {
-            'global': {'ip_limit': 100, 'ip_window': 60},
-            'endpoints': {
-                '/api/test': {'limit': 10, 'window_seconds': 60}
-            }
+            "global": {"ip_limit": 100, "ip_window": 60},
+            "endpoints": {"/api/test": {"limit": 10, "window_seconds": 60}},
         }
 
         # Make mocks available on instance for test access
@@ -63,6 +63,7 @@ async def test_dispatch_health_check_bypass(middleware):
     assert response.body == b"OK"
     middleware.rate_limiter.check_sliding_window.assert_not_called()
 
+
 @pytest.mark.asyncio
 async def test_dispatch_blocked_ip(middleware):
     request = MagicMock(spec=Request)
@@ -79,6 +80,7 @@ async def test_dispatch_blocked_ip(middleware):
     assert response.status_code == 403
     assert b"Access denied" in response.body
     call_next.assert_not_called()
+
 
 @pytest.mark.asyncio
 async def test_dispatch_rate_limit_exceeded(middleware):
@@ -103,6 +105,7 @@ async def test_dispatch_rate_limit_exceeded(middleware):
     # Verify monitor called
     middleware.mock_monitor.log_violation.assert_called_once()
 
+
 @pytest.mark.asyncio
 async def test_dispatch_success_headers(middleware):
     request = MagicMock(spec=Request)
@@ -122,4 +125,4 @@ async def test_dispatch_success_headers(middleware):
 
     assert response.status_code == 200
     assert "X-RateLimit-Limit" in response.headers
-    assert response.headers["X-RateLimit-Limit"] == "10" # Endpoint limit
+    assert response.headers["X-RateLimit-Limit"] == "10"  # Endpoint limit

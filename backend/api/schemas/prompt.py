@@ -12,8 +12,10 @@ class PromptBase(BaseModel):
     input_variables: Optional[List[str]] = []
     is_active: Optional[bool] = True
 
+
 class PromptCreate(PromptBase):
     pass
+
 
 class PromptUpdate(BaseModel):
     name: Optional[str] = None
@@ -21,6 +23,7 @@ class PromptUpdate(BaseModel):
     content: Optional[str] = None
     input_variables: Optional[List[str]] = None
     is_active: Optional[bool] = None
+
 
 class PromptResponse(PromptBase):
     id: int

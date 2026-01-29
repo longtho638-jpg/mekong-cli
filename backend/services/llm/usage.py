@@ -6,6 +6,7 @@ from backend.services.llm.types import TokenUsage
 
 logger = logging.getLogger(__name__)
 
+
 class LLMUsageTracker:
     """
     Tracks token usage for LLM requests.
@@ -19,11 +20,7 @@ class LLMUsageTracker:
         return cls._instance
 
     async def track_usage(
-        self,
-        provider: str,
-        model: str,
-        usage: Optional[TokenUsage],
-        request_type: str = "text"
+        self, provider: str, model: str, usage: Optional[TokenUsage], request_type: str = "text"
     ):
         """
         Log token usage. In a real implementation, this would write to a DB table
@@ -41,6 +38,7 @@ class LLMUsageTracker:
             f"Completion: {usage.get('completion_tokens', 0)} | "
             f"Total: {usage.get('total_tokens', 0)}"
         )
+
 
 # Global instance
 llm_usage_tracker = LLMUsageTracker()

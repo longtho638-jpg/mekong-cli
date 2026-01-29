@@ -1,6 +1,7 @@
 """
 POC Tracker Models
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -14,17 +15,21 @@ class POCStage(Enum):
     WON = "won"
     LOST = "lost"
 
+
 @dataclass
 class SuccessCriterion:
     """POC success criterion"""
+
     id: str
     description: str
     met: bool = False
     notes: str = ""
 
+
 @dataclass
 class POC:
     """Proof of Concept"""
+
     id: str
     company: str
     contact: str

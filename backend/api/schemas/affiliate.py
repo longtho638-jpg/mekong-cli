@@ -8,17 +8,20 @@ from backend.models.enums import AffiliateStatus, ConversionStatus, PayoutStatus
 
 # --- Affiliate Schemas ---
 
+
 class AffiliateCreate(BaseModel):
     payment_email: EmailStr
     tax_id: Optional[str] = None
     settings: Optional[Dict[str, Any]] = {}
 
+
 class AffiliateUpdate(BaseModel):
     payment_email: Optional[EmailStr] = None
     tax_id: Optional[str] = None
     settings: Optional[Dict[str, Any]] = None
-    commission_rate: Optional[float] = None # Admin only
-    status: Optional[AffiliateStatus] = None # Admin only
+    commission_rate: Optional[float] = None  # Admin only
+    status: Optional[AffiliateStatus] = None  # Admin only
+
 
 class AffiliateResponse(BaseModel):
     id: str
@@ -36,11 +39,14 @@ class AffiliateResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # --- Link Schemas ---
+
 
 class LinkCreate(BaseModel):
     destination_url: HttpUrl
     slug: Optional[str] = None
+
 
 class LinkResponse(BaseModel):
     id: str
@@ -54,7 +60,9 @@ class LinkResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # --- Payout Schemas ---
+
 
 class PayoutResponse(BaseModel):
     id: str
@@ -71,7 +79,9 @@ class PayoutResponse(BaseModel):
     class Config:
         from_attributes = True
 
+
 # --- Stats Schema ---
+
 
 class AffiliateStats(BaseModel):
     clicks: int

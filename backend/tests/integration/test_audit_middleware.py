@@ -12,6 +12,7 @@ client = TestClient(app)
 # Mock DB or use test DB?
 # Ideally use integration test DB setup. For now, assuming environment is setup or mocks used.
 
+
 class TestAuditMiddleware:
     def test_middleware_logs_request(self):
         # This is hard to test black-box without checking DB side effects.
@@ -80,7 +81,9 @@ class TestAuditMiddleware:
             assert mock_create.called
             args, kwargs = mock_create.call_args
             assert kwargs["metadata"]["status_code"] == 500
-            assert kwargs["resource_type"] == "api_endpoint" # /error-endpoint -> split -> ['error-endpoint'] -> len 1
+            assert (
+                kwargs["resource_type"] == "api_endpoint"
+            )  # /error-endpoint -> split -> ['error-endpoint'] -> len 1
 
     def test_middleware_db_failure(self):
         # Test that if DB log fails, request still succeeds
@@ -96,4 +99,3 @@ class TestAuditMiddleware:
             # Should still return response, not crash
             assert response.status_code == 404
             assert mock_create.called
-

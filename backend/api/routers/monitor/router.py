@@ -40,6 +40,7 @@ class SystemStatus(BaseModel):
     last_check: str
     details: Dict[str, Any]
 
+
 class Anomaly(BaseModel):
     system: str
     type: str
@@ -47,11 +48,13 @@ class Anomaly(BaseModel):
     severity: str
     recovery_action: Optional[str] = None
 
+
 class DashboardResponse(BaseModel):
     timestamp: str
     systems: Dict[str, SystemStatus]
     anomalies: List[Anomaly]
     summary: str
+
 
 @router.get("/status", response_model=DashboardResponse)
 async def get_status():
@@ -63,9 +66,11 @@ async def get_status():
         # with the CLI.
         # We use the shim script which imports the MCP handler.
         process = await asyncio.create_subprocess_exec(
-            "python3", "scripts/vibeos/commander_engine.py", "--status",
+            "python3",
+            "scripts/vibeos/commander_engine.py",
+            "--status",
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
+            stderr=subprocess.PIPE,
         )
         stdout, stderr = await process.communicate()
 
@@ -76,6 +81,7 @@ async def get_status():
 
         # Better approach: Import the handler directly
         from antigravity.mcp_servers.commander_server.handlers import CommanderHandler
+
         handler = CommanderHandler()
         dashboard_data = await handler.get_dashboard()
         return dashboard_data
@@ -85,5 +91,5 @@ async def get_status():
             "timestamp": "",
             "systems": {},
             "anomalies": [],
-            "summary": f"Error fetching status: {str(e)}"
+            "summary": f"Error fetching status: {str(e)}",
         }

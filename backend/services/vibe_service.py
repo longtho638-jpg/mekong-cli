@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class VibeConfig(TypedDict):
     """Configuration for a specific vibe"""
+
     tone: str
     style: str
     local_words: List[str]
@@ -21,12 +22,14 @@ class VibeConfig(TypedDict):
 
 class VibeListResponse(TypedDict):
     """Response structure for listing vibes"""
+
     vibes: List[str]
     current: str
 
 
 class VibePromptResponse(TypedDict):
     """Response structure for vibe prompts"""
+
     vibe: str
     system_prompt: str
 

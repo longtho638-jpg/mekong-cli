@@ -1,6 +1,7 @@
 """
 Outreach Agent Data Models.
 """
+
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
@@ -13,6 +14,7 @@ class ContactType(Enum):
     INFLUENCER = "influencer"
     PARTNER = "partner"
 
+
 class PitchStatus(Enum):
     DRAFT = "draft"
     SENT = "sent"
@@ -21,9 +23,11 @@ class PitchStatus(Enum):
     COVERED = "covered"
     DECLINED = "declined"
 
+
 @dataclass
 class MediaContact:
     """Media contact for outreach"""
+
     id: str
     name: str
     outlet: str
@@ -33,9 +37,11 @@ class MediaContact:
     notes: str = ""
     last_contacted: Optional[datetime] = None
 
+
 @dataclass
 class Pitch:
     """Outreach pitch"""
+
     id: str
     contact_id: str
     subject: str
@@ -47,4 +53,5 @@ class Pitch:
     created_at: datetime = None
 
     def __post_init__(self):
-        if self.created_at is None: self.created_at = datetime.now()
+        if self.created_at is None:
+            self.created_at = datetime.now()

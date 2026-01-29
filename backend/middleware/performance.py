@@ -16,6 +16,7 @@ from starlette.types import ASGIApp
 
 logger = logging.getLogger(__name__)
 
+
 # In-memory metrics storage
 class MetricsStore:
     """Thread-safe in-memory storage for performance metrics"""
@@ -31,11 +32,9 @@ class MetricsStore:
 
     def add_request(self, endpoint: str, duration_ms: float, timestamp: datetime):
         """Add a request metric"""
-        self.request_times.append({
-            'endpoint': endpoint,
-            'duration_ms': duration_ms,
-            'timestamp': timestamp
-        })
+        self.request_times.append(
+            {"endpoint": endpoint, "duration_ms": duration_ms, "timestamp": timestamp}
+        )
 
         # Track per-endpoint metrics
         if endpoint not in self.endpoint_metrics:
@@ -44,21 +43,17 @@ class MetricsStore:
 
         # Track slow queries (>500ms)
         if duration_ms > 500:
-            self.slow_queries.append({
-                'endpoint': endpoint,
-                'duration_ms': duration_ms,
-                'timestamp': timestamp
-            })
-            logger.warning(
-                f"Slow query detected: {endpoint} took {duration_ms:.2f}ms"
+            self.slow_queries.append(
+                {"endpoint": endpoint, "duration_ms": duration_ms, "timestamp": timestamp}
             )
+            logger.warning(f"Slow query detected: {endpoint} took {duration_ms:.2f}ms")
 
     def calculate_percentile(self, percentile: float = 99.0) -> float:
         """Calculate the specified percentile of response times"""
         if not self.request_times:
             return 0.0
 
-        durations = sorted([req['duration_ms'] for req in self.request_times])
+        durations = sorted([req["duration_ms"] for req in self.request_times])
         index = int(len(durations) * (percentile / 100.0))
         return durations[min(index, len(durations) - 1)]
 
@@ -91,10 +86,10 @@ class MetricsStore:
         if current_p99 > spike_threshold:
             self.last_alert_time = now
             return {
-                'current_p99': current_p99,
-                'threshold': spike_threshold,
-                'baseline': self.p99_threshold,
-                'timestamp': now.isoformat()
+                "current_p99": current_p99,
+                "threshold": spike_threshold,
+                "baseline": self.p99_threshold,
+                "timestamp": now.isoformat(),
             }
 
         return None
@@ -103,34 +98,34 @@ class MetricsStore:
         """Get summary statistics for dashboard"""
         if not self.request_times:
             return {
-                'total_requests': 0,
-                'avg_response_time': 0,
-                'p50': 0,
-                'p95': 0,
-                'p99': 0,
-                'slow_queries_count': 0
+                "total_requests": 0,
+                "avg_response_time": 0,
+                "p50": 0,
+                "p95": 0,
+                "p99": 0,
+                "slow_queries_count": 0,
             }
 
-        durations = [req['duration_ms'] for req in self.request_times]
+        durations = [req["duration_ms"] for req in self.request_times]
 
         return {
-            'total_requests': len(self.request_times),
-            'avg_response_time': sum(durations) / len(durations),
-            'p50': self.calculate_percentile(50.0),
-            'p95': self.calculate_percentile(95.0),
-            'p99': self.calculate_percentile(99.0),
-            'slow_queries_count': len(self.slow_queries),
-            'slow_queries': list(self.slow_queries)[-10:],  # Last 10 slow queries
-            'endpoint_breakdown': {
+            "total_requests": len(self.request_times),
+            "avg_response_time": sum(durations) / len(durations),
+            "p50": self.calculate_percentile(50.0),
+            "p95": self.calculate_percentile(95.0),
+            "p99": self.calculate_percentile(99.0),
+            "slow_queries_count": len(self.slow_queries),
+            "slow_queries": list(self.slow_queries)[-10:],  # Last 10 slow queries
+            "endpoint_breakdown": {
                 endpoint: {
-                    'avg': sum(times) / len(times),
-                    'count': len(times),
-                    'max': max(times),
-                    'min': min(times)
+                    "avg": sum(times) / len(times),
+                    "count": len(times),
+                    "max": max(times),
+                    "min": min(times),
                 }
                 for endpoint, times in self.endpoint_metrics.items()
                 if times
-            }
+            },
         }
 
 
@@ -170,9 +165,7 @@ class PerformanceMonitoringMiddleware(BaseHTTPMiddleware):
         response.headers["X-Response-Time"] = f"{duration_ms:.2f}ms"
 
         # Log request
-        logger.info(
-            f"{endpoint} - {response.status_code} - {duration_ms:.2f}ms"
-        )
+        logger.info(f"{endpoint} - {response.status_code} - {duration_ms:.2f}ms")
 
         # Store metrics
         timestamp = datetime.now()

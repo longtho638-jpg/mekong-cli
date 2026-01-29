@@ -13,6 +13,7 @@ import stripe
 
 logger = logging.getLogger(__name__)
 
+
 class StripeClient:
     """
     Production-ready Wrapper for Stripe API interactions.
@@ -39,14 +40,12 @@ class StripeClient:
         """Check if Stripe is properly configured."""
         return bool(self.api_key and self.publishable_key)
 
-    def create_customer(self, email: str, name: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def create_customer(
+        self, email: str, name: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """Create a new Stripe customer."""
         try:
-            return stripe.Customer.create(
-                email=email,
-                name=name,
-                metadata=metadata or {}
-            )
+            return stripe.Customer.create(email=email, name=name, metadata=metadata or {})
         except stripe.error.StripeError as e:
             logger.error(f"Failed to create customer: {e}")
             raise RuntimeError(f"Customer creation failed: {str(e)}")
@@ -75,7 +74,7 @@ class StripeClient:
         currency: str = "usd",
         line_items: Optional[List[Dict[str, Any]]] = None,
         trial_days: Optional[int] = None,
-        allow_promotion_codes: bool = True
+        allow_promotion_codes: bool = True,
     ) -> Dict[str, Any]:
         """
         Create a Stripe Checkout Session.
@@ -88,30 +87,34 @@ class StripeClient:
         if line_items:
             final_line_items = line_items
         elif price_id:
-            final_line_items = [{
-                'price': price_id,
-                'quantity': 1,
-            }]
+            final_line_items = [
+                {
+                    "price": price_id,
+                    "quantity": 1,
+                }
+            ]
         elif amount:
-            final_line_items = [{
-                'price_data': {
-                    'currency': currency,
-                    'product_data': {
-                        'name': 'One-time Payment',
+            final_line_items = [
+                {
+                    "price_data": {
+                        "currency": currency,
+                        "product_data": {
+                            "name": "One-time Payment",
+                        },
+                        "unit_amount": int(amount * 100),  # Convert to cents
                     },
-                    'unit_amount': int(amount * 100), # Convert to cents
-                },
-                'quantity': 1,
-            }]
+                    "quantity": 1,
+                }
+            ]
         else:
             raise ValueError("Either price_id, amount, or line_items must be provided")
 
         metadata = {}
         if tenant_id:
-            metadata['tenant_id'] = tenant_id
+            metadata["tenant_id"] = tenant_id
 
         session_params = {
-            "payment_method_types": ['card'],
+            "payment_method_types": ["card"],
             "line_items": final_line_items,
             "mode": mode,
             "success_url": success_url,
@@ -125,18 +128,15 @@ class StripeClient:
         elif customer_email:
             session_params["customer_email"] = customer_email
 
-        if mode == 'subscription':
-            subscription_data = {'metadata': metadata}
+        if mode == "subscription":
+            subscription_data = {"metadata": metadata}
             if trial_days:
-                subscription_data['trial_period_days'] = trial_days
-            session_params['subscription_data'] = subscription_data
+                subscription_data["trial_period_days"] = trial_days
+            session_params["subscription_data"] = subscription_data
 
         try:
             session = stripe.checkout.Session.create(**session_params)
-            return {
-                "id": session.id,
-                "url": session.url
-            }
+            return {"id": session.id, "url": session.url}
         except stripe.error.StripeError as e:
             logger.error(f"Stripe API error: {e}")
             raise RuntimeError(f"Stripe checkout creation failed: {str(e)}")
@@ -153,16 +153,16 @@ class StripeClient:
             logger.error(f"Failed to create portal session: {e}")
             raise RuntimeError(f"Portal session creation failed: {str(e)}")
 
-    def construct_event(self, payload: bytes, sig_header: str, webhook_secret: Optional[str] = None) -> Dict[str, Any]:
+    def construct_event(
+        self, payload: bytes, sig_header: str, webhook_secret: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Verify webhook signature and construct event."""
         secret = webhook_secret or self.webhook_secret
         if not secret:
             raise ValueError("Webhook secret not configured")
 
         try:
-            event = stripe.Webhook.construct_event(
-                payload, sig_header, secret
-            )
+            event = stripe.Webhook.construct_event(payload, sig_header, secret)
             return event
         except ValueError as e:
             raise ValueError(f"Invalid payload: {str(e)}")
@@ -177,14 +177,13 @@ class StripeClient:
             logger.error(f"Failed to retrieve subscription {subscription_id}: {e}")
             raise RuntimeError(f"Retrieval failed: {str(e)}")
 
-    def cancel_subscription(self, subscription_id: str, at_period_end: bool = False) -> Dict[str, Any]:
+    def cancel_subscription(
+        self, subscription_id: str, at_period_end: bool = False
+    ) -> Dict[str, Any]:
         """Cancel a subscription."""
         try:
             if at_period_end:
-                return stripe.Subscription.modify(
-                    subscription_id,
-                    cancel_at_period_end=True
-                )
+                return stripe.Subscription.modify(subscription_id, cancel_at_period_end=True)
             else:
                 return stripe.Subscription.delete(subscription_id)
         except stripe.error.StripeError as e:
@@ -195,15 +194,17 @@ class StripeClient:
         """Upgrade or downgrade subscription to a new price."""
         try:
             subscription = stripe.Subscription.retrieve(subscription_id)
-            item_id = subscription['items']['data'][0].id
+            item_id = subscription["items"]["data"][0].id
 
             return stripe.Subscription.modify(
                 subscription_id,
-                items=[{
-                    'id': item_id,
-                    'price': new_price_id,
-                }],
-                proration_behavior='create_prorations',
+                items=[
+                    {
+                        "id": item_id,
+                        "price": new_price_id,
+                    }
+                ],
+                proration_behavior="create_prorations",
             )
         except stripe.error.StripeError as e:
             logger.error(f"Failed to update subscription {subscription_id}: {e}")
@@ -225,7 +226,7 @@ class StripeClient:
             logger.error(f"Failed to retrieve payment method: {e}")
             raise RuntimeError(f"Retrieve payment method failed: {str(e)}")
 
-    def list_payment_methods(self, customer_id: str, type: str = 'card') -> List[Dict[str, Any]]:
+    def list_payment_methods(self, customer_id: str, type: str = "card") -> List[Dict[str, Any]]:
         """List payment methods for a customer."""
         try:
             return stripe.PaymentMethod.list(

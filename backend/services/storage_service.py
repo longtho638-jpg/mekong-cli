@@ -13,6 +13,7 @@ except ImportError:
     ClientError = None
     logger.warning("boto3 not installed. StorageService will not function.")
 
+
 class StorageService:
     def __init__(self):
         if not boto3:
@@ -23,17 +24,17 @@ class StorageService:
             return
 
         # Check if settings has the required attributes
-        if not hasattr(settings, 'aws_access_key_id') or not settings.aws_access_key_id:
+        if not hasattr(settings, "aws_access_key_id") or not settings.aws_access_key_id:
             logger.warning("AWS settings not found or empty in configuration.")
             self.s3_client = None
             return
 
         try:
             self.s3_client = boto3.client(
-                's3',
+                "s3",
                 aws_access_key_id=settings.aws_access_key_id,
                 aws_secret_access_key=settings.aws_secret_access_key,
-                region_name=settings.aws_region
+                region_name=settings.aws_region,
             )
             self.bucket_name = settings.s3_bucket_name
         except Exception as e:
@@ -49,13 +50,10 @@ class StorageService:
         try:
             extra_args = {}
             if content_type:
-                extra_args['ContentType'] = content_type
+                extra_args["ContentType"] = content_type
 
             self.s3_client.upload_fileobj(
-                file_obj,
-                self.bucket_name,
-                file_name,
-                ExtraArgs=extra_args
+                file_obj, self.bucket_name, file_name, ExtraArgs=extra_args
             )
             return file_name
         except ClientError as e:
@@ -72,9 +70,9 @@ class StorageService:
 
         try:
             response = self.s3_client.generate_presigned_url(
-                'get_object',
-                Params={'Bucket': self.bucket_name, 'Key': file_name},
-                ExpiresIn=expiration
+                "get_object",
+                Params={"Bucket": self.bucket_name, "Key": file_name},
+                ExpiresIn=expiration,
             )
             return response
         except ClientError as e:

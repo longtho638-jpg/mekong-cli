@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/ws/dashboard", tags=["websocket"])
 
+
 class DashboardConnectionManager:
     def __init__(self):
         # Map metric_name -> Set[WebSocket]
@@ -42,13 +43,7 @@ class DashboardConnectionManager:
 
     async def broadcast_metric(self, metric: str, value: any):
         if metric in self.subscriptions:
-            message = {
-                "type": "update",
-                "payload": {
-                    "metric": metric,
-                    "value": value
-                }
-            }
+            message = {"type": "update", "payload": {"metric": metric, "value": value}}
             json_message = json.dumps(message)
             to_remove = []
             for connection in self.subscriptions[metric]:
@@ -61,7 +56,9 @@ class DashboardConnectionManager:
             for ws in to_remove:
                 self.disconnect(ws)
 
+
 manager = DashboardConnectionManager()
+
 
 @router.websocket("")
 async def dashboard_websocket(websocket: WebSocket):
@@ -71,24 +68,26 @@ async def dashboard_websocket(websocket: WebSocket):
     try:
         while True:
             data = await websocket.receive_json()
-            action = data.get('action')
-            metric = data.get('metric')
+            action = data.get("action")
+            metric = data.get("metric")
 
-            if action == 'subscribe' and metric:
+            if action == "subscribe" and metric:
                 await manager.subscribe(websocket, metric)
 
                 # Send immediate initial value
                 # In a real app, parse date_range from request or default
                 metric_data = await service.get_metric_data(metric, "30d")
-                await websocket.send_json({
-                    "type": "update",
-                    "payload": {
-                        "metric": metric,
-                        "value": metric_data.value # simplified for realtime card
+                await websocket.send_json(
+                    {
+                        "type": "update",
+                        "payload": {
+                            "metric": metric,
+                            "value": metric_data.value,  # simplified for realtime card
+                        },
                     }
-                })
+                )
 
-            elif action == 'unsubscribe' and metric:
+            elif action == "unsubscribe" and metric:
                 await manager.unsubscribe(websocket, metric)
 
     except WebSocketDisconnect:
@@ -101,19 +100,22 @@ async def dashboard_websocket(websocket: WebSocket):
             pass
         manager.disconnect(websocket)
 
+
 # Simulation of background updates (for demo/testing)
 async def simulate_data_updates():
     """Background task to simulate real-time data changes"""
     import random
+
     while True:
         await asyncio.sleep(5)
         # Simulate updates for common metrics
-        if 'revenue' in manager.subscriptions:
+        if "revenue" in manager.subscriptions:
             change = random.uniform(-100, 200)
-            await manager.broadcast_metric('revenue', 50000 + change) # Mock value
+            await manager.broadcast_metric("revenue", 50000 + change)  # Mock value
 
-        if 'active_users' in manager.subscriptions:
+        if "active_users" in manager.subscriptions:
             change = random.randint(-5, 10)
-            await manager.broadcast_metric('active_users', 1200 + change)
+            await manager.broadcast_metric("active_users", 1200 + change)
+
 
 # In a real app, this would be started on startup event

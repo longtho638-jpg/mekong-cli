@@ -15,6 +15,7 @@ class SlidingWindowLimiter:
     Key: rate_limit:{user_id}:{endpoint}
     Members: request_timestamp (score = timestamp)
     """
+
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
         # Atomically:
@@ -65,6 +66,7 @@ class SlidingWindowLimiter:
         """
         now = time.time()
         import uuid
+
         unique_id = str(uuid.uuid4())
 
         # Execute Lua script

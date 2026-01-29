@@ -15,6 +15,7 @@ class TokenBucketLimiter:
     Key: rate_limit:bucket:{user_id}:{endpoint}
     Fields: tokens (float), last_refill (timestamp)
     """
+
     def __init__(self, redis_client: redis.Redis):
         self.redis = redis_client
         self.lua_script = self.redis.register_script("""
@@ -80,19 +81,18 @@ class TokenBucketLimiter:
             # keys=[bucket_key], args=[capacity, refill_rate, now, cost=1]
             result = await self.lua_script(keys=[bucket_key], args=[capacity, refill_rate, now, 1])
             allowed = bool(result[0])
-            remaining = int(float(result[1])) # Lua returns numbers which might be float for tokens
+            remaining = int(float(result[1]))  # Lua returns numbers which might be float for tokens
             return allowed, remaining
         except Exception as e:
             # Propagate error to service wrapper
             raise e
-
 
     async def get_reset_time(self, key: str, refill_rate: float) -> int:
         """
         Get timestamp when 1 token will be available.
         """
         bucket_key = f"rate_limit:bucket:{key}"
-        tokens_raw = await self.redis.hget(bucket_key, 'tokens')
+        tokens_raw = await self.redis.hget(bucket_key, "tokens")
         tokens = float(tokens_raw) if tokens_raw is not None else 0.0
 
         if tokens >= 1.0:
@@ -100,5 +100,5 @@ class TokenBucketLimiter:
         else:
             # Time to refill 1 token
             if refill_rate <= 0:
-                return int(time.time() + 3600) # Fallback
+                return int(time.time() + 3600)  # Fallback
             return int(time.time() + (1.0 - tokens) / refill_rate)

@@ -2,6 +2,7 @@
 Advanced Webhook Service.
 Orchestrates reliable webhook delivery with retries, DLQ, and rate limiting.
 """
+
 import asyncio
 import json
 import logging
@@ -21,6 +22,7 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class AdvancedWebhookService:
     def __init__(self, redis_client):
         self.db = get_db()
@@ -32,7 +34,7 @@ class AdvancedWebhookService:
         self.matcher = SubscriptionMatcher()
 
         # Configuration
-        self.default_timeout = 10 # seconds
+        self.default_timeout = 10  # seconds
 
     async def broadcast_event(self, event_type: str, payload: Dict[str, Any]):
         """
@@ -50,9 +52,7 @@ class AdvancedWebhookService:
                 # 2. Match
                 if self.matcher.is_match(config, event_type, payload):
                     # 3. Trigger (Async)
-                    tasks.append(
-                        self.trigger_webhook(config["id"], event_type, payload)
-                    )
+                    tasks.append(self.trigger_webhook(config["id"], event_type, payload))
 
             if tasks:
                 await asyncio.gather(*tasks)
@@ -61,7 +61,13 @@ class AdvancedWebhookService:
         except Exception as e:
             logger.error(f"Error broadcasting event {event_type}: {e}")
 
-    async def trigger_webhook(self, webhook_config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: Optional[str] = None):
+    async def trigger_webhook(
+        self,
+        webhook_config_id: str,
+        event_type: str,
+        payload: Dict[str, Any],
+        idempotency_key: Optional[str] = None,
+    ):
         """
         Main entry point to trigger a webhook.
         Handles idempotency, transformation, rate limiting, and initial delivery.
@@ -129,7 +135,9 @@ class AdvancedWebhookService:
         # If called from API, we should probably spawn a background task.
         asyncio.create_task(self.execute_delivery_attempt(delivery_id, config, final_payload))
 
-    async def execute_delivery_attempt(self, delivery_id: str, config: Dict[str, Any], payload: Dict[str, Any]):
+    async def execute_delivery_attempt(
+        self, delivery_id: str, config: Dict[str, Any], payload: Dict[str, Any]
+    ):
         """
         Execute a single delivery attempt.
         """
@@ -156,7 +164,7 @@ class AdvancedWebhookService:
             "AgencyOS-Signature": sig_header,
             "AgencyOS-Event-Id": str(delivery_id),
             "User-Agent": "AgencyOS-Webhook/2.0",
-            "X-AgencyOS-Event": delivery["event_type"]
+            "X-AgencyOS-Event": delivery["event_type"],
         }
 
         # Add idempotency header if applicable
@@ -171,7 +179,9 @@ class AdvancedWebhookService:
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(url, data=payload_json, headers=headers, timeout=self.default_timeout) as response:
+                async with session.post(
+                    url, data=payload_json, headers=headers, timeout=self.default_timeout
+                ) as response:
                     response_status = response.status
                     response_body = await response.text()
                     if 200 <= response_status < 300:
@@ -189,13 +199,27 @@ class AdvancedWebhookService:
 
         # Update State
         await self._handle_attempt_result(
-            delivery, config, attempt_number, success, response_status, response_body, error_msg, duration_ms
+            delivery,
+            config,
+            attempt_number,
+            success,
+            response_status,
+            response_body,
+            error_msg,
+            duration_ms,
         )
 
-    async def _handle_attempt_result(self, delivery: Dict[str, Any], config: Dict[str, Any],
-                                     attempt_number: int, success: bool, response_status: int,
-                                     response_body: str, error_msg: str, duration_ms: int):
-
+    async def _handle_attempt_result(
+        self,
+        delivery: Dict[str, Any],
+        config: Dict[str, Any],
+        attempt_number: int,
+        success: bool,
+        response_status: int,
+        response_body: str,
+        error_msg: str,
+        duration_ms: int,
+    ):
         webhook_id = config["id"]
 
         # 1. Record Attempt in `webhook_delivery_attempts`
@@ -207,7 +231,7 @@ class AdvancedWebhookService:
             "response_status": response_status,
             "response_body": response_body[:5000] if response_body else None,
             "error_message": error_msg,
-            "duration_ms": duration_ms
+            "duration_ms": duration_ms,
         }
         self.db.table("webhook_delivery_attempts").insert(attempt_data).execute()
 
@@ -222,7 +246,7 @@ class AdvancedWebhookService:
             "attempt_count": attempt_number,
             "updated_at": datetime.utcnow().isoformat(),
             "response_status": response_status,
-            "response_body": response_body[:2000] if response_body else None
+            "response_body": response_body[:2000] if response_body else None,
         }
 
         if success:
@@ -256,7 +280,7 @@ class AdvancedWebhookService:
             "event_type": delivery["event_type"],
             "event_payload": delivery["payload"],
             "error_message": error,
-            "retry_count": delivery["attempt_count"]
+            "retry_count": delivery["attempt_count"],
         }
         try:
             self.db.table("dlq_entries").insert(dlq_data).execute()
@@ -273,14 +297,16 @@ class AdvancedWebhookService:
         res = self.db.table("webhook_deliveries").select("*").eq("id", delivery_id).execute()
         return res.data[0] if res.data else None
 
-    def _create_delivery_record(self, config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: str) -> str:
+    def _create_delivery_record(
+        self, config_id: str, event_type: str, payload: Dict[str, Any], idempotency_key: str
+    ) -> str:
         data = {
             "webhook_config_id": config_id,
             "event_type": event_type,
             "payload": payload,
             "status": "pending",
             "idempotency_key": idempotency_key,
-            "created_at": datetime.utcnow().isoformat()
+            "created_at": datetime.utcnow().isoformat(),
         }
         res = self.db.table("webhook_deliveries").insert(data).execute()
         return res.data[0]["id"]
@@ -291,10 +317,12 @@ class AdvancedWebhookService:
 
     def _mark_idempotency_key(self, config_id: str, key: str):
         redis_key = f"idempotency:{config_id}:{key}"
-        self.redis.setex(redis_key, 86400, str(int(time.time()))) # 24h TTL
+        self.redis.setex(redis_key, 86400, str(int(time.time())))  # 24h TTL
 
     # --- Batch Operations ---
-    async def queue_event_for_batch(self, webhook_config_id: str, event_type: str, payload: Dict[str, Any]):
+    async def queue_event_for_batch(
+        self, webhook_config_id: str, event_type: str, payload: Dict[str, Any]
+    ):
         """
         Add an event to the batch buffer for a specific endpoint.
         """
@@ -303,7 +331,7 @@ class AdvancedWebhookService:
             "id": str(uuid.uuid4()),
             "event_type": event_type,
             "payload": payload,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
         }
 
         # Add to Redis List
@@ -338,19 +366,12 @@ class AdvancedWebhookService:
 
         # Create a "Batch Delivery" record
         # We treat the batch as a single delivery payload
-        batch_payload = {
-            "batch_id": str(uuid.uuid4()),
-            "count": len(events),
-            "events": events
-        }
+        batch_payload = {"batch_id": str(uuid.uuid4()), "count": len(events), "events": events}
 
         # Trigger as a normal webhook but with "batch" event type?
         # Or just use the standard trigger mechanism
         await self.trigger_webhook(
-            webhook_config_id,
-            "batch.events",
-            batch_payload,
-            idempotency_key=str(uuid.uuid4())
+            webhook_config_id, "batch.events", batch_payload, idempotency_key=str(uuid.uuid4())
         )
 
     async def flush_stale_batches(self, max_wait_seconds: int = 60):
@@ -361,13 +382,13 @@ class AdvancedWebhookService:
         # Scan for all batch keys
         # In production with many keys, use SCAN iter.
         # Pattern: batch:*
-        cursor = '0'
+        cursor = "0"
         while cursor != 0:
             cursor, keys = self.redis.scan(cursor=cursor, match="batch:*", count=100)
             for key in keys:
                 # Key is bytes in some redis clients, handle carefully
                 if isinstance(key, bytes):
-                    key = key.decode('utf-8')
+                    key = key.decode("utf-8")
 
                 # key format: batch:{config_id}
                 config_id = key.split(":", 1)[1]
@@ -401,9 +422,11 @@ class AdvancedWebhookService:
         # Filter for last 24h
         since = (datetime.utcnow() - timedelta(hours=24)).isoformat()
 
-        query = self.db.table("webhook_delivery_attempts")\
-            .select("status, duration_ms")\
+        query = (
+            self.db.table("webhook_delivery_attempts")
+            .select("status, duration_ms")
             .gte("created_at", since)
+        )
 
         if webhook_config_id:
             query = query.eq("webhook_config_id", webhook_config_id)
@@ -412,11 +435,7 @@ class AdvancedWebhookService:
         attempts = res.data
 
         if not attempts:
-            return {
-                "success_rate": 0,
-                "avg_latency": 0,
-                "total": 0
-            }
+            return {"success_rate": 0, "avg_latency": 0, "total": 0}
 
         total = len(attempts)
         success_count = sum(1 for a in attempts if a["status"] == "success")
@@ -428,12 +447,17 @@ class AdvancedWebhookService:
         return {
             "success_rate": round(success_rate, 2),
             "avg_latency": int(avg_latency),
-            "total_events": total
+            "total_events": total,
         }
 
     # --- DLQ Operations ---
     def get_dlq_entries(self, config_id: Optional[str] = None, limit: int = 50, offset: int = 0):
-        query = self.db.table("dlq_entries").select("*").order("stored_at", desc=True).range(offset, offset + limit - 1)
+        query = (
+            self.db.table("dlq_entries")
+            .select("*")
+            .order("stored_at", desc=True)
+            .range(offset, offset + limit - 1)
+        )
         if config_id:
             query = query.eq("webhook_config_id", config_id)
         return query.execute().data
@@ -453,18 +477,16 @@ class AdvancedWebhookService:
             config_id,
             entry["event_type"],
             entry["event_payload"],
-            idempotency_key=f"replay-{entry_id}" # New idempotency key for replay
+            idempotency_key=f"replay-{entry_id}",  # New idempotency key for replay
         )
 
         # Mark as replayed
-        self.db.table("dlq_entries").update({
-            "replayed_at": datetime.utcnow().isoformat()
-        }).eq("id", entry_id).execute()
+        self.db.table("dlq_entries").update({"replayed_at": datetime.utcnow().isoformat()}).eq(
+            "id", entry_id
+        ).execute()
 
         return True
 
     def discard_dlq_entry(self, entry_id: str):
         """Archive/Delete DLQ entry."""
-        self.db.table("dlq_entries").update({
-            "is_archived": True
-        }).eq("id", entry_id).execute()
+        self.db.table("dlq_entries").update({"is_archived": True}).eq("id", entry_id).execute()

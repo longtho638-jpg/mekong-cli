@@ -158,5 +158,21 @@
       }
     ],
     "notes": ""
+  },
+  "INV-202601-324B": {
+    "id": "INV-202601-324B",
+    "client_id": "CLI-1366996B",
+    "project_id": null,
+    "amount": 2500.0,
+    "status": "draft",
+    "due_date": "2026-02-28T13:26:23.604720",
+    "paid_date": null,
+    "items": [
+      {
+        "name": "Phase 1",
+        "amount": 2500.0
+      }
+    ],
+    "notes": ""
   }
 }

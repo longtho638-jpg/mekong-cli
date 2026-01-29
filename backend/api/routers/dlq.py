@@ -2,6 +2,7 @@
 DLQ Router.
 API endpoints for managing Dead Letter Queue.
 """
+
 from typing import List, Optional
 from uuid import UUID
 
@@ -12,28 +13,32 @@ from core.infrastructure.redis import get_redis_client
 
 router = APIRouter(prefix="/dlq", tags=["webhooks-dlq"])
 
+
 # Dependency to get service
 def get_webhook_service():
     redis = get_redis_client()
     return AdvancedWebhookService(redis)
+
 
 @router.get("/", response_model=List[dict])
 async def list_dlq_entries(
     webhook_config_id: Optional[UUID] = None,
     limit: int = 50,
     offset: int = 0,
-    service: AdvancedWebhookService = Depends(get_webhook_service)
+    service: AdvancedWebhookService = Depends(get_webhook_service),
 ):
     """
     List DLQ entries.
     """
-    entries = service.get_dlq_entries(str(webhook_config_id) if webhook_config_id else None, limit, offset)
+    entries = service.get_dlq_entries(
+        str(webhook_config_id) if webhook_config_id else None, limit, offset
+    )
     return entries
+
 
 @router.post("/{entry_id}/replay")
 async def replay_dlq_entry(
-    entry_id: UUID,
-    service: AdvancedWebhookService = Depends(get_webhook_service)
+    entry_id: UUID, service: AdvancedWebhookService = Depends(get_webhook_service)
 ):
     """
     Replay a specific DLQ entry.
@@ -43,10 +48,10 @@ async def replay_dlq_entry(
         raise HTTPException(status_code=404, detail="DLQ entry not found")
     return {"status": "replayed"}
 
+
 @router.delete("/{entry_id}")
 async def discard_dlq_entry(
-    entry_id: UUID,
-    service: AdvancedWebhookService = Depends(get_webhook_service)
+    entry_id: UUID, service: AdvancedWebhookService = Depends(get_webhook_service)
 ):
     """
     Discard (archive) a DLQ entry.
@@ -54,10 +59,10 @@ async def discard_dlq_entry(
     service.discard_dlq_entry(str(entry_id))
     return {"status": "discarded"}
 
+
 @router.post("/replay-bulk")
 async def replay_bulk(
-    entry_ids: List[UUID],
-    service: AdvancedWebhookService = Depends(get_webhook_service)
+    entry_ids: List[UUID], service: AdvancedWebhookService = Depends(get_webhook_service)
 ):
     """
     Replay multiple DLQ entries.

@@ -55,7 +55,7 @@ class MockPayPalProvider(IPaymentProvider):
         return {
             "id": "PAYPAL123",
             "url": "https://paypal.com/checkout/PAYPAL123",
-            "status": "created"
+            "status": "created",
         }
 
     def verify_webhook(self, headers, body, webhook_secret=None):
@@ -84,11 +84,7 @@ class MockPolarProvider(IPaymentProvider):
         if self.should_fail:
             raise ProviderUnavailableError("Polar 500 Internal Server Error")
 
-        return {
-            "id": "POLAR456",
-            "url": "https://polar.sh/checkout/POLAR456",
-            "status": "created"
-        }
+        return {"id": "POLAR456", "url": "https://polar.sh/checkout/POLAR456", "status": "created"}
 
     def verify_webhook(self, headers, body, webhook_secret=None):
         return {"type": "payment.succeeded", "data": {}}
@@ -107,16 +103,11 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider()
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute
         result = orchestrator.create_checkout_session(
-            amount=99.99,
-            currency="USD",
-            mode="subscription"
+            amount=99.99, currency="USD", mode="subscription"
         )
 
         # Assert
@@ -133,23 +124,18 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=False)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute
         result = orchestrator.create_checkout_session(
-            amount=99.99,
-            currency="USD",
-            mode="subscription"
+            amount=99.99, currency="USD", mode="subscription"
         )
 
         # Assert
         assert result["id"] == "POLAR456"
         assert result["provider"] == "polar"
         assert paypal_mock.calls == 1  # PayPal tried first
-        assert polar_mock.calls == 1   # Polar used as fallback
+        assert polar_mock.calls == 1  # Polar used as fallback
         assert orchestrator.stats["failovers"] == 1
 
     def test_paypal_timeout_fallback_to_polar(self):
@@ -159,16 +145,11 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=False)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute
         result = orchestrator.create_checkout_session(
-            amount=99.99,
-            currency="USD",
-            mode="subscription"
+            amount=99.99, currency="USD", mode="subscription"
         )
 
         # Assert
@@ -182,18 +163,11 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=False)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute & Assert
         with pytest.raises(PaymentFailedError):
-            orchestrator.create_checkout_session(
-                amount=99.99,
-                currency="USD",
-                mode="subscription"
-            )
+            orchestrator.create_checkout_session(amount=99.99, currency="USD", mode="subscription")
 
         # Polar should NOT be called (4xx is permanent)
         assert paypal_mock.calls == 1
@@ -207,18 +181,11 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=True)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute & Assert
         with pytest.raises(PaymentError, match="All payment providers failed"):
-            orchestrator.create_checkout_session(
-                amount=99.99,
-                currency="USD",
-                mode="subscription"
-            )
+            orchestrator.create_checkout_session(amount=99.99, currency="USD", mode="subscription")
 
         assert paypal_mock.calls == 1
         assert polar_mock.calls == 1
@@ -231,10 +198,7 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=False)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute multiple requests
         for _ in range(3):
@@ -255,16 +219,10 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider(should_fail=False)
 
         orchestrator = PaymentOrchestrator(provider_order=["paypal", "polar"])
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Execute with preferred_provider=polar
-        result = orchestrator.create_checkout_session(
-            amount=99.99,
-            preferred_provider="polar"
-        )
+        result = orchestrator.create_checkout_session(amount=99.99, preferred_provider="polar")
 
         # Assert
         assert result["provider"] == "polar"
@@ -278,24 +236,19 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider()
 
         orchestrator = PaymentOrchestrator()
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Test PayPal webhook
         event = orchestrator.verify_webhook(
             provider="paypal",
             headers={"paypal-transmission-id": "123"},
-            body={"event_type": "PAYMENT.CAPTURE.COMPLETED"}
+            body={"event_type": "PAYMENT.CAPTURE.COMPLETED"},
         )
         assert "event_type" in event
 
         # Test Polar webhook
         event = orchestrator.verify_webhook(
-            provider="polar",
-            headers={"polar-signature": "abc"},
-            body={"type": "payment.succeeded"}
+            provider="polar", headers={"polar-signature": "abc"}, body={"type": "payment.succeeded"}
         )
         assert "type" in event
 
@@ -306,16 +259,11 @@ class TestPaymentOrchestrator:
         polar_mock = MockPolarProvider()
 
         orchestrator = PaymentOrchestrator()
-        orchestrator.providers = {
-            "paypal": paypal_mock,
-            "polar": polar_mock
-        }
+        orchestrator.providers = {"paypal": paypal_mock, "polar": polar_mock}
 
         # Test PayPal cancellation
         result = orchestrator.cancel_subscription(
-            provider="paypal",
-            subscription_id="SUB123",
-            reason="Customer request"
+            provider="paypal", subscription_id="SUB123", reason="Customer request"
         )
         assert result["status"] == "cancelled"
 
@@ -329,7 +277,7 @@ def mock_paypal_sdk():
         sdk_instance.subscriptions.create.return_value = {
             "id": "I-REAL123",
             "status": "APPROVAL_PENDING",
-            "links": [{"rel": "approve", "href": "https://paypal.com/approve"}]
+            "links": [{"rel": "approve", "href": "https://paypal.com/approve"}],
         }
         mock.return_value = sdk_instance
         yield mock

@@ -46,7 +46,7 @@ class LandingPageService:
             content_json=page.content_json,
             seo_metadata=page.seo_metadata,
             template_id=page.template_id,
-            is_published=page.is_published
+            is_published=page.is_published,
         )
         self.db.add(db_page)
         self.db.commit()
@@ -54,7 +54,9 @@ class LandingPageService:
         self.invalidator.invalidate_pattern("list:*")
         return db_page
 
-    def update_landing_page(self, page_id: int, page_update: LandingPageUpdate) -> Optional[LandingPage]:
+    def update_landing_page(
+        self, page_id: int, page_update: LandingPageUpdate
+    ) -> Optional[LandingPage]:
         db_page = self.get_landing_page(page_id)
         if not db_page:
             return None
@@ -91,7 +93,9 @@ class LandingPageService:
     def unpublish_landing_page(self, page_id: int) -> Optional[LandingPage]:
         return self.update_landing_page(page_id, LandingPageUpdate(is_published=False))
 
-    def duplicate_landing_page(self, page_id: int, new_title: str, new_slug: str) -> Optional[LandingPage]:
+    def duplicate_landing_page(
+        self, page_id: int, new_title: str, new_slug: str
+    ) -> Optional[LandingPage]:
         original_page = self.get_landing_page(page_id)
         if not original_page:
             return None
@@ -103,7 +107,7 @@ class LandingPageService:
             content_json=original_page.content_json,
             seo_metadata=original_page.seo_metadata,
             template_id=original_page.template_id,
-            is_published=False
+            is_published=False,
         )
         self.db.add(new_page)
         self.db.commit()
@@ -113,16 +117,21 @@ class LandingPageService:
 
         return new_page
 
+
 class ABTestingService:
     def __init__(self, db: Session):
         self.db = db
 
     def create_ab_test(self, test_data: ABTestCreate) -> ABTest:
         # Check if there is already a running test for this page
-        existing_test = self.db.query(ABTest).filter(
-            ABTest.landing_page_id == test_data.landing_page_id,
-            ABTest.status == ABTestStatus.RUNNING
-        ).first()
+        existing_test = (
+            self.db.query(ABTest)
+            .filter(
+                ABTest.landing_page_id == test_data.landing_page_id,
+                ABTest.status == ABTestStatus.RUNNING,
+            )
+            .first()
+        )
 
         if existing_test:
             # Optionally handle this case (error or pause existing)
@@ -132,7 +141,7 @@ class ABTestingService:
             landing_page_id=test_data.landing_page_id,
             variants_json=test_data.variants_json,
             traffic_split=test_data.traffic_split,
-            status=test_data.status
+            status=test_data.status,
         )
         self.db.add(db_test)
         self.db.commit()
@@ -140,18 +149,25 @@ class ABTestingService:
         return db_test
 
     def get_active_test_for_page(self, landing_page_id: int) -> Optional[ABTest]:
-        return self.db.query(ABTest).filter(
-            ABTest.landing_page_id == landing_page_id,
-            ABTest.status == ABTestStatus.RUNNING
-        ).first()
+        return (
+            self.db.query(ABTest)
+            .filter(
+                ABTest.landing_page_id == landing_page_id, ABTest.status == ABTestStatus.RUNNING
+            )
+            .first()
+        )
 
     def record_event(self, event_data: AnalyticsEventCreate) -> AnalyticsEvent:
         # Resolve landing page ID from UUID
-        page = self.db.query(LandingPage).filter(LandingPage.uuid == event_data.landing_page_uuid).first()
+        page = (
+            self.db.query(LandingPage)
+            .filter(LandingPage.uuid == event_data.landing_page_uuid)
+            .first()
+        )
         if not page:
-             # If page not found, we can't link it properly. Return None or raise.
-             # For now, let's assume valid UUID is passed or fail gracefully
-             raise ValueError("Invalid Landing Page UUID")
+            # If page not found, we can't link it properly. Return None or raise.
+            # For now, let's assume valid UUID is passed or fail gracefully
+            raise ValueError("Invalid Landing Page UUID")
 
         db_event = AnalyticsEvent(
             landing_page_id=page.id,
@@ -159,7 +175,7 @@ class ABTestingService:
             event_type=event_data.event_type,
             user_id=event_data.user_id,
             session_id=event_data.session_id,
-            metadata_=event_data.metadata
+            metadata_=event_data.metadata,
         )
         self.db.add(db_event)
         self.db.commit()
@@ -182,31 +198,35 @@ class ABTestingService:
                 continue
 
             # Count page views
-            views = self.db.query(func.count(AnalyticsEvent.id)).filter(
-                AnalyticsEvent.landing_page_id == test.landing_page_id,
-                AnalyticsEvent.variant_id == variant_id,
-                AnalyticsEvent.event_type == AnalyticsEventType.PAGE_VIEW,
-                AnalyticsEvent.timestamp >= test.created_at # rudimentary time filter
-            ).scalar()
+            views = (
+                self.db.query(func.count(AnalyticsEvent.id))
+                .filter(
+                    AnalyticsEvent.landing_page_id == test.landing_page_id,
+                    AnalyticsEvent.variant_id == variant_id,
+                    AnalyticsEvent.event_type == AnalyticsEventType.PAGE_VIEW,
+                    AnalyticsEvent.timestamp >= test.created_at,  # rudimentary time filter
+                )
+                .scalar()
+            )
 
             # Count conversions (e.g., form submission)
-            conversions = self.db.query(func.count(AnalyticsEvent.id)).filter(
-                AnalyticsEvent.landing_page_id == test.landing_page_id,
-                AnalyticsEvent.variant_id == variant_id,
-                AnalyticsEvent.event_type == AnalyticsEventType.FORM_SUBMISSION,
-                AnalyticsEvent.timestamp >= test.created_at
-            ).scalar()
+            conversions = (
+                self.db.query(func.count(AnalyticsEvent.id))
+                .filter(
+                    AnalyticsEvent.landing_page_id == test.landing_page_id,
+                    AnalyticsEvent.variant_id == variant_id,
+                    AnalyticsEvent.event_type == AnalyticsEventType.FORM_SUBMISSION,
+                    AnalyticsEvent.timestamp >= test.created_at,
+                )
+                .scalar()
+            )
 
             rate = (conversions / views) if views > 0 else 0
 
             results[variant_id] = {
                 "views": views,
                 "conversions": conversions,
-                "conversion_rate": rate
+                "conversion_rate": rate,
             }
 
-        return {
-            "test_id": test_id,
-            "status": test.status,
-            "results": results
-        }
+        return {"test_id": test_id, "status": test.status, "results": results}

@@ -14,17 +14,20 @@ class OAuth2TokenRequest(BaseModel):
     code_verifier: Optional[str] = None
     scope: Optional[str] = None
 
+
 class OAuth2TokenResponse(BaseModel):
     access_token: str
     token_type: str = "Bearer"
     expires_in: int
     refresh_token: Optional[str] = None
     scope: Optional[str] = None
-    id_token: Optional[str] = None # For OIDC future proofing
+    id_token: Optional[str] = None  # For OIDC future proofing
+
 
 class OAuth2IntrospectRequest(BaseModel):
     token: str
     token_type_hint: Optional[str] = None
+
 
 class OAuth2IntrospectResponse(BaseModel):
     active: bool
@@ -40,9 +43,11 @@ class OAuth2IntrospectResponse(BaseModel):
     iss: Optional[str] = None
     jti: Optional[str] = None
 
+
 class OAuth2RevokeRequest(BaseModel):
     token: str
     token_type_hint: Optional[str] = None
+
 
 class OAuthClientCreate(BaseModel):
     client_name: str
@@ -50,6 +55,7 @@ class OAuthClientCreate(BaseModel):
     grant_types: List[str] = ["authorization_code", "refresh_token"]
     scopes: List[str] = ["read", "write"]
     is_confidential: bool = True
+
 
 class OAuthClientResponse(BaseModel):
     client_id: str
@@ -60,8 +66,10 @@ class OAuthClientResponse(BaseModel):
     is_confidential: bool
     created_at: datetime
 
+
 class OAuthClientSecretResponse(OAuthClientResponse):
-    client_secret: str # Only returned once upon creation
+    client_secret: str  # Only returned once upon creation
+
 
 class JWTPayload(BaseModel):
     iss: str

@@ -8,6 +8,7 @@ from backend.workers.worker_base import BaseWorker
 
 logger = logging.getLogger(__name__)
 
+
 def send_email_handler(payload: Dict[str, Any]):
     """
     Handler for 'send_email' jobs.
@@ -36,11 +37,12 @@ def send_email_handler(payload: Dict[str, Any]):
         logger.error(f"Failed to send email: {str(e)}")
         raise
 
+
 if __name__ == "__main__":
     # Standalone execution
     worker = BaseWorker(
-        queues=["high"], # Email is usually high priority
-        worker_id=f"email-worker-{int(time.time())}"
+        queues=["high"],  # Email is usually high priority
+        worker_id=f"email-worker-{int(time.time())}",
     )
     worker.register_handler("send_email", send_email_handler)
     worker.start()

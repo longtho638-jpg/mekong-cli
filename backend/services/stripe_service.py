@@ -66,7 +66,7 @@ class StripeService:
         success_url: str,
         cancel_url: str,
         price_id: Optional[str] = None,
-        mode: str = "subscription"
+        mode: str = "subscription",
     ) -> Dict[str, Any]:
         """
         Create a Stripe Checkout Session for subscription purchase.
@@ -94,9 +94,13 @@ class StripeService:
         if not price_id:
             price_id = self.TIER_TO_PRICE_MAP.get(tier.lower())
             if not price_id:
-                raise ValueError(f"Invalid tier: {tier}. Must be one of {list(self.TIER_TO_PRICE_MAP.keys())}")
+                raise ValueError(
+                    f"Invalid tier: {tier}. Must be one of {list(self.TIER_TO_PRICE_MAP.keys())}"
+                )
 
-        logger.info(f"Creating Stripe checkout for tier={tier}, tenant={tenant_id}, price={price_id}")
+        logger.info(
+            f"Creating Stripe checkout for tier={tier}, tenant={tenant_id}, price={price_id}"
+        )
 
         try:
             session = self.client.create_checkout_session(
@@ -105,14 +109,10 @@ class StripeService:
                 cancel_url=cancel_url,
                 customer_email=customer_email,
                 tenant_id=tenant_id,
-                mode=mode
+                mode=mode,
             )
 
-            return {
-                "id": session["id"],
-                "url": session["url"],
-                "status": "created"
-            }
+            return {"id": session["id"], "url": session["url"], "status": "created"}
 
         except Exception as e:
             logger.error(f"Failed to create Stripe checkout session: {e}")
@@ -189,7 +189,7 @@ class StripeService:
                 tier=tier,
                 tenant_id=tenant_id,
                 stripe_subscription_id=subscription_id,
-                stripe_customer_id=customer_id
+                stripe_customer_id=customer_id,
             )
 
         logger.info(f"Checkout completed: tenant={tenant_id}, subscription={subscription_id}")
@@ -207,14 +207,17 @@ class StripeService:
         # Store subscription record in database
         if self.db and tenant_id:
             try:
-                self.db.table("subscriptions").upsert({
-                    "tenant_id": tenant_id,
-                    "provider": "stripe",
-                    "subscription_id": sub_id,
-                    "customer_id": customer_id,
-                    "status": status,
-                    "created_at": datetime.utcnow().isoformat()
-                }, on_conflict="subscription_id").execute()
+                self.db.table("subscriptions").upsert(
+                    {
+                        "tenant_id": tenant_id,
+                        "provider": "stripe",
+                        "subscription_id": sub_id,
+                        "customer_id": customer_id,
+                        "status": status,
+                        "created_at": datetime.utcnow().isoformat(),
+                    },
+                    on_conflict="subscription_id",
+                ).execute()
             except Exception as e:
                 logger.error(f"Failed to store subscription: {e}")
 
@@ -231,10 +234,9 @@ class StripeService:
         # Update subscription status in database
         if self.db and sub_id:
             try:
-                self.db.table("subscriptions").update({
-                    "status": status,
-                    "updated_at": datetime.utcnow().isoformat()
-                }).eq("subscription_id", sub_id).execute()
+                self.db.table("subscriptions").update(
+                    {"status": status, "updated_at": datetime.utcnow().isoformat()}
+                ).eq("subscription_id", sub_id).execute()
             except Exception as e:
                 logger.error(f"Failed to update subscription: {e}")
 
@@ -250,16 +252,15 @@ class StripeService:
         # Update subscription status to cancelled
         if self.db and sub_id:
             try:
-                self.db.table("subscriptions").update({
-                    "status": "cancelled",
-                    "cancelled_at": datetime.utcnow().isoformat()
-                }).eq("subscription_id", sub_id).execute()
+                self.db.table("subscriptions").update(
+                    {"status": "cancelled", "cancelled_at": datetime.utcnow().isoformat()}
+                ).eq("subscription_id", sub_id).execute()
 
                 # Optionally deactivate license
                 if tenant_id:
-                    self.db.table("licenses").update({
-                        "status": "inactive"
-                    }).eq("metadata->>tenant_id", tenant_id).execute()
+                    self.db.table("licenses").update({"status": "inactive"}).eq(
+                        "metadata->>tenant_id", tenant_id
+                    ).execute()
 
             except Exception as e:
                 logger.error(f"Failed to cancel subscription: {e}")
@@ -277,14 +278,16 @@ class StripeService:
         # Record payment in database
         if self.db and sub_id:
             try:
-                self.db.table("payments").insert({
-                    "subscription_id": sub_id,
-                    "provider": "stripe",
-                    "amount": amount_paid,
-                    "currency": currency,
-                    "status": "succeeded",
-                    "paid_at": datetime.utcnow().isoformat()
-                }).execute()
+                self.db.table("payments").insert(
+                    {
+                        "subscription_id": sub_id,
+                        "provider": "stripe",
+                        "amount": amount_paid,
+                        "currency": currency,
+                        "status": "succeeded",
+                        "paid_at": datetime.utcnow().isoformat(),
+                    }
+                ).execute()
             except Exception as e:
                 logger.error(f"Failed to record payment: {e}")
 
@@ -325,10 +328,9 @@ class StripeService:
 
             # Update local database
             if self.db:
-                self.db.table("subscriptions").update({
-                    "status": "cancelled",
-                    "cancelled_at": datetime.utcnow().isoformat()
-                }).eq("subscription_id", subscription_id).execute()
+                self.db.table("subscriptions").update(
+                    {"status": "cancelled", "cancelled_at": datetime.utcnow().isoformat()}
+                ).eq("subscription_id", subscription_id).execute()
 
             return result
 
@@ -361,7 +363,9 @@ class StripeService:
                 "current_period_end": subscription["current_period_end"],
                 "cancel_at_period_end": subscription["cancel_at_period_end"],
                 "customer": subscription["customer"],
-                "plan": subscription["items"]["data"][0]["price"]["id"] if subscription.get("items") else None
+                "plan": subscription["items"]["data"][0]["price"]["id"]
+                if subscription.get("items")
+                else None,
             }
 
         except Exception as e:
@@ -389,7 +393,7 @@ class StripeService:
         tenant_id: str,
         stripe_subscription_id: Optional[str] = None,
         stripe_customer_id: Optional[str] = None,
-        format: str = "agencyos"
+        format: str = "agencyos",
     ) -> None:
         """
         Generate license key and store in database.
@@ -407,22 +411,15 @@ class StripeService:
             return
 
         try:
-            license_key = self.licensing.generate(
-                format=format,
-                tier=tier,
-                email=email
-            )
+            license_key = self.licensing.generate(format=format, tier=tier, email=email)
 
             license_data = {
                 "license_key": license_key,
                 "email": email,
                 "plan": tier,
                 "status": "active",
-                "metadata": {
-                    "tenant_id": tenant_id,
-                    "provider": "stripe"
-                },
-                "created_at": datetime.utcnow().isoformat()
+                "metadata": {"tenant_id": tenant_id, "provider": "stripe"},
+                "created_at": datetime.utcnow().isoformat(),
             }
 
             if stripe_subscription_id:
@@ -432,10 +429,7 @@ class StripeService:
                 license_data["metadata"]["stripe_customer_id"] = stripe_customer_id
 
             # Upsert to avoid duplicates on webhook retries
-            self.db.table("licenses").upsert(
-                license_data,
-                on_conflict="license_key"
-            ).execute()
+            self.db.table("licenses").upsert(license_data, on_conflict="license_key").execute()
 
             logger.info(f"Generated and stored license {license_key} for {email} (tier: {tier})")
 

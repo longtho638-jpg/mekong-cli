@@ -1,6 +1,7 @@
 """
 Core rate limiting logic and limiter initialization.
 """
+
 import logging
 
 from slowapi import Limiter
@@ -20,9 +21,11 @@ logger = logging.getLogger(__name__)
 storage_uri = settings.redis_url if settings.is_production else "memory://"
 limiter = Limiter(key_func=get_remote_address, storage_uri=storage_uri)
 
+
 def get_plan_limits():
     """Get rate limits from config."""
     return settings.rate_limits_by_plan
+
 
 DEFAULT_LIMITS = {
     "default": "60/minute",
@@ -30,6 +33,7 @@ DEFAULT_LIMITS = {
     "docs": "30/minute",
     "webhooks": "20/minute",
 }
+
 
 def get_tenant_limit(request) -> str:
     """Get rate limit based on tenant plan."""

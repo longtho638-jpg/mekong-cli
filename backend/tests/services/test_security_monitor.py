@@ -9,8 +9,9 @@ from backend.services.security_monitor import SecurityMonitor
 @pytest.fixture
 def monitor():
     # Patch the logger to avoid cluttering output
-    with patch('backend.services.security_monitor.logger'):
+    with patch("backend.services.security_monitor.logger"):
         yield SecurityMonitor()
+
 
 @pytest.mark.asyncio
 async def test_monitor_logs_event(monitor):
@@ -19,12 +20,12 @@ async def test_monitor_logs_event(monitor):
     monitor.redis.incr.return_value = 1
     monitor.redis.exists.return_value = False
 
-    with patch('backend.services.security_monitor.logger') as mock_logger:
+    with patch("backend.services.security_monitor.logger") as mock_logger:
         await monitor.log_security_event(
             event_type="failed_login",
             actor_id="user_123",
             ip_address="1.2.3.4",
-            details={"reason": "bad_pass"}
+            details={"reason": "bad_pass"},
         )
 
         # Verify log
@@ -35,21 +36,21 @@ async def test_monitor_logs_event(monitor):
         monitor.redis.incr.assert_any_call("security:monitor:failed_login:ip:1.2.3.4")
         monitor.redis.incr.assert_any_call("security:monitor:failed_login:user:user_123")
 
+
 @pytest.mark.asyncio
 async def test_monitor_logs_permission_denied(monitor):
     monitor.redis = Mock()
     monitor.redis.incr.return_value = 1
 
-    with patch('backend.services.security_monitor.logger') as _:
+    with patch("backend.services.security_monitor.logger") as _:
         await monitor.log_security_event(
-            event_type="permission_denied",
-            actor_id="user_456",
-            ip_address="5.6.7.8"
+            event_type="permission_denied", actor_id="user_456", ip_address="5.6.7.8"
         )
 
         # Verify Redis increment for permission denied
         monitor.redis.incr.assert_any_call("security:monitor:api_violation:ip:5.6.7.8")
         monitor.redis.incr.assert_any_call("security:monitor:api_violation:user:user_456")
+
 
 @pytest.mark.asyncio
 async def test_monitor_triggers_alert(monitor):
@@ -58,11 +59,9 @@ async def test_monitor_triggers_alert(monitor):
     monitor.redis.incr.return_value = 10
     monitor.redis.exists.return_value = False
 
-    with patch('backend.services.security_monitor.logger') as mock_logger:
+    with patch("backend.services.security_monitor.logger") as mock_logger:
         await monitor.log_security_event(
-            event_type="failed_login",
-            actor_id="user_123",
-            ip_address="1.2.3.4"
+            event_type="failed_login", actor_id="user_123", ip_address="1.2.3.4"
         )
 
         # Should trigger critical alert
@@ -70,4 +69,6 @@ async def test_monitor_triggers_alert(monitor):
         assert "SECURITY ALERT" in mock_logger.critical.call_args[0][0]
 
         # Should check cooldown
-        monitor.redis.exists.assert_called_with("security:monitor:alert_cooldown:failed_login:user:user_123")
+        monitor.redis.exists.assert_called_with(
+            "security:monitor:alert_cooldown:failed_login:user:user_123"
+        )

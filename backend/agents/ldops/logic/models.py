@@ -1,6 +1,7 @@
 """
 Development Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -13,10 +14,12 @@ class SkillLevel(Enum):
     ADVANCED = "advanced"
     EXPERT = "expert"
 
+
 class CareerTrack(Enum):
     INDIVIDUAL_CONTRIBUTOR = "ic"
     MANAGEMENT = "management"
     SPECIALIST = "specialist"
+
 
 @dataclass
 class Skill:
@@ -26,6 +29,7 @@ class Skill:
     current_level: SkillLevel
     target_level: SkillLevel
     gap: int = 0
+
 
 @dataclass
 class DevelopmentPlan:
@@ -40,6 +44,7 @@ class DevelopmentPlan:
     created_at: datetime = field(default_factory=datetime.now)
 
     def calculate_progress(self):
-        if not self.skills: return 0
+        if not self.skills:
+            return 0
         completed = sum(1 for s in self.skills if s.gap == 0)
         return int((completed / len(self.skills)) * 100)

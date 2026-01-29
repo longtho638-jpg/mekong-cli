@@ -13,18 +13,14 @@ from core.infrastructure.database import get_db
 
 logger = logging.getLogger(__name__)
 
+
 class FunnelService:
     """Service for calculating conversion funnels."""
 
     def __init__(self):
         self.db = get_db()
 
-    def analyze_funnel(
-        self,
-        steps: List[str],
-        start_date: str,
-        end_date: str
-    ) -> Dict[str, Any]:
+    def analyze_funnel(self, steps: List[str], start_date: str, end_date: str) -> Dict[str, Any]:
         """
         Analyze a conversion funnel.
 
@@ -66,13 +62,15 @@ class FunnelService:
 
             # Get all events for the steps in the date range
             # Warning: extensive data fetch. Limit to reasonable amount or use RPC.
-            response = self.db.table("usage_events")\
-                .select("user_id, event_name, occurred_at")\
-                .in_("event_name", steps)\
-                .gte("occurred_at", start_date)\
-                .lte("occurred_at", end_date)\
-                .order("occurred_at")\
+            response = (
+                self.db.table("usage_events")
+                .select("user_id, event_name, occurred_at")
+                .in_("event_name", steps)
+                .gte("occurred_at", start_date)
+                .lte("occurred_at", end_date)
+                .order("occurred_at")
                 .execute()
+            )
 
             events = response.data
 
@@ -80,8 +78,9 @@ class FunnelService:
             # Group by user
             user_events: Dict[str, List[Dict]] = {}
             for e in events:
-                uid = e['user_id']
-                if not uid: continue
+                uid = e["user_id"]
+                if not uid:
+                    continue
                 if uid not in user_events:
                     user_events[uid] = []
                 user_events[uid].append(e)
@@ -104,16 +103,16 @@ class FunnelService:
 
                     target_step = steps[current_step_idx]
 
-                    if event['event_name'] == target_step:
+                    if event["event_name"] == target_step:
                         # Time check? We usually just want sequence
                         # If strict time ordering needed:
-                        if last_time and event['occurred_at'] < last_time:
+                        if last_time and event["occurred_at"] < last_time:
                             continue
 
                         # Step completed
                         step_users[current_step_idx].add(uid)
                         current_step_idx += 1
-                        last_time = event['occurred_at']
+                        last_time = event["occurred_at"]
 
             # Compile results
             funnel_data = []
@@ -125,24 +124,28 @@ class FunnelService:
                 conversion_rate = 0.0
 
                 if i > 0:
-                    previous_count = len(step_users[i-1])
+                    previous_count = len(step_users[i - 1])
                     if previous_count > 0:
                         conversion_rate = (count / previous_count) * 100
                         drop_off = 100 - conversion_rate
                 elif count > 0:
-                     conversion_rate = 100.0 # First step is 100% of itself
+                    conversion_rate = 100.0  # First step is 100% of itself
 
-                funnel_data.append({
-                    "step": step,
-                    "count": count,
-                    "conversion_rate": round(conversion_rate, 2),
-                    "drop_off_rate": round(drop_off, 2)
-                })
+                funnel_data.append(
+                    {
+                        "step": step,
+                        "count": count,
+                        "conversion_rate": round(conversion_rate, 2),
+                        "drop_off_rate": round(drop_off, 2),
+                    }
+                )
 
             return {
                 "funnel": funnel_data,
                 "total_entries": len(step_users[0]) if step_users else 0,
-                "overall_conversion": round((len(step_users[-1]) / len(step_users[0]) * 100), 2) if step_users and len(step_users[0]) > 0 else 0
+                "overall_conversion": round((len(step_users[-1]) / len(step_users[0]) * 100), 2)
+                if step_users and len(step_users[0]) > 0
+                else 0,
             }
 
         except Exception as e:

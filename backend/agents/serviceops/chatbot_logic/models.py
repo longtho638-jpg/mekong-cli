@@ -1,6 +1,7 @@
 """
 Chatbot Agent Data Models.
 """
+
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
@@ -15,15 +16,18 @@ class Intent(Enum):
     FEATURE_REQUEST = "feature_request"
     UNKNOWN = "unknown"
 
+
 class Channel(Enum):
     ZALO = "zalo"
     MESSENGER = "messenger"
     WEBSITE = "website"
     EMAIL = "email"
 
+
 @dataclass
 class Message:
     """Chat message"""
+
     id: str
     channel: Channel
     sender_id: str
@@ -32,9 +36,11 @@ class Message:
     intent: Optional[Intent] = None
     timestamp: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class Conversation:
     """Conversation thread"""
+
     id: str
     channel: Channel
     customer_id: str

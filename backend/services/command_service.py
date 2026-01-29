@@ -14,12 +14,14 @@ logger = logging.getLogger(__name__)
 
 class CommandInfo(TypedDict):
     """Metadata for a Mekong command"""
+
     section: str
     output_format: str
 
 
 class CommandListResponse(TypedDict):
     """Response structure for listing commands"""
+
     commands: List[str]
     total: int
     categories: Dict[str, List[str]]

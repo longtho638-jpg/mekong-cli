@@ -178,7 +178,8 @@ class TestRolloutStrategies:
 
         # Test distribution: roughly 50% should be enabled
         enabled_count = sum(
-            1 for i in range(1000)
+            1
+            for i in range(1000)
             if service.is_enabled("test_feature", UserContext(user_id=f"user{i}"))
         )
         # Allow 10% margin (450-550)
@@ -197,7 +198,9 @@ class TestRolloutStrategies:
         service.enable_for_tiers("test_feature", ["pro", "enterprise"])
 
         assert service.is_enabled("test_feature", UserContext(user_id="u1", tier="pro")) is True
-        assert service.is_enabled("test_feature", UserContext(user_id="u2", tier="enterprise")) is True
+        assert (
+            service.is_enabled("test_feature", UserContext(user_id="u2", tier="enterprise")) is True
+        )
         assert service.is_enabled("test_feature", UserContext(user_id="u3", tier="free")) is False
         assert service.is_enabled("test_feature", UserContext(user_id="u4")) is False
 
@@ -205,9 +208,18 @@ class TestRolloutStrategies:
         """Test EMAIL_DOMAIN strategy"""
         service.enable_for_domains("test_feature", ["company.com", "partner.com"])
 
-        assert service.is_enabled("test_feature", UserContext(user_id="u1", email="john@company.com")) is True
-        assert service.is_enabled("test_feature", UserContext(user_id="u2", email="jane@partner.com")) is True
-        assert service.is_enabled("test_feature", UserContext(user_id="u3", email="bob@other.com")) is False
+        assert (
+            service.is_enabled("test_feature", UserContext(user_id="u1", email="john@company.com"))
+            is True
+        )
+        assert (
+            service.is_enabled("test_feature", UserContext(user_id="u2", email="jane@partner.com"))
+            is True
+        )
+        assert (
+            service.is_enabled("test_feature", UserContext(user_id="u3", email="bob@other.com"))
+            is False
+        )
         assert service.is_enabled("test_feature", UserContext(user_id="u4")) is False
 
     def test_strategy_ab_test(self, service):

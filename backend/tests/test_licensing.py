@@ -186,15 +186,11 @@ class TestLicenseValidator:
         validator = LicenseValidator()
 
         # Valid domain
-        result = validator.validate(
-            license.license_key, domain="example.com", license_data=license
-        )
+        result = validator.validate(license.license_key, domain="example.com", license_data=license)
         assert result.valid
 
         # Invalid domain
-        result = validator.validate(
-            license.license_key, domain="wrong.com", license_data=license
-        )
+        result = validator.validate(license.license_key, domain="wrong.com", license_data=license)
         assert not result.valid
         assert "domain" in result.reason.lower()
 

@@ -23,54 +23,46 @@ router = APIRouter(
 
 # --- Landing Pages CRUD ---
 
+
 @router.get("/", response_model=List[LandingPageResponse])
 @cache(
     ttl=60,
     prefix="landing_pages",
     key_func=lambda skip=0, limit=100, **kwargs: f"list:{skip}:{limit}",
-    tags=["landing_pages"]
+    tags=["landing_pages"],
 )
-def get_landing_pages(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
+def get_landing_pages(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     return service.get_landing_pages(skip=skip, limit=limit)
 
+
 @router.post("/", response_model=LandingPageResponse, status_code=status.HTTP_201_CREATED)
-def create_landing_page(
-    page: LandingPageCreate,
-    db: Session = Depends(get_db)
-):
+def create_landing_page(page: LandingPageCreate, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     # Check if slug exists
     if service.get_landing_page_by_slug(page.slug):
         raise HTTPException(status_code=400, detail="Slug already registered")
     return service.create_landing_page(page)
 
+
 @router.get("/{page_id}", response_model=LandingPageResponse)
 @cache(
     ttl=60,
     prefix="landing_pages",
     key_func=lambda page_id, **kwargs: f"detail:{page_id}",
-    tags=["landing_pages"]
+    tags=["landing_pages"],
 )
-def get_landing_page(
-    page_id: int,
-    db: Session = Depends(get_db)
-):
+def get_landing_page(page_id: int, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     db_page = service.get_landing_page(page_id)
     if db_page is None:
         raise HTTPException(status_code=404, detail="Landing page not found")
     return db_page
 
+
 @router.put("/{page_id}", response_model=LandingPageResponse)
 def update_landing_page(
-    page_id: int,
-    page_update: LandingPageUpdate,
-    db: Session = Depends(get_db)
+    page_id: int, page_update: LandingPageUpdate, db: Session = Depends(get_db)
 ):
     service = LandingPageService(db)
     db_page = service.update_landing_page(page_id, page_update)
@@ -78,45 +70,37 @@ def update_landing_page(
         raise HTTPException(status_code=404, detail="Landing page not found")
     return db_page
 
+
 @router.delete("/{page_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_landing_page(
-    page_id: int,
-    db: Session = Depends(get_db)
-):
+def delete_landing_page(page_id: int, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     success = service.delete_landing_page(page_id)
     if not success:
         raise HTTPException(status_code=404, detail="Landing page not found")
     return None
 
+
 @router.post("/{page_id}/publish", response_model=LandingPageResponse)
-def publish_landing_page(
-    page_id: int,
-    db: Session = Depends(get_db)
-):
+def publish_landing_page(page_id: int, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     db_page = service.publish_landing_page(page_id)
     if db_page is None:
         raise HTTPException(status_code=404, detail="Landing page not found")
     return db_page
 
+
 @router.post("/{page_id}/unpublish", response_model=LandingPageResponse)
-def unpublish_landing_page(
-    page_id: int,
-    db: Session = Depends(get_db)
-):
+def unpublish_landing_page(page_id: int, db: Session = Depends(get_db)):
     service = LandingPageService(db)
     db_page = service.unpublish_landing_page(page_id)
     if db_page is None:
         raise HTTPException(status_code=404, detail="Landing page not found")
     return db_page
 
+
 @router.post("/{page_id}/duplicate", response_model=LandingPageResponse)
 def duplicate_landing_page(
-    page_id: int,
-    new_title: str,
-    new_slug: str,
-    db: Session = Depends(get_db)
+    page_id: int, new_title: str, new_slug: str, db: Session = Depends(get_db)
 ):
     service = LandingPageService(db)
     if service.get_landing_page_by_slug(new_slug):
@@ -127,13 +111,12 @@ def duplicate_landing_page(
         raise HTTPException(status_code=404, detail="Source landing page not found")
     return db_page
 
+
 # --- A/B Testing & Analytics ---
 
+
 @router.post("/ab-tests", response_model=ABTestResponse, status_code=status.HTTP_201_CREATED)
-def create_ab_test(
-    test_data: ABTestCreate,
-    db: Session = Depends(get_db)
-):
+def create_ab_test(test_data: ABTestCreate, db: Session = Depends(get_db)):
     service = ABTestingService(db)
     # Ensure landing page exists
     lp_service = LandingPageService(db)
@@ -142,22 +125,18 @@ def create_ab_test(
 
     return service.create_ab_test(test_data)
 
+
 @router.get("/ab-tests/results/{test_id}")
-def get_ab_test_results(
-    test_id: int,
-    db: Session = Depends(get_db)
-):
+def get_ab_test_results(test_id: int, db: Session = Depends(get_db)):
     service = ABTestingService(db)
     results = service.get_test_results(test_id)
     if not results:
         raise HTTPException(status_code=404, detail="Test not found")
     return results
 
+
 @router.post("/analytics/events", status_code=status.HTTP_201_CREATED)
-def record_analytics_event(
-    event_data: AnalyticsEventCreate,
-    db: Session = Depends(get_db)
-):
+def record_analytics_event(event_data: AnalyticsEventCreate, db: Session = Depends(get_db)):
     service = ABTestingService(db)
     try:
         service.record_event(event_data)

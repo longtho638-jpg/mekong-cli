@@ -12,6 +12,7 @@ from backend.core.payments.stripe_client import StripeClient
 
 logger = logging.getLogger(__name__)
 
+
 class SubscriptionManager:
     """
     Manages subscription business logic using StripeClient.
@@ -19,14 +20,14 @@ class SubscriptionManager:
 
     def __init__(self, db_client=None):
         self.stripe = StripeClient()
-        self.db = db_client # Should be passed in or retrieved via get_db()
+        self.db = db_client  # Should be passed in or retrieved via get_db()
 
         # Internal Plan to Stripe Price ID mapping
         # In a real app, this might come from DB or config
         self.plan_mapping = {
             "solo": self.stripe.price_solo,
             "team": self.stripe.price_team,
-            "enterprise": self.stripe.price_enterprise
+            "enterprise": self.stripe.price_enterprise,
         }
 
     def _get_stripe_price_id(self, plan_id: str) -> str:
@@ -36,9 +37,11 @@ class SubscriptionManager:
 
         price_id = self.plan_mapping.get(plan_id) or self.stripe.price_solo
         if not price_id:
-             logger.warning(f"No Stripe price found for plan {plan_id}, falling back to passed ID if valid or error.")
-             # If mapping fails and it doesn't look like a price ID, this might fail downstream
-             return plan_id
+            logger.warning(
+                f"No Stripe price found for plan {plan_id}, falling back to passed ID if valid or error."
+            )
+            # If mapping fails and it doesn't look like a price ID, this might fail downstream
+            return plan_id
         return price_id
 
     def create_subscription_checkout(
@@ -48,7 +51,7 @@ class SubscriptionManager:
         customer_email: str,
         success_url: str,
         cancel_url: str,
-        trial_days: int = None
+        trial_days: int = None,
     ) -> Dict[str, Any]:
         """
         Create a checkout session for a new subscription.
@@ -70,7 +73,7 @@ class SubscriptionManager:
             success_url=success_url,
             cancel_url=cancel_url,
             mode="subscription",
-            trial_days=trial_days
+            trial_days=trial_days,
         )
 
     def change_subscription_plan(self, subscription_id: str, new_plan_id: str) -> Dict[str, Any]:
@@ -78,7 +81,9 @@ class SubscriptionManager:
         Upgrade or downgrade a subscription.
         """
         new_price_id = self._get_stripe_price_id(new_plan_id)
-        logger.info(f"Changing subscription {subscription_id} to plan {new_plan_id} ({new_price_id})")
+        logger.info(
+            f"Changing subscription {subscription_id} to plan {new_plan_id} ({new_price_id})"
+        )
 
         result = self.stripe.update_subscription(subscription_id, new_price_id)
 
@@ -87,7 +92,9 @@ class SubscriptionManager:
 
         return result
 
-    def cancel_subscription(self, subscription_id: str, immediately: bool = False) -> Dict[str, Any]:
+    def cancel_subscription(
+        self, subscription_id: str, immediately: bool = False
+    ) -> Dict[str, Any]:
         """
         Cancel a subscription.
         """
@@ -105,9 +112,9 @@ class SubscriptionManager:
             "status": sub.get("status"),
             "current_period_end": datetime.fromtimestamp(sub.get("current_period_end")),
             "cancel_at_period_end": sub.get("cancel_at_period_end"),
-            "plan_amount": sub['plan']['amount'] / 100 if sub.get('plan') else 0,
-            "currency": sub['plan']['currency'] if sub.get('plan') else 'usd',
-            "customer": sub.get("customer")
+            "plan_amount": sub["plan"]["amount"] / 100 if sub.get("plan") else 0,
+            "currency": sub["plan"]["currency"] if sub.get("plan") else "usd",
+            "customer": sub.get("customer"),
         }
 
     def create_portal_session(self, customer_id: str, return_url: str) -> Dict[str, Any]:

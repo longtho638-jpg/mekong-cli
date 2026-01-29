@@ -1,6 +1,7 @@
 """
 Demo Manager engine logic.
 """
+
 import random
 from datetime import datetime
 from typing import Dict, List
@@ -17,9 +18,25 @@ class DemoEngine:
     def __init__(self):
         self.demos: Dict[str, Demo] = {}
 
-    def schedule_demo(self, prospect: str, company: str, demo_type: DemoType, scheduled_at: datetime, se_assigned: str, deal_size: float = 0.0) -> Demo:
+    def schedule_demo(
+        self,
+        prospect: str,
+        company: str,
+        demo_type: DemoType,
+        scheduled_at: datetime,
+        se_assigned: str,
+        deal_size: float = 0.0,
+    ) -> Demo:
         did = f"demo_{int(datetime.now().timestamp())}_{random.randint(100, 999)}"
-        demo = Demo(id=did, prospect=prospect, company=company, demo_type=demo_type, scheduled_at=scheduled_at, se_assigned=se_assigned, deal_size=deal_size)
+        demo = Demo(
+            id=did,
+            prospect=prospect,
+            company=company,
+            demo_type=demo_type,
+            scheduled_at=scheduled_at,
+            se_assigned=se_assigned,
+            deal_size=deal_size,
+        )
         self.demos[did] = demo
         return demo
 

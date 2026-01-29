@@ -2,6 +2,7 @@
 Webhook Retry Worker.
 Background worker that polls for pending retries and executes them using the Fire Engine.
 """
+
 import asyncio
 import logging
 import time
@@ -15,13 +16,14 @@ from core.infrastructure.redis import get_redis_client
 
 logger = logging.getLogger(__name__)
 
+
 class WebhookRetryWorker:
     def __init__(self):
         self.db = get_db()
         self.redis = get_redis_client()
         self.fire_engine = WebhookFireEngine(self.redis)
         self.running = False
-        self.poll_interval = 5 # seconds
+        self.poll_interval = 5  # seconds
 
     async def start(self):
         self.running = True
@@ -42,12 +44,14 @@ class WebhookRetryWorker:
 
         # Fetch due retries
         # Limit to 50 at a time to prevent backlog explosion
-        res = self.db.table("webhook_deliveries")\
-            .select("*")\
-            .eq("status", "pending")\
-            .lte("next_retry_at", now)\
-            .limit(50)\
+        res = (
+            self.db.table("webhook_deliveries")
+            .select("*")
+            .eq("status", "pending")
+            .lte("next_retry_at", now)
+            .limit(50)
             .execute()
+        )
 
         deliveries = res.data or []
 
@@ -77,11 +81,12 @@ class WebhookRetryWorker:
             return
 
         config = config_res.data[0]
-        payload = delivery["payload"] # delivery has the payload
+        payload = delivery["payload"]  # delivery has the payload
 
         # Use Fire Engine to execute the attempt
         # Logic for creating new attempt record and scheduling next retry is handled inside execute_attempt
         await self.fire_engine.execute_attempt(delivery["id"], config, payload)
+
 
 if __name__ == "__main__":
     # Entry point for standalone worker

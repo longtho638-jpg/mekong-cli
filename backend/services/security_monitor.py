@@ -18,6 +18,7 @@ from backend.services.audit_service import audit_service
 
 logger = logging.getLogger(__name__)
 
+
 class SecurityMonitor:
     """
     Monitors security events and triggers alerts.
@@ -29,11 +30,11 @@ class SecurityMonitor:
     def __init__(self):
         self.redis = redis_client
         self.alert_thresholds = {
-            "failed_login": 5,        # 5 failures in window
-            "api_violation": 10,      # 10 403s in window
-            "high_value_access": 1,   # Alert on any sensitive admin access
+            "failed_login": 5,  # 5 failures in window
+            "api_violation": 10,  # 10 403s in window
+            "high_value_access": 1,  # Alert on any sensitive admin access
         }
-        self.window_seconds = 300     # 5 minutes window
+        self.window_seconds = 300  # 5 minutes window
 
     async def log_security_event(
         self,
@@ -41,7 +42,7 @@ class SecurityMonitor:
         actor_id: str,
         ip_address: str,
         details: Dict[str, Any] = None,
-        severity: str = "medium"
+        severity: str = "medium",
     ):
         """
         Log a security event, update counters, and check for alerts.
@@ -105,6 +106,7 @@ class SecurityMonitor:
 
             # Set cooldown for 1 hour
             self.redis.setex(cooldown_key, 3600, "1")
+
 
 # Singleton
 security_monitor = SecurityMonitor()

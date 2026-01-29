@@ -11,11 +11,10 @@ from backend.models.user_preferences import (
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
+
 @router.get("/preferences", response_model=UserPreferences)
 def get_user_preferences(
-    request: Request,
-    user_id: str = Depends(get_current_user_id),
-    db: Session = Depends(get_db)
+    request: Request, user_id: str = Depends(get_current_user_id), db: Session = Depends(get_db)
 ):
     prefs = db.query(UserPreferencesDB).filter(UserPreferencesDB.user_id == user_id).first()
     if not prefs:
@@ -23,12 +22,13 @@ def get_user_preferences(
         return UserPreferences(user_id=user_id)
     return prefs
 
+
 @router.patch("/preferences", response_model=UserPreferences)
 def update_user_preferences(
     prefs_in: UserPreferencesUpdate,
     request: Request,
     user_id: str = Depends(get_current_user_id),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     prefs = db.query(UserPreferencesDB).filter(UserPreferencesDB.user_id == user_id).first()
     if not prefs:

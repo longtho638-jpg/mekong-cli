@@ -17,6 +17,7 @@ from typing import Any, Dict, Optional
 
 class LicenseTier(str, Enum):
     """License tier definitions"""
+
     FREE = "free"
     STARTER = "starter"
     PRO = "pro"
@@ -83,8 +84,7 @@ class WhiteLabelService:
 
         if tier != LicenseTier.ENTERPRISE:
             raise ValueError(
-                f"White-label features require enterprise tier. "
-                f"Current tier: {tier.value}"
+                f"White-label features require enterprise tier. Current tier: {tier.value}"
             )
 
         return True

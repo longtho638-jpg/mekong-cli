@@ -20,27 +20,21 @@ def example_usage():
     # 1. Send welcome notification
     print("\n1. Sending welcome notification...")
     welcome_notif = notification_service.send_welcome_notification(
-        user_id=user_id,
-        username=username
+        user_id=user_id, username=username
     )
     print(f"   Created: {welcome_notif.notification_id}")
 
     # 2. Send payment success notification
     print("\n2. Sending payment success notification...")
     payment_notif = notification_service.send_payment_success_notification(
-        user_id=user_id,
-        amount=395.00,
-        currency="USD",
-        transaction_id="txn_abc123"
+        user_id=user_id, amount=395.00, currency="USD", transaction_id="txn_abc123"
     )
     print(f"   Created: {payment_notif.notification_id}")
 
     # 3. Send license expiry warning
     print("\n3. Sending license expiry warning...")
     expiry_notif = notification_service.send_license_expiry_warning(
-        user_id=user_id,
-        days_remaining=7,
-        license_type="Premium"
+        user_id=user_id, days_remaining=7, license_type="Premium"
     )
     print(f"   Created: {expiry_notif.notification_id}")
 
@@ -50,7 +44,7 @@ def example_usage():
         user_id=user_id,
         feature_name="AI-Powered Code Review",
         feature_description="Get instant code quality feedback with our new AI reviewer.",
-        learn_more_url="https://example.com/features/ai-review"
+        learn_more_url="https://example.com/features/ai-review",
     )
     print(f"   Created: {feature_notif.notification_id}")
 
@@ -74,10 +68,7 @@ def example_usage():
 
     # 8. Get only unread notifications
     print("\n8. Getting unread notifications...")
-    unread_notifications = notification_service.get_user_notifications(
-        user_id,
-        unread_only=True
-    )
+    unread_notifications = notification_service.get_user_notifications(user_id, unread_only=True)
     print(f"   Unread notifications: {len(unread_notifications)}")
     for notif in unread_notifications:
         print(f"   - {notif.title}")
@@ -95,7 +86,7 @@ def example_usage():
         user_ids=user_ids,
         feature_name="Dark Mode",
         feature_description="Toggle between light and dark themes in settings.",
-        learn_more_url="https://example.com/features/dark-mode"
+        learn_more_url="https://example.com/features/dark-mode",
     )
     print(f"   Sent {len(broadcast_notifs)} notifications")
 

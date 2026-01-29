@@ -24,16 +24,14 @@ class NotificationAnalyticsService:
         # Breakdown by channel
         channel_stats = db.execute(
             select(
-                NotificationDelivery.channel,
-                func.count(NotificationDelivery.id).label("count")
+                NotificationDelivery.channel, func.count(NotificationDelivery.id).label("count")
             ).group_by(NotificationDelivery.channel)
         ).all()
 
         # Breakdown by status
         status_stats = db.execute(
             select(
-                NotificationDelivery.status,
-                func.count(NotificationDelivery.id).label("count")
+                NotificationDelivery.status, func.count(NotificationDelivery.id).label("count")
             ).group_by(NotificationDelivery.status)
         ).all()
 
@@ -54,7 +52,7 @@ class NotificationAnalyticsService:
             "total_sent": total_sent,
             "channels": {channel: count for channel, count in channel_stats},
             "statuses": {status: count for status, count in status_stats},
-            "success_rate": round(success_rate, 2)
+            "success_rate": round(success_rate, 2),
         }
 
     def get_daily_trends(self, db: Session, days: int = 7) -> List[Dict[str, Any]]:
@@ -63,25 +61,21 @@ class NotificationAnalyticsService:
         """
         # This requires date truncation which depends on DB (Postgres)
         # Assuming Postgres for now
-        trunc_date = func.date_trunc('day', NotificationDelivery.created_at)
+        trunc_date = func.date_trunc("day", NotificationDelivery.created_at)
 
         trends = db.execute(
-            select(
-                trunc_date.label("date"),
-                func.count(NotificationDelivery.id).label("count")
-            )
+            select(trunc_date.label("date"), func.count(NotificationDelivery.id).label("count"))
             .group_by(trunc_date)
             .order_by(trunc_date.desc())
             .limit(days)
         ).all()
 
-        return [
-            {"date": date.isoformat(), "count": count}
-            for date, count in trends
-        ]
+        return [{"date": date.isoformat(), "count": count} for date, count in trends]
+
 
 # Global instance
 _analytics_service = NotificationAnalyticsService()
+
 
 def get_notification_analytics_service():
     return _analytics_service

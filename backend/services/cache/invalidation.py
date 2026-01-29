@@ -16,8 +16,10 @@ from backend.services.cache.metrics import MetricsContext, global_metrics
 
 logger = logging.getLogger(__name__)
 
+
 class SyncCacheInvalidator:
     """Synchronous version of CacheInvalidator for legacy services"""
+
     def __init__(self, redis_client: sync_redis.Redis, prefix: str = "cache"):
         self.redis = redis_client
         self.prefix = prefix
@@ -45,8 +47,8 @@ class SyncCacheInvalidator:
             while True:
                 cursor, keys = self.redis.scan(cursor, match=full_pattern, count=100)
                 if keys:
-                     count = self.redis.delete(*keys)
-                     deleted_count += count
+                    count = self.redis.delete(*keys)
+                    deleted_count += count
                 if cursor == 0:
                     break
             logger.info(f"Invalidated {deleted_count} keys matching pattern: {full_pattern}")
@@ -63,7 +65,7 @@ class SyncCacheInvalidator:
                 tag_key = self._make_key(f"tag:{tag}")
                 keys = self.redis.smembers(tag_key)
                 if keys:
-                    decoded_keys = [k.decode('utf-8') if isinstance(k, bytes) else k for k in keys]
+                    decoded_keys = [k.decode("utf-8") if isinstance(k, bytes) else k for k in keys]
                     self.redis.delete(*decoded_keys)
                     total_deleted += len(decoded_keys)
                     self.redis.delete(tag_key)
@@ -73,6 +75,7 @@ class SyncCacheInvalidator:
             logger.error(f"Error invalidating tags {tags}: {e}")
             global_metrics.increment_error()
             return 0
+
 
 class CacheInvalidator:
     def __init__(self, redis_client: redis.Redis, prefix: str = "cache"):
@@ -139,7 +142,9 @@ class CacheInvalidator:
                     keys = await self.redis.smembers(tag_key)
                     if keys:
                         # Decode bytes to strings if needed
-                        decoded_keys = [k.decode('utf-8') if isinstance(k, bytes) else k for k in keys]
+                        decoded_keys = [
+                            k.decode("utf-8") if isinstance(k, bytes) else k for k in keys
+                        ]
 
                         # Delete the actual keys
                         await self.redis.delete(*decoded_keys)
@@ -165,9 +170,9 @@ class CacheInvalidator:
                 tag_key = self._make_key(f"tag:{tag}")
                 pipe.sadd(tag_key, full_key)
                 # Set expiry on tag set equal to max possible TTL (or just long)
-                #Ideally tag sets should expire when member keys expire, but Redis doesn't support that easily.
+                # Ideally tag sets should expire when member keys expire, but Redis doesn't support that easily.
                 # A common strategy is setting a long TTL.
-                pipe.expire(tag_key, 86400 * 30) # 30 days
+                pipe.expire(tag_key, 86400 * 30)  # 30 days
 
             await pipe.execute()
         except Exception as e:

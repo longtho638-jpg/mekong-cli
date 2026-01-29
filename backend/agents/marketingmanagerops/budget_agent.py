@@ -101,7 +101,8 @@ class BudgetAgent:
             if total_spent > 0
             else 0,
             "by_category": {
-                cat.value: sum(lead.spent for lead in self.get_by_category(cat)) for cat in BudgetCategory
+                cat.value: sum(lead.spent for lead in self.get_by_category(cat))
+                for cat in BudgetCategory
             },
         }
 

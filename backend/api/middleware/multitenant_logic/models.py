@@ -1,6 +1,7 @@
 """
 Tenant models and store.
 """
+
 import os
 from typing import Any, Dict, List, Optional
 
@@ -9,6 +10,7 @@ from typing_extensions import TypedDict
 
 class TenantSettingsDict(TypedDict, total=False):
     """Structured settings for a tenant"""
+
     status: str
     plan: str
     features: List[str]
@@ -18,7 +20,11 @@ class TenantContext:
     """Tenant context data."""
 
     def __init__(
-        self, tenant_id: str, tenant_name: str, database_url: str, settings: Optional[TenantSettingsDict] = None
+        self,
+        tenant_id: str,
+        tenant_name: str,
+        database_url: str,
+        settings: Optional[TenantSettingsDict] = None,
     ):
         self.tenant_id = tenant_id
         self.tenant_name = tenant_name
