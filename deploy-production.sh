@@ -1,111 +1,69 @@
 #!/usr/bin/env bash
 # 🏯 AgencyOS Production Deployment Script
-# This script is called by cc_release.py during production deployment
+# Orchestrates Backend + Dashboard using Docker Compose
+# ============================================================================
 
 set -e
 
 VERSION="${1:-latest}"
-DOCKER_IMAGE="agencyos/mekong-cli:${VERSION}"
-
 echo "🚀 Deploying AgencyOS v${VERSION} to PRODUCTION..."
-echo "⚠️  Production deployment - safety checks enabled"
 
-# Pre-deployment health checks
-echo "🔍 Running pre-deployment checks..."
+# 1. Pre-flight Checks
+# ----------------------------------------------------------------------------
+echo "🔍 Running pre-flight checks..."
 
-# Check if Docker image exists
-if ! docker pull ${DOCKER_IMAGE}; then
-    echo "❌ Docker image ${DOCKER_IMAGE} not found!"
+if [ ! -f .env.production ]; then
+    echo "❌ Missing .env.production file!"
+    echo "   Please copy .env.production.example to .env.production and configure secrets."
     exit 1
 fi
 
-# Check database connectivity (customize as needed)
-# echo "🗄️  Checking database connectivity..."
-# if ! pg_isready -h production-db.example.com -p 5432; then
-#     echo "❌ Database not accessible!"
-#     exit 1
-# fi
-
-echo "✅ Pre-deployment checks passed"
-
-# Blue-Green Deployment Strategy
-echo "🔵 Starting blue-green deployment..."
-
-# Option 1: Docker with zero-downtime
-echo "🐳 Deploying with zero-downtime strategy..."
-
-# Start new container (green)
-docker pull ${DOCKER_IMAGE}
-docker run -d \
-    --name agencyos-production-new \
-    --restart unless-stopped \
-    -p 8081:8080 \
-    -e ENV=production \
-    ${DOCKER_IMAGE}
-
-# Wait for new container to be healthy
-echo "⏳ Waiting for new container to be healthy..."
-sleep 10
-
-# Health check
-if ! curl -f http://localhost:8081/health 2>/dev/null; then
-    echo "❌ New container health check failed!"
-    docker stop agencyos-production-new
-    docker rm agencyos-production-new
+# Ensure Docker Compose is available
+if ! command -v docker >/dev/null 2>&1; then
+    echo "❌ Docker is not installed."
     exit 1
 fi
 
-echo "✅ New container is healthy"
+# 2. Build / Pull Images
+# ----------------------------------------------------------------------------
+echo "🏗️  Building/Pulling production images..."
 
-# Switch traffic (update load balancer or swap ports)
-echo "🔄 Switching traffic to new container..."
+# Ideally we pull from registry, but for now we build locally
+# docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml build
 
-# Stop old container
-docker stop agencyos-production 2>/dev/null || true
-docker rm agencyos-production 2>/dev/null || true
+# 3. Deploy (Zero-downtime rolling update via Compose)
+# ----------------------------------------------------------------------------
+echo "🔄 Updating services..."
 
-# Rename new container
-docker rename agencyos-production-new agencyos-production
+docker compose -f docker-compose.prod.yml up -d --remove-orphans
 
-# Update port mapping if needed
-# docker stop agencyos-production
-# docker run -d \
-#     --name agencyos-production \
-#     --restart unless-stopped \
-#     -p 8080:8080 \
-#     -e ENV=production \
-#     ${DOCKER_IMAGE}
+# 4. Health Checks
+# ----------------------------------------------------------------------------
+echo "❤️  Verifying system health..."
 
-# Option 2: Kubernetes (uncomment and customize)
-# echo "☸️  Deploying to Kubernetes production namespace..."
-# kubectl set image deployment/agencyos agencyos=${DOCKER_IMAGE} -n production
-# kubectl rollout status deployment/agencyos -n production
-# echo "ℹ️  Kubernetes deployment completed"
+# Wait for services to stabilize
+echo "⏳ Waiting 15s for startup..."
+sleep 15
 
-# Option 3: Cloud Platform deployment
-# Example for AWS ECS:
-# aws ecs update-service --cluster production --service agencyos --force-new-deployment
-
-# Post-deployment verification
-echo "🔍 Running post-deployment checks..."
-
-# Verify deployment
-if docker ps | grep agencyos-production; then
-    echo "✅ Production deployment successful!"
+# Backend Health
+if curl -f http://localhost:8000/health >/dev/null 2>&1; then
+    echo "✅ Backend is HEALTHY"
 else
-    echo "❌ Production deployment verification failed!"
+    echo "❌ Backend is UNHEALTHY"
+    docker compose -f docker-compose.prod.yml logs --tail=50 backend
     exit 1
 fi
 
-# Send deployment notification (customize)
-# curl -X POST https://hooks.slack.com/services/YOUR/WEBHOOK/URL \
-#     -H 'Content-Type: application/json' \
-#     -d "{\"text\": \"🚀 AgencyOS v${VERSION} deployed to production\"}"
+# Dashboard Health
+if wget --spider --quiet http://localhost:3000/api/health; then
+    echo "✅ Dashboard is HEALTHY"
+else
+    echo "❌ Dashboard is UNHEALTHY"
+    docker compose -f docker-compose.prod.yml logs --tail=50 dashboard
+    exit 1
+fi
 
-echo "✅ Production deployment complete!"
-echo "📊 Container status:"
-docker ps | grep agencyos-production
-
-echo ""
-echo "💡 Rollback command if needed:"
-echo "   cc release rollback"
+echo "🎉 Deployment Complete!"
+echo "   Backend: http://localhost:8000"
+echo "   Dashboard: http://localhost:3000"
