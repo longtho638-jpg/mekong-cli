@@ -1,5 +1,5 @@
 {
-    "name": "@agencyos/vibe-analytics",
+    "name": "agencyos-vibe-analytics",
     "version": "1.0.0",
     "description": "VIBE Analytics - Growth Telemetry Engine",
     "main": "dist/index.js",

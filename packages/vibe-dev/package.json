@@ -1,5 +1,5 @@
 {
-    "name": "@agencyos/vibe-dev",
+    "name": "agencyos-vibe-dev",
     "version": "1.0.0",
     "description": "🟢 Earth - Development Workflow Layer - Bidirectional sync between GitHub Projects V2 and local JSON",
     "main": "dist/index.js",
