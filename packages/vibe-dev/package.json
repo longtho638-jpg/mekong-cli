@@ -2,6 +2,29 @@
     "name": "@agencyos/vibe-dev",
     "version": "1.0.0",
     "description": "🟢 Earth - Development Workflow Layer",
-    "main": "index.ts",
-    "types": "index.ts"
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "vibe": "./dist/cli.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "test:connection": "ts-node scripts/test-github-connection.ts",
+        "test:sync-down": "ts-node scripts/test-sync-down.ts",
+        "test:sync-up": "ts-node scripts/test-sync-up.ts",
+        "test:sync-engine": "ts-node scripts/test-sync-engine.ts",
+        "test:cli": "ts-node scripts/test-cli-integration.ts"
+    },
+    "dependencies": {
+        "@types/inquirer": "^9.0.9",
+        "chalk": "^4.1.2",
+        "commander": "^11.1.0",
+        "dotenv": "^17.2.4",
+        "inquirer": "^8.2.6"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.32",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.3.3"
+    }
 }
