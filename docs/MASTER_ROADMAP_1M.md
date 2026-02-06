@@ -157,7 +157,7 @@ These plans are now DEPRECATED - information merged into this master:
 
 | Document                                      | Purpose                |
 | --------------------------------------------- | ---------------------- |
-| [MASTER_PRD](./MASTER_PRD_AGENCYOS_RAAS.md)   | Technical Architecture |
+| [MASTER_PRD](./MASTER_PRD.md)   | Technical Architecture |
 | [PRD_AGENCY_GENESIS](./PRD_AGENCY_GENESIS.md) | Automation Loop        |
 | [PRD_MEKONG_GENESIS](./PRD_MEKONG_GENESIS.md) | CLI Blueprint          |
 
