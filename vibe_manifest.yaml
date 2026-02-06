@@ -1,0 +1,15 @@
+version: "1.0"
+project: "AgencyOS-Box"
+dna_source: "./claudekit_dna"
+
+tasks:
+  - id: "agency-setup-1"
+    description: "Initialize AgencyOS folder structure for a new agency client"
+    priority: HIGH
+    auto_approve: true
+    dna_reference: "claudekit_dna/patterns/structure"
+
+  - id: "agency-setup-2"
+    description: "Generate deployment configuration (vercel.json) for the agency landing page"
+    priority: HIGH
+    auto_approve: true

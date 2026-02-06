@@ -101,8 +101,10 @@ Updated: 2026-02-06 | Status: EXECUTION
 
 ## 🔄 IN PROGRESS
 
-- [ ] Mekong CLI Recipe System Integration
-- [ ] Agency-in-a-Box Setup Automation
+- [x] Mekong CLI Recipe System Integration - Executor & Parser implemented
+- [x] Agency-in-a-Box Setup Automation
+- [ ] Marketplace Foundation - Recipe Registry
+
 
 ---
 
