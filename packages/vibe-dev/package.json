@@ -1,0 +1,7 @@
+{
+    "name": "@agencyos/vibe-dev",
+    "version": "1.0.0",
+    "description": "🟢 Earth - Development Workflow Layer",
+    "main": "index.ts",
+    "types": "index.ts"
+}

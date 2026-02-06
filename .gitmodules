@@ -1,0 +1,6 @@
+[submodule "apps/sophia-ai-factory"]
+	path = apps/sophia-ai-factory
+	url = https://github.com/longtho638-jpg/sophia-ai-factory.git
+[submodule "apps/84tea"]
+	path = apps/84tea
+	url = https://github.com/longtho638-jpg/84tea.git
