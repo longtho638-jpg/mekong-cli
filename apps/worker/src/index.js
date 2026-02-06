@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import './worker.js';
 
 console.log('🚀 Agency Worker Service Started');

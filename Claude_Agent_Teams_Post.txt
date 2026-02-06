@@ -1,0 +1,76 @@
+CLAUDE CODE AGENT TEAMS
+Tính năng mới vừa ra - Đốt token nhưng ngon vl!
+
+---
+
+VẤN ĐỀ CŨ
+
+Manual Sub-Agent:
+- Phải gán task thủ công từng chút một
+- Mình phải tự kiểm tra và điều phối AI
+- Chạy tuần tự, xong việc này mới tới việc kia
+- Context riêng lẻ, dễ bị quên đầu đuôi
+
+Prompt kiểu cũ:
+"Sub agent A làm việc này, sub agent B làm việc kia, xong báo cáo về cho tao"
+
+---
+
+AGENT TEAMS (MỚI)
+
+Chỉ cần:
+1. Lên plan
+2. Prompt: "Gọi team thực hiện plan này"
+3. Ngồi uống cafe xem nó làm
+
+Nó tự:
+- Spawn đủ agent phù hợp (FE dev, BE dev, Code Reviewer, Debugger...)
+- Phân task tự động
+- Sync logic với nhau
+- Làm xong tự báo cáo về Lead Agent
+
+---
+
+ĐIỂM KHÁC BIỆT
+
+Cũ (Manual):
+- Gán task thủ công
+- Điều phối AI bằng tay
+- Chạy tuần tự
+- Context riêng lẻ
+
+Mới (Agent Teams):
+- Tự phân chia task dựa trên mục tiêu lớn
+- Các Agent tự đồng bộ và sửa lỗi cho nhau
+- Chạy song song nhiều việc cùng lúc
+- Dùng chung Shared Task List, hiểu toàn bộ dự án
+
+---
+
+DEMO THỰC TẾ
+
+1 prompt > Lead Agent lên plan > Gọi 2 dev (FE + BE) làm song song > Xong tự gọi Code Review + Debug > Ship
+
+Thay vì 1 fullstack dev làm tuần tự, giờ có cả team AI làm parallel.
+
+---
+
+CÁCH BẬT
+
+Thêm vào settings:
+
+CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+
+---
+
+NHƯỢC ĐIỂM
+
+Đốt token vl :))
+
+Nhưng mà... đam mê không đủ xài thì upgrade thôi đúng không?
+
+---
+
+Tính năng CHÍNH CHỦ từ Anthropic
+Claude Code - Agent Teams (Agent Swarm)
+Feb 2026

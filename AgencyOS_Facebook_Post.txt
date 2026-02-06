@@ -1,0 +1,90 @@
+AGENCYOS QUAD STACK
+"Vibe Coding có Kỷ Luật = Code nhanh mà không hỏng"
+
+---
+
+VẤN ĐỀ CŨ
+
+- Code xong lại refactor hoài
+- Context overflow liên tục
+- Bug production vì không review
+- Tech debt chồng chất
+
+GIẢI PHÁP: Bộ Tứ AgencyOS
+
+---
+
+[1] BRAIN - BMAD-METHOD
+"Nghĩ trước khi làm"
+
+Cài: npx bmad-method install
+
+Workflows:
+/product-brief - Define problem
+/create-prd - Requirements
+/create-architecture - Design
+
+---
+
+[2] HANDS - OpenClaw
+"Điều phối đa kênh"
+
+- Telegram Bot nhận lệnh
+- BullMQ + Redis queue
+- Multi-channel routing
+
+---
+
+[3] MUSCLE - CC CLI
+"Sức mạnh thực thi"
+
+- Claude Code CLI
+- 400+ tool uses / session
+- Auto Git commit
+
+---
+
+[4] PULSE - Antigravity Proxy
+"Giữ nhịp tim LLM"
+
+- Quota rotation tự động
+- Rate limit handling
+- 2+ giờ chạy liên tục
+
+---
+
+QUICK START
+
+1. Tạo project mới
+mkdir my-project && cd my-project
+
+2. Install BMAD
+npx bmad-method install
+
+3. Chạy CC CLI
+claude --dangerously-skip-permissions
+
+---
+
+WORKFLOW
+
+Task nhỏ (< 1 ngày):
+/quick-spec > /dev-story > /code-review
+
+Task lớn (> 3 ngày):
+/product-brief > /create-prd > /create-architecture > /dev-story loop
+
+---
+
+STATS THỰC TẾ
+
+Trước > Sau
+0% review > 100%
+40% rework > dưới 10%
+30min session > 2+ hours
+50 tools > 400+
+
+---
+
+Build More, Architect Dreams
+Bộ Tứ AgencyOS - Feb 2026

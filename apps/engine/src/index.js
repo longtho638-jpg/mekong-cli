@@ -1,8 +1,6 @@
+import 'dotenv/config';
 import Fastify from 'fastify';
-import dotenv from 'dotenv';
 import routes from './routes.js';
-
-dotenv.config();
 
 const fastify = Fastify({
   logger: true

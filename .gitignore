@@ -82,3 +82,4 @@ docs/revenue-strategy/
 docs/competitor-analysis/
 apps/dashboard-internal/
 **/internal/**
+openclaw-key.json
