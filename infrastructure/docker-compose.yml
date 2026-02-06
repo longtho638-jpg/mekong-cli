@@ -70,6 +70,22 @@ services:
     networks:
       - agency-network
 
+  api:
+    build: ../apps/api
+    container_name: agency_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:5432/${POSTGRES_DB:-agency_os}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - agency-network
+
   tunnel:
     image: cloudflare/cloudflared:latest
     container_name: agency_tunnel
