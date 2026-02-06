@@ -94,8 +94,15 @@ Updated: 2026-02-06 | Status: EXECUTION
 
 ## 🔄 IN PROGRESS
 
-- [ ] Engine Layer Deployment (Docker/GCP)
-- [ ] Deployment Preparation (Vercel)
+- [x] Engine Layer Deployment (Docker/GCP) - Dockerfiles & Makefile ready
+- [x] Deployment Preparation (Vercel) - vercel.json & Guide ready
+
+---
+
+## 🔄 IN PROGRESS
+
+- [ ] Mekong CLI Recipe System Integration
+- [ ] Agency-in-a-Box Setup Automation
 
 ---
 
