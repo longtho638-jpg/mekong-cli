@@ -56,9 +56,9 @@ graph TD
 - **Redis (BullMQ)**:
   - Used for job queuing and pub/sub.
   - ephemeral storage for active jobs.
-- **PostgreSQL (Prisma)**:
-  - Long-term persistence for job history, users, and credits.
-  - Source of truth for job status.
+- **Database**:
+  - **Production**: PostgreSQL (Prisma) for long-term persistence, users, and credits.
+  - **Local Development**: SQLite (via Prisma) for zero-dependency setup.
 
 ## 3. Data Model (Prisma Schema)
 
@@ -83,7 +83,7 @@ graph TD
 ## 4. Deployment Strategy
 - **Containerization**: Docker & Docker Compose.
 - **Orchestration**:
-  - **Dev**: `docker-compose up` (All-in-one).
+  - **Dev**: `npm run dev` (Local SQLite + Local Redis) or `docker-compose up`.
   - **Prod**: Google Cloud Run (Serverless Containers) or VM.
 - **CI/CD**: GitHub Actions for build and test.
 

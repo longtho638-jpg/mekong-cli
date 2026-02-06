@@ -40,5 +40,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **System Architecture**: Added `docs/system-architecture.md` detailing the Hub-and-Spoke design.
 - **Recipe Registry**: Implemented foundation for Marketplace. Added `list`, `search`, and smart `run` commands to CLI.
 
+### Phase 8: Production Hardening
+- **Infrastructure**: Switched default development database to SQLite (removed Docker dependency for local dev).
+- **Resilience**: Implemented `safeJSONStringify`/`safeJSONParse` to handle edge cases (BigInt, circular refs).
+- **Concurrency**: Added `withRetry` wrapper for SQLite concurrency (`SQLITE_BUSY` handling).
+- **Reliability**: Added "Compensation Transaction" pattern in Engine to prevent ghost jobs.
+- **Maintenance**: Added Zombie Job cleanup on Worker startup.
+
 ### Changed
 - **Dependencies**: Updated `vibe-dev` to depend on published `@agencyos/vibe-analytics@^1.0.0` instead of local file protocol.
