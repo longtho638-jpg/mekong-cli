@@ -89,6 +89,11 @@ Updated: 2026-02-06 | Status: EXECUTION
 - [x] Stripe Checkout Integration (Pre-order $99)
 - [x] Engine Layer Setup (OpenClaw + BullMQ) - Code Complete
 - [x] Engine Layer Database Integration (PostgreSQL + Prisma)
+- [x] Mekong CLI Recipe System Integration - Executor & Parser implemented
+- [x] Agency-in-a-Box Setup Automation
+- [x] Marketplace Foundation - Recipe Registry
+- [x] Autonomous Genesis Protocol - LeadHunter, ContentWriter, RecipeCrawler
+- [x] Mekong CLI Interactive UI - Module Selector
 
 ---
 
@@ -98,14 +103,6 @@ Updated: 2026-02-06 | Status: EXECUTION
 - [x] Deployment Preparation (Vercel) - vercel.json & Guide ready
 
 ---
-
-## 🔄 IN PROGRESS
-
-- [x] Mekong CLI Recipe System Integration - Executor & Parser implemented
-- [x] Agency-in-a-Box Setup Automation
-- [x] Marketplace Foundation - Recipe Registry
-
-
 ---
 
 ## 📊 KPIs TO TRACK

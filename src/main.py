@@ -19,6 +19,8 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.core.parser import RecipeParser
 from src.core.executor import RecipeExecutor
 from src.core.registry import RecipeRegistry
+from src.agents import LeadHunter, ContentWriter, RecipeCrawler
+from rich.prompt import Prompt
 
 app = typer.Typer(
     name="mekong",
@@ -155,7 +157,82 @@ def ui():
             border_style="cyan",
         )
     )
-    console.print("[dim]Coming soon: Interactive module selector[/dim]")
+
+    # Available modules
+    modules = {
+        "1": {
+            "name": "LeadHunter",
+            "class": LeadHunter,
+            "desc": "Find CEO emails from domains",
+        },
+        "2": {
+            "name": "ContentWriter",
+            "class": ContentWriter,
+            "desc": "Generate SEO articles",
+        },
+        "3": {
+            "name": "RecipeCrawler",
+            "class": RecipeCrawler,
+            "desc": "Discover community recipes",
+        },
+    }
+
+    # Display menu
+    table = Table(title="Select Module")
+    table.add_column("ID", style="cyan", justify="right")
+    table.add_column("Module", style="bold")
+    table.add_column("Description", style="dim")
+
+    for pid, info in modules.items():
+        table.add_row(pid, info["name"], info["desc"])
+
+    console.print(table)
+
+    # Interactive loop
+    choice = Prompt.ask("Enter module ID", choices=list(modules.keys()))
+    selected = modules[choice]
+
+    console.print(f"\n[bold green]Selected: {selected['name']}[/bold green]")
+
+    # Instantiate agent
+    agent_class = selected["class"]
+    agent = agent_class()
+
+    # Get input
+    if choice == "1":
+        user_input = Prompt.ask("Enter domain to hunt (e.g., techcorp.com)")
+    elif choice == "2":
+        user_input = Prompt.ask("Enter topic/keyword (e.g., AI Marketing)")
+    elif choice == "3":
+        user_input = Prompt.ask("Enter search query or 'all'")
+    else:
+        user_input = Prompt.ask("Enter input data")
+
+    # Run execution
+    with console.status(f"[bold green]Running {selected['name']}...[/bold green]"):
+        try:
+            results = agent.run(user_input)
+
+            # Show results
+            console.print("\n[bold]Execution Results:[/bold]")
+            for res in results:
+                status_symbol = "✅" if res.success else "❌"
+                status_color = "green" if res.success else "red"
+
+                console.print(
+                    f"[{status_color}]{status_symbol} Task: {res.task_id}[/{status_color}]"
+                )
+
+                if res.output:
+                    console.print(Panel(str(res.output), title="Output", border_style="dim"))
+                if res.error:
+                    console.print(f"[bold red]Error:[/bold red] {res.error}")
+
+        except Exception as e:
+            console.print(f"[bold red]Critical Error:[/bold red] {str(e)}")
+
+    console.print("\n[dim]Press Enter to exit...[/dim]")
+    input()
 
 
 @app.command()

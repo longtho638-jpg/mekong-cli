@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Agents**: Added core autonomous agents (`LeadHunter`, `ContentWriter`, `RecipeCrawler`) for the Genesis Protocol.
+- **CLI**: Added interactive UI (`mekong ui`) for module selection and execution.
 - **Engine Layer**: Implemented Hub-and-Spoke RaaS Architecture.
   - **Infrastructure**: Docker Compose configuration for Redis (Queue) and PostgreSQL (Data).
   - **Engine API**: Node.js/Fastify service (`apps/engine`) for job ingestion and validation.
