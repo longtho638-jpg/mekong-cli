@@ -56,7 +56,7 @@ export function FeaturesSection() {
   const t = useTranslations('features');
 
   return (
-    <section className="relative py-16 md:py-24">
+    <section id="features" className="relative py-16 md:py-24 scroll-mt-20">
       <GlassContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

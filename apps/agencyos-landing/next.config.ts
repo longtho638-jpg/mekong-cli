@@ -24,8 +24,22 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
+// CSP directives - strict defaults, allows self-hosted fonts and Polar.sh checkout
+const cspDirectives = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://api.polar.sh https://polar.sh https://*.vercel-insights.com https://*.vercel-analytics.com",
+  "form-action 'self' https://polar.sh",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "upgrade-insecure-requests",
+].join('; ');
+
 const nextConfig: NextConfig = {
-  /* config options here */
   reactCompiler: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
@@ -53,11 +67,15 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin'
+            value: 'strict-origin-when-cross-origin'
           },
           {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()'
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: cspDirectives
           }
         ]
       }
