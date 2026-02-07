@@ -1,18 +1,27 @@
-name: CI
+name: AgencyOS Landing CI
 
 on:
   push:
     branches: [master, main]
+    paths:
+      - 'apps/agencyos-landing/**'
+      - '.github/workflows/agencyos-landing-ci.yml'
   pull_request:
     branches: [master, main]
+    paths:
+      - 'apps/agencyos-landing/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  NODE_VERSION: '20'
+  WORKING_DIRECTORY: apps/agencyos-landing
+
 jobs:
-  lint-and-build:
-    name: Lint & Build
+  ci:
+    name: Lint, Typecheck, Test & Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
@@ -23,24 +32,28 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: ${{ env.NODE_VERSION }}
           cache: npm
-          cache-dependency-path: apps/agencyos-landing/package-lock.json
+          cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
 
       - name: Install dependencies
-        working-directory: apps/agencyos-landing
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm ci
 
       - name: Lint
-        working-directory: apps/agencyos-landing
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run lint
 
       - name: Type check
-        working-directory: apps/agencyos-landing
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run typecheck
 
+      - name: Test
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+        run: npm test
+
       - name: Build
-        working-directory: apps/agencyos-landing
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: npm run build
         env:
           NEXT_PUBLIC_BASE_URL: https://agencyos.dev

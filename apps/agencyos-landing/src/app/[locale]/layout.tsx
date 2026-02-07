@@ -143,7 +143,7 @@ export default async function LocaleLayout({
           '@type': 'Offer',
           price: siteConfig.structuredData.defaultPrice,
           priceCurrency: siteConfig.structuredData.priceCurrency,
-          priceValidUntil: '2025-12-31',
+          priceValidUntil: '2026-12-31',
         },
         aggregateRating: {
           '@type': 'AggregateRating',
