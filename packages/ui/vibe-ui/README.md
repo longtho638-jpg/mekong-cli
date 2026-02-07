@@ -1,28 +1,29 @@
-# @vibe/vibe-ui
+# Mekong vibe-ui 🌊
 
-Core UI component library for Vibe applications.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-ui
+npm install @mekong/vibe-ui
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-ui
+    vibe-ui --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { Button, Card } from '@vibe/vibe-ui';
-```
+import { something } from '@mekong/vibe-ui';
 
-## Features
-
-- React components with TypeScript support
-- Consistent design system
-- Accessible by default
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

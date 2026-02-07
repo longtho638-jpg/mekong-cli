@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe-bridge",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "Bridge FE to BE Agentic Infrastructure",
     "main": "index.ts",
     "types": "index.ts",

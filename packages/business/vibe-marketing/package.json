@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe-marketing",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "🟡 Mercury - Marketing & Content Layer",
     "main": "index.ts",
     "types": "index.ts",

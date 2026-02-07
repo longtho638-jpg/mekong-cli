@@ -1,31 +1,29 @@
-# @vibe/i18n
+# Mekong i18n 🌊
 
-Internationalization (i18n) utilities for Vibe applications.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/i18n
+npm install @mekong/i18n
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> i18n
+    i18n --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { t, setLocale } from '@vibe/i18n';
+import { something } from '@mekong/i18n';
 
-setLocale('en');
-const message = t('common.welcome');
-```
-
-## Features
-
-- Multi-language support
-- Type-safe translation keys
-- Locale switching utilities
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

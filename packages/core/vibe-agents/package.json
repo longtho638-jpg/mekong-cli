@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe-agents",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "🟣 Saturn - AI Agent Orchestration Layer",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

@@ -1,32 +1,29 @@
-# @vibe/vibe-marketing
+# Mekong vibe-marketing 🌊
 
-Marketing automation and campaign management for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-marketing
+npm install @mekong/vibe-marketing
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-marketing
+    vibe-marketing --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { CampaignManager } from '@vibe/vibe-marketing';
+import { something } from '@mekong/vibe-marketing';
 
-const manager = new CampaignManager();
-await manager.createCampaign(config);
-```
-
-## Features
-
-- Campaign management
-- Marketing automation
-- Analytics integration
-- Multi-channel support
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

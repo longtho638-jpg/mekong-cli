@@ -1,5 +1,6 @@
 {
   "name": "@mekong/shared",
+  "sideEffects": false,
   "version": "1.0.0",
   "description": "Shared utilities for Mekong CLI",
   "main": "dist/index.js",

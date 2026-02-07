@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "🌐 Unified VIBE Ecosystem - Core Foundation Layer",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",

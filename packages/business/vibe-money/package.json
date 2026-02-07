@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe-money",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "💰 Money-making workflows for AgencyEr - Kiếm tiền dễ như ăn kẹo",
     "main": "index.ts",
     "types": "index.ts",

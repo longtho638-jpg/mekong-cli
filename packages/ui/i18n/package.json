@@ -1,5 +1,6 @@
 {
   "name": "@mekong/i18n",
+  "sideEffects": false,
   "version": "0.1.0",
   "type": "module",
   "description": "Shared i18n package for Antigravity/Mekong CLI",

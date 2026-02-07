@@ -1,32 +1,29 @@
-# @vibe/vibe-bridge
+# Mekong vibe-bridge 🌊
 
-Integration bridge for external services and APIs.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-bridge
+npm install @mekong/vibe-bridge
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-bridge
+    vibe-bridge --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { Bridge } from '@vibe/vibe-bridge';
+import { something } from '@mekong/vibe-bridge';
 
-const bridge = new Bridge();
-await bridge.connect(service);
-```
-
-## Features
-
-- Service integration
-- API connectors
-- Data transformation
-- Webhook handling
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

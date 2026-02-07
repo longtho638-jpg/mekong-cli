@@ -1,51 +1,29 @@
-# 🌐 @mekong/vibe
+# Mekong vibe 🌊
 
-> **8 Planets, 1 Package**
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Install
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @mekong/vibe
+npm install @mekong/vibe
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe
+    vibe --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { 
-  vibeUI, vibeAnalytics, vibeAgents, vibeCRM,
-  vibeOps, vibeDev, vibeMarketing, vibeRevenue,
-  treasury, tracker
-} from '@mekong/vibe';
+import { something } from '@mekong/vibe';
 
-// UI
-vibeUI.colors.primary
-
-// Agents
-vibeAgents.orchestrator.register(agent)
-
-// CRM
-vibeCRM.crm.createDeal(deal)
-
-// Treasury
-treasury.collect('saturn', 'agent_call', 100)
-
-// Workflow
-tracker.complete('user1', 'activate')
+// Use it
 ```
-
-## Planets
-
-| Planet | Module | Purpose |
-|--------|--------|---------|
-| 🔵 Venus | `vibeUI` | Design |
-| ⚪ Uranus | `vibeAnalytics` | Data |
-| 🟣 Saturn | `vibeAgents` | AI |
-| 🟠 Jupiter | `vibeCRM` | Sales |
-| 🔴 Mars | `vibeOps` | Deploy |
-| 🟢 Earth | `vibeDev` | Code |
-| 🟡 Mercury | `vibeMarketing` | Growth |
-| 🟤 Neptune | `vibeRevenue` | Finance |
-
----
-
-*☀️ AgencyOS Solar System*

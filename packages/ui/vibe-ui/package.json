@@ -1,6 +1,7 @@
 {
     "name": "@mekong/vibe-ui",
-    "version": "1.0.0",
+    "sideEffects": false,
+  "version": "1.0.0",
     "description": "VIBE Design System - Aura Elite Components with MAX WOW",
     "main": "index.ts",
     "types": "index.ts",

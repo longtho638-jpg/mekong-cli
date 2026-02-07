@@ -1,32 +1,29 @@
-# @vibe/vibe-money
+# Mekong vibe-money 🌊
 
-Financial operations and ledger management for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-money
+npm install @mekong/vibe-money
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-money
+    vibe-money --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { DoubleLedger } from '@vibe/vibe-money';
+import { something } from '@mekong/vibe-money';
 
-const ledger = new DoubleLedger();
-await ledger.recordTransaction(entry);
-```
-
-## Features
-
-- Double-entry ledger
-- Transaction management
-- Financial reporting
-- Stripe integration
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

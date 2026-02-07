@@ -1,31 +1,29 @@
-# @vibe/shared
+# Mekong shared 🌊
 
-Shared utilities and types for Vibe packages.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/shared
+npm install @mekong/shared
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> shared
+    shared --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { logger, config } from '@vibe/shared';
+import { something } from '@mekong/shared';
 
-logger.info('Application started');
-```
-
-## Features
-
-- Common utilities
-- Shared TypeScript types
-- Configuration helpers
-- Logging utilities
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

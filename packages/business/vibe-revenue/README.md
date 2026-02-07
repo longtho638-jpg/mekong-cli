@@ -1,32 +1,29 @@
-# @vibe/vibe-revenue
+# Mekong vibe-revenue 🌊
 
-Revenue management and subscription handling for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-revenue
+npm install @mekong/vibe-revenue
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-revenue
+    vibe-revenue --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { RevenueManager } from '@vibe/vibe-revenue';
+import { something } from '@mekong/vibe-revenue';
 
-const revenue = new RevenueManager();
-await revenue.processSubscription(user);
-```
-
-## Features
-
-- Subscription management
-- Revenue tracking
-- Payment processing integration
-- Billing automation
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

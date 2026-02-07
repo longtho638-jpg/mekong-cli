@@ -1,31 +1,29 @@
-# @vibe/vibe-agents
+# Mekong vibe-agents 🌊
 
-Agent orchestration and management for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-agents
+npm install @mekong/vibe-agents
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-agents
+    vibe-agents --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { AgentOrchestrator } from '@vibe/vibe-agents';
+import { something } from '@mekong/vibe-agents';
 
-const orchestrator = new AgentOrchestrator();
-await orchestrator.execute(task);
-```
-
-## Features
-
-- Multi-agent coordination
-- Task delegation and execution
-- Plan-Execute-Verify workflow
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

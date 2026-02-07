@@ -1,32 +1,29 @@
-# @vibe/vibe-ops
+# Mekong vibe-ops 🌊
 
-Operations management and workflow automation for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-ops
+npm install @mekong/vibe-ops
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-ops
+    vibe-ops --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { WorkflowEngine } from '@vibe/vibe-ops';
+import { something } from '@mekong/vibe-ops';
 
-const engine = new WorkflowEngine();
-await engine.executeWorkflow(definition);
-```
-
-## Features
-
-- Workflow automation
-- Task scheduling
-- Operations monitoring
-- Process orchestration
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```

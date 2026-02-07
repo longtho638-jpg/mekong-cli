@@ -1,32 +1,29 @@
-# @vibe/vibe-crm
+# Mekong vibe-crm 🌊
 
-CRM integration and customer management for Vibe platform.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-## Installation
+> Part of the **Mekong CLI Hub** - RaaS Agency Operating System
+
+## 📦 Installation
 
 ```bash
-pnpm add @vibe/vibe-crm
+npm install @mekong/vibe-crm
 ```
 
-## Usage
+## 🏗 Architecture
+
+```mermaid
+graph TD
+    App --> vibe-crm
+    vibe-crm --> Core
+```
+
+## 🚀 Usage
 
 ```typescript
-import { CRMClient } from '@vibe/vibe-crm';
+import { something } from '@mekong/vibe-crm';
 
-const crm = new CRMClient();
-await crm.syncCustomers();
-```
-
-## Features
-
-- CRM integration
-- Customer data management
-- Contact synchronization
-- Lead tracking
-
-## Development
-
-```bash
-pnpm build
-pnpm dev
+// Use it
 ```
