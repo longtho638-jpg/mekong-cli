@@ -4,3 +4,15 @@
 [submodule "apps/84tea"]
 	path = apps/84tea
 	url = https://github.com/longtho638-jpg/84tea.git
+
+[submodule "apex-os"]
+	path = apex-os
+	url = https://github.com/longtho638-jpg/apex-os.git
+
+[submodule "claudekit-engineer-dna"]
+	path = claudekit-engineer-dna
+	url = https://github.com/claudekit/claudekit-engineer.git
+
+[submodule "com-anh-duong-10x"]
+	path = com-anh-duong-10x
+	url = https://github.com/PHIHOANG160314/COM-ANH-DUONG.git
