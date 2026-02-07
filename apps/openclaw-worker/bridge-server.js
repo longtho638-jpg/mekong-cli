@@ -13,6 +13,17 @@ const path = require('path');
 const PORT = 8765;
 const TELEGRAM_BOT_TOKEN = '8405197398:AAHuuykECSxEGZaBZVhtvwyIWM84LtGLO5I';
 const TELEGRAM_CHAT_ID = 5503922921;
+const BRIDGE_TOKEN = process.env.BRIDGE_TOKEN || '';
+
+// Validate Bearer token on mutating endpoints
+function authenticateRequest(req, res) {
+  if (!BRIDGE_TOKEN) return true; // No token configured = open (dev mode)
+  const auth = req.headers['authorization'] || '';
+  if (auth === `Bearer ${BRIDGE_TOKEN}`) return true;
+  res.writeHead(401, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({ error: 'Unauthorized' }));
+  return false;
+}
 
 // Task queue
 const tasks = [];
@@ -93,8 +104,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Receive task from OpenClaw
+  // Receive task from OpenClaw (auth required)
   if (url.pathname === '/task' && req.method === 'POST') {
+    if (!authenticateRequest(req, res)) return;
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', async () => {
@@ -126,8 +138,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Send message to Telegram (from Antigravity)
+  // Send message to Telegram (from Antigravity, auth required)
   if (url.pathname === '/telegram' && req.method === 'POST') {
+    if (!authenticateRequest(req, res)) return;
     let body = '';
     req.on('data', chunk => body += chunk);
     req.on('end', async () => {
