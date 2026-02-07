@@ -70,18 +70,18 @@ export function NavbarSection() {
             transition={{ duration: 0.2 }}
             className="md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950"
           >
-            <div className="container mx-auto px-4 py-4 space-y-4">
+            <div className="container mx-auto px-4 py-4 space-y-2">
               <Link
                 href="#features"
                 onClick={closeMenu}
-                className="block text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                className="flex items-center text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 min-h-[44px]"
               >
                 {t('features')}
               </Link>
               <Link
                 href="#pricing"
                 onClick={closeMenu}
-                className="block text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                className="flex items-center text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 min-h-[44px]"
               >
                 {t('pricing')}
               </Link>
@@ -89,7 +89,7 @@ export function NavbarSection() {
                 href="https://github.com/agencyos/mekong-cli"
                 target="_blank"
                 onClick={closeMenu}
-                className="block text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400"
+                className="flex items-center text-base font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 min-h-[44px]"
               >
                 GitHub
               </Link>
@@ -97,7 +97,7 @@ export function NavbarSection() {
                 <Link
                   href="#pricing"
                   onClick={closeMenu}
-                  className="block w-full text-center rounded-md bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95"
+                  className="flex w-full items-center justify-center rounded-md bg-indigo-600 px-4 text-base font-medium text-white shadow-sm hover:bg-indigo-700 active:scale-95 min-h-[44px]"
                 >
                   {t('signup')}
                 </Link>

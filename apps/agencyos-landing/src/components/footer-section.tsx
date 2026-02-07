@@ -24,27 +24,27 @@ export function FooterSection() {
 
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">{t('product.title')}</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.features')}</a></li>
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.pricing')}</a></li>
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.marketplace')}</a></li>
+            <ul className="space-y-1">
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.features')}</a></li>
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.pricing')}</a></li>
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('product.marketplace')}</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">{t('resources.title')}</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.docs')}</a></li>
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.api')}</a></li>
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.blog')}</a></li>
+            <ul className="space-y-1">
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.docs')}</a></li>
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.api')}</a></li>
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('resources.blog')}</a></li>
             </ul>
           </div>
 
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">{t('legal.title')}</h3>
-            <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('legal.privacy')}</a></li>
-              <li><a href="#" className="text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('legal.terms')}</a></li>
+            <ul className="space-y-1">
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('legal.privacy')}</a></li>
+              <li><a href="#" className="block py-2 text-sm text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400">{t('legal.terms')}</a></li>
             </ul>
           </div>
         </div>

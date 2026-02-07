@@ -23,7 +23,7 @@ export function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg glass-effect hover:bg-white/10 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg glass-effect hover:bg-white/10 transition-colors min-h-[44px] min-w-[44px] justify-center"
         aria-label="Change language"
       >
         <Globe className="w-4 h-4" />
@@ -36,13 +36,13 @@ export function LanguageSwitcher() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 glass-effect rounded-lg overflow-hidden min-w-36 z-50"
+            className="absolute top-full mt-2 right-0 glass-effect rounded-lg overflow-hidden min-w-[140px] z-50"
           >
             {locales.map((loc) => (
               <button
                 key={loc}
                 onClick={() => handleLocaleChange(loc)}
-                className={`w-full text-left px-4 py-2 hover:bg-white/10 transition-colors ${
+                className={`w-full text-left px-4 py-3 hover:bg-white/10 transition-colors min-h-[44px] flex items-center ${
                   locale === loc ? 'bg-white/5 font-medium' : ''
                 }`}
               >

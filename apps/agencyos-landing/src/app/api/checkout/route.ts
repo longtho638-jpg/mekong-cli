@@ -1,12 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createCheckoutSession } from '@/lib/polar-checkout-client';
+import { CheckoutSchema } from '@/lib/schemas/checkout';
 import { z } from 'zod';
-
-const CheckoutSchema = z.object({
-  priceId: z.string().min(1),
-  customerEmail: z.string().email().optional(),
-  locale: z.string().optional(),
-});
 
 export async function POST(req: NextRequest) {
   try {

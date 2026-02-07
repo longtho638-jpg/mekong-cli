@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyWebhookSignature } from '@/lib/polar-checkout-client';
 import { headers } from 'next/headers';
+import { WebhookEventSchema } from '@/lib/schemas/webhook';
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +24,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const event = JSON.parse(payload);
+    // Validate payload structure using Zod
+    const json = JSON.parse(payload);
+    const event = WebhookEventSchema.parse(json);
 
     // Handle different event types
     switch (event.type) {

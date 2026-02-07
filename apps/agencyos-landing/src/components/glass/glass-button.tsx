@@ -15,9 +15,9 @@ const buttonVariants = cva(
         outline: "border-2 border-white/20 hover:border-white/40 hover:bg-glass-100 text-white",
       },
       size: {
-        sm: "px-4 py-2 text-sm",
-        md: "px-6 py-3 text-base",
-        lg: "px-8 py-4 text-lg",
+        sm: "px-4 py-2 text-sm min-h-[44px]", // Ensure touch target size
+        md: "px-6 py-3 text-base min-h-[48px]",
+        lg: "px-8 py-4 text-lg min-h-[56px]",
       },
       magnetic: {
         true: "cursor-pointer",

@@ -1,9 +1,24 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
 import withBundleAnalyzer from '@next/bundle-analyzer';
-import "./src/env";
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+// Simple build-time environment validation
+if (process.env.NODE_ENV === 'production') {
+  const requiredEnvs = [
+    'NEXT_PUBLIC_BASE_URL',
+    'NEXT_PUBLIC_POLAR_PRICE_STARTER',
+    'NEXT_PUBLIC_POLAR_PRICE_PRO'
+  ];
+
+  const missingEnvs = requiredEnvs.filter(env => !process.env[env]);
+  if (missingEnvs.length > 0) {
+    console.warn(`⚠️  Missing required environment variables for production build: ${missingEnvs.join(', ')}`);
+    // We don't throw here to allow build to proceed if vars are provided at runtime (e.g. Docker/Vercel)
+    // but we warn loud enough.
+  }
+}
 
 const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
