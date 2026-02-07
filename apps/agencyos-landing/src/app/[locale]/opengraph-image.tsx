@@ -1,11 +1,14 @@
 import { ImageResponse } from 'next/og';
+import { getTranslations } from 'next-intl/server';
 
 export const runtime = 'edge';
-export const alt = 'AgencyOS - AI Agent Operating System';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-export default async function Image() {
+export default async function Image({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'meta' });
+
   return new ImageResponse(
     (
       <div
@@ -23,11 +26,13 @@ export default async function Image() {
         <div style={{ fontSize: 80, fontWeight: 'bold', color: 'white' }}>
           AgencyOS
         </div>
-        <div style={{ fontSize: 40, color: 'rgba(255,255,255,0.9)', marginTop: 20 }}>
-          Build AI Agents at 10x Speed
+        <div style={{ fontSize: 40, color: 'rgba(255,255,255,0.9)', marginTop: 20, textAlign: 'center', padding: '0 40px' }}>
+          {t('description')}
         </div>
       </div>
     ),
-    { ...size }
+    {
+      ...size,
+    }
   );
 }

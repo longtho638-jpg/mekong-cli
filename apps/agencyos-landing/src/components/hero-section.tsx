@@ -4,7 +4,7 @@ import { GlassButton, GlassContainer, AnimatedBackground } from "@/components/gl
 import { Heading } from "@/components/typography/heading";
 import { TypewriterText } from "@/components/sections/typewriter-text";
 import { TerminalAnimation } from "@/components/sections/terminal-animation";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -19,7 +19,7 @@ export function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <AnimatedBackground />
 
-      <GlassContainer className="relative z-10 py-20">
+      <GlassContainer className="relative z-10 py-12 md:py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Column: Text + CTAs */}
           <motion.div

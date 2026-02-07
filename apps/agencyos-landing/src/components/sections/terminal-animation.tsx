@@ -1,18 +1,20 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-
-const codeLines = [
-  '$ npm install @agencyos/raas',
-  '✓ Installing dependencies...',
-  '✓ Setting up AI agents...',
-  '✓ Connecting to knowledge base...',
-  '> Ready! Your RaaS is live 🚀',
-];
+import { m as motion } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 
 export function TerminalAnimation() {
+  const t = useTranslations('terminal');
   const [lines, setLines] = useState<string[]>([]);
+
+  const codeLines = useMemo(() => [
+    t('lines.0'),
+    t('lines.1'),
+    t('lines.2'),
+    t('lines.3'),
+    t('lines.4'),
+  ], [t]);
 
   useEffect(() => {
     let lineIndex = 0;
@@ -26,7 +28,7 @@ export function TerminalAnimation() {
     }, 800);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [codeLines]);
 
   return (
     <div className="relative w-full max-w-2xl">
@@ -36,7 +38,7 @@ export function TerminalAnimation() {
           <div className="w-3 h-3 rounded-full bg-red-500" />
           <div className="w-3 h-3 rounded-full bg-yellow-500" />
           <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="ml-2 text-gray-400">terminal</span>
+          <span className="ml-2 text-gray-400">{t('title')}</span>
         </div>
 
         {/* Terminal Content */}

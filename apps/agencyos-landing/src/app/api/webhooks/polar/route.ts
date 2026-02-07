@@ -58,18 +58,18 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handleCheckoutCompleted(data: Record<string, unknown>) {
+async function handleCheckoutCompleted(_data: Record<string, unknown>) {
   // TODO: Send confirmation email, provision access, etc.
 }
 
-async function handleSubscriptionCreated(data: Record<string, unknown>) {
+async function handleSubscriptionCreated(_data: Record<string, unknown>) {
   // TODO: Grant user access, send welcome email
 }
 
-async function handleSubscriptionUpdated(data: Record<string, unknown>) {
+async function handleSubscriptionUpdated(_data: Record<string, unknown>) {
   // TODO: Update user permissions
 }
 
-async function handleSubscriptionCancelled(data: Record<string, unknown>) {
+async function handleSubscriptionCancelled(_data: Record<string, unknown>) {
   // TODO: Schedule access revocation, send exit survey
 }

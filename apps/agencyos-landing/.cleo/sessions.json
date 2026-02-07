@@ -1,0 +1,20 @@
+{
+  "$schema": "./schemas/sessions.schema.json",
+  "version": "1.0.0",
+  "project": "agencyos-landing",
+  "_meta": {
+    "schemaVersion": "1.0.0",
+    "checksum": "",
+    "lastModified": "2026-02-07T11:06:50Z",
+    "totalSessionsCreated": 0
+  },
+  "config": {
+    "maxConcurrentSessions": 5,
+    "maxActiveTasksPerScope": 1,
+    "scopeValidation": "strict",
+    "allowNestedScopes": true,
+    "allowScopeOverlap": false
+  },
+  "sessions": [],
+  "sessionHistory": []
+}

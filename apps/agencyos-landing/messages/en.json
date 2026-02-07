@@ -133,6 +133,85 @@
   },
   "footer": {
     "tagline": "The operating system for AI-powered agencies",
-    "copyright": "© 2024 AgencyOS. All rights reserved."
+    "copyright": "© {year} AgencyOS. All rights reserved.",
+    "product": {
+      "title": "Product",
+      "features": "Features",
+      "pricing": "Pricing",
+      "marketplace": "Marketplace"
+    },
+    "resources": {
+      "title": "Resources",
+      "docs": "Documentation",
+      "api": "API Reference",
+      "blog": "Blog"
+    },
+    "legal": {
+      "title": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    }
+  },
+  "success": {
+    "title": "Payment Successful!",
+    "message": "Thank you for your pre-order. You've secured your spot in the AgencyOS ecosystem. We'll send a confirmation email shortly.",
+    "back": "Back to Home"
+  },
+  "cancel": {
+    "title": "Payment Cancelled",
+    "message": "Your payment was not processed. No charges were made. If you experienced an error, please try again.",
+    "tryAgain": "Try Again",
+    "back": "Back to Home"
+  },
+  "design": {
+    "title": "Design System Test",
+    "cards": {
+      "default": {
+        "title": "Default Card",
+        "desc": "Basic glassmorphism card"
+      },
+      "highlighted": {
+        "title": "Highlighted Card",
+        "desc": "With glow border effect"
+      },
+      "interactive": {
+        "title": "Interactive Card",
+        "desc": "Hover to see scale effect"
+      }
+    },
+    "buttons": {
+      "primary": "Primary Button",
+      "glass": "Glass Button",
+      "outline": "Outline Button"
+    }
+  },
+  "meta": {
+    "title": "AgencyOS - Build AI Agents at 10x Speed",
+    "description": "The operating system for AI-powered agencies. Ship autonomous agent systems in hours, not months.",
+    "keywords": "AI agents, autonomous systems, agency OS, multi-agent, orchestration"
+  },
+  "terminal": {
+    "title": "terminal",
+    "lines": {
+      "0": "$ npm install @agencyos/raas",
+      "1": "✓ Installing dependencies...",
+      "2": "✓ Setting up AI agents...",
+      "3": "✓ Connecting to knowledge base...",
+      "4": "> Ready! Your RaaS is live 🚀"
+    }
+  },
+  "errors": {
+    "checkout": "Failed to start checkout. Please check console for details."
+  },
+  "marketing": {
+    "stickyCta": {
+      "text": "Ready to build your AI agency?",
+      "button": "Get Started"
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Sorry, we couldn't find the page you're looking for.",
+    "back": "Back to Home"
   }
 }

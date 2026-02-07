@@ -36,7 +36,7 @@ export function LanguageSwitcher() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full mt-2 right-0 glass-effect rounded-lg overflow-hidden min-w-[140px] z-50"
+            className="absolute top-full mt-2 right-0 glass-effect rounded-lg overflow-hidden min-w-36 z-50"
           >
             {locales.map((loc) => (
               <button

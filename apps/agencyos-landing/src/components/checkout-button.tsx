@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface CheckoutButtonProps {
   priceId: string;
@@ -9,6 +10,8 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
+  const t = useTranslations('errors');
+  const locale = useLocale();
 
   const handleCheckout = async () => {
     setLoading(true);
@@ -18,7 +21,7 @@ export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ priceId, locale }),
       });
 
       if (!response.ok) {
@@ -32,7 +35,7 @@ export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
       window.location.href = url;
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please check console for details.');
+      alert(t('checkout'));
     } finally {
       setLoading(false);
     }

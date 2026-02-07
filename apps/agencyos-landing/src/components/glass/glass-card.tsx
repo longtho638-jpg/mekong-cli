@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { HTMLMotionProps, motion } from "framer-motion";
+import { HTMLMotionProps, m as motion } from "framer-motion";
 import { forwardRef, HTMLAttributes } from "react";
 
 const glassCardVariants = cva(

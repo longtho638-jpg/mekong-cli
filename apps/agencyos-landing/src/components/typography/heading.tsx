@@ -5,10 +5,10 @@ import { HTMLAttributes, forwardRef } from "react";
 const headingVariants = cva("font-bold tracking-tight", {
   variants: {
     size: {
-      h1: "text-5xl md:text-7xl lg:text-8xl",
-      h2: "text-4xl md:text-5xl lg:text-6xl",
-      h3: "text-3xl md:text-4xl lg:text-5xl",
-      h4: "text-2xl md:text-3xl",
+      h1: "text-4xl sm:text-5xl md:text-7xl lg:text-8xl",
+      h2: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl",
+      h3: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl",
+      h4: "text-xl sm:text-2xl md:text-3xl",
     },
     gradient: {
       true: "bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent",

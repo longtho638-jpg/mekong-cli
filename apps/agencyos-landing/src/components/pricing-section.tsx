@@ -3,7 +3,7 @@
 import { GlassCard, GlassButton, GlassContainer } from "@/components/glass";
 import { Heading } from "@/components/typography/heading";
 import { CheckoutButton } from "./checkout-button";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useTranslations, useMessages } from "next-intl";
 import { Check, Zap, Crown, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,10 +40,14 @@ const tierConfig = [
 
 export function PricingSection() {
   const t = useTranslations('pricing');
-  const messages = useMessages() as any;
+  const messages = useMessages() as unknown as {
+    pricing: {
+      tiers: Record<string, { features: string[] }>
+    }
+  };
 
   return (
-    <section id="pricing" className="relative py-24">
+    <section id="pricing" className="relative py-16 md:py-24">
       <GlassContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

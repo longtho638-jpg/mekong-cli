@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 
 const faqKeys = [
   "pricing",
@@ -24,7 +24,7 @@ export function FAQSection() {
   const t = useTranslations('faq');
 
   return (
-    <section className="relative py-24">
+    <section className="relative py-16 md:py-24">
       <GlassContainer maxWidth="lg">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

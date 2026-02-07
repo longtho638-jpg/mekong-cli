@@ -133,6 +133,85 @@
   },
   "footer": {
     "tagline": "Hệ điều hành cho agency AI",
-    "copyright": "© 2024 AgencyOS. Bảo lưu mọi quyền."
+    "copyright": "© {year} AgencyOS. Bảo lưu mọi quyền.",
+    "product": {
+      "title": "Sản Phẩm",
+      "features": "Tính Năng",
+      "pricing": "Bảng Giá",
+      "marketplace": "Chợ Ứng Dụng"
+    },
+    "resources": {
+      "title": "Tài Nguyên",
+      "docs": "Tài Liệu",
+      "api": "API Reference",
+      "blog": "Blog"
+    },
+    "legal": {
+      "title": "Pháp Lý",
+      "privacy": "Quyền Riêng Tư",
+      "terms": "Điều Khoản"
+    }
+  },
+  "success": {
+    "title": "Thanh Toán Thành Công!",
+    "message": "Cảm ơn bạn đã đặt hàng trước. Bạn đã đảm bảo vị trí trong hệ sinh thái AgencyOS. Chúng tôi sẽ gửi email xác nhận sớm.",
+    "back": "Trở Về Trang Chủ"
+  },
+  "cancel": {
+    "title": "Đã Hủy Thanh Toán",
+    "message": "Thanh toán của bạn chưa được xử lý. Không có khoản phí nào được trừ. Nếu bạn gặp lỗi, vui lòng thử lại.",
+    "tryAgain": "Thử Lại",
+    "back": "Trở Về Trang Chủ"
+  },
+  "design": {
+    "title": "Kiểm Tra Design System",
+    "cards": {
+      "default": {
+        "title": "Thẻ Mặc Định",
+        "desc": "Thẻ glassmorphism cơ bản"
+      },
+      "highlighted": {
+        "title": "Thẻ Nổi Bật",
+        "desc": "Với hiệu ứng viền sáng"
+      },
+      "interactive": {
+        "title": "Thẻ Tương Tác",
+        "desc": "Di chuột để xem hiệu ứng phóng to"
+      }
+    },
+    "buttons": {
+      "primary": "Nút Chính",
+      "glass": "Nút Glass",
+      "outline": "Nút Viền"
+    }
+  },
+  "meta": {
+    "title": "AgencyOS - Xây Dựng AI Agent Nhanh 10x",
+    "description": "Hệ điều hành cho agency AI. Triển khai hệ thống agent tự động trong vài giờ.",
+    "keywords": "AI agents, hệ thống tự động, agency OS, đa agent, điều phối"
+  },
+  "terminal": {
+    "title": "terminal",
+    "lines": {
+      "0": "$ npm install @agencyos/raas",
+      "1": "✓ Đang cài đặt các gói phụ thuộc...",
+      "2": "✓ Đang thiết lập AI agent...",
+      "3": "✓ Đang kết nối cơ sở tri thức...",
+      "4": "> Sẵn sàng! RaaS của bạn đã hoạt động 🚀"
+    }
+  },
+  "errors": {
+    "checkout": "Không thể bắt đầu thanh toán. Vui lòng kiểm tra console để biết chi tiết."
+  },
+  "marketing": {
+    "stickyCta": {
+      "text": "Sẵn sàng xây dựng agency AI của bạn?",
+      "button": "Bắt Đầu Ngay"
+    }
+  },
+  "notFound": {
+    "title": "Không Tìm Thấy Trang",
+    "description": "Xin lỗi, chúng tôi không thể tìm thấy trang bạn đang tìm kiếm.",
+    "back": "Trở Về Trang Chủ"
   }
 }

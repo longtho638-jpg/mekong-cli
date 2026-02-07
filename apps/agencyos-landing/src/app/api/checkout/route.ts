@@ -5,15 +5,17 @@ import { z } from 'zod';
 const CheckoutSchema = z.object({
   priceId: z.string().min(1),
   customerEmail: z.string().email().optional(),
+  locale: z.string().optional(),
 });
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { priceId, customerEmail } = CheckoutSchema.parse(body);
+    const { priceId, customerEmail, locale: bodyLocale } = CheckoutSchema.parse(body);
 
     const baseUrl = req.headers.get('origin') || 'http://localhost:3000';
-    const locale = req.headers.get('x-locale') || 'en';
+    // Use locale from body, fallback to header, then default to 'en'
+    const locale = bodyLocale || req.headers.get('x-locale') || 'en';
 
     const session = await createCheckoutSession({
       priceId,

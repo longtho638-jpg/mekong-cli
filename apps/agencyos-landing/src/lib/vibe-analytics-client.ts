@@ -2,15 +2,15 @@
 // This will be replaced with actual SDK implementation
 
 export const analytics = {
-  track: (event: { event: string; properties?: Record<string, unknown> }) => {
+  track: (_event: { event: string; properties?: Record<string, unknown> }) => {
     if (typeof window === 'undefined') return;
     // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
-  page: (data: { path?: string; url?: string; referrer?: string }) => {
+  page: (_data: { path?: string; url?: string; referrer?: string }) => {
     if (typeof window === 'undefined') return;
     // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
-  identify: (data: { userId: string; traits?: Record<string, unknown> }) => {
+  identify: (_data: { userId: string; traits?: Record<string, unknown> }) => {
     // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
 };

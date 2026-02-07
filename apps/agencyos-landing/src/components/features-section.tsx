@@ -2,7 +2,7 @@
 
 import { GlassCard, GlassContainer } from "@/components/glass";
 import { Heading } from "@/components/typography/heading";
-import { motion } from "framer-motion";
+import { m as motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import {
   Zap,
@@ -56,7 +56,7 @@ export function FeaturesSection() {
   const t = useTranslations('features');
 
   return (
-    <section className="relative py-24">
+    <section className="relative py-16 md:py-24">
       <GlassContainer>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

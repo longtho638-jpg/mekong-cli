@@ -7,8 +7,15 @@ import { Inter } from 'next/font/google';
 import '../globals.css';
 import { LenisProvider } from '@/lib/lenis-provider';
 import { AnalyticsProvider } from '@/components/providers/analytics-provider';
+import { LazyMotionProvider } from '@/components/motion/lazy-motion-provider';
+import { StickyCTA } from '@/components/marketing/sticky-cta';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  adjustFontFallback: true,
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -158,14 +165,17 @@ export default async function LocaleLayout({
       </head>
       <body className={`${inter.className} bg-deep-space-900 text-starlight-100 selection:bg-nebula-500/30`}>
         <NextIntlClientProvider messages={messages}>
-          <AnalyticsProvider>
-            <LenisProvider>
-              <div className="fixed inset-0 z-0 pointer-events-none noise-texture opacity-20 mix-blend-overlay"></div>
-              <div className="relative z-10">
-                {children}
-              </div>
-            </LenisProvider>
-          </AnalyticsProvider>
+          <LazyMotionProvider>
+            <AnalyticsProvider>
+              <LenisProvider>
+                <div className="fixed inset-0 z-0 pointer-events-none noise-texture opacity-20 mix-blend-overlay"></div>
+                <div className="relative z-10">
+                  {children}
+                </div>
+                <StickyCTA />
+              </LenisProvider>
+            </AnalyticsProvider>
+          </LazyMotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

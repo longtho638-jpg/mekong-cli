@@ -19,10 +19,10 @@ export async function createCheckoutSession(params: CheckoutSessionParams) {
 }
 
 export async function verifyWebhookSignature(
-  _payload: string,
-  _signature: string
+  payload: string,
+  signature: string
 ): Promise<boolean> {
   // Mock implementation - replace with actual webhook verification
   // TODO: Implement real signature verification
-  return true;
+  return !!(payload && signature);
 }

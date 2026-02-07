@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, HTMLMotionProps, useInView } from "framer-motion";
+import { m as motion, HTMLMotionProps, useInView } from "framer-motion";
 import { useRef } from "react";
 
 interface SlideUpProps extends HTMLMotionProps<"div"> {
@@ -21,7 +21,10 @@ export function SlideUp({
   ...props
 }: SlideUpProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: `0px 0px -${threshold * 100}% 0px` as any });
+  const isInView = useInView(ref, {
+    once: true,
+    margin: `0px 0px -${threshold * 100}% 0px` as "0px"
+  });
 
   return (
     <motion.div

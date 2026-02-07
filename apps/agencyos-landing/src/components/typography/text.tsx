@@ -30,10 +30,10 @@ export interface TextProps
 
 export const Text = forwardRef<HTMLElement, TextProps>(
   ({ className, size, weight, as = "p", children, ...props }, ref) => {
-    const Comp = as;
+    const Comp = as as React.ElementType;
     return (
       <Comp
-        ref={ref as any}
+        ref={ref}
         className={cn(textVariants({ size, weight }), className)}
         {...props}
       >

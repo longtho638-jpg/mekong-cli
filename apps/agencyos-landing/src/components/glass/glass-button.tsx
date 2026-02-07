@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
-import { HTMLMotionProps, motion, useMotionValue, useSpring } from "framer-motion";
+import { HTMLMotionProps, m as motion, useMotionValue, useSpring } from "framer-motion";
 import { forwardRef, useRef, useImperativeHandle } from "react";
 
 const buttonVariants = cva(
