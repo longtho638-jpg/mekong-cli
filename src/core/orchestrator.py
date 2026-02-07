@@ -21,6 +21,7 @@ from .parser import Recipe, RecipeStep
 
 class OrchestrationStatus(Enum):
     """Status of orchestration workflow"""
+
     SUCCESS = "success"
     FAILED = "failed"
     PARTIAL = "partial"
@@ -30,6 +31,7 @@ class OrchestrationStatus(Enum):
 @dataclass
 class StepResult:
     """Result of executing and verifying a single step"""
+
     step: RecipeStep
     execution: ExecutionResult
     verification: VerificationReport
@@ -39,6 +41,7 @@ class StepResult:
 @dataclass
 class OrchestrationResult:
     """Complete result of Plan → Execute → Verify workflow"""
+
     status: OrchestrationStatus
     recipe: Recipe
     step_results: List[StepResult] = field(default_factory=list)
@@ -68,7 +71,7 @@ class RecipeOrchestrator:
         self,
         llm_client: Optional[Any] = None,
         strict_verification: bool = True,
-        enable_rollback: bool = True
+        enable_rollback: bool = True,
     ):
         """
         Initialize orchestrator.
@@ -86,15 +89,14 @@ class RecipeOrchestrator:
         # Initialize BMAD loader
         try:
             from packages.core.bmad.loader import BMADWorkflowLoader
+
             self.bmad_loader = BMADWorkflowLoader()
         except ImportError:
             self.bmad_loader = None
             self.console.print("[yellow]Warning: BMAD loader not available[/yellow]")
 
     def run_from_goal(
-        self,
-        goal: str,
-        context: Optional[PlanningContext] = None
+        self, goal: str, context: Optional[PlanningContext] = None
     ) -> OrchestrationResult:
         """
         Execute complete workflow from high-level goal.
@@ -108,11 +110,13 @@ class RecipeOrchestrator:
         Returns:
             OrchestrationResult with complete workflow results
         """
-        self.console.print(Panel(
-            f"[bold]Goal:[/bold] {goal}",
-            title="🎯 Mekong Orchestrator",
-            border_style="cyan"
-        ))
+        self.console.print(
+            Panel(
+                f"[bold]Goal:[/bold] {goal}",
+                title="🎯 Mekong Orchestrator",
+                border_style="cyan",
+            )
+        )
 
         # PHASE 1: PLAN
         self.console.print("\n[bold yellow]📋 PHASE 1: PLANNING[/bold yellow]")
@@ -120,7 +124,7 @@ class RecipeOrchestrator:
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=self.console
+            console=self.console,
         ) as progress:
             task = progress.add_task("Generating execution plan...", total=None)
             recipe = self.planner.plan(goal, context)
@@ -153,10 +157,12 @@ class RecipeOrchestrator:
         result = OrchestrationResult(
             status=OrchestrationStatus.SUCCESS,
             recipe=recipe,
-            total_steps=len(recipe.steps)
+            total_steps=len(recipe.steps),
         )
 
-        self.console.print("\n[bold yellow]⚙️  PHASE 2: EXECUTION & VERIFICATION[/bold yellow]")
+        self.console.print(
+            "\n[bold yellow]⚙️  PHASE 2: EXECUTION & VERIFICATION[/bold yellow]"
+        )
 
         # Create executor
         executor = RecipeExecutor(recipe)
@@ -196,9 +202,7 @@ class RecipeOrchestrator:
         return result
 
     def _execute_and_verify_step(
-        self,
-        executor: RecipeExecutor,
-        step: RecipeStep
+        self, executor: RecipeExecutor, step: RecipeStep
     ) -> StepResult:
         """
         Execute single step and verify results.
@@ -220,15 +224,11 @@ class RecipeOrchestrator:
         verification_report = self.verifier.verify(execution_result, criteria)
 
         return StepResult(
-            step=step,
-            execution=execution_result,
-            verification=verification_report
+            step=step, execution=execution_result, verification=verification_report
         )
 
     def _handle_failure(
-        self,
-        result: OrchestrationResult,
-        failed_step: RecipeStep
+        self, result: OrchestrationResult, failed_step: RecipeStep
     ) -> None:
         """
         Handle step failure with rollback.
@@ -294,16 +294,13 @@ class RecipeOrchestrator:
             OrchestrationStatus.SUCCESS: "green",
             OrchestrationStatus.FAILED: "red",
             OrchestrationStatus.PARTIAL: "yellow",
-            OrchestrationStatus.ROLLED_BACK: "magenta"
+            OrchestrationStatus.ROLLED_BACK: "magenta",
         }
         color = colors.get(status, "white")
         return f"[{color}]{status.value.upper()}[/{color}]"
 
-
     def run_bmad_workflow(
-        self,
-        workflow_id: str,
-        context: Optional[Dict[str, Any]] = None
+        self, workflow_id: str, context: Optional[Dict[str, Any]] = None
     ) -> OrchestrationResult:
         """
         Execute a BMAD workflow by ID.
@@ -324,27 +321,21 @@ class RecipeOrchestrator:
             raise ValueError(f"Workflow not found: {workflow_id}")
 
         # Convert BMAD workflow to Recipe format
-        # This is a simplified conversion - extend as needed
         from .parser import Recipe, RecipeStep
+
+        step = RecipeStep(
+            order=1,
+            title=f"Execute {workflow.name}",
+            description=f"# BMAD Workflow: {workflow_id}",
+            params={"workflow_id": workflow_id, "context": context or {}},
+        )
 
         recipe = Recipe(
             name=workflow.name,
             description=workflow.description,
-            author="BMAD",
-            tags=[workflow.agent_type, "bmad"],
-            steps=[]
+            steps=[step],
+            metadata={"agent_type": workflow.agent_type, "source": "bmad"},
         )
-
-        # For now, create a single step to execute the workflow
-        # In production, parse BMAD workflow YAML into Recipe steps
-        step = RecipeStep(
-            order=1,
-            name=f"Execute {workflow.name}",
-            command=f"# BMAD Workflow: {workflow_id}",
-            mode="shell",
-            params={"workflow_id": workflow_id, "context": context or {}}
-        )
-        recipe.steps.append(step)
 
         return self.run_from_recipe(recipe)
 

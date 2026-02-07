@@ -19,14 +19,17 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.core.parser import RecipeParser
 from src.core.executor import RecipeExecutor
 from src.core.registry import RecipeRegistry
+from src.core.orchestrator import RecipeOrchestrator, OrchestrationStatus
+from src.core.planner import PlanningContext, TaskComplexity
+from src.core.llm_client import get_client
 from src.agents import LeadHunter, ContentWriter, RecipeCrawler
 from rich.prompt import Prompt
 
 # Import BMAD CLI (using dash naming convention)
 import importlib.util
+
 spec = importlib.util.spec_from_file_location(
-    "bmad_commands",
-    Path(__file__).parent / "cli" / "bmad-commands.py"
+    "bmad_commands", Path(__file__).parent / "cli" / "bmad-commands.py"
 )
 bmad_module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(bmad_module)
@@ -77,10 +80,7 @@ def list():
 
     for recipe in recipes:
         table.add_row(
-            recipe.name,
-            recipe.description,
-            recipe.author,
-            ", ".join(recipe.tags)
+            recipe.name, recipe.description, recipe.author, ", ".join(recipe.tags)
         )
 
     console.print(table)
@@ -102,11 +102,7 @@ def search(query: str):
     table.add_column("Tags", style="blue")
 
     for recipe in results:
-        table.add_row(
-            recipe.name,
-            recipe.description,
-            ", ".join(recipe.tags)
-        )
+        table.add_row(recipe.name, recipe.description, ", ".join(recipe.tags))
 
     console.print(table)
 
@@ -237,7 +233,9 @@ def ui():
                 )
 
                 if res.output:
-                    console.print(Panel(str(res.output), title="Output", border_style="dim"))
+                    console.print(
+                        Panel(str(res.output), title="Output", border_style="dim")
+                    )
                 if res.error:
                     console.print(f"[bold red]Error:[/bold red] {res.error}")
 
@@ -249,12 +247,100 @@ def ui():
 
 
 @app.command()
+def cook(
+    goal: str = typer.Argument(
+        ..., help="High-level goal to plan, execute, and verify"
+    ),
+    strict: bool = typer.Option(True, help="Strict verification mode"),
+    no_rollback: bool = typer.Option(False, help="Disable rollback on failure"),
+):
+    """🎯 Cook: Plan → Execute → Verify workflow (Binh Pháp engine)"""
+    llm_client = get_client()
+
+    orchestrator = RecipeOrchestrator(
+        llm_client=llm_client if llm_client.is_available else None,
+        strict_verification=strict,
+        enable_rollback=not no_rollback,
+    )
+
+    result = orchestrator.run_from_goal(goal)
+
+    if result.status == OrchestrationStatus.SUCCESS:
+        console.print("\n[bold green]🎉 Mission accomplished![/bold green]")
+    elif result.status == OrchestrationStatus.PARTIAL:
+        console.print("\n[bold yellow]⚠️  Partial completion[/bold yellow]")
+        raise typer.Exit(code=1)
+    else:
+        console.print("\n[bold red]❌ Mission failed[/bold red]")
+        raise typer.Exit(code=1)
+
+
+@app.command(name="plan")
+def plan_cmd(
+    goal: str = typer.Argument(..., help="Goal to decompose into tasks"),
+    complexity: str = typer.Option(
+        "moderate", help="Task complexity: simple/moderate/complex"
+    ),
+):
+    """📋 Plan: Decompose a goal into executable steps (plan only, no execution)"""
+    from src.core.planner import RecipePlanner
+
+    complexity_map = {
+        "simple": TaskComplexity.SIMPLE,
+        "moderate": TaskComplexity.MODERATE,
+        "complex": TaskComplexity.COMPLEX,
+    }
+
+    context = PlanningContext(
+        goal=goal,
+        complexity=complexity_map.get(complexity, TaskComplexity.MODERATE),
+    )
+
+    llm = get_client()
+    planner = RecipePlanner(llm_client=llm if llm.is_available else None)
+    recipe = planner.plan(goal, context)
+
+    # Display plan
+    console.print(
+        Panel(
+            f"[bold]{recipe.name}[/bold]\n{recipe.description}",
+            title="📋 Generated Plan",
+            border_style="cyan",
+        )
+    )
+
+    plan_table = Table(title="Steps")
+    plan_table.add_column("#", style="bold cyan", justify="right")
+    plan_table.add_column("Task", style="bold")
+    plan_table.add_column("Description", style="dim")
+
+    for step in recipe.steps:
+        plan_table.add_row(str(step.order), step.title, step.description[:80])
+
+    console.print(plan_table)
+
+    # Validate
+    issues = planner.validate_plan(recipe)
+    if issues:
+        console.print("\n[yellow]⚠️  Issues:[/yellow]")
+        for issue in issues:
+            console.print(f"  • {issue}")
+    else:
+        console.print("\n[green]✓ Plan valid[/green]")
+
+    console.print(
+        f'\n[dim]Run [bold cyan]mekong cook "{goal}"[/bold cyan] to execute this plan[/dim]'
+    )
+
+
+@app.command()
 def version():
     """Show version info"""
     console.print(
         Panel(
-            "[bold green]Mekong CLI[/bold green] v0.1.0\n"
+            "[bold green]Mekong CLI[/bold green] v0.2.0\n"
             "[dim]RaaS Agency Operating System[/dim]\n"
+            "[dim]Engine: Plan-Execute-Verify (Binh Pháp)[/dim]\n"
             "[dim]DNA: ClaudeKit v2.9.1+[/dim]",
             title="Version",
             border_style="blue",

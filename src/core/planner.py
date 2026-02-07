@@ -14,6 +14,7 @@ from .parser import Recipe, RecipeStep
 
 class TaskComplexity(Enum):
     """Task complexity levels"""
+
     SIMPLE = "simple"
     MODERATE = "moderate"
     COMPLEX = "complex"
@@ -22,6 +23,7 @@ class TaskComplexity(Enum):
 @dataclass
 class PlanningContext:
     """Context for planning operations"""
+
     goal: str
     constraints: Dict[str, Any] = field(default_factory=dict)
     project_info: Dict[str, Any] = field(default_factory=dict)
@@ -32,6 +34,7 @@ class PlanningContext:
 @dataclass
 class VerificationCriteria:
     """Success criteria for a recipe step"""
+
     exit_code: Optional[int] = 0
     file_exists: List[str] = field(default_factory=list)
     file_not_exists: List[str] = field(default_factory=list)
@@ -56,7 +59,9 @@ class RecipePlanner:
         """
         self.llm_client = llm_client
 
-    def decompose_goal(self, goal: str, context: PlanningContext) -> List[Dict[str, Any]]:
+    def decompose_goal(
+        self, goal: str, context: PlanningContext
+    ) -> List[Dict[str, Any]]:
         """
         Decompose high-level goal into atomic tasks.
 
@@ -74,7 +79,9 @@ class RecipePlanner:
         # Fallback: Rule-based decomposition
         return self._rule_based_decompose(goal, context)
 
-    def _rule_based_decompose(self, goal: str, context: PlanningContext) -> List[Dict[str, Any]]:
+    def _rule_based_decompose(
+        self, goal: str, context: PlanningContext
+    ) -> List[Dict[str, Any]]:
         """
         Rule-based task decomposition (fallback when no LLM).
 
@@ -92,60 +99,64 @@ class RecipePlanner:
 
         # Pattern: "implement X" or "create X"
         if any(word in goal_lower for word in ["implement", "create", "build"]):
-            tasks.extend([
-                {
-                    "title": "Setup environment",
-                    "description": "Prepare project structure and dependencies",
-                    "dependencies": []
-                },
-                {
-                    "title": "Implement core logic",
-                    "description": f"Implement {goal}",
-                    "dependencies": [0]
-                },
-                {
-                    "title": "Write tests",
-                    "description": "Create test cases",
-                    "dependencies": [1]
-                },
-                {
-                    "title": "Verify implementation",
-                    "description": "Run tests and validate",
-                    "dependencies": [2]
-                }
-            ])
+            tasks.extend(
+                [
+                    {
+                        "title": "Setup environment",
+                        "description": "Prepare project structure and dependencies",
+                        "dependencies": [],
+                    },
+                    {
+                        "title": "Implement core logic",
+                        "description": f"Implement {goal}",
+                        "dependencies": [0],
+                    },
+                    {
+                        "title": "Write tests",
+                        "description": "Create test cases",
+                        "dependencies": [1],
+                    },
+                    {
+                        "title": "Verify implementation",
+                        "description": "Run tests and validate",
+                        "dependencies": [2],
+                    },
+                ]
+            )
 
         # Pattern: "fix X" or "debug X"
         elif any(word in goal_lower for word in ["fix", "debug", "resolve"]):
-            tasks.extend([
-                {
-                    "title": "Identify issue",
-                    "description": f"Analyze and locate problem: {goal}",
-                    "dependencies": []
-                },
-                {
-                    "title": "Apply fix",
-                    "description": "Implement solution",
-                    "dependencies": [0]
-                },
-                {
-                    "title": "Verify fix",
-                    "description": "Test that issue is resolved",
-                    "dependencies": [1]
-                }
-            ])
+            tasks.extend(
+                [
+                    {
+                        "title": "Identify issue",
+                        "description": f"Analyze and locate problem: {goal}",
+                        "dependencies": [],
+                    },
+                    {
+                        "title": "Apply fix",
+                        "description": "Implement solution",
+                        "dependencies": [0],
+                    },
+                    {
+                        "title": "Verify fix",
+                        "description": "Test that issue is resolved",
+                        "dependencies": [1],
+                    },
+                ]
+            )
 
         # Default: single task
         else:
-            tasks.append({
-                "title": goal,
-                "description": f"Execute: {goal}",
-                "dependencies": []
-            })
+            tasks.append(
+                {"title": goal, "description": f"Execute: {goal}", "dependencies": []}
+            )
 
         return tasks
 
-    def _llm_decompose(self, goal: str, context: PlanningContext) -> List[Dict[str, Any]]:
+    def _llm_decompose(
+        self, goal: str, context: PlanningContext
+    ) -> List[Dict[str, Any]]:
         """
         LLM-powered task decomposition.
 
@@ -156,62 +167,63 @@ class RecipePlanner:
         Returns:
             List of task dictionaries from LLM
         """
-        import os
-        import json
+        from src.core.llm_client import get_client
 
-        # Check for API keys
-        has_antigravity = os.getenv("ANTIGRAVITY_KEY")
-        has_openai = os.getenv("OPENAI_API_KEY")
+        client = get_client()
+        if not client.is_available:
+            print("[PLANNER] LLM unavailable — using rule-based fallback")
+            return self._rule_based_decompose(goal, context)
 
-        if not (has_antigravity or has_openai):
-            # No LLM available - return simulated plan
-            print("[PLANNER] No API keys found - generating simulated plan")
-            return [
-                {
-                    "title": f"Analyze: {goal}",
-                    "description": f"Simulated analysis of '{goal}'",
-                    "dependencies": []
-                },
-                {
-                    "title": f"Execute: {goal}",
-                    "description": f"Simulated execution of '{goal}'",
-                    "dependencies": [0]
-                },
-                {
-                    "title": f"Verify: {goal}",
-                    "description": f"Simulated verification of '{goal}'",
-                    "dependencies": [1]
-                }
-            ]
+        prompt = f"""Decompose this goal into atomic, executable tasks.
 
-        # LLM available - attempt real decomposition
-        prompt = f"""
-        Decompose this goal into atomic, executable tasks:
+Goal: {goal}
 
-        Goal: {goal}
+Context:
+- Complexity: {context.complexity.value}
+- Constraints: {context.constraints}
 
-        Context:
-        - Complexity: {context.complexity.value}
-        - Constraints: {context.constraints}
+Return ONLY a JSON array with tasks. Each task must have:
+- title: Brief task name
+- description: Detailed task description with the exact command or action
+- dependencies: Array of task indices this depends on (empty array if none)
 
-        Return ONLY a JSON array with tasks. Each task must have:
-        - title: Brief task name
-        - description: Detailed task description
-        - dependencies: Array of task indices this depends on (empty array if none)
-
-        Example: [{{"title": "Setup", "description": "Install deps", "dependencies": []}}]
-        """
+Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}]"""
 
         try:
-            # Basic implementation - would integrate with actual LLM client
-            print(f"[PLANNER] LLM decomposition requested for: {goal}")
-            print("[PLANNER] Using rule-based fallback (LLM client not fully wired)")
-            return self._rule_based_decompose(goal, context)
+            result = client.generate_json(prompt)
+
+            # Handle different response shapes
+            if isinstance(result, list):
+                tasks = result
+            elif isinstance(result, dict) and "tasks" in result:
+                tasks = result["tasks"]
+            elif isinstance(result, dict) and "raw_content" in result:
+                print("[PLANNER] LLM returned non-JSON — using rule-based fallback")
+                return self._rule_based_decompose(goal, context)
+            else:
+                tasks = [result]
+
+            # Validate tasks
+            validated = []
+            for task in tasks:
+                if isinstance(task, dict) and "title" in task:
+                    validated.append(
+                        {
+                            "title": task.get("title", "Untitled"),
+                            "description": task.get("description", ""),
+                            "dependencies": task.get("dependencies", []),
+                        }
+                    )
+
+            return validated if validated else self._rule_based_decompose(goal, context)
+
         except Exception as e:
             print(f"[PLANNER] LLM decomposition failed: {e}")
             return self._rule_based_decompose(goal, context)
 
-    def generate_verification_criteria(self, task: Dict[str, Any]) -> VerificationCriteria:
+    def generate_verification_criteria(
+        self, task: Dict[str, Any]
+    ) -> VerificationCriteria:
         """
         Generate verification criteria for a task.
 
@@ -276,8 +288,8 @@ class RecipePlanner:
                 agent=task.get("agent"),
                 params={
                     "dependencies": task.get("dependencies", []),
-                    "verification": self.generate_verification_criteria(task).__dict__
-                }
+                    "verification": self.generate_verification_criteria(task).__dict__,
+                },
             )
             steps.append(step)
 
@@ -289,8 +301,8 @@ class RecipePlanner:
             metadata={
                 "planned_by": "RecipePlanner",
                 "complexity": context.complexity.value,
-                "goal": goal
-            }
+                "goal": goal,
+            },
         )
 
         return recipe
@@ -315,9 +327,7 @@ class RecipePlanner:
 
             for dep in deps:
                 if dep >= step.order - 1:
-                    issues.append(
-                        f"Step {step.order} depends on future step {dep + 1}"
-                    )
+                    issues.append(f"Step {step.order} depends on future step {dep + 1}")
 
         # Check for empty steps
         if not recipe.steps:
