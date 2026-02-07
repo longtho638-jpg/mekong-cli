@@ -34,7 +34,6 @@ export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
       // Redirect to Polar.sh Checkout
       window.location.href = url;
     } catch (error) {
-      console.error('Checkout error:', error);
       alert(t('checkout'));
     } finally {
       setLoading(false);
