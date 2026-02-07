@@ -40,6 +40,7 @@ const cspDirectives = [
 ].join('; ');
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   reactCompiler: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",

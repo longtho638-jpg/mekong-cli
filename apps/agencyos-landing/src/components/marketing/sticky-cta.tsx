@@ -36,7 +36,7 @@ export function StickyCTA() {
           className="fixed bottom-6 left-0 right-0 z-40 px-4 pointer-events-none"
         >
           <div className="container mx-auto max-w-lg pointer-events-auto">
-            <div className="rounded-2xl p-4 shadow-2xl flex items-center justify-between gap-4 backdrop-blur-xl border border-white/10" style={{ background: "rgba(3, 0, 20, 0.85)" }}>
+            <div className="rounded-2xl p-4 shadow-2xl flex items-center justify-between gap-4 backdrop-blur-xl border border-white/10 bg-deep-space-900/85">
               <span className="text-white font-medium pl-2 text-sm sm:text-base">
                 {t('text')}
               </span>

@@ -1,10 +1,11 @@
 import { MetadataRoute } from 'next';
 import { locales } from '@/i18n/config';
+import { siteConfig } from '@/config/site';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://agencyos.dev';
+  const baseUrl = siteConfig.url;
 
-  const routes = ['', '/pricing', '/docs', '/blog'];
+  const routes = siteConfig.sitemapRoutes;
 
   const sitemap: MetadataRoute.Sitemap = [];
 

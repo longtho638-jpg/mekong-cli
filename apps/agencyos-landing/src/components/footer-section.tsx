@@ -4,13 +4,13 @@ import { useTranslations } from "next-intl";
 import { m as motion } from "framer-motion";
 
 const linkClass =
-  "block py-2 text-sm text-gray-400 hover:text-purple-400 transition-colors duration-200";
+  "block py-2 text-sm text-starlight-300 hover:text-nebula-400 transition-colors duration-200 min-h-[44px] flex items-center";
 
 export function FooterSection() {
   const t = useTranslations("footer");
 
   return (
-    <footer className="border-t border-white/10" style={{ background: "rgba(3, 0, 20, 0.6)" }}>
+    <footer className="border-t border-white/10 bg-deep-space-900/60">
       <div className="container mx-auto px-4 py-8 md:py-12 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -21,14 +21,14 @@ export function FooterSection() {
         >
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-nebula-500 to-blue-500 flex items-center justify-center">
                 <span className="text-white font-bold text-xl">A</span>
               </div>
               <span className="text-xl font-bold tracking-tight text-white">
                 AgencyOS
               </span>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-starlight-300">
               {t("tagline")}
             </p>
           </div>
@@ -73,7 +73,7 @@ export function FooterSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-12 border-t border-white/10 pt-8 text-center"
         >
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-starlight-400">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
         </motion.div>

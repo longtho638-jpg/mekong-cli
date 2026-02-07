@@ -4,10 +4,10 @@ import { m as motion } from "framer-motion";
 
 export function AnimatedBackground() {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-deep-space-900">
       {/* Gradient Orbs */}
       <motion.div
-        className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl"
+        className="absolute top-0 left-1/4 w-96 h-96 bg-nebula-500/30 rounded-full blur-3xl"
         style={{ willChange: 'transform' }}
         animate={{
           x: [0, 100, 0],

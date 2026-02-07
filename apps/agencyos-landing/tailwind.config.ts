@@ -6,14 +6,29 @@ const config: Config = {
     extend: {
       colors: {
         'deep-space': {
+          950: '#020010',
           900: '#030014',
           800: '#0a0a1f',
+          700: '#11112e',
+          600: '#1a1a3e',
         },
         nebula: {
+          400: '#A78BFA',
           500: '#8B5CF6',
+          600: '#7C3AED',
         },
         starlight: {
+          50: '#F8FAFC',
           100: '#E2E8F0',
+          200: '#CBD5E1',
+          300: '#94A3B8',
+          400: '#64748B',
+        },
+        'primary-cyan': '#00F5FF',
+        amethyst: {
+          400: '#C084FC',
+          500: '#A855F7',
+          600: '#9333EA',
         },
         glass: {
           50: "rgba(255, 255, 255, 0.05)",

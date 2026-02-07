@@ -10,9 +10,9 @@ const glassCardVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-glass-100 border-glass-border",
+        default: "bg-glass-100 border-white/10",
         highlighted: "bg-glass-200 border-glow-purple glow-border",
-        interactive: "bg-glass-100 border-glass-border hover:bg-glass-200 hover:scale-[1.02] cursor-pointer",
+        interactive: "bg-glass-100 border-white/10 hover:bg-glass-200 hover:scale-[1.02] cursor-pointer",
       },
       padding: {
         none: "p-0",

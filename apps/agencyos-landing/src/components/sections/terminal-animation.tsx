@@ -38,7 +38,7 @@ export function TerminalAnimation() {
           <div className="w-3 h-3 rounded-full bg-red-500" />
           <div className="w-3 h-3 rounded-full bg-yellow-500" />
           <div className="w-3 h-3 rounded-full bg-green-500" />
-          <span className="ml-2 text-gray-400">{t('title')}</span>
+          <span className="ml-2 text-starlight-300">{t('title')}</span>
         </div>
 
         {/* Terminal Content */}
@@ -51,12 +51,12 @@ export function TerminalAnimation() {
               transition={{ duration: 0.3 }}
               className={
                 line.startsWith('$')
-                  ? 'text-cyan-400'
+                  ? 'text-primary-cyan'
                   : line.startsWith('✓')
                   ? 'text-green-400'
                   : line.startsWith('>')
-                  ? 'text-purple-400'
-                  : 'text-gray-300'
+                  ? 'text-nebula-400'
+                  : 'text-starlight-200'
               }
             >
               {line}
@@ -64,7 +64,7 @@ export function TerminalAnimation() {
           ))}
           {lines.length === codeLines.length && (
             <motion.span
-              className="inline-block w-2 h-4 bg-cyan-400"
+              className="inline-block w-2 h-4 bg-primary-cyan"
               animate={{ opacity: [1, 0] }}
               transition={{ duration: 0.8, repeat: Infinity }}
             />

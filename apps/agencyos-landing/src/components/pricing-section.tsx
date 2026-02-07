@@ -59,7 +59,7 @@ export function PricingSection() {
           <Heading size="h2" gradient className="mb-6">
             {t('title')}
           </Heading>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-starlight-200 max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </motion.div>
@@ -80,7 +80,7 @@ export function PricingSection() {
               >
                 {tier.popular && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <div className="glass-effect px-4 py-1 rounded-full text-sm font-medium text-purple-300 border border-purple-500/50">
+                    <div className="glass-effect px-4 py-1 rounded-full text-sm font-medium text-nebula-400 border border-nebula-500/50">
                       {t('popular')}
                     </div>
                   </div>
@@ -90,11 +90,11 @@ export function PricingSection() {
                   variant={tier.variant}
                   className={cn(
                     "h-full flex flex-col",
-                    tier.popular && "scale-105 shadow-2xl shadow-purple-500/20"
+                    tier.popular && "md:scale-105 shadow-2xl shadow-nebula-500/20"
                   )}
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-nebula-500 to-blue-500 flex items-center justify-center">
                       <Icon className="w-6 h-6 text-white" />
                     </div>
                     <div>
@@ -102,14 +102,14 @@ export function PricingSection() {
                     </div>
                   </div>
 
-                  <p className="text-gray-400 mb-6">{t(`tiers.${tier.key}.description`)}</p>
+                  <p className="text-starlight-300 mb-6">{t(`tiers.${tier.key}.description`)}</p>
 
                   <div className="mb-6">
                     <div className="flex items-baseline gap-1">
-                      <span className="text-5xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                      <span className="text-5xl font-bold bg-gradient-to-r from-white to-starlight-200 bg-clip-text text-transparent">
                         {tier.key === 'enterprise' ? t(`tiers.${tier.key}.price`) : tier.price}
                       </span>
-                      {tier.period && <span className="text-gray-400">{t('period')}</span>}
+                      {tier.period && <span className="text-starlight-300">{t('period')}</span>}
                     </div>
                   </div>
 
@@ -117,7 +117,7 @@ export function PricingSection() {
                     {features.map((feature) => (
                       <li key={feature} className="flex items-start gap-3">
                         <Check className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                        <span className="text-gray-300">{feature}</span>
+                        <span className="text-starlight-200">{feature}</span>
                       </li>
                     ))}
                   </ul>

@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { HTMLAttributes, forwardRef } from "react";
 
-const textVariants = cva("text-gray-300", {
+const textVariants = cva("text-starlight-200", {
   variants: {
     size: {
       sm: "text-sm",

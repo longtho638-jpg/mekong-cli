@@ -36,7 +36,7 @@ export function FAQSection() {
           <Heading size="h2" gradient className="mb-6">
             {t('title')}
           </Heading>
-          <p className="text-xl text-gray-300">
+          <p className="text-xl text-starlight-200">
             {t('subtitle')}
           </p>
         </motion.div>
@@ -53,7 +53,7 @@ export function FAQSection() {
                 <AccordionTrigger className="text-left text-lg">
                   {t(`items.${key}.question`)}
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-400">
+                <AccordionContent className="text-starlight-300">
                   {t(`items.${key}.answer`)}
                 </AccordionContent>
               </AccordionItem>

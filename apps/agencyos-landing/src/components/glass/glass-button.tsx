@@ -10,7 +10,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-gradient-to-r from-purple-500 to-blue-500 text-white",
+        primary: "bg-gradient-to-r from-nebula-500 to-blue-500 text-white",
         glass: "glass-effect text-white",
         outline: "border-2 border-white/20 text-white",
       },

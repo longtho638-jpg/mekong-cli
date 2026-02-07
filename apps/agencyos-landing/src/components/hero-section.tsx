@@ -29,8 +29,8 @@ export function HeroSection() {
             className="space-y-8"
           >
             <div className="inline-flex items-center gap-2 glass-effect px-4 py-2 rounded-full">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-gray-300">{t('badge')}</span>
+              <Sparkles className="w-4 h-4 text-nebula-400" />
+              <span className="text-sm text-starlight-300">{t('badge')}</span>
             </div>
 
             <Heading size="h1" gradient>
@@ -45,7 +45,7 @@ export function HeroSection() {
               />
             </Heading>
 
-            <p className="text-xl text-gray-300 max-w-xl">
+            <p className="text-xl text-starlight-200 max-w-xl">
               {t('subtitle')}
             </p>
 
@@ -65,7 +65,7 @@ export function HeroSection() {
               </GlassButton>
             </div>
 
-            <div className="flex items-center gap-8 text-sm text-gray-400">
+            <div className="flex flex-wrap items-center gap-4 sm:gap-8 text-sm text-starlight-300">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 <span>{t('openCore')}</span>

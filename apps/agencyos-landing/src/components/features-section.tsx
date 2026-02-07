@@ -17,37 +17,37 @@ const featureConfig = [
   {
     key: "fast",
     icon: Zap,
-    span: "col-span-1 row-span-1",
+    span: "col-span-1",
     variant: "default" as const,
   },
   {
     key: "security",
     icon: Shield,
-    span: "col-span-1 row-span-2",
+    span: "col-span-1 md:row-span-2",
     variant: "highlighted" as const,
   },
   {
     key: "developer",
     icon: Code,
-    span: "col-span-1 row-span-1",
+    span: "col-span-1",
     variant: "default" as const,
   },
   {
     key: "analytics",
     icon: BarChart,
-    span: "col-span-2 row-span-1",
+    span: "col-span-1 md:col-span-2",
     variant: "interactive" as const,
   },
   {
     key: "edge",
     icon: Globe,
-    span: "col-span-1 row-span-1",
+    span: "col-span-1",
     variant: "default" as const,
   },
   {
     key: "workflow",
     icon: Workflow,
-    span: "col-span-1 row-span-1",
+    span: "col-span-1",
     variant: "highlighted" as const,
   },
 ];
@@ -68,7 +68,7 @@ export function FeaturesSection() {
           <Heading size="h2" gradient className="mb-6">
             {t('title')}
           </Heading>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-starlight-200 max-w-2xl mx-auto">
             {t('subtitle')}
           </p>
         </motion.div>
@@ -89,11 +89,11 @@ export function FeaturesSection() {
                   variant={feature.variant}
                   className="h-full flex flex-col"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-nebula-500 to-blue-500 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-xl font-bold mb-2">{t(`items.${feature.key}.title`)}</h3>
-                  <p className="text-gray-400 flex-grow">{t(`items.${feature.key}.description`)}</p>
+                  <p className="text-starlight-300 flex-grow">{t(`items.${feature.key}.description`)}</p>
                 </GlassCard>
               </motion.div>
             );

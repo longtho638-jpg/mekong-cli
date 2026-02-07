@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { locales } from '@/i18n/config';
-import type { Metadata } from 'next';
+import { siteConfig } from '@/config/site';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import '../globals.css';
 import { LenisProvider } from '@/lib/lenis-provider';
@@ -21,13 +22,20 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#030014',
+};
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://agencyos.dev';
+  const baseUrl = siteConfig.url;
 
   const metadataMap: Record<string, { title: string; description: string; keywords: string }> = {
     en: {
@@ -60,13 +68,13 @@ export async function generateMetadata({
       title: metadata.title,
       description: metadata.description,
       url: `${baseUrl}/${locale}`,
-      siteName: 'AgencyOS',
+      siteName: siteConfig.name,
       images: [
         {
-          url: '/og-image.png',
-          width: 1200,
-          height: 630,
-          alt: 'AgencyOS - AI Agent Operating System',
+          url: siteConfig.ogImage,
+          width: siteConfig.ogImageDimensions.width,
+          height: siteConfig.ogImageDimensions.height,
+          alt: `${siteConfig.name} - AI Agent Operating System`,
         },
       ],
       locale: locale,
@@ -76,7 +84,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title: metadata.title,
       description: metadata.description,
-      images: ['/og-image.png'],
+      images: [siteConfig.ogImage],
     },
     robots: {
       index: true,
@@ -113,41 +121,41 @@ export default async function LocaleLayout({
     '@graph': [
       {
         '@type': 'Organization',
-        '@id': 'https://agencyos.dev/#organization',
-        name: 'AgencyOS',
-        url: 'https://agencyos.dev',
+        '@id': `${siteConfig.url}/#organization`,
+        name: siteConfig.name,
+        url: siteConfig.url,
         logo: {
           '@type': 'ImageObject',
-          url: 'https://agencyos.dev/logo.png',
+          url: `${siteConfig.url}/logo.png`,
         },
         sameAs: [
-          'https://twitter.com/agencyos',
-          'https://github.com/agencyos',
+          siteConfig.social.twitter,
+          siteConfig.social.github,
         ],
       },
       {
         '@type': 'SoftwareApplication',
-        '@id': 'https://agencyos.dev/#software',
-        name: 'AgencyOS',
-        applicationCategory: 'DeveloperApplication',
-        operatingSystem: 'Web',
+        '@id': `${siteConfig.url}/#software`,
+        name: siteConfig.name,
+        applicationCategory: siteConfig.structuredData.applicationCategory,
+        operatingSystem: siteConfig.structuredData.operatingSystem,
         offers: {
           '@type': 'Offer',
-          price: '99',
-          priceCurrency: 'USD',
+          price: siteConfig.structuredData.defaultPrice,
+          priceCurrency: siteConfig.structuredData.priceCurrency,
           priceValidUntil: '2025-12-31',
         },
         aggregateRating: {
           '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          ratingCount: '127',
+          ratingValue: siteConfig.structuredData.ratingValue,
+          ratingCount: siteConfig.structuredData.ratingCount,
         },
       },
       {
         '@type': 'WebSite',
-        '@id': 'https://agencyos.dev/#website',
-        url: 'https://agencyos.dev',
-        name: 'AgencyOS',
+        '@id': `${siteConfig.url}/#website`,
+        url: siteConfig.url,
+        name: siteConfig.name,
         inLanguage: locale,
       },
     ],

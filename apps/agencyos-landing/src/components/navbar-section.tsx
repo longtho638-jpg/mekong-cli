@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { m as motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
 const SECTION_IDS = ["features", "pricing"] as const;
@@ -90,7 +91,7 @@ export function NavbarSection() {
   const navItems = [
     { href: "#features", label: t("features") },
     { href: "#pricing", label: t("pricing") },
-    { href: "https://github.com/agencyos/mekong-cli", label: "GitHub", external: true },
+    { href: siteConfig.social.githubRepo, label: "GitHub", external: true },
   ];
 
   return (
@@ -113,7 +114,7 @@ export function NavbarSection() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/30">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-nebula-500 to-blue-500 flex items-center justify-center transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-nebula-500/30">
             <span className="text-white font-bold text-xl">A</span>
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
@@ -132,7 +133,7 @@ export function NavbarSection() {
                 "text-sm font-medium transition-colors duration-200",
                 isActive(item.href)
                   ? "text-primary-cyan"
-                  : "text-gray-300 hover:text-white"
+                  : "text-starlight-200 hover:text-white"
               )}
             >
               {item.label}
@@ -154,7 +155,7 @@ export function NavbarSection() {
           <motion.div className="hidden sm:block" whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
             <Link
               href="#pricing"
-              className="inline-flex h-9 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-purple-500/25 transition-shadow duration-300 hover:shadow-xl hover:shadow-purple-500/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-[#030014]"
+              className="inline-flex h-9 items-center justify-center rounded-full bg-gradient-to-r from-nebula-500 to-blue-500 px-5 py-2 text-sm font-medium text-white shadow-lg shadow-nebula-500/25 transition-shadow duration-300 hover:shadow-xl hover:shadow-nebula-500/40 focus:outline-none focus:ring-2 focus:ring-nebula-500 focus:ring-offset-2 focus:ring-offset-deep-space-900"
             >
               {t("signup")}
             </Link>
@@ -163,7 +164,7 @@ export function NavbarSection() {
           {/* Mobile Menu Button */}
           <motion.button
             onClick={toggleMenu}
-            className="md:hidden p-2 text-gray-300 hover:text-white rounded-lg"
+            className="md:hidden p-2 text-starlight-200 hover:text-white rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Toggle menu"
             whileTap={{ scale: 0.9 }}
           >
@@ -226,7 +227,7 @@ export function NavbarSection() {
                       "flex items-center text-base font-medium transition-colors duration-200 min-h-[44px]",
                       isActive(item.href)
                         ? "text-primary-cyan"
-                        : "text-gray-300 hover:text-white"
+                        : "text-starlight-200 hover:text-white"
                     )}
                   >
                     {isActive(item.href) && (
@@ -247,7 +248,7 @@ export function NavbarSection() {
                 <Link
                   href="#pricing"
                   onClick={closeMenu}
-                  className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 text-base font-medium text-white shadow-lg shadow-purple-500/25 min-h-[48px] hover:shadow-xl hover:shadow-purple-500/40 transition-shadow"
+                  className="flex w-full items-center justify-center rounded-full bg-gradient-to-r from-nebula-500 to-blue-500 px-6 text-base font-medium text-white shadow-lg shadow-nebula-500/25 min-h-[48px] hover:shadow-xl hover:shadow-nebula-500/40 transition-shadow"
                 >
                   {t("signup")}
                 </Link>

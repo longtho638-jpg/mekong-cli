@@ -11,7 +11,7 @@ const headingVariants = cva("font-bold tracking-tight", {
       h4: "text-xl sm:text-2xl md:text-3xl",
     },
     gradient: {
-      true: "bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent",
+      true: "bg-gradient-to-r from-white via-nebula-400 to-blue-200 bg-clip-text text-transparent",
       false: "text-white",
     },
   },
