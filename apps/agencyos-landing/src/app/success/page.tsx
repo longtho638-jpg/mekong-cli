@@ -22,7 +22,7 @@ export default function SuccessPage() {
         Payment Successful!
       </h1>
       <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-        Thank you for your pre-order. You've secured your spot in the AgencyOS ecosystem. We'll send a confirmation email shortly.
+        Thank you for your pre-order. You&apos;ve secured your spot in the AgencyOS ecosystem. We&apos;ll send a confirmation email shortly.
       </p>
       <div className="mt-10 flex items-center justify-center gap-x-6">
         <Link

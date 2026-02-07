@@ -13,46 +13,40 @@ import {
   Workflow
 } from "lucide-react";
 
-const features = [
+const featureConfig = [
   {
+    key: "fast",
     icon: Zap,
-    title: "Lightning Fast",
-    description: "Sub-100ms API response times with edge deployment",
     span: "col-span-1 row-span-1",
     variant: "default" as const,
   },
   {
+    key: "security",
     icon: Shield,
-    title: "Enterprise Security",
-    description: "SOC 2 Type II, GDPR compliant, end-to-end encryption",
     span: "col-span-1 row-span-2",
     variant: "highlighted" as const,
   },
   {
+    key: "developer",
     icon: Code,
-    title: "Developer First",
-    description: "TypeScript SDK, REST API, webhooks, full docs",
     span: "col-span-1 row-span-1",
     variant: "default" as const,
   },
   {
+    key: "analytics",
     icon: BarChart,
-    title: "Real-time Analytics",
-    description: "Track every request, token usage, costs, and performance",
     span: "col-span-2 row-span-1",
     variant: "interactive" as const,
   },
   {
+    key: "edge",
     icon: Globe,
-    title: "Global Edge Network",
-    description: "Deployed across 300+ cities worldwide for lowest latency",
     span: "col-span-1 row-span-1",
     variant: "default" as const,
   },
   {
+    key: "workflow",
     icon: Workflow,
-    title: "Visual Workflow Builder",
-    description: "Design complex AI pipelines with drag-and-drop interface",
     span: "col-span-1 row-span-1",
     variant: "highlighted" as const,
   },
@@ -80,11 +74,11 @@ export function FeaturesSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-fr">
-          {features.map((feature, index) => {
+          {featureConfig.map((feature, index) => {
             const Icon = feature.icon;
             return (
               <motion.div
-                key={feature.title}
+                key={feature.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -98,8 +92,8 @@ export function FeaturesSection() {
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                  <p className="text-gray-400 flex-grow">{feature.description}</p>
+                  <h3 className="text-xl font-bold mb-2">{t(`items.${feature.key}.title`)}</h3>
+                  <p className="text-gray-400 flex-grow">{t(`items.${feature.key}.description`)}</p>
                 </GlassCard>
               </motion.div>
             );

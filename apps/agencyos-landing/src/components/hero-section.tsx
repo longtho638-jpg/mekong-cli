@@ -30,17 +30,17 @@ export function HeroSection() {
           >
             <div className="inline-flex items-center gap-2 glass-effect px-4 py-2 rounded-full">
               <Sparkles className="w-4 h-4 text-purple-400" />
-              <span className="text-sm text-gray-300">Research-as-a-Service Platform</span>
+              <span className="text-sm text-gray-300">{t('badge')}</span>
             </div>
 
             <Heading size="h1" gradient>
-              Build Your{" "}
+              {t('title')}{" "}
               <TypewriterText
                 texts={[
-                  "AI Agency",
-                  "Research Team",
-                  "Content Engine",
-                  "Growth Machine",
+                  t('typewriter.0'),
+                  t('typewriter.1'),
+                  t('typewriter.2'),
+                  t('typewriter.3'),
                 ]}
               />
             </Heading>
@@ -68,10 +68,10 @@ export function HeroSection() {
             <div className="flex items-center gap-8 text-sm text-gray-400">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                <span>100% Open Core</span>
+                <span>{t('openCore')}</span>
               </div>
-              <div>⚡ Deploy in 5 minutes</div>
-              <div>🔒 SOC 2 Compliant</div>
+              <div>⚡ {t('deploy')}</div>
+              <div>🔒 {t('compliant')}</div>
             </div>
           </motion.div>
 

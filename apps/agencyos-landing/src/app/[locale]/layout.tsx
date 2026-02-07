@@ -96,7 +96,7 @@ export default async function LocaleLayout({
 }) {
   const { locale } = await params;
 
-  if (!locales.includes(locale as any)) {
+  if (!locales.includes(locale as "en" | "vi")) {
     notFound();
   }
 
@@ -156,11 +156,14 @@ export default async function LocaleLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-deep-space-900 text-starlight-100 selection:bg-nebula-500/30`}>
         <NextIntlClientProvider messages={messages}>
           <AnalyticsProvider>
             <LenisProvider>
-              {children}
+              <div className="fixed inset-0 z-0 pointer-events-none noise-texture opacity-20 mix-blend-overlay"></div>
+              <div className="relative z-10">
+                {children}
+              </div>
             </LenisProvider>
           </AnalyticsProvider>
         </NextIntlClientProvider>

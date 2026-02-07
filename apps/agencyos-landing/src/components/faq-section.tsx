@@ -11,31 +11,13 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 
-const faqs = [
-  {
-    question: "How does the pricing work?",
-    answer: "Our pricing is based on the number of AI requests per month. You can upgrade or downgrade at any time, and we'll prorate the difference. No long-term contracts required.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer: "Yes! You can cancel your subscription at any time from your dashboard. Your service will continue until the end of your billing period, and you won't be charged again.",
-  },
-  {
-    question: "Do you offer refunds?",
-    answer: "We offer a 14-day money-back guarantee for all paid plans. If you're not satisfied, contact our support team for a full refund.",
-  },
-  {
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards (Visa, Mastercard, Amex) and bank transfers for Enterprise plans. All payments are processed securely through Polar.sh.",
-  },
-  {
-    question: "Is there a free trial?",
-    answer: "We offer a 14-day free trial for the Pro plan with no credit card required. You'll get access to all Pro features during the trial period.",
-  },
-  {
-    question: "How secure is my data?",
-    answer: "We're SOC 2 Type II certified and GDPR compliant. All data is encrypted in transit and at rest. We never train AI models on your data without explicit permission.",
-  },
+const faqKeys = [
+  "pricing",
+  "cancel",
+  "refunds",
+  "payment",
+  "trial",
+  "security"
 ];
 
 export function FAQSection() {
@@ -66,13 +48,13 @@ export function FAQSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <Accordion type="single" collapsible className="space-y-4">
-            {faqs.map((faq, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
+            {faqKeys.map((key, index) => (
+              <AccordionItem key={key} value={`item-${index}`}>
                 <AccordionTrigger className="text-left text-lg">
-                  {faq.question}
+                  {t(`items.${key}.question`)}
                 </AccordionTrigger>
                 <AccordionContent className="text-gray-400">
-                  {faq.answer}
+                  {t(`items.${key}.answer`)}
                 </AccordionContent>
               </AccordionItem>
             ))}

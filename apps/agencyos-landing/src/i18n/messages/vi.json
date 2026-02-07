@@ -4,30 +4,52 @@
     "pricing": "Bảng Giá",
     "docs": "Tài Liệu",
     "login": "Đăng Nhập",
-    "signup": "Bắt Đầu"
+    "signup": "Bắt Đầu",
+    "github": "GitHub"
   },
   "hero": {
-    "title": "Xây Dựng AI Agent",
-    "titleHighlight": "Nhanh 10x",
+    "badge": "Nền Tảng Nghiên Cứu Dịch Vụ",
+    "title": "Xây Dựng",
+    "typewriter": [
+      "Agency AI",
+      "Đội Ngũ Nghiên Cứu",
+      "Bộ Máy Nội Dung",
+      "Cỗ Máy Tăng Trưởng"
+    ],
     "subtitle": "Hệ điều hành cho agency AI. Triển khai hệ thống agent tự động trong vài giờ, không phải vài tháng.",
     "cta": "Dùng Thử Miễn Phí",
-    "ctaSecondary": "Xem Demo"
+    "ctaSecondary": "Xem Demo",
+    "openCore": "100% Open Core",
+    "deploy": "Triển khai trong 5 phút",
+    "compliant": "Tuân thủ SOC 2"
   },
   "features": {
     "title": "Mọi Thứ Bạn Cần",
     "subtitle": "Công cụ sẵn sàng cho agency AI hiện đại",
     "items": {
-      "agents": {
-        "title": "Điều Phối Đa Agent",
-        "description": "Triển khai đội ngũ agent song song với điều phối tích hợp"
+      "fast": {
+        "title": "Cực Nhanh",
+        "description": "Phản hồi API dưới 100ms với triển khai edge"
       },
-      "infrastructure": {
-        "title": "Hạ Tầng Đã Kiểm Chứng",
-        "description": "Xoay vòng proxy, giới hạn tốc độ, và phục hồi lỗi"
+      "security": {
+        "title": "Bảo Mật Doanh Nghiệp",
+        "description": "SOC 2 Type II, tuân thủ GDPR, mã hóa đầu cuối"
       },
-      "integrations": {
-        "title": "150+ Tích Hợp",
-        "description": "Kết nối với Stripe, Supabase, Vercel và nhiều hơn"
+      "developer": {
+        "title": "Ưu Tiên Lập Trình Viên",
+        "description": "TypeScript SDK, REST API, webhooks, tài liệu đầy đủ"
+      },
+      "analytics": {
+        "title": "Phân Tích Thời Gian Thực",
+        "description": "Theo dõi mọi yêu cầu, token sử dụng, chi phí và hiệu năng"
+      },
+      "edge": {
+        "title": "Mạng Lưới Edge Toàn Cầu",
+        "description": "Triển khai trên 300+ thành phố toàn cầu cho độ trễ thấp nhất"
+      },
+      "workflow": {
+        "title": "Xây Dựng Workflow Trực Quan",
+        "description": "Thiết kế pipeline AI phức tạp với giao diện kéo thả"
       }
     }
   },
@@ -37,6 +59,7 @@
     "popular": "Phổ Biến Nhất",
     "cta": "Bắt Đầu",
     "ctaEnterprise": "Liên Hệ Bán Hàng",
+    "period": "/ tháng",
     "tiers": {
       "starter": {
         "name": "Khởi Đầu",
@@ -65,6 +88,7 @@
       "enterprise": {
         "name": "Doanh Nghiệp",
         "description": "Giải pháp tùy chỉnh cho tổ chức lớn",
+        "price": "Liên hệ",
         "features": [
           "Yêu cầu không giới hạn",
           "Triển khai on-premise",
@@ -79,7 +103,33 @@
   },
   "faq": {
     "title": "Câu Hỏi Thường Gặp",
-    "subtitle": "Mọi thứ bạn cần biết về AgencyOS"
+    "subtitle": "Mọi thứ bạn cần biết về AgencyOS",
+    "items": {
+      "pricing": {
+        "question": "Cách tính giá như thế nào?",
+        "answer": "Giá của chúng tôi dựa trên số lượng yêu cầu AI mỗi tháng. Bạn có thể nâng cấp hoặc hạ cấp bất cứ lúc nào, và chúng tôi sẽ tính phí chênh lệch. Không yêu cầu hợp đồng dài hạn."
+      },
+      "cancel": {
+        "question": "Tôi có thể hủy bất cứ lúc nào không?",
+        "answer": "Có! Bạn có thể hủy đăng ký bất cứ lúc nào từ bảng điều khiển. Dịch vụ của bạn sẽ tiếp tục cho đến cuối kỳ thanh toán, và bạn sẽ không bị tính phí lại."
+      },
+      "refunds": {
+        "question": "Bạn có hoàn tiền không?",
+        "answer": "Chúng tôi cung cấp đảm bảo hoàn tiền trong 14 ngày cho tất cả các gói trả phí. Nếu bạn không hài lòng, hãy liên hệ với đội ngũ hỗ trợ của chúng tôi để được hoàn tiền đầy đủ."
+      },
+      "payment": {
+        "question": "Bạn chấp nhận phương thức thanh toán nào?",
+        "answer": "Chúng tôi chấp nhận tất cả các thẻ tín dụng chính (Visa, Mastercard, Amex) và chuyển khoản ngân hàng cho các gói Doanh nghiệp. Tất cả các khoản thanh toán được xử lý an toàn thông qua Polar.sh."
+      },
+      "trial": {
+        "question": "Có bản dùng thử miễn phí không?",
+        "answer": "Chúng tôi cung cấp bản dùng thử miễn phí 14 ngày cho gói Pro không cần thẻ tín dụng. Bạn sẽ được truy cập tất cả các tính năng Pro trong thời gian dùng thử."
+      },
+      "security": {
+        "question": "Dữ liệu của tôi an toàn như thế nào?",
+        "answer": "Chúng tôi được chứng nhận SOC 2 Type II và tuân thủ GDPR. Tất cả dữ liệu được mã hóa khi truyền và khi lưu trữ. Chúng tôi không bao giờ huấn luyện mô hình AI trên dữ liệu của bạn mà không có sự cho phép rõ ràng."
+      }
+    }
   },
   "footer": {
     "tagline": "Hệ điều hành cho agency AI",

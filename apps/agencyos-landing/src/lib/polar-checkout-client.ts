@@ -10,7 +10,7 @@ export type CheckoutSessionParams = {
 
 export async function createCheckoutSession(params: CheckoutSessionParams) {
   // Mock implementation - replace with actual Polar.sh SDK
-  console.log('Creating checkout session:', params);
+  // TODO: Integrate real Polar.sh SDK
 
   return {
     url: `https://polar.sh/checkout/${params.priceId}?success_url=${encodeURIComponent(params.successUrl)}`,
@@ -19,10 +19,10 @@ export async function createCheckoutSession(params: CheckoutSessionParams) {
 }
 
 export async function verifyWebhookSignature(
-  payload: string,
-  signature: string
+  _payload: string,
+  _signature: string
 ): Promise<boolean> {
   // Mock implementation - replace with actual webhook verification
-  console.log('Verifying webhook signature');
+  // TODO: Implement real signature verification
   return true;
 }

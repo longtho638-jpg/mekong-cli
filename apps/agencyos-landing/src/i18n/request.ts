@@ -4,7 +4,7 @@ import { locales } from './config';
 
 export default getRequestConfig(async ({ locale }) => {
   // Validate locale exists and is supported
-  if (!locale || !locales.includes(locale as any)) {
+  if (!locale || !locales.includes(locale as "en" | "vi")) {
     notFound();
   }
 

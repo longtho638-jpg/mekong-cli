@@ -4,6 +4,11 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
+  --color-deep-space-900: #030014;
+  --color-deep-space-800: #0a0a1f;
+  --color-nebula-500: #8B5CF6;
+  --color-starlight-100: #E2E8F0;
+
   --color-deep-space: #030014;
   --color-primary-cyan: #00F5FF;
   --color-accent-purple: #8B5CF6;

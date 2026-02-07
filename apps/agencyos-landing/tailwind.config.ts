@@ -5,6 +5,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        'deep-space': {
+          900: '#030014',
+          800: '#0a0a1f',
+        },
+        nebula: {
+          500: '#8B5CF6',
+        },
+        starlight: {
+          100: '#E2E8F0',
+        },
         glass: {
           50: "rgba(255, 255, 255, 0.05)",
           100: "rgba(255, 255, 255, 0.1)",

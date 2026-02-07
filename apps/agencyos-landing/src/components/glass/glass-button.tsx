@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
 import { HTMLMotionProps, motion, useMotionValue, useSpring } from "framer-motion";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useImperativeHandle } from "react";
 
 const buttonVariants = cva(
   "relative inline-flex items-center justify-center rounded-full font-medium transition-all duration-300 overflow-hidden",
@@ -38,18 +38,21 @@ export interface GlassButtonProps
 
 export const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
   ({ className, variant, size, magnetic, children, onClick, type, disabled, ...props }, ref) => {
-    const buttonRef = useRef<HTMLButtonElement>(null);
+    const internalRef = useRef<HTMLButtonElement>(null);
     const x = useMotionValue(0);
     const y = useMotionValue(0);
+
+    // Sync forwarded ref with internal ref
+    useImperativeHandle(ref, () => internalRef.current as HTMLButtonElement);
 
     const springConfig = { damping: 20, stiffness: 300 };
     const springX = useSpring(x, springConfig);
     const springY = useSpring(y, springConfig);
 
     const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-      if (!magnetic || !buttonRef.current) return;
+      if (!magnetic || !internalRef.current) return;
 
-      const rect = buttonRef.current.getBoundingClientRect();
+      const rect = internalRef.current.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
@@ -67,7 +70,7 @@ export const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
 
     return (
       <motion.button
-        ref={buttonRef}
+        ref={internalRef}
         className={cn(buttonVariants({ variant, size, magnetic }), className)}
         style={magnetic ? { x: springX, y: springY } : {}}
         onMouseMove={handleMouseMove}
@@ -77,7 +80,7 @@ export const GlassButton = forwardRef<HTMLButtonElement, GlassButtonProps>(
         disabled={disabled}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        {...(props as any)}
+        {...props}
       >
         {children}
       </motion.button>

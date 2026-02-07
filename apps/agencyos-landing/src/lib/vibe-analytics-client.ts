@@ -2,20 +2,20 @@
 // This will be replaced with actual SDK implementation
 
 export const analytics = {
-  track: (event: { event: string; properties?: Record<string, any> }) => {
+  track: (event: { event: string; properties?: Record<string, unknown> }) => {
     if (typeof window === 'undefined') return;
-    console.log('Track event:', event);
+    // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
   page: (data: { path?: string; url?: string; referrer?: string }) => {
     if (typeof window === 'undefined') return;
-    console.log('Track page:', data);
+    // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
-  identify: (data: { userId: string; traits?: Record<string, any> }) => {
-    console.log('Identify user:', data);
+  identify: (data: { userId: string; traits?: Record<string, unknown> }) => {
+    // TODO: Integrate with @agencyos/vibe-analytics SDK
   },
 };
 
-export const trackEvent = (event: string, properties?: Record<string, any>) => {
+export const trackEvent = (event: string, properties?: Record<string, unknown>) => {
   if (typeof window === 'undefined') return;
 
   analytics.track({
@@ -40,7 +40,7 @@ export const trackPageView = (path?: string) => {
   });
 };
 
-export const identifyUser = (userId: string, traits?: Record<string, any>) => {
+export const identifyUser = (userId: string, traits?: Record<string, unknown>) => {
   analytics.identify({
     userId,
     traits,

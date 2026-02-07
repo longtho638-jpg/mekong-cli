@@ -44,7 +44,8 @@ export async function POST(req: NextRequest) {
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        // Unhandled event type - log to stderr for monitoring
+        console.warn(`Unhandled event type: ${event.type}`);
     }
 
     return NextResponse.json({ received: true });
@@ -57,22 +58,18 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handleCheckoutCompleted(data: any) {
-  console.log('Checkout completed:', data);
+async function handleCheckoutCompleted(data: Record<string, unknown>) {
   // TODO: Send confirmation email, provision access, etc.
 }
 
-async function handleSubscriptionCreated(data: any) {
-  console.log('Subscription created:', data);
+async function handleSubscriptionCreated(data: Record<string, unknown>) {
   // TODO: Grant user access, send welcome email
 }
 
-async function handleSubscriptionUpdated(data: any) {
-  console.log('Subscription updated:', data);
+async function handleSubscriptionUpdated(data: Record<string, unknown>) {
   // TODO: Update user permissions
 }
 
-async function handleSubscriptionCancelled(data: any) {
-  console.log('Subscription cancelled:', data);
+async function handleSubscriptionCancelled(data: Record<string, unknown>) {
   // TODO: Schedule access revocation, send exit survey
 }

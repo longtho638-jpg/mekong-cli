@@ -18,13 +18,13 @@ export function NavbarSection() {
         </div>
 
         <nav className="hidden md:flex items-center gap-8">
-          <Link href="#features" className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+          <Link href="#features" className="text-sm font-medium text-slate-600 hover:text-indigo-600 active:text-indigo-700 dark:text-slate-400 dark:hover:text-indigo-400 dark:active:text-indigo-500 transition-colors">
             {t('features')}
           </Link>
-          <Link href="#pricing" className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+          <Link href="#pricing" className="text-sm font-medium text-slate-600 hover:text-indigo-600 active:text-indigo-700 dark:text-slate-400 dark:hover:text-indigo-400 dark:active:text-indigo-500 transition-colors">
             {t('pricing')}
           </Link>
-          <Link href="https://github.com/agencyos/mekong-cli" target="_blank" className="text-sm font-medium text-slate-600 hover:text-indigo-600 dark:text-slate-400 dark:hover:text-indigo-400 transition-colors">
+          <Link href="https://github.com/agencyos/mekong-cli" target="_blank" className="text-sm font-medium text-slate-600 hover:text-indigo-600 active:text-indigo-700 dark:text-slate-400 dark:hover:text-indigo-400 dark:active:text-indigo-500 transition-colors">
             GitHub
           </Link>
         </nav>
@@ -32,7 +32,7 @@ export function NavbarSection() {
         <div className="flex items-center gap-4">
           <Link
             href="#pricing"
-            className="hidden sm:inline-flex h-9 items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-950"
+            className="hidden sm:inline-flex h-9 items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-950"
           >
             {t('signup')}
           </Link>
