@@ -1,6 +1,8 @@
 import unittest
 import sys
 import os
+import tempfile
+import shutil
 
 # Add project root to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -28,6 +30,13 @@ class TestFileAgent(unittest.TestCase):
         self.assertEqual(len(tasks), 1)
         self.assertEqual(tasks[0].id, "file_read")
         self.assertEqual(tasks[0].input["path"], "README.md")
+
+    def test_plan_write(self):
+        tasks = self.agent.plan("write test.txt hello world")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "file_write")
+        self.assertEqual(tasks[0].input["path"], "test.txt")
+        self.assertEqual(tasks[0].input["content"], "hello world")
 
     def test_plan_tree(self):
         tasks = self.agent.plan("tree 2")
@@ -81,6 +90,34 @@ class TestFileAgent(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertTrue(results[0].success)
         self.assertGreater(results[0].output["count"], 0)
+
+    def test_execute_write_and_read(self):
+        """Write a temp file and read it back."""
+        tmpdir = tempfile.mkdtemp()
+        try:
+            agent = FileAgent(cwd=tmpdir)
+            # Write
+            from src.core.agent_base import Task
+            write_task = Task(
+                id="file_write",
+                description="Write test",
+                input={"path": "test_output.txt", "content": "hello mekong"},
+            )
+            result = agent.execute(write_task)
+            self.assertTrue(result.success)
+            self.assertEqual(result.output["size"], 12)
+
+            # Read back
+            read_task = Task(
+                id="file_read",
+                description="Read test",
+                input={"path": "test_output.txt"},
+            )
+            result = agent.execute(read_task)
+            self.assertTrue(result.success)
+            self.assertIn("hello mekong", result.output["content"])
+        finally:
+            shutil.rmtree(tmpdir)
 
 
 if __name__ == "__main__":

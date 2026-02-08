@@ -44,6 +44,30 @@ class TestGitAgent(unittest.TestCase):
         self.assertEqual(tasks[1].id, "git_commit")
         self.assertEqual(tasks[1].input["message"], "fix: test message")
 
+    def test_plan_push(self):
+        tasks = self.agent.plan("push origin main")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "git_push")
+        self.assertEqual(tasks[0].input["remote"], "origin")
+        self.assertEqual(tasks[0].input["branch"], "main")
+
+    def test_plan_push_default(self):
+        tasks = self.agent.plan("push")
+        self.assertEqual(tasks[0].input["remote"], "origin")
+        self.assertEqual(tasks[0].input["branch"], "")
+
+    def test_plan_pull(self):
+        tasks = self.agent.plan("pull upstream")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "git_pull")
+        self.assertEqual(tasks[0].input["remote"], "upstream")
+
+    def test_plan_checkout(self):
+        tasks = self.agent.plan("checkout feat/new")
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0].id, "git_checkout")
+        self.assertEqual(tasks[0].input["target"], "feat/new")
+
     def test_plan_branch_list(self):
         tasks = self.agent.plan("branch")
         self.assertEqual(len(tasks), 1)
@@ -72,6 +96,18 @@ class TestGitAgent(unittest.TestCase):
         self.assertEqual(len(results), 1)
         self.assertTrue(results[0].success)
         self.assertIsNotNone(results[0].output)
+
+    def test_execute_diff(self):
+        """Execute git diff in actual repo."""
+        results = self.agent.run("diff")
+        self.assertEqual(len(results), 1)
+        self.assertTrue(results[0].success)
+
+    def test_execute_branch_list(self):
+        """Execute git branch -a in actual repo."""
+        results = self.agent.run("branch")
+        self.assertEqual(len(results), 1)
+        self.assertTrue(results[0].success)
 
 
 if __name__ == "__main__":

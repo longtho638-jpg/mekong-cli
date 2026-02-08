@@ -18,6 +18,7 @@ class FileAgent(AgentBase):
     Supports:
     - find <pattern>: Search for files matching pattern
     - read <path>: Read file content
+    - write <path> <content>: Write content to file
     - tree [depth]: Show directory tree
     - stats: Show project file statistics
     - grep <pattern>: Search content in files
@@ -45,6 +46,19 @@ class FileAgent(AgentBase):
         elif command == "read":
             return [
                 Task(id="file_read", description=f"Read: {args}", input={"path": args})
+            ]
+
+        elif command == "write":
+            # Format: write <path> <content>
+            write_parts = args.split(maxsplit=1)
+            path = write_parts[0] if write_parts else ""
+            content = write_parts[1] if len(write_parts) > 1 else ""
+            return [
+                Task(
+                    id="file_write",
+                    description=f"Write: {path}",
+                    input={"path": path, "content": content},
+                )
             ]
 
         elif command == "tree":
@@ -125,6 +139,21 @@ class FileAgent(AgentBase):
                     output={
                         "content": content[:5000],
                         "lines": lines,
+                        "size": len(content),
+                    },
+                )
+
+            elif task.id == "file_write":
+                filepath = Path(self.cwd) / task.input.get("path", "")
+                content = task.input.get("content", "")
+                if not filepath.parent.exists():
+                    filepath.parent.mkdir(parents=True, exist_ok=True)
+                filepath.write_text(content, encoding="utf-8")
+                return Result(
+                    task_id=task.id,
+                    success=True,
+                    output={
+                        "path": str(filepath),
                         "size": len(content),
                     },
                 )

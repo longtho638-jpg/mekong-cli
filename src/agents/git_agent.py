@@ -19,6 +19,9 @@ class GitAgent(AgentBase):
     - diff: Show unstaged changes
     - log: Show recent commits
     - commit: Stage all and commit
+    - push: Push to remote
+    - pull: Pull from remote
+    - checkout: Switch branches
     - branch: List or create branches
     """
 
@@ -64,6 +67,44 @@ class GitAgent(AgentBase):
                 ),
             ]
 
+        elif command == "push":
+            remote = args.split()[0] if args else "origin"
+            branch = args.split()[1] if len(args.split()) > 1 else ""
+            return [
+                Task(
+                    id="git_push",
+                    description=f"Push to {remote}",
+                    input={"remote": remote, "branch": branch},
+                )
+            ]
+
+        elif command == "pull":
+            remote = args.split()[0] if args else "origin"
+            return [
+                Task(
+                    id="git_pull",
+                    description=f"Pull from {remote}",
+                    input={"remote": remote},
+                )
+            ]
+
+        elif command == "checkout":
+            if not args:
+                return [
+                    Task(
+                        id="git_custom",
+                        description="checkout requires branch name",
+                        input={"cmd": "branch -a"},
+                    )
+                ]
+            return [
+                Task(
+                    id="git_checkout",
+                    description=f"Checkout: {args}",
+                    input={"target": args},
+                )
+            ]
+
         elif command == "branch":
             if args:
                 return [
@@ -86,6 +127,34 @@ class GitAgent(AgentBase):
 
     def execute(self, task: Task) -> Result:
         """Execute git command."""
+        cmd = self._build_command(task)
+
+        try:
+            result = subprocess.run(
+                cmd,
+                cwd=self.cwd,
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+
+            output = result.stdout.strip() or result.stderr.strip()
+            return Result(
+                task_id=task.id,
+                success=result.returncode == 0,
+                output=output,
+                error=result.stderr.strip() if result.returncode != 0 else None,
+            )
+
+        except subprocess.TimeoutExpired:
+            return Result(
+                task_id=task.id, success=False, output=None, error="Command timed out"
+            )
+        except Exception as e:
+            return Result(task_id=task.id, success=False, output=None, error=str(e))
+
+    def _build_command(self, task: Task) -> list:
+        """Build git command list from task."""
         cmd_map = {
             "git_status": ["git", "status", "--short"],
             "git_diff": ["git", "diff", "--stat"],
@@ -107,34 +176,26 @@ class GitAgent(AgentBase):
         }
 
         cmd = cmd_map.get(task.id)
-        if not cmd:
-            # Custom command
-            custom = task.input.get("cmd", "")
-            cmd = ["git"] + custom.split()
+        if cmd:
+            return cmd
 
-        try:
-            result = subprocess.run(
-                cmd,
-                cwd=self.cwd,
-                capture_output=True,
-                text=True,
-                timeout=30,
-            )
+        # Dynamic commands
+        if task.id == "git_push":
+            parts = ["git", "push", task.input.get("remote", "origin")]
+            branch = task.input.get("branch", "")
+            if branch:
+                parts.append(branch)
+            return parts
 
-            output = result.stdout.strip() or result.stderr.strip()
-            return Result(
-                task_id=task.id,
-                success=result.returncode == 0,
-                output=output,
-                error=result.stderr.strip() if result.returncode != 0 else None,
-            )
+        if task.id == "git_pull":
+            return ["git", "pull", task.input.get("remote", "origin")]
 
-        except subprocess.TimeoutExpired:
-            return Result(
-                task_id=task.id, success=False, output=None, error="Command timed out"
-            )
-        except Exception as e:
-            return Result(task_id=task.id, success=False, output=None, error=str(e))
+        if task.id == "git_checkout":
+            return ["git", "checkout", task.input.get("target", "main")]
+
+        # Fallback: custom command
+        custom = task.input.get("cmd", "")
+        return ["git"] + custom.split()
 
 
 __all__ = ["GitAgent"]
