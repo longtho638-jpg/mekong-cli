@@ -24,13 +24,14 @@ from src.core.gateway_dashboard import DASHBOARD_HTML
 from src.core.swarm import SwarmNode, SwarmRegistry
 from src.core.event_bus import EventType, get_event_bus
 from src.core.scheduler import Scheduler, ScheduledJob
+from src.core.memory import MemoryStore, MemoryEntry
 
 
 # -- Load config; export presets for backward compatibility --
 GATEWAY_CONFIG: GatewayConfig = load_config()
 PRESET_ACTIONS: List[Dict[str, str]] = GATEWAY_CONFIG.presets
 
-VERSION = "0.6.0"
+VERSION = "0.7.0"
 
 
 # -- Request / Response models --
@@ -139,6 +140,24 @@ class ScheduleAddRequest(BaseModel):
     job_type: str = Field("interval", pattern="^(interval|daily)$")
     interval_seconds: int = Field(300, ge=10)
     daily_time: str = Field("09:00")
+
+
+class MemoryEntryInfo(BaseModel):
+    """Memory entry returned by API"""
+    goal: str
+    status: str
+    timestamp: float
+    duration_ms: float
+    error_summary: str
+    recipe_used: str
+
+
+class MemoryStatsResponse(BaseModel):
+    """Memory aggregate statistics"""
+    total: int
+    success_rate: float
+    top_goals: List[str]
+    recent_failures: int
 
 
 # -- Token verification --
@@ -411,6 +430,41 @@ def create_app() -> FastAPI:
     # -- Schedule endpoints --
     scheduler = Scheduler()
 
+    # -- Memory endpoints --
+    memory_store = MemoryStore()
+
+    @gateway.get("/memory/recent", response_model=List[MemoryEntryInfo])
+    def memory_recent(limit: int = 20):
+        """Get recent execution memory entries."""
+        entries = memory_store.recent(limit)
+        return [
+            MemoryEntryInfo(
+                goal=e.goal, status=e.status, timestamp=e.timestamp,
+                duration_ms=e.duration_ms, error_summary=e.error_summary,
+                recipe_used=e.recipe_used,
+            )
+            for e in entries
+        ]
+
+    @gateway.get("/memory/stats", response_model=MemoryStatsResponse)
+    def memory_stats():
+        """Get memory aggregate statistics."""
+        s = memory_store.stats()
+        return MemoryStatsResponse(**s)
+
+    @gateway.get("/memory/search", response_model=List[MemoryEntryInfo])
+    def memory_search(q: str = ""):
+        """Search execution memory by goal pattern."""
+        entries = memory_store.query(q) if q else memory_store.recent()
+        return [
+            MemoryEntryInfo(
+                goal=e.goal, status=e.status, timestamp=e.timestamp,
+                duration_ms=e.duration_ms, error_summary=e.error_summary,
+                recipe_used=e.recipe_used,
+            )
+            for e in entries
+        ]
+
     @gateway.post("/schedule/jobs", response_model=ScheduleJobInfo)
     def schedule_add_job(req: ScheduleAddRequest):
         """Add a new scheduled job."""
@@ -473,6 +527,8 @@ __all__ = [
     "SwarmDispatchRequest",
     "ScheduleJobInfo",
     "ScheduleAddRequest",
+    "MemoryEntryInfo",
+    "MemoryStatsResponse",
     "PRESET_ACTIONS",
     "GATEWAY_CONFIG",
     "VERSION",

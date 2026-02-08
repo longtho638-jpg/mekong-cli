@@ -21,6 +21,8 @@ class EventType(str, Enum):
     STEP_FAILED = "step_failed"
     JOB_STARTED = "job_started"
     JOB_COMPLETED = "job_completed"
+    MEMORY_RECORDED = "memory_recorded"
+    PATTERN_DETECTED = "pattern_detected"
 
 
 @dataclass

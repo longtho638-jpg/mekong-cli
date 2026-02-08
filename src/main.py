@@ -53,6 +53,10 @@ app.add_typer(swarm_app, name="swarm")
 schedule_app = typer.Typer(help="Schedule: autonomous recurring missions")
 app.add_typer(schedule_app, name="schedule")
 
+# Memory sub-commands
+memory_app = typer.Typer(help="Memory: execution history & learning")
+app.add_typer(memory_app, name="memory")
+
 console = Console()
 
 
@@ -829,12 +833,76 @@ def schedule_remove(
         raise typer.Exit(code=1)
 
 
+# -- Memory CLI commands --
+
+@memory_app.command(name="list")
+def memory_list(
+    limit: int = typer.Option(20, "--limit", "-l", help="Number of entries"),
+):
+    """List recent execution memory entries."""
+    from src.core.memory import MemoryStore
+
+    store = MemoryStore()
+    entries = store.recent(limit)
+
+    if not entries:
+        console.print("[yellow]No memory entries yet.[/yellow]")
+        return
+
+    table = Table(title=f"Memory ({len(entries)} entries)")
+    table.add_column("Goal", style="cyan")
+    table.add_column("Status")
+    table.add_column("Duration", style="dim")
+    table.add_column("Recipe", style="dim")
+
+    for e in reversed(entries):
+        status_style = "green" if e.status == "success" else "red"
+        table.add_row(
+            e.goal[:40],
+            f"[{status_style}]{e.status}[/{status_style}]",
+            f"{e.duration_ms:.0f}ms",
+            e.recipe_used or "-",
+        )
+
+    console.print(table)
+
+
+@memory_app.command(name="stats")
+def memory_stats_cmd():
+    """Show memory statistics."""
+    from src.core.memory import MemoryStore
+
+    store = MemoryStore()
+    s = store.stats()
+
+    console.print(
+        Panel(
+            f"[bold]Total Executions:[/bold] {s['total']}\n"
+            f"[bold]Success Rate:[/bold] {s['success_rate']:.1f}%\n"
+            f"[bold]Recent Failures:[/bold] {s['recent_failures']}\n"
+            f"[bold]Top Goals:[/bold] {', '.join(s['top_goals']) or 'none'}",
+            title="🧠 Memory Statistics",
+            border_style="cyan",
+        )
+    )
+
+
+@memory_app.command(name="clear")
+def memory_clear_cmd():
+    """Clear all execution memory."""
+    from src.core.memory import MemoryStore
+
+    store = MemoryStore()
+    store.clear()
+    console.print("[green]Memory cleared.[/green]")
+
+
 @app.command()
 def version():
     """Show version info"""
     console.print(
         Panel(
-            "[bold green]Mekong CLI[/bold green] v0.6.0\n"
+            "[bold green]Mekong CLI[/bold green] v0.7.0\n"
             "[dim]RaaS Agency Operating System[/dim]\n"
             "[dim]Engine: Plan-Execute-Verify (Binh Pháp)[/dim]\n"
             "[dim]DNA: ClaudeKit v2.9.1+[/dim]",

@@ -24,6 +24,7 @@ from .verifier import RecipeVerifier, VerificationReport, ExecutionResult
 from .parser import Recipe, RecipeStep
 from .exceptions import RollbackError
 from .telemetry import TelemetryCollector
+from .memory import MemoryStore, MemoryEntry
 
 
 class OrchestrationStatus(Enum):
@@ -94,6 +95,7 @@ class RecipeOrchestrator:
         self.console = Console()
         self.enable_rollback = enable_rollback
         self.telemetry = TelemetryCollector()
+        self.memory = MemoryStore()
 
         # Initialize BMAD loader
         try:
@@ -130,6 +132,8 @@ class RecipeOrchestrator:
             )
         )
 
+        goal_start_time = time.time()
+
         # Start telemetry trace
         self.telemetry.start_trace(goal)
 
@@ -159,6 +163,16 @@ class RecipeOrchestrator:
 
         # Finalize telemetry
         self.telemetry.finish_trace()
+
+        # Record to memory
+        entry = MemoryEntry(
+            goal=goal,
+            status=result.status.value,
+            duration_ms=(time.time() - goal_start_time) * 1000,
+            error_summary="; ".join(result.errors[:3]) if result.errors else "",
+            recipe_used=result.recipe.name if result.recipe else "",
+        )
+        self.memory.record(entry)
 
         return result
 
