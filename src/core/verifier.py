@@ -5,11 +5,12 @@ Validates execution results against success criteria.
 Implements the VERIFY phase of Plan-Execute-Verify pattern.
 """
 
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Callable
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 import re
+import subprocess
 
 
 class VerificationStatus(Enum):
@@ -302,9 +303,10 @@ class RecipeVerifier:
 
         # Custom checks (extensibility point)
         for custom_check in criteria.get("custom_checks", []):
-            # TODO: Implement custom check execution
-            # Could be Python code, shell script, or LLM validation
-            pass
+            check = self._run_custom_check(custom_check, result)
+            report.checks.append(check)
+            if check.status == VerificationStatus.FAILED:
+                report.passed = False
 
         # Collect warnings and errors
         for check in report.checks:
@@ -316,6 +318,90 @@ class RecipeVerifier:
                     report.passed = False
 
         return report
+
+    def _run_custom_check(
+        self, check_spec: Any, result: ExecutionResult
+    ) -> VerificationCheck:
+        """
+        Execute a custom verification check.
+
+        Supports:
+        - Shell command string: runs command, checks exit code 0
+        - Dict with {command, expected_output}: runs and matches output
+
+        Args:
+            check_spec: Shell command string or dict with command/expected_output
+            result: ExecutionResult context (available to checks)
+
+        Returns:
+            VerificationCheck result
+        """
+        if isinstance(check_spec, str):
+            command = check_spec
+            expected_output = None
+        elif isinstance(check_spec, dict):
+            command = check_spec.get("command", "")
+            expected_output = check_spec.get("expected_output")
+        else:
+            return VerificationCheck(
+                name="custom_check",
+                status=VerificationStatus.FAILED,
+                message=f"Invalid check spec type: {type(check_spec).__name__}",
+            )
+
+        if not command:
+            return VerificationCheck(
+                name="custom_check",
+                status=VerificationStatus.FAILED,
+                message="Empty custom check command",
+            )
+
+        try:
+            proc = subprocess.run(
+                command,
+                shell=True,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+
+            if proc.returncode != 0:
+                return VerificationCheck(
+                    name=f"custom:{command[:40]}",
+                    status=VerificationStatus.FAILED,
+                    message=f"Custom check failed (exit {proc.returncode}): {proc.stderr.strip()[:200]}",
+                    expected=0,
+                    actual=proc.returncode,
+                )
+
+            # If expected_output specified, verify it matches
+            if expected_output and expected_output not in proc.stdout:
+                return VerificationCheck(
+                    name=f"custom:{command[:40]}",
+                    status=VerificationStatus.FAILED,
+                    message=f"Output mismatch: expected '{expected_output}'",
+                    expected=expected_output,
+                    actual=proc.stdout.strip()[:200],
+                )
+
+            return VerificationCheck(
+                name=f"custom:{command[:40]}",
+                status=VerificationStatus.PASSED,
+                message=f"Custom check passed: {command[:60]}",
+            )
+
+        except subprocess.TimeoutExpired:
+            return VerificationCheck(
+                name=f"custom:{command[:40]}",
+                status=VerificationStatus.FAILED,
+                message=f"Custom check timed out: {command[:60]}",
+            )
+        except Exception as e:
+            return VerificationCheck(
+                name=f"custom:{command[:40]}",
+                status=VerificationStatus.FAILED,
+                message=f"Custom check error: {e}",
+            )
 
     def verify_quality_gates(self, result: ExecutionResult) -> VerificationReport:
         """
