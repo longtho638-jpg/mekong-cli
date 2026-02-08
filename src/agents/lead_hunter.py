@@ -4,7 +4,7 @@ Mekong CLI - LeadHunter Agent
 Specialized agent for finding CEO/Founder contact information from domains.
 """
 
-from typing import List, Any, Dict
+from typing import List
 from ..core.agent_base import AgentBase, Task, Result, TaskStatus
 
 class LeadHunter(AgentBase):

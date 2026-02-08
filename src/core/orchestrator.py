@@ -5,7 +5,10 @@ Coordinates Plan → Execute → Verify workflow.
 Implements ClaudeKit DNA's triadic pattern.
 """
 
-from typing import Optional, Any, List, Dict
+from typing import Optional, Any, List, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .llm_client import LLMClient
 from dataclasses import dataclass, field
 from enum import Enum
 from rich.console import Console
@@ -13,11 +16,14 @@ from rich.panel import Panel
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
+import time
+
 from .planner import RecipePlanner, PlanningContext
 from .executor import RecipeExecutor
 from .verifier import RecipeVerifier, VerificationReport, ExecutionResult
 from .parser import Recipe, RecipeStep
 from .exceptions import RollbackError
+from .telemetry import TelemetryCollector
 
 
 class OrchestrationStatus(Enum):
@@ -37,6 +43,7 @@ class StepResult:
     execution: ExecutionResult
     verification: VerificationReport
     retry_count: int = 0
+    self_healed: bool = False
 
 
 @dataclass
@@ -70,7 +77,7 @@ class RecipeOrchestrator:
 
     def __init__(
         self,
-        llm_client: Optional[Any] = None,
+        llm_client: Optional["LLMClient"] = None,
         strict_verification: bool = True,
         enable_rollback: bool = True,
     ):
@@ -86,6 +93,7 @@ class RecipeOrchestrator:
         self.verifier = RecipeVerifier(strict_mode=strict_verification)
         self.console = Console()
         self.enable_rollback = enable_rollback
+        self.telemetry = TelemetryCollector()
 
         # Initialize BMAD loader
         try:
@@ -119,6 +127,9 @@ class RecipeOrchestrator:
             )
         )
 
+        # Start telemetry trace
+        self.telemetry.start_trace(goal)
+
         # PHASE 1: PLAN
         self.console.print("\n[bold yellow]📋 PHASE 1: PLANNING[/bold yellow]")
 
@@ -141,7 +152,12 @@ class RecipeOrchestrator:
         self.console.print(f"[green]✓[/green] Generated {len(recipe.steps)} steps")
 
         # PHASE 2 & 3: EXECUTE → VERIFY
-        return self.run_from_recipe(recipe)
+        result = self.run_from_recipe(recipe)
+
+        # Finalize telemetry
+        self.telemetry.finish_trace()
+
+        return result
 
     def run_from_recipe(self, recipe: Recipe) -> OrchestrationResult:
         """
@@ -207,6 +223,8 @@ class RecipeOrchestrator:
     ) -> StepResult:
         """
         Execute single step and verify results.
+        If a shell step fails and an LLM client is available, attempt
+        one self-healing retry with an LLM-suggested corrected command.
 
         Args:
             executor: Recipe executor instance
@@ -215,8 +233,59 @@ class RecipeOrchestrator:
         Returns:
             StepResult with execution and verification data
         """
+        step_start = time.time()
+        self_healed = False
+
         # Execute step
         execution_result = executor.execute_step(step)
+
+        # Self-healing: retry failed shell steps with LLM correction
+        step_type = step.params.get("type", "shell") if step.params else "shell"
+        if (
+            step_type == "shell"
+            and execution_result.exit_code != 0
+            and self.planner.llm_client
+            and hasattr(self.planner.llm_client, "generate")
+        ):
+            command = step.description.strip()
+            stderr = execution_result.stderr or ""
+            self.console.print(
+                "[yellow]🔧 Attempting AI self-correction...[/yellow]"
+            )
+
+            try:
+                self.telemetry.record_llm_call()
+                prompt = (
+                    f"This shell command failed: `{command}`. "
+                    f"Error: `{stderr[:500]}`. "
+                    "Suggest a corrected command. "
+                    "Reply with ONLY the corrected command, no explanation."
+                )
+                corrected = self.planner.llm_client.generate(prompt).strip()
+
+                if corrected and corrected != command:
+                    # Build a temporary step with corrected command
+                    from .parser import RecipeStep as _RS
+
+                    healed_step = _RS(
+                        order=step.order,
+                        title=f"{step.title} (healed)",
+                        description=corrected,
+                        agent=step.agent,
+                        params=step.params,
+                    )
+                    execution_result = executor.execute_step(healed_step)
+                    if execution_result.exit_code == 0:
+                        self_healed = True
+                        self.console.print(
+                            "[green]✓ Self-healing succeeded[/green]"
+                        )
+                    else:
+                        self.telemetry.record_error(
+                            f"Self-heal retry also failed for step {step.order}"
+                        )
+            except Exception as e:
+                self.telemetry.record_error(f"Self-heal error: {e}")
 
         # Extract verification criteria from step params
         criteria = step.params.get("verification", {})
@@ -224,8 +293,22 @@ class RecipeOrchestrator:
         # Verify results
         verification_report = self.verifier.verify(execution_result, criteria)
 
+        # Record telemetry
+        duration = time.time() - step_start
+        self.telemetry.record_step(
+            step_order=step.order,
+            title=step.title,
+            duration=duration,
+            exit_code=execution_result.exit_code,
+            self_healed=self_healed,
+            agent=step.agent,
+        )
+
         return StepResult(
-            step=step, execution=execution_result, verification=verification_report
+            step=step,
+            execution=execution_result,
+            verification=verification_report,
+            self_healed=self_healed,
         )
 
     def _handle_failure(

@@ -5,7 +5,7 @@ Validates execution results against success criteria.
 Implements the VERIFY phase of Plan-Execute-Verify pattern.
 """
 
-from typing import Dict, List, Any, Optional, Callable
+from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -38,8 +38,8 @@ class VerificationCheck:
     name: str
     status: VerificationStatus
     message: str
-    expected: Any = None
-    actual: Any = None
+    expected: Optional[Union[str, int, bool]] = None
+    actual: Optional[Union[str, int, bool]] = None
 
 
 @dataclass
@@ -320,7 +320,7 @@ class RecipeVerifier:
         return report
 
     def _run_custom_check(
-        self, check_spec: Any, result: ExecutionResult
+        self, check_spec: Union[str, Dict[str, str]], result: ExecutionResult
     ) -> VerificationCheck:
         """
         Execute a custom verification check.

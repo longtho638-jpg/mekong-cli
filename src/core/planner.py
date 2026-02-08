@@ -5,7 +5,10 @@ Converts high-level goals into executable task lists using LLM.
 Implements the PLAN phase of Plan-Execute-Verify pattern.
 """
 
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .llm_client import LLMClient
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -60,7 +63,7 @@ class RecipePlanner:
         "crawler": ["crawl", "scrape", "recipe", "discover"],
     }
 
-    def __init__(self, llm_client: Optional[Any] = None):
+    def __init__(self, llm_client: Optional["LLMClient"] = None):
         """
         Initialize planner.
 

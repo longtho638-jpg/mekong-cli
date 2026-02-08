@@ -7,7 +7,7 @@ Pattern: Plan-Execute-Verify
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Optional, Any
+from typing import Dict, List, Optional, Any, Union
 from enum import Enum
 
 
@@ -27,9 +27,9 @@ class Task:
 
     id: str
     description: str
-    input: Any
+    input: Dict[str, Any]
     status: TaskStatus = TaskStatus.PENDING
-    output: Optional[Any] = None
+    output: Optional[Union[str, dict, list]] = None
     error: Optional[str] = None
 
 
@@ -39,7 +39,7 @@ class Result:
 
     task_id: str
     success: bool
-    output: Any
+    output: Optional[Union[str, dict, list]]
     error: Optional[str] = None
 
 
@@ -59,7 +59,7 @@ class AgentBase(ABC):
         self.tasks: List[Task] = []
 
     @abstractmethod
-    def plan(self, input_data: Any) -> List[Task]:
+    def plan(self, input_data: str) -> List[Task]:
         """
         Parse input into executable tasks.
 
@@ -98,7 +98,7 @@ class AgentBase(ABC):
         """
         return result.success
 
-    def run(self, input_data: Any) -> List[Result]:
+    def run(self, input_data: str) -> List[Result]:
         """
         Main execution loop.
 

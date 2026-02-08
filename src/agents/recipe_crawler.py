@@ -4,7 +4,7 @@ Mekong CLI - RecipeCrawler Agent
 Specialized agent for discovering and downloading recipes from the community repository.
 """
 
-from typing import List, Any
+from typing import List
 import json
 from ..core.agent_base import AgentBase, Task, Result, TaskStatus
 

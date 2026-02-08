@@ -4,7 +4,7 @@ Mekong CLI - ContentWriter Agent
 Specialized agent for generating SEO-optimized content from keywords.
 """
 
-from typing import List, Any
+from typing import List
 from ..core.agent_base import AgentBase, Task, Result, TaskStatus
 
 class ContentWriter(AgentBase):

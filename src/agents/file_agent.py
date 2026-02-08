@@ -218,7 +218,7 @@ class FileAgent(AgentBase):
                         for f in files:
                             try:
                                 total_lines += f.read_text(errors="replace").count("\n")
-                            except Exception:
+                            except (OSError, UnicodeDecodeError):
                                 pass
                         stats[ext] = {"files": len(files), "lines": total_lines}
 
