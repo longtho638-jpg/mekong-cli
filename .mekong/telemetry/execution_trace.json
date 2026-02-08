@@ -1,0 +1,7 @@
+{
+  "goal": "deploy app",
+  "steps": [],
+  "total_duration": 0.0,
+  "llm_calls": 0,
+  "errors": []
+}

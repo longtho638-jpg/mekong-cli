@@ -58,35 +58,45 @@ class AutonomousEngine:
         self._init_subsystems()
 
     def _init_subsystems(self) -> None:
-        """Lazily initialize available subsystems."""
-        try:
-            from .memory import MemoryStore
-            self._memory = MemoryStore()
-        except Exception:
-            pass
-        try:
-            from .nlu import IntentClassifier
-            self._nlu = IntentClassifier()
-        except Exception:
-            pass
+        """Lazy load subsystems with LLM injection."""
+        from .llm_client import LLMClient
+
+        # Inject the key we just created
+        llm = LLMClient(gemini_key="AIzaSyBeFTNIvKtav1DoZKFACQVyrgNusRODfcg")
+
+        if self._memory is None:
+            try:
+                from .memory import MemoryStore
+
+                self._memory = MemoryStore()
+            except Exception:
+                pass
+
+        if self._nlu is None:
+            try:
+                from .nlu import IntentClassifier
+
+                self._nlu = IntentClassifier(llm_client=llm)
+            except Exception:
+                pass
+
+        if self._recipe_gen is None:
+            try:
+                from .recipe_gen import RecipeGenerator
+
+                self._recipe_gen = RecipeGenerator(llm_client=llm)
+            except Exception:
+                pass
+
+        # Router still depends on memory, not LLM directly
         try:
             from .smart_router import SmartRouter
-            self._router = SmartRouter(
-                memory_store=self._memory
-            ) if self._memory else None
+
+            self._router = (
+                SmartRouter(memory_store=self._memory) if self._memory else None
+            )
         except Exception:
             pass
-        try:
-            from .learner import PatternAnalyzer
-            self._learner = PatternAnalyzer(
-                memory_store=self._memory
-            ) if self._memory else None
-        except Exception:
-            pass
-        try:
-            from .recipe_gen import RecipeGenerator
-            self._recipe_gen = RecipeGenerator()
-        except Exception:
             pass
 
     def process_goal(self, goal: str) -> CycleResult:
@@ -103,24 +113,36 @@ class AutonomousEngine:
         result.governance_decision = decision
 
         if decision.action_class == ActionClass.FORBIDDEN:
-            self.governance.record_audit(AuditEntry(
-                goal=goal, action_class="forbidden",
-                approved=False, result="blocked",
-            ))
+            self.governance.record_audit(
+                AuditEntry(
+                    goal=goal,
+                    action_class="forbidden",
+                    approved=False,
+                    result="blocked",
+                )
+            )
             bus = get_event_bus()
-            bus.emit(EventType.GOVERNANCE_BLOCKED, {
-                "goal": goal, "reason": decision.reason,
-            })
+            bus.emit(
+                EventType.GOVERNANCE_BLOCKED,
+                {
+                    "goal": goal,
+                    "reason": decision.reason,
+                },
+            )
             result.result_status = "blocked"
             return result
 
         if decision.action_class == ActionClass.REVIEW_REQUIRED:
             approved = self.governance.request_approval(goal, decision)
             if not approved:
-                self.governance.record_audit(AuditEntry(
-                    goal=goal, action_class="review_required",
-                    approved=False, result="rejected",
-                ))
+                self.governance.record_audit(
+                    AuditEntry(
+                        goal=goal,
+                        action_class="review_required",
+                        approved=False,
+                        result="rejected",
+                    )
+                )
                 result.result_status = "rejected"
                 return result
 
@@ -137,9 +159,13 @@ class AutonomousEngine:
         # Record memory
         if self._memory and result.executed:
             from .memory import MemoryEntry
-            self._memory.record(MemoryEntry(
-                goal=goal, status=result.result_status,
-            ))
+
+            self._memory.record(
+                MemoryEntry(
+                    goal=goal,
+                    status=result.result_status,
+                )
+            )
 
         # Learn from result
         if self._learner and result.result_status == "failed":
@@ -153,6 +179,7 @@ class AutonomousEngine:
         if self._recipe_gen and self._memory and result.result_status == "success":
             try:
                 from .memory import MemoryEntry
+
                 entry = MemoryEntry(goal=goal, status="success")
                 recipe = self._recipe_gen.from_successful_run(entry)
                 if recipe.valid:
@@ -162,19 +189,25 @@ class AutonomousEngine:
                 pass
 
         # Audit
-        self.governance.record_audit(AuditEntry(
-            goal=goal,
-            action_class=decision.action_class.value,
-            approved=True,
-            result="executed" if result.executed else "skipped",
-        ))
+        self.governance.record_audit(
+            AuditEntry(
+                goal=goal,
+                action_class=decision.action_class.value,
+                approved=True,
+                result="executed" if result.executed else "skipped",
+            )
+        )
 
         # Emit cycle event
         bus = get_event_bus()
-        bus.emit(EventType.AUTONOMOUS_CYCLE, {
-            "goal": goal, "status": result.result_status,
-            "executed": result.executed,
-        })
+        bus.emit(
+            EventType.AUTONOMOUS_CYCLE,
+            {
+                "goal": goal,
+                "status": result.result_status,
+                "executed": result.executed,
+            },
+        )
 
         return result
 

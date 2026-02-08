@@ -1,0 +1,93 @@
+# Mekong Swarm Registry
+nodes:
+  - id: 798705c4
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544076.081207
+  - id: 6d2d989d
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544078.085164
+  - id: 73086b4e
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544080.102634
+  - id: a3f91fcc
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544082.109792
+  - id: 0202789a
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544084.119921
+  - id: 0a722887
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544086.124054
+  - id: 2cb54c9d
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544088.132929
+  - id: 1c0b01d3
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544090.135465
+  - id: 16eafb6d
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544092.1403892
+  - id: ec57aa36
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544094.14897
+  - id: 523e2f62
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544096.158867
+  - id: e52b12a0
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1770544098.170031
+  - id: e08b6528
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unknown
+    last_heartbeat: 0.0

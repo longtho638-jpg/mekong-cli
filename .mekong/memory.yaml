@@ -1,0 +1,24 @@
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1770543911.380689
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1770543911.389838
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1770545823.525903
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1770545823.5450208
