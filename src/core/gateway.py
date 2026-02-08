@@ -31,7 +31,7 @@ from src.core.memory import MemoryStore, MemoryEntry
 GATEWAY_CONFIG: GatewayConfig = load_config()
 PRESET_ACTIONS: List[Dict[str, str]] = GATEWAY_CONFIG.presets
 
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 
 
 # -- Request / Response models --
@@ -408,6 +408,39 @@ def create_app() -> FastAPI:
             entities=result.entities,
             suggested_recipe=result.suggested_recipe,
         )
+
+    # -- Telegram bot integration --
+    telegram_token = os.environ.get("MEKONG_TELEGRAM_TOKEN", "")
+    _bot = None
+
+    if telegram_token:
+        try:
+            from src.core.telegram_bot import MekongBot
+            from src.core.notifier import Notifier
+
+            _bot = MekongBot(token=telegram_token)
+            _notifier = Notifier(bot=_bot)
+            _notifier.subscribe(get_event_bus())
+        except ImportError:
+            pass
+
+    @gateway.on_event("startup")
+    async def _startup_bot():
+        if _bot:
+            asyncio.create_task(_bot.start())
+
+    @gateway.on_event("shutdown")
+    async def _shutdown_bot():
+        if _bot:
+            await _bot.stop()
+
+    @gateway.get("/telegram/status")
+    def telegram_status():
+        """Check Telegram bot status."""
+        return {
+            "running": _bot.is_running() if _bot else False,
+            "configured": bool(telegram_token),
+        }
 
     # -- Swarm endpoints --
     swarm_registry = SwarmRegistry()

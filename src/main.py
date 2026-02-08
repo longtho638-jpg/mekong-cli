@@ -57,6 +57,10 @@ app.add_typer(schedule_app, name="schedule")
 memory_app = typer.Typer(help="Memory: execution history & learning")
 app.add_typer(memory_app, name="memory")
 
+# Telegram sub-commands
+telegram_app = typer.Typer(help="Telegram: remote commander bot")
+app.add_typer(telegram_app, name="telegram")
+
 console = Console()
 
 
@@ -897,12 +901,69 @@ def memory_clear_cmd():
     console.print("[green]Memory cleared.[/green]")
 
 
+@telegram_app.command(name="start")
+def telegram_start():
+    """Start Telegram bot in foreground (blocking)."""
+    import asyncio
+
+    token = os.environ.get("MEKONG_TELEGRAM_TOKEN", "")
+    if not token:
+        console.print(
+            Panel(
+                "[bold red]MEKONG_TELEGRAM_TOKEN not set![/bold red]\n\n"
+                "Set it before starting:\n"
+                "  [cyan]export MEKONG_TELEGRAM_TOKEN='your-bot-token'[/cyan]",
+                title="Telegram Bot",
+                border_style="red",
+            )
+        )
+        raise typer.Exit(code=1)
+
+    try:
+        from src.core.telegram_bot import MekongBot
+    except ImportError:
+        console.print("[red]python-telegram-bot not installed.[/red]")
+        console.print("[dim]pip install python-telegram-bot[/dim]")
+        raise typer.Exit(code=1)
+
+    bot = MekongBot(token=token)
+    console.print("[green]Starting Telegram bot...[/green]")
+
+    async def run():
+        await bot.start()
+        try:
+            while bot.is_running():
+                await asyncio.sleep(1)
+        except KeyboardInterrupt:
+            pass
+        finally:
+            await bot.stop()
+
+    asyncio.run(run())
+
+
+@telegram_app.command(name="status")
+def telegram_status_cmd():
+    """Check Telegram bot configuration status."""
+    token = os.environ.get("MEKONG_TELEGRAM_TOKEN", "")
+    configured = bool(token)
+    status_style = "green" if configured else "red"
+    console.print(
+        Panel(
+            f"[bold]Configured:[/bold] [{status_style}]{configured}[/{status_style}]\n"
+            f"[bold]Token:[/bold] {'*' * 8 + token[-4:] if token else 'not set'}",
+            title="Telegram Bot Status",
+            border_style=status_style,
+        )
+    )
+
+
 @app.command()
 def version():
     """Show version info"""
     console.print(
         Panel(
-            "[bold green]Mekong CLI[/bold green] v0.8.0\n"
+            "[bold green]Mekong CLI[/bold green] v0.9.0\n"
             "[dim]RaaS Agency Operating System[/dim]\n"
             "[dim]Engine: Plan-Execute-Verify (Binh Pháp)[/dim]\n"
             "[dim]DNA: ClaudeKit v2.9.1+[/dim]",
