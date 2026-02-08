@@ -25,6 +25,7 @@ from .parser import Recipe, RecipeStep
 from .exceptions import RollbackError
 from .telemetry import TelemetryCollector
 from .memory import MemoryStore, MemoryEntry
+from .nlu import IntentClassifier
 
 
 class OrchestrationStatus(Enum):
@@ -96,6 +97,7 @@ class RecipeOrchestrator:
         self.enable_rollback = enable_rollback
         self.telemetry = TelemetryCollector()
         self.memory = MemoryStore()
+        self.nlu = IntentClassifier(llm_client=llm_client)
 
         # Initialize BMAD loader
         try:
@@ -136,6 +138,37 @@ class RecipeOrchestrator:
 
         # Start telemetry trace
         self.telemetry.start_trace(goal)
+
+        # NLU Phase (pre-planning) — classify intent and try direct recipe
+        intent_result = self.nlu.classify(goal)
+        if intent_result.confidence > 0.7 and intent_result.suggested_recipe:
+            from .smart_router import SmartRouter
+
+            router = SmartRouter(memory_store=self.memory)
+            route = router.route(intent_result)
+            if route.action == "recipe" and route.recipe_path:
+                from .parser import RecipeParser
+
+                try:
+                    recipe = RecipeParser().parse_file(route.recipe_path)
+                    self.console.print(
+                        f"[green]NLU:[/green] Matched recipe '{route.recipe_name}'"
+                    )
+                    result = self.run_from_recipe(
+                        recipe, progress_callback=progress_callback,
+                    )
+                    self.telemetry.finish_trace()
+                    entry = MemoryEntry(
+                        goal=goal,
+                        status=result.status.value,
+                        duration_ms=(time.time() - goal_start_time) * 1000,
+                        error_summary="; ".join(result.errors[:3]) if result.errors else "",
+                        recipe_used=result.recipe.name if result.recipe else "",
+                    )
+                    self.memory.record(entry)
+                    return result
+                except Exception:
+                    pass  # Fall through to normal planning
 
         # PHASE 1: PLAN
         self.console.print("\n[bold yellow]📋 PHASE 1: PLANNING[/bold yellow]")

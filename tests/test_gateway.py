@@ -728,8 +728,8 @@ class TestGatewayConfig(unittest.TestCase):
         self.assertEqual(DEFAULT_PRESETS[0]["id"], "deploy")
 
     def test_version_is_0_6_0(self):
-        """Gateway version should be 0.7.0"""
-        self.assertEqual(VERSION, "0.7.0")
+        """Gateway version should be 0.8.0"""
+        self.assertEqual(VERSION, "0.8.0")
 
 
 class TestDashboardTemplate(unittest.TestCase):
@@ -1434,18 +1434,18 @@ class TestScheduleEndpoints(unittest.TestCase):
 
 
 class TestVersionIs060(unittest.TestCase):
-    """Verify version was bumped to 0.7.0."""
+    """Verify version was bumped to 0.8.0."""
 
     def test_gateway_version_string(self):
-        """VERSION constant should be 0.7.0."""
-        self.assertEqual(VERSION, "0.7.0")
+        """VERSION constant should be 0.8.0."""
+        self.assertEqual(VERSION, "0.8.0")
 
     def test_health_reports_version(self):
-        """Health endpoint should report 0.7.0."""
+        """Health endpoint should report 0.8.0."""
         app = create_app()
         client = TestClient(app)
         resp = client.get("/health")
-        self.assertEqual(resp.json()["version"], "0.7.0")
+        self.assertEqual(resp.json()["version"], "0.8.0")
 
 
 # ====================================================================

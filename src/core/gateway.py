@@ -31,7 +31,7 @@ from src.core.memory import MemoryStore, MemoryEntry
 GATEWAY_CONFIG: GatewayConfig = load_config()
 PRESET_ACTIONS: List[Dict[str, str]] = GATEWAY_CONFIG.presets
 
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 
 
 # -- Request / Response models --
@@ -158,6 +158,19 @@ class MemoryStatsResponse(BaseModel):
     success_rate: float
     top_goals: List[str]
     recent_failures: int
+
+
+class NLUParseRequest(BaseModel):
+    """NLU parse request"""
+    goal: str = Field(..., min_length=1)
+
+
+class NLUParseResponse(BaseModel):
+    """NLU parse response"""
+    intent: str
+    confidence: float
+    entities: Dict[str, str]
+    suggested_recipe: str
 
 
 # -- Token verification --
@@ -380,6 +393,22 @@ def create_app() -> FastAPI:
             except Exception:
                 pass
 
+    # -- NLU endpoint --
+
+    @gateway.post("/nlu/parse", response_model=NLUParseResponse)
+    def nlu_parse(req: NLUParseRequest):
+        """Parse a goal into intent, confidence, and entities."""
+        from src.core.nlu import IntentClassifier
+
+        classifier = IntentClassifier()
+        result = classifier.classify(req.goal)
+        return NLUParseResponse(
+            intent=result.intent.value,
+            confidence=result.confidence,
+            entities=result.entities,
+            suggested_recipe=result.suggested_recipe,
+        )
+
     # -- Swarm endpoints --
     swarm_registry = SwarmRegistry()
 
@@ -529,6 +558,8 @@ __all__ = [
     "ScheduleAddRequest",
     "MemoryEntryInfo",
     "MemoryStatsResponse",
+    "NLUParseRequest",
+    "NLUParseResponse",
     "PRESET_ACTIONS",
     "GATEWAY_CONFIG",
     "VERSION",
