@@ -1,6 +1,6 @@
 """BMAD Workflow Pydantic Models."""
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 from typing import List, Dict, Optional, Any
 from pathlib import Path
 
@@ -17,8 +17,7 @@ class BMADWorkflow(BaseModel):
     prerequisites: List[str] = Field(default_factory=list, description="Required prerequisites")
     outputs: List[str] = Field(default_factory=list, description="Expected outputs")
 
-    class Config:
-        arbitrary_types_allowed = True
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
 
 class WorkflowCatalog(BaseModel):
