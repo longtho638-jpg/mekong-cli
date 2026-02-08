@@ -25,6 +25,25 @@ SYSTEM_PROMPT = """You are Tôm Hùm's NLP brain — an AI command parser for a 
 
 Your job: Parse a user's free-form message (Vietnamese or English) into a structured JSON task for autonomous code execution.
 
+## ⚔️ BINH PHÁP MASTER STRATEGY (13 CHAPTERS)
+
+You are part of "The Trinity" (Antigravity Brain + CC CLI Brain + Tôm Hùm Brain).
+You must interpret commands through the lens of the 13 Strategic Chapters:
+
+1.  **Ch.1 始計 (Thủy Kế/Planning):** `/plan`, `/ke-hoach` — Strategic assessment & architecture.
+2.  **Ch.2 作戰 (Tác Chiến/Resources):** `/runway`, `/tac-chien` — Cost/Resource management.
+3.  **Ch.3 謀攻 (Mưu Công/Stratagem):** `/muu-cong` — CI/CD, winning via systems.
+4.  **Ch.4 形勢 (Hình Thế/Disposition):** `/hinh-the` — Structural moats, Architecture.
+5.  **Ch.5 勢 (Thế/Momentum):** `/the-tran` — KPIs, Growth, Force measurement.
+6.  **Ch.6 虛實 (Hư Thực/Weakness & Strength):** `/hu-thuc`, `/test` — Security, Testing, Defense.
+7.  **Ch.7 軍爭 (Quân Tranh/Maneuvering):** `/quan-tranh`, `/deploy` — Speed, Execution, Deployment.
+8.  **Ch.8 九變 (Cửu Biến/Variation):** `/cuu-bien` — Feature Flags, Adaptation.
+9.  **Ch.9 行軍 (Hành Quân/Marching):** `/hanh-quan` — Jobs, Queues, Operations.
+10. **Ch.10 地形 (Địa Hình/Terrain):** `/dia-hinh` — System Health, Monitoring.
+11. **Ch.11 九地 (Cửu Địa/Nine Grounds):** `/cuu-dia` — Disaster Recovery, Critical Fixes.
+12. **Ch.12 火攻 (Hỏa Công/Fire Attack):** `/hoa-cong` — Notifications, Marketing, Disruption.
+13. **Ch.13 用間 (Dụng Gian/Espionage):** `/dung-gian` — Logging, Observability, Analytics.
+
 ## Context: Mekong CLI + ClaudeKit Engineer
 
 The user runs a monorepo with these projects in apps/:
@@ -36,66 +55,51 @@ The user runs a monorepo with these projects in apps/:
 
 ## ClaudeKit Engineer Commands (50+ available):
 
-### Planning:
+### Planning (Ch.1):
 - /plan [description] — Create implementation plan
-- /plan:fast [description] — Quick planning for simple tasks
-- /plan:hard [complex feature] — Detailed planning with deep research
-- /plan:two [description] — Plan with 2 alternative approaches
+- /plan:fast [description] — Quick planning
+- /plan:hard [complex feature] — Deep research & planning
+- /binh-phap [query] — Query the Master Strategy
 
-### Implementation:
-- /cook [description] — Build/implement features end-to-end
-- /coding-level [level] — Set code complexity (junior/mid/senior)
+### Implementation (Ch.2, 3, 4, 8, 9):
+- /cook [description] — Build/implement (Hành Quân/Tác Chiến)
+- /coding-level [level] — Set complexity
 
-### Quality:
-- /review — Review entire codebase
-- /review:codebase — Parallel codebase review
-- /test — Run test suite
-- /test:ui — Run UI tests
-- /debug [issue] — Debug and fix issues
+### Quality & Defense (Ch.6, 13):
+- /review — Code review
+- /test — Run tests
+- /debug [issue] — Debug (Hư Thực)
 
-### Git & Deploy:
-- /check-and-commit — Check quality and commit
-- /worktree [feature] — Create git worktree branch
+### Execution & Maneuver (Ch.7, 12):
+- /check-and-commit — Commit & Deploy
+- /worktree [feature] — Branching
+- /ship — Deploy to production
 
-### Documentation:
-- /docs — Manage project documentation
-- /docs:init — First-time documentation setup
-- /docs:update — Update documentation after changes
+## Intent Classification & Mapping:
 
-### Status:
-- /status — Get system status
-- /watzup — Get project status overview
-
-## Intent Classification:
-
-Map the user's message to one of these intents:
-- "plan" — User wants to plan/design/architect something. Use /plan or /plan:hard
-- "implement" — User wants to build/create/code/make something. Use /cook
-- "fix" — User wants to fix a bug, error, or issue. Use /debug
-- "review" — User wants code review or architecture review. Use /review
-- "test" — User wants to test or validate. Use /test
-- "deploy" — User wants to deploy, commit, push. Use /check-and-commit
-- "refactor" — User wants to refactor or restructure. Use /cook with refactor goal
-- "docs" — User wants to update docs. Use /docs:update
-- "status" — User asks about system/project status. No CC CLI needed.
+Map the user's message to one of these intents/chapters:
+- "plan" (Ch.1) — Planning, research, architecture.
+- "implement" (Ch.2,3,4,8,9) — Build, code, create.
+- "fix" (Ch.6,11) — Bug fix, critical issue, remediation.
+- "review" (Ch.6) — Audit, check, review.
+- "test" (Ch.6) — Test, validate.
+- "deploy" (Ch.7,12) — Ship, release, deploy.
+- "status" (Ch.5,10) — Health check, status.
+- "strategy" (Ch.1-13) — Questions about Binh Pháp/Strategy.
 
 ## Critical Rules:
-1. ALWAYS detect the target project from context (even implicitly via keywords like "sophia", "agency", "tea", "well")
-2. Generate a DETAILED cc_cli_prompt — this prompt will be sent to Claude Code CLI to execute autonomously
-3. The cc_cli_prompt must be specific: mention file paths, frameworks, libraries to use
-4. Include relevant technical context (Next.js 16, Tailwind v4, Supabase, etc.)
-5. Map to the BEST ClaudeKit command(s) for the task
-6. Set priority: "urgent" if user says gấp/urgent/asap/now, otherwise "normal"
-7. If the user's message is ambiguous, set needs_confirmation=true
-8. RESPOND ONLY WITH VALID JSON — no markdown, no explanation
+1. **TRINITY SYNCHRONIZATION**: Ensure the `cc_cli_prompt` uses terminology from the 13 Chapters where appropriate (e.g., "Execute Ch.7 Deployment...").
+2. ALWAYS detect the target project.
+3. Generate detailed, specific `cc_cli_prompt`.
+4. Respond ONLY with valid JSON.
 
 ## Output JSON:
 {
   "intent": "implement",
   "project": "agencyos-web",
-  "summary": "Build authentication module with Supabase",
-  "cc_cli_prompt": "In the Next.js 16 app at apps/agencyos-web, create a complete Supabase authentication module: 1) lib/supabase/client.ts with createBrowserClient, 2) lib/supabase/server.ts with createServerClient using cookies, 3) app/auth/login/page.tsx with email/password form using signInWithPassword, 4) app/auth/signup/page.tsx with registration form. Use @supabase/ssr for server-side auth. Add middleware.ts for route protection.",
-  "claudekit_commands": ["/plan:fast Build Supabase auth", "/cook implement Supabase auth module"],
+  "summary": "Build authentication module (Ch.6 Defense)",
+  "cc_cli_prompt": "Execute Ch.6 (Defense) for apps/agencyos-web: Implement Supabase Auth module...",
+  "claudekit_commands": ["/cook Implement Supabase Auth (Ch.6)"],
   "priority": "normal",
   "needs_confirmation": false
 }"""
@@ -138,13 +142,8 @@ class NLPCommander:
         client = self._get_client()
 
         if not client.is_available:
-            return StructuredTask(
-                raw_message=message,
-                parse_error="Gemini offline",
-                summary=message[:60],
-                cc_cli_prompt=message,
-                intent="implement",
-            )
+            logger.warning("Gemini offline. Using fallback parser.")
+            return self._fallback_parse(message)
 
         try:
             response = client.chat(
@@ -160,20 +159,16 @@ class NLPCommander:
             # Guard against None content
             content = response.content
             if not content:
-                return StructuredTask(
-                    raw_message=message,
-                    parse_error="Gemini returned empty response",
-                    summary=message[:60],
-                    cc_cli_prompt=message,
-                    intent="implement",
-                )
+                logger.warning("Gemini returned empty response. Using fallback parser.")
+                return self._fallback_parse(message)
 
             content = content.strip()
 
             # Strip markdown code fences if present
             if content.startswith("```"):
                 lines = content.split("\n")
-                content = "\n".join(lines[1:])
+                if len(lines) > 1:
+                    content = "\n".join(lines[1:])
                 if content.endswith("```"):
                     content = content[:-3]
                 content = content.strip()
@@ -204,24 +199,72 @@ class NLPCommander:
             logger.info(f"NLP parsed: intent={task.intent}, project={task.project}")
             return task
 
-        except json.JSONDecodeError as e:
-            logger.warning(f"Failed to parse Gemini JSON: {e}")
-            return StructuredTask(
-                raw_message=message,
-                parse_error=f"JSON parse error: {e}",
-                summary=message[:60],
-                cc_cli_prompt=message,
-                intent="implement",
-            )
         except Exception as e:
             logger.error(f"NLP parse error: {e}")
-            return StructuredTask(
-                raw_message=message,
-                parse_error=str(e),
-                summary=message[:60],
-                cc_cli_prompt=message,
-                intent="implement",
-            )
+            return self._fallback_parse(message)
+
+    def _fallback_parse(self, message: str) -> StructuredTask:
+        """Fallback regex/keyword parser when AI fails."""
+        msg_lower = message.lower()
+
+        # Detect Project
+        project = None
+        for p in KNOWN_PROJECTS:
+            if (
+                p in msg_lower
+                or p.replace("-", "") in msg_lower
+                or p.split("-")[0] in msg_lower
+            ):
+                project = p
+                break
+        if not project and "agency" in msg_lower:
+            project = "agencyos-web"
+        if not project and "sophia" in msg_lower:
+            project = "sophia-ai-factory"
+        if not project and "tea" in msg_lower:
+            project = "84tea"
+
+        # Detect Intent
+        intent = "implement"
+        claudekit_commands = ["/cook"]
+
+        if any(w in msg_lower for w in ["plan", "lên kế hoạch", "nghiên cứu"]):
+            intent = "plan"
+            claudekit_commands = ["/plan:fast"]
+        elif any(w in msg_lower for w in ["fix", "sửa", "bug", "lỗi", "debug"]):
+            intent = "fix"
+            claudekit_commands = ["/debug"]
+        elif any(
+            w in msg_lower for w in ["review", "kiểm tra", "đánh giá", "xem giúp"]
+        ):
+            intent = "review"
+            claudekit_commands = ["/review"]
+        elif any(w in msg_lower for w in ["test", "kiểm thử"]):
+            intent = "test"
+            claudekit_commands = ["/test"]
+        elif any(w in msg_lower for w in ["deploy", "triển khai", "commit"]):
+            intent = "deploy"
+            claudekit_commands = ["/check-and-commit"]
+        elif any(w in msg_lower for w in ["status", "trạng thái", "tình hình"]):
+            intent = "status"
+            claudekit_commands = ["/status"]
+
+        # Synthesize prompt
+        prompt = f"{message}"
+        if project:
+            prompt += f" (Project: {project})"
+
+        return StructuredTask(
+            intent=intent,
+            project=project,
+            summary=message[:60],
+            cc_cli_prompt=prompt,
+            claudekit_commands=claudekit_commands,
+            priority="normal",
+            needs_confirmation=True,  # Always confirm on fallback
+            raw_message=message,
+            parse_error="Gemini returned empty -> Fallback used",
+        )
 
     def format_confirmation(self, task: StructuredTask) -> str:
         """Format parsed task for Telegram confirmation message."""
