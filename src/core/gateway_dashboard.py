@@ -77,6 +77,30 @@ footer{text-align:center;padding:1rem;color:#475569;font-size:.75rem;border-top:
 details{margin-top:.5rem}
 details summary{cursor:pointer;color:#94a3b8;font-size:.85rem}
 details pre{font-size:.75rem;color:#94a3b8;white-space:pre-wrap;margin-top:.5rem}
+.tabs{display:flex;gap:0;margin-bottom:1rem;border-bottom:2px solid #334155}
+.tab{padding:.6rem 1.2rem;cursor:pointer;color:#94a3b8;font-weight:600;font-size:.9rem;
+border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab:hover{color:#e2e8f0}
+.tab.active{color:#38bdf8;border-bottom-color:#38bdf8}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.swarm-nodes{display:grid;gap:.75rem}
+.swarm-node{padding:1rem;border:1px solid #334155;border-radius:.75rem;background:#1e293b;
+display:flex;align-items:center;gap:1rem}
+.swarm-node .node-status{width:10px;height:10px;border-radius:50%}
+.swarm-node .node-status.healthy{background:#22c55e}
+.swarm-node .node-status.unhealthy{background:#f59e0b}
+.swarm-node .node-status.unreachable{background:#ef4444}
+.swarm-node .node-status.unknown{background:#475569}
+.swarm-node .node-info{flex:1}
+.swarm-node .node-name{font-weight:600;font-size:.95rem}
+.swarm-node .node-host{color:#94a3b8;font-size:.8rem}
+.swarm-node .node-btn{padding:.4rem .8rem;border:1px solid #334155;border-radius:.5rem;
+background:#0f172a;color:#e2e8f0;cursor:pointer;font-size:.8rem}
+.swarm-node .node-btn:hover{border-color:#38bdf8}
+.swarm-empty{color:#94a3b8;text-align:center;padding:2rem;font-size:.9rem}
+.swarm-stats{display:flex;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.swarm-stat{padding:.5rem .75rem;border-radius:.5rem;background:#1e293b;border:1px solid #334155;font-size:.85rem}
 </style>
 </head>
 <body>
@@ -92,10 +116,20 @@ details pre{font-size:.75rem;color:#94a3b8;white-space:pre-wrap;margin-top:.5rem
 </div>
 </header>
 <main>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('actions')">Actions</div>
+<div class="tab" onclick="switchTab('swarm')">Swarm</div>
+</div>
+<div id="tab-actions" class="tab-content active">
 <div class="grid" id="buttons"></div>
 <div class="custom-bar">
 <input type="text" id="custom-goal" placeholder="Or type a custom goal..." />
 <button onclick="runCustom()">Run</button>
+</div>
+</div>
+<div id="tab-swarm" class="tab-content">
+<div class="swarm-stats" id="swarm-stats"></div>
+<div class="swarm-nodes" id="swarm-nodes"><div class="swarm-empty">Loading nodes...</div></div>
 </div>
 <div id="live-log" class="live-log">
 <div class="live-log-hdr">Live Progress</div>
@@ -188,6 +222,55 @@ if(typeof WebSocket!=='undefined'){runGoalWS(goal,btnId)}else{runGoalHTTP(goal,b
 }
 function runCustom(){var g=document.getElementById('custom-goal').value.trim();
 if(!g){alert('Please enter a goal.');return}runGoal(g,null)}
+
+/* --- Tabs --- */
+function switchTab(name){
+document.querySelectorAll('.tab').forEach(function(t){t.className='tab'});
+document.querySelectorAll('.tab-content').forEach(function(c){c.className='tab-content'});
+document.querySelector('[onclick="switchTab(\''+name+'\')"]').className='tab active';
+document.getElementById('tab-'+name).className='tab-content active';
+if(name==='swarm')loadSwarmNodes();
+}
+
+/* --- Swarm --- */
+function loadSwarmNodes(){
+fetch('/swarm/nodes').then(function(r){return r.json()}).then(function(nodes){
+var container=document.getElementById('swarm-nodes');
+while(container.firstChild)container.removeChild(container.firstChild);
+var stats=document.getElementById('swarm-stats');
+while(stats.firstChild)stats.removeChild(stats.firstChild);
+if(!nodes.length){container.appendChild(el('div','swarm-empty','No nodes registered. Use CLI: mekong swarm add'));return}
+var healthy=0,total=nodes.length;
+nodes.forEach(function(n){if(n.status==='healthy')healthy++});
+stats.appendChild(el('div','swarm-stat','Nodes: '+total));
+stats.appendChild(el('div','swarm-stat','Healthy: '+healthy+'/'+total));
+nodes.forEach(function(n){
+var row=el('div','swarm-node');
+var dot=el('div','node-status '+n.status);
+var info=el('div','node-info');
+info.appendChild(el('div','node-name',n.name));
+info.appendChild(el('div','node-host',n.host+':'+n.port+' ('+n.status+')'));
+var btn=el('button','node-btn','Dispatch');
+btn.onclick=function(){dispatchToNode(n.id,n.name)};
+row.appendChild(dot);row.appendChild(info);row.appendChild(btn);
+container.appendChild(row);
+});
+}).catch(function(){
+var c=document.getElementById('swarm-nodes');
+while(c.firstChild)c.removeChild(c.firstChild);
+c.appendChild(el('div','swarm-empty','Failed to load swarm nodes.'));
+})
+}
+function dispatchToNode(nodeId,nodeName){
+var goal=prompt('Enter goal to dispatch to '+nodeName+':');
+if(!goal)return;
+showLiveLog();clearLog();addLogStatus('Dispatching to '+nodeName+'...');
+fetch('/swarm/dispatch',{method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({node_id:nodeId,goal:goal})})
+.then(function(r){return r.json()}).then(function(d){
+if(d.error){addLogError(d.error)}else{addLogStatus('Dispatch complete');showResult(buildResultFragment(d))}
+}).catch(function(e){addLogError('Dispatch failed: '+e.message)})
+}
 
 /* --- Init --- */
 window.onload=function(){

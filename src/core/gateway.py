@@ -21,13 +21,15 @@ from src.core.llm_client import get_client
 from src.core.orchestrator import RecipeOrchestrator
 from src.core.gateway_config import DEFAULT_PRESETS, GatewayConfig, load_config
 from src.core.gateway_dashboard import DASHBOARD_HTML
+from src.core.swarm import SwarmNode, SwarmRegistry
+from src.core.event_bus import EventType, get_event_bus
 
 
 # -- Load config; export presets for backward compatibility --
 GATEWAY_CONFIG: GatewayConfig = load_config()
 PRESET_ACTIONS: List[Dict[str, str]] = GATEWAY_CONFIG.presets
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 
 
 # -- Request / Response models --
@@ -89,6 +91,30 @@ class ProjectInfo(BaseModel):
     name: str
     path: str
     has_git: bool
+
+
+class SwarmNodeInfo(BaseModel):
+    """Swarm node info returned by API"""
+    id: str
+    name: str
+    host: str
+    port: int
+    status: str
+    last_heartbeat: float
+
+
+class SwarmRegisterRequest(BaseModel):
+    """Request to register a new swarm node"""
+    name: str = Field(..., min_length=1)
+    host: str = Field(..., min_length=1)
+    port: int = Field(8000, ge=1, le=65535)
+    token: str = Field(..., min_length=1)
+
+
+class SwarmDispatchRequest(BaseModel):
+    """Request to dispatch a goal to a remote node"""
+    node_id: str = Field(..., min_length=1)
+    goal: str = Field(..., min_length=1)
 
 
 # -- Token verification --
@@ -311,6 +337,53 @@ def create_app() -> FastAPI:
             except Exception:
                 pass
 
+    # -- Swarm endpoints --
+    swarm_registry = SwarmRegistry()
+
+    @gateway.post("/swarm/register", response_model=SwarmNodeInfo)
+    def swarm_register(req: SwarmRegisterRequest):
+        """Register a remote Mekong node in the swarm."""
+        node = swarm_registry.register_node(
+            name=req.name, host=req.host, port=req.port, token=req.token
+        )
+        return SwarmNodeInfo(
+            id=node.id, name=node.name, host=node.host,
+            port=node.port, status=node.status,
+            last_heartbeat=node.last_heartbeat,
+        )
+
+    @gateway.get("/swarm/nodes", response_model=List[SwarmNodeInfo])
+    def swarm_list_nodes():
+        """List all registered swarm nodes with health status."""
+        swarm_registry.check_all_health(timeout=2.0)
+        return [
+            SwarmNodeInfo(
+                id=n.id, name=n.name, host=n.host, port=n.port,
+                status=n.status, last_heartbeat=n.last_heartbeat,
+            )
+            for n in swarm_registry.list_nodes()
+        ]
+
+    @gateway.post("/swarm/dispatch")
+    def swarm_dispatch(req: SwarmDispatchRequest):
+        """Send a goal to a specific remote node."""
+        node = swarm_registry.get_node(req.node_id)
+        if not node:
+            raise HTTPException(status_code=404, detail="Node not found")
+        bus = get_event_bus()
+        bus.emit(EventType.GOAL_STARTED, {"node_id": req.node_id, "goal": req.goal})
+        result = swarm_registry.dispatch_goal(req.node_id, req.goal)
+        bus.emit(EventType.GOAL_COMPLETED, {"node_id": req.node_id, "result": result})
+        return result
+
+    @gateway.delete("/swarm/nodes/{node_id}")
+    def swarm_remove_node(node_id: str):
+        """Remove a node from the swarm."""
+        removed = swarm_registry.remove_node(node_id)
+        if not removed:
+            raise HTTPException(status_code=404, detail="Node not found")
+        return {"status": "removed", "node_id": node_id}
+
     return gateway
 
 
@@ -328,6 +401,9 @@ __all__ = [
     "StepSummary",
     "PresetAction",
     "ProjectInfo",
+    "SwarmNodeInfo",
+    "SwarmRegisterRequest",
+    "SwarmDispatchRequest",
     "PRESET_ACTIONS",
     "GATEWAY_CONFIG",
     "VERSION",

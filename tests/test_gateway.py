@@ -11,6 +11,7 @@ Tests cover:
 - Multi-project listing via /projects
 - Gateway config loading
 - WebSocket live streaming endpoint
+- Swarm registry, endpoints, and event bus
 """
 
 import json
@@ -27,9 +28,12 @@ from src.core.gateway import (
     create_app, verify_token, CommandRequest,
     build_human_summary, HumanSummary, PRESET_ACTIONS,
     VERSION, ProjectInfo, _scan_projects,
+    SwarmNodeInfo, SwarmRegisterRequest, SwarmDispatchRequest,
 )
 from src.core.gateway_config import GatewayConfig, load_config, DEFAULT_PRESETS
 from src.core.gateway_dashboard import DASHBOARD_HTML
+from src.core.swarm import SwarmNode, SwarmRegistry
+from src.core.event_bus import EventType, Event, EventBus, get_event_bus
 
 
 class TestGatewayHealth(unittest.TestCase):
@@ -721,9 +725,9 @@ class TestGatewayConfig(unittest.TestCase):
         self.assertEqual(len(DEFAULT_PRESETS), len(PRESET_ACTIONS))
         self.assertEqual(DEFAULT_PRESETS[0]["id"], "deploy")
 
-    def test_version_is_0_4_0(self):
-        """Gateway version should be 0.4.0"""
-        self.assertEqual(VERSION, "0.4.0")
+    def test_version_is_0_5_0(self):
+        """Gateway version should be 0.5.0"""
+        self.assertEqual(VERSION, "0.5.0")
 
 
 class TestDashboardTemplate(unittest.TestCase):
@@ -912,6 +916,252 @@ class TestParserDisplayTag(unittest.TestCase):
         recipe = parser.parse_string(content, "test")
         self.assertEqual(recipe.display, "")
         self.assertFalse(recipe.is_one_button)
+
+
+class TestSwarmRegistry(unittest.TestCase):
+    """Tests for SwarmNode and SwarmRegistry."""
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
+        self.config_path = os.path.join(self.tmpdir, "swarm.yaml")
+        self.registry = SwarmRegistry(config_path=self.config_path)
+
+    def test_register_node(self):
+        """register_node should create a node with generated ID."""
+        node = self.registry.register_node("node-1", "localhost", 8001, "tok")
+        self.assertTrue(len(node.id) > 0)
+        self.assertEqual(node.name, "node-1")
+        self.assertEqual(node.host, "localhost")
+        self.assertEqual(node.port, 8001)
+
+    def test_list_nodes_returns_all(self):
+        """list_nodes should return all registered nodes."""
+        self.registry.register_node("a", "h1", 8001, "t1")
+        self.registry.register_node("b", "h2", 8002, "t2")
+        nodes = self.registry.list_nodes()
+        self.assertEqual(len(nodes), 2)
+
+    def test_get_node_by_id(self):
+        """get_node should return a specific node."""
+        node = self.registry.register_node("n", "h", 8000, "t")
+        found = self.registry.get_node(node.id)
+        self.assertIsNotNone(found)
+        self.assertEqual(found.name, "n")
+
+    def test_get_node_not_found(self):
+        """get_node should return None for unknown ID."""
+        self.assertIsNone(self.registry.get_node("nonexistent"))
+
+    def test_remove_node(self):
+        """remove_node should remove a registered node."""
+        node = self.registry.register_node("n", "h", 8000, "t")
+        self.assertTrue(self.registry.remove_node(node.id))
+        self.assertEqual(len(self.registry.list_nodes()), 0)
+
+    def test_remove_nonexistent_returns_false(self):
+        """remove_node should return False for unknown ID."""
+        self.assertFalse(self.registry.remove_node("bad-id"))
+
+    def test_persistence_save_and_load(self):
+        """Registry should persist and reload from YAML."""
+        self.registry.register_node("persist", "h", 9000, "tok")
+        # Create new registry from same file
+        reg2 = SwarmRegistry(config_path=self.config_path)
+        nodes = reg2.list_nodes()
+        self.assertEqual(len(nodes), 1)
+        self.assertEqual(nodes[0].name, "persist")
+
+    def test_node_default_status(self):
+        """New nodes should have 'unknown' status."""
+        node = self.registry.register_node("n", "h", 8000, "t")
+        self.assertEqual(node.status, "unknown")
+
+    @patch("src.core.swarm.requests.get")
+    def test_check_health_healthy(self, mock_get):
+        """check_health should set 'healthy' on 200 response."""
+        mock_get.return_value = MagicMock(status_code=200)
+        node = self.registry.register_node("n", "h", 8000, "t")
+        status = self.registry.check_health(node)
+        self.assertEqual(status, "healthy")
+        self.assertEqual(node.status, "healthy")
+
+    @patch("src.core.swarm.requests.get")
+    def test_check_health_unreachable(self, mock_get):
+        """check_health should set 'unreachable' on connection error."""
+        import requests as req_lib
+        mock_get.side_effect = req_lib.ConnectionError("fail")
+        node = self.registry.register_node("n", "h", 8000, "t")
+        status = self.registry.check_health(node)
+        self.assertEqual(status, "unreachable")
+
+    @patch("src.core.swarm.requests.post")
+    def test_dispatch_goal_success(self, mock_post):
+        """dispatch_goal should return response JSON."""
+        mock_post.return_value = MagicMock(
+            json=MagicMock(return_value={"status": "success"})
+        )
+        node = self.registry.register_node("n", "h", 8000, "t")
+        result = self.registry.dispatch_goal(node.id, "test goal")
+        self.assertEqual(result["status"], "success")
+
+    def test_dispatch_goal_unknown_node(self):
+        """dispatch_goal should return error for unknown node."""
+        result = self.registry.dispatch_goal("bad", "goal")
+        self.assertIn("error", result)
+
+
+class TestEventBus(unittest.TestCase):
+    """Tests for the in-process event bus."""
+
+    def setUp(self):
+        self.bus = EventBus()
+
+    def test_subscribe_and_emit(self):
+        """Subscribers should receive emitted events."""
+        received = []
+        self.bus.subscribe(EventType.GOAL_STARTED, lambda e: received.append(e))
+        self.bus.emit(EventType.GOAL_STARTED, {"goal": "test"})
+        self.assertEqual(len(received), 1)
+        self.assertEqual(received[0].data["goal"], "test")
+
+    def test_emit_returns_event(self):
+        """emit should return the Event object."""
+        event = self.bus.emit(EventType.STEP_COMPLETED, {"step": 1})
+        self.assertIsInstance(event, Event)
+        self.assertEqual(event.type, EventType.STEP_COMPLETED)
+
+    def test_unsubscribe(self):
+        """Unsubscribed callbacks should not receive events."""
+        received = []
+        cb = lambda e: received.append(e)
+        self.bus.subscribe(EventType.GOAL_STARTED, cb)
+        self.bus.unsubscribe(EventType.GOAL_STARTED, cb)
+        self.bus.emit(EventType.GOAL_STARTED)
+        self.assertEqual(len(received), 0)
+
+    def test_multiple_subscribers(self):
+        """Multiple subscribers should all receive events."""
+        counts = [0, 0]
+        self.bus.subscribe(EventType.STEP_STARTED, lambda e: counts.__setitem__(0, counts[0]+1))
+        self.bus.subscribe(EventType.STEP_STARTED, lambda e: counts.__setitem__(1, counts[1]+1))
+        self.bus.emit(EventType.STEP_STARTED)
+        self.assertEqual(counts, [1, 1])
+
+    def test_clear_removes_all(self):
+        """clear should remove all subscribers."""
+        self.bus.subscribe(EventType.GOAL_STARTED, lambda e: None)
+        self.bus.clear()
+        self.assertEqual(self.bus.subscriber_count, 0)
+
+    def test_subscriber_count(self):
+        """subscriber_count should reflect total subscribers."""
+        self.bus.subscribe(EventType.GOAL_STARTED, lambda e: None)
+        self.bus.subscribe(EventType.STEP_FAILED, lambda e: None)
+        self.assertEqual(self.bus.subscriber_count, 2)
+
+    def test_subscriber_error_does_not_break_emit(self):
+        """A failing subscriber should not prevent other subscribers."""
+        received = []
+        self.bus.subscribe(EventType.GOAL_STARTED, lambda e: 1/0)  # raises
+        self.bus.subscribe(EventType.GOAL_STARTED, lambda e: received.append(e))
+        self.bus.emit(EventType.GOAL_STARTED)
+        self.assertEqual(len(received), 1)
+
+    def test_event_types_are_strings(self):
+        """EventType values should be strings."""
+        self.assertEqual(EventType.GOAL_STARTED.value, "goal_started")
+        self.assertEqual(EventType.STEP_FAILED.value, "step_failed")
+
+    def test_get_event_bus_singleton(self):
+        """get_event_bus should return same instance."""
+        bus1 = get_event_bus()
+        bus2 = get_event_bus()
+        self.assertIs(bus1, bus2)
+
+
+class TestSwarmEndpoints(unittest.TestCase):
+    """Tests for swarm API endpoints."""
+
+    def setUp(self):
+        self.app = create_app()
+        self.client = TestClient(self.app)
+
+    def test_swarm_register(self):
+        """POST /swarm/register should create a node."""
+        resp = self.client.post("/swarm/register", json={
+            "name": "test-node", "host": "10.0.0.1", "port": 8001, "token": "secret"
+        })
+        self.assertEqual(resp.status_code, 200)
+        data = resp.json()
+        self.assertEqual(data["name"], "test-node")
+        self.assertIn("id", data)
+
+    def test_swarm_list_nodes(self):
+        """GET /swarm/nodes should return a list."""
+        resp = self.client.get("/swarm/nodes")
+        self.assertEqual(resp.status_code, 200)
+        self.assertIsInstance(resp.json(), list)
+
+    def test_swarm_remove_node_not_found(self):
+        """DELETE /swarm/nodes/{bad_id} should return 404."""
+        resp = self.client.delete("/swarm/nodes/nonexistent")
+        self.assertEqual(resp.status_code, 404)
+
+    def test_swarm_dispatch_node_not_found(self):
+        """POST /swarm/dispatch with bad node_id should return 404."""
+        resp = self.client.post("/swarm/dispatch", json={
+            "node_id": "bad", "goal": "test"
+        })
+        self.assertEqual(resp.status_code, 404)
+
+    def test_swarm_routes_exist(self):
+        """Gateway should have swarm routes."""
+        routes = [r.path for r in self.app.routes]
+        self.assertIn("/swarm/register", routes)
+        self.assertIn("/swarm/nodes", routes)
+        self.assertIn("/swarm/dispatch", routes)
+        self.assertIn("/swarm/nodes/{node_id}", routes)
+
+    def test_swarm_register_missing_name(self):
+        """POST /swarm/register with missing name should return 422."""
+        resp = self.client.post("/swarm/register", json={
+            "host": "h", "port": 8000, "token": "t"
+        })
+        self.assertEqual(resp.status_code, 422)
+
+
+class TestVersionBump(unittest.TestCase):
+    """Verify version is v0.5.0."""
+
+    def test_gateway_version(self):
+        """VERSION constant should be 0.5.0."""
+        self.assertEqual(VERSION, "0.5.0")
+
+
+class TestDashboardSwarmTab(unittest.TestCase):
+    """Tests for swarm tab in dashboard template."""
+
+    def test_dashboard_has_tabs(self):
+        """Dashboard should have tab navigation."""
+        self.assertIn("switchTab", DASHBOARD_HTML)
+        self.assertIn("tab-actions", DASHBOARD_HTML)
+        self.assertIn("tab-swarm", DASHBOARD_HTML)
+
+    def test_dashboard_has_swarm_nodes_container(self):
+        """Dashboard should have swarm nodes container."""
+        self.assertIn("swarm-nodes", DASHBOARD_HTML)
+
+    def test_dashboard_has_load_swarm_nodes(self):
+        """Dashboard should have loadSwarmNodes function."""
+        self.assertIn("loadSwarmNodes", DASHBOARD_HTML)
+
+    def test_dashboard_has_dispatch_to_node(self):
+        """Dashboard should have dispatchToNode function."""
+        self.assertIn("dispatchToNode", DASHBOARD_HTML)
+
+    def test_dashboard_has_swarm_stats(self):
+        """Dashboard should have swarm stats container."""
+        self.assertIn("swarm-stats", DASHBOARD_HTML)
 
 
 if __name__ == "__main__":
