@@ -17,6 +17,7 @@ from .planner import RecipePlanner, PlanningContext
 from .executor import RecipeExecutor
 from .verifier import RecipeVerifier, VerificationReport, ExecutionResult
 from .parser import Recipe, RecipeStep
+from .exceptions import RollbackError
 
 
 class OrchestrationStatus(Enum):
@@ -233,6 +234,9 @@ class RecipeOrchestrator:
         """
         Handle step failure with rollback.
 
+        Reverses completed steps in reverse order by executing their
+        rollback commands (if defined in step params).
+
         Args:
             result: Current orchestration result
             failed_step: The step that failed
@@ -241,14 +245,60 @@ class RecipeOrchestrator:
             f"\n[bold red]❌ Step {failed_step.order} failed verification[/bold red]"
         )
 
-        if self.enable_rollback:
-            self.console.print("[yellow]🔄 Rolling back changes...[/yellow]")
+        if not self.enable_rollback:
+            return
 
-            # TODO: Implement rollback logic
-            # This would reverse completed steps in reverse order
-            # For now, just mark status
+        self.console.print("[yellow]🔄 Rolling back completed steps...[/yellow]")
 
-            result.status = OrchestrationStatus.ROLLED_BACK
+        # Reverse through completed steps
+        rollback_errors = []
+        for step_result in reversed(result.step_results):
+            if not step_result.verification.passed:
+                continue  # Skip the failed step itself
+
+            step = step_result.step
+            rollback_cmd = step.params.get("rollback") if step.params else None
+
+            if not rollback_cmd:
+                self.console.print(
+                    f"  [dim]Step {step.order}: no rollback command — skipping[/dim]"
+                )
+                continue
+
+            self.console.print(f"  [yellow]↩ Rolling back step {step.order}...[/yellow]")
+
+            try:
+                import subprocess
+
+                proc = subprocess.run(
+                    rollback_cmd,
+                    shell=True,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+                if proc.returncode == 0:
+                    self.console.print(
+                        f"  [green]✓ Step {step.order} rolled back[/green]"
+                    )
+                else:
+                    msg = f"Step {step.order} rollback failed: {proc.stderr.strip()}"
+                    rollback_errors.append(msg)
+                    self.console.print(f"  [red]✗ {msg}[/red]")
+            except subprocess.TimeoutExpired:
+                msg = f"Step {step.order} rollback timed out"
+                rollback_errors.append(msg)
+                self.console.print(f"  [red]✗ {msg}[/red]")
+            except Exception as e:
+                msg = f"Step {step.order} rollback error: {e}"
+                rollback_errors.append(msg)
+                self.console.print(f"  [red]✗ {msg}[/red]")
+
+        if rollback_errors:
+            result.errors.extend(rollback_errors)
+            result.warnings.append("Rollback completed with errors")
+
+        result.status = OrchestrationStatus.ROLLED_BACK
 
     def _display_report(self, result: OrchestrationResult) -> None:
         """
