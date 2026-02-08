@@ -1,15 +1,26 @@
 """
-Mekong CLI - Telegram Commander Bot
+Mekong CLI - Telegram Commander Bot (Tôm Hùm Edition)
 
 Remote command center via Telegram. Users chat commands, Mekong executes locally.
-Supports /cmd, /status, /schedule, /swarm, /memory, /help with inline keyboards.
+Now with CC CLI spawning: /cook spawns Claude Code CLI terminals autonomously.
+
+Commands:
+  /cmd <goal>           — Execute via Python orchestrator
+  /cook <goal>          — 🦞 Spawn CC CLI to code autonomously
+  /spawn <project> <g>  — Spawn CC CLI targeting apps/<project>
+  /sessions             — List active CC CLI terminals
+  /status               — System health
+  /schedule             — View scheduled jobs
+  /swarm                — Swarm node status
+  /memory               — Recent 5 executions
+  /help                 — This help message
 """
 
 import asyncio
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 import yaml
 
@@ -23,9 +34,15 @@ class BotConfig:
     enabled: bool = True
 
 
-HELP_TEXT = """🚀 *Mekong CLI — Telegram Commander*
+HELP_TEXT = """🦞 *Tôm Hùm — Telegram Commander*
 
-/cmd <goal> — Execute a goal
+*Autonomous Coding:*
+/cook <goal> — Spawn CC CLI terminal
+/spawn <project> <goal> — CC CLI for specific app
+/sessions — Active CC CLI terminals
+
+*Operations:*
+/cmd <goal> — Execute via Python orchestrator
 /status — System health
 /schedule — View scheduled jobs
 /swarm — Swarm node status
@@ -35,7 +52,7 @@ HELP_TEXT = """🚀 *Mekong CLI — Telegram Commander*
 
 
 class MekongBot:
-    """Telegram bot for remote Mekong CLI control."""
+    """Telegram bot for remote Mekong CLI control with CC CLI spawning."""
 
     CONFIG_PATH = ".mekong/telegram.yaml"
 
@@ -65,10 +82,9 @@ class MekongBot:
         except ImportError:
             return
 
-        self._application = (
-            ApplicationBuilder().token(self.token).build()
-        )
+        self._application = ApplicationBuilder().token(self.token).build()
 
+        # Original commands
         self._application.add_handler(CommandHandler("cmd", self.cmd_handler))
         self._application.add_handler(CommandHandler("status", self.status_handler))
         self._application.add_handler(CommandHandler("schedule", self.schedule_handler))
@@ -76,9 +92,13 @@ class MekongBot:
         self._application.add_handler(CommandHandler("memory", self.memory_handler))
         self._application.add_handler(CommandHandler("help", self.help_handler))
         self._application.add_handler(CommandHandler("start", self.help_handler))
-        self._application.add_handler(
-            CallbackQueryHandler(self._callback_handler)
-        )
+
+        # 🦞 Tôm Hùm CC CLI commands
+        self._application.add_handler(CommandHandler("cook", self.cook_handler))
+        self._application.add_handler(CommandHandler("spawn", self.spawn_handler))
+        self._application.add_handler(CommandHandler("sessions", self.sessions_handler))
+
+        self._application.add_handler(CallbackQueryHandler(self._callback_handler))
 
         self._running = True
         await self._application.initialize()
@@ -100,7 +120,153 @@ class MekongBot:
         """Check if bot is running."""
         return self._running
 
-    # -- Command handlers --
+    # ============================================================
+    # 🦞 TÔM HÙM: CC CLI Spawning Commands
+    # ============================================================
+
+    async def cook_handler(self, update: Any, context: Any) -> None:
+        """Handle /cook <goal> — spawn CC CLI to code autonomously."""
+        goal = " ".join(context.args) if context.args else ""
+        if not goal:
+            await update.message.reply_text(
+                "🦞 Usage: /cook <goal>\n\n"
+                "Example:\n"
+                "`/cook Build auth module for AgencyOS`\n"
+                "`/cook Fix the landing page hero section`",
+                parse_mode="Markdown",
+            )
+            return
+
+        from src.core.cc_spawner import get_spawner
+
+        spawner = get_spawner()
+
+        await update.message.reply_text(
+            f"🦞 *Tôm Hùm Activating...*\n"
+            f"Goal: `{goal[:60]}`\n"
+            f"Spawning CC CLI terminal...",
+            parse_mode="Markdown",
+        )
+
+        session = await spawner.spawn(goal=goal)
+
+        if session.error:
+            await update.message.reply_text(f"❌ Failed to spawn: {session.error}")
+            return
+
+        await update.message.reply_text(
+            f"✅ *CC CLI Spawned!*\n"
+            f"Session: `{session.id}`\n"
+            f"PID: `{session.pid or 'starting...'}`\n"
+            f"CWD: `{session.cwd}`\n\n"
+            f"Use /sessions to track progress.",
+            parse_mode="Markdown",
+        )
+
+        # Background: wait for completion and notify
+        asyncio.create_task(self._watch_session(update.effective_chat.id, session))
+
+    async def spawn_handler(self, update: Any, context: Any) -> None:
+        """Handle /spawn <project> <goal> — CC CLI for specific apps/<project>."""
+        args = context.args or []
+        if len(args) < 2:
+            await update.message.reply_text(
+                "🦞 Usage: /spawn <project> <goal>\n\n"
+                "Example:\n"
+                "`/spawn agencyos-web Add a dashboard sidebar`\n"
+                "`/spawn openclaw-worker Fix Redis connection`",
+                parse_mode="Markdown",
+            )
+            return
+
+        project = args[0]
+        goal = " ".join(args[1:])
+
+        from src.core.cc_spawner import get_spawner
+
+        spawner = get_spawner()
+
+        await update.message.reply_text(
+            f"🦞 *Spawning CC CLI for `{project}`...*\nGoal: `{goal[:60]}`",
+            parse_mode="Markdown",
+        )
+
+        session = await spawner.spawn(goal=goal, project=project)
+
+        if session.error:
+            await update.message.reply_text(f"❌ Failed: {session.error}")
+            return
+
+        await update.message.reply_text(
+            f"✅ *CC CLI Spawned for `{project}`!*\n"
+            f"Session: `{session.id}`\n"
+            f"PID: `{session.pid or 'starting...'}`\n\n"
+            f"Use /sessions to track.",
+            parse_mode="Markdown",
+        )
+
+        asyncio.create_task(self._watch_session(update.effective_chat.id, session))
+
+    async def sessions_handler(self, update: Any, context: Any) -> None:
+        """Handle /sessions — list active CC CLI terminals."""
+        from src.core.cc_spawner import get_spawner
+
+        spawner = get_spawner()
+        sessions = spawner.all_sessions
+
+        if not sessions:
+            await update.message.reply_text(
+                "No CC CLI sessions.\nUse /cook <goal> to start one."
+            )
+            return
+
+        lines = ["🦞 *Active CC CLI Sessions*\n"]
+        for s in sessions:
+            icon = {
+                "running": "🔄",
+                "completed": "✅",
+                "failed": "❌",
+                "timeout": "⏰",
+                "pending": "⏳",
+            }.get(s.status.value, "❓")
+
+            lines.append(
+                f"{icon} `{s.id}` — {s.status.value}\n"
+                f"   Goal: {s.goal[:40]}\n"
+                f"   Duration: {s.duration:.0f}s | Lines: {len(s.output_buffer)}"
+            )
+
+        await update.message.reply_text(
+            "\n".join(lines),
+            parse_mode="Markdown",
+        )
+
+    async def _watch_session(self, chat_id: int, session: Any) -> None:
+        """Watch a CC CLI session and send updates to Telegram on completion."""
+        from src.core.cc_spawner import SessionStatus
+
+        # Poll every 10s until done
+        while session.status in (SessionStatus.PENDING, SessionStatus.RUNNING):
+            await asyncio.sleep(10)
+
+        # Session finished — send result
+        icon = "✅" if session.status == SessionStatus.COMPLETED else "❌"
+        last_output = (
+            session.last_output[:500] if session.output_buffer else "(no output)"
+        )
+
+        message = (
+            f"{icon} *CC CLI Session `{session.id}` {session.status.value.upper()}*\n"
+            f"Duration: {session.duration:.0f}s\n"
+            f"Exit Code: {session.exit_code}\n\n"
+            f"```\n{last_output}\n```"
+        )
+
+        await self.send_notification(chat_id, message)
+
+    # ============================================================
+    # Original Command Handlers
+    # ============================================================
 
     async def cmd_handler(self, update: Any, context: Any) -> None:
         """Handle /cmd <goal> — execute via orchestrator."""
@@ -112,7 +278,8 @@ class MekongBot:
         await update.message.reply_text(f"⏳ Executing: {goal}...")
         result = await asyncio.to_thread(self._execute_goal, goal)
         await update.message.reply_text(
-            self._format_result(result), parse_mode="Markdown",
+            self._format_result(result),
+            parse_mode="Markdown",
         )
 
     async def status_handler(self, update: Any, context: Any) -> None:
@@ -121,11 +288,25 @@ class MekongBot:
 
         store = MemoryStore()
         stats = store.stats()
+
+        # Include CC CLI session info
+        cc_info = ""
+        try:
+            from src.core.cc_spawner import get_spawner
+
+            spawner = get_spawner()
+            active = len(spawner.active_sessions)
+            total = len(spawner.all_sessions)
+            cc_info = f"\nCC CLI: {active} active / {total} total"
+        except Exception:
+            pass
+
         text = (
-            f"🟢 *Mekong Status*\n"
+            f"🟢 *Tôm Hùm Status*\n"
             f"Executions: {stats['total']}\n"
             f"Success Rate: {stats['success_rate']:.1f}%\n"
             f"Recent Failures: {stats['recent_failures']}"
+            f"{cc_info}"
         )
         await update.message.reply_text(text, parse_mode="Markdown")
 
@@ -179,7 +360,9 @@ class MekongBot:
         """Handle /help — show available commands."""
         kb = self._build_keyboard()
         await update.message.reply_text(
-            HELP_TEXT, parse_mode="Markdown", reply_markup=kb,
+            HELP_TEXT,
+            parse_mode="Markdown",
+            reply_markup=kb,
         )
 
     async def _callback_handler(self, update: Any, context: Any) -> None:
@@ -190,10 +373,12 @@ class MekongBot:
         if data.startswith("cmd:"):
             action = data.split(":", 1)[1]
             mapping = {
+                "cook": "/cook",
                 "deploy": "/cmd deploy",
                 "status": "/status",
                 "memory": "/memory",
                 "schedule": "/schedule",
+                "sessions": "/sessions",
             }
             await query.edit_message_text(f"Use: {mapping.get(action, data)}")
 
@@ -205,7 +390,9 @@ class MekongBot:
             return
         try:
             await self._application.bot.send_message(
-                chat_id=chat_id, text=message, parse_mode="Markdown",
+                chat_id=chat_id,
+                text=message,
+                parse_mode="Markdown",
             )
         except Exception:
             pass
@@ -217,12 +404,12 @@ class MekongBot:
 
             keyboard = [
                 [
-                    InlineKeyboardButton("🚀 Deploy", callback_data="cmd:deploy"),
+                    InlineKeyboardButton("🦞 Cook", callback_data="cmd:cook"),
                     InlineKeyboardButton("📊 Status", callback_data="cmd:status"),
                 ],
                 [
+                    InlineKeyboardButton("🔄 Sessions", callback_data="cmd:sessions"),
                     InlineKeyboardButton("🧠 Memory", callback_data="cmd:memory"),
-                    InlineKeyboardButton("📅 Schedule", callback_data="cmd:schedule"),
                 ],
             ]
             return InlineKeyboardMarkup(keyboard)
