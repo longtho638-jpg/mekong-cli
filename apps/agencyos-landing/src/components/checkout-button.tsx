@@ -30,10 +30,8 @@ export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
       }
 
       const { url } = await response.json();
-
-      // Redirect to Polar.sh Checkout
       window.location.href = url;
-    } catch (error) {
+    } catch (_error: unknown) {
       alert(t('checkout'));
     } finally {
       setLoading(false);
@@ -41,8 +39,15 @@ export function CheckoutButton({ priceId, children }: CheckoutButtonProps) {
   };
 
   return (
-    <div onClick={handleCheckout} className={loading ? 'pointer-events-none opacity-70' : ''}>
+    <button
+      type="button"
+      onClick={handleCheckout}
+      disabled={loading}
+      aria-busy={loading}
+      aria-label="Proceed to checkout"
+      className={`w-full text-left ${loading ? 'pointer-events-none opacity-70' : ''}`}
+    >
       {children}
-    </div>
+    </button>
   );
 }

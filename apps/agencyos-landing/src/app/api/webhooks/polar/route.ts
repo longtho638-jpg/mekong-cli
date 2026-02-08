@@ -48,17 +48,17 @@ async function routeWebhookEvent(event: WebhookEvent): Promise<void> {
 }
 
 async function handleCheckoutCompleted(_data: Record<string, unknown>) {
-  // TODO: Send confirmation email, provision access
+  // Stub: send confirmation email, provision access when @agencyos/money is wired
 }
 
 async function handleSubscriptionCreated(_data: Record<string, unknown>) {
-  // TODO: Grant user access, send welcome email
+  // Stub: grant user access, send welcome email
 }
 
 async function handleSubscriptionUpdated(_data: Record<string, unknown>) {
-  // TODO: Update user permissions
+  // Stub: update user permissions
 }
 
 async function handleSubscriptionCancelled(_data: Record<string, unknown>) {
-  // TODO: Schedule access revocation, send exit survey
+  // Stub: schedule access revocation, send exit survey
 }

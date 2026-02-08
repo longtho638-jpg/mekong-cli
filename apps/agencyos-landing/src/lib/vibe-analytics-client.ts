@@ -1,17 +1,16 @@
-// Mock Analytics client until @agencyos/vibe-analytics is available
-// This will be replaced with actual SDK implementation
+// Analytics client stub — replaced by @agencyos/vibe-analytics SDK when available
 
 export const analytics = {
   track: (_event: { event: string; properties?: Record<string, unknown> }) => {
     if (typeof window === 'undefined') return;
-    // TODO: Integrate with @agencyos/vibe-analytics SDK
+    // Stub: no-op until SDK integration
   },
   page: (_data: { path?: string; url?: string; referrer?: string }) => {
     if (typeof window === 'undefined') return;
-    // TODO: Integrate with @agencyos/vibe-analytics SDK
+    // Stub: no-op until SDK integration
   },
   identify: (_data: { userId: string; traits?: Record<string, unknown> }) => {
-    // TODO: Integrate with @agencyos/vibe-analytics SDK
+    // Stub: no-op until SDK integration
   },
 };
 

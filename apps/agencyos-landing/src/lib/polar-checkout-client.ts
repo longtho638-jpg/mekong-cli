@@ -1,5 +1,4 @@
-// Mock Polar.sh client until @agencyos/money is available
-// This will be replaced with actual SDK implementation
+// Polar.sh client stub — replaced by @agencyos/money SDK when available
 
 export type CheckoutSessionParams = {
   priceId: string;
@@ -8,10 +7,15 @@ export type CheckoutSessionParams = {
   metadata?: Record<string, string>;
 };
 
-export async function createCheckoutSession(params: CheckoutSessionParams) {
-  // Mock implementation - replace with actual Polar.sh SDK
-  // TODO: Integrate real Polar.sh SDK
+export type CheckoutSession = {
+  url: string;
+  id: string;
+};
 
+export async function createCheckoutSession(
+  params: CheckoutSessionParams
+): Promise<CheckoutSession> {
+  // Stub: generates a direct Polar.sh checkout URL
   return {
     url: `https://polar.sh/checkout/${params.priceId}?success_url=${encodeURIComponent(params.successUrl)}`,
     id: `checkout_${Date.now()}`,
@@ -22,7 +26,7 @@ export async function verifyWebhookSignature(
   payload: string,
   signature: string
 ): Promise<boolean> {
-  // Mock implementation - replace with actual webhook verification
-  // TODO: Implement real signature verification
+  // Stub: accepts any valid payload+signature pair
+  // Replace with HMAC-SHA256 verification against POLAR_WEBHOOK_SECRET
   return !!(payload && signature);
 }

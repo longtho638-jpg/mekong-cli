@@ -1,17 +1,25 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Payment Cancelled — AgencyOS',
+  description: 'Your payment was cancelled. You can try again anytime.',
+  robots: { index: false, follow: false },
+};
 
 export default function CancelPage() {
   const t = useTranslations('cancel');
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-slate-950 px-4 text-center">
-      <div className="rounded-full bg-yellow-100 p-3 dark:bg-yellow-900/30">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-deep-space-900 px-4 text-center">
+      <div className="rounded-full bg-yellow-900/30 p-3">
         <svg
-          className="h-12 w-12 text-yellow-600 dark:text-yellow-400"
+          className="h-12 w-12 text-yellow-400"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth="1.5"
           stroke="currentColor"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -20,26 +28,26 @@ export default function CancelPage() {
           />
         </svg>
       </div>
-      <h1 className="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+      <h1 className="mt-4 text-3xl font-bold tracking-tight text-starlight-100 sm:text-4xl">
         {t('title')}
       </h1>
-      <p className="mt-4 text-lg text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+      <p className="mt-4 text-lg text-gray-400 max-w-md mx-auto">
         {t('message')}
       </p>
       <div className="mt-10 flex items-center justify-center gap-x-6">
         <Link
           href="/#pricing"
-          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          className="rounded-full bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-purple-500/25 transition-shadow hover:shadow-xl hover:shadow-purple-500/40 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-deep-space-900"
         >
           {t('tryAgain')}
         </Link>
         <Link
           href="/"
-          className="text-sm font-semibold leading-6 text-slate-900 dark:text-white"
+          className="text-sm font-semibold leading-6 text-starlight-100 hover:text-white"
         >
-          {t('back')} <span aria-hidden="true">→</span>
+          {t('back')} <span aria-hidden="true">&rarr;</span>
         </Link>
       </div>
-    </div>
+    </main>
   );
 }

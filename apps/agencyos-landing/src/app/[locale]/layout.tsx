@@ -10,6 +10,7 @@ import { LenisProvider } from '@/lib/lenis-provider';
 import { AnalyticsProvider } from '@/components/providers/analytics-provider';
 import { LazyMotionProvider } from '@/components/motion/lazy-motion-provider';
 import { StickyCTA } from '@/components/marketing/sticky-cta';
+import { ErrorBoundary } from '@/components/error-boundary';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -170,16 +171,24 @@ export default async function LocaleLayout({
         />
       </head>
       <body className={`${inter.className} bg-deep-space-900 text-starlight-100 selection:bg-nebula-500/30`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-nebula-500 focus:px-4 focus:py-2 focus:text-white focus:outline-none"
+        >
+          Skip to main content
+        </a>
         <NextIntlClientProvider messages={messages}>
           <LazyMotionProvider>
             <AnalyticsProvider>
-              <LenisProvider>
-                <div className="fixed inset-0 z-0 pointer-events-none noise-texture opacity-20 mix-blend-overlay"></div>
-                <div className="relative z-10">
-                  {children}
-                </div>
-                <StickyCTA />
-              </LenisProvider>
+              <ErrorBoundary>
+                <LenisProvider>
+                  <div className="fixed inset-0 z-0 pointer-events-none noise-texture opacity-20 mix-blend-overlay" aria-hidden="true" />
+                  <div id="main-content" className="relative z-10">
+                    {children}
+                  </div>
+                  <StickyCTA />
+                </LenisProvider>
+              </ErrorBoundary>
             </AnalyticsProvider>
           </LazyMotionProvider>
         </NextIntlClientProvider>
