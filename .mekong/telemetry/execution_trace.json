@@ -1,7 +1,16 @@
 {
-  "goal": "deploy app",
-  "steps": [],
-  "total_duration": 0.0,
+  "goal": "Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode AgencyOS RaaS landing page. Title: 'AgencyOS: Results-as-a-Service'. CTA: 'Start RaaS Engine'. Use Tailwind v4 classes for glassmorphism.",
+  "steps": [
+    {
+      "step_order": 1,
+      "title": "Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode AgencyOS RaaS landing page. Title: 'AgencyOS: Results-as-a-Service'. CTA: 'Start RaaS Engine'. Use Tailwind v4 classes for glassmorphism.",
+      "duration_seconds": 18.586,
+      "exit_code": 1,
+      "self_healed": false,
+      "agent_used": null
+    }
+  ],
+  "total_duration": 44.613,
   "llm_calls": 0,
   "errors": []
 }

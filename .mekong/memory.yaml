@@ -22,3 +22,23 @@
   recipe_used: ''
   status: success
   timestamp: 1770545823.5450208
+- duration_ms: 6.918907165527344
+  error_summary: ''
+  goal: 'Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode AgencyOS RaaS
+    landing page. Title: ''AgencyOS: Results-as-a-Service''. CTA: ''Start RaaS Engine''.
+    Use Tailwind v4 classes for glassmorphism.'
+  recipe_used: 'Plan: Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode
+    AgencyOS RaaS landing page. Title: ''AgencyOS: Results-as-a-Service''. CTA: ''Start
+    RaaS Engine''. Use Tailwind v4 classes for glassmorphism.'
+  status: success
+  timestamp: 1770547779.1211169
+- duration_ms: 44614.444971084595
+  error_summary: 'Step 1: Exit code mismatch: expected 0, got 1'
+  goal: 'Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode AgencyOS RaaS
+    landing page. Title: ''AgencyOS: Results-as-a-Service''. CTA: ''Start RaaS Engine''.
+    Use Tailwind v4 classes for glassmorphism.'
+  recipe_used: 'Plan: Replace apps/agencyos-web/app/page.tsx with a modern Dark Mode
+    AgencyOS RaaS landing page. Title: ''AgencyOS: Results-as-a-Service''. CTA: ''Start
+    RaaS Engine''. Use Tailwind v4 classes for glassmorphism.'
+  status: rolled_back
+  timestamp: 1770547838.049236

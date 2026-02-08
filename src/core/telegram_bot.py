@@ -1,28 +1,32 @@
 """
 Mekong CLI - Telegram Commander Bot (Tôm Hùm Edition)
 
-Remote command center via Telegram. Users chat commands, Mekong executes locally.
-Now with CC CLI spawning: /cook spawns Claude Code CLI terminals autonomously.
+Remote command center via Telegram → Antigravity relay.
+Commands received on Telegram are saved to inbox for Antigravity to pick up
+and coordinate CC CLI execution.
 
 Commands:
-  /cmd <goal>           — Execute via Python orchestrator
-  /cook <goal>          — 🦞 Spawn CC CLI to code autonomously
-  /spawn <project> <g>  — Spawn CC CLI targeting apps/<project>
+  /cook <goal>          — Queue task for Antigravity to execute
+  /spawn <project> <g>  — Queue task targeting apps/<project>
+  /tasks                — View pending tasks in inbox
   /sessions             — List active CC CLI terminals
   /status               — System health
   /schedule             — View scheduled jobs
-  /swarm                — Swarm node status
-  /memory               — Recent 5 executions
   /help                 — This help message
 """
 
 import asyncio
+import json
 import os
+import time
+import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, List, Optional
 
 import yaml
+
+INBOX_PATH = Path(".mekong/inbox.json")
 
 
 @dataclass
@@ -36,33 +40,76 @@ class BotConfig:
 
 HELP_TEXT = """🦞 *Tôm Hùm — Telegram Commander*
 
-*Autonomous Coding:*
-/cook <goal> — Spawn CC CLI terminal
-/spawn <project> <goal> — CC CLI for specific app
+*Autonomous Coding (via Antigravity):*
+/cook <goal> — Queue task → Antigravity executes
+/spawn <project> <goal> — Task for specific app
+/tasks — View pending inbox
 /sessions — Active CC CLI terminals
 
 *Operations:*
-/cmd <goal> — Execute via Python orchestrator
 /status — System health
 /schedule — View scheduled jobs
-/swarm — Swarm node status
 /memory — Recent 5 executions
 /help — This help message
 """
 
 
+def _load_inbox() -> list:
+    """Load inbox tasks from file."""
+    if not INBOX_PATH.exists():
+        return []
+    try:
+        return json.loads(INBOX_PATH.read_text())
+    except Exception:
+        return []
+
+
+def _save_inbox(tasks: list) -> None:
+    """Save inbox tasks to file."""
+    INBOX_PATH.parent.mkdir(parents=True, exist_ok=True)
+    INBOX_PATH.write_text(json.dumps(tasks, indent=2, ensure_ascii=False))
+
+
+def add_task(goal: str, project: Optional[str] = None, chat_id: int = 0) -> dict:
+    """Add a new task to the inbox."""
+    task = {
+        "id": uuid.uuid4().hex[:8],
+        "goal": goal,
+        "project": project,
+        "chat_id": chat_id,
+        "status": "pending",
+        "created_at": time.time(),
+        "created_at_iso": time.strftime("%Y-%m-%d %H:%M:%S"),
+    }
+    inbox = _load_inbox()
+    inbox.append(task)
+    _save_inbox(inbox)
+    return task
+
+
+def get_pending_tasks() -> list:
+    """Get all pending tasks from inbox."""
+    return [t for t in _load_inbox() if t.get("status") == "pending"]
+
+
+def mark_task(task_id: str, status: str, result: str = "") -> None:
+    """Update a task's status."""
+    inbox = _load_inbox()
+    for t in inbox:
+        if t["id"] == task_id:
+            t["status"] = status
+            t["result"] = result
+            t["completed_at"] = time.strftime("%Y-%m-%d %H:%M:%S")
+            break
+    _save_inbox(inbox)
+
+
 class MekongBot:
-    """Telegram bot for remote Mekong CLI control with CC CLI spawning."""
+    """Telegram bot — relay commands to Antigravity for CC CLI coordination."""
 
     CONFIG_PATH = ".mekong/telegram.yaml"
 
     def __init__(self, token: Optional[str] = None) -> None:
-        """
-        Initialize bot.
-
-        Args:
-            token: Telegram bot token (or reads MEKONG_TELEGRAM_TOKEN env)
-        """
         self.token = token or os.environ.get("MEKONG_TELEGRAM_TOKEN", "")
         self.config = self._load_config()
         self._running = False
@@ -84,6 +131,12 @@ class MekongBot:
 
         self._application = ApplicationBuilder().token(self.token).build()
 
+        # Task relay commands
+        self._application.add_handler(CommandHandler("cook", self.cook_handler))
+        self._application.add_handler(CommandHandler("spawn", self.spawn_handler))
+        self._application.add_handler(CommandHandler("tasks", self.tasks_handler))
+        self._application.add_handler(CommandHandler("sessions", self.sessions_handler))
+
         # Original commands
         self._application.add_handler(CommandHandler("cmd", self.cmd_handler))
         self._application.add_handler(CommandHandler("status", self.status_handler))
@@ -92,11 +145,6 @@ class MekongBot:
         self._application.add_handler(CommandHandler("memory", self.memory_handler))
         self._application.add_handler(CommandHandler("help", self.help_handler))
         self._application.add_handler(CommandHandler("start", self.help_handler))
-
-        # 🦞 Tôm Hùm CC CLI commands
-        self._application.add_handler(CommandHandler("cook", self.cook_handler))
-        self._application.add_handler(CommandHandler("spawn", self.spawn_handler))
-        self._application.add_handler(CommandHandler("sessions", self.sessions_handler))
 
         self._application.add_handler(CallbackQueryHandler(self._callback_handler))
 
@@ -117,15 +165,14 @@ class MekongBot:
                 pass
 
     def is_running(self) -> bool:
-        """Check if bot is running."""
         return self._running
 
     # ============================================================
-    # 🦞 TÔM HÙM: CC CLI Spawning Commands
+    # 🦞 TÔM HÙM: Task Relay (Telegram → Inbox → Antigravity)
     # ============================================================
 
     async def cook_handler(self, update: Any, context: Any) -> None:
-        """Handle /cook <goal> — spawn CC CLI to code autonomously."""
+        """Handle /cook <goal> — queue task for Antigravity."""
         goal = " ".join(context.args) if context.args else ""
         if not goal:
             await update.message.reply_text(
@@ -137,37 +184,26 @@ class MekongBot:
             )
             return
 
-        from src.core.cc_spawner import get_spawner
+        chat_id = update.effective_chat.id
+        task = add_task(goal=goal, chat_id=chat_id)
 
-        spawner = get_spawner()
-
-        await update.message.reply_text(
-            f"🦞 *Tôm Hùm Activating...*\n"
-            f"Goal: `{goal[:60]}`\n"
-            f"Spawning CC CLI terminal...",
-            parse_mode="Markdown",
-        )
-
-        session = await spawner.spawn(goal=goal)
-
-        if session.error:
-            await update.message.reply_text(f"❌ Failed to spawn: {session.error}")
-            return
+        # Save chat_id to config for Antigravity to reply back
+        if chat_id not in self.config.chat_ids:
+            self.config.chat_ids.append(chat_id)
+            self._save_config()
 
         await update.message.reply_text(
-            f"✅ *CC CLI Spawned!*\n"
-            f"Session: `{session.id}`\n"
-            f"PID: `{session.pid or 'starting...'}`\n"
-            f"CWD: `{session.cwd}`\n\n"
-            f"Use /sessions to track progress.",
+            f"📨 *Task Queued for Antigravity!*\n\n"
+            f"🆔 `{task['id']}`\n"
+            f"🎯 Goal: _{goal}_\n"
+            f"⏰ {task['created_at_iso']}\n\n"
+            f"Antigravity sẽ pick up và điều phối CC CLI.\n"
+            f"Use /tasks to check status.",
             parse_mode="Markdown",
         )
-
-        # Background: wait for completion and notify
-        asyncio.create_task(self._watch_session(update.effective_chat.id, session))
 
     async def spawn_handler(self, update: Any, context: Any) -> None:
-        """Handle /spawn <project> <goal> — CC CLI for specific apps/<project>."""
+        """Handle /spawn <project> <goal> — queue task for specific project."""
         args = context.args or []
         if len(args) < 2:
             await update.message.reply_text(
@@ -181,59 +217,46 @@ class MekongBot:
 
         project = args[0]
         goal = " ".join(args[1:])
+        chat_id = update.effective_chat.id
+        task = add_task(goal=goal, project=project, chat_id=chat_id)
 
-        from src.core.cc_spawner import get_spawner
-
-        spawner = get_spawner()
+        if chat_id not in self.config.chat_ids:
+            self.config.chat_ids.append(chat_id)
+            self._save_config()
 
         await update.message.reply_text(
-            f"🦞 *Spawning CC CLI for `{project}`...*\nGoal: `{goal[:60]}`",
+            f"📨 *Task Queued for `{project}`!*\n\n"
+            f"🆔 `{task['id']}`\n"
+            f"🎯 Goal: _{goal}_\n"
+            f"📂 Project: `apps/{project}`\n\n"
+            f"Antigravity sẽ pick up và điều phối CC CLI.",
             parse_mode="Markdown",
         )
 
-        session = await spawner.spawn(goal=goal, project=project)
+    async def tasks_handler(self, update: Any, context: Any) -> None:
+        """Handle /tasks — view pending tasks in inbox."""
+        inbox = _load_inbox()
 
-        if session.error:
-            await update.message.reply_text(f"❌ Failed: {session.error}")
-            return
-
-        await update.message.reply_text(
-            f"✅ *CC CLI Spawned for `{project}`!*\n"
-            f"Session: `{session.id}`\n"
-            f"PID: `{session.pid or 'starting...'}`\n\n"
-            f"Use /sessions to track.",
-            parse_mode="Markdown",
-        )
-
-        asyncio.create_task(self._watch_session(update.effective_chat.id, session))
-
-    async def sessions_handler(self, update: Any, context: Any) -> None:
-        """Handle /sessions — list active CC CLI terminals."""
-        from src.core.cc_spawner import get_spawner
-
-        spawner = get_spawner()
-        sessions = spawner.all_sessions
-
-        if not sessions:
+        if not inbox:
             await update.message.reply_text(
-                "No CC CLI sessions.\nUse /cook <goal> to start one."
+                "📭 Inbox trống.\nDùng /cook <goal> để gửi task."
             )
             return
 
-        lines = ["🦞 *Active CC CLI Sessions*\n"]
-        for s in sessions:
+        lines = ["📬 *Tôm Hùm Inbox*\n"]
+        for t in inbox[-10:]:  # Last 10 tasks
             icon = {
+                "pending": "⏳",
                 "running": "🔄",
                 "completed": "✅",
                 "failed": "❌",
-                "timeout": "⏰",
-                "pending": "⏳",
-            }.get(s.status.value, "❓")
+            }.get(t.get("status", "pending"), "❓")
 
+            project_str = f" → `{t['project']}`" if t.get("project") else ""
             lines.append(
-                f"{icon} `{s.id}` — {s.status.value}\n"
-                f"   Goal: {s.goal[:40]}\n"
-                f"   Duration: {s.duration:.0f}s | Lines: {len(s.output_buffer)}"
+                f"{icon} `{t['id']}`{project_str}\n"
+                f"   {t['goal'][:50]}\n"
+                f"   {t.get('created_at_iso', '')}"
             )
 
         await update.message.reply_text(
@@ -241,28 +264,42 @@ class MekongBot:
             parse_mode="Markdown",
         )
 
-    async def _watch_session(self, chat_id: int, session: Any) -> None:
-        """Watch a CC CLI session and send updates to Telegram on completion."""
-        from src.core.cc_spawner import SessionStatus
+    async def sessions_handler(self, update: Any, context: Any) -> None:
+        """Handle /sessions — list active CC CLI terminals."""
+        try:
+            from src.core.cc_spawner import get_spawner
 
-        # Poll every 10s until done
-        while session.status in (SessionStatus.PENDING, SessionStatus.RUNNING):
-            await asyncio.sleep(10)
+            spawner = get_spawner()
+            sessions = spawner.all_sessions
 
-        # Session finished — send result
-        icon = "✅" if session.status == SessionStatus.COMPLETED else "❌"
-        last_output = (
-            session.last_output[:500] if session.output_buffer else "(no output)"
-        )
+            if not sessions:
+                await update.message.reply_text(
+                    "No CC CLI sessions.\nUse /cook <goal> to queue a task."
+                )
+                return
 
-        message = (
-            f"{icon} *CC CLI Session `{session.id}` {session.status.value.upper()}*\n"
-            f"Duration: {session.duration:.0f}s\n"
-            f"Exit Code: {session.exit_code}\n\n"
-            f"```\n{last_output}\n```"
-        )
+            lines = ["🦞 *Active CC CLI Sessions*\n"]
+            for s in sessions:
+                icon = {
+                    "running": "🔄",
+                    "completed": "✅",
+                    "failed": "❌",
+                    "timeout": "⏰",
+                    "pending": "⏳",
+                }.get(s.status.value, "❓")
 
-        await self.send_notification(chat_id, message)
+                lines.append(
+                    f"{icon} `{s.id}` — {s.status.value}\n"
+                    f"   Goal: {s.goal[:40]}\n"
+                    f"   Duration: {s.duration:.0f}s | Lines: {len(s.output_buffer)}"
+                )
+
+            await update.message.reply_text(
+                "\n".join(lines),
+                parse_mode="Markdown",
+            )
+        except Exception:
+            await update.message.reply_text("No CC CLI sessions active.")
 
     # ============================================================
     # Original Command Handlers
@@ -289,7 +326,11 @@ class MekongBot:
         store = MemoryStore()
         stats = store.stats()
 
-        # Include CC CLI session info
+        # Include inbox info
+        pending = len(get_pending_tasks())
+        inbox_info = f"\n📬 Inbox: {pending} pending"
+
+        # CC CLI session info
         cc_info = ""
         try:
             from src.core.cc_spawner import get_spawner
@@ -297,7 +338,7 @@ class MekongBot:
             spawner = get_spawner()
             active = len(spawner.active_sessions)
             total = len(spawner.all_sessions)
-            cc_info = f"\nCC CLI: {active} active / {total} total"
+            cc_info = f"\n🤖 CC CLI: {active} active / {total} total"
         except Exception:
             pass
 
@@ -306,6 +347,7 @@ class MekongBot:
             f"Executions: {stats['total']}\n"
             f"Success Rate: {stats['success_rate']:.1f}%\n"
             f"Recent Failures: {stats['recent_failures']}"
+            f"{inbox_info}"
             f"{cc_info}"
         )
         await update.message.reply_text(text, parse_mode="Markdown")
@@ -374,10 +416,10 @@ class MekongBot:
             action = data.split(":", 1)[1]
             mapping = {
                 "cook": "/cook",
-                "deploy": "/cmd deploy",
                 "status": "/status",
                 "memory": "/memory",
                 "schedule": "/schedule",
+                "tasks": "/tasks",
                 "sessions": "/sessions",
             }
             await query.edit_message_text(f"Use: {mapping.get(action, data)}")
@@ -408,7 +450,7 @@ class MekongBot:
                     InlineKeyboardButton("📊 Status", callback_data="cmd:status"),
                 ],
                 [
-                    InlineKeyboardButton("🔄 Sessions", callback_data="cmd:sessions"),
+                    InlineKeyboardButton("📬 Tasks", callback_data="cmd:tasks"),
                     InlineKeyboardButton("🧠 Memory", callback_data="cmd:memory"),
                 ],
             ]
@@ -476,4 +518,7 @@ __all__ = [
     "MekongBot",
     "BotConfig",
     "HELP_TEXT",
+    "add_task",
+    "get_pending_tasks",
+    "mark_task",
 ]
