@@ -7,6 +7,10 @@ Tests cover:
 - Command execution via /cmd
 - Response structure and telemetry trace
 - Edge cases (empty goal, missing fields)
+- Dashboard HTML serving and WebSocket live log
+- Multi-project listing via /projects
+- Gateway config loading
+- WebSocket live streaming endpoint
 """
 
 import json
@@ -14,13 +18,18 @@ import os
 import unittest
 from unittest.mock import patch, MagicMock
 from dataclasses import dataclass
+from pathlib import Path
+import tempfile
 
 from fastapi.testclient import TestClient
 
 from src.core.gateway import (
     create_app, verify_token, CommandRequest,
-    build_human_summary, HumanSummary, PRESET_ACTIONS, DASHBOARD_HTML,
+    build_human_summary, HumanSummary, PRESET_ACTIONS,
+    VERSION, ProjectInfo, _scan_projects,
 )
+from src.core.gateway_config import GatewayConfig, load_config, DEFAULT_PRESETS
+from src.core.gateway_dashboard import DASHBOARD_HTML
 
 
 class TestGatewayHealth(unittest.TestCase):
@@ -426,13 +435,15 @@ class TestGatewayAppFactory(unittest.TestCase):
         self.assertIsInstance(app, FastAPI)
 
     def test_create_app_has_routes(self):
-        """App should have /health, /cmd, /, and /presets routes"""
+        """App should have /health, /cmd, /, /presets, /projects, /ws routes"""
         app = create_app()
         routes = [r.path for r in app.routes]
         self.assertIn("/health", routes)
         self.assertIn("/cmd", routes)
         self.assertIn("/", routes)
         self.assertIn("/presets", routes)
+        self.assertIn("/projects", routes)
+        self.assertIn("/ws", routes)
 
     def test_create_app_title(self):
         """App title should be Mekong Gateway"""
@@ -496,10 +507,255 @@ class TestGatewayDashboard(unittest.TestCase):
         resp = self.client.get("/")
         self.assertIn('id="token"', resp.text)
 
-    def test_dashboard_contains_custom_goal_input(self):
-        """Dashboard should have a custom goal input"""
+    def test_dashboard_contains_version(self):
+        """Dashboard should contain the current version"""
         resp = self.client.get("/")
-        self.assertIn('id="custom-goal"', resp.text)
+        self.assertIn(VERSION, resp.text)
+
+    def test_dashboard_contains_project_selector(self):
+        """Dashboard should have project selector dropdown"""
+        resp = self.client.get("/")
+        self.assertIn('id="project-select"', resp.text)
+
+    def test_dashboard_contains_live_log(self):
+        """Dashboard should have live log panel"""
+        resp = self.client.get("/")
+        self.assertIn('id="live-log"', resp.text)
+
+
+class TestGatewayProjects(unittest.TestCase):
+    """Tests for the /projects endpoint"""
+
+    def setUp(self):
+        self.app = create_app()
+        self.client = TestClient(self.app)
+
+    def test_projects_returns_200(self):
+        """Projects endpoint should return 200"""
+        resp = self.client.get("/projects")
+        self.assertEqual(resp.status_code, 200)
+
+    def test_projects_returns_list(self):
+        """Projects should return a list"""
+        resp = self.client.get("/projects")
+        self.assertIsInstance(resp.json(), list)
+
+    def test_projects_structure(self):
+        """Each project should have name, path, has_git"""
+        resp = self.client.get("/projects")
+        for proj in resp.json():
+            self.assertIn("name", proj)
+            self.assertIn("path", proj)
+            self.assertIn("has_git", proj)
+
+    def test_projects_excludes_hidden_dirs(self):
+        """Projects should not include dot-prefixed directories"""
+        resp = self.client.get("/projects")
+        for proj in resp.json():
+            self.assertFalse(proj["name"].startswith("."))
+
+    def test_scan_projects_with_temp_dir(self):
+        """_scan_projects should find directories in project_paths"""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Create fake projects
+            os.makedirs(os.path.join(tmpdir, "project-a"))
+            os.makedirs(os.path.join(tmpdir, "project-b", ".git"))
+            os.makedirs(os.path.join(tmpdir, ".hidden"))
+
+            with patch("src.core.gateway.GATEWAY_CONFIG") as mock_cfg:
+                mock_cfg.project_paths = [tmpdir]
+                projects = _scan_projects()
+
+            names = [p.name for p in projects]
+            self.assertIn("project-a", names)
+            self.assertIn("project-b", names)
+            self.assertNotIn(".hidden", names)
+
+            # Check has_git
+            proj_b = next(p for p in projects if p.name == "project-b")
+            self.assertTrue(proj_b.has_git)
+
+
+class TestGatewayWebSocket(unittest.TestCase):
+    """Tests for the WebSocket /ws endpoint"""
+
+    def setUp(self):
+        self.app = create_app()
+        self.client = TestClient(self.app)
+
+    @patch.dict(os.environ, {"MEKONG_API_TOKEN": "test-secret"})
+    @patch("src.core.gateway.get_client")
+    @patch("src.core.gateway.RecipeOrchestrator")
+    def test_ws_returns_complete_message(self, mock_orch_cls, mock_get_client):
+        """WebSocket should return a complete message after execution"""
+        mock_client = MagicMock()
+        mock_client.is_available = False
+        mock_get_client.return_value = mock_client
+
+        mock_orch = MagicMock()
+        mock_result = MagicMock()
+        mock_result.status.value = "success"
+        mock_result.total_steps = 1
+        mock_result.completed_steps = 1
+        mock_result.failed_steps = 0
+        mock_result.success_rate = 100.0
+        mock_result.errors = []
+        mock_result.warnings = []
+        mock_result.step_results = []
+        mock_orch.run_from_goal.return_value = mock_result
+        mock_orch.telemetry.get_trace.return_value = None
+        mock_orch_cls.return_value = mock_orch
+
+        with self.client.websocket_connect("/ws") as ws:
+            ws.send_json({"goal": "test goal", "token": "test-secret"})
+            # First message: status "Planning..."
+            msg1 = ws.receive_json()
+            self.assertEqual(msg1["type"], "status")
+            # Second message: complete
+            msg2 = ws.receive_json()
+            self.assertEqual(msg2["type"], "complete")
+            self.assertEqual(msg2["status"], "success")
+
+    @patch.dict(os.environ, {"MEKONG_API_TOKEN": "test-secret"})
+    def test_ws_invalid_token_returns_error(self):
+        """WebSocket with invalid token should return error"""
+        with self.client.websocket_connect("/ws") as ws:
+            ws.send_json({"goal": "test", "token": "wrong"})
+            msg = ws.receive_json()
+            self.assertEqual(msg["type"], "error")
+            self.assertIn("Invalid token", msg["message"])
+
+    def test_ws_missing_goal_returns_error(self):
+        """WebSocket with missing goal should return error"""
+        with self.client.websocket_connect("/ws") as ws:
+            ws.send_json({"token": "abc"})
+            msg = ws.receive_json()
+            self.assertEqual(msg["type"], "error")
+            self.assertIn("Missing", msg["message"])
+
+    def test_ws_missing_token_returns_error(self):
+        """WebSocket with missing token should return error"""
+        with self.client.websocket_connect("/ws") as ws:
+            ws.send_json({"goal": "test"})
+            msg = ws.receive_json()
+            self.assertEqual(msg["type"], "error")
+            self.assertIn("Missing", msg["message"])
+
+    @patch.dict(os.environ, {"MEKONG_API_TOKEN": "test-secret"})
+    @patch("src.core.gateway.get_client")
+    @patch("src.core.gateway.RecipeOrchestrator")
+    def test_ws_complete_has_human_summary(self, mock_orch_cls, mock_get_client):
+        """WebSocket complete message should include human_summary"""
+        mock_client = MagicMock()
+        mock_client.is_available = False
+        mock_get_client.return_value = mock_client
+
+        mock_orch = MagicMock()
+        mock_result = MagicMock()
+        mock_result.status.value = "success"
+        mock_result.total_steps = 2
+        mock_result.completed_steps = 2
+        mock_result.failed_steps = 0
+        mock_result.success_rate = 100.0
+        mock_result.errors = []
+        mock_result.warnings = []
+        mock_result.step_results = []
+        mock_orch.run_from_goal.return_value = mock_result
+        mock_orch.telemetry.get_trace.return_value = None
+        mock_orch_cls.return_value = mock_orch
+
+        with self.client.websocket_connect("/ws") as ws:
+            ws.send_json({"goal": "deploy", "token": "test-secret"})
+            ws.receive_json()  # status
+            msg = ws.receive_json()  # complete
+            self.assertIn("human_summary", msg)
+            self.assertIn("en", msg["human_summary"])
+            self.assertIn("vi", msg["human_summary"])
+
+
+class TestGatewayConfig(unittest.TestCase):
+    """Tests for gateway configuration loading"""
+
+    def test_default_config_has_presets(self):
+        """Default config should have preset actions"""
+        cfg = GatewayConfig()
+        self.assertEqual(len(cfg.presets), 6)
+
+    def test_default_config_host_port(self):
+        """Default config should have localhost:8000"""
+        cfg = GatewayConfig()
+        self.assertEqual(cfg.host, "127.0.0.1")
+        self.assertEqual(cfg.port, 8000)
+
+    def test_default_config_project_paths(self):
+        """Default config should have apps/ as project path"""
+        cfg = GatewayConfig()
+        self.assertEqual(cfg.project_paths, ["apps"])
+
+    def test_load_config_missing_file_returns_defaults(self):
+        """Loading a non-existent config returns defaults"""
+        cfg = load_config("/nonexistent/path/gateway.yaml")
+        self.assertEqual(cfg.host, "127.0.0.1")
+        self.assertEqual(cfg.port, 8000)
+        self.assertEqual(len(cfg.presets), 6)
+
+    def test_load_config_with_yaml(self):
+        """Loading a valid YAML config should override defaults"""
+        try:
+            import yaml
+        except ImportError:
+            self.skipTest("PyYAML not installed")
+
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as f:
+            yaml.dump({"host": "0.0.0.0", "port": 9000, "tunnel_name": "my-tunnel"}, f)
+            f.flush()
+            cfg = load_config(f.name)
+
+        os.unlink(f.name)
+        self.assertEqual(cfg.host, "0.0.0.0")
+        self.assertEqual(cfg.port, 9000)
+        self.assertEqual(cfg.tunnel_name, "my-tunnel")
+
+    def test_default_presets_match_gateway(self):
+        """DEFAULT_PRESETS should match PRESET_ACTIONS from gateway"""
+        self.assertEqual(len(DEFAULT_PRESETS), len(PRESET_ACTIONS))
+        self.assertEqual(DEFAULT_PRESETS[0]["id"], "deploy")
+
+    def test_version_is_0_4_0(self):
+        """Gateway version should be 0.4.0"""
+        self.assertEqual(VERSION, "0.4.0")
+
+
+class TestDashboardTemplate(unittest.TestCase):
+    """Tests for the extracted dashboard HTML template"""
+
+    def test_template_has_presets_placeholder(self):
+        """Template should contain __PRESETS_JSON__ placeholder"""
+        self.assertIn("__PRESETS_JSON__", DASHBOARD_HTML)
+
+    def test_template_has_version_placeholder(self):
+        """Template should contain __VERSION__ placeholder"""
+        self.assertIn("__VERSION__", DASHBOARD_HTML)
+
+    def test_template_has_websocket_code(self):
+        """Template should contain WebSocket client code"""
+        self.assertIn("WebSocket", DASHBOARD_HTML)
+        self.assertIn("runGoalWS", DASHBOARD_HTML)
+
+    def test_template_has_live_log(self):
+        """Template should contain live log elements"""
+        self.assertIn("live-log", DASHBOARD_HTML)
+        self.assertIn("log-entries", DASHBOARD_HTML)
+
+    def test_template_has_project_selector(self):
+        """Template should contain project selector"""
+        self.assertIn("project-select", DASHBOARD_HTML)
+        self.assertIn("loadProjects", DASHBOARD_HTML)
+
+    def test_template_uses_safe_dom(self):
+        """Template should use createElement, not innerHTML"""
+        self.assertIn("createElement", DASHBOARD_HTML)
+        self.assertNotIn("innerHTML", DASHBOARD_HTML)
 
 
 class TestGatewayPresets(unittest.TestCase):

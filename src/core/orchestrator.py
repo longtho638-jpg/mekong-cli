@@ -105,7 +105,10 @@ class RecipeOrchestrator:
             self.console.print("[yellow]Warning: BMAD loader not available[/yellow]")
 
     def run_from_goal(
-        self, goal: str, context: Optional[PlanningContext] = None
+        self,
+        goal: str,
+        context: Optional[PlanningContext] = None,
+        progress_callback=None,
     ) -> OrchestrationResult:
         """
         Execute complete workflow from high-level goal.
@@ -152,14 +155,16 @@ class RecipeOrchestrator:
         self.console.print(f"[green]✓[/green] Generated {len(recipe.steps)} steps")
 
         # PHASE 2 & 3: EXECUTE → VERIFY
-        result = self.run_from_recipe(recipe)
+        result = self.run_from_recipe(recipe, progress_callback=progress_callback)
 
         # Finalize telemetry
         self.telemetry.finish_trace()
 
         return result
 
-    def run_from_recipe(self, recipe: Recipe) -> OrchestrationResult:
+    def run_from_recipe(
+        self, recipe: Recipe, progress_callback=None,
+    ) -> OrchestrationResult:
         """
         Execute existing recipe with verification.
 
@@ -201,17 +206,21 @@ class RecipeOrchestrator:
                 for error in step_result.verification.errors:
                     result.errors.append(f"Step {step.order}: {error}")
 
-                # Handle failure
+            # Collect warnings
+            for warning in step_result.verification.warnings:
+                result.warnings.append(f"Step {step.order}: {warning}")
+
+            # Notify progress listener (used by WebSocket streaming)
+            if progress_callback:
+                progress_callback(step_result, result)
+
+            # Handle failure after callback so the listener sees the step
+            if not step_result.verification.passed:
                 if self.enable_rollback:
                     self._handle_failure(result, step)
                     break
                 else:
-                    # Continue execution despite failure
                     result.status = OrchestrationStatus.PARTIAL
-
-            # Collect warnings
-            for warning in step_result.verification.warnings:
-                result.warnings.append(f"Step {step.order}: {warning}")
 
         # Display final report
         self._display_report(result)

@@ -639,7 +639,7 @@ def version():
     """Show version info"""
     console.print(
         Panel(
-            "[bold green]Mekong CLI[/bold green] v0.3.0\n"
+            "[bold green]Mekong CLI[/bold green] v0.4.0\n"
             "[dim]RaaS Agency Operating System[/dim]\n"
             "[dim]Engine: Plan-Execute-Verify (Binh Pháp)[/dim]\n"
             "[dim]DNA: ClaudeKit v2.9.1+[/dim]",

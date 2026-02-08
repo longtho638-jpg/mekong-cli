@@ -1,46 +1,33 @@
 """
 Mekong CLI - Gateway Server (OpenClaw Hybrid Commander)
 
-FastAPI server exposing the Plan-Execute-Verify engine via HTTP.
+FastAPI server exposing the Plan-Execute-Verify engine via HTTP + WebSocket.
 Includes "Washing Machine" dashboard for one-button operation.
 Enables remote command execution: Cloud Ra Lenh + Local Thuc Thi.
 """
 
+import asyncio
 import json
 import os
 from dataclasses import asdict
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 from src.core.llm_client import get_client
 from src.core.orchestrator import RecipeOrchestrator
+from src.core.gateway_config import DEFAULT_PRESETS, GatewayConfig, load_config
+from src.core.gateway_dashboard import DASHBOARD_HTML
 
 
-# -- Preset recipes: "Washing Machine" one-button actions --
+# -- Load config; export presets for backward compatibility --
+GATEWAY_CONFIG: GatewayConfig = load_config()
+PRESET_ACTIONS: List[Dict[str, str]] = GATEWAY_CONFIG.presets
 
-PRESET_ACTIONS = [
-    {"id": "deploy", "icon": "\U0001f680", "label": "Quick Deploy",
-     "goal": "deploy all applications to production",
-     "label_vi": "Tri\u1ec3n Khai Nhanh"},
-    {"id": "leads", "icon": "\U0001f50d", "label": "Audit Leads",
-     "goal": "scan and audit all lead generation sources",
-     "label_vi": "Ki\u1ec3m Tra Leads"},
-    {"id": "content", "icon": "\U0001f4dd", "label": "Plan Content",
-     "goal": "create a content plan for this week",
-     "label_vi": "L\u00ean K\u1ebf Ho\u1ea1ch N\u1ed9i Dung"},
-    {"id": "ask", "icon": "\U0001f4a1", "label": "Ask AI",
-     "goal": "answer my question using AI analysis",
-     "label_vi": "H\u1ecfi AI"},
-    {"id": "review", "icon": "\U0001f9d0", "label": "Code Review",
-     "goal": "review recent code changes for quality and security",
-     "label_vi": "Ki\u1ec3m Tra Code"},
-    {"id": "status", "icon": "\U0001f4ca", "label": "System Status",
-     "goal": "check system health and report status of all services",
-     "label_vi": "Tr\u1ea1ng Th\u00e1i H\u1ec7 Th\u1ed1ng"},
-]
+VERSION = "0.4.0"
 
 
 # -- Request / Response models --
@@ -84,7 +71,7 @@ class CommandResponse(BaseModel):
 class HealthResponse(BaseModel):
     """Health check response"""
     status: str = "ok"
-    version: str = "0.3.0"
+    version: str = VERSION
     engine: str = "Plan-Execute-Verify"
 
 
@@ -95,6 +82,13 @@ class PresetAction(BaseModel):
     label: str
     label_vi: str
     goal: str
+
+
+class ProjectInfo(BaseModel):
+    """A project discovered in the apps/ directory"""
+    name: str
+    path: str
+    has_git: bool
 
 
 # -- Token verification --
@@ -131,125 +125,66 @@ def build_human_summary(result) -> HumanSummary:
     return HumanSummary(en=en, vi=vi)
 
 
-# -- Dashboard HTML: The Washing Machine UI --
-# Uses safe DOM methods (createElement, textContent) instead of innerHTML
+def _scan_projects() -> List[ProjectInfo]:
+    """Scan configured project paths for sub-projects."""
+    projects: List[ProjectInfo] = []
+    for base in GATEWAY_CONFIG.project_paths:
+        base_dir = Path(base)
+        if not base_dir.is_dir():
+            continue
+        for child in sorted(base_dir.iterdir()):
+            if child.is_dir() and not child.name.startswith("."):
+                projects.append(ProjectInfo(
+                    name=child.name,
+                    path=str(child),
+                    has_git=(child / ".git").exists(),
+                ))
+    return projects
 
-DASHBOARD_HTML = r"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mekong Dashboard</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column}
-header{text-align:center;padding:2rem 1rem 1rem;border-bottom:1px solid #1e293b}
-header h1{font-size:1.8rem;background:linear-gradient(135deg,#38bdf8,#818cf8);
--webkit-background-clip:text;-webkit-text-fill-color:transparent}
-header p{color:#94a3b8;margin-top:.3rem;font-size:.9rem}
-.token-bar{display:flex;gap:.5rem;max-width:400px;margin:1rem auto 0;align-items:center}
-.token-bar input{flex:1;padding:.5rem .75rem;border:1px solid #334155;border-radius:.5rem;
-background:#1e293b;color:#e2e8f0;font-size:.85rem}
-.token-bar button{padding:.5rem 1rem;border:none;border-radius:.5rem;
-background:#334155;color:#e2e8f0;cursor:pointer;font-size:.85rem}
-.token-bar button:hover{background:#475569}
-main{flex:1;padding:1.5rem;max-width:800px;margin:0 auto;width:100%}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin-top:1rem}
-.btn{display:flex;flex-direction:column;align-items:center;justify-content:center;
-padding:1.5rem 1rem;border:2px solid #334155;border-radius:1rem;background:#1e293b;
-cursor:pointer;transition:all .2s;min-height:140px;text-align:center}
-.btn:hover{border-color:#38bdf8;transform:translateY(-2px);box-shadow:0 4px 20px rgba(56,189,248,.15)}
-.btn:active{transform:translateY(0)}
-.btn.running{border-color:#f59e0b;animation:pulse 1.5s infinite}
-.btn.success{border-color:#22c55e}
-.btn.error{border-color:#ef4444}
-.btn .icon{font-size:2.5rem;margin-bottom:.5rem}
-.btn .label{font-size:1rem;font-weight:600}
-.btn .label-vi{font-size:.75rem;color:#94a3b8;margin-top:.2rem}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
-#result{margin-top:1.5rem;padding:1rem;border-radius:.75rem;background:#1e293b;
-border:1px solid #334155;display:none;max-height:400px;overflow-y:auto}
-#result.show{display:block}
-.custom-bar{display:flex;gap:.5rem;margin-top:1rem}
-.custom-bar input{flex:1;padding:.75rem 1rem;border:1px solid #334155;border-radius:.75rem;
-background:#1e293b;color:#e2e8f0;font-size:1rem}
-.custom-bar button{padding:.75rem 1.5rem;border:none;border-radius:.75rem;
-background:linear-gradient(135deg,#38bdf8,#818cf8);color:#0f172a;
-font-weight:700;cursor:pointer;font-size:1rem}
-.custom-bar button:hover{opacity:.9}
-footer{text-align:center;padding:1rem;color:#475569;font-size:.75rem;border-top:1px solid #1e293b}
-.summary-box{padding:.75rem;border-radius:.5rem;margin-bottom:.75rem}
-.summary-ok{background:#052e16;border:1px solid #22c55e}
-.summary-fail{background:#450a0a;border:1px solid #ef4444}
-.summary-partial{background:#422006;border:1px solid #f59e0b}
-details{margin-top:.5rem}
-details summary{cursor:pointer;color:#94a3b8;font-size:.85rem}
-details pre{font-size:.75rem;color:#94a3b8;white-space:pre-wrap;margin-top:.5rem}
-</style>
-</head>
-<body>
-<header>
-<h1>Mekong Dashboard</h1>
-<p>AgencyOS — Press a button, get things done.</p>
-<div class="token-bar">
-<input type="password" id="token" placeholder="API Token" />
-<button onclick="saveToken()">Save</button>
-</div>
-</header>
-<main>
-<div class="grid" id="buttons"></div>
-<div class="custom-bar">
-<input type="text" id="custom-goal" placeholder="Or type a custom goal..." />
-<button onclick="runCustom()">Run</button>
-</div>
-<div id="result"></div>
-</main>
-<footer>Mekong CLI v0.3.0 — OpenClaw Hybrid Commander</footer>
-<script>
-var PRESETS=__PRESETS_JSON__;
-function saveToken(){localStorage.setItem('mekong_token',document.getElementById('token').value)}
-function getToken(){return document.getElementById('token').value||localStorage.getItem('mekong_token')||''}
-function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text)e.textContent=text;return e}
-window.onload=function(){
-document.getElementById('token').value=localStorage.getItem('mekong_token')||'';
-var grid=document.getElementById('buttons');
-PRESETS.forEach(function(p){
-var d=el('div','btn');d.id='btn-'+p.id;
-d.appendChild(el('span','icon',p.icon));
-d.appendChild(el('span','label',p.label));
-d.appendChild(el('span','label-vi',p.label_vi));
-d.onclick=function(){runGoal(p.goal,p.id)};
-grid.appendChild(d);
-});
-};
-function showResult(content){var r=document.getElementById('result');r.className='show';while(r.firstChild)r.removeChild(r.firstChild);if(typeof content==='string'){r.appendChild(el('h3','',content))}else{r.appendChild(content)}}
-async function runGoal(goal,btnId){
-var token=getToken();if(!token){alert('Please enter your API token first.');return}
-var btn=btnId?document.getElementById('btn-'+btnId):null;
-if(btn)btn.className='btn running';
-showResult('Running...');
-try{
-var r=await fetch('/cmd',{method:'POST',headers:{'Content-Type':'application/json'},
-body:JSON.stringify({goal:goal,token:token})});
-var d=await r.json();
-if(!r.ok){var errBox=el('div','');errBox.appendChild(el('h3','','Error'));errBox.appendChild(el('pre','',JSON.stringify(d,null,2)));showResult(errBox);if(btn)btn.className='btn error';return}
-var frag=document.createDocumentFragment();
-var hs=d.human_summary;var cls=d.status==='success'?'summary-ok':d.status==='partial'?'summary-partial':'summary-fail';
-var box=el('div','summary-box '+cls);
-if(hs){box.appendChild(el('strong','',hs.en));var viLine=el('div','',hs.vi);viLine.style.marginTop='.3rem';viLine.style.color='#94a3b8';box.appendChild(viLine)}
-else{box.appendChild(el('div','','Status: '+d.status+' ('+d.success_rate+'%)'))}
-frag.appendChild(box);
-var details=document.createElement('details');details.appendChild(el('summary','','Technical Details'));details.appendChild(el('pre','',JSON.stringify(d,null,2)));
-frag.appendChild(details);showResult(frag);
-if(btn)btn.className='btn '+(d.status==='success'?'success':'error');
-}catch(e){showResult('Network Error: '+e.message);if(btn)btn.className='btn error'}
-}
-function runCustom(){var g=document.getElementById('custom-goal').value.trim();
-if(!g){alert('Please enter a goal.');return}runGoal(g,null)}
-</script>
-</body>
-</html>"""
+
+def _build_orchestrator():
+    """Create a configured RecipeOrchestrator instance."""
+    llm_client = get_client()
+    return RecipeOrchestrator(
+        llm_client=llm_client if llm_client.is_available else None,
+        strict_verification=True,
+        enable_rollback=True,
+    )
+
+
+def _build_cmd_response(result, goal: str, orchestrator) -> CommandResponse:
+    """Build CommandResponse from orchestration result."""
+    steps = [
+        StepSummary(
+            order=sr.step.order,
+            title=sr.step.title,
+            passed=sr.verification.passed,
+            exit_code=sr.execution.exit_code,
+            summary=sr.verification.summary,
+        )
+        for sr in result.step_results
+    ]
+
+    trace = None
+    trace_obj = orchestrator.telemetry.get_trace()
+    if trace_obj:
+        trace = asdict(trace_obj)
+
+    human_summary = build_human_summary(result)
+
+    return CommandResponse(
+        status=result.status.value,
+        goal=goal,
+        total_steps=result.total_steps,
+        completed_steps=result.completed_steps,
+        failed_steps=result.failed_steps,
+        success_rate=result.success_rate,
+        errors=result.errors,
+        warnings=result.warnings,
+        steps=steps,
+        trace=trace,
+        human_summary=human_summary,
+    )
 
 
 # -- FastAPI app factory --
@@ -259,7 +194,7 @@ def create_app() -> FastAPI:
     gateway = FastAPI(
         title="Mekong Gateway",
         description="OpenClaw Hybrid Commander — Cloud Ra Lenh, Local Thuc Thi",
-        version="0.3.0",
+        version=VERSION,
     )
 
     @gateway.get("/", response_class=HTMLResponse)
@@ -267,12 +202,18 @@ def create_app() -> FastAPI:
         """Serve the Washing Machine dashboard UI"""
         presets_json = json.dumps(PRESET_ACTIONS)
         html = DASHBOARD_HTML.replace("__PRESETS_JSON__", presets_json)
+        html = html.replace("__VERSION__", f"v{VERSION}")
         return HTMLResponse(content=html)
 
     @gateway.get("/presets", response_model=List[PresetAction])
     def list_presets():
         """List available one-button preset actions"""
         return [PresetAction(**p) for p in PRESET_ACTIONS]
+
+    @gateway.get("/projects", response_model=List[ProjectInfo])
+    def list_projects():
+        """List available sub-projects from apps/ directory"""
+        return _scan_projects()
 
     @gateway.get("/health", response_model=HealthResponse)
     def health_check():
@@ -281,63 +222,94 @@ def create_app() -> FastAPI:
 
     @gateway.post("/cmd", response_model=CommandResponse)
     def execute_command(req: CommandRequest):
-        """
-        Execute a goal through the Plan-Execute-Verify engine.
-
-        Requires valid MEKONG_API_TOKEN for authentication.
-        Returns orchestration result with optional execution trace.
-        """
+        """Execute a goal through the Plan-Execute-Verify engine (HTTP)."""
         verify_token(req.token)
-
         try:
-            llm_client = get_client()
-            orchestrator = RecipeOrchestrator(
-                llm_client=llm_client if llm_client.is_available else None,
-                strict_verification=True,
-                enable_rollback=True,
-            )
-
+            orchestrator = _build_orchestrator()
             result = orchestrator.run_from_goal(req.goal)
-
-            # Build step summaries
-            steps = [
-                StepSummary(
-                    order=sr.step.order,
-                    title=sr.step.title,
-                    passed=sr.verification.passed,
-                    exit_code=sr.execution.exit_code,
-                    summary=sr.verification.summary,
-                )
-                for sr in result.step_results
-            ]
-
-            # Read execution trace if available
-            trace = None
-            trace_obj = orchestrator.telemetry.get_trace()
-            if trace_obj:
-                trace = asdict(trace_obj)
-
-            # Build human-friendly summary
-            human_summary = build_human_summary(result)
-
-            return CommandResponse(
-                status=result.status.value,
-                goal=req.goal,
-                total_steps=result.total_steps,
-                completed_steps=result.completed_steps,
-                failed_steps=result.failed_steps,
-                success_rate=result.success_rate,
-                errors=result.errors,
-                warnings=result.warnings,
-                steps=steps,
-                trace=trace,
-                human_summary=human_summary,
-            )
-
+            return _build_cmd_response(result, req.goal, orchestrator)
         except HTTPException:
             raise
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
+
+    @gateway.websocket("/ws")
+    async def ws_execute(websocket: WebSocket):
+        """Execute a goal with real-time step-by-step progress streaming."""
+        await websocket.accept()
+        try:
+            data = await websocket.receive_json()
+            goal = data.get("goal", "")
+            token = data.get("token", "")
+
+            if not goal or not token:
+                await websocket.send_json(
+                    {"type": "error", "message": "Missing goal or token"}
+                )
+                return
+
+            try:
+                verify_token(token)
+            except HTTPException as exc:
+                await websocket.send_json(
+                    {"type": "error", "message": exc.detail}
+                )
+                return
+
+            await websocket.send_json(
+                {"type": "status", "message": "Planning..."}
+            )
+
+            loop = asyncio.get_running_loop()
+
+            def progress_callback(step_result, current_result):
+                """Send step progress over WebSocket (called from worker thread)."""
+                msg = {
+                    "type": "step",
+                    "order": step_result.step.order,
+                    "title": step_result.step.title,
+                    "passed": step_result.verification.passed,
+                    "exit_code": step_result.execution.exit_code,
+                    "summary": step_result.verification.summary,
+                    "completed": current_result.completed_steps,
+                    "total": current_result.total_steps,
+                }
+                future = asyncio.run_coroutine_threadsafe(
+                    websocket.send_json(msg), loop
+                )
+                future.result(timeout=10)
+
+            def run_goal():
+                orchestrator = _build_orchestrator()
+                result = orchestrator.run_from_goal(
+                    goal, progress_callback=progress_callback
+                )
+                return result, orchestrator
+
+            result, orchestrator = await asyncio.to_thread(run_goal)
+
+            human_summary = build_human_summary(result)
+            await websocket.send_json({
+                "type": "complete",
+                "status": result.status.value,
+                "goal": goal,
+                "total_steps": result.total_steps,
+                "completed_steps": result.completed_steps,
+                "failed_steps": result.failed_steps,
+                "success_rate": result.success_rate,
+                "errors": result.errors,
+                "human_summary": {"en": human_summary.en, "vi": human_summary.vi},
+            })
+
+        except WebSocketDisconnect:
+            pass
+        except Exception as e:
+            try:
+                await websocket.send_json(
+                    {"type": "error", "message": str(e)}
+                )
+            except Exception:
+                pass
 
     return gateway
 
@@ -355,8 +327,10 @@ __all__ = [
     "HumanSummary",
     "StepSummary",
     "PresetAction",
+    "ProjectInfo",
     "PRESET_ACTIONS",
-    "DASHBOARD_HTML",
+    "GATEWAY_CONFIG",
+    "VERSION",
     "verify_token",
     "build_human_summary",
 ]
