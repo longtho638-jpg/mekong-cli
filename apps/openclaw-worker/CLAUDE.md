@@ -17,20 +17,19 @@
 |-----------|------------|
 | Runtime | Node.js |
 | Language | JavaScript (CommonJS) |
-| Brain Control | Expect (TCL) via `scripts/tom-hum-persistent-dispatch.exp` |
-| IPC | Atomic file writes (`/tmp/tom_hum_next_mission.txt`) |
+| Brain Control | Direct `claude -p` spawn (v2 — replaced expect) |
 | Proxy | Antigravity Proxy (port 8080) |
 | Model | claude-opus-4-6-thinking |
 
-## Architecture (v22.0 Modular Brain)
+## Architecture (v23.0 Direct Execution)
 
 ```
 apps/openclaw-worker/
 ├── task-watcher.js              # Thin orchestrator: boot + shutdown (entry point)
 ├── config.js                    # All constants, paths, env vars, project registry
 └── lib/
-    ├── brain-process-manager.js # Spawn/monitor/kill expect brain process
-    ├── mission-dispatcher.js    # Atomic file IPC, prompt building, project routing
+    ├── brain-process-manager.js # Spawn claude -p per mission (v2: no expect)
+    ├── mission-dispatcher.js    # Prompt building, project routing, runMission()
     ├── task-queue.js            # File watching (fs.watch + poll), FIFO queue
     ├── auto-cto-pilot.js        # Self-CTO: generates Binh Phap quality tasks
     └── m1-cooling-daemon.js     # M1 thermal/RAM protection
@@ -42,24 +41,22 @@ apps/openclaw-worker/
 - `MEKONG_DIR` — Root project directory
 - `WATCH_DIR` — `tasks/` directory for mission files
 - `PROCESSED_DIR` — `tasks/processed/` for completed missions
-- `MISSION_FILE` — `/tmp/tom_hum_next_mission.txt` (IPC inbox)
-- `DONE_FILE` — `/tmp/tom_hum_mission_done` (completion signal)
-- `EXPECT_SCRIPT` — Path to `scripts/tom-hum-persistent-dispatch.exp`
 - `TASK_PATTERN` — `/^mission_.*\.txt$/` (file naming convention)
 - `MISSION_TIMEOUT_MS` — 45 minutes per mission
 - `PROJECTS` — Array of sub-project names for routing
 
-### IPC Protocol (File-Based)
-1. **Mission delivery:** Atomic write (tmp + rename) to `MISSION_FILE`
-2. **Completion signal:** Expect brain writes `"done"` to `DONE_FILE`
-3. **State persistence:** `tasks/.tom_hum_state.json` tracks Auto-CTO progress
+### Execution Protocol (v2: Direct claude -p)
+- Each mission spawns: `claude -p "<prompt>" --model X --dangerously-skip-permissions`
+- stdin set to `'ignore'` (critical: piped stdin causes hang)
+- stdout/stderr captured and logged
+- Process exit code determines success (0 = done)
+- No file IPC needed — Node.js child_process handles everything
+- Timeout watchdog kills process after MISSION_TIMEOUT_MS
 
-### Expect Brain Protocol
-- Spawns CC CLI with `--dangerously-skip-permissions`
-- Detects `❯` prompt via regex `(\\xe2\\x9d\\xaf|❯)` with 500ms debounce
-- Initial ready timeout: 120 seconds
-- Mission timeout: 2700 seconds (45 min)
-- Crash recovery: auto-respawn with `--continue`, max 5/hour
+### Legacy: Expect Brain Protocol (DEPRECATED)
+- `scripts/tom-hum-persistent-dispatch.exp` — no longer works with CC CLI v2.1.38+
+- CC CLI uses Ink (React TUI) with alternate screen buffer
+- Expect cannot detect prompt output through Ink's rendering
 
 ## Development Rules (Domain-Specific)
 
@@ -68,9 +65,9 @@ apps/openclaw-worker/
 - Mission files use snake_case: `mission_{project}_{task}.txt` (consumed by regex)
 
 ### Modifying the Brain
-- Changes to expect script require testing the full spawn→mission→completion cycle
-- Never modify `MISSION_FILE` or `DONE_FILE` paths without updating BOTH config.js AND expect script
-- IPC is one-way: Node.js writes mission, expect writes done signal
+- Changes to `brain-process-manager.js` require testing the full mission cycle
+- Test by writing a `tasks/mission_test_*.txt` file and watching logs
+- Critical: stdin MUST be `'ignore'` when spawning claude -p (piped stdin hangs)
 
 ### Adding New Modules
 - Create in `lib/` with kebab-case naming

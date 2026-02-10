@@ -9,7 +9,8 @@ module.exports = {
   LOG_FILE: process.env.TOM_HUM_LOG || '/Users/macbookprom1/tom_hum_cto.log',
   MISSION_FILE: '/tmp/tom_hum_next_mission.txt',
   DONE_FILE: '/tmp/tom_hum_mission_done',
-  EXPECT_SCRIPT: path.join(MEKONG_DIR, 'scripts', 'tom-hum-persistent-dispatch.exp'),
+  // DEPRECATED: expect script no longer used (CC CLI v2.1.38+ Ink TUI breaks PTY detection)
+  EXPECT_SCRIPT_LEGACY: path.join(MEKONG_DIR, 'scripts', 'tom-hum-persistent-dispatch.exp'),
   TASK_PATTERN: /^mission_.*\.txt$/,
   MISSION_TIMEOUT_MS: 45 * 60 * 1000,
   POLL_INTERVAL_MS: 3000,

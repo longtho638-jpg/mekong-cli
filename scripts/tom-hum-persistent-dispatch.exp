@@ -1,9 +1,13 @@
 #!/usr/bin/expect -f
-# Tom Hum Persistent Dispatch — keeps CC CLI alive across all missions.
+# DEPRECATED: This expect script no longer works with CC CLI v2.1.38+
+# CC CLI uses Ink (React TUI) which writes to alternate screen buffer,
+# making expect PTY prompt detection impossible.
+# Replaced by: apps/openclaw-worker/lib/brain-process-manager.js (v2)
+# which uses claude -p (non-interactive print mode) directly.
 #
-# Spawns CC CLI ONCE, detects mission completion by prompt return,
-# auto-respawns on crash, reads missions via file IPC.
+# Kept as reference. Do not use in production.
 #
+# Original purpose: kept CC CLI alive across all missions via PTY.
 # Usage: expect tom-hum-persistent-dispatch.exp <default_project_dir> <log_file>
 # Missions read from: /tmp/tom_hum_next_mission.txt
 # Done signal written: /tmp/tom_hum_mission_done
