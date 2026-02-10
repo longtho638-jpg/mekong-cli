@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * TOM HUM (OpenClaw) Task Watcher — v25.1 DAEMON MODE
+ * TOM HUM (OpenClaw) Task Watcher — v26.0 FULL AUTONOMY
  *
  * Thin orchestrator: imports modules, wires lifecycle, handles shutdown.
  * Runs FOREVER as a daemon — never exits after queue empties.
@@ -43,7 +43,7 @@ try {
 }
 
 // --- Boot (wrapped in try/catch so daemon survives partial failures) ---
-log('--- MISSION CONTROL v25.1 ONLINE (Daemon Mode) ---');
+log('--- MISSION CONTROL v26.0 ONLINE (Full Autonomy) ---');
 
 try { spawnBrain(); } catch (e) { log(`BOOT ERROR (spawnBrain): ${e.message}`); }
 try { startWatching(); } catch (e) { log(`BOOT ERROR (startWatching): ${e.message}`); }
