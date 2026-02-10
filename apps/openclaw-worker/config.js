@@ -22,13 +22,6 @@ module.exports = {
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen-coder-plus',
   // Engine selection: 'antigravity' (default, port 8080) or 'qwen' (port 8081)
   ENGINE: process.env.TOM_HUM_ENGINE || 'antigravity',
-  // Brain modes: 'interactive' (default) = expect PTY in tmux, 'direct' = claude -p, 'tmux' = persistent tmux, 'external' = manual
-  BRAIN_MODE: process.env.TOM_HUM_BRAIN_MODE || 'interactive',
-  EXPECT_SCRIPT: path.join(MEKONG_DIR, 'scripts', 'tom-hum-dispatch.exp'),
-  TMUX_SESSION: 'tom-hum-brain',
-  TMUX_WIDTH: 200,
-  TMUX_HEIGHT: 50,
-  PROMPT_DEBOUNCE_MS: 2000,
   PROJECTS: ['sophia-ai-factory', 'wellnexus', 'apex-os', '84tea', 'anima119'],
 
   // Agent Team orchestration

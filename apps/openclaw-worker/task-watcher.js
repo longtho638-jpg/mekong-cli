@@ -7,7 +7,7 @@
  *
  * Modules:
  *   config.js               — All constants, paths, env vars
- *   lib/brain-process-manager.js — Spawn/monitor/kill expect brain
+ *   lib/brain-process-manager.js — External-only brain (CC CLI in visible terminal)
  *   lib/mission-dispatcher.js    — Atomic file IPC, prompt building
  *   lib/task-queue.js            — File watching, queuing, archiving
  *   lib/auto-cto-pilot.js       — Binh Phap auto-task generation

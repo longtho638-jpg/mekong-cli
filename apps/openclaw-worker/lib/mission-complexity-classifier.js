@@ -1,9 +1,12 @@
 /**
  * Mission Complexity Classifier — Routes missions to appropriate execution format
  *
+ * ALL levels use /cook ClaudeKit command to ensure proper workflow activation
+ * (research → plan → implement → test → review → finalize).
+ *
  * SIMPLE  → /cook "task" --auto                    (single agent, fast)
  * MEDIUM  → /cook "task" --auto --parallel          (sub-agents, parallel)
- * COMPLEX → Agent Team prompt with N teammates      (full team orchestration)
+ * COMPLEX → /cook "task" --auto --parallel          (sub-agents, deep scope)
  */
 
 const config = require('../config');
@@ -36,38 +39,29 @@ function classifyComplexity(task, project) {
 function generateMissionPrompt(task, project, complexity) {
   const mission = `${task.cmd} in ${project}`;
 
+  // All levels use /cook to ensure ClaudeKit workflow activation
+  // Complex gets extended scope description for deeper analysis
   if (complexity === 'complex') {
-    const teamSize = config.AGENT_TEAM_SIZE_DEFAULT;
-    // Agent Team prompt — CC CLI with CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-    // will parse this and spawn a coordinated team
-    return [
-      `Create an agent team with ${teamSize} teammates to: ${mission}.`,
-      'Assign ownership:',
-      `- Teammate 1 (scout): Scan the ${project} codebase, identify all files and patterns relevant to the task`,
-      `- Teammate 2 (implementer): Implement the changes identified by scout`,
-      `- Teammate 3 (tester): Run tests, verify changes compile, check for regressions`,
-      `- Teammate 4 (reviewer): Code review all changes, verify quality standards`,
-      'Coordinate sequentially: scout first, then implementer, then tester+reviewer in parallel.',
-      'Report final summary when all teammates complete.',
-    ].join(' ');
+    return `/cook "${mission}. Scope: thorough — scan all files, fix all issues found, run tests, verify build passes" --auto --parallel use context7`;
   }
 
   if (complexity === 'medium') {
-    return `/cook "${mission}" --auto --parallel`;
+    return `/cook "${mission}" --auto --parallel use context7`;
   }
 
   // simple
-  return `/cook "${mission}" --auto`;
+  return `/cook "${mission}" --auto use context7`;
 }
 
 /**
- * Check if a mission prompt is a team mission (for timeout decisions).
+ * Check if a mission prompt is a complex/deep-scope mission (for timeout decisions).
+ * Complex missions get extended timeout even though they now use /cook.
  * @param {string} prompt - The full mission prompt text
  * @returns {boolean}
  */
 function isTeamMission(prompt) {
   const lower = prompt.toLowerCase();
-  return lower.includes('agent team') || lower.includes('teammates') || lower.includes('teammate');
+  return lower.includes('scope: thorough') || lower.includes('agent team') || lower.includes('teammates');
 }
 
 module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission };
