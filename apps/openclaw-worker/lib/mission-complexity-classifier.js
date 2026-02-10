@@ -1,12 +1,11 @@
 /**
  * Mission Complexity Classifier — Routes missions to appropriate execution format
  *
- * ALL levels use /cook ClaudeKit command to ensure proper workflow activation
- * (research → plan → implement → test → review → finalize).
+ * ALL levels use /cook ClaudeKit command to ensure proper workflow activation.
  *
- * SIMPLE  → /cook "task" --auto                    (single agent, fast)
- * MEDIUM  → /cook "task" --auto --parallel          (sub-agents, parallel)
- * COMPLEX → /cook "task" --auto --parallel          (sub-agents, deep scope)
+ * SIMPLE  → /cook "task" --auto                     (single agent, fast)
+ * MEDIUM  → /cook "task" --auto --parallel           (sub-agents, parallel)
+ * COMPLEX → /cook with Agent Team instructions       (4+ parallel Task subagents)
  */
 
 const config = require('../config');
@@ -18,15 +17,29 @@ const config = require('../config');
  * @returns {'simple'|'medium'|'complex'}
  */
 function classifyComplexity(task, project) {
-  // Explicit complexity from task config takes priority
   if (task.complexity) return task.complexity;
-
-  // Keyword-based fallback classification
   const text = `${task.cmd} ${task.id}`.toLowerCase();
-
   if (config.COMPLEXITY.COMPLEX_KEYWORDS.some(kw => text.includes(kw))) return 'complex';
   if (config.COMPLEXITY.MEDIUM_KEYWORDS.some(kw => text.includes(kw))) return 'medium';
   return 'simple';
+}
+
+/**
+ * Build Agent Team instruction block for complex missions.
+ * Tells CC CLI to spawn parallel Task subagents via the native Task tool.
+ * @param {string} taskId - Task identifier for role lookup
+ * @returns {string} Agent Team instruction text
+ */
+function buildAgentTeamBlock(taskId) {
+  const roles = config.AGENT_TEAM_ROLES[taskId] || config.AGENT_TEAM_ROLES.default;
+  const roleList = roles.map((r, i) => `(${i + 1}) ${r}`).join(', ');
+  return [
+    'AGENT TEAM: You MUST use Claude Code native Agent Teams.',
+    `Spawn ${roles.length} parallel Task subagents via the Task tool: ${roleList}.`,
+    'Each subagent works independently on its scope.',
+    'Launch ALL subagents in a single message with multiple Task tool calls.',
+    'Wait for all to complete, then consolidate findings.',
+  ].join(' ');
 }
 
 /**
@@ -39,29 +52,29 @@ function classifyComplexity(task, project) {
 function generateMissionPrompt(task, project, complexity) {
   const mission = `${task.cmd} in ${project}`;
 
-  // All levels use /cook to ensure ClaudeKit workflow activation
-  // Complex gets extended scope description for deeper analysis
   if (complexity === 'complex') {
-    return `/cook "${mission}. Scope: thorough — scan all files, fix all issues found, run tests, verify build passes" --auto --parallel use context7`;
+    const teamBlock = buildAgentTeamBlock(task.id);
+    return `/cook "${mission}. ${teamBlock}" use context7`;
   }
 
   if (complexity === 'medium') {
     return `/cook "${mission}" --auto --parallel use context7`;
   }
 
-  // simple
   return `/cook "${mission}" --auto use context7`;
 }
 
 /**
- * Check if a mission prompt is a complex/deep-scope mission (for timeout decisions).
- * Complex missions get extended timeout even though they now use /cook.
+ * Check if a mission prompt is a team/complex mission (for timeout decisions).
  * @param {string} prompt - The full mission prompt text
  * @returns {boolean}
  */
 function isTeamMission(prompt) {
   const lower = prompt.toLowerCase();
-  return lower.includes('scope: thorough') || lower.includes('agent team') || lower.includes('teammates');
+  return lower.includes('agent team') ||
+    lower.includes('parallel task subagents') ||
+    lower.includes('scope: thorough') ||
+    lower.includes('teammates');
 }
 
-module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission };
+module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock };

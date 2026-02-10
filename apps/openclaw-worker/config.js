@@ -30,9 +30,17 @@ module.exports = {
 
   // Complexity classification keywords
   COMPLEXITY: {
-    COMPLEX_KEYWORDS: ['refactor', 'redesign', 'migrate', 'rewrite', 'overhaul', 'architecture', 'cross-module', 'full-stack', 'multi-project', 'monorepo'],
+    COMPLEX_KEYWORDS: ['refactor', 'redesign', 'migrate', 'rewrite', 'overhaul', 'architecture', 'cross-module', 'full-stack', 'multi-project', 'monorepo', 'security audit', 'tech debt', 'performance audit'],
     MEDIUM_KEYWORDS: ['feature', 'implement', 'security', 'audit', 'multi-file', 'integration', 'api', 'database', 'auth', 'testing'],
     // Anything not matching COMPLEX or MEDIUM is SIMPLE
+  },
+
+  // Agent Team subagent roles for parallel execution
+  AGENT_TEAM_ROLES: {
+    security_scan: ['code-reviewer', 'tester', 'debugger', 'fullstack-developer'],
+    tech_debt: ['code-reviewer', 'tester', 'fullstack-developer', 'researcher'],
+    perf_audit: ['code-reviewer', 'tester', 'debugger', 'fullstack-developer'],
+    default: ['code-reviewer', 'tester', 'debugger', 'fullstack-developer'],
   },
 
   // Rule: Match ClaudeKit /commands to situation — NOT blind /cook
@@ -42,7 +50,7 @@ module.exports = {
     { id: 'type_safety', complexity: 'medium', cmd: 'Audit TypeScript any types — report all locations needing proper type annotations, fix them' },
     { id: 'a11y_audit', complexity: 'medium', cmd: 'WCAG 2.1 AA accessibility audit — report and fix alt text, ARIA labels, semantic HTML issues' },
     { id: 'security_scan', complexity: 'complex', cmd: 'Security audit — check CSP headers, XSS vectors, exposed secrets, CORS config. Fix all issues found' },
-    { id: 'perf_audit', complexity: 'medium', cmd: 'Performance audit — bundle size, lazy loading, image optimization, Core Web Vitals improvements' },
+    { id: 'perf_audit', complexity: 'complex', cmd: 'Performance audit — bundle size, lazy loading, image optimization, Core Web Vitals improvements' },
     { id: 'test_suite', complexity: 'medium', cmd: 'Run full test suite, report failures and coverage gaps, fix failing tests' },
     { id: 'debug_errors', complexity: 'simple', cmd: 'Investigate any runtime errors, unhandled rejections, or console warnings in production' },
     { id: 'i18n_sync', complexity: 'medium', cmd: 'Sync all i18n translation keys — fix missing translations across all locales' },
