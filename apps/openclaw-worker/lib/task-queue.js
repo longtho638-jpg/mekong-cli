@@ -63,7 +63,7 @@ function startWatching() {
     try {
       const files = fs.readdirSync(config.WATCH_DIR);
       const tasks = files.filter(f => config.TASK_PATTERN.test(f));
-      const newTasks = tasks.filter(f => !queue.includes(f));
+      const newTasks = tasks.filter(f => !queue.includes(f) && f !== currentTaskFile);
       if (newTasks.length > 0) {
         log(`Poll found new: ${newTasks.join(', ')}`);
       }

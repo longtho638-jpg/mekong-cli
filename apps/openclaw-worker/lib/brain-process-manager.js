@@ -323,10 +323,10 @@ async function runMissionInteractive(prompt, projectDir, timeoutMs) {
   // Clean done file before dispatching
   try { fs.unlinkSync(config.DONE_FILE); } catch (e) {}
 
-  // Prepend cd command if not in default dir
+  // Prepend project context if not in default dir
   let fullPrompt = prompt;
   if (projectDir !== config.MEKONG_DIR) {
-    fullPrompt = `cd ${projectDir} && ${prompt}`;
+    fullPrompt = `First cd to ${projectDir} then: ${prompt}`;
   }
 
   // Write mission file — expect script will pick it up
@@ -523,9 +523,20 @@ async function runMissionExternal(prompt, projectDir, timeoutMs) {
   // Write mission file — expect script picks it up
   let fullPrompt = prompt;
   if (projectDir !== config.MEKONG_DIR) {
-    fullPrompt = `cd ${projectDir} && ${prompt}`;
+    fullPrompt = `First cd to ${projectDir} then: ${prompt}`;
   }
   fs.writeFileSync(config.MISSION_FILE, fullPrompt);
+
+  // Wait for expect to consume (delete) the mission file — confirms handoff
+  const consumeDeadline = Date.now() + 30000; // 30s max wait
+  while (fs.existsSync(config.MISSION_FILE)) {
+    if (Date.now() > consumeDeadline) {
+      log(`WARN: Mission file not consumed within 30s — expect may be busy`);
+      break;
+    }
+    await sleep(500);
+  }
+  log(`Mission file consumed by expect brain — polling for done signal`);
 
   // Poll for done signal with timeout
   return new Promise((resolve) => {
