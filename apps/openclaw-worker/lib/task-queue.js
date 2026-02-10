@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
-const { log } = require('./brain-headless-per-mission');
+const { log } = require('./brain-tmux');
 const { executeTask } = require('./mission-dispatcher');
 const { pauseIfOverheating, waitForSafeTemperature } = require('./m1-cooling-daemon');
 

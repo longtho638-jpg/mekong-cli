@@ -11,7 +11,7 @@
 
 const path = require('path');
 const config = require('../config');
-const { log, runMission } = require('./brain-headless-per-mission');
+const { log, runMission } = require('./brain-tmux');
 const { isTeamMission, buildAgentTeamBlock } = require('./mission-complexity-classifier');
 
 // Project routing: detect project from task content keywords

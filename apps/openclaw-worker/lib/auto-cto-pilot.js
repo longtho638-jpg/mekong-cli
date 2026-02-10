@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
-const { log, isBrainAlive } = require('./brain-headless-per-mission');
+const { log, isBrainAlive } = require('./brain-tmux');
 const { isQueueEmpty } = require('./task-queue');
 const { classifyComplexity, generateMissionPrompt } = require('./mission-complexity-classifier');
 const { isOverheating } = require('./m1-cooling-daemon');
