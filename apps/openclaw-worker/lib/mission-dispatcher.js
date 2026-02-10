@@ -29,9 +29,14 @@ function detectProjectDir(taskContent) {
 }
 
 // Build clean prompt from raw task content
+// If task already contains /binh-phap or /cook, use as-is (strip project prefix only)
 function buildPrompt(taskContent) {
-  const clean = taskContent.replace(/\\!/g, '!').replace(/\\"/g, '"').trim();
+  let clean = taskContent.replace(/\\!/g, '!').replace(/\\"/g, '"').trim();
+  // Strip project routing prefix (e.g. "sophia: " at start)
+  clean = clean.replace(/^[a-z0-9_-]+:\s*/i, '');
   const safe = clean.replace(/[()$`\\!]/g, ' ').replace(/\s+/g, ' ').trim();
+  // Don't double-wrap if already has /binh-phap or /cook
+  if (safe.includes('/binh-phap') || safe.includes('/cook')) return safe;
   return `/binh-phap implement: ${safe} /cook`;
 }
 
