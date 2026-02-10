@@ -1,0 +1,12 @@
+{
+  "skill-seeker": {
+    "type": "stdio",
+    "command": "/Users/macbookprom1/mekong-cli/.skill-seekers-venv/bin/python3.12",
+    "args": [
+      "-m",
+      "skill_seekers.mcp.server_fastmcp"
+    ],
+    "cwd": "/Users/macbookprom1/mekong-cli",
+    "env": {}
+  }
+}

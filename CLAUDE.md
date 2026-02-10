@@ -322,6 +322,25 @@ Reviewer Agent   → Code quality + security
 | Agents | 17+ | ClaudeKit subagent system |
 | BMAD Workflows | 169 | `_bmad/` |
 
+### Skill Seekers — Skill Factory (MCP)
+
+Universal preprocessor that converts docs, GitHub repos, and PDFs into CC CLI skills.
+
+| Config | Value |
+|--------|-------|
+| Venv | `.skill-seekers-venv/` (Python 3.12) |
+| CLI | `.skill-seekers-venv/bin/skill-seekers` |
+| Version | 3.0.0 |
+| MCP | `.claude/mcp.json` → `skill-seeker` (stdio) |
+| Tools | 17 MCP tools (config, scrape, package, upload, split, sources) |
+
+Quick usage:
+```bash
+skill-seekers scrape --config configs/react.json   # Scrape docs → skill
+skill-seekers github --repo user/repo              # GitHub repo → skill
+skill-seekers install --config configs/X.json       # End-to-end pipeline
+```
+
 ### Mekong Agents
 
 | Agent | Operations |

@@ -21,6 +21,7 @@ wheels/
 MANIFEST
 .venv/
 venv/
+.skill-seekers-venv/
 ENV/
 env/
 .env
