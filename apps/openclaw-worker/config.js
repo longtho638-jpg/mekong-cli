@@ -19,6 +19,10 @@ module.exports = {
   STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
   PROXY_PORT: parseInt(process.env.PROXY_PORT || '8080', 10),
   MODEL_NAME: 'claude-opus-4-6-thinking',
+  TMUX_SESSION: 'tom-hum-brain',
+  TMUX_WIDTH: 200,
+  TMUX_HEIGHT: 50,
+  PROMPT_DEBOUNCE_MS: 2000,
   PROJECTS: ['84tea', 'apex-os', 'sophia-ai-factory', 'anima119', 'well'],
   BINH_PHAP_TASKS: [
     { id: 'console_cleanup', cmd: '/cook "Clean all console.log and debug statements from production code"' },

@@ -17,18 +17,18 @@
 |-----------|------------|
 | Runtime | Node.js |
 | Language | JavaScript (CommonJS) |
-| Brain Control | Direct `claude -p` spawn (v2 — replaced expect) |
+| Brain Control | Tmux session with interactive CC CLI (v24.0) |
 | Proxy | Antigravity Proxy (port 8080) |
 | Model | claude-opus-4-6-thinking |
 
-## Architecture (v23.0 Direct Execution)
+## Architecture (v24.0 Tmux Visible Brain)
 
 ```
 apps/openclaw-worker/
 ├── task-watcher.js              # Thin orchestrator: boot + shutdown (entry point)
 ├── config.js                    # All constants, paths, env vars, project registry
 └── lib/
-    ├── brain-process-manager.js # Spawn claude -p per mission (v2: no expect)
+    ├── brain-process-manager.js # Tmux-based CC CLI brain (v24.0: visible session)
     ├── mission-dispatcher.js    # Prompt building, project routing, runMission()
     ├── task-queue.js            # File watching (fs.watch + poll), FIFO queue
     ├── auto-cto-pilot.js        # Self-CTO: generates Binh Phap quality tasks
@@ -43,20 +43,20 @@ apps/openclaw-worker/
 - `PROCESSED_DIR` — `tasks/processed/` for completed missions
 - `TASK_PATTERN` — `/^mission_.*\.txt$/` (file naming convention)
 - `MISSION_TIMEOUT_MS` — 45 minutes per mission
+- `TMUX_SESSION` — Tmux session name (`tom-hum-brain`)
 - `PROJECTS` — Array of sub-project names for routing
 
-### Execution Protocol (v2: Direct claude -p)
-- Each mission spawns: `claude -p "<prompt>" --model X --dangerously-skip-permissions`
-- stdin set to `'ignore'` (critical: piped stdin causes hang)
-- stdout/stderr captured and logged
-- Process exit code determines success (0 = done)
-- No file IPC needed — Node.js child_process handles everything
-- Timeout watchdog kills process after MISSION_TIMEOUT_MS
+### Execution Protocol (v24.0: Tmux Visible Brain)
+- CC CLI runs inside tmux session `tom-hum-brain` (user can `tmux attach` to watch)
+- Missions injected via `tmux send-keys -l` (literal mode for special chars)
+- Completion detected via `tmux capture-pane -p` polling for prompt return
+- Debounce: prompt must persist 2s to confirm idle (not mid-output)
+- CC CLI stays alive across missions (persistent interactive session)
+- Brain auto-respawns if tmux session dies before next mission
 
-### Legacy: Expect Brain Protocol (DEPRECATED)
-- `scripts/tom-hum-persistent-dispatch.exp` — no longer works with CC CLI v2.1.38+
-- CC CLI uses Ink (React TUI) with alternate screen buffer
-- Expect cannot detect prompt output through Ink's rendering
+### Legacy: Expect Brain + claude -p (DEPRECATED)
+- `scripts/tom-hum-persistent-dispatch.exp` — expect brain, broken by Ink TUI
+- `claude -p` direct spawn — invisible, no user observation possible
 
 ## Development Rules (Domain-Specific)
 
@@ -67,7 +67,8 @@ apps/openclaw-worker/
 ### Modifying the Brain
 - Changes to `brain-process-manager.js` require testing the full mission cycle
 - Test by writing a `tasks/mission_test_*.txt` file and watching logs
-- Critical: stdin MUST be `'ignore'` when spawning claude -p (piped stdin hangs)
+- Verify tmux session: `tmux has-session -t tom-hum-brain && echo OK`
+- Watch CC CLI live: `tmux attach -t tom-hum-brain`
 
 ### Adding New Modules
 - Create in `lib/` with kebab-case naming
