@@ -61,10 +61,10 @@ function buildPrompt(taskContent) {
   const lower = safe.toLowerCase();
   if (isComplexRawMission(lower)) {
     const teamBlock = buildAgentTeamBlock('default');
-    return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${teamBlock}"`;
+    return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${teamBlock}" --auto`;
   }
 
-  return `/binh-phap implement: ${VI_PREFIX}${safe}. ${FILE_LIMIT} /cook`;
+  return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --auto`;
 }
 
 /**

@@ -93,8 +93,8 @@ function generateMissionPrompt(task, project, complexity) {
     return { prompt: `/cook "${mission}" --auto`, timeout };
   }
 
-  // SIMPLE: no --auto flag
-  return { prompt: `/cook "${mission}"`, timeout };
+  // SIMPLE: --auto BẮT BUỘC vì Tôm Hùm chạy tự trị, không có người approve
+  return { prompt: `/cook "${mission}" --auto`, timeout };
 }
 
 /**
