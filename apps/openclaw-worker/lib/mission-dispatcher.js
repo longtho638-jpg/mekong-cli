@@ -14,6 +14,9 @@ const config = require('../config');
 const { log, runMission } = require('./brain-tmux');
 const { isTeamMission, buildAgentTeamBlock } = require('./mission-complexity-classifier');
 
+const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
+const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
+
 // Project routing: detect project from task content keywords
 function detectProjectDir(taskContent) {
   const lower = taskContent.toLowerCase();
@@ -58,10 +61,10 @@ function buildPrompt(taskContent) {
   const lower = safe.toLowerCase();
   if (isComplexRawMission(lower)) {
     const teamBlock = buildAgentTeamBlock('default');
-    return `/cook "${safe}. ${teamBlock}" use context7`;
+    return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${teamBlock}"`;
   }
 
-  return `/binh-phap implement: ${safe} /cook use context7`;
+  return `/binh-phap implement: ${VI_PREFIX}${safe}. ${FILE_LIMIT} /cook`;
 }
 
 /**
@@ -69,16 +72,17 @@ function buildPrompt(taskContent) {
  *
  * @param {string} taskContent - Raw task file content
  * @param {string} taskFile - Task filename (for logging)
+ * @param {number} [timeoutMs] - Override timeout from classifier (optional)
  * @returns {Promise<{success: boolean, result: string, elapsed: number}>}
  */
-async function executeTask(taskContent, taskFile) {
+async function executeTask(taskContent, taskFile, timeoutMs) {
   const projectDir = detectProjectDir(taskContent);
   const prompt = buildPrompt(taskContent);
-  const timeoutMs = isTeamMission(prompt) ? config.AGENT_TEAM_TIMEOUT_MS : config.MISSION_TIMEOUT_MS;
+  const finalTimeout = timeoutMs || (isTeamMission(prompt) ? config.AGENT_TEAM_TIMEOUT_MS : config.MISSION_TIMEOUT_MS);
   const mode = isTeamMission(prompt) ? 'AGENT_TEAM' : 'SINGLE';
-  log(`PROMPT [${mode}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(timeoutMs/60000)}min]`);
+  log(`PROMPT [${mode}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(finalTimeout/60000)}min]`);
 
-  return runMission(prompt, projectDir, timeoutMs);
+  return runMission(prompt, projectDir, finalTimeout);
 }
 
 module.exports = { executeTask, buildPrompt, detectProjectDir };

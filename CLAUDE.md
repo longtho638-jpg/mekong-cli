@@ -7,6 +7,14 @@
 
 ---
 
+## NGÔN NGỮ — TIẾNG VIỆT BẮT BUỘC (ĐIỀU 55)
+
+> **LUÔN LUÔN trả lời bằng TIẾNG VIỆT.** Không dùng Tiếng Anh trừ khi là code, tên biến, hoặc thuật ngữ kỹ thuật.
+> Khi commit, log, báo cáo — tất cả phải Tiếng Việt.
+> Khi chạy mission từ Tôm Hùm — output, báo cáo, và console log phải Tiếng Việt.
+
+---
+
 ## LOADING ORDER — CSS-Specificity Cascade
 
 > Like CSS specificity, deeper CLAUDE.md files override higher ones. Each level owns its domain.
@@ -732,10 +740,11 @@ git push origin main
 | 52 | Error Recovery Protocol | 第二篇 |
 | 53 | M1 Resource Management | 第二篇 |
 | 54 | Tôm Hùm Tự Trị (Autonomous Dispatch) | 第九篇 |
+| 55 | Ngôn Ngữ — Tiếng Việt Bắt Buộc | Hiến Pháp |
 
 *ĐIỀU 1-46: Inherited from global `~/.claude/CLAUDE.md` rules (CC CLI supervision, i18n sync, production verification, skill activation, browser discipline, etc.)*
 
 ---
 
-_Genesis: 2026-02-06 | Hiến Pháp v2.0: 2026-02-10_
-_ClaudeKit DNA v2.9.1+ | Agent Teams + BMAD + Binh Pháp + Tôm Hùm v22.0_
+_Genesis: 2026-02-06 | Hiến Pháp v2.1: 2026-02-11_
+_ClaudeKit DNA v2.9.1+ | Agent Teams + BMAD + Binh Pháp + Tôm Hùm v29.0_

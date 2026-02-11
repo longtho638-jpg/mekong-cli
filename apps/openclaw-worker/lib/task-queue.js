@@ -3,6 +3,7 @@ const path = require('path');
 const config = require('../config');
 const { log } = require('./brain-tmux');
 const { executeTask } = require('./mission-dispatcher');
+const { classifyContentTimeout } = require('./mission-complexity-classifier');
 const { pauseIfOverheating, waitForSafeTemperature } = require('./m1-cooling-daemon');
 
 let isProcessing = false;
@@ -29,8 +30,9 @@ async function processQueue() {
       return;
     }
     const content = fs.readFileSync(filePath, 'utf-8').trim();
-    log(`EXECUTING: ${taskFile}`);
-    await executeTask(content, taskFile);
+    const { complexity, timeout } = classifyContentTimeout(content);
+    log(`EXECUTING [${complexity.toUpperCase()}/${Math.round(timeout/60000)}min]: ${taskFile}`);
+    await executeTask(content, taskFile, timeout);
     fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
     log(`Archived: ${taskFile}`);
   } catch (error) {

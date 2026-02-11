@@ -13,6 +13,9 @@ module.exports = {
   DONE_FILE: '/tmp/tom_hum_mission_done',
   TASK_PATTERN: /^mission_.*\.txt$/,
   MISSION_TIMEOUT_MS: 45 * 60 * 1000,
+  TIMEOUT_SIMPLE: 15 * 60 * 1000,   // 15 phút
+  TIMEOUT_MEDIUM: 30 * 60 * 1000,   // 30 phút
+  TIMEOUT_COMPLEX: 45 * 60 * 1000,  // 45 phút
   POLL_INTERVAL_MS: 3000,
   COOLING_INTERVAL_MS: 90000,
   AUTO_CTO_EMPTY_THRESHOLD: 6, // 6 polls × 5s = 30s idle → generate next task

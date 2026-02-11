@@ -141,9 +141,9 @@ function generateNextTask() {
         // Found a task — generate mission file
         state.currentProjectIdx = idx;
         const complexity = classifyComplexity(nextTask, project);
-        const missionPrompt = generateMissionPrompt(nextTask, project, complexity);
+        const missionResult = generateMissionPrompt(nextTask, project, complexity);
         const filename = `mission_${project.replace(/-/g, '_')}_auto_${nextTask.id}.txt`;
-        fs.writeFileSync(path.join(config.WATCH_DIR, filename), missionPrompt);
+        fs.writeFileSync(path.join(config.WATCH_DIR, filename), missionResult.prompt);
         state.completedTasks[project].push(nextTask.id);
         log(`AUTO-CTO: Generated ${nextTask.id} for ${project} [${complexity.toUpperCase()}] (${state.completedTasks[project].length}/${config.BINH_PHAP_TASKS.length} done)`);
         saveState(state);

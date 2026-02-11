@@ -3,12 +3,15 @@
  *
  * ALL levels use /cook ClaudeKit command to ensure proper workflow activation.
  *
- * SIMPLE  → /cook "task" --auto                     (single agent, fast)
- * MEDIUM  → /cook "task" --auto --parallel           (sub-agents, parallel)
- * COMPLEX → /cook with Agent Team instructions       (4+ parallel Task subagents)
+ * SIMPLE  → /cook "task"                        (single agent, 15 phút)
+ * MEDIUM  → /cook "task" --auto                  (sub-agents, 30 phút)
+ * COMPLEX → /cook with Agent Team instructions   (4+ parallel Task subagents, 45 phút)
  */
 
 const config = require('../config');
+
+const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
+const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
 
 /**
  * Classify mission complexity based on task metadata and keyword analysis.
@@ -22,6 +25,34 @@ function classifyComplexity(task, project) {
   if (config.COMPLEXITY.COMPLEX_KEYWORDS.some(kw => text.includes(kw))) return 'complex';
   if (config.COMPLEXITY.MEDIUM_KEYWORDS.some(kw => text.includes(kw))) return 'medium';
   return 'simple';
+}
+
+/**
+ * Get timeout for a given complexity level.
+ * @param {'simple'|'medium'|'complex'} complexity
+ * @returns {number} Timeout in milliseconds
+ */
+function getTimeoutForComplexity(complexity) {
+  if (complexity === 'complex') return config.TIMEOUT_COMPLEX;
+  if (complexity === 'medium') return config.TIMEOUT_MEDIUM;
+  return config.TIMEOUT_SIMPLE;
+}
+
+/**
+ * Classify raw mission text and return appropriate timeout.
+ * Used by task-queue for dynamic timeout on any mission content.
+ * @param {string} text - Raw mission file content
+ * @returns {{ complexity: string, timeout: number }}
+ */
+function classifyContentTimeout(text) {
+  const lower = text.toLowerCase();
+  if (config.COMPLEXITY.COMPLEX_KEYWORDS.some(kw => lower.includes(kw))) {
+    return { complexity: 'complex', timeout: config.TIMEOUT_COMPLEX };
+  }
+  if (config.COMPLEXITY.MEDIUM_KEYWORDS.some(kw => lower.includes(kw))) {
+    return { complexity: 'medium', timeout: config.TIMEOUT_MEDIUM };
+  }
+  return { complexity: 'simple', timeout: config.TIMEOUT_SIMPLE };
 }
 
 /**
@@ -43,25 +74,27 @@ function buildAgentTeamBlock(taskId) {
 }
 
 /**
- * Generate the mission prompt in the format appropriate for the complexity level.
+ * Generate the mission prompt with appropriate complexity settings.
  * @param {object} task - Task object ({id, cmd, complexity?})
  * @param {string} project - Target project name
  * @param {'simple'|'medium'|'complex'} complexity - Classified complexity
- * @returns {string} Formatted mission prompt for CC CLI
+ * @returns {{ prompt: string, timeout: number }} Formatted mission prompt + timeout
  */
 function generateMissionPrompt(task, project, complexity) {
-  const mission = `${task.cmd} in ${project}`;
+  const mission = `${VI_PREFIX}${task.cmd} in ${project}. ${FILE_LIMIT}`;
+  const timeout = getTimeoutForComplexity(complexity);
 
   if (complexity === 'complex') {
     const teamBlock = buildAgentTeamBlock(task.id);
-    return `/cook "${mission}. ${teamBlock}" use context7`;
+    return { prompt: `/cook "${mission} ${teamBlock}"`, timeout };
   }
 
   if (complexity === 'medium') {
-    return `/cook "${mission}" --auto --parallel use context7`;
+    return { prompt: `/cook "${mission}" --auto`, timeout };
   }
 
-  return `/cook "${mission}" --auto use context7`;
+  // SIMPLE: no --auto flag
+  return { prompt: `/cook "${mission}"`, timeout };
 }
 
 /**
@@ -77,4 +110,4 @@ function isTeamMission(prompt) {
     lower.includes('teammates');
 }
 
-module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock };
+module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock, classifyContentTimeout, getTimeoutForComplexity };
