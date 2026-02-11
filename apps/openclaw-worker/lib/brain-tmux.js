@@ -41,6 +41,14 @@ const APPROVE_PATTERNS = [
   /\? \(Use arrow/i,  // AskUserQuestion TUI pattern
 ];
 
+// Patterns CC CLI shows when context window is exhausted
+const CONTEXT_LIMIT_PATTERNS = [
+  /Context limit reached/i,
+  /\/compact or \/clear/i,
+  /context is full/i,
+  /out of context/i,
+];
+
 let missionCount = 0;
 let respawnTimestamps = [];
 
@@ -80,10 +88,11 @@ function getLastLine(output) {
   return lines[lines.length - 1] || '';
 }
 
-/** Detect CC CLI prompt (❯) at end of captured output */
+/** Detect CC CLI prompt (❯ or >) at end of captured output */
 function hasPrompt(output) {
   const last = getLastLine(output);
-  return last.includes('❯');
+  // CC CLI uses ❯ normally, but may show > after /clear or context reset
+  return last.includes('❯') || /^[>❯]\s*$/.test(last.trim());
 }
 
 /** Check if CC CLI is asking an approve/confirm/proceed question */
@@ -93,10 +102,34 @@ function hasApproveQuestion(output) {
   return APPROVE_PATTERNS.some(pattern => pattern.test(tail));
 }
 
+/** Check if CC CLI hit context limit and needs /clear */
+function hasContextLimit(output) {
+  const lines = output.split('\n').slice(-15);
+  const tail = lines.join('\n');
+  return CONTEXT_LIMIT_PATTERNS.some(pattern => pattern.test(tail));
+}
+
+/** Auto-clear if CC CLI hit context limit — send /clear + Enter */
+async function autoClearIfNeeded() {
+  const output = capturePane();
+  if (hasContextLimit(output)) {
+    log('CONTEXT LIMIT: CC CLI hết context — tự gửi /clear');
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
+    await sleep(5000); // wait for clear to process
+    return true;
+  }
+  return false;
+}
+
 /** Auto-approve if CC CLI is asking a question — send 'y' + Enter */
 async function autoApproveIfNeeded() {
   const output = capturePane();
   if (hasPrompt(output)) return false; // already at prompt, no need
+  // Check context limit FIRST (higher priority)
+  if (hasContextLimit(output)) {
+    await autoClearIfNeeded();
+    return true;
+  }
   if (hasApproveQuestion(output)) {
     log('AUTO-APPROVE: CC CLI asking question — sending y + Enter');
     tmuxExec(`tmux send-keys -t ${TMUX_SESSION} y Enter`);
