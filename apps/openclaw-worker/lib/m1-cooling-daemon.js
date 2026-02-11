@@ -10,8 +10,10 @@
  *   Logs thermal status every 30s to ~/tom_hum_thermal.log.
  *
  * Thresholds:
- *   OVERHEAT: load > 7 OR free RAM < 300MB → pause dispatch
- *   SAFE:     load < 5 AND free RAM > 500MB → resume dispatch
+ *   OVERHEAT: load > 7 OR free RAM < 50MB → pause dispatch
+ *   SAFE:     load < 5 AND free RAM > 100MB → resume dispatch
+ *   NOTE: macOS aggressively caches files in RAM, so Pages free is typically
+ *         50-200MB even when healthy. Only trigger on truly critical levels.
  */
 
 const { execSync } = require('child_process');
@@ -26,9 +28,9 @@ function log(msg) {
 
 const THERMAL_LOG = config.THERMAL_LOG || '/Users/macbookprom1/tom_hum_thermal.log';
 const OVERHEAT_LOAD = 7;
-const OVERHEAT_RAM_MB = 300;
+const OVERHEAT_RAM_MB = 50;   // macOS keeps Pages free low (50-200MB is normal)
 const SAFE_LOAD = 5;
-const SAFE_RAM_MB = 500;
+const SAFE_RAM_MB = 100;      // Resume when free RAM > 100MB
 
 let coolingCycle = 0;
 let intervalRef = null;
