@@ -48,6 +48,21 @@ const CONTEXT_LIMIT_PATTERNS = [
   /out of context/i,
 ];
 
+// Patterns CC CLI shows when ACTIVELY PROCESSING (TUI always shows ❯ even when busy)
+const BUSY_PATTERNS = [
+  /Photosynthesizing/i,
+  /Crunching/i,
+  /Saut[eé]ing/i,
+  /Marinating/i,
+  /Fermenting/i,
+  /Braising/i,
+  /Reducing/i,
+  /Blanching/i,
+  /Thinking/i,
+  /Press up to edit queued messages/i,
+  /queued messages/i,
+];
+
 let missionCount = 0;
 let respawnTimestamps = [];
 
@@ -86,10 +101,24 @@ function capturePane() {
   return tmuxExec(`tmux capture-pane -t ${TMUX_SESSION} -p -S -50`);
 }
 
+/** Detect if CC CLI is ACTIVELY PROCESSING — TUI shows activity indicators.
+ *  CRITICAL: CC CLI TUI always renders ❯ in input area even when busy.
+ *  We MUST check for busy state before checking for prompt. */
+function isBusy(output) {
+  const clean = stripAnsi(output);
+  const lines = clean.split('\n').slice(-20);
+  const tail = lines.join('\n');
+  return BUSY_PATTERNS.some(p => p.test(tail));
+}
+
 /** Detect CC CLI prompt (❯ or >) in captured output.
  *  CC CLI v2.1.38+ has a status bar (2-3 lines) below the prompt,
- *  so we scan last 10 lines, not just the last one. */
+ *  so we scan last 10 lines, not just the last one.
+ *  IMPORTANT: Returns false if CC CLI is busy processing! */
 function hasPrompt(output) {
+  // If CC CLI is actively processing, ❯ is TUI decoration, NOT a real prompt
+  if (isBusy(output)) return false;
+  
   const clean = stripAnsi(output);
   const lines = clean.split('\n').slice(-10);
   for (const line of lines) {
@@ -320,8 +349,8 @@ async function runMission(prompt, projectDir, timeoutMs) {
   sendEnter();
   log(`DISPATCHED: Mission #${num} sent to tmux`);
 
-  // Wait for CC CLI to start processing
-  await sleep(15000);
+  // Wait for CC CLI to start processing (must be long enough for TUI to show activity indicator)
+  await sleep(20000);
 
   // Auto-approve any early questions (skill review gates, confirm prompts)
   await autoApproveIfNeeded();
