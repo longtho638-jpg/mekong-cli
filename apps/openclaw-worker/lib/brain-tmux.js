@@ -1,21 +1,24 @@
 /**
  * Brain Tmux — CC CLI interactive mode via tmux session
  *
- * Why? `claude -p` (headless) lacks agents/skills/CLAUDE.md context.
- * Interactive mode has full context. Tmux gives programmatic control.
- *
  * Architecture:
  *   spawnBrain()  → tmux new-session + launch CC CLI interactive
- *   runMission()  → tmux paste-buffer (prompt) + poll capture-pane (❯ = done)
+ *   runMission()  → paste prompt + state-machine polling (DISPATCHED→BUSY→DONE)
  *   killBrain()   → tmux kill-session
  *
- * Context management:
- *   - Tracks 🔋 XX% from capture-pane output
- *   - /clear when > 85%, /compact every 5 missions
+ * CRITICAL FIX (v29): CC CLI TUI always renders ❯ even when busy.
+ * hasPrompt() alone is UNRELIABLE for completion detection.
+ * runMission() uses state machine: require BUSY→IDLE transition or completion pattern.
  *
- * Crash recovery:
- *   - Detects tmux session death → respawn with --continue
- *   - Rate-limited: max 5 respawns/hour, then 5min cooldown
+ * State machine for mission completion:
+ *   DISPATCHED → BUSY → DONE
+ *   Completion requires:
+ *     (a) Completion pattern (Cooked/Sautéed/Churned for Xm Ys), OR
+ *     (b) Was BUSY then became IDLE for 3 consecutive polls, OR
+ *     (c) Never detected BUSY but elapsed > 45s and IDLE for 3 consecutive polls
+ *
+ * Context management: /clear every 3 missions, /compact every 5 missions
+ * Crash recovery: auto-respawn with --continue, rate-limited 5/hr
  *
  * Exports: spawnBrain, killBrain, isBrainAlive, runMission, log
  */
@@ -26,41 +29,51 @@ const config = require('../config');
 
 const TMUX_SESSION = 'tom_hum_brain';
 const COMPACT_EVERY_N = 5;
+const CLEAR_EVERY_N = 3;
 const MAX_RESPAWNS_PER_HOUR = 5;
 const RESPAWN_COOLDOWN_MS = 5 * 60 * 1000;
 const PROMPT_FILE = '/tmp/tom_hum_prompt.txt';
+const MIN_MISSION_SECONDS = 45;   // Don't accept idle-without-busy before this
+const IDLE_CONFIRM_POLLS = 3;     // Consecutive idle polls required for completion
 
-// Patterns CC CLI shows when waiting for user approval/confirm
+// --- DETECTION PATTERNS ---
+
+// CC CLI activity indicators (present continuous = actively processing)
+const BUSY_PATTERNS = [
+  /Photosynthesizing/i, /Crunching/i, /Saut[eé]ing/i,
+  /Marinating/i, /Fermenting/i, /Braising/i,
+  /Reducing/i, /Blanching/i, /Thinking/i,
+  /Churning/i, /Cooking/i, /Toasting/i,
+  /Simmering/i, /Steaming/i, /Grilling/i, /Roasting/i,
+  /✻\s+\w+ing/,                        // General: ✻ + any gerund verb
+  /\d+[ms]\s+\d+[ms]\s*·\s*↓/,         // Timer + download: "4m 27s · ↓"
+  /↓\s*[\d.]+k?\s*tokens/i,            // Download counter: "↓ 4.5k tokens"
+  /queued messages/i,
+  /Press up to edit queued/i,
+];
+
+// CC CLI completion indicators (past tense = finished cooking)
+const COMPLETION_PATTERNS = [
+  /(?:Cooked|Churned|Saut[eé]ed|Braised|Blanched|Reduced|Fermented|Marinated|Toasted|Simmered|Steamed|Grilled|Roasted)\s+for\s+\d+/i,
+  /✻\s+\w+(?:ed|t)\s+for\s+\d+/i,     // General: ✻ + past tense + "for N"
+];
+
+// CC CLI asking for approval/confirmation
 const APPROVE_PATTERNS = [
   /\(y\/n\)/i, /\[y\/n\]/i, /\[Y\/n\]/i,
   /Do you want to proceed/i, /Do you want to continue/i,
   /Allow .+? to /i, /Approve\?/i, /Confirm\?/i,
   /Press Enter/i, /waiting for input/i,
   /Would you like to/i, /Should I /i,
-  /\? \(Use arrow/i,  // AskUserQuestion TUI pattern
+  /\? \(Use arrow/i,
 ];
 
-// Patterns CC CLI shows when context window is exhausted
+// CC CLI context exhaustion
 const CONTEXT_LIMIT_PATTERNS = [
   /Context limit reached/i,
   /\/compact or \/clear/i,
   /context is full/i,
   /out of context/i,
-];
-
-// Patterns CC CLI shows when ACTIVELY PROCESSING (TUI always shows ❯ even when busy)
-const BUSY_PATTERNS = [
-  /Photosynthesizing/i,
-  /Crunching/i,
-  /Saut[eé]ing/i,
-  /Marinating/i,
-  /Fermenting/i,
-  /Braising/i,
-  /Reducing/i,
-  /Blanching/i,
-  /Thinking/i,
-  /Press up to edit queued messages/i,
-  /queued messages/i,
 ];
 
 let missionCount = 0;
@@ -77,9 +90,14 @@ function log(msg) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-/** Strip ANSI escape sequences from text (CSI, OSC, simple escapes) */
+/** Strip ANSI escape codes + control characters from captured tmux text */
 function stripAnsi(text) {
-  return text.replace(/\x1B(?:\[[0-9;?]*[A-Za-z]|\][^\x07]*\x07|[A-Za-z])/g, '');
+  return text
+    .replace(/\x1B\[[0-9;?]*[A-Za-z]/g, '')         // CSI sequences (colors, cursor)
+    .replace(/\x1B\][^\x07\x1B]*(?:\x07|\x1B\\)/g, '') // OSC sequences (BEL or ST)
+    .replace(/\x1B[()][A-Za-z0-9]/g, '')              // Character set selection
+    .replace(/\x1B[A-Za-z]/g, '')                      // Simple ESC sequences
+    .replace(/[\x00-\x08\x0E-\x1F\x7F]/g, '');        // Control chars (keep \t \n \r)
 }
 
 // --- Tmux helpers ---
@@ -101,91 +119,65 @@ function capturePane() {
   return tmuxExec(`tmux capture-pane -t ${TMUX_SESSION} -p -S -50`);
 }
 
-/** Detect if CC CLI is ACTIVELY PROCESSING — TUI shows activity indicators.
- *  CRITICAL: CC CLI TUI always renders ❯ in input area even when busy.
- *  We MUST check for busy state before checking for prompt. */
+/** Get clean last N lines from captured tmux output */
+function getCleanTail(output, n) {
+  return stripAnsi(output).split('\n').slice(-n);
+}
+
+// --- State detection functions ---
+
+/** CC CLI is ACTIVELY PROCESSING (Photosynthesizing, Crunching, etc.) */
 function isBusy(output) {
-  const clean = stripAnsi(output);
-  const lines = clean.split('\n').slice(-20);
-  const tail = lines.join('\n');
+  const tail = getCleanTail(output, 25).join('\n');
   return BUSY_PATTERNS.some(p => p.test(tail));
 }
 
-/** Detect CC CLI prompt (❯ or >) in captured output.
- *  CC CLI v2.1.38+ has a status bar (2-3 lines) below the prompt,
- *  so we scan last 10 lines, not just the last one.
- *  IMPORTANT: Returns false if CC CLI is busy processing! */
-function hasPrompt(output) {
-  // If CC CLI is actively processing, ❯ is TUI decoration, NOT a real prompt
-  if (isBusy(output)) return false;
-  
-  const clean = stripAnsi(output);
-  const lines = clean.split('\n').slice(-10);
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed) continue;
-    // ❯ prompt — unique CC CLI char, not in status bar lines
-    if (trimmed.includes('❯')) return true;
-    // > prompt — standalone line (after /clear or context reset)
-    if (/^>\s*$/.test(trimmed)) return true;
-  }
-  return false;
-}
-
-/** Detect "Cooked for Xm Ys" or "Churned for Xm Ys" — mission done indicator.
- *  CC CLI prints this when /cook completes, before prompt may render. */
+/** Mission completion pattern found (Cooked for Xm Ys, Sautéed for Xm Ys) */
 function hasCompletionPattern(output) {
-  const clean = stripAnsi(output);
-  return /(?:Cooked|Churned) for \d+m \d+s/i.test(clean);
+  const tail = getCleanTail(output, 25).join('\n');
+  return COMPLETION_PATTERNS.some(p => p.test(tail));
 }
 
-/** Check if CC CLI is asking an approve/confirm/proceed question */
+/** CC CLI prompt visible — ONLY meaningful when NOT busy.
+ *  WARNING: CC CLI TUI always renders ❯ even when processing.
+ *  This function gates on !isBusy() but callers should still treat
+ *  this as a weak signal and require additional confirmation. */
+function hasPrompt(output) {
+  if (isBusy(output)) return false;
+  for (const line of getCleanTail(output, 10)) {
+    const t = line.trim();
+    if (!t) continue;
+    if (t.includes('❯')) return true;
+    if (/^>\s*$/.test(t)) return true;
+  }
+  return false;
+}
+
 function hasApproveQuestion(output) {
-  const clean = stripAnsi(output);
-  const lines = clean.split('\n').slice(-10);
-  const tail = lines.join('\n');
-  return APPROVE_PATTERNS.some(pattern => pattern.test(tail));
+  const tail = getCleanTail(output, 10).join('\n');
+  return APPROVE_PATTERNS.some(p => p.test(tail));
 }
 
-/** Check if CC CLI hit context limit and needs /clear */
 function hasContextLimit(output) {
-  const clean = stripAnsi(output);
-  const lines = clean.split('\n').slice(-15);
-  const tail = lines.join('\n');
-  return CONTEXT_LIMIT_PATTERNS.some(pattern => pattern.test(tail));
+  const tail = getCleanTail(output, 15).join('\n');
+  return CONTEXT_LIMIT_PATTERNS.some(p => p.test(tail));
 }
 
-/** Auto-clear if CC CLI hit context limit — send /clear + Enter */
-async function autoClearIfNeeded() {
-  const output = capturePane();
-  if (hasContextLimit(output)) {
-    log('CONTEXT LIMIT: CC CLI hết context — tự gửi /clear');
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
-    await sleep(5000); // wait for clear to process
-    return true;
-  }
-  return false;
+/** Unified state detection from tmux output.
+ *  Returns: 'busy' | 'complete' | 'context_limit' | 'question' | 'idle' | 'unknown'
+ *  CRITICAL: BUSY checked BEFORE completion — prevents stale "Cooked for"
+ *  in scrollback from overriding active processing indicators. */
+function detectState(output) {
+  if (hasContextLimit(output)) return 'context_limit';
+  if (isBusy(output)) return 'busy';
+  if (hasCompletionPattern(output)) return 'complete';
+  if (hasApproveQuestion(output)) return 'question';
+  if (hasPrompt(output)) return 'idle';
+  return 'unknown';
 }
 
-/** Auto-approve if CC CLI is asking a question — send 'y' + Enter */
-async function autoApproveIfNeeded() {
-  const output = capturePane();
-  if (hasPrompt(output) || hasCompletionPattern(output)) return false; // already done, no need
-  // Check context limit FIRST (higher priority)
-  if (hasContextLimit(output)) {
-    await autoClearIfNeeded();
-    return true;
-  }
-  if (hasApproveQuestion(output)) {
-    log('AUTO-APPROVE: CC CLI asking question — sending y + Enter');
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} y Enter`);
-    await sleep(3000);
-    return true;
-  }
-  return false;
-}
+// --- Text dispatch ---
 
-/** Send prompt via tmux paste-buffer (handles long text, special chars) */
 function pasteText(text) {
   fs.writeFileSync(PROMPT_FILE, text);
   tmuxExec(`tmux load-buffer ${PROMPT_FILE}`);
@@ -201,7 +193,7 @@ function sendCtrlC() {
   tmuxExec(`tmux send-keys -t ${TMUX_SESSION} C-c`);
 }
 
-/** Poll until ❯ prompt appears or timeout */
+/** Poll until prompt appears (used by spawnBrain/respawn/context management) */
 async function waitForPrompt(timeoutMs = 120000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -218,8 +210,6 @@ function canRespawn() {
   respawnTimestamps = respawnTimestamps.filter(ts => ts > cutoff);
   return respawnTimestamps.length < MAX_RESPAWNS_PER_HOUR;
 }
-
-// --- Brain build command ---
 
 function buildClaudeCmd() {
   const port = config.ENGINE === 'qwen' ? config.QWEN_PROXY_PORT : config.PROXY_PORT;
@@ -256,11 +246,8 @@ function isBrainAlive() {
 }
 
 // --- Context management ---
-// NOTE: Qua Antigravity Proxy, 🔋 XX% của CC CLI là SỐ ẢO (track Anthropic limits
-// nhưng route qua Gemini model khác). KHÔNG dùng % để quyết định /clear.
-// Thay vào đó: /clear theo số mission cố định.
-
-const CLEAR_EVERY_N = 3;   // /clear mỗi 3 missions
+// NOTE: 🔋 XX% via Antigravity Proxy is FAKE (tracks Anthropic limits but routes
+// through Gemini). Use mission count instead.
 
 function parseContextUsage(output) {
   const match = output.match(/🔋\s*(\d+)%/);
@@ -268,9 +255,8 @@ function parseContextUsage(output) {
 }
 
 async function manageContext() {
-  // /clear based on mission count (not fake percentage)
   if (missionCount > 0 && missionCount % CLEAR_EVERY_N === 0) {
-    log(`CONTEXT: /clear mỗi ${CLEAR_EVERY_N} missions (mission #${missionCount})`);
+    log(`CONTEXT: /clear (mission #${missionCount})`);
     pasteText('/clear');
     await sleep(1000);
     sendEnter();
@@ -283,7 +269,7 @@ async function manageContext() {
 
 async function compactIfNeeded() {
   if (missionCount > 0 && missionCount % COMPACT_EVERY_N === 0) {
-    log(`CONTEXT: Periodic /compact (every ${COMPACT_EVERY_N} missions)`);
+    log(`CONTEXT: /compact (mission #${missionCount})`);
     pasteText('/compact');
     await sleep(1000);
     sendEnter();
@@ -303,7 +289,6 @@ async function respawnBrain(useContinue = true) {
   respawnTimestamps.push(Date.now());
   killBrain();
   await sleep(5000);
-
   const continueFlag = useContinue ? ' --continue' : '';
   tmuxExec(`tmux new-session -d -s ${TMUX_SESSION} -x 200 -y 50`);
   tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '${buildClaudeCmd()}${continueFlag}' Enter`);
@@ -311,7 +296,7 @@ async function respawnBrain(useContinue = true) {
   return waitForPrompt(120000);
 }
 
-// --- Core: run mission via tmux ---
+// --- Core: run mission via tmux (state machine) ---
 
 async function runMission(prompt, projectDir, timeoutMs) {
   missionCount++;
@@ -337,27 +322,35 @@ async function runMission(prompt, projectDir, timeoutMs) {
   await manageContext();
   await compactIfNeeded();
 
-  // Build full prompt with project dir context
+  // Build full prompt
   let fullPrompt = prompt;
   if (projectDir && projectDir !== config.MEKONG_DIR) {
     fullPrompt = `First cd to ${projectDir} then: ${prompt}`;
   }
 
-  // Send prompt via paste-buffer (reliable for long text)
+  // Dispatch via paste-buffer (reliable for long text + special chars)
   pasteText(fullPrompt);
-  await sleep(1000); // Let Ink TUI render pasted text before Enter
+  await sleep(1000);
   sendEnter();
   log(`DISPATCHED: Mission #${num} sent to tmux`);
 
-  // Wait for CC CLI to start processing (must be long enough for TUI to show activity indicator)
-  await sleep(20000);
+  // ═══════════════════════════════════════════════════════════════
+  // STATE MACHINE: DISPATCHED → BUSY → DONE
+  //
+  // CC CLI TUI always renders ❯ even when busy — hasPrompt() alone
+  // is NOT reliable. We track wasBusy and require either:
+  //   (a) Completion pattern found (Cooked/Sautéed for Xm Ys)
+  //   (b) Was BUSY → 3x consecutive IDLE polls
+  //   (c) Never saw BUSY but elapsed > 45s → 3x consecutive IDLE
+  // ═══════════════════════════════════════════════════════════════
 
-  // Auto-approve any early questions (skill review gates, confirm prompts)
-  await autoApproveIfNeeded();
-
-  // Poll for completion
+  let wasBusy = false;
+  let idleConfirmCount = 0;
   const deadline = Date.now() + timeoutMs;
   let lastLogTime = Date.now();
+
+  // Give CC CLI time to parse prompt and begin processing
+  await sleep(15000);
 
   while (Date.now() < deadline) {
     if (!isSessionAlive()) {
@@ -368,27 +361,74 @@ async function runMission(prompt, projectDir, timeoutMs) {
     }
 
     const output = capturePane();
-    if (hasPrompt(output) || hasCompletionPattern(output)) {
-      const elapsed = Math.round((Date.now() - startTime) / 1000);
-      const usage = parseContextUsage(output);
-      const how = hasCompletionPattern(output) ? 'cooked-pattern' : 'prompt';
-      log(`COMPLETE: Mission #${num} (${elapsed}s) [${how}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
-      return { success: true, result: 'done', elapsed };
+    const state = detectState(output);
+    const elapsedSec = Math.round((Date.now() - startTime) / 1000);
+
+    switch (state) {
+      case 'complete': {
+        // Guard against stale completion from previous mission still in scrollback
+        if (!wasBusy && elapsedSec < MIN_MISSION_SECONDS) {
+          break; // Likely stale — wait for BUSY or more elapsed time
+        }
+        const usage = parseContextUsage(output);
+        log(`COMPLETE: Mission #${num} (${elapsedSec}s) [cooked-pattern]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+        return { success: true, result: 'done', elapsed: elapsedSec };
+      }
+
+      case 'busy':
+        if (!wasBusy) log(`BUSY: Mission #${num} — CC CLI started processing`);
+        wasBusy = true;
+        idleConfirmCount = 0;
+        break;
+
+      case 'question':
+        log(`QUESTION: Mission #${num} — auto-approving`);
+        tmuxExec(`tmux send-keys -t ${TMUX_SESSION} y Enter`);
+        await sleep(3000);
+        idleConfirmCount = 0;
+        continue; // Re-check immediately
+
+      case 'context_limit':
+        log(`CONTEXT LIMIT: Mission #${num} — sending /clear`);
+        tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
+        await sleep(5000);
+        idleConfirmCount = 0;
+        continue;
+
+      case 'idle':
+        if (wasBusy) {
+          // Was processing, now idle — confirm over multiple polls
+          idleConfirmCount++;
+          if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
+            const usage = parseContextUsage(output);
+            log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+            return { success: true, result: 'done', elapsed: elapsedSec };
+          }
+        } else if (elapsedSec > MIN_MISSION_SECONDS) {
+          // Never saw BUSY — might be very fast or isBusy missed it
+          idleConfirmCount++;
+          if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
+            log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
+            return { success: true, result: 'done', elapsed: elapsedSec };
+          }
+        }
+        break;
+
+      default: // 'unknown' — can't classify, reset idle counter
+        idleConfirmCount = 0;
+        break;
     }
 
-    // Auto-approve if CC CLI is asking for confirmation mid-mission
-    await autoApproveIfNeeded();
-
+    // Progress logging every 60s
     if (Date.now() - lastLogTime > 60000) {
-      const elapsed = Math.round((Date.now() - startTime) / 1000);
-      log(`Mission #${num} working — ${elapsed}s`);
+      log(`Mission #${num} [${state}] — ${elapsedSec}s${wasBusy ? ' (was-busy)' : ''}`);
       lastLogTime = Date.now();
     }
 
     await sleep(10000);
   }
 
-  // Timeout — send Ctrl+C
+  // Timeout — send Ctrl+C and report
   const elapsed = Math.round((Date.now() - startTime) / 1000);
   log(`TIMEOUT: Mission #${num} exceeded ${Math.round(timeoutMs / 1000)}s — sending Ctrl+C`);
   sendCtrlC();
