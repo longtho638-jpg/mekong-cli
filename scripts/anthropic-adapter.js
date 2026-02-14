@@ -80,31 +80,27 @@ function getOllamaKey() {
     return { key: chosen.key, keyIndex: chosen.i, load: chosen.load + 1, provider: 'ollama' };
 }
 
+let googleRoundRobin = 0; // 虛實 strict round-robin index
+
 function getGoogleKey() {
     const now = Date.now();
     googleState.forEach(k => { k.calls = k.calls.filter(t => now - t < 60000); });
-    const all = GOOGLE_KEYS.map((key, i) => ({
-        key, i, load: googleState[i].calls.length,
-        blocked: now < googleState[i].blockedUntil,
-        maxRpm: GOOGLE_ULTRA_KEYS.has(i) ? GOOGLE_MAX_PER_MIN_ULTRA : GOOGLE_MAX_PER_MIN_FREE,
-        isUltra: GOOGLE_ULTRA_KEYS.has(i),
-    })).filter(k => !k.blocked && k.load < k.maxRpm);
-    if (all.length === 0) return null;
 
-    // 虛實 70/30 Split: Ultra 70%, Free 30% — tránh limit + tránh detection
-    const ultra = all.filter(k => k.isUltra).sort((a, b) => a.load - b.load);
-    const free = all.filter(k => !k.isUltra).sort((a, b) => a.load - b.load);
-    let chosen;
-    if (ultra.length > 0 && free.length > 0) {
-        chosen = Math.random() < 0.7 ? ultra[0] : free[0];
-    } else {
-        chosen = (ultra[0] || free[0]);
+    // 虛實 Round-Robin: G0→G1→G2→G3→G4→G5→G0... mỗi key 1 lệnh xoay vòng
+    for (let attempt = 0; attempt < GOOGLE_KEYS.length; attempt++) {
+        const i = (googleRoundRobin + attempt) % GOOGLE_KEYS.length;
+        const maxRpm = GOOGLE_ULTRA_KEYS.has(i) ? GOOGLE_MAX_PER_MIN_ULTRA : GOOGLE_MAX_PER_MIN_FREE;
+        const blocked = now < googleState[i].blockedUntil;
+        const load = googleState[i].calls.length;
+        if (!blocked && load < maxRpm) {
+            googleRoundRobin = (i + 1) % GOOGLE_KEYS.length; // next key cho lần sau
+            googleState[i].calls.push(now);
+            googleState[i].total++;
+            requestCount++;
+            return { key: GOOGLE_KEYS[i], keyIndex: i, load: load + 1, maxRpm, provider: 'google' };
+        }
     }
-
-    googleState[chosen.i].calls.push(now);
-    googleState[chosen.i].total++;
-    requestCount++;
-    return { key: chosen.key, keyIndex: chosen.i, load: chosen.load + 1, maxRpm: chosen.maxRpm, provider: 'google' };
+    return null; // tất cả blocked
 }
 
 function isOpenRouterAvailable() {
