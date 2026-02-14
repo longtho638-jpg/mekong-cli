@@ -24,12 +24,12 @@ function loadState() {
     if (fs.existsSync(config.STATE_FILE)) {
       return JSON.parse(fs.readFileSync(config.STATE_FILE, 'utf-8'));
     }
-  } catch(e) {}
+  } catch (e) { }
   return { completedTasks: {}, currentProjectIdx: 0 };
 }
 
 function saveState(state) {
-  try { fs.writeFileSync(config.STATE_FILE, JSON.stringify(state, null, 2)); } catch(e) {}
+  try { fs.writeFileSync(config.STATE_FILE, JSON.stringify(state, null, 2)); } catch (e) { }
 }
 
 // Check if project uses TypeScript (has tsconfig.json or .ts/.tsx files)
@@ -41,7 +41,7 @@ function hasTypeScript(projectDir) {
       const files = fs.readdirSync(src, { recursive: true });
       return files.some(f => /\.(ts|tsx)$/.test(f));
     }
-  } catch(e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -58,7 +58,7 @@ function hasI18n(projectDir) {
       const deps = { ...pkg.dependencies, ...pkg.devDependencies };
       return Object.keys(deps).some(d => d.includes('i18n') || d.includes('intl'));
     }
-  } catch(e) {}
+  } catch (e) { }
   return false;
 }
 
@@ -73,25 +73,31 @@ function startAutoCTO() {
   intervalRef = setInterval(() => {
     try {
       const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
-      if (tasks.length === 0 && isQueueEmpty()) {
-        emptyQueueCount++;
-        if (emptyQueueCount >= config.AUTO_CTO_EMPTY_THRESHOLD) {
-          emptyQueueCount = 0;
-          if (!isBrainAlive()) {
-            log('AUTO-CTO: Brain not alive — skipping task generation');
-            return;
-          }
-          if (isOverheating()) {
-            log('AUTO-CTO: System overheating — skipping task generation');
-            return;
-          }
-          generateNextTask();
+
+      // PARALLEL PIPELINE LOGIC (v30)
+      // Goal: Keep queue full up to AGENT_TEAM_SIZE so all workers are busy.
+      // We check 'queue.length' from task-queue, plus files on disk waiting to be detected.
+
+      const currentLoad = tasks.length;
+      const targetLoad = config.AGENT_TEAM_SIZE_DEFAULT || 4;
+
+      if (currentLoad < targetLoad) {
+        // If we have capacity, generate immediately (throttled by loop speed)
+
+        if (!isBrainAlive()) {
+          log('AUTO-CTO: Brain not alive — skipping task generation');
+          return;
         }
-      } else {
-        emptyQueueCount = 0;
+        if (isOverheating()) {
+          log('AUTO-CTO: System overheating — skipping task generation');
+          return;
+        }
+
+        // Generate task to fill the pipeline
+        generateNextTask();
       }
-    } catch (e) {}
-  }, 5000);
+    } catch (e) { }
+  }, 5000); // 5s Check Speed (Stabilized)
 }
 
 function stopAutoCTO() {
@@ -101,7 +107,7 @@ function stopAutoCTO() {
   }
 }
 
-function generateNextTask() {
+async function generateNextTask() {
   try {
     const state = loadState();
     if (!state.completedTasks) state.completedTasks = {};
@@ -145,19 +151,28 @@ function generateNextTask() {
         const filename = `mission_${project.replace(/-/g, '_')}_auto_${nextTask.id}.txt`;
         fs.writeFileSync(path.join(config.WATCH_DIR, filename), missionResult.prompt);
         state.completedTasks[project].push(nextTask.id);
-        log(`AUTO-CTO: Generated ${nextTask.id} for ${project} [${complexity.toUpperCase()}] (${state.completedTasks[project].length}/${config.BINH_PHAP_TASKS.length} done)`);
+        log(`AUTO-CTO: Generated ${nextTask.id} for ${project} [${complexity.toUpperCase()}] ${missionResult.mode || ''} (${state.completedTasks[project].length}/${config.BINH_PHAP_TASKS.length} done)`);
         saveState(state);
         return;
       }
 
       // All tasks done for this project — move to next
       log(`AUTO-CTO: All tasks complete for ${project} — advancing to next project`);
+
+      // INFINITE LOOP LOGIC: Reset tasks for this project to start over (Continuous Improvement)
+      state.completedTasks[project] = [];
+      log(`AUTO-CTO: [INFINITE LOOP] Resetting tasks for ${project} to begin Cycle #${(state.cycles || 0) + 1}`);
+
       state.currentProjectIdx = (idx + 1) % config.PROJECTS.length;
+      if (state.currentProjectIdx === 0) state.cycles = (state.cycles || 0) + 1;
+
       searched++;
+      // Prevent event loop blocking in tight loops
+      if (searched % 5 === 0) await new Promise(r => setTimeout(r, 100));
     }
 
-    // All projects, all tasks done
-    log('AUTO-CTO: All Binh Phap tasks complete for all projects!');
+    // All projects, all tasks done (Should rarely reach here with reset logic)
+    // log('AUTO-CTO: All Binh Phap tasks complete for all projects!');
     saveState(state);
   } catch (error) {
     log(`AUTO-CTO error: ${error.message}`);

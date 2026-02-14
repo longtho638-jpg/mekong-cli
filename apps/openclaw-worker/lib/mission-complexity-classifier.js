@@ -65,36 +65,44 @@ function buildAgentTeamBlock(taskId) {
   const roles = config.AGENT_TEAM_ROLES[taskId] || config.AGENT_TEAM_ROLES.default;
   const roleList = roles.map((r, i) => `(${i + 1}) ${r}`).join(', ');
   return [
-    'AGENT TEAM: You MUST use Claude Code native Agent Teams.',
-    `Spawn ${roles.length} parallel Task subagents via the Task tool: ${roleList}.`,
-    'Each subagent works independently on its scope.',
-    'Launch ALL subagents in a single message with multiple Task tool calls.',
+    'AGENT TEAM: Activate Agent Teams.',
+    `Spawn ${roles.length} parallel subagents: ${roleList}.`,
+    'Launch them in parallel.',
     'Wait for all to complete, then consolidate findings.',
+    'IMPORTANT: DO NOT use XML tags like <invoke>. Use natural language or slash commands only.',
   ].join(' ');
 }
 
 /**
- * Generate the mission prompt with appropriate complexity settings.
+ * Generate the mission prompt with Phong Lâm Hỏa Sơn (風林火山) token optimization.
+ *
+ * 🌪️ GIÓ (SIMPLE):  --fast --no-test  → 30% tokens, speed run
+ * 🌲 RỪNG (MEDIUM): --auto            → 60% tokens, standard quality
+ * 🔥 LỬA (COMPLEX): --parallel teams  → 100% tokens, maximum power
+ * ⛰️ NÚI (IDLE):    queue scan        → 0 tokens
+ *
  * @param {object} task - Task object ({id, cmd, complexity?})
  * @param {string} project - Target project name
  * @param {'simple'|'medium'|'complex'} complexity - Classified complexity
- * @returns {{ prompt: string, timeout: number }} Formatted mission prompt + timeout
+ * @returns {{ prompt: string, timeout: number, mode: string }} Formatted mission prompt + timeout + binh phap mode
  */
 function generateMissionPrompt(task, project, complexity) {
   const mission = `${VI_PREFIX}${task.cmd} in ${project}. ${FILE_LIMIT}`;
   const timeout = getTimeoutForComplexity(complexity);
 
+  // 🔥 LỬA mode — Complex: Agent Teams parallel, max token burn, max output
   if (complexity === 'complex') {
     const teamBlock = buildAgentTeamBlock(task.id);
-    return { prompt: `/cook "${mission} ${teamBlock}" --auto`, timeout };
+    return { prompt: `/cook "${mission} ${teamBlock}" --auto`, timeout, mode: '🔥LỬA' };
   }
 
+  // 🌲 RỪNG mode — Medium: standard /cook with auto, balanced
   if (complexity === 'medium') {
-    return { prompt: `/cook "${mission}" --auto`, timeout };
+    return { prompt: `/cook "${mission}" --auto`, timeout, mode: '🌲RỪNG' };
   }
 
-  // SIMPLE: --auto BẮT BUỘC vì Tôm Hùm chạy tự trị, không có người approve
-  return { prompt: `/cook "${mission}" --auto`, timeout };
+  // 🌪️ GIÓ mode — Simple: fast + no-test, minimum token burn, maximum speed
+  return { prompt: `/cook "${mission}" --fast --no-test --auto`, timeout, mode: '🌪️GIÓ' };
 }
 
 /**
