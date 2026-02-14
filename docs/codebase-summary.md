@@ -42,6 +42,20 @@ Project documentation, roadmaps, and architectural guides.
 - **`project-changelog.md`**: Record of changes and version history.
 - **`development-rules.md`**: Coding standards and workflows.
 
+### 🧠 Knowledge Base (`.gemini/antigravity/knowledge`)
+Curated AGI knowledge items for the Sage Agent's reasoning engine.
+
+- **`ethics_moral_reasoning.md`**: Frameworks for AI alignment and ethics.
+- **`self_correction_error_detection.md`**: Mechanisms for RLAIF and autonomous oversight.
+- **`meta_learning_adaptive_strategies.md`**: MAML, Hypernetworks, and continuous learning.
+- **`consciousness_self_awareness.md`**: Global Workspace Theory and Attention Schema Theory.
+- **`causal_reasoning_counterfactuals.md`**: Structural Causal Models and Do-calculus.
+- **`emotional_intelligence_empathy.md`**: Affective computing and Theory of Mind.
+- **`long_term_alignment_value_learning.md`**: Superalignment and Direct Preference Optimization.
+- **`robustness_adversarial_resistance.md`**: Adversarial training and formal verification.
+- **`interpretability_explainable_ai.md`**: Mechanistic interpretability and Sparse Autoencoders.
+- **`resource_management_efficiency.md`**: BitNet (1-bit LLMs) and State Space Models (Mamba).
+
 ### 🛠️ Infrastructure
 - **Root Configuration**: `package.json` (Monorepo), `turbo.json` (Build system).
 - **Database**:
