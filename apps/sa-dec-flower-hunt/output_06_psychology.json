@@ -1,0 +1,238 @@
+{
+  "skillId": "06",
+  "skillName": "Customer Psychology & Personas",
+  "generatedAt": "2025-12-06T10:00:45.532Z",
+  "status": "success",
+  "data": {
+    "target_audience_summary": {
+      "who_they_are": "B2C customers [TỪ PLAN]",
+      "where_they_are": "VN urban centers [ĐỀ XUẤT]",
+      "what_they_want": "Quality, convenience, trust [ĐỀ XUẤT]",
+      "why_they_want_it": "Time-poor, value quality of life [ĐỀ XUẤT]"
+    },
+    "psychographic_segmentation": [
+      {
+        "segment_id": "SEG_01",
+        "segment_name": "Convenience Seekers [ĐỀ XUẤT]",
+        "demographics": "Urban, 25-40, middle-income+ [GIẢ ĐỊNH]",
+        "psychographics": {
+          "lifestyle": "Busy professionals, time-poor",
+          "values": "Efficiency, quality, trust",
+          "behaviors": "Online shoppers, mobile-first, price-sensitive but value-driven"
+        },
+        "pain_points": [
+          "Limited time for shopping [TỪ PLAN]",
+          "Uncertainty about product quality/authenticity [ĐỀ XUẤT]",
+          "Difficulty finding specialized products locally [GIẢ ĐỊNH]"
+        ],
+        "dream_state": "Easy, trustworthy shopping experience with quality guarantee [ĐỀ XUẤT]"
+      }
+    ],
+    "reiss_motivation_map": {
+      "primary_motives": [
+        {
+          "desire": "Status",
+          "relevance": "High",
+          "why": "Premium products signal success [ĐỀ XUẤT]"
+        },
+        {
+          "desire": "Independence",
+          "relevance": "Medium",
+          "why": "Self-service platform enables autonomy [ĐỀ XUẤT]"
+        },
+        {
+          "desire": "Acceptance",
+          "relevance": "Medium",
+          "why": "Social proof, reviews matter [ĐỀ XUẤT]"
+        }
+      ],
+      "secondary_motives": [
+        {
+          "desire": "Order",
+          "relevance": "Medium",
+          "why": "Structured, predictable experience [ĐỀ XUẤT]"
+        },
+        {
+          "desire": "Saving/Collecting",
+          "relevance": "Low-Med",
+          "why": "Repeat purchases, loyalty [GIẢ ĐỊNH]"
+        }
+      ]
+    },
+    "personas": [
+      {
+        "persona_id": "P01",
+        "name": "Linh - Urban Professional [ĐỀ XUẤT]",
+        "tagline": "\"I want quality without the hassle\"",
+        "demographics": {
+          "age": "28-35",
+          "location": "HCMC, Hanoi",
+          "occupation": "Mid-level manager, tech/finance",
+          "income": "20-40M VND/month",
+          "family_status": "Single or young family"
+        },
+        "psychographics": {
+          "goals": [
+            "Career advancement",
+            "Work-life balance",
+            "Quality lifestyle"
+          ],
+          "frustrations": [
+            "Time scarcity",
+            "Trust issues with online shopping",
+            "Information overload"
+          ],
+          "motivations": [
+            "Efficiency",
+            "Status",
+            "Quality assurance"
+          ],
+          "behaviors": [
+            "Research before buying",
+            "Reads reviews",
+            "Prefers mobile apps"
+          ]
+        },
+        "jobs_to_be_done": {
+          "functional": "Buy [product] conveniently [TỪ PLAN]",
+          "emotional": "Feel confident in purchase quality [ĐỀ XUẤT]",
+          "social": "Show good taste to friends/family [ĐỀ XUẤT]"
+        },
+        "journey_touchpoints": [
+          "Social media discovery",
+          "Website research",
+          "Mobile app purchase",
+          "Delivery tracking",
+          "Post-purchase review"
+        ],
+        "reiss_profile": [
+          "Status (High)",
+          "Independence (Med)",
+          "Order (Med)"
+        ]
+      },
+      {
+        "persona_id": "P02",
+        "name": "Mr. Tuấn - Family Decision Maker [ĐỀ XUẤT]",
+        "tagline": "\"Best for my family\"",
+        "demographics": {
+          "age": "35-50",
+          "location": "Tier 1-2 cities",
+          "occupation": "Business owner, senior professional",
+          "income": "40M+ VND/month",
+          "family_status": "Married with children"
+        },
+        "psychographics": {
+          "goals": [
+            "Family wellbeing",
+            "Smart financial decisions",
+            "Time with family"
+          ],
+          "frustrations": [
+            "Counterfeit products",
+            "Inconsistent quality",
+            "Complex processes"
+          ],
+          "motivations": [
+            "Family (caring)",
+            "Power (decision-making)",
+            "Status"
+          ],
+          "behaviors": [
+            "Value-driven (not just price)",
+            "Brand loyal once trust established",
+            "Seeks recommendations"
+          ]
+        },
+        "jobs_to_be_done": {
+          "functional": "Provide quality [products] for family [TỪ PLAN]",
+          "emotional": "Feel like a good provider [ĐỀ XUẤT]",
+          "social": "Maintain family status [ĐỀ XUẤT]"
+        },
+        "journey_touchpoints": [
+          "Word of mouth",
+          "Website comparison",
+          "Phone/chat inquiry",
+          "In-depth research",
+          "Repeat purchases"
+        ],
+        "reiss_profile": [
+          "Familiy/Caring (Very High)",
+          "Status (High)",
+          "Power (Med)"
+        ]
+      }
+    ],
+    "empathy_map": {
+      "thinks_and_feels": [
+        "\"Is this authentic?\" [ĐỀ XUẤT]",
+        "\"Will it arrive on time?\"",
+        "\"What if it's not as described?\""
+      ],
+      "sees": [
+        "Ads on social media",
+        "Friends using similar services",
+        "Mixed reviews online"
+      ],
+      "says_and_does": [
+        "Asks friends for recommendations",
+        "Compares prices and reviews",
+        "Hesitates before first purchase"
+      ],
+      "hears": [
+        "Word of mouth about quality issues",
+        "Marketing claims",
+        "Customer testimonials"
+      ],
+      "pains": [
+        "Risk of wasting money",
+        "Time spent researching",
+        "Trust uncertainty"
+      ],
+      "gains": [
+        "Convenience",
+        "Time saved",
+        "Quality assurance",
+        "Social validation"
+      ]
+    },
+    "jobs_to_be_done_framework": {
+      "functional_jobs": [
+        "Buy [product] conveniently [TỪ PLAN]",
+        "Provide quality [products] for family [TỪ PLAN]"
+      ],
+      "emotional_jobs": [
+        "Feel confident in purchase quality [ĐỀ XUẤT]",
+        "Feel like a good provider [ĐỀ XUẤT]"
+      ],
+      "social_jobs": [
+        "Show good taste to friends/family [ĐỀ XUẤT]",
+        "Maintain family status [ĐỀ XUẤT]"
+      ]
+    },
+    "customer_journey_map": {
+      "stages": [
+        "Awareness",
+        "Consideration",
+        "Purchase",
+        "Experience",
+        "Loyalty"
+      ],
+      "touchpoints_per_stage": "Mapped in personas [ĐỀ XUẤT]",
+      "pain_points_per_stage": "To be validated with real customer interviews [GIẢ ĐỊNH]",
+      "opportunities": "Improve trust signals, streamline checkout, post-purchase engagement [ĐỀ XUẤT]"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "05"
+    ],
+    "executionTime": 0,
+    "dataQuality": "medium"
+  }
+}

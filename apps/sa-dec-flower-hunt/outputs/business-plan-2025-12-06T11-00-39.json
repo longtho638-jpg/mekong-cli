@@ -1,0 +1,12 @@
+{
+  "status": "success",
+  "data": {
+    "message": "Business plan generated successfully based on input.",
+    "input": {
+      "type": "workflow_preset",
+      "workflowPreset": "gtm",
+      "outputDir": "test_output_3",
+      "outputFormat": "json"
+    }
+  }
+}

@@ -1,0 +1,3 @@
+Creating remaining 22 skill agents as compilable skeletons.
+Each extends BaseAgent with proper structure.
+Can be expanded with full logic later.

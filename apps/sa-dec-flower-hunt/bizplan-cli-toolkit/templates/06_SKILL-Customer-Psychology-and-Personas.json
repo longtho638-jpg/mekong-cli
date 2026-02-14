@@ -1,0 +1,250 @@
+{
+  "id": "06_SKILL-Customer-Psychology-and-Personas",
+  "version": "1.0.0",
+  "title": "Skill – Customer Psychology & Personas (Reiss / Freud / Rogers)",
+  "type": "skill",
+  "description": "Kỹ năng phân tích khách hàng mục tiêu ở lớp tâm lý học: phân khúc, đau ẩn, dream state, động cơ theo Steven Reiss, góc nhìn Freud/Rogers và sinh bộ persona thực dụng để dùng cho brand, product, marketing.",
+  "intended_use": {
+    "primary": [
+      "Chuyển một business idea/phần mô tả khách hàng thành customer profile có chiều sâu tâm lý.",
+      "Phân tích psychographic segmentation, latent pain points, dream state, động cơ cốt lõi.",
+      "Sinh 2–3 buyer personas có thể dùng thẳng cho product, marketing, sales."
+    ],
+    "works_best_when": [
+      "User mô tả đủ rõ: sản phẩm/dịch vụ, context sử dụng, thị trường/địa lý, nhóm khách hàng chính.",
+      "Đã có Business Model sơ bộ (ai trả tiền, vì lý do gì) từ 05_SKILL-Business-Model-Patterns-and-Unit-Economics."
+    ],
+    "not_for": [
+      "Chẩn đoán tâm lý cá nhân trong đời thực – đây chỉ là khung mô hình hoá cho kinh doanh.",
+      "Thay thế research định lượng/định tính trên field; chỉ là bước khởi đầu để đặt giả thuyết."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_plan_excerpt": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả sản phẩm/dịch vụ, khách hàng mục tiêu, tình huống sử dụng, kênh tiếp cận chính."
+      },
+      "market_context_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý thị trường: 'VN_mass', 'VN_premium', 'SEA_B2B_SME', 'Global_Dev', v.v."
+      },
+      "b2b_or_b2c": {
+        "type": "string",
+        "required": false,
+        "description": "Giá trị: 'B2B','B2C','B2B2C' để điều chỉnh kiểu persona (cá nhân vs tổ chức)."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu dữ liệu cụ thể, chỉ đưa ra pattern giả định chung của industry, gắn tag [GIẢ ĐỊNH].",
+      "Personas sinh ra là semi-fictive: đủ chi tiết để hữu ích, nhưng không được mô tả quá giống 1 cá nhân thật."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "target_audience_summary": {
+        "description": "Tóm tắt khách hàng mục tiêu ở level business + tâm lý.",
+        "fields": [
+          "who_they_are",
+          "where_they_are",
+          "what_they_do",
+          "why_they_care",
+          "purchase_context"
+        ]
+      },
+      "psychographic_segmentation": {
+        "description": "Phân nhóm khách hàng theo thái độ, giá trị, lối sống, mindset.",
+        "structure": {
+          "segment_fields": [
+            "segment_id",
+            "label",
+            "core_values",
+            "attitudes_and_beliefs",
+            "behavioural_traits",
+            "typical_objections"
+          ]
+        }
+      },
+      "latent_pain_points_and_dream_states": {
+        "description": "Đau ẩn (latent pains) và trạng thái mơ ước (dream states) theo từng nhóm.",
+        "structure": {
+          "fields_per_segment": [
+            "segment_id",
+            "latent_pains",
+            "surface_pains",
+            "dream_state_description",
+            "emotional_triggers"
+          ]
+        }
+      },
+      "reiss_16_motivation_map": {
+        "description": "Map các động cơ chính theo khung 16 human desires của Steven Reiss (rút gọn).",
+        "fields": [
+          "dominant_desires",
+          "supporting_desires",
+          "anti_desires_or_tradeoffs",
+          "how_product_aligns_with_desires"
+        ],
+        "examples_of_desires": [
+          "Power",
+          "Independence",
+          "Curiosity",
+          "Acceptance",
+          "Order",
+          "Saving",
+          "Honor",
+          "Idealism",
+          "Social_Contact",
+          "Family",
+          "Status",
+          "Vengeance",
+          "Romance",
+          "Eating",
+          "Physical_Activity",
+          "Tranquility"
+        ]
+      },
+      "freud_and_rogers_lenses": {
+        "description": "Diễn giải nhanh bằng 2 lăng kính: Freud (xung năng, xung đột) & Rogers (self-actualization, điều kiện chấp nhận).",
+        "fields": [
+          "freud_view_notes",
+          "rogers_view_notes",
+          "implications_for_messaging",
+          "implications_for_product_experience"
+        ]
+      },
+      "personas": {
+        "description": "2–3 buyer personas với chiều sâu tâm lý.",
+        "structure": {
+          "persona_fields": [
+            "persona_id",
+            "name_alias",
+            "archetype_label",
+            "demographic_or_firmographic",
+            "goals_and_success_definition",
+            "fears_and_frustrations",
+            "decision_drivers",
+            "buying_barriers",
+            "reiss_desire_profile",
+            "quote_style_statement"
+          ],
+          "recommended_count": "2_to_3"
+        }
+      },
+      "psychology_summary_for_team": {
+        "description": "Summary ngắn để team Product/Marketing/Sales hiểu chung.",
+        "fields": [
+          "key_insights",
+          "do_and_dont_for_messaging",
+          "notes_for_sales_conversations",
+          "notes_for_agentic_automation"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_basic_audience_read",
+      "label": "Đọc sơ bộ khách hàng & bối cảnh",
+      "goal": "Hiểu ai là người/đơn vị hưởng lợi chính & trong hoàn cảnh nào.",
+      "actions": [
+        "Rút ra who_they_are, where_they_are, what_they_do, why_they_care, purchase_context từ idea_or_plan_excerpt.",
+        "Nếu có b2b_or_b2c, điều chỉnh ngôn ngữ cho phù hợp (cá nhân vs role trong tổ chức)."
+      ]
+    },
+    {
+      "step_id": "02_define_psychographic_segments",
+      "label": "Xác định psychographic segments",
+      "goal": "Chia nhóm theo thái độ, giá trị, hành vi – không chỉ demography.",
+      "actions": [
+        "Nhận diện 2–4 segment chính dựa trên thái độ với risk, tiền, công nghệ, status, cộng đồng, v.v.",
+        "Đặt label dễ nhớ, liệt kê core_values, attitudes_and_beliefs, behavioural_traits, typical_objections cho mỗi segment."
+      ]
+    },
+    {
+      "step_id": "03_surface_and_latent_pains",
+      "label": "Tách pain bề mặt & đau ẩn",
+      "goal": "Hiểu điều gì họ nói ra vs điều gì họ thật sự sợ/mong.",
+      "actions": [
+        "Với mỗi segment, liệt kê surface_pains (họ dễ thừa nhận) và latent_pains (ẩn sâu, liên quan tới tự trọng, status, an toàn, v.v.).",
+        "Mô tả dream_state_description: cuộc sống/công việc trông như thế nào nếu vấn đề được giải quyết.",
+        "Liệt kê emotional_triggers: loại thông điệp/kích hoạt cảm xúc dễ chạm tới họ."
+      ]
+    },
+    {
+      "step_id": "04_map_reiss_desires",
+      "label": "Map động cơ theo Reiss 16 desires",
+      "goal": "Đặt tên cho các động cơ sâu hơn đằng sau hành vi mua.",
+      "actions": [
+        "Dựa trên pains & dreams, chọn 3–5 dominant_desires liên quan nhất.",
+        "Chọn một số supporting_desires bổ trợ (vd: Curiosity, Social_Contact…).",
+        "Nếu có tradeoff (vd Status vs Tranquility), ghi vào anti_desires_or_tradeoffs.",
+        "Giải thích how_product_aligns_with_desires bằng ngôn ngữ đơn giản, ứng dụng được vào messaging."
+      ]
+    },
+    {
+      "step_id": "05_apply_freud_and_rogers_lenses",
+      "label": "Chiếu theo Freud & Rogers",
+      "goal": "Thêm 2 lớp diễn giải tâm lý giúp sharpen thông điệp & trải nghiệm.",
+      "actions": [
+        "Trong freud_view_notes, mô tả xung năng/xung đột chính (an toàn vs tham vọng, khoái cảm vs tội lỗi, v.v.).",
+        "Trong rogers_view_notes, mô tả cách sản phẩm giúp họ tiến gần hơn tới self-actualization / sống đúng với bản thân.",
+        "Từ đó rút implications_for_messaging & implications_for_product_experience (giữ giọng tôn trọng, không thao túng)."
+      ]
+    },
+    {
+      "step_id": "06_generate_personas",
+      "label": "Sinh 2–3 buyer personas",
+      "goal": "Tạo nhân vật đại diện đủ sống động để team dùng trong trao đổi hằng ngày.",
+      "actions": [
+        "Gom thông tin từ các bước trên thành 2–3 personas, mỗi persona gắn với 1–2 segment.",
+        "Điền đầy đủ persona_fields: goals, fears, decision_drivers, buying_barriers, reiss_desire_profile, quote_style_statement.",
+        "Đảm bảo không mô tả quá chi tiết đến mức giống 1 người thật ngoài đời."
+      ]
+    },
+    {
+      "step_id": "07_summarize_for_team",
+      "label": "Tóm tắt cho team đa chức năng",
+      "goal": "Biến insight tâm lý thành hành động cho Product, Marketing, Sales, Agentic.",
+      "actions": [
+        "Ghi key_insights ở dạng bullet, tập trung vào điều bất ngờ/hay bị hiểu sai về khách hàng.",
+        "Tạo do_and_dont_for_messaging: những kiểu thông điệp nên/không nên dùng.",
+        "notes_for_sales_conversations: cách đặt câu hỏi, nghe objection, kể câu chuyện phù hợp.",
+        "notes_for_agentic_automation: phần nào có thể tự động hoá (nhắn tin, nurturing), phần nào cần con người."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã nắm được idea sản phẩm & mô hình kiếm tiền ở level cơ bản.",
+      "Trước khi viết brand messaging, content pillars hoặc thiết kế funnel marketing/sales."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Tóm tắt target_audience_summary ngắn gọn.",
+      "Bước 2: Trình bày psychographic_segmentation + latent_pain_points_and_dream_states theo segment.",
+      "Bước 3: Trình bày reiss_16_motivation_map & freud_and_rogers_lenses ở dạng ngắn gọn, dễ action.",
+      "Bước 4: Kết luận bằng 2–3 personas + psychology_summary_for_team."
+    ]
+  },
+  "constraints": {
+    "no_real_person_mimic": "Không mô tả persona giống hệt một cá nhân cụ thể (vd: tên thật, chi tiết nhận diện).",
+    "no_manipulative_tactics": "Không khuyến khích sử dụng insight tâm lý để thao túng hoặc gây hại khách hàng.",
+    "language": "Output ưu tiên tiếng Việt, có thể xen thuật ngữ tiếng Anh phổ biến trong marketing/psychology."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:48:15.023Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a piece of marketing content for Sa Dec Flower Hunt, targeting a general audience with an unknown special offer, in Vietnamese, and designed to be engaging and friendly:\n\n**Title: Sa Đéc ơi, mình về lại vườn hoa nha! (Sa Dec, let's go back to the flower gardens!)**\n\nNè nè, bạn có bao giờ cảm thấy cuộc sống mình đang \"fast-forward\" quá nhanh không? Sáng vội vội vàng vàng đi làm, tối mệt nhoài về nhà, lướt điện thoại rồi ngủ. Đôi khi mình quên mất những điều nhỏ bé xinh xắn quanh mình, quên mất những nơi chốn thanh bình mà mình từng yêu.\n\nMình nhớ Sa Đéc quá chừng! Nhớ những luống hoa rực rỡ đủ màu, chen chúc nhau khoe sắc dưới nắng miền Tây. Nhớ tiếng cười nói rộn ràng của mấy cô bác nông dân, chăm chút từng bông hoa như chăm con mọn. Nhớ mùi hương thoang thoảng, ngọt ngào, quyện vào trong gió, làm mình thấy lòng nhẹ nhàng, thư thái lạ thường.\n\nSa Đéc không chỉ là hoa, mà còn là cả một vùng ký ức tuổi thơ. Là những con kênh xanh mướt, những ngôi nhà cổ kính rêu phong, những món ăn ngon bá cháy mà chỉ cần nghĩ đến thôi là đã ứa nước miếng.\n\nHồi xưa, mỗi độ xuân về, cả nhà mình lại háo hức khăn gói xuống Sa Đéc chơi Tết. Mình thích nhất là được chạy nhảy giữa những luống hoa, ngắm nghía những chậu cúc đại đóa vàng rực, rồi xin mẹ mua cho một cành mai con con mang về cắm trong nhà. Cái không khí Tết ở Sa Đéc nó khác lắm, nó rộn ràng, nó tươi vui, nó làm mình cảm thấy hạnh phúc vô cùng.\n\nBạn có muốn sống lại những cảm xúc đó không? Có muốn một lần nữa đắm mình trong vẻ đẹp của những vườn hoa Sa Đéc không?\n\nMình đang có một bất ngờ nho nhỏ dành cho bạn đây. Một món quà bí mật từ Sa Đéc Flower Hunt, giúp bạn mang cả vườn hoa Sa Đéc về nhà, dù bạn đang ở bất cứ nơi đâu.\n\n**Nhấn vào nút \"Khám Phá Ngay\" bên dưới để nhận món quà đặc biệt này nhé!** Biết đâu chừng, bạn sẽ tìm thấy một chút Sa Đéc trong chính ngôi nhà của mình đấy!\n\n(Button: **Khám Phá Ngay! (Discover Now!)**)\n\n**Why this works:**\n\n*   **Emotional Connection:** The content evokes nostalgia and positive memories associated with Sa Dec, connecting with the reader on a personal level.\n*   **Storytelling:** It uses a personal anecdote to illustrate the beauty and cultural significance of Sa Dec flowers.\n*   **Informal Tone:** The language is friendly, conversational, and uses local expressions (\"bá cháy\", \"chừng\").\n*   **Highlighting Beauty and Heritage:** It emphasizes the vibrant colors, scents, and the cultural atmosphere surrounding Sa Dec flowers.\n*   **Clear Call-to-Action:** The \"Khám Phá Ngay!\" button encourages immediate engagement.\n*   **Intrigue:** The unknown offer creates curiosity and motivates the reader to click.\n*   **Visual Language:** The descriptions of the flower gardens are vivid and engaging, creating a mental image for the reader.\n*   **Avoidance of Corporate Speak:** There are no formal or promotional terms used. The text feels like a friend sharing a memory.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

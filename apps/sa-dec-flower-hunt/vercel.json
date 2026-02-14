@@ -1,0 +1,17 @@
+{
+    "functions": {
+        "app/api/**/*": {
+            "includeFiles": "output_*.json, auto_*.json, autopilot_*.json"
+        }
+    },
+    "crons": [
+        {
+            "path": "/api/autonomous/execute",
+            "schedule": "0 19 * * *"
+        },
+        {
+            "path": "/api/cron/daily-growth",
+            "schedule": "0 4 * * *"
+        }
+    ]
+}

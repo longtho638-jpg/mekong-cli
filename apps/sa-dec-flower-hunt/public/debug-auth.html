@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Flow Debugger</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            background: #000;
+            color: #0f0;
+            padding: 20px;
+            font-size: 14px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { color: #0f0; margin-bottom: 20px; border-bottom: 2px solid #0f0; padding-bottom: 10px; }
+        .section { margin: 20px 0; padding: 15px; border: 1px solid #0f0; border-radius: 4px; background: #001100; }
+        .section h2 { color: #0ff; margin-bottom: 10px; font-size: 16px; }
+        .log { background: #000; padding: 10px; margin: 10px 0; border-left: 3px solid #0f0; font-size: 12px; }
+        .success { color: #0f0; }
+        .error { color: #f00; }
+        .warning { color: #ff0; }
+        .info { color: #0ff; }
+        button {
+            background: #0f0;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+        button:hover { background: #0ff; }
+        pre { white-space: pre-wrap; word-wrap: break-word; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 AUTH FLOW DEBUGGER</h1>
+        
+        <div class="section">
+            <h2>1️⃣ Environment Check</h2>
+            <div id="env-check" class="log">Checking...</div>
+        </div>
+
+        <div class="section">
+            <h2>2️⃣ Cookie Inspection</h2>
+            <div id="cookies" class="log">Loading...</div>
+        </div>
+
+        <div class="section">
+            <h2>3️⃣ Login Test</h2>
+            <button onclick="testLogin()">🔐 Test Login</button>
+            <button onclick="checkSession()">🔍 Check Session</button>
+            <button onclick="testRedirect()">➡️ Test Redirect</button>
+            <div id="login-log" class="log"></div>
+        </div>
+
+        <div class="section">
+            <h2>4️⃣ Profile Fetch Test</h2>
+            <button onclick="fetchProfile()">👤 Fetch Profile</button>
+            <div id="profile-log" class="log"></div>
+        </div>
+
+        <div class="section">
+            <h2>5️⃣ Recommendations</h2>
+            <div id="recommendations" class="log"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_KEY';
+        const supabase = createClient(supabaseUrl, supabaseKey);
+
+        function log(elementId, message, type = 'info') {
+            const el = document.getElementById(elementId);
+            const className = type;
+            el.innerHTML += `<div class="${className}">[${new Date().toLocaleTimeString()}] ${message}</div>`;
+        }
+
+        // Check environment
+        if (supabaseUrl.includes('YOUR_')) {
+            log('env-check', '❌ Missing Supabase credentials! Please update the script.', 'error');
+        } else {
+            log('env-check', '✅ Supabase client initialized', 'success');
+            log('env-check', `URL: ${supabaseUrl.substring(0, 30)}...`, 'info');
+        }
+
+        // Check cookies
+        const cookies = document.cookie;
+        const cookiesList = cookies ? cookies.split(';').map(c => c.trim()) : [];
+        const supabaseCookies = cookiesList.filter(c => c.startsWith('sb-'));
+        
+        document.getElementById('cookies').innerHTML = '';
+        if (supabaseCookies.length > 0) {
+            log('cookies', `✅ Found ${supabaseCookies.length} Supabase cookie(s):`, 'success');
+            supabaseCookies.forEach(c => {
+                log('cookies', `  - ${c.split('=')[0]}`, 'info');
+            });
+        } else {
+            log('cookies', '⚠️ No Supabase cookies found', 'warning');
+            log('cookies', 'Total cookies: ' + cookiesList.length, 'info');
+        }
+
+        window.testLogin = async function() {
+            log('login-log', '🔐 Testing login...', 'info');
+            
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: 'farmer1@sadec.com',
+                password: 'password123'
+            });
+
+            if (error) {
+                log('login-log', `❌ Login failed: ${error.message}`, 'error');
+                return;
+            }
+
+            log('login-log', '✅ Login successful!', 'success');
+            log('login-log', `User: ${data.user.email}`, 'success');
+            log('login-log', `Session expires: ${new Date(data.session.expires_at * 1000).toLocaleString()}`, 'info');
+            
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        };
+
+        window.checkSession = async function() {
+            log('login-log', '🔍 Checking session...', 'info');
+            
+            const { data, error } = await supabase.auth.getSession();
+
+            if (error) {
+                log('login-log', `❌ Session check failed: ${error.message}`, 'error');
+                return;
+            }
+
+            if (data.session) {
+                log('login-log', '✅ Active session found!', 'success');
+                log('login-log', `User: ${data.session.user.email}`, 'success');
+            } else {
+                log('login-log', '⚠️ No active session', 'warning');
+            }
+        };
+
+        window.fetchProfile = async function() {
+            log('profile-log', '👤 Fetching profile...', 'info');
+            
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                log('profile-log', '❌ No session - please login first', 'error');
+                return;
+            }
+
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+
+            if (error) {
+                log('profile-log', `❌ Profile fetch failed: ${error.message}`, 'error');
+                log('profile-log', `Error details: ${JSON.stringify(error)}`, 'error');
+                return;
+            }
+
+            log('profile-log', '✅ Profile fetched!', 'success');
+            log('profile-log', `<pre>${JSON.stringify(profile, null, 2)}</pre>`, 'success');
+        };
+
+        window.testRedirect = function() {
+            log('login-log', '➡️ Testing redirect to /farmer...', 'info');
+            setTimeout(() => {
+                window.location.href = '/farmer';
+            }, 1000);
+        };
+
+        // Recommendations
+        const recommendations = [];
+        if (!supabaseCookies.length) {
+            recommendations.push('⚠️ No auth cookies detected. Login may not persist.');
+        }
+        if (supabaseUrl.includes('YOUR_')) {
+            recommendations.push('❌ Update this HTML file with your actual Supabase credentials.');
+        } else {
+            recommendations.push('✅ Ready to test! Click "Test Login" to begin.');
+        }
+
+        document.getElementById('recommendations').innerHTML = recommendations.map(r => `<div>${r}</div>`).join('');
+    </script>
+</body>
+</html>

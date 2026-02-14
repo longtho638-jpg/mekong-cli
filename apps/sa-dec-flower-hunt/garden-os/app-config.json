@@ -1,0 +1,65 @@
+{
+    "app": {
+        "title": "AGRIOS Farmer",
+        "headerTitle": "Quản Lý Vườn",
+        "headerColor": "#15803d",
+        "textColor": "white",
+        "statusBarColor": "#166534",
+        "hideAndroidBottomNavigationBar": true,
+        "actionBarHidden": false
+    },
+    "pages": [
+        {
+            "path": "/",
+            "name": "home"
+        },
+        {
+            "path": "/inventory",
+            "name": "inventory"
+        },
+        {
+            "path": "/orders",
+            "name": "orders"
+        },
+        {
+            "path": "/profile",
+            "name": "profile"
+        }
+    ],
+    "bottomNavigation": {
+        "items": [
+            {
+                "path": "/",
+                "label": "Tổng quan",
+                "icon": "zi-home",
+                "activeIcon": "zi-home-solid"
+            },
+            {
+                "path": "/inventory",
+                "label": "Kho hoa",
+                "icon": "zi-camera",
+                "activeIcon": "zi-camera-solid"
+            },
+            {
+                "path": "/orders",
+                "label": "Đơn hàng",
+                "icon": "zi-list",
+                "activeIcon": "zi-list-solid"
+            },
+            {
+                "path": "/profile",
+                "label": "Cá nhân",
+                "icon": "zi-user",
+                "activeIcon": "zi-user-solid"
+            }
+        ]
+    },
+    "permissions": [
+        "scope.userLocation",
+        "scope.camera",
+        "scope.getUserInfo"
+    ],
+    "css": {
+        "preflight": true
+    }
+}

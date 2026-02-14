@@ -1,0 +1,60 @@
+{
+  "skillId": "07",
+  "skillName": "Brand Positioning & Identity",
+  "generatedAt": "2025-12-06T10:00:45.534Z",
+  "status": "success",
+  "data": {
+    "brand_core": {
+      "brand_essence": "Core brand essence (2-4 words) [ĐỀ XUẤT]",
+      "brand_promise": "What brand commits to deliver [ĐỀ XUẤT]",
+      "one_line_positioning_statement": "Concise positioning [ĐỀ XUẤT]",
+      "category_and_frame_of_reference": "Industry category [TỪ PLAN]"
+    },
+    "positioning_statement_canon": {
+      "for_who": "Target audience [ĐỀ XUẤT]",
+      "who_have": "Customer pain point [ĐỀ XUẤT]",
+      "we_are": "Product/service description [TỪ PLAN]",
+      "that_do": "Value proposition [ĐỀ XUẤT]",
+      "unlike": "Competitor differentiation [ĐỀ XUẤT]",
+      "we_uniquely": "Unique advantage [ĐỀ XUẤT]"
+    },
+    "unique_selling_proposition": {
+      "usp_long_form": "Detailed USP (1-3 sentences) [ĐỀ XUẤT]",
+      "usp_short_form": "Short USP phrase [ĐỀ XUẤT]",
+      "supporting_proofs_or_reasons_to_believe": [
+        "Proof point 1 [TỪ PLAN]",
+        "Proof point 2 [ĐỀ XUẤT]",
+        "[TODO] Certification/awards"
+      ]
+    },
+    "brand_personality_and_voice": {
+      "personality_keywords": [
+        "Trustworthy",
+        "Innovative",
+        "Customer-focused"
+      ],
+      "voice_principles": [
+        "Clear and direct",
+        "Professional yet approachable"
+      ],
+      "tone_by_context": {
+        "website": "Informative and engaging",
+        "email": "Personal and helpful",
+        "social": "Conversational and vibrant"
+      }
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "05",
+      "06"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

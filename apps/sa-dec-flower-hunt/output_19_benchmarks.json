@@ -1,0 +1,73 @@
+{
+  "skillId": "19",
+  "skillName": "Industry Patterns & Benchmarks",
+  "generatedAt": "2025-12-06T09:14:08.198Z",
+  "status": "success",
+  "data": {
+    "saas_metrics_benchmark": {
+      "revenue_growth": {
+        "seed": "100-300% YoY [GIẢ ĐỊNH]",
+        "series_a": "100-200% YoY",
+        "series_b": "80-150% YoY",
+        "target": "Aim for top quartile (>150% for Series A) [ĐỀ XUẤT]"
+      },
+      "gross_margin": {
+        "saas_standard": "70-85%",
+        "marketplace": "60-75%",
+        "hardware": "40-60%",
+        "target": "75%+ for pure SaaS [ĐỀ XUẤT]"
+      },
+      "ltv_cac_ratio": {
+        "minimum": "3:1",
+        "good": "4-5:1",
+        "excellent": ">5:1",
+        "target": "4:1 or better [ĐỀ XUẤT]"
+      },
+      "cac_payback": {
+        "saas_standard": "12-18 months",
+        "excellent": "<12 months",
+        "acceptable": "<24 months",
+        "target": "12 months [ĐỀ XUẤT]"
+      },
+      "net_dollar_retention": {
+        "minimum": "90%",
+        "good": "100-110%",
+        "excellent": ">120%",
+        "target": "105%+ [ĐỀ XUẤT]"
+      },
+      "rule_of_40": {
+        "formula": "Growth Rate + Profit Margin",
+        "benchmark": ">40 is strong",
+        "target": "Prioritize growth early, 40+ by Series B [GIẢ ĐỊNH]"
+      }
+    },
+    "competitive_positioning": {
+      "market_position": "Top 3 in [specific niche/geography] [ĐỀ XUẤT]",
+      "differentiation": [
+        "Better UX/UI [TỪ PLAN]",
+        "SEA-optimized features [ĐỀ XUẤT]",
+        "Lower price point [GIẢ ĐỊNH]"
+      ],
+      "competitive_advantages": [
+        "First mover in Vietnam",
+        "Local language support",
+        "Integration with local platforms"
+      ]
+    },
+    "industry_patterns": {
+      "typical_valuation_multiples": "SaaS: 5-15x ARR, Marketplace: 2-8x GMV [GIẢ ĐỊNH]",
+      "funding_trajectory": "Seed $500K-2M → A $3-10M → B $15-50M",
+      "time_to_series_b": "18-30 months from Series A"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

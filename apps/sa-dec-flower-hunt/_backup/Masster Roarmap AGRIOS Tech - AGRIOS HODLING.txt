@@ -1,0 +1,95 @@
+{
+  "agrios_corporate_evolution_roadmap": {
+    "meta_data": {
+      "project": "Agrios Platform - From Startup to IPO",
+      "architect": "Lex - Strategic Legal & Governance Counsel",
+      "version": "3.0 (Finalized)",
+      "date": "2025-12-11",
+      "status": "PHASE_1_INITIATION"
+    },
+    "phase_1_the_fortress": {
+      "title": "Giai đoạn 1: Pháo đài Hợp nhất (The Unified Fortress)",
+      "timeline": "Tháng 0 - Tháng 18 (Hiện tại -> Pre-Series A)",
+      "objective": "Tối ưu vận hành, Tối ưu thuế, Sống sót qua giai đoạn 'Thung lũng chết'.",
+      "structure": {
+        "entity_name": "CÔNG TY TNHH CÔNG NGHỆ AGRIOS (Agrios Tech Co., Ltd)",
+        "model": "All-in-One (Một pháp nhân duy nhất)",
+        "ownership": "Founders trực tiếp sở hữu 100%",
+        "capitalization": {
+          "total_charter_capital": "2,000,000,000 VNĐ",
+          "structure": "10% Tiền mặt (Vận hành) + 90% Tài sản IP (Source Code Agrios Platform)",
+          "valuation_method": "Thành viên tự định giá (Điều 36 Luật Doanh nghiệp 2020) - Không tốn phí thẩm định."
+        }
+      },
+      "key_strategies": {
+        "tax_optimization": "Đăng ký mã ngành chính 6201 để hưởng ưu đãi thuế TNDN (Miễn 2 năm, Giảm 4 năm).",
+        "asset_protection": "Chuyển quyền sở hữu (Assignment) toàn bộ Copyright từ Cá nhân sang Công ty ngay sau khi thành lập.",
+        "governance": "Ký Thỏa thuận thành viên (SHA) với điều khoản Vesting 4 năm."
+      },
+      "risk_level": "Thấp (Do mô hình đơn giản, dễ quản lý)."
+    },
+    "phase_2_the_expansion": {
+      "title": "Giai đoạn 2: Tách bạch & Gọi vốn (The Expansion)",
+      "timeline": "Tháng 18 - Tháng 36 (Series A Funding)",
+      "trigger_event": "Gọi vốn thành công > $500,000 hoặc Doanh thu đạt $1M.",
+      "objective": "Bảo vệ tài sản lõi, Mở rộng quy mô, Chuyên nghiệp hóa định giá.",
+      "structure": {
+        "parent_entity": "AGRIOS TECH JSC (Chuyển đổi từ TNHH sang Cổ phần)",
+        "subsidiary_entity": "Thành lập mới AGRIOS OPCO (Công ty Vận hành/Thương mại)",
+        "relationship": "Mẹ - Con (Parent - Subsidiary)"
+      },
+      "key_strategies": {
+        "asset_segregation": "Agrios Tech giữ IP (Code). Agrios OpCo giữ Giấy phép sàn TMĐT, Data khách hàng, Hợp đồng nông dân.",
+        "licensing_model": "Agrios Tech cấp quyền sử dụng phần mềm cho OpCo (Bắt đầu hạch toán dòng tiền bản quyền).",
+        "valuation": "Thuê Big4/VIVC thẩm định giá IP chuyên nghiệp để chứng minh với Nhà đầu tư."
+      },
+      "risk_management": "Kiểm soát rủi ro Chuyển giá (Transfer Pricing) khi giao dịch giữa Mẹ-Con."
+    },
+    "phase_3_the_empire": {
+      "title": "Giai đoạn 3: Đế chế Holding (The Empire Structure)",
+      "timeline": "Tháng 36+ (Pre-IPO / Exit)",
+      "objective": "Quản lý gia sản Founder, Kiểm soát quyền lực tuyệt đối, Niêm yết sàn.",
+      "structure": {
+        "tier_1_holdings": "Thành lập FOUNDERS HOLDINGS (Công ty quản lý vốn, không kinh doanh).",
+        "tier_2_tech_core": "AGRIOS TECH JSC (Niêm yết trên sàn, sở hữu công nghệ lõi).",
+        "tier_3_ecosystem": [
+          "Agrios OpCo (Vận hành TMĐT)",
+          "Agrios Fintech (Dịch vụ tài chính)",
+          "Agrios Global (Mở rộng quốc tế)"
+        ]
+      },
+      "key_strategies": {
+        "voting_control": "Founders Holdings nắm giữ cổ phần chi phối tại Agrios Tech.",
+        "exit_strategy": "Bán cổ phần tại tầng Tech JSC để lấy tiền mặt, nhưng vẫn giữ quyền kiểm soát qua Holdings."
+      }
+    },
+    "immediate_execution_plan": {
+      "context": "Chiến dịch 'Tet Offensive' (19 ngày còn lại)",
+      "actions": [
+        {
+          "step": 1,
+          "task": "Đăng ký Bản quyền Tác giả (Copyright) cho Source Code Agrios.",
+          "owner": "Founders",
+          "deadline": "Ngay lập tức"
+        },
+        {
+          "step": 2,
+          "task": "Nộp hồ sơ thành lập Agrios Tech (TNHH 2 TV trở lên).",
+          "detail": "Vốn 2 Tỷ (Góp bằng IP). Mã ngành 6201.",
+          "deadline": "Ngày 1-3"
+        },
+        {
+          "step": 3,
+          "task": "Họp HĐTV & Ký Biên bản định giá tài sản góp vốn.",
+          "detail": "Định giá Platform 1.8 Tỷ. Cam kết chuyển quyền sở hữu trong 90 ngày.",
+          "deadline": "Ngày 5"
+        },
+        {
+          "step": 4,
+          "task": "Setup hạ tầng thanh toán (PayOS) & Zalo OA dưới pháp nhân mới.",
+          "deadline": "Ngày 7-10"
+        }
+      ]
+    }
+  }
+}

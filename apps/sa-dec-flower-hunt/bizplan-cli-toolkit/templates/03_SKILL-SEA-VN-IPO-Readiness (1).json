@@ -1,0 +1,241 @@
+{
+  "id": "03_SKILL-SEA-VN-IPO-Readiness",
+  "version": "1.0.0",
+  "title": "Skill – SEA/VN IPO Readiness Assessment",
+  "type": "skill",
+  "description": "Kỹ năng đánh giá mức độ sẵn sàng IPO cho doanh nghiệp hoạt động tại Việt Nam/Đông Nam Á, dựa trên Business Plan 2026 – Agentic Zero→IPO và chuẩn niêm yết khu vực.",
+  "intended_use": {
+    "primary": [
+      "Đánh giá nhanh mức độ sẵn sàng IPO (VN/SEA) từ bản kế hoạch kinh doanh đã chuẩn hoá.",
+      "Nhận diện gap về tài chính, governance, compliance, hệ thống và narrative IPO.",
+      "Đề xuất lộ trình chuẩn hoá 3–5 năm theo từng giai đoạn."
+    ],
+    "works_best_when": [
+      "Đã có bản Business Plan 2026 tương đối đầy đủ (ít nhất các block 0,1,4,6,7 trong 00_MASTER).",
+      "User có ý định IPO tại HOSE/HNX/UPCoM hoặc listing chéo tại thị trường SEA khác."
+    ],
+    "not_for": [
+      "Tư vấn pháp lý/hồ sơ chính thức để nộp hồ sơ IPO – chỉ cung cấp khung phân tích & gợi ý.",
+      "Đánh giá IPO ở thị trường US/EU (chỉ tham chiếu nhẹ nếu cần)."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "plan_meta": {
+        "type": "object",
+        "required": true,
+        "description": "Meta từ block 0 trong 00_MASTER: tên công ty, ngành, stage, geography, cấu trúc pháp lý."
+      },
+      "financial_snapshot": {
+        "type": "object",
+        "required": false,
+        "description": "Thông tin tóm tắt tài chính: revenue, growth, EBITDA, FCF, leverage (nếu có)."
+      },
+      "governance_snapshot": {
+        "type": "object",
+        "required": false,
+        "description": "Thông tin về HĐQT, cổ đông lớn, ESOP, quy chế quản trị, kiểm toán (nếu có)."
+      },
+      "compliance_snapshot": {
+        "type": "object",
+        "required": false,
+        "description": "Các yếu tố pháp lý/compliance chính: licenses, KYC/AML (nếu fintech/crypto), data/privacy, ESG."
+      },
+      "target_markets": {
+        "type": "array",
+        "required": false,
+        "description": "Thị trường list: ['VN_HOSE','VN_HNX','VN_UPCOM','SGX','SET','IDX','MYX',...]"
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu số liệu tài chính, chỉ đánh giá định tính và tag rõ là [GIẢ ĐỊNH].",
+      "Nếu chưa rõ sàn niêm yết mục tiêu, giả định IPO nội địa (HOSE/HNX) rồi mở rộng."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "ipo_readiness_scorecard": {
+        "description": "Bảng chấm điểm mức độ sẵn sàng IPO theo trục chính.",
+        "structure": {
+          "dimensions": [
+            "strategy_story",
+            "financial_profile",
+            "governance_control",
+            "risk_compliance",
+            "systems_data_reporting",
+            "agentic_maturity_for_public_company"
+          ],
+          "fields_per_dimension": [
+            "score_0_to_5",
+            "evidence_notes",
+            "key_gaps",
+            "improvement_suggestions"
+          ]
+        }
+      },
+      "listing_pathways": {
+        "description": "Các kịch bản listing khả thi (VN/SEA) và yêu cầu tối thiểu.",
+        "structure": {
+          "pathways": [
+            {
+              "fields": [
+                "code",
+                "exchange_name",
+                "typical_requirements_summary",
+                "fit_assessment",
+                "time_horizon_hint"
+              ]
+            }
+          ]
+        }
+      },
+      "governance_and_structure_gap_list": {
+        "description": "Danh sách gap về governance/cấu trúc sở hữu liên quan tới IPO.",
+        "structure": {
+          "items": [
+            {
+              "fields": [
+                "gap_id",
+                "area",
+                "current_state",
+                "expected_ipo_state",
+                "severity",
+                "suggested_actions"
+              ]
+            }
+          ],
+          "areas_example": [
+            "board_composition",
+            "independent_directors",
+            "audit_and_risk_committees",
+            "shareholder_structure",
+            "esop_and_incentives"
+          ]
+        }
+      },
+      "financial_kpi_readiness": {
+        "description": "Đánh giá nhanh các KPI tài chính chính so với chuẩn IPO khu vực (định tính + định lượng nếu có data).",
+        "fields": [
+          "growth_profile_comment",
+          "profitability_profile_comment",
+          "cash_flow_quality_comment",
+          "leverage_comment",
+          "unit_economics_comment"
+        ]
+      },
+      "ipo_roadmap_outline": {
+        "description": "Khung lộ trình chuẩn bị IPO 3–5 năm (hoặc 18–36 tháng nếu late-stage).",
+        "structure": {
+          "horizons": [
+            "short_term_0_12_months",
+            "mid_term_12_24_months",
+            "long_term_24_36_plus_months"
+          ],
+          "each_horizon_item_fields": [
+            "focus_themes",
+            "key_initiatives",
+            "owner_roles",
+            "dependencies"
+          ]
+        }
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_context_and_stage_detection",
+      "label": "Nhận diện bối cảnh & stage IPO",
+      "goal": "Hiểu doanh nghiệp đang ở đâu trên trục Zero→IPO và ở hệ quy chiếu thị trường nào.",
+      "actions": [
+        "Phân tích plan_meta để xác định stage: growth, size, funding history (nếu có).",
+        "Xác định geography chính: Việt Nam, multi-SEA hay global-first.",
+        "Nếu target_markets thiếu, đề xuất 1–2 kịch bản hợp lý nhưng gắn [GIẢ ĐỊNH]."
+      ]
+    },
+    {
+      "step_id": "02_build_ipo_readiness_scorecard",
+      "label": "Chấm điểm IPO Readiness",
+      "goal": "Tạo scorecard 6 chiều (strategy, financial, governance, compliance, systems, agentic).",
+      "actions": [
+        "Đọc các block 1,4,6,7 trong Business Plan để đánh giá strategy_story, financial_profile, risk_compliance.",
+        "Dùng governance_snapshot & compliance_snapshot nếu có để bổ sung bằng chứng.",
+        "Chấm điểm 0–5 cho mỗi dimension, kèm evidence_notes ngắn gọn.",
+        "Liệt kê 1–3 key_gaps/dimension + improvement_suggestions [ĐỀ XUẤT]."
+      ]
+    },
+    {
+      "step_id": "03_map_listing_pathways",
+      "label": "Xác định đường đi niêm yết khả thi",
+      "goal": "Liệt kê 2–3 con đường niêm yết phù hợp nhất với profile hiện tại.",
+      "actions": [
+        "Dựa trên size, ngành, geography để gợi ý vài pathway: VN_HOSE, VN_HNX, VN_UPCOM, SEA_cross_listing,…",
+        "Tóm tắt typical_requirements_summary ở mức khái niệm (profit history, equity size, governance standards).",
+        "fit_assessment: 'strong_fit' / 'medium_fit' / 'weak_fit'.",
+        "time_horizon_hint: '<=2y', '~3y', '3y_plus' theo độ chín hiện tại."
+      ]
+    },
+    {
+      "step_id": "04_find_governance_and_structure_gaps",
+      "label": "Quét gap về governance & cấu trúc sở hữu",
+      "goal": "Nhận diện sớm những điểm sẽ rất tốn kém nếu sửa muộn.",
+      "actions": [
+        "Phân tích board, shareholder, ESOP, committee từ plan_meta & governance_snapshot.",
+        "So sánh với chuẩn public company VN/SEA ở mức conceptual (có independent director, audit committee, internal control…).",
+        "Sinh 5–10 gap item quan trọng nhất với severity: 'high', 'medium', 'low'.",
+        "Đưa suggested_actions dạng bullet [ĐỀ XUẤT]."
+      ]
+    },
+    {
+      "step_id": "05_assess_financial_kpi_readiness",
+      "label": "Đánh giá profile KPI tài chính",
+      "goal": "Nhìn tổng thể financial profile xem đã 'kể được câu chuyện IPO' chưa.",
+      "actions": [
+        "Nếu có financial_snapshot: bình luận về growth (CAGR, momentum), profitability (EBITDA/FCF), leverage, unit economics (nếu mô tả).",
+        "Nếu không có số, chỉ nhận xét định tính và gắn tag [GIẢ ĐỊNH].",
+        "Highlight 2–3 điểm cần cải thiện mạnh nhất trước khi nói chuyện banker/VC late-stage."
+      ]
+    },
+    {
+      "step_id": "06_outline_ipo_roadmap",
+      "label": "Vẽ khung lộ trình IPO 3–5 năm",
+      "goal": "Cho founder/team một bản đồ khái quát để ưu tiên.",
+      "actions": [
+        "Chia roadmap thành 3 horizon: 0–12m, 12–24m, 24–36m+ (hoặc nén xuống nếu doanh nghiệp đã late-stage).",
+        "Trong mỗi horizon, nhóm việc theo 3–4 theme: Financials, Governance, Systems/Data, Brand/Story & Agentic.",
+        "Mỗi key_initiative có owner_roles gợi ý (CFO, COO, Head of Legal, CPO, Head of Data…)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi user hỏi về IPO, niêm yết, exit cho founder/VC.",
+      "Sau khi đã có Business Plan 2026 ở mức đủ đầy để đánh giá chiến lược & tài chính."
+    ],
+    "how_to_present_to_user": [
+      "Luôn bắt đầu bằng ipo_readiness_scorecard dạng bảng ngắn.",
+      "Tiếp theo là listing_pathways (2–3 kịch bản chính).",
+      "Sau đó là governance_and_structure_gap_list (top gap).",
+      "Cuối cùng là ipo_roadmap_outline để user biết 12–36 tháng tới nên ưu tiên gì."
+    ]
+  },
+  "constraints": {
+    "no_legal_advice": "Không được coi như tư vấn pháp lý chính thức; luôn nhắc user cần luật sư/local advisor để triển khai thật.",
+    "no_fake_numbers": "Không bịa số tài chính; chỉ dùng số nếu có trong plan hoặc được user cung cấp.",
+    "language": "Output ưu tiên tiếng Việt, có thể dùng viết tắt tiếng Anh cho tên sàn và thuật ngữ tài chính."
+  }
+}

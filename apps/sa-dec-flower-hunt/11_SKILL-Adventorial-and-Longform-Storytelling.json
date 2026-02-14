@@ -1,0 +1,212 @@
+{
+  "id": "11_SKILL-Adventorial-and-Longform-Storytelling",
+  "version": "1.0.0",
+  "title": "Skill – Adventorial & Long-Form Storytelling for Conversion",
+  "type": "skill",
+  "description": "Kỹ năng viết bài advertorial / long-form narrative (blog, email dài, bài PR native) để giáo dục, thuyết phục và dẫn traffic/conversion về offer chính, nhất quán với brand và business model.",
+  "intended_use": {
+    "primary": [
+      "Viết bài advertorial dạng bài báo/story cho 1 offer cụ thể (PR native, blog, partner site).",
+      "Tạo long-form content bán hàng nhẹ (storyselling) cho ngành cần educate sâu (SaaS, fintech, health, B2B…).",
+      "Chuyển insight từ psychology (06), brand story (07) & offer (05/09/10) thành một đường dây thuyết phục mượt."
+    ],
+    "works_best_when": [
+      "Đã có thông tin rõ về offer, persona, brand và landing/CTA (từ 05, 06, 07, 09, 10).",
+      "User muốn nội dung có thể dùng làm bài blog, bài PR, email dài, hoặc script tham khảo cho webinar."
+    ],
+    "not_for": [
+      "Viết bài nghiên cứu học thuật hoặc whitepaper thuần technical (cần skill riêng).",
+      "Viết sale page thuần direct response dạng copy cứng (có thể dùng skill website/landing + future sales-letter skill)."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json",
+      "09_SKILL-Website-and-Landing-Narrative.json",
+      "10_SKILL-Performance-Ads-and-Intro-Creatives.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Offer chính cần viết advertorial/long-form (sản phẩm, dịch vụ, chương trình…)."
+      },
+      "target_persona_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Nhóm khách hàng chính hoặc persona (nếu biết)."
+      },
+      "primary_goal": {
+        "type": "string",
+        "required": false,
+        "description": "Mục tiêu chính: 'educate', 'lead_gen', 'pre_sell', 'book_call', 'direct_sale', v.v."
+      },
+      "preferred_publish_context": {
+        "type": "string",
+        "required": false,
+        "description": "Ngữ cảnh: 'blog_own_site', 'media_PR', 'newsletter', 'partner_site', v.v."
+      },
+      "length_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Độ dài ước tính: 'short' (~800-1200), 'medium' (~1500-2500), 'long' (~2500+)."
+      }
+    },
+    "assumptions": [
+      "Nếu không có primary_goal, mặc định 'pre_sell' + 'lead_gen'.",
+      "Nếu không có length_hint, mặc định 'medium' cho balance giữa depth & readability."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "narrative_brief": {
+        "description": "Tóm tắt chiến lược câu chuyện trước khi viết.",
+        "fields": [
+          "core_angle",
+          "target_persona",
+          "primary_goal",
+          "desired_reader_action",
+          "key_objections_to_address",
+          "key_proofs_to_include"
+        ]
+      },
+      "structure_outline": {
+        "description": "Dàn ý bài viết với các phần chính & mục tiêu từng phần.",
+        "structure": {
+          "section_fields": [
+            "section_id",
+            "section_title",
+            "section_goal",
+            "summary_of_content"
+          ]
+        }
+      },
+      "full_article_draft": {
+        "description": "Bản nháp advertorial/long-form hoàn chỉnh.",
+        "fields": [
+          "estimated_word_count",
+          "title_options",
+          "subtitle_or_deck",
+          "sections"
+        ]
+      },
+      "cta_and_linking_plan": {
+        "description": "Kế hoạch CTA & link sang landing/offer chính.",
+        "fields": [
+          "primary_cta_text",
+          "primary_cta_destination",
+          "secondary_cta_texts",
+          "cta_placements",
+          "internal_links_suggestions",
+          "external_links_or_sources_suggestions"
+        ]
+      },
+      "adaptation_notes": {
+        "description": "Gợi ý rút gọn/phân mảnh nội dung cho các kênh khác.",
+        "fields": [
+          "short_form_snippets_ideas",
+          "email_teaser_variants",
+          "social_post_variants",
+          "carousel_or_thread_breakdown"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_align_on_goal_and_persona",
+      "label": "Chốt mục tiêu & persona",
+      "goal": "Không viết khi chưa rõ viết cho ai và để làm gì.",
+      "actions": [
+        "Tóm tắt idea_or_offer & chọn target_persona từ input hoặc 06_SKILL.",
+        "Xác định primary_goal (educate, lead_gen, pre_sell, book_call, direct_sale…).",
+        "Xác định desired_reader_action cụ thể (vd: đăng ký form, đọc landing, đặt lịch, reply email…)."
+      ]
+    },
+    {
+      "step_id": "02_define_narrative_brief",
+      "label": "Tạo narrative brief",
+      "goal": "Chốt góc kể chuyện & các objection/proof cần xử lý.",
+      "actions": [
+        "Chọn core_angle (vd: market-shift, founder-journey, customer-success, data-driven insight, risk-avoidance…).",
+        "Liệt kê key_objections_to_address (từ 06_SKILL & 05_SKILL).",
+        "Liệt kê key_proofs_to_include (case study, số liệu, chứng nhận; nếu không có dùng [TODO]).",
+        "Điền narrative_brief đầy đủ."
+      ]
+    },
+    {
+      "step_id": "03_build_structure_outline",
+      "label": "Xây dàn ý",
+      "goal": "Thiết kế khung before viết để tránh lạc đề.",
+      "actions": [
+        "Tạo 6–10 sections logic, ví dụ: Hook (bối cảnh) → Vấn đề → Hệ quả → Insight mới → Giải pháp/Framework → Case/Minh chứng → Offer & CTA → Kết.",
+        "Với mỗi section, ghi section_goal (vd: thu hút, đồng cảm, educate, reframe, thuyết phục, kêu gọi).",
+        "Tóm tắt 1–2 câu summary_of_content cho từng section."
+      ]
+    },
+    {
+      "step_id": "04_write_full_article_draft",
+      "label": "Viết nháp full bài",
+      "goal": "Tạo bản long-form đủ dùng để editor chỉnh sửa & xuất bản.",
+      "actions": [
+        "Chọn length_hint và ước tính estimated_word_count (range).",
+        "Đề xuất 3–5 title_options khác nhau (hướng data, story, benefit…).",
+        "Viết subtitle_or_deck 1–2 câu tóm ý chính.",
+        "Cho từng section trong structure_outline: viết body_text rõ ràng, tránh sáo rỗng; đánh dấu [TỪ PLAN] cho chỗ lấy từ kế hoạch cũ, [ĐỀ XUẤT] hoặc [GIẢ ĐỊNH] cho chỗ tự thêm."
+      ]
+    },
+    {
+      "step_id": "05_design_cta_and_linking_plan",
+      "label": "Thiết kế CTA & linking",
+      "goal": "Đảm bảo bài viết không chỉ hay mà còn dẫn hành động.",
+      "actions": [
+        "Chọn primary_cta_text ăn khớp offer & landing (09/10).",
+        "Xác định primary_cta_destination (URL hoặc mô tả landing).",
+        "Tạo 2–3 secondary_cta_texts mềm hơn (vd: tải tài liệu, join group, đọc thêm…).",
+        "Đề xuất cta_placements (intro, mid, end).",
+        "Gợi ý internal_links_suggestions & external_links_or_sources_suggestions (nếu phù hợp)."
+      ]
+    },
+    {
+      "step_id": "06_generate_adaptation_notes",
+      "label": "Gợi ý tái sử dụng nội dung",
+      "goal": "Biến 1 bài long-form thành nhiều asset nhỏ.",
+      "actions": [
+        "Tạo idea cho short_form_snippets_ideas (câu quote, stats, đoạn mini-story).",
+        "Viết 2–3 email_teaser_variants dẫn về bài hoặc landing.",
+        "Đề xuất 3–5 social_post_variants (post dài, thread, carousel breakdown…).",
+        "Tạo carousel_or_thread_breakdown: phân đoạn nội dung thành 5–10 slide/post."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi có brand, offer & landing tương đối rõ (07, 09).",
+      "Khi user nói: 'Viết giúp anh bài PR/bài blog dài/bài newsletter để bán/giải thích offer này.'"
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả narrative_brief + structure_outline để user duyệt góc & dàn ý.",
+      "Bước 2: Khi user OK, trả full_article_draft.",
+      "Bước 3: Cuối cùng trả cta_and_linking_plan + adaptation_notes để đội growth/media triển khai đa kênh."
+    ]
+  },
+  "constraints": {
+    "no_exaggerated_claims": "Không thổi phồng kết quả, đặc biệt trong tài chính/y tế/đầu tư; dùng [GIẢ ĐỊNH] & [TODO] nếu cần ví dụ minh hoạ.",
+    "respect_journalistic_tone_for_PR": "Nếu preferred_publish_context là 'media_PR', giữ tone khách quan vừa phải, tránh quảng cáo lộ liễu.",
+    "language": "Tiếng Việt là chính, có thể xen thuật ngữ marketing/growth tiếng Anh khi cần, nhưng ưu tiên dễ hiểu."
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "business_registration_profile": {
+    "meta_data": {
+      "project": "Agrios Platform - Strategic Restructuring",
+      "consultant": "Lex - Strategic Legal & Governance Counsel",
+      "date": "2025-12-10",
+      "status": "READY_FOR_SUBMISSION"
+    },
+    "company_identity": {
+      "name_vi": "CÔNG TY TNHH CÔNG NGHỆ AGRIOS",
+      "name_en": "AGRIOS TECHNOLOGY COMPANY LIMITED",
+      "name_abbr": "AGRIOS TECH CO., LTD",
+      "type": "Công ty Trách nhiệm Hữu hạn Một Thành viên (LLC 1 Member)",
+      "charter_capital": {
+        "amount": 1000000000,
+        "currency": "VNĐ",
+        "text": "Một tỷ đồng",
+        "strategic_note": "Mức vốn tối ưu để tạo tín nhiệm với Sở Du lịch và Ngân hàng cho các dự án Smart City."
+      }
+    },
+    "vsic_codes": [
+      {
+        "category": "CORE_TECH",
+        "code": "6201",
+        "name": "Lập trình máy vi tính",
+        "detail_description": "Sản xuất phần mềm, xây dựng ứng dụng di động và nền tảng web.",
+        "is_primary": true,
+        "strategic_reason": "Ngành chính. Hưởng ưu đãi thuế TNDN cho doanh nghiệp phần mềm (Miễn 2, Giảm 4)."
+      },
+      {
+        "category": "CORE_TECH",
+        "code": "6311",
+        "name": "Xử lý dữ liệu, cho thuê và các hoạt động liên quan",
+        "detail_description": "Xử lý dữ liệu lớn (Big Data), cung cấp hạ tầng máy chủ, dịch vụ điện toán đám mây.",
+        "is_primary": false,
+        "strategic_reason": "Cơ sở pháp lý cho Yield Predictor và thu thập dữ liệu người dùng."
+      },
+      {
+        "category": "CORE_TECH",
+        "code": "6202",
+        "name": "Tư vấn máy vi tính và quản trị hệ thống máy vi tính",
+        "detail_description": "Tư vấn giải pháp chuyển đổi số, quản trị hệ thống mạng.",
+        "is_primary": false,
+        "strategic_reason": "Hỗ trợ triển khai Digital Twin cho nông dân."
+      },
+      {
+        "category": "COMMERCE_LOGISTICS",
+        "code": "6312",
+        "name": "Cổng thông tin",
+        "detail_description": "Thiết lập trang thông tin điện tử tổng hợp, sàn giao dịch thương mại điện tử.",
+        "is_primary": false,
+        "strategic_reason": "Bắt buộc để vận hành Agrios Marketplace hợp pháp."
+      },
+      {
+        "category": "COMMERCE_LOGISTICS",
+        "code": "4791",
+        "name": "Bán lẻ theo yêu cầu qua Internet",
+        "detail_description": "Bán lẻ hoa, cây cảnh, nông sản và các sản phẩm khác qua mạng.",
+        "is_primary": false,
+        "strategic_reason": "Hợp thức hóa doanh thu bán lẻ B2C."
+      },
+      {
+        "category": "COMMERCE_LOGISTICS",
+        "code": "5229",
+        "name": "Dịch vụ hỗ trợ khác liên quan đến vận tải",
+        "detail_description": "Dịch vụ giao nhận hàng hóa, thu xếp vận chuyển (Logistics arrangement).",
+        "is_primary": false,
+        "strategic_reason": "Phục vụ điều phối giao vận O2O."
+      },
+      {
+        "category": "FMCG_DEEP_PROCESSING",
+        "code": "4620",
+        "name": "Bán buôn nông, lâm sản nguyên liệu (trừ gỗ, tre, nứa)",
+        "detail_description": "Bán buôn hoa, cây cảnh.",
+        "is_primary": false,
+        "strategic_reason": "Phục vụ bán sỉ B2B."
+      },
+      {
+        "category": "FMCG_DEEP_PROCESSING",
+        "code": "4632",
+        "name": "Bán buôn thực phẩm",
+        "detail_description": "Bán buôn chè (trà), thực phẩm chế biến từ nông sản.",
+        "is_primary": false,
+        "strategic_reason": "Kinh doanh Trà sen, Trà hoa hồng."
+      },
+      {
+        "category": "FMCG_DEEP_PROCESSING",
+        "code": "4649",
+        "name": "Bán buôn đồ dùng khác cho gia đình",
+        "detail_description": "Bán buôn nước hoa, mỹ phẩm, tinh dầu, xà phòng.",
+        "is_primary": false,
+        "strategic_reason": "Kinh doanh Nước hoa hồng, Tinh dầu (High margin products)."
+      },
+      {
+        "category": "FINTECH_SERVICES",
+        "code": "6619",
+        "name": "Hoạt động hỗ trợ dịch vụ tài chính chưa được phân vào đâu",
+        "detail_description": "Tư vấn đánh giá tín dụng, kết nối dịch vụ tài chính (Không bao gồm hoạt động cấp tín dụng, huy động vốn).",
+        "is_primary": false,
+        "strategic_reason": "Phục vụ Micro-financing scoring. Câu loại trừ trong ngoặc là bắt buộc để tránh vi phạm luật Ngân hàng."
+      },
+      {
+        "category": "FINTECH_SERVICES",
+        "code": "7990",
+        "name": "Dịch vụ hỗ trợ liên quan đến quảng bá và tổ chức tua du lịch",
+        "detail_description": "Dịch vụ đặt chỗ (Booking), cung cấp thông tin du lịch, quảng bá điểm đến.",
+        "is_primary": false,
+        "strategic_reason": "Phục vụ tính năng Booking Farmstay mà không cần ký quỹ 100 triệu (như mã 7912)."
+      },
+      {
+        "category": "FINTECH_SERVICES",
+        "code": "7310",
+        "name": "Quảng cáo",
+        "detail_description": "Dịch vụ quảng cáo thương mại, quảng bá thương hiệu.",
+        "is_primary": false,
+        "strategic_reason": "Thu doanh thu quảng cáo từ các nhà vườn (Priority Listing)."
+      }
+    ],
+    "submission_checklist": [
+      "Đăng ký tài khoản tại dangkykinhdoanh.gov.vn",
+      "Chọn loại hình: Công ty TNHH Một Thành Viên",
+      "Nhập Mã ngành chính: 6201",
+      "Copy chính xác nội dung 'detail_description' vào ô Chi tiết ngành nghề",
+      "Nộp lệ phí và chờ 3 ngày làm việc"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "legal_compliance_layer": {
+    "website_audit_requirements": {
+      "mandatory_footer_info": {
+        "company_name": "CÔNG TY TNHH CÔNG NGHỆ AGRIOS",
+        "tax_id": "Pending (Update immediately upon issuance)",
+        "address": "Registered HQ Address",
+        "contact": "Hotline & Email"
+      },
+      "policy_pages": [
+        {
+          "title": "Chính sách bảo mật (Privacy Policy)",
+          "focus": "Tuân thủ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân (GPS, Camera, Phone)."
+        },
+        {
+          "title": "Điều khoản sử dụng (Terms of Use)",
+          "focus": "Miễn trừ trách nhiệm AI, Quy định vật phẩm ảo (Non-cash convertibility), An toàn di chuyển."
+        },
+        {
+          "title": "Chính sách thanh toán & Hoàn hủy",
+          "focus": "Quy định rõ về SaaS Subscription và Voucher."
+        }
+      ],
+      "ux_requirements": {
+        "consent_checkbox": "Bắt buộc tại màn hình Login/Register (Unchecked by default).",
+        "price_display": "Giá niêm yết phải bao gồm VAT (Việt Nam Đồng)."
+      }
+    },
+    "missing_vsic_codes_check": {
+      "status": "COMPLETED",
+      "note": "Đã bổ sung mã 4791 (Bán lẻ qua Internet) và 6312 (Cổng thông tin) để bao phủ hoạt động của Website."
+    }
+  }
+}

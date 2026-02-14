@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:37:17.248Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: Gen Z & Millennials who love eco-tourism, culture, and authentic experiences. Also local flower buyers. [ĐỀ XUẤT]",
+      "challenge_section": "Context: Sa Dec is a historic flower village. The project aims to digitize the experience, helping farmers sell more and tourists have fun finding 'rare' flowers. [ĐỀ XUẤT]",
+      "solution_section": "Vision: Reviving the old village with new tech (AI, Gamification). - implementing Sa Dec Flower Hunt: A gamified tourism & commerce platform connecting visitors with traditional flower growers in Sa Dec, Vietnam. [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "[Template] Sa Dec Flower Hunt: A gamified tourism & commerce platform connecting visitors with traditional flower growers in Sa Dec, Vietnam. - Sa Dec is a historic flower village. The project aims to digitize the experience, helping farmers sell more and tourists have fun finding 'rare' flowers."
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

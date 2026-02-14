@@ -1,0 +1,206 @@
+{
+  "skillId": "16",
+  "skillName": "Fundraising & VC Narrative",
+  "generatedAt": "2025-12-06T10:00:45.537Z",
+  "status": "success",
+  "data": {
+    "investment_thesis": {
+      "one_liner": "Leading [category] platform transforming [problem] in [market] [ĐỀ XUẤT]",
+      "market_opportunity": {
+        "market_size": "TAM/SAM/SOM from plan [TỪ PLAN]",
+        "market_dynamics": "Growing at X% CAGR, driven by [trend 1, trend 2] [ĐỀ XUẤT]",
+        "timing": "Why now: [catalyst 1], [catalyst 2], [catalyst 3] [ĐỀ XUẤT]"
+      },
+      "unique_insight": "Conventional wisdom says X, but we've discovered Y [ĐỀ XUẤT]",
+      "competitive_advantage": {
+        "moats": [
+          "Network effects from marketplace [TỪ PLAN]",
+          "Proprietary data/tech [ĐỀ XUẤT]",
+          "Brand + trust in regulated space [ĐỀ XUẤT]"
+        ],
+        "defensibility": "First-mover in niche, high switching costs [ĐỀ XUẤT]"
+      },
+      "team_unfair_advantage": "[TODO: Highlight founder domain expertise, previous exits, etc] [GIẢ ĐỊNH]"
+    },
+    "pitch_deck_structure": {
+      "slides": [
+        {
+          "slide": 1,
+          "title": "Cover",
+          "content": "Company name, tagline, contact"
+        },
+        {
+          "slide": 2,
+          "title": "Problem",
+          "content": "Customer pain points from personas [TỪ PLAN]"
+        },
+        {
+          "slide": 3,
+          "title": "Solution",
+          "content": "Product/service value prop [TỪ PLAN]"
+        },
+        {
+          "slide": 4,
+          "title": "Why Now",
+          "content": "Market trends, catalysts, timing [ĐỀ XUẤT]"
+        },
+        {
+          "slide": 5,
+          "title": "Market Size",
+          "content": "TAM/SAM/SOM breakdown [TỪ PLAN]"
+        },
+        {
+          "slide": 6,
+          "title": "Product Demo",
+          "content": "Screenshots, user flow, key features [ĐỀ XUẤT]"
+        },
+        {
+          "slide": 7,
+          "title": "Traction",
+          "content": "[TODO: GMV, users, MoM growth%] [TỪ PLAN]"
+        },
+        {
+          "slide": 8,
+          "title": "Business Model",
+          "content": "Revenue streams, unit economics from Skill 05 [TỪ PLAN]"
+        },
+        {
+          "slide": 9,
+          "title": "GTM Strategy",
+          "content": "Channel mix, CAC/LTV from Skill 14 [ĐỀ XUẤT]"
+        },
+        {
+          "slide": 10,
+          "title": "Competition",
+          "content": "Competitive matrix, differentiation [ĐỀ XUẤT]"
+        },
+        {
+          "slide": 11,
+          "title": "Team",
+          "content": "[TODO: Founder bios, advisors, key hires] [GIẢ ĐỊNH]"
+        },
+        {
+          "slide": 12,
+          "title": "Financials",
+          "content": "3-year projection: Revenue, EBITDA, key metrics [GIẢ ĐỊNH]"
+        },
+        {
+          "slide": 13,
+          "title": "The Ask",
+          "content": "Raising [amount] for [use of funds] [TỪ PLAN]"
+        },
+        {
+          "slide": 14,
+          "title": "Vision",
+          "content": "Where we'll be in 5 years, exit potential [ĐỀ XUẤT]"
+        }
+      ]
+    },
+    "vc_narrative": {
+      "hook": "Start with compelling anecdote or stark problem statistic [ĐỀ XUẤT]",
+      "story_arc": {
+        "act_1_problem": "Deep dive into customer pain and market gap [TỪ PLAN]",
+        "act_2_solution": "How founders discovered solution, initial validation [TỪ PLAN]",
+        "act_3_traction": "What we've achieved, what's working, growth trajectory [TỪ PLAN]",
+        "act_4_vision": "The future: category leadership, regional expansion, exit scenarios [ĐỀ XUẤT]"
+      },
+      "key_narratives_for_different_audiences": {
+        "financial_vcs": "Focus on unit economics, scalability, TAM, comps multiples [ĐỀ XUẤT]",
+        "strategic_vcs": "Emphasize market transformation, ecosystem play, platform network effects [ĐỀ XUẤT]",
+        "impact_investors": "Highlight social impact, ESG metrics, inclusive growth [ĐỀ XUẤT]"
+      }
+    },
+    "term_sheet_guidance": {
+      "typical_terms_for_stage": {
+        "seed": "$500K-2M, 10-20% dilution, SAFE or priced round [ĐỀ XUẤT]",
+        "series_a": "$3-10M, 20-30% dilution, priced round with standard terms [ĐỀ XUẤT]",
+        "series_b": "$10-30M, 15-25% dilution, growth metrics KPIs [ĐỀ XUẤT]"
+      },
+      "key_negotiation_points": [
+        {
+          "term": "Valuation",
+          "guidance": "Benchmark against comps, justify with traction [ĐỀ XUẤT]"
+        },
+        {
+          "term": "Board seats",
+          "guidance": " Founders maintain control early, accept investor board rep Series A+ [ĐỀ XUẤT]"
+        },
+        {
+          "term": "Liquidation preference",
+          "guidance": "1x non-participating typical for early stage [GIẢ ĐỊNH]"
+        },
+        {
+          "term": "Vesting",
+          "guidance": "Founder reverse vesting common, 4yr w/ 1yr cliff [ĐỀ XUẤT]"
+        },
+        {
+          "term": "Pro-rata rights",
+          "guidance": "Acceptable to give to lead investors [ĐỀ XUẤT]"
+        }
+      ],
+      "deal_structure_recommendation": "For Seed: SAFE with cap + discount OR priced round if strong position [ĐỀ XUẤT]"
+    },
+    "use_of_funds": {
+      "breakdown": [
+        {
+          "category": "Product/Tech",
+          "percentage": "30-40%",
+          "rationale": "Team expansion, platform development [ĐỀ XUẤT]"
+        },
+        {
+          "category": "Sales/Marketing",
+          "percentage": "30-40%",
+          "rationale": "Customer acquisition, brand building [ĐỀ XUẤT]"
+        },
+        {
+          "category": "Operations",
+          "percentage": "15-20%",
+          "rationale": "Ops scale, customer support, logistics [ĐỀ XUẤT]"
+        },
+        {
+          "category": "G&A",
+          "percentage": "5-10%",
+          "rationale": "Finance, legal, admin [ĐỀ XUẤT]"
+        },
+        {
+          "category": "Runway buffer",
+          "percentage": "10%",
+          "rationale": "Contingency, bridge to next round [ĐỀ XUẤT]"
+        }
+      ],
+      "milestones_to_achieve": [
+        "Reach $XM ARR / GMV [ĐỀ XUẤT]",
+        "Achieve positive unit economics [ĐỀ XUẤT]",
+        "Expand to Y cities / new market [ĐỀ XUẤT]",
+        "Build Z-person team [ĐỀ XUẤT]",
+        "Position for Series A/B in 12-18 months [ĐỀ XUẤT]"
+      ]
+    },
+    "investor_targeting": {
+      "ideal_investor_profile": "SEA-focused, sector experience, value-add beyond capital [ĐỀ XUẤT]",
+      "target_firms": "[TODO: Research specific VCs - e.g., Sequoia SEA, 500 Startups, etc] [GIẢ ĐỊNH]",
+      "warm_intro_strategy": "Leverage accelerators, angels, founders network [ĐỀ XUẤT]"
+    },
+    "fundraising_timeline": {
+      "months_0_1": "Finalize deck, model, data room",
+      "months_1_2": "First meetings, pitch practice",
+      "months_2_3": "Term sheets, due diligence",
+      "months_3_4": "Close, legal docs, wire transfer"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "01",
+      "05",
+      "06",
+      "07"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "skillId": "09",
+  "skillName": "Website & Landing Narrative",
+  "generatedAt": "2025-12-06T10:00:45.535Z",
+  "status": "success",
+  "data": {
+    "homepage_structure": {
+      "hero_section": {
+        "headline": "[Benefit-Driven Statement in <10 words] [ĐỀ XUẤT]",
+        "subheadline": "Expand on value prop, address pain point (1 sentence) [ĐỀ XUẤT]",
+        "cta_primary": "Start Free Trial",
+        "cta_secondary": "Watch Demo",
+        "hero_image": "Product screenshot or lifestyle image [GIẢ ĐỊNH]"
+      },
+      "social_proof": {
+        "trust_bar": "Logos of recognizable customers [ĐỀ XUẤT]",
+        "testimonial_highlight": "Quote from top customer [TỪ PLAN]",
+        "stats": [
+          "[X,XXX] customers",
+          "[Y]% increase in [metric]",
+          "[Z] countries"
+        ]
+      },
+      "features_benefits": [
+        {
+          "feature": "Feature 1",
+          "benefit": "Save [time/money] [ĐỀ XUẤT]",
+          "icon": "⚡"
+        },
+        {
+          "feature": "Feature 2",
+          "benefit": "Increase [outcome] [ĐỀ XUẤT]",
+          "icon": "📈"
+        },
+        {
+          "feature": "Feature 3",
+          "benefit": "Simplify [process] [ĐỀ XUẤT]",
+          "icon": "✨"
+        }
+      ],
+      "how_it_works": {
+        "step_1": "Sign up in 30 seconds [ĐỀ XUẤT]",
+        "step_2": "Connect your [integration] [ĐỀ XUẤT]",
+        "step_3": "Start seeing results [ĐỀ XUẤT]"
+      },
+      "final_cta": {
+        "headline": "Ready to [achieve outcome]? [ĐỀ XUẤT]",
+        "cta": "Get Started Free"
+      }
+    },
+    "landing_page_template": {
+      "headline_formula": "[Verb] [Outcome] without [Pain Point] [ĐỀ XUẤT]",
+      "structure": [
+        "Hero (headline + CTA above fold)",
+        "Problem agitation (empathize with pain)",
+        "Solution introduction (product as answer)",
+        "Features & benefits (3-5 key points)",
+        "Social proof (testimonials, logos, stats)",
+        "How it works (3 simple steps)",
+        "Pricing preview (if applicable)",
+        "FAQ (address objections)",
+        "Final CTA (strong, benefit-driven)"
+      ],
+      "copy_principles": [
+        "Benefit-driven, not feature-list [ĐỀ XUẤT]",
+        "Clear hierarchy (scan able headings)",
+        "Concise paragraphs (2-3 sentences max)",
+        "Active voice, present tense",
+        "Use numbers and specifics",
+        "Address objections preemptively"
+      ]
+    },
+    "about_page": {
+      "founder_story": "From vision/mission [TỪ PLAN]",
+      "team": "Photos + bios [ĐỀ XUẤT]"
+    },
+    "pricing_page": {
+      "tiers": "3-tier structure: Starter, Pro, Enterprise [ĐỀ XUẤT]",
+      "faq": "Common pricing questions [ĐỀ XUẤT]"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "06",
+      "07",
+      "08"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

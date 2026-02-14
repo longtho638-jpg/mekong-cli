@@ -1,0 +1,318 @@
+{
+  "skillId": "04",
+  "skillName": "Gap Report & Roadmap",
+  "generatedAt": "2025-12-06T08:52:26.929Z",
+  "status": "success",
+  "data": {
+    "current_state_assessment": {
+      "stage": "Seed/Series A [TỪ PLAN]",
+      "key_strengths": [
+        "Product-market fit validated [TỪ PLAN]",
+        "Strong founding team [ĐỀ XUẤT]",
+        "Initial traction/revenue [TỪ PLAN]"
+      ],
+      "key_weaknesses": [
+        "Limited financial infrastructure [GIẢ ĐỊNH]",
+        "Informal governance [GIẢ ĐỊNH]",
+        "No dedicated finance team [ĐỀ XUẤT]"
+      ]
+    },
+    "gap_analysis_by_category": {
+      "financial_gaps": [
+        {
+          "gap": "Audited Financials",
+          "current": "Internal books only [GIẢ ĐỊNH]",
+          "target": "Big 4 audited (3 years)",
+          "priority": "Critical",
+          "effort": "High",
+          "timeline": "12-18 months"
+        },
+        {
+          "gap": "Financial Systems",
+          "current": "Excel/QuickBooks [GIẢ ĐỊNH]",
+          "target": "ERP (SAP/Oracle/NetSuite)",
+          "priority": "High",
+          "effort": "Medium-High",
+          "timeline": "6-9 months"
+        },
+        {
+          "gap": "Unit Economics",
+          "current": "Basic tracking [TỪ PLAN]",
+          "target": "Detailed cohort analysis, LTV/CAC models",
+          "priority": "High",
+          "effort": "Medium",
+          "timeline": "3-6 months"
+        }
+      ],
+      "governance_gaps": [
+        {
+          "gap": "Board Structure",
+          "current": "Founders only [GIẢ ĐỊNH]",
+          "target": "Professional board with independents",
+          "priority": "Critical",
+          "effort": "Medium",
+          "timeline": "6-12 months"
+        },
+        {
+          "gap": "Corporate Policies",
+          "current": "Ad-hoc [GIẢ ĐỊNH]",
+          "target": "Documented governance charter, codes of conduct",
+          "priority": "High",
+          "effort": "Low-Medium",
+          "timeline": "3-6 months"
+        }
+      ],
+      "operational_gaps": [
+        {
+          "gap": "Team Structure",
+          "current": "~20 people, informal [GIẢ ĐỊNH]",
+          "target": "100+ with clear org chart and roles",
+          "priority": "High",
+          "effort": "High",
+          "timeline": "12-24 months"
+        },
+        {
+          "gap": "Key Hires",
+          "current": "No CFO, no General Counsel [GIẢ ĐỊNH]",
+          "target": "CFO, GC, VP HR hired",
+          "priority": "Critical",
+          "effort": "High",
+          "timeline": "6-12 months"
+        }
+      ],
+      "compliance_gaps": [
+        {
+          "gap": "Data Privacy",
+          "current": "Basic practices [GIẢ ĐỊNH]",
+          "target": "GDPR/PDPA compliant, DPO appointed",
+          "priority": "High",
+          "effort": "Medium",
+          "timeline": "6-9 months"
+        },
+        {
+          "gap": "Internal Controls",
+          "current": "Minimal [GIẢ ĐỊNH]",
+          "target": "SOX-lite framework, internal audit",
+          "priority": "High",
+          "effort": "Medium-High",
+          "timeline": "9-12 months"
+        }
+      ],
+      "product_market_gaps": [
+        {
+          "gap": "Market Diversification",
+          "current": "Single market (VN) [TỪ PLAN]",
+          "target": "Multi-country SEA presence",
+          "priority": "Medium-High",
+          "effort": "Very High",
+          "timeline": "12-24 months"
+        }
+      ]
+    },
+    "prioritized_roadmap": {
+      "phase_1_foundation": {
+        "months": "0-6",
+        "theme": "Build Core Infrastructure",
+        "priorities": [
+          {
+            "milestone": "Hire CFO",
+            "owner": "CEO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": []
+          },
+          {
+            "milestone": "Engage Big 4 Audit Firm",
+            "owner": "CFO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Hire CFO"
+            ]
+          },
+          {
+            "milestone": "Implement ERP System",
+            "owner": "CFO + CTO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Hire CFO"
+            ]
+          },
+          {
+            "milestone": "Establish Audit Committee",
+            "owner": "Board",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": []
+          }
+        ]
+      },
+      "phase_2_maturity": {
+        "months": "7-12",
+        "theme": "Mature Governance & Financials",
+        "priorities": [
+          {
+            "milestone": "Complete 3-Year Audit",
+            "owner": "CFO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Engage Big 4"
+            ]
+          },
+          {
+            "milestone": "Appoint Independent Directors",
+            "owner": "Board",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Establish Audit Committee"
+            ]
+          },
+          {
+            "milestone": "Implement Internal Controls",
+            "owner": "CFO + GC",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Hire GC"
+            ]
+          },
+          {
+            "milestone": "Hire General Counsel",
+            "owner": "CEO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": []
+          }
+        ]
+      },
+      "phase_3_ipo_prep": {
+        "months": "13-18",
+        "theme": "IPO Readiness",
+        "priorities": [
+          {
+            "milestone": "Draft Prospectus",
+            "owner": "CFO + GC",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Complete 3-Year Audit"
+            ]
+          },
+          {
+            "milestone": "Engage Underwriters",
+            "owner": "CEO + CFO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": []
+          },
+          {
+            "milestone": "Investor Relations Setup",
+            "owner": "CFO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": []
+          }
+        ]
+      },
+      "phase_4_execution": {
+        "months": "19-24",
+        "theme": "IPO Execution",
+        "priorities": [
+          {
+            "milestone": "SSC Filing",
+            "owner": "GC",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Draft Prospectus"
+            ]
+          },
+          {
+            "milestone": "Roadshow",
+            "owner": "CEO + CFO",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "SSC Filing"
+            ]
+          },
+          {
+            "milestone": "Listing",
+            "owner": "All",
+            "status": "TODO [GIẢ ĐỊNH]",
+            "dependencies": [
+              "Roadshow"
+            ]
+          }
+        ]
+      }
+    },
+    "risk_assessment": [
+      {
+        "risk": "Timeline Slippage",
+        "likelihood": "High",
+        "impact": "High",
+        "mitigation": "Build 6-month buffer, hire experienced advisors early [ĐỀ XUẤT]"
+      },
+      {
+        "risk": "Key Hire Delays",
+        "likelihood": "Medium",
+        "impact": "Critical",
+        "mitigation": "Start CFO/GC search immediately, use exec search firms [ĐỀ XUẤT]"
+      },
+      {
+        "risk": "Audit Issues",
+        "likelihood": "Medium",
+        "impact": "High",
+        "mitigation": "Clean up books proactively, implement controls early [GIẢ ĐỊNH]"
+      },
+      {
+        "risk": "Market Downturn",
+        "likelihood": "Medium",
+        "impact": "Critical",
+        "mitigation": "Build strong fundamentals, have IPO-window flexibility [ĐỀ XUẤT]"
+      }
+    ],
+    "resource_requirements": {
+      "budget_estimate": "$2-5M USD over 18-24 months [GIẢ ĐỊNH]",
+      "key_hires": [
+        "CFO",
+        "General Counsel",
+        "VP Finance",
+        "Internal Auditor",
+        "IR Manager"
+      ],
+      "external_advisors": [
+        "Big 4 Auditor",
+        "Legal Counsel",
+        "Underwriters",
+        "IR Firm"
+      ]
+    },
+    "success_metrics": {
+      "financial": [
+        "3 years IFRS audited",
+        "Quarterly reporting ready",
+        "Clean audit opinion"
+      ],
+      "governance": [
+        "Board with independents",
+        "Audit committee functional",
+        "Policies documented"
+      ],
+      "operational": [
+        "ERP live",
+        "SOX-lite controls",
+        "Data room ready"
+      ],
+      "market": [
+        "IPO filing submitted",
+        "Investor interest confirmed",
+        "Listing approved"
+      ]
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "01",
+      "03"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

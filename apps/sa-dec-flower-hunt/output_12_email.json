@@ -1,0 +1,55 @@
+{
+  "skillId": "12",
+  "skillName": "Email & Lifecycle Sequences",
+  "generatedAt": "2025-12-06T10:00:45.536Z",
+  "status": "success",
+  "data": {
+    "welcome_sequence": [
+      {
+        "day": 0,
+        "subject": "Welcome! Here's what to do first [ĐỀ XUẤT]",
+        "goal": "Onboarding",
+        "cta": "Complete setup"
+      },
+      {
+        "day": 1,
+        "subject": "Quick tip: [Feature] in action [ĐỀ XUẤT]",
+        "goal": "Feature education",
+        "cta": "Try it now"
+      },
+      {
+        "day": 3,
+        "subject": "Success story: How [Customer] achieved [Result] [ĐỀ XUẤT]",
+        "goal": "Social proof",
+        "cta": "Read case study"
+      },
+      {
+        "day": 7,
+        "subject": "You're making progress! Next steps... [ĐỀ XUẤT]",
+        "goal": "Engagement",
+        "cta": "Continue"
+      }
+    ],
+    "nurture_sequence": {
+      "frequency": "Weekly",
+      "content_mix": [
+        "Educational (60%)",
+        "Product updates (20%)",
+        "Social proof (20%)"
+      ],
+      "segments": "By persona, engagement level, product interest [ĐỀ XUẤT]"
+    },
+    "conversion_sequence": "Trial ending reminders, objection handling, limited offers [ĐỀ XUẤT]",
+    "retention_sequence": "Feature highlights, tips, exclusive content, win-back for churned [ĐỀ XUẤT]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

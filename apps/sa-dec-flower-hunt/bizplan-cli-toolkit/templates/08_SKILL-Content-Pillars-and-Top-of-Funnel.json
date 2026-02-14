@@ -1,0 +1,229 @@
+{
+  "id": "08_SKILL-Content-Pillars-and-Top-of-Funnel",
+  "version": "1.0.0",
+  "title": "Skill – Content Pillars & Top-of-Funnel System",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế chiến lược nội dung cho Top-of-Funnel (TOF): content pillars, ý tưởng nội dung đa kênh, hook & angle theo persona, kết nối với brand positioning & customer psychology để nuôi dưỡng đến conversion.",
+  "intended_use": {
+    "primary": [
+      "Biến brand positioning + customer psychology thành hệ thống content pillars rõ ràng.",
+      "Sinh ý tưởng nội dung (idea-level) cho blog, social, email, video… gắn với hành trình khách hàng.",
+      "Liên kết nội dung TOF với mục tiêu business: educate, lead-gen, trust-building, pre-sell."
+    ],
+    "works_best_when": [
+      "Đã chạy 06_SKILL-Customer-Psychology-and-Personas và 07_SKILL-Brand-Positioning-and-Identity.",
+      "Có mục tiêu growth cơ bản (vd: thu lead, book call, signup free trial, join community…)."
+    ],
+    "not_for": [
+      "Viết full bài chi tiết (sẽ thuộc skill khác về long-form copy).",
+      "Lập media buying plan chi tiết (ngân sách, bid, placement) – đây là khung nội dung."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_plan_excerpt": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả business, khách hàng mục tiêu, offer chính và kênh dự kiến (nếu có)."
+      },
+      "primary_growth_goal": {
+        "type": "string",
+        "required": false,
+        "description": "Mục tiêu chính: 'lead_gen', 'brand_awareness', 'community', 'product_launch', v.v."
+      },
+      "main_channels_hint": {
+        "type": "array",
+        "items": "string",
+        "required": false,
+        "description": "Gợi ý kênh chính: ['facebook','tiktok','linkedin','youtube','email','blog','seo',...]."
+      }
+    },
+    "assumptions": [
+      "Nếu user không nêu rõ kênh, chọn 2–3 kênh hợp lý cho thị trường VN/SEA theo loại sản phẩm.",
+      "Không giả định ngân sách ads; tập trung vào chiến lược nội dung & cấu trúc thông điệp."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "tof_strategy_summary": {
+        "description": "Tóm tắt chiến lược TOF: mục tiêu, audience, narrative chính.",
+        "fields": [
+          "primary_goal",
+          "key_audiences_or_personas",
+          "core_narrative",
+          "role_of_content_in_funnel"
+        ]
+      },
+      "content_pillars": {
+        "description": "4–6 content pillars chính cho brand.",
+        "structure": {
+          "pillar_fields": [
+            "pillar_id",
+            "pillar_name",
+            "strategic_purpose",
+            "linked_personas_or_segments",
+            "typical_formats",
+            "success_indicators"
+          ],
+          "recommended_count": "4_to_6"
+        }
+      },
+      "content_ideas_by_pillar": {
+        "description": "Mỗi pillar có ~10 ý tưởng nội dung (idea-level, chưa phải full script).",
+        "structure": {
+          "fields_per_pillar": [
+            "pillar_id",
+            "pillar_name",
+            "ideas"
+          ]
+        }
+      },
+      "hook_and_angle_patterns": {
+        "description": "Các kiểu hook & angle chủ đạo để dùng lại cho nhiều nội dung.",
+        "fields": [
+          "problem_aware_hooks",
+          "solution_aware_hooks",
+          "objection_busting_hooks",
+          "authority_and_proof_hooks",
+          "story_based_angles",
+          "educational_angles"
+        ]
+      },
+      "channel_mapping": {
+        "description": "Map content pillars & idea types ra từng kênh chính.",
+        "structure": {
+          "fields": [
+            "channel_name",
+            "priority_level",
+            "recommended_content_types",
+            "cadence_suggestion",
+            "notes_for_local_context"
+          ]
+        }
+      },
+      "lightweight_editorial_rhythm": {
+        "description": "Khung nhịp nội dung 4–8 tuần: không phải calendar cụ thể mà là pattern.",
+        "fields": [
+          "timeframe_weeks",
+          "weekly_structure_example",
+          "mix_of_pillars_per_week",
+          "cta_distribution_principles"
+        ]
+      },
+      "measurement_and_feedback_loops": {
+        "description": "Định nghĩa metric & vòng lặp học hỏi từ nội dung.",
+        "fields": [
+          "primary_content_kpis",
+          "diagnostic_metrics",
+          "learning_loop_questions",
+          "when_to_double_down_or_pivot"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_read_context_and_goal",
+      "label": "Đọc bối cảnh & mục tiêu growth",
+      "goal": "Hiểu business đang muốn TOF phục vụ cho chuyện gì cụ thể.",
+      "actions": [
+        "Tóm tắt primary_goal (nếu không có thì suy luận từ idea_or_plan_excerpt).",
+        "Nhận diện key_audiences_or_personas từ input hoặc từ 06_SKILL (nếu có).",
+        "Viết core_narrative (câu chuyện xuyên suốt mà brand muốn kể ở TOF)."
+      ]
+    },
+    {
+      "step_id": "02_define_content_pillars",
+      "label": "Xây content pillars",
+      "goal": "Tạo 4–6 trụ cột nội dung gắn với chiến lược và tâm lý khách hàng.",
+      "actions": [
+        "Nhìn vào pains/dreams (06) và brand promise (07) để đề xuất pillars.",
+        "Mỗi pillar: đặt tên, Strategic_purpose (giải thích để làm gì), linked_personas_or_segments, typical_formats (vd: explainer, case study, meme, Q&A…), success_indicators (vd: saves, shares, leads)."
+      ]
+    },
+    {
+      "step_id": "03_generate_content_ideas_by_pillar",
+      "label": "Sinh ý tưởng nội dung theo pillar",
+      "goal": "Đưa ra đủ nhiều ý tưởng để founder/team có thể chọn và triển khai dần.",
+      "actions": [
+        "Cho mỗi pillar khoảng 8–12 ideas.",
+        "Mỗi idea: title_or_hook (câu móc), short_description (1–2 câu), suggested_format (short-form video, carousel, long-form article, live, email…), target_persona, funnel_stage (TOF/MOF/BOF-lite).",
+        "Đánh dấu rõ đâu là [TỪ PLAN], đâu là [ĐỀ XUẤT]/[GIẢ ĐỊNH]."
+      ]
+    },
+    {
+      "step_id": "04_define_hook_and_angle_patterns",
+      "label": "Định nghĩa hook & angle pattern",
+      "goal": "Tạo bộ khung hook & angle có thể reuse cho nhiều nội dung.",
+      "actions": [
+        "Dựa trên latent pains & dreams, tạo 4–6 pattern cho problem_aware_hooks.",
+        "Tạo thêm hooks phá objection, hooks thể hiện authority (case, số liệu, partner), và hooks kể chuyện (story-based).",
+        "Thêm educational_angles giúp khách hàng nâng level hiểu biết, không chỉ bán hàng."
+      ]
+    },
+    {
+      "step_id": "05_map_to_channels",
+      "label": "Map pillars ra kênh",
+      "goal": "Đảm bảo không bị lệch giữa thông điệp và môi trường kênh.",
+      "actions": [
+        "Nếu main_channels_hint có, ưu tiên những kênh đó; nếu không, chọn 2–3 kênh phù hợp với audience.",
+        "Với mỗi channel, đề xuất recommended_content_types (vd: TikTok: short-form, trends + educational snippets; LinkedIn: thought leadership, case studies…).",
+        "Đề xuất cadence_suggestion (vd: 3–5 bài/tuần/FB, 2 clip/TikTok, 1 long-form/blog), kèm notes_for_local_context (giờ vàng, style hợp VN/SEA)."
+      ]
+    },
+    {
+      "step_id": "06_define_editorial_rhythm",
+      "label": "Thiết kế nhịp nội dung 4–8 tuần",
+      "goal": "Tạo pattern để team có thể xoay vòng mà không bí.",
+      "actions": [
+        "Đề xuất timeframe_weeks (thường 4 hoặc 8).",
+        "Mô tả weekly_structure_example (vd: Thứ 2: giáo dục, Thứ 3: case, Thứ 4: behind-the-scenes, Thứ 5: objection-busting, Thứ 6: community/UGC, Cuối tuần: recap/story).",
+        "Chỉ ra mix_of_pillars_per_week để tránh lệch quá nhiều vào 1 pillar.",
+        "Định nghĩa cta_distribution_principles (tỷ lệ content 'ask' vs 'give')."
+      ]
+    },
+    {
+      "step_id": "07_define_measurement_and_feedback_loops",
+      "label": "Định nghĩa đo lường & vòng lặp feedback",
+      "goal": "Đảm bảo nội dung không chỉ đẹp mà còn học & tối ưu được.",
+      "actions": [
+        "Chọn primary_content_kpis (vd: reach chất lượng, saves, replies, leads, click-to-landing…).",
+        "Xác định diagnostic_metrics (vd: watch time, scroll depth, comment rate).",
+        "Đề xuất 5–7 learning_loop_questions mà team nên hỏi mỗi 2–4 tuần.",
+        "Chỉ ra trigger cho when_to_double_down_or_pivot (vd: 2–3 cycle liên tiếp 1 pillar outperform, hoặc 0 traction cho 1 angle sau nhiều thử nghiệm)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi có brand positioning (07) và personas (06).",
+      "Khi founder/team hỏi: 'Giờ post cái gì? Nội dung gì để dẫn về sales/funnel?'"
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Cho tof_strategy_summary (ngắn, 1–2 đoạn).",
+      "Bước 2: Trình bày content_pillars + content_ideas_by_pillar (có thể rút gọn | full tuỳ context).",
+      "Bước 3: Đưa hook_and_angle_patterns + channel_mapping.",
+      "Bước 4: Kết với lightweight_editorial_rhythm + measurement_and_feedback_loops để user dễ triển khai & iterate."
+    ]
+  },
+  "constraints": {
+    "no_spammy_tactics": "Không khuyến khích nội dung clickbait rác, lừa dối hoặc gây hại.",
+    "respect_platform_guidelines": "Gợi ý nội dung phải phù hợp với guideline cơ bản của nền tảng lớn (Facebook, TikTok, YouTube…).",
+    "language": "Output ưu tiên tiếng Việt, có thể xen một số thuật ngữ content/growth tiếng Anh."
+  }
+}

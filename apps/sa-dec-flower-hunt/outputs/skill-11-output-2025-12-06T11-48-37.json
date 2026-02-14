@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:48:37.971Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a piece of content in Vietnamese aiming to engage a general audience with the beauty of Sa Dec flowers, hinting at a special offer without revealing it directly.\n\n**Title: Bí mật ẩn sau những đóa hoa Sa Đéc… bạn có muốn khám phá? (Secrets Hidden Behind Sa Dec Flowers… Do You Want to Discover Them?)**\n\nNè nè, nói nhỏ nghe nè! Có bao giờ bạn lạc vào một khu vườn hoa rực rỡ sắc màu, cảm thấy như lạc vào một thế giới khác chưa? Nếu chưa, bạn nhất định phải đến Sa Đéc một lần trong đời!\n\nSa Đéc không chỉ là một thành phố nhỏ xinh đẹp ở miền Tây đâu, mà còn là \"vương quốc\" của hoa nữa đó! Hàng trăm, hàng ngàn loài hoa khoe sắc quanh năm, từ cúc mâm xôi vàng óng ánh, đến hoa hồng đủ màu, hoa lan kiêu sa, rồi cả những chậu vạn thọ tươi tắn... Chụp hình \"check-in\" ở đâu cũng lung linh như phim!\n\nNhưng cái hay của hoa Sa Đéc không chỉ ở vẻ đẹp bên ngoài. Bạn biết không, mỗi loài hoa ở đây đều mang trong mình một câu chuyện riêng. Nó là mồ hôi, công sức của những người nông dân cần cù, tỉ mỉ chăm chút từng chút một. Nó là niềm tự hào của cả một vùng đất đã bao đời gắn bó với nghề trồng hoa.\n\nMình nhớ hồi nhỏ, mỗi dịp Tết đến, cả nhà lại tất bật chọn hoa mang lên Sài Gòn bán. Bà nội mình luôn chọn những chậu cúc to nhất, đẹp nhất, bảo rằng hoa phải tươi tắn thì cả năm mới gặp nhiều may mắn. Những kỷ niệm ấy, hương hoa Sa Đéc ấy, cứ theo mình lớn lên, trở thành một phần không thể thiếu của tuổi thơ.\n\nGiờ đây, dù đi đâu về đâu, cứ thấy hoa Sa Đéc là lòng mình lại rộn ràng, nhớ nhà da diết. Mình tin rằng, trong mỗi cánh hoa đều ẩn chứa một điều gì đó đặc biệt, một ký ức, một câu chuyện, một niềm vui nho nhỏ.\n\nMà nè, bật mí cho bạn một bí mật nha! Sắp tới, **Sa Dec Flower Hunt** tụi mình có một \"bất ngờ nho nhỏ\" dành cho những ai yêu hoa Sa Đéc đó. Một \"món quà\" nho nhỏ để bạn có thể mang cả khu vườn Sa Đéc về nhà mình, để mỗi ngày đều được ngắm hoa, được nhớ về những câu chuyện đẹp đẽ.\n\nBạn có tò mò không? 😉 Theo dõi trang của tụi mình để không bỏ lỡ nhé! Chắc chắn bạn sẽ thích đó!\n\n**Bạn muốn là một trong những người đầu tiên khám phá bí mật này? Nhấn \"Theo dõi\" trang của Sa Dec Flower Hunt ngay!**\n(Bạn có thể để lại link trang Facebook/Instagram của mình ở đây)\n\n**Translation Notes:**\n\n*   **\"Nè nè, nói nhỏ nghe nè!\"** This is a very informal way to start, like saying \"Hey, listen up!\"\n*   **\"vương quốc\" của hoa:** \"Kingdom\" of flowers, emphasizes the scale and importance of flower cultivation in Sa Dec.\n*   **\"check-in\" ở đâu cũng lung linh như phim!:** \"Checking-in\" (taking photos) anywhere looks as stunning as a movie!\n*   **\"mồ hôi, công sức\":** Literally \"sweat and effort,\" highlights the hard work involved.\n*   **\"bất ngờ nho nhỏ\" & \"món quà\" nho nhỏ:** \"Little surprise\" and \"little gift,\" avoids direct mentioning of an offer, creating intrigue.\n*   The overall tone is friendly, relatable, and evokes nostalgia. The call to action is simple and direct, encouraging people to follow the page for updates.\n*   The writing uses specific details (Chrysanthemums, Roses, Orchids) to paint a vivid picture of the flower market.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

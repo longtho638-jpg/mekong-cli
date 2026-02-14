@@ -1,0 +1,102 @@
+{
+  "skillId": "15",
+  "skillName": "AARRR & Lean Analytics",
+  "generatedAt": "2025-12-06T09:14:08.196Z",
+  "status": "success",
+  "data": {
+    "aarrr_framework": {
+      "acquisition": {
+        "definition": "How users discover and visit",
+        "key_metrics": [
+          "Traffic sources",
+          "Visitor count",
+          "CAC by channel",
+          "Click-through rates"
+        ],
+        "targets": "X visitors/month, CAC < $Y [ĐỀ XUẤT]"
+      },
+      "activation": {
+        "definition": "First great experience, aha moment",
+        "key_metrics": [
+          "Signup rate",
+          "Onboarding completion",
+          "Time to first value",
+          "Activation rate"
+        ],
+        "targets": "Z% visitor-to-signup, A% complete onboarding [ĐỀ XUẤT]"
+      },
+      "retention": {
+        "definition": "Users come back repeatedly",
+        "key_metrics": [
+          "D1/D7/D30 retention",
+          "Churn rate",
+          "DAU/MAU ratio",
+          "Feature usage"
+        ],
+        "targets": "B% D30 retention, <C% monthly churn [ĐỀ XUẤT]"
+      },
+      "revenue": {
+        "definition": "Monetization and unit economics",
+        "key_metrics": [
+          "MRR/ARR",
+          "ARPU",
+          "LTV",
+          "Conversion to paid",
+          "Expansion revenue"
+        ],
+        "targets": "LTV/CAC > 3x, MRR growth D% MoM [ĐỀ XUẤT]"
+      },
+      "referral": {
+        "definition": "Users recommend to others",
+        "key_metrics": [
+          "K-factor (viral coefficient)",
+          "Referral rate",
+          "NPS",
+          "Invite-to-signup conversion"
+        ],
+        "targets": "E% of users refer, K-factor > 0.5 [ĐỀ XUẤT]"
+      }
+    },
+    "dashboard_structure": {
+      "north_star_metric": "Weekly active users (WAU) or MRR, depending on business model [ĐỀ XUẤT]",
+      "daily_metrics": [
+        "Active users",
+        "Signups",
+        "Revenue",
+        "Churn"
+      ],
+      "weekly_review": [
+        "AARRR funnel",
+        "Cohort analysis",
+        "Channel performance"
+      ],
+      "monthly_deep_dive": [
+        "Unit economics trends",
+        "LTV/CAC by segment",
+        "Feature adoption"
+      ]
+    },
+    "analytics_tools": {
+      "product_analytics": "Mixpanel, Amplitude, or Heap [ĐỀ XUẤT]",
+      "web_analytics": "Google Analytics 4",
+      "attribution": "Segment for data collection [ĐỀ XUẤT]",
+      "visualization": "Metabase, Looker, or custom dashboards"
+    },
+    "cohort_analysis": "Track retention, revenue, LTV by signup cohort (weekly/monthly) [ĐỀ XUẤT]",
+    "experimentation": "A/B test framework, statistical significance, iteration speed [ĐỀ XUẤT]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "05",
+      "06",
+      "14"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

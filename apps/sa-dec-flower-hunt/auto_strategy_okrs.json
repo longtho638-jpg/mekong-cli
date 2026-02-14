@@ -1,0 +1,48 @@
+{
+  "company_level": {
+    "objective_1": {
+      "objective": "Become #1 [product category] in Vietnam by EOY [ĐỀ XUẤT]",
+      "key_results": [
+        "Achieve $5M ARR (from $1M current)",
+        "Reach 500 active customers (from 100)",
+        "NPS score >50",
+        "Net Dollar Retention >100%"
+      ]
+    },
+    "objective_2": {
+      "objective": "Build world-class product loved by users [ĐỀ XUẤT]",
+      "key_results": [
+        "Ship 5 major features from roadmap",
+        "Improve app performance (load time <2s)",
+        "User engagement: 3x DAU/MAU ratio",
+        "Churn rate <5% monthly"
+      ]
+    }
+  },
+  "team_level_okrs": {
+    "engineering": {
+      "objective": "Deliver reliable, scalable platform",
+      "krs": [
+        "99.9% uptime",
+        "50% faster page loads",
+        "Zero critical bugs in production"
+      ]
+    },
+    "sales": {
+      "objective": "Hit revenue targets profitably",
+      "krs": [
+        "$4M new ARR",
+        "CAC <$1000",
+        "20% of revenue from enterprise"
+      ]
+    },
+    "product": {
+      "objective": "Ship features users love",
+      "krs": [
+        "5 features launched",
+        "NPS >50",
+        "Feature adoption >60% within 30 days"
+      ]
+    }
+  }
+}

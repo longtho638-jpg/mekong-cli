@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:47:42.363Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a piece of content designed to spark engagement around Sa Dec flowers in Vietnamese. I've aimed for an informal, friendly tone with storytelling elements, hinting at a special offer without explicitly revealing it.\n\n**Title: Điều Gì Đang Chờ Đợi Bạn Giữa Vườn Hoa Sa Đéc? (What Awaits You Amidst the Sa Dec Flower Gardens?)**\n\nBạn đã bao giờ mơ về một nơi, nơi mà màu sắc rực rỡ nhảy múa trước mắt, hương thơm ngọt ngào len lỏi vào từng hơi thở, và tiếng cười nói rộn ràng vang vọng trong không gian? Nơi đó không đâu xa, chính là Sa Đéc, trái tim của những vườn hoa miền Tây!\n\nMỗi độ xuân về, Sa Đéc khoác lên mình chiếc áo mới, được dệt nên từ hàng ngàn, hàng vạn bông hoa đủ loại. Cúc mâm xôi vàng óng ả, thược dược kiêu sa khoe sắc, dạ yến thảo dịu dàng lay động trong gió… Tất cả hòa quyện thành một bức tranh tuyệt đẹp, khiến bất cứ ai đặt chân đến đây đều phải ngỡ ngàng.\n\nNhưng Sa Đéc không chỉ có hoa. Nơi đây còn là nơi lưu giữ những giá trị văn hóa truyền thống, là nơi người nông dân cần cù, chân chất ngày đêm chăm sóc những \"đứa con tinh thần\" của mình. Từng bông hoa không chỉ là sản phẩm, mà còn là tâm huyết, là niềm tự hào của những người con Sa Đéc.\n\nNhớ ngày còn bé, tôi thường theo bà ngoại ra chợ hoa Sa Đéc. Bà chọn những chậu cúc vàng ươm để chưng Tết, vừa chọn vừa kể chuyện về những người trồng hoa, về những vất vả mà họ phải trải qua để có được những bông hoa đẹp nhất.  Những câu chuyện ấy đã gieo vào lòng tôi tình yêu với hoa, với con người Sa Đéc.\n\nBây giờ, bạn có thể cảm nhận được vẻ đẹp ấy, hương vị ấy, ngay tại nhà mình.  Sa Dec Flower Hunt mang cả vườn hoa Sa Đéc đến với bạn, chỉ bằng vài cú click chuột.\n\n**Điều bất ngờ là...**  Trong những ngày tới, Sa Dec Flower Hunt sẽ có một điều đặc biệt dành tặng cho những ai yêu mến hoa Sa Đéc. Một món quà nhỏ, một ưu đãi bất ngờ, để bạn có thể mang cả mùa xuân Sa Đéc về nhà.  Hãy theo dõi Sa Dec Flower Hunt để không bỏ lỡ nhé!  Hint: Chú ý đến những bông hoa rực rỡ nhất!\n\n**Gọi ý:**\n\n*   **Tìm hiểu thêm về Sa Dec Flower Hunt tại:** [Link to your website]\n*   **Like và share bài viết này để lan tỏa vẻ đẹp của hoa Sa Đéc!**\n*   **Comment một loài hoa bạn yêu thích nhất ở Sa Đéc để nhận được thông báo sớm nhất về ưu đãi!**\n\n**Explanation of elements:**\n\n*   **Beauty & Cultural Heritage:** Emphasized through vivid descriptions of the flowers and mentioning the hard work and tradition of Sa Dec farmers.\n*   **Emotional Connection:** Uses a personal anecdote about childhood memories of the flower market to evoke a sense of nostalgia and connection to the place.\n*   **Call to Action:** Includes multiple CTAs: visiting the website, liking/sharing the post, and commenting. The main CTA is to \"follow Sa Dec Flower Hunt\" to learn about the upcoming offer.\n*   **Storytelling:** The anecdote about going to the flower market with the grandmother is a key element of storytelling that helps build emotional connection.\n*   **Informal Tone:** Uses casual language, conversational phrases (\"Nơi đó không đâu xa,\" \"Chỉ bằng vài cú click chuột\"), and avoids corporate jargon.\n*   **The \"Unknown Offer\":**  Teases a special offer without revealing it, creating curiosity and encouraging engagement. The hint encourages engagement on the platform to find the offer.\n\nThis content aims to create a sense of anticipation and excitement around Sa Dec flowers and the Sa Dec Flower Hunt platform. I hope this helps! Let me know if you'd like any adjustments.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

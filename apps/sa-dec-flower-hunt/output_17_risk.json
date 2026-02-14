@@ -1,0 +1,143 @@
+{
+  "skillId": "17",
+  "skillName": "Risk & Scenario Planning",
+  "generatedAt": "2025-12-06T09:14:08.197Z",
+  "status": "success",
+  "data": {
+    "risk_register": {
+      "market_risks": [
+        {
+          "risk": "Market downturn / recession",
+          "likelihood": "Medium",
+          "impact": "High",
+          "mitigation": "Diversify revenue streams, maintain 12-18 month runway, focus on retention [ĐỀ XUẤT]",
+          "contingency": "Cut CAC spend, extend runway, pivot to profitability [ĐỀ XUẤT]"
+        },
+        {
+          "risk": "Competitor launches similar product",
+          "likelihood": "High",
+          "impact": "Medium",
+          "mitigation": "Build moat via network effects, switching costs, brand [ĐỀ XUẤT]",
+          "contingency": "Accelerate product roadmap, aggressive pricing [ĐỀ XUẤT]"
+        },
+        {
+          "risk": "Customer demand lower than expected",
+          "likelihood": "Medium",
+          "impact": "Critical",
+          "mitigation": "Validate PMF early, iterate fast, maintain flexibility [ĐỀ XUẤT]",
+          "contingency": "Pivot to adjacent market, reduce burn [ĐỀ XUẤT]"
+        }
+      ],
+      "operational_risks": [
+        {
+          "risk": "Key employee departure",
+          "likelihood": "Medium",
+          "impact": "High",
+          "mitigation": "Vesting schedules, documentation, cross-training [ĐỀ XUẤT]",
+          "contingency": "Succession plan, retain recruiters on retainer [ĐỀ XUẤT]"
+        },
+        {
+          "risk": "Technology failure / security breach",
+          "likelihood": "Low",
+          "impact": "Critical",
+          "mitigation": "Backups, monitoring, security audits, insurance [ĐỀ XUẤT]",
+          "contingency": "Incident response plan, PR crisis management [ĐỀ XUẤT]"
+        }
+      ],
+      "financial_risks": [
+        {
+          "risk": "Fundraising falls through",
+          "likelihood": "Medium",
+          "impact": "Critical",
+          "mitigation": "Multiple investor conversations, bridge financing ready [ĐỀ XUẤT]",
+          "contingency": "Revenue-based financing, cost cuts, extend runway [ĐỀ XUẤT]"
+        },
+        {
+          "risk": "Burn rate exceeds projections",
+          "likelihood": "Medium-High",
+          "impact": "High",
+          "mitigation": "Monthly budget reviews, alerts at 80% budget [ĐỀ XUẤT]",
+          "contingency": "Hiring freeze, contractor conversion, reduce perks [ĐỀ XUẤT]"
+        }
+      ],
+      "regulatory_risks": [
+        {
+          "risk": "New regulations increase compliance cost",
+          "likelihood": "Low-Medium",
+          "impact": "Medium",
+          "mitigation": "Monitor regulatory landscape, engage legal counsel [ĐỀ XUẤT]",
+          "contingency": "Pass costs to customers, lobby via industry groups [ĐỀ XUẤT]"
+        }
+      ]
+    },
+    "scenario_planning": {
+      "base_case": {
+        "assumptions": [
+          "Revenue grows 3-4x annually",
+          "Churn stays below 5% monthly",
+          "Fundraising on schedule",
+          "Team scales as planned"
+        ],
+        "outcomes": {
+          "year_1": "$1M ARR, 50 customers, team of 20 [GIẢ ĐỊNH]",
+          "year_2": "$3-4M ARR, 200 customers, team of 50 [GIẢ ĐỊNH]",
+          "year_3": "$10-15M ARR, 500+ customers, Series B, team of 100 [GIẢ ĐỊNH]"
+        },
+        "probability": "50%"
+      },
+      "best_case": {
+        "assumptions": [
+          "Viral growth, revenue 5-10x annually",
+          "Major enterprise deals close",
+          "Low churn (<2%)",
+          "Strong investor interest"
+        ],
+        "outcomes": {
+          "year_1": "$2M ARR, 100 customers [GIẢ ĐỊNH]",
+          "year_2": "$10M ARR, 500 customers [GIẢ ĐỊNH]",
+          "year_3": "$50M+ ARR, unicorn path, acquisition interest [GIẢ ĐỊNH]"
+        },
+        "probability": "20%"
+      },
+      "worst_case": {
+        "assumptions": [
+          "Slow growth, 1-2x annually",
+          "High churn (>10%)",
+          "Fundraising delayed",
+          "Key hire challenges"
+        ],
+        "outcomes": {
+          "year_1": "$500K ARR, 30 customers [GIẢ ĐỊNH]",
+          "year_2": "$1M ARR, struggling to scale [GIẢ ĐỊNH]",
+          "year_3": "Pivot or wind down [GIẢ ĐỊNH]"
+        },
+        "probability": "30%",
+        "triggers": [
+          "6 months of flat growth",
+          "Runway < 6 months",
+          "Founder conflict"
+        ],
+        "actions": "Pivot, layoffs, merge with competitor, graceful shutdown [ĐỀ XUẤT]"
+      }
+    },
+    "risk_management_plan": {
+      "review_frequency": "Quarterly board review, monthly exec team",
+      "risk_owner": "CFO or COO",
+      "escalation": "Critical risks to board within 24 hours",
+      "insurance": "D&O, E&O, Cyber, Key person life insurance [ĐỀ XUẤT]"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "01",
+      "05"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

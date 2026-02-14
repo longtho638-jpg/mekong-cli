@@ -1,0 +1,61 @@
+{
+    "system_global": {
+        "default_temperature": 0.7,
+        "max_tokens": 4096,
+        "risk_threshold": "medium"
+    },
+    "agents": {
+        "01_product": {
+            "name": "Product Strategy Agent",
+            "model": "gemini-pro-1.5",
+            "temperature": 0.8,
+            "context_access": [
+                "customer_feedback",
+                "competitor_analysis"
+            ],
+            "tools": [
+                "web_search",
+                "github_api"
+            ]
+        },
+        "05_strategy": {
+            "name": "Marketing Strategy Agent",
+            "model": "gpt-4-turbo",
+            "temperature": 0.9,
+            "context_access": [
+                "market_trends",
+                "customer_crm"
+            ],
+            "tools": [
+                "web_search",
+                "facebook_ads_api"
+            ]
+        },
+        "10_viral_ads": {
+            "name": "Viral Content Agent",
+            "model": "claude-3-opus",
+            "temperature": 0.95,
+            "context_access": [
+                "tiktok_trends",
+                "meme_database"
+            ],
+            "tools": [
+                "image_generation",
+                "video_processing"
+            ]
+        },
+        "16_finance": {
+            "name": "CFO Agent",
+            "model": "gpt-4-turbo",
+            "temperature": 0.1,
+            "context_access": [
+                "accounting_ledger",
+                "bank_feeds"
+            ],
+            "tools": [
+                "excel_export",
+                "stripe_api"
+            ]
+        }
+    }
+}

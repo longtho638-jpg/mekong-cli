@@ -1,0 +1,210 @@
+{
+  "id": "12_SKILL-Email-and-Lifecycle-Sequences",
+  "version": "1.0.0",
+  "title": "Skill – Email & Lifecycle Sequences (Onboarding, Nurture, Win-back)",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế chuỗi email/lifecycle đa giai đoạn: onboarding, nurture, sales, activation, retention và win-back, khớp với business model, hành trình khách hàng và chuẩn Zero→IPO.",
+  "intended_use": {
+    "primary": [
+      "Thiết kế chuỗi email onboarding cho user mới (product/service/SaaS/ cộng đồng).",
+      "Viết chuỗi nurture & education (giữa awareness → consideration → decision).",
+      "Tạo chuỗi sales/promo có kiểm soát (không spam, có logic, có off-ramp).",
+      "Thiết kế chuỗi win-back/reactivation cho user ngủ đông hoặc churn."
+    ],
+    "works_best_when": [
+      "Đã có thông tin rõ về product/offer, personas, hành trình khách hàng (customer journey) và KPIs cơ bản.",
+      "Đã có brand voice (07), content pillars (08) và offer/landing (09/10/11)."
+    ],
+    "not_for": [
+      "Email transactional thuần kỹ thuật (biên nhận, reset password…).",
+      "Automation config trong ESP/CRM (HubSpot, Klaviyo…) – đây là skill về nội dung & logic, không phải implementation."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "03_SKILL-IPO-and-Governance-Readiness.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json",
+      "09_SKILL-Website-and-Landing-Narrative.json",
+      "10_SKILL-Performance-Ads-and-Intro-Creatives.json",
+      "11_SKILL-Adventorial-and-Longform-Storytelling.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả sản phẩm/dịch vụ/chương trình hoặc hệ thống mà email sẽ phục vụ."
+      },
+      "lifecycle_stage_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn chính muốn thiết kế: 'onboarding', 'nurture', 'sales_sequence', 'activation', 'retention', 'win_back', hoặc 'full_funnel'."
+      },
+      "primary_kpi": {
+        "type": "string",
+        "required": false,
+        "description": "KPI chính: activation_rate, trial_to_paid, demo_booked, revenue_per_user, reactivation_rate, v.v."
+      },
+      "typical_sales_cycle_length_days": {
+        "type": "integer",
+        "required": false,
+        "description": "Độ dài chu kỳ ra quyết định trung bình (ước tính), để canh spacing email."
+      },
+      "tone_preference": {
+        "type": "string",
+        "required": false,
+        "description": "Tone mong muốn: 'thân mật', 'chuyên nghiệp', 'thẳng_tới_vấn_đề', 'storytelling', v.v."
+      }
+    },
+    "assumptions": [
+      "Nếu lifecycle_stage_focus không được chọn, mặc định 'full_funnel' với ưu tiên onboarding + nurture.",
+      "Nếu không có typical_sales_cycle_length_days, giả định 14–30 ngày cho B2C và 30–60 ngày cho B2B (đánh dấu [GIẢ ĐỊNH])."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "lifecycle_map_overview": {
+        "description": "Bản đồ high-level các giai đoạn email & mục tiêu từng giai đoạn.",
+        "fields": [
+          "stages",
+          "stage_goals",
+          "stage_kpis",
+          "stage_trigger_events"
+        ]
+      },
+      "sequence_blueprints": {
+        "description": "Blueprint logic cho từng sequence/giai đoạn.",
+        "structure": {
+          "fields_per_sequence": [
+            "sequence_id",
+            "lifecycle_stage",
+            "goal",
+            "entry_conditions",
+            "exit_conditions",
+            "length_days_estimate",
+            "email_count_estimate"
+          ]
+        }
+      },
+      "email_sequence_details": {
+        "description": "Chi tiết từng email trong mỗi sequence.",
+        "structure": {
+          "fields_per_email": [
+            "sequence_id",
+            "email_id",
+            "relative_day_or_delay",
+            "email_type",
+            "subject_line_options",
+            "preview_text_options",
+            "body_outline",
+            "call_to_action",
+            "personalization_notes",
+            "conditional_logic_notes"
+          ]
+        }
+      },
+      "copy_snippets_examples": {
+        "description": "Ví dụ đoạn copy mẫu cho một vài email key.",
+        "fields": [
+          "welcome_email_sample",
+          "key_educational_email_sample",
+          "key_sales_email_sample",
+          "win_back_email_sample"
+        ]
+      },
+      "measurement_and_experiment_plan": {
+        "description": "Kế hoạch đo lường & test A/B cho chuỗi email.",
+        "fields": [
+          "core_metrics",
+          "monitoring_cadence",
+          "ab_test_ideas",
+          "cohort_or_segmenting_suggestions"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_map_lifecycle_and_goal",
+      "label": "Vẽ bản đồ lifecycle & KPI",
+      "goal": "Hiểu khách đang ở đâu trong hành trình và muốn kéo họ đi đâu.",
+      "actions": [
+        "Tóm tắt idea_or_offer và loại hình business (B2B/B2C/community/SaaS/crypto/edtech…).",
+        "Xác định các lifecycle stages relevant dựa trên input & 00_MASTER.",
+        "Điền lifecycle_map_overview: stages, stage_goals, stage_kpis, stage_trigger_events."
+      ]
+    },
+    {
+      "step_id": "02_define_sequence_blueprints",
+      "label": "Thiết kế blueprint cho từng sequence",
+      "goal": "Chốt khung logic trước khi viết từng email.",
+      "actions": [
+        "Cho mỗi stage: tạo 1–2 sequence_id nếu cần (vd: onboarding_trial, onboarding_paid, nurture_evergreen…).",
+        "Cho mỗi sequence: xác định goal, entry_conditions, exit_conditions, length_days_estimate, email_count_estimate.",
+        "Đảm bảo không spam: tránh >3 email/tuần trừ khi user nêu rõ khác."
+      ]
+    },
+    {
+      "step_id": "03_define_email_level_details",
+      "label": "Chi tiết từng email",
+      "goal": "Biến blueprint thành khung email cụ thể có thể triển khai ngay.",
+      "actions": [
+        "Cho mỗi email: gán email_type (welcome, educate, proof, objection-handling, offer, check-in, win-back…).",
+        "Sinh 2–4 subject_line_options & 1–3 preview_text_options theo tone_preference.",
+        "Tạo body_outline với các khối: hook → context → value → proof → CTA.",
+        "Ghi personalization_notes (vd: {first_name}, {use_case}, {plan_type}).",
+        "Ghi conditional_logic_notes (vd: 'Nếu chưa mở email 1 sau 3 ngày → resend subject khác')."
+      ]
+    },
+    {
+      "step_id": "04_generate_copy_snippets_examples",
+      "label": "Tạo đoạn copy mẫu",
+      "goal": "Giúp team thấy rõ style & dễ nhân rộng.",
+      "actions": [
+        "Viết đầy đủ nội dung cho 3–4 email tiêu biểu: welcome, educational, sales/promo, win-back.",
+        "Đánh dấu [TỪ PLAN] ở insight/data lấy trực tiếp từ plan; [ĐỀ XUẤT] hoặc [GIẢ ĐỊNH] ở phần ví dụ.",
+        "Giữ câu chữ tự nhiên, không quá marketing-speak nếu không phù hợp ngành."
+      ]
+    },
+    {
+      "step_id": "05_define_measurement_and_experiment_plan",
+      "label": "Kế hoạch đo & test",
+      "goal": "Đảm bảo chuỗi email gắn với học hỏi & tối ưu, không bắn một lần rồi bỏ.",
+      "actions": [
+        "Chọn core_metrics (vd: open_rate, click_rate, activation_rate, revenue_per_recipient…).",
+        "Đề xuất monitoring_cadence (vd: xem số liệu hàng tuần 4–8 tuần đầu).",
+        "Liệt kê ab_test_ideas: subject, CTA, email length, sending time, value props…",
+        "Đề xuất cohort_or_segmenting_suggestions (vd: segment theo source, plan, hành vi trong app)."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã có customer journey & business model tương đối rõ (05 + phần Customer Journey trong khung plan).",
+      "Khi user nói: 'Thiết kế giúp anh chuỗi email onboarding/nurture/win-back cho offer này.'"
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả lifecycle_map_overview + sequence_blueprints để user duyệt logic.",
+      "Bước 2: Khi user OK, trả email_sequence_details + copy_snippets_examples.",
+      "Bước 3: Trả measurement_and_experiment_plan để team growth/CRM triển khai & tối ưu."
+    ]
+  },
+  "constraints": {
+    "compliance_sensitive_industries": "Trong ngành tài chính, crypto, y tế, giáo dục: tránh cam kết kết quả; luôn đánh dấu ví dụ mang tính minh hoạ.",
+    "privacy_and_optout": "Luôn giả định có link unsubscribe/opt-out & tôn trọng tần suất hợp lý cho người nhận.",
+    "language": "Tiếng Việt là chính, có thể xen thuật ngữ lifecycle/email/growth tiếng Anh khi hữu ích."
+  }
+}

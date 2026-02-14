@@ -1,0 +1,48 @@
+{
+  "skillId": "13",
+  "skillName": "Sales Process & Channels",
+  "generatedAt": "2025-12-06T10:00:45.536Z",
+  "status": "success",
+  "data": {
+    "sales_process": {
+      "prospecting": "Identify ICP, source from LinkedIn, referrals, inbound [ĐỀ XUẤT]",
+      "qualification": "BANT framework (Budget, Authority, Need, Timeline)",
+      "discovery": "Understand pain, current solution, decision process [ĐỀ XUẤT]",
+      "demo": "Customized demo focused on their use case",
+      "proposal": "Tailored proposal with ROI calculation [ĐỀ XUẤT]",
+      "negotiation": "Handle objections, offer options",
+      "close": "Sign contract, onboarding handoff [ĐỀ XUẤT]"
+    },
+    "objection_handling": [
+      {
+        "objection": "Too expensive",
+        "response": "ROI focus: Cost vs value, payback period [ĐỀ XUẤT]"
+      },
+      {
+        "objection": "Need to think about it",
+        "response": "Uncover real concern, create urgency [ĐỀ XUẤT]"
+      },
+      {
+        "objection": "Happy with current solution",
+        "response": "Compare limitations, highlight gaps [ĐỀ XUẤT]"
+      }
+    ],
+    "sales_scripts": "Cold call, email templates, demo flow [ĐỀ XUẤT]",
+    "kpis": [
+      "Conversion rate by stage",
+      "Average deal size",
+      "Sales cycle length",
+      "Win rate"
+    ]
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

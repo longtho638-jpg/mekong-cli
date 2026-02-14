@@ -1,0 +1,58 @@
+{
+  "skillId": "10",
+  "skillName": "Performance Ads & Intro Creatives",
+  "generatedAt": "2025-12-06T09:31:02.800Z",
+  "status": "success",
+  "data": {
+    "facebook_ads": [
+      {
+        "campaign": "Awareness",
+        "objective": "Reach",
+        "ad_formats": [
+          "Carousel",
+          "Video",
+          "Single image"
+        ],
+        "copy_angle": "Educate on problem, soft intro to solution [ĐỀ XUẤT]",
+        "cta": "Learn More"
+      },
+      {
+        "campaign": "Consideration",
+        "objective": "Traffic → Landing page",
+        "ad_formats": [
+          "Lead gen form",
+          "Messenger",
+          "Video"
+        ],
+        "copy_angle": "Feature benefits, address pain directly [ĐỀ XUẤT]",
+        "cta": "Download Guide / Watch Demo"
+      },
+      {
+        "campaign": "Conversion",
+        "objective": "Conversions",
+        "ad_formats": [
+          "Dynamic product ads",
+          "Collection",
+          "Instant experience"
+        ],
+        "copy_angle": "Limited offer, urgency, clear value [ĐỀ XUẤT]",
+        "cta": "Start Free Trial / Sign Up"
+      }
+    ],
+    "google_ads": {
+      "search": "RSAs with 15 headlines [ĐỀ XUẤT]",
+      "display": "Responsive display ads"
+    },
+    "creative_testing": "A/B test headlines, images, CTAs weekly [ĐỀ XUẤT]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

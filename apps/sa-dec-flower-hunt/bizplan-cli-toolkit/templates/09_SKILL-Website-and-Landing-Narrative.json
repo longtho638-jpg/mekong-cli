@@ -1,0 +1,244 @@
+{
+  "id": "09_SKILL-Website-and-Landing-Narrative",
+  "version": "1.0.0",
+  "title": "Skill – Website & Landing Page Narrative System",
+  "type": "skill",
+  "description": "Kỹ năng chuyển brand positioning, psychology và offer thành cấu trúc & nội dung website/landing page tối ưu chuyển đổi (storyline, sections, microcopy, CTA), có thể dùng làm bản nháp đầu cho dev/UX.",
+  "intended_use": {
+    "primary": [
+      "Thiết kế cấu trúc website/landing page cho 1 sản phẩm/dịch vụ/brand cụ thể.",
+      "Sinh bản nháp copy cho homepage hoặc landing chính (hero, sections, CTA, FAQ…).",
+      "Đảm bảo narrative nhất quán với brand (07), psychology (06) và offer/business model (05)."
+    ],
+    "works_best_when": [
+      "Đã chạy 05_SKILL-Business-Model-Patterns-and-Unit-Economics, 06_SKILL-Customer-Psychology-and-Personas, 07_SKILL-Brand-Positioning-and-Identity.",
+      "Có mục tiêu rõ ràng cho trang: lead-gen, sign-up, booking, purchase, apply, v.v."
+    ],
+    "not_for": [
+      "Thiết kế UI chi tiết hoặc code front-end (Next.js/Tailwind) – đây là bản nội dung & cấu trúc thông tin.",
+      "Tạo landing cho performance ads siêu cụ thể (có thể cần 1 skill khác chuyên sâu hơn)."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả ngắn về sản phẩm/dịch vụ/offer chính muốn làm website/landing."
+      },
+      "primary_page_goal": {
+        "type": "string",
+        "required": false,
+        "description": "Mục tiêu chính của trang: 'collect_leads', 'book_call', 'signup', 'purchase', 'apply', v.v."
+      },
+      "target_persona_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Tên persona chính hoặc mô tả ngắn về nhóm khách hàng chính của trang."
+      }
+    },
+    "assumptions": [
+      "Nếu user không chọn rõ persona, ưu tiên persona có LTV cao nhất hoặc phù hợp nhất với mục tiêu.",
+      "Nếu chưa có mục tiêu primary_page_goal, giả định 'collect_leads' hoặc 'signup' tuỳ context."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "page_summary": {
+        "description": "Tóm tắt trang: mục tiêu + audience + big promise.",
+        "fields": [
+          "page_type",
+          "primary_goal",
+          "primary_persona",
+          "core_promise"
+        ]
+      },
+      "section_structure": {
+        "description": "Danh sách sections với mục tiêu và vai trò trong funnel.",
+        "structure": {
+          "section_fields": [
+            "section_id",
+            "section_name",
+            "section_purpose",
+            "funnel_role",
+            "priority_level"
+          ]
+        }
+      },
+      "section_copy_drafts": {
+        "description": "Bản nháp copy cho từng section chính.",
+        "structure": {
+          "section_fields": [
+            "section_id",
+            "headline",
+            "subheadline",
+            "supporting_bullets_or_body",
+            "primary_cta_text",
+            "secondary_cta_text",
+            "notes_for_design_or_layout"
+          ]
+        }
+      },
+      "hero_block": {
+        "description": "Hero section chi tiết vì đây là phần quan trọng nhất.",
+        "fields": [
+          "hero_headline",
+          "hero_subheadline",
+          "value_stack_bullets",
+          "primary_cta_text",
+          "secondary_cta_text",
+          "social_proof_snippet",
+          "above_the_fold_notes"
+        ]
+      },
+      "credibility_and_proof_blocks": {
+        "description": "Các khối tăng trust: testimonials, logos, metrics, authority.",
+        "structure": {
+          "block_fields": [
+            "block_type",
+            "headline",
+            "content_items",
+            "placement_hint"
+          ]
+        }
+      },
+      "objection_and_risk_reversal_block": {
+        "description": "Xử lý objection và giảm rủi ro cho người đọc.",
+        "fields": [
+          "common_objections_list",
+          "objection_responses",
+          "risk_reversal_elements",
+          "faq_items"
+        ]
+      },
+      "story_or_founder_block": {
+        "description": "Tùy chọn: kể câu chuyện/mission để tăng kết nối cảm xúc.",
+        "fields": [
+          "story_headline",
+          "short_narrative",
+          "why_now_reason",
+          "why_us_reason"
+        ]
+      },
+      "microcopy_and_ux_notes": {
+        "description": "Gợi ý microcopy & note UX để dev/UX dùng.",
+        "fields": [
+          "form_labels_and_helpers",
+          "error_state_copy_examples",
+          "success_state_copy_examples",
+          "trust_badge_or_helper_text_examples"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_understand_offer_and_persona",
+      "label": "Hiểu offer & persona",
+      "goal": "Nắm rõ trang bán cái gì, cho ai, muốn họ làm gì.",
+      "actions": [
+        "Tóm tắt idea_or_offer thành 2–3 câu giải thích rõ ràng.",
+        "Xác định primary_persona từ input hoặc từ 06_SKILL.",
+        "Chọn primary_goal (collect_leads / signup / book_call / purchase / apply)."
+      ]
+    },
+    {
+      "step_id": "02_define_page_summary_and_hero",
+      "label": "Định nghĩa page summary & hero",
+      "goal": "Chốt big promise & cấu trúc hero.",
+      "actions": [
+        "Điền page_summary (page_type, goal, persona, core_promise).",
+        "Viết hero_headline rõ ràng, cụ thể, không mơ hồ.",
+        "Viết hero_subheadline bổ trợ: nói rõ vấn đề + kết quả mong muốn.",
+        "Tạo value_stack_bullets (3–5 bullet lợi ích cụ thể).",
+        "Chọn primary_cta_text & secondary_cta_text phù hợp mục tiêu.",
+        "Đề xuất social_proof_snippet nếu có (hoặc [TODO])."
+      ]
+    },
+    {
+      "step_id": "03_design_section_structure",
+      "label": "Thiết kế cấu trúc section",
+      "goal": "Quy hoạch tuyến nội dung từ trên xuống dưới.",
+      "actions": [
+        "Tạo danh sách 6–10 sections, ví dụ: Hero, Problem, Solution, How it works, Benefits, Social proof, Pricing/Plans, FAQ, Founder story, Final CTA.",
+        "Với mỗi section: mô tả section_purpose & funnel_role (attract, qualify, reassure, convert, de-risk, v.v.).",
+        "Đánh priority_level để UX hiểu phần nào bắt buộc / có thể rút gọn."
+      ]
+    },
+    {
+      "step_id": "04_write_section_copy_drafts",
+      "label": "Viết nháp copy cho từng section",
+      "goal": "Đưa ra bản text đủ dùng cho bản v1.",
+      "actions": [
+        "Cho mỗi section: viết headline, subheadline, supporting_bullets_or_body (ngắn gọn nhưng đủ ý).",
+        "Đề xuất primary_cta_text & secondary_cta_text (nếu relevant).",
+        "Thêm notes_for_design_or_layout (vd: nên dùng 3 cột, icon list, timeline, stepper…)."
+      ]
+    },
+    {
+      "step_id": "05_credibility_and_objection_blocks",
+      "label": "Khối credibility & xử lý objection",
+      "goal": "Giảm risk cảm nhận, tăng trust.",
+      "actions": [
+        "Thiết kế 1–2 credibility_and_proof_blocks (logos, testimonials, metrics, media mentions nếu có).",
+        "Liệt kê common_objections_list (từ psychology 06) và viết objection_responses tương ứng.",
+        "Gợi ý risk_reversal_elements (trial, guarantee, refund policy) nếu phù hợp model.",
+        "Soạn 4–8 FAQ items rõ ràng, không vòng vo."
+      ]
+    },
+    {
+      "step_id": "06_optional_story_block",
+      "label": "Khối câu chuyện (tuỳ chọn)",
+      "goal": "Thêm chiều sâu cảm xúc nếu brand/industry phù hợp.",
+      "actions": [
+        "Viết story_headline gây tò mò nhưng chân thật.",
+        "Tóm tắt short_narrative: nguồn gốc, pain founder/market, turning point.",
+        "Giải thích why_now_reason (tại sao lúc này là timing chuẩn).",
+        "Giải thích why_us_reason (tại sao team này/brand này đáng tin)."
+      ]
+    },
+    {
+      "step_id": "07_define_microcopy_and_ux_notes",
+      "label": "Microcopy & UX notes",
+      "goal": "Giúp dev/UX không phải tự nghĩ text nhỏ lẻ.",
+      "actions": [
+        "Đề xuất form_labels_and_helpers (vd: placeholder, helper text giảm friction).",
+        "Soạn 2–3 error_state_copy_examples (vd: validation, network error) thân thiện, không đổ lỗi khách.",
+        "Soạn 2–3 success_state_copy_examples (vd: sau khi submit form).",
+        "Đề xuất trust_badge_or_helper_text_examples (vd: 'Không spam', 'Huỷ bất cứ lúc nào', 'Dữ liệu bảo mật…')."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi có brand + personas + offer rõ ràng.",
+      "Khi người dùng nói: 'Anh cần website/landing cho idea này' hoặc 'viết giúp anh cấu trúc homepage/landing'."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả page_summary + hero_block trước, để user check alignment.",
+      "Bước 2: Sau khi user OK, trả tiếp section_structure + section_copy_drafts.",
+      "Bước 3: Cuối cùng, bổ sung credibility_and_proof_blocks, objection_and_risk_reversal_block, story_or_founder_block (nếu phù hợp) và microcopy_and_ux_notes."
+    ]
+  },
+  "constraints": {
+    "no_false_claims": "Không bịa số liệu, testimonial hoặc chứng nhận; nếu thiếu thì dùng placeholder với [TODO].",
+    "respect_regulations": "Tránh copy vi phạm quy định ngành (tài chính, y tế, crypto…). Nếu nhạy cảm, thêm note cảnh báo.",
+    "language": "Ưu tiên tiếng Việt, có thể giữ một số cụm thuật ngữ conversion/UX bằng tiếng Anh cho đội dev/marketing."
+  }
+}

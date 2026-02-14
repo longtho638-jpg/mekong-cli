@@ -1,0 +1,51 @@
+{
+  "skillId": "13",
+  "skillName": "Sales Process & Channels",
+  "generatedAt": "2025-12-06T11:08:29.981Z",
+  "status": "success",
+  "data": {
+    "sales_process": {
+      "prospecting": "Source leads for B2C_direct_and_B2B_wholesale in Mekong Delta & Ho Chi Minh City [ĐỀ XUẤT]",
+      "qualification": "BANT adapted for Tickets: $10-20 (B2C) | Bulk Orders: $500-5000 (B2B) deals",
+      "discovery": "Focus on: Farmers aren't tech-savvy. Tourists need easy booking. [ĐỀ XUẤT]",
+      "demo": "Showcase: Sa Dec Flower Hunt Platform (Goal: Automate B2C ticket sales, keep B2B high-touch.)",
+      "proposal": "Custom quote for B2B; Self-serve checkout for B2C",
+      "negotiation": "Volume discounts for B2B only",
+      "close": "Digital contract (B2B) / Instant ticket QR (B2C)"
+    },
+    "objection_handling": [
+      {
+        "objection": "Too expensive",
+        "response": "ROI focus: Cost vs value, payback period [ĐỀ XUẤT]"
+      },
+      {
+        "objection": "Need to think about it",
+        "response": "Uncover real concern, create urgency [ĐỀ XUẤT]"
+      },
+      {
+        "objection": "Happy with current solution",
+        "response": "Compare limitations, highlight gaps [ĐỀ XUẤT]"
+      }
+    ],
+    "sales_scripts": "Cold call, email templates, demo flow [ĐỀ XUẤT]",
+    "kpis": [
+      "Conversion rate by stage",
+      "Average deal size",
+      "Sales cycle length",
+      "Win rate"
+    ]
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

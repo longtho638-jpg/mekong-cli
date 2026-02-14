@@ -1,0 +1,35 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:05:16.600Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "Challenge",
+        "Solution",
+        "Results"
+      ],
+      "customer_profile": "[Company name], [industry], [size] [ĐỀ XUẤT]",
+      "challenge_section": "Specific pain point and context [ĐỀ XUẤT]",
+      "solution_section": "How product solved it, implementation [ĐỀ XUẤT]",
+      "results_section": "[X]% improvement in [metric], quotes [ĐỀ XUẤT]",
+      "call_to_action": "See how we can help you achieve similar results"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

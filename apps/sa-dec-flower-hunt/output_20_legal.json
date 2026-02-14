@@ -1,0 +1,229 @@
+{
+  "skillId": "20",
+  "skillName": "Data Room & Investor Materials",
+  "generatedAt": "2025-12-11T04:31:12.525Z",
+  "status": "success",
+  "data": {
+    "data_room_structure": {
+      "01_corporate_legal": {
+        "description": "Corporate documents and legal structure",
+        "required_documents": [
+          "Certificate of Incorporation [ĐỀ XUẤT]",
+          "Articles of Association/Charter [ĐỀ XUẤT]",
+          "Cap table (current + fully diluted) [ĐỀ XUẤT]",
+          "Shareholder agreements [ĐỀ XUẤT]",
+          "Board minutes (past 2 years) [ĐỀ XUẤT]",
+          "Previous fundraising documents (SAFEs, convertible notes, SHA) [GIẢ ĐỊNH]"
+        ],
+        "priority": "Critical"
+      },
+      "02_financial": {
+        "description": "Financial statements and models",
+        "required_documents": [
+          "Audited financials (3 years if available) [GIẢ ĐỊNH]",
+          "Management accounts (monthly, past 24 months) [ĐỀ XUẤT]",
+          "Financial model (3-5 year projections) [ĐỀ XUẤT]",
+          "Unit economics breakdown [ĐỀ XUẤT]",
+          "Burn rate and runway analysis [ĐỀ XUẤT]",
+          "P&L, Balance Sheet, Cash Flow by quarter [GIẢ ĐỊNH]"
+        ],
+        "priority": "Critical"
+      },
+      "03_product_tech": {
+        "description": "Product, technology, and IP",
+        "required_documents": [
+          "Product roadmap [ĐỀ XUẤT]",
+          "Tech stack documentation [ĐỀ XUẤT]",
+          "IP ownership (code, patents, trademarks) [GIẢ ĐỊNH]",
+          "Customer contracts (key accounts) [ĐỀ XUẤT]",
+          "Security & data privacy policies [ĐỀ XUẤT]",
+          "Product demo/screenshots [GIẢ ĐỊNH]"
+        ],
+        "priority": "High"
+      },
+      "04_commercial_traction": {
+        "description": "Sales, marketing, and customer data",
+        "required_documents": [
+          "Customer list (anonymized if needed) [ĐỀ XUẤT]",
+          "Sales pipeline (CRM export) [ĐỀ XUẤT]",
+          "Marketing materials [ĐỀ XUẤT]",
+          "Key metrics dashboard (MRR, churn, CAC, LTV) [ĐỀ XUẤT]",
+          "Case studies/testimonials [ĐỀ XUẤT]",
+          "Cohort analysis [GIẢ ĐỊNH]"
+        ],
+        "priority": "High"
+      },
+      "05_team_org": {
+        "description": "Team, org chart, compensation",
+        "required_documents": [
+          "Org chart [ĐỀ XUẤT]",
+          "Key employee bios [ĐỀ XUẤT]",
+          "ESOP plan and allocation [ĐỀ XUẤT]",
+          "Employment agreements (C-level) [GIẢ ĐỊNH]",
+          "Compensation benchmarking [ĐỀ XUẤT]",
+          "Key person insurance (if any) [GIẢ ĐỊNH]"
+        ],
+        "priority": "Medium-High"
+      },
+      "06_legal_compliance": {
+        "description": "Legal, regulatory, and compliance",
+        "required_documents": [
+          "Business licenses [ĐỀ XUẤT]",
+          "Regulatory filings [ĐỀ XUẤT]",
+          "Material contracts (partnerships, vendors) [ĐỀ XUẤT]",
+          "Insurance policies [ĐỀ XUẤT]",
+          "Litigation history/pending [GIẢ ĐỊNH]",
+          "Privacy policy (GDPR/PDPA compliance) [ĐỀ XUẤT]"
+        ],
+        "priority": "Medium-High"
+      },
+      "07_investor_updates": {
+        "description": "Previous investor communications",
+        "required_documents": [
+          "Monthly/quarterly investor updates (past 12 months) [ĐỀ XUẤT]",
+          "Board decks [ĐỀ XUẤT]",
+          "Previous pitch decks [GIẢ ĐỊNH]",
+          "Investment memos from past rounds [ĐỀ XUẤT]"
+        ],
+        "priority": "Medium"
+      }
+    },
+    "investor_materials_checklist": {
+      "core_deck": {
+        "name": "Investor Pitch Deck",
+        "slides": -3,
+        "format": "PDF",
+        "content": "From Agent 16 (Fundraising) [TỪ PLAN]",
+        "status": "To be customized per investor [GIẢ ĐỊNH]"
+      },
+      "executive_summary": {
+        "name": "One-Pager Executive Summary",
+        "pages": -1,
+        "format": "PDF",
+        "content": "Company snapshot, traction, ask",
+        "status": "Create from pitch deck [ĐỀ XUẤT]"
+      },
+      "detailed_memo": {
+        "name": "Investment Memo (Long-Form)",
+        "pages": -5,
+        "format": "PDF",
+        "content": "Deep dive: market, product, business model, financials, team, use of funds",
+        "status": "Optional for sophisticated investors [ĐỀ XUẤT]"
+      },
+      "financial_model": {
+        "name": "Financial Model",
+        "format": "Excel",
+        "content": "Dynamic 3-5 year model with assumptions",
+        "status": "Share after NDA [GIẢ ĐỊNH]"
+      },
+      "demo_video": {
+        "name": "Product Demo Video",
+        "duration": "2-3 minutes",
+        "format": "MP4/YouTube unlisted",
+        "content": "Product walkthrough, key features",
+        "status": "Optional but impressive [ĐỀ XUẤT]"
+      }
+    },
+    "best_practices": {
+      "organization": [
+        "Use professional VDR (Virtual Data Room) like DocSend, Dropbox, Box [ĐỀ XUẤT]",
+        "Clear folder structure with numbered sections [ĐỀ XUẤT]",
+        "Index/table of contents at root level [ĐỀ XUẤT]",
+        "Version control - latest docs always on top [GIẢ ĐỊNH]"
+      ],
+      "access_control": [
+        "NDA required before access [ĐỀ XUẤT]",
+        "Track who views what [ĐỀ XUẤT]",
+        "Watermark sensitive documents [ĐỀ XUẤT]",
+        "Revoke access after round closes [GIẢ ĐỊNH]"
+      ],
+      "preparation": [
+        "Prepare 4-6 weeks before fundraising [ĐỀ XUẤT]",
+        "Review with legal counsel [ĐỀ XUẤT]",
+        "Redact commercially sensitive info initially [ĐỀ XUẤT]",
+        "Have FAQ document ready [GIẢ ĐỊNH]"
+      ],
+      "updates": [
+        "Update monthly financials [ĐỀ XUẤT]",
+        "Add new contracts/partnerships [ĐỀ XUẤT]",
+        "Keep metrics dashboard current [ĐỀ XUẤT]",
+        "Archive old versions, don't delete [GIẢ ĐỊNH]"
+      ]
+    },
+    "common_dd_questions": {
+      "financial": [
+        "What's your monthly burn rate and current runway?",
+        "How do you calculate CAC and LTV?",
+        "What are your top 3 KPIs and how do they trend?",
+        "Any contingent liabilities or off-balance sheet items?"
+      ],
+      "product": [
+        "What's your tech stack and why?",
+        "How do you handle data security and privacy?",
+        "What's in your product roadmap for next 12 months?",
+        "Any technical debt or scaling challenges?"
+      ],
+      "market": [
+        "Who are your top 3 competitors and how do you differentiate?",
+        "What's your go-to-market strategy?",
+        "Customer concentration risk - top 10 customers % of revenue?",
+        "Unit economics by customer segment?"
+      ],
+      "team": [
+        "Any co-founder vesting cliffs?",
+        "Key person dependencies?",
+        "ESOP pool size and allocation plan?",
+        "Any team members planning to leave?"
+      ],
+      "legal": [
+        "Any pending or threatened litigation?",
+        "IP ownership - anything not owned outright?",
+        "Any regulatory compliance issues?",
+        "Material contracts with unusual terms?"
+      ]
+    },
+    "recommended_vdr_platforms": [
+      {
+        "platform": "DocSend",
+        "best_for": "Seed/Series A",
+        "pricing": "$$$"
+      },
+      {
+        "platform": "Dropbox",
+        "best_for": "Early stage, budget",
+        "pricing": "$"
+      },
+      {
+        "platform": "Carta",
+        "best_for": "Equity management + data room",
+        "pricing": "$$$$"
+      },
+      {
+        "platform": "Firmex",
+        "best_for": "Later stage, enterprise",
+        "pricing": "$$$$$"
+      }
+    ],
+    "preparation_timeline": {
+      "weeks_4_6_before": "Gather all documents, create folder structure",
+      "weeks_2_3_before": "Review with legal, redact sensitive info",
+      "week_1_before": "Share with trusted advisor for QA",
+      "week_0": "Launch with first investor"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "01",
+      "03",
+      "04",
+      "16"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

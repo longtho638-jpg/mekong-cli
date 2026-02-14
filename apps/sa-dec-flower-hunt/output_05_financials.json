@@ -1,0 +1,101 @@
+{
+  "skillId": "05",
+  "skillName": "Business Model Patterns & Unit Economics",
+  "generatedAt": "2025-12-06T08:52:26.928Z",
+  "status": "success",
+  "data": {
+    "business_model_archetype": {
+      "primary_archetype_code": "Urban Gen Z [ĐỀ XUẤT]",
+      "secondary_archetype_code": "Marketplace [ĐỀ XUẤT]",
+      "why_these_archetypes": "Based on product/service description and customer type [TỪ PLAN]",
+      "similar_reference_models_hint": "Shopee (VN), Lazada, Tokopedia (SEA) [ĐỀ XUẤT]"
+    },
+    "revenue_logic_map": [
+      {
+        "revenue_stream_id": "RS_01",
+        "payer_type": "End customers (B2C) [TỪ PLAN]",
+        "revenue_mechanism": "Transaction fee / Take rate [ĐỀ XUẤT]",
+        "pricing_logic": "% of GMV (5-15%) [ĐỀ XUẤT]",
+        "frequency": "Per transaction",
+        "key_drivers_notes": "GMV growth, conversion rate, avg order value [GIẢ ĐỊNH]"
+      },
+      {
+        "revenue_stream_id": "RS_02",
+        "payer_type": "Sellers/suppliers [ĐỀ XUẤT]",
+        "revenue_mechanism": "Listing/subscription fees [ĐỀ XUẤT]",
+        "pricing_logic": "Monthly/annual subscription tiers [ĐỀ XUẤT]",
+        "frequency": "Recurring",
+        "key_drivers_notes": "Seller acquisition, retention [GIẢ ĐỊNH]"
+      }
+    ],
+    "unit_economics_frame": {
+      "core_metric_set": {
+        "ARPU": "[TODO: Average Revenue Per User - need transaction data] [GIẢ ĐỊNH]",
+        "LTV": "[TODO: Customer Lifetime Value - need cohort analysis] [GIẢ ĐỊNH]",
+        "CAC": "[TODO: Customer Acquisition Cost - need marketing spend data] [GIẢ ĐỊNH]",
+        "Payback_Period": "[Calculated from LTV/CAC - typically 6-18 months for B2C] [GIẢ ĐỊNH]",
+        "Gross_Margin": "Depends on take rate model - typically 20-40% for marketplaces [TỪ PLAN]"
+      },
+      "key_drivers": [
+        {
+          "driver": "Transaction volume",
+          "impact": "Direct on revenue",
+          "lever": "Increase supply & demand"
+        },
+        {
+          "driver": "Take rate %",
+          "impact": "Direct on margin",
+          "lever": "Balance competitive vs profitable"
+        },
+        {
+          "driver": "Retention rate",
+          "impact": "Multiplier on LTV",
+          "lever": "Improve product/service quality"
+        },
+        {
+          "driver": "CAC",
+          "impact": "Inverse on profitability",
+          "lever": "Optimize marketing channels, viral loops"
+        }
+      ],
+      "unit_economic_viability": "Viable if LTV/CAC > 3x and payback < 12 months [ĐỀ XUẤT]"
+    },
+    "business_model_canvas": {
+      "value_propositions": "Extracted from plan [TỪ PLAN]",
+      "customer_segments": "Target customers [TỪ PLAN]",
+      "channels": "Online platform, Mobile app, Social media [ĐỀ XUẤT]",
+      "revenue_streams": "Transaction fee / Take rate [ĐỀ XUẤT], Listing/subscription fees [ĐỀ XUẤT]",
+      "key_resources": "Technology platform, Supplier network, Brand [ĐỀ XUẤT]",
+      "key_activities": "Platform ops, Supplier onboarding, Marketing [ĐỀ XUẤT]",
+      "key_partnerships": "Payment providers, Logistics partners, Suppliers [ĐỀ XUẤT]",
+      "cost_structure": "Tech infrastructure, Marketing, Operations, Support [GIẢ ĐỊNH]"
+    },
+    "agentic_opportunities": {
+      "pricing_optimization": "AI agent for dynamic pricing based on demand [ĐỀ XUẤT]",
+      "demand_forecasting": "Predictive analytics for inventory [ĐỀ XUẤT]",
+      "customer_segmentation": "ML for personalized recommendations [ĐỀ XUẤT]"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [
+        "Business description",
+        "Customer type"
+      ],
+      "suggestions": [
+        "Revenue model",
+        "Unit economics framework",
+        "Benchmarks"
+      ],
+      "assumptions": [
+        "Specific metrics need real data",
+        "Archetype based on description"
+      ]
+    },
+    "dependenciesUsed": [
+      "01"
+    ],
+    "executionTime": 0,
+    "dataQuality": "medium"
+  }
+}

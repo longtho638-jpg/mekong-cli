@@ -21,11 +21,15 @@ const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sử
 function detectProjectDir(taskContent) {
   const lower = taskContent.toLowerCase();
   const routes = {
-    '84tea': 'apps/84tea', tea: 'apps/84tea',
+    '84tea': 'apps/84tea',
     apex: 'apps/apex-os',
     anima: 'apps/anima119',
     sophia: 'apps/sophia-ai-factory',
     well: 'apps/well',
+    agency: 'apps/agencyos-web',
+    'sa-dec': 'apps/sa-dec-flower-hunt',
+    'flower': 'apps/sa-dec-flower-hunt',
+    mekong: '.',
   };
   for (const [keyword, dir] of Object.entries(routes)) {
     if (lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
@@ -80,7 +84,7 @@ async function executeTask(taskContent, taskFile, timeoutMs) {
   const prompt = buildPrompt(taskContent);
   const finalTimeout = timeoutMs || (isTeamMission(prompt) ? config.AGENT_TEAM_TIMEOUT_MS : config.MISSION_TIMEOUT_MS);
   const mode = isTeamMission(prompt) ? 'AGENT_TEAM' : 'SINGLE';
-  log(`PROMPT [${mode}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(finalTimeout/60000)}min]`);
+  log(`PROMPT [${mode}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(finalTimeout / 60000)}min]`);
 
   return runMission(prompt, projectDir, finalTimeout);
 }

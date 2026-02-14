@@ -1,0 +1,259 @@
+{
+  "id": "17_SKILL-Risk-Downside-and-Scenario-OS",
+  "version": "1.0.0",
+  "title": "Skill – Risk, Downside & Scenario Operating System",
+  "type": "skill",
+  "description": "Kỹ năng xây dựng bản đồ rủi ro, kịch bản downside & playbook ứng phó cho startup từ Zero → IPO, phù hợp bối cảnh VN/SEA và các mô hình có Agentic/AI layer.",
+  "intended_use": {
+    "primary": [
+      "Chuẩn hóa phần 'Business Model Risks' và 'Risk Management' trong Business Plan 2026 – Agentic Zero→IPO.",
+      "Thiết kế Risk Map đa chiều: chiến lược, thị trường, sản phẩm/công nghệ, tài chính, pháp lý, vận hành, con người.",
+      "Sinh kịch bản Base/Downside/Upside + 1–2 kịch bản Black Swan quan trọng.",
+      "Gắn rủi ro với early warning indicators (chỉ số cảnh báo sớm) & hành động ứng phó.",
+      "Làm nền cho phần Governance & IPO readiness (liên hệ 03_SKILL-SEA-VN-IPO-Readiness)."
+    ],
+    "works_best_when": [
+      "Đã có mô tả business model & unit economics (05).",
+      "Đã có khung GTM, growth & fundraising cơ bản (14, 15, 16).",
+      "Có ít nhất vài assumption về thị trường & vận hành để soi rủi ro."
+    ],
+    "not_for": [
+      "Soạn full policy ISO/SOC2 – chỉ dừng ở mức khung & ưu tiên.",
+      "Tính toán mô hình VaR, stress test định lượng chi tiết – chỉ ở mức kịch bản & qualitative."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "03_SKILL-SEA-VN-IPO-Readiness.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "11_SKILL-Operations-and-Execution-OS.json",
+      "15_SKILL-AARRR-and-Lean-Analytics.json",
+      "16_SKILL-Fundraising-and-VC-Narrative.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả business, mô hình kiếm tiền & phân khúc khách hàng chính."
+      },
+      "geo_focus": {
+        "type": "string",
+        "required": false,
+        "description": "Khu vực chính: 'VN', 'SEA', 'APAC', 'global' – để bối cảnh hoá rủi ro vĩ mô & pháp lý."
+      },
+      "has_agentic_layer": {
+        "type": "boolean",
+        "required": false,
+        "description": "Cho biết có Agentic/AI layer hay không để phân tích rủi ro riêng (model risk, data, automation)."
+      },
+      "stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'idea', 'pre_seed', 'seed', 'series_a', 'series_b_plus', 'pre_ipo'. Nếu không có, model suy luận & đánh dấu [GIẢ ĐỊNH]."
+      },
+      "key_assumptions": {
+        "type": "string",
+        "required": false,
+        "description": "Các giả định quan trọng về thị trường, khách hàng, growth, giá, cost, pháp lý… nếu user đã nêu."
+      },
+      "known_constraints": {
+        "type": "string",
+        "required": false,
+        "description": "Giới hạn đã biết: vốn, nhân sự, pháp lý, timing, hạ tầng, phụ thuộc vendor…"
+      },
+      "time_horizon_years": {
+        "type": "number",
+        "required": false,
+        "description": "Khung thời gian chính để thiết kế kịch bản (mặc định 3–5 năm nếu không có)."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu stage, model suy luận stage dựa trên idea_or_offer & đánh dấu [GIẢ ĐỊNH].",
+      "Nếu thiếu time_horizon_years, dùng 3 năm làm khung chính & đánh dấu [GIẢ ĐỊNH]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "risk_landscape_overview": {
+        "description": "Toàn cảnh rủi ro cấp cao.",
+        "fields": [
+          "inferred_stage",
+          "time_horizon_used",
+          "macro_and_geo_risks_summary",
+          "sector_specific_risks_summary",
+          "agentic_specific_risks_summary"
+        ]
+      },
+      "risk_register": {
+        "description": "Bảng Risk Register dạng ngắn gọn.",
+        "fields": [
+          "strategic_risks",
+          "market_and_customer_risks",
+          "product_and_tech_risks",
+          "operations_and_supply_chain_risks",
+          "financial_and_liquidity_risks",
+          "legal_and_compliance_risks",
+          "people_and_culture_risks",
+          "reputation_and_brand_risks"
+        ]
+      },
+      "early_warning_indicators": {
+        "description": "Chỉ số cảnh báo sớm & signal cần theo dõi.",
+        "fields": [
+          "leading_indicators_by_risk_type",
+          "thresholds_or_patterns_of_concern",
+          "recommended_monitoring_cadence"
+        ]
+      },
+      "scenario_matrix": {
+        "description": "Ma trận kịch bản Base / Upside / Downside + 1–2 Black Swan.",
+        "fields": [
+          "base_case_description",
+          "upside_case_description",
+          "downside_case_description",
+          "black_swan_scenarios"
+        ]
+      },
+      "mitigation_and_playbooks": {
+        "description": "Gói hành động ứng phó & giảm thiểu rủi ro.",
+        "fields": [
+          "preventive_actions",
+          "detective_controls",
+          "corrective_actions",
+          "contingency_plans",
+          "agentic_support_ideas"
+        ]
+      },
+      "risk_prioritization_and_heatmap": {
+        "description": "Xếp hạng ưu tiên rủi ro & heatmap định tính.",
+        "fields": [
+          "top_5_critical_risks",
+          "risk_scoring_criteria",
+          "high_medium_low_buckets"
+        ]
+      },
+      "link_to_governance_and_ipo": {
+        "description": "Kết nối risk OS với governance & IPO readiness.",
+        "fields": [
+          "governance_improvement_suggestions",
+          "disclosures_and_reporting_considerations",
+          "ipo_readiness_risk_gaps"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_stage_and_context_diagnosis",
+      "label": "Chẩn đoán stage & bối cảnh rủi ro",
+      "goal": "Đặt business vào đúng stage & khung thời gian để nói chuyện về risk.",
+      "actions": [
+        "Đọc idea_or_offer, geo_focus, stage (nếu có) & key_assumptions.",
+        "Suy luận inferred_stage nếu thiếu & đánh dấu [GIẢ ĐỊNH].",
+        "Xác định time_horizon_used (dùng time_horizon_years hoặc 3 năm [GIẢ ĐỊNH]).",
+        "Tóm tắt macro_and_geo_risks_summary (vĩ mô, geopol, FX, regulation theo geo_focus nếu có).",
+        "Tóm tắt sector_specific_risks_summary dựa trên loại business (fintech, SaaS, consumer, deeptech...).",
+        "Nếu has_agentic_layer = true: tạo agentic_specific_risks_summary."
+      ]
+    },
+    {
+      "step_id": "02_build_risk_register",
+      "label": "Tạo Risk Register",
+      "goal": "Liệt kê rủi ro chính theo nhóm, dùng ngôn ngữ ngắn gọn, actionable.",
+      "actions": [
+        "Dựa vào business model & assumptions để liệt kê strategic_risks (timing, focus, positioning...).",
+        "Liệt kê market_and_customer_risks: adoption, churn, pricing sensitivity, competition.",
+        "Liệt kê product_and_tech_risks: reliability, scalability, security, vendor lock-in, tech debt.",
+        "Liệt kê operations_and_supply_chain_risks: logistics, partners, service level, infra.",
+        "Liệt kê financial_and_liquidity_risks: runway, funding risk, FX, receivable, concentration.",
+        "Liệt kê legal_and_compliance_risks: license, data, KYC/AML (nếu relevant), consumer protection.",
+        "Liệt kê people_and_culture_risks: key person risk, hiring, retention, misalignment.",
+        "Liệt kê reputation_and_brand_risks: PR, trust, mis-selling, scandal."
+      ]
+    },
+    {
+      "step_id": "03_define_early_warning_indicators",
+      "label": "Chỉ số cảnh báo sớm",
+      "goal": "Gắn mỗi nhóm rủi ro với vài leading indicator & cách theo dõi.",
+      "actions": [
+        "Với mỗi nhóm rủi ro, chọn 1–3 leading_indicators_by_risk_type (vd: churn %, NPS drop, infra incidents, DSCR...).",
+        "Đề xuất thresholds_or_patterns_of_concern (ví dụ: churn > X%, downtime > Y giờ/tháng, ticket volume tăng bất thường...).",
+        "Đề xuất recommended_monitoring_cadence: daily/weekly/monthly/quarterly tuỳ loại risk."
+      ]
+    },
+    {
+      "step_id": "04_build_scenario_matrix",
+      "label": "Xây ma trận kịch bản",
+      "goal": "Định nghĩa Base / Upside / Downside & 1–2 Black Swan có ý nghĩa.",
+      "actions": [
+        "Mô tả base_case_description: nếu mọi thứ diễn ra 'như plan' (growth, margin, funding...).",
+        "Mô tả upside_case_description: nếu 1–2 cực thuận lợi xảy ra (viral, key partnership, regulation hỗ trợ...).",
+        "Mô tả downside_case_description: nếu 1–2 yếu tố xấu xảy ra (chậm funding, demand yếu, cost tăng...).",
+        "Xây dựng black_swan_scenarios: ít xảy ra nhưng impact lớn (reg change mạnh, platform risk, ban, crisis)."
+      ]
+    },
+    {
+      "step_id": "05_define_mitigation_and_playbooks",
+      "label": "Thiết kế mitigation & playbook",
+      "goal": "Không chỉ liệt kê rủi ro mà còn có 'động tác' ứng phó.",
+      "actions": [
+        "Từ Risk Register, đề xuất preventive_actions: thay đổi design, policy, terms, diversification...",
+        "Đề xuất detective_controls: alert, dashboard, periodic review, internal audit, error budget, SLO.",
+        "Đề xuất corrective_actions: cut cost, re-negotiate, kill feature, re-route volume, freeze campaign.",
+        "Xây contingency_plans cho 3–5 risk quan trọng nhất (top_5_critical_risks).",
+        "Đề xuất agentic_support_ideas: agent theo dõi metrics, log, policy drift, anomaly, legal change..."
+      ]
+    },
+    {
+      "step_id": "06_prioritize_risks_and_heatmap",
+      "label": "Ưu tiên & Heatmap",
+      "goal": "Giúp founder không bị choáng vì danh sách quá dài.",
+      "actions": [
+        "Định nghĩa risk_scoring_criteria (Likely/Impact/Detectability) theo mô tả định tính.",
+        "Chọn top_5_critical_risks & giải thích ngắn tại sao.",
+        "Chia high_medium_low_buckets & gơi ý thứ tự xử lý ('Now', 'Next', 'Later')."
+      ]
+    },
+    {
+      "step_id": "07_link_to_governance_and_ipo",
+      "label": "Kết nối với Governance & IPO",
+      "goal": "Biến risk OS thành nền tảng Governance/IPO-ready.",
+      "actions": [
+        "Từ các rủi ro & playbook, đề xuất governance_improvement_suggestions: committee, policy, reporting, RACI...",
+        "Gợi ý disclosures_and_reporting_considerations: những gì nên/không nên đưa vào data room, board pack, prospectus.",
+        "Nếu geo_focus liên quan VN/SEA & stage gần late/pre_ipo: nêu ipo_readiness_risk_gaps chính cần xử."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Khi Business Plan đến phần 'Business Model Risks', 'Risk Management', 'Governance & IPO Readiness'.",
+      "Khi user hỏi các câu kiểu: 'rủi ro lớn nhất là gì', 'cần chuẩn bị contingency plan thế nào', 'đi IPO cần clean up gì về risk'."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả risk_landscape_overview + scenario_matrix để user thấy toàn cảnh & các kịch bản.",
+      "Bước 2: Sau khi user đồng ý, mở rộng risk_register + early_warning_indicators + risk_prioritization_and_heatmap.",
+      "Bước 3: Cuối cùng trả mitigation_and_playbooks + link_to_governance_and_ipo để dùng vào plan & board/doc IPO."
+    ]
+  },
+  "constraints": {
+    "qualitative_first": "Tập trung mô tả định tính, tránh tạo cảm giác chính xác giả cho số liệu risk.",
+    "no_pseudo_certainty": "Không khẳng định chắc chắn về sự kiện vĩ mô; chỉ mô tả kịch bản & khả năng tương đối.",
+    "regional_context": "Khi geo_focus là VN/SEA, phải phản ánh đặc thù: pháp lý, thanh khoản vốn, hạ tầng, văn hoá kinh doanh.",
+    "language": "Tiếng Việt, dùng thêm thuật ngữ risk/compliance tiếng Anh khi cần (vd: risk register, playbook, contingency)."
+  }
+}

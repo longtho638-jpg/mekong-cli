@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:47:03.861Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: Gen Z & Millennials who love eco-tourism, culture, and authentic experiences. Also local flower buyers. [ĐỀ XUẤT]",
+      "challenge_section": "Context: Sa Dec is a historic flower village. The project aims to digitize the experience, helping farmers sell more and tourists have fun finding 'rare' flowers. [ĐỀ XUẤT]",
+      "solution_section": "Vision: Reviving the old village with new tech (AI, Gamification). - implementing Sa Dec Flower Hunt: A gamified tourism & commerce platform connecting visitors with traditional flower growers in Sa Dec, Vietnam. [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a piece of content targeted at Gen Z & Millennials who love eco-tourism, culture, and authentic experiences, written in Vietnamese, with the goal of building trust and inspiring them to check out Sa Dec Flower Hunt:\n\n**Title: Sa Dec: Hơn Cả Một Vườn Hoa, Là Cả Một Trời Thương Nhớ! 🌸✨**\n\nÊ mấy bạn ơi! Chán mấy cái quán cafe \"check-in\" máy móc, giả trân rồi đúng không? Muốn \"chill\" mà phải chất, phải \"real\" cơ! Tụi mình hiểu mà! Vậy thì nghe tụi mình kể câu chuyện này nha.\n\nỞ miền Tây sông nước, có một nơi mà hoa nở rộ quanh năm, không phải trong nhà kính hiện đại, mà ngay trên những chiếc thuyền nhỏ, lênh đênh trên sông. Đó là Sa Đéc, vựa hoa lớn nhất miền Tây, nơi mà mỗi cành hoa, mỗi gốc cây đều kể một câu chuyện đời, chuyện nghề truyền thống cha ông.\n\nTừ đời này sang đời khác, người Sa Đéc sống cùng hoa, yêu hoa, trân trọng từng cánh hoa. Họ không chỉ trồng hoa để bán, mà còn gửi gắm cả tâm hồn, cả niềm tự hào vào từng giống hoa. Bạn có thể thấy những chậu cúc mâm xôi vàng ươm, những đóa hồng nhung kiêu sa, hay những giàn lan đủ sắc màu, tất cả đều được chăm chút tỉ mỉ bởi bàn tay của những người nông dân chân chất.\n\nNhưng mà… cuộc sống hiện đại khiến cho việc bán hoa truyền thống ngày càng khó khăn. Người trẻ thì ít biết đến vẻ đẹp của hoa Sa Đéc, còn người lớn thì ngại mua hoa online. Vậy nên, tụi mình, Sa Dec Flower Hunt, ra đời để giúp các cô chú nông dân đưa hoa Sa Đéc đến gần hơn với mọi người, đặc biệt là những bạn trẻ như tụi mình.\n\nTụi mình không chỉ là một trang web bán hoa. Tụi mình là một \"chiến trường\" thú vị để bạn khám phá những giống hoa \"hiếm có khó tìm\" ở Sa Đéc, chơi game tương tác với các cô chú nông dân, và tìm hiểu về văn hóa trồng hoa độc đáo ở đây. Tưởng tượng xem, bạn vừa được \"sống ảo\" giữa vườn hoa, vừa học được bao điều hay ho, lại còn ủng hộ được người nông dân địa phương nữa chứ! Quá \"win-win\" luôn!\n\nĐến Sa Đéc không chỉ là ngắm hoa. Đó là trải nghiệm một phần văn hóa Việt Nam, là cảm nhận sự chân thành, mộc mạc của những con người nơi đây. Hãy cùng tụi mình khám phá Sa Đéc theo một cách hoàn toàn mới, vừa vui, vừa ý nghĩa nha!\n\n**➡️ Click ngay vào [link website Sa Dec Flower Hunt] để bắt đầu hành trình \"săn hoa\" và khám phá Sa Đéc cùng tụi mình! Nhớ follow tụi mình trên [Facebook/Instagram link] để cập nhật những thông tin và ưu đãi mới nhất nha!**\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

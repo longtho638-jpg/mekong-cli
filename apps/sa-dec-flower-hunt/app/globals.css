@@ -1,0 +1,366 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Midnight Garden Theme - Light Mode (Futuristic Clean) */
+    --background: 140 30% 98%;
+    --foreground: 140 50% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 140 50% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 140 50% 10%;
+
+    --primary: 142 76% 36%;
+    /* Classic Green */
+    --primary-foreground: 355.7 100% 97.3%;
+
+    --secondary: 280 60% 90%;
+    --secondary-foreground: 280 60% 20%;
+
+    --muted: 140 20% 96%;
+    --muted-foreground: 140 10% 40%;
+
+    --accent: 142 70% 90%;
+    --accent-foreground: 142 80% 20%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 140 20% 90%;
+    --input: 140 20% 90%;
+    --ring: 142 76% 36%;
+
+    --radius: 1rem;
+
+    /* 3D Glass Effects */
+    --glass-border: rgba(255, 255, 255, 0.5);
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  }
+
+  .dark {
+    /* Midnight Garden Theme - Dark Mode (Cyber Agritech) */
+    --background: 145 50% 3%;
+    /* Deep Dark Jungle */
+    --foreground: 140 20% 98%;
+
+    --card: 145 40% 5%;
+    --card-foreground: 140 20% 98%;
+
+    --popover: 145 40% 5%;
+    --popover-foreground: 140 20% 98%;
+
+    --primary: 145 80% 50%;
+    /* Neon Green #1AFF80 */
+    --primary-foreground: 145 50% 5%;
+
+    --secondary: 270 70% 15%;
+    /* Deep Purple */
+    --secondary-foreground: 270 80% 80%;
+
+    --muted: 145 30% 10%;
+    --muted-foreground: 140 20% 60%;
+
+    --accent: 145 60% 15%;
+    --accent-foreground: 140 20% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 145 30% 12%;
+    --input: 145 30% 12%;
+    --ring: 145 80% 50%;
+
+    /* 3D Glass Effects - Dark */
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(10, 20, 15, 0.6);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom 4D Utilities */
+@layer utilities {
+  .glass-panel {
+    @apply bg-[var(--glass-bg)] border border-[var(--glass-border)] backdrop-blur-xl shadow-[var(--glass-shadow)];
+  }
+
+  .glass-card-hover {
+    @apply transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(26, 255, 128, 0.2)] hover:border-[var(--primary)];
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px rgba(26, 255, 128, 0.5);
+  }
+
+  .neon-border {
+    box-shadow: 0 0 10px rgba(26, 255, 128, 0.2), inset 0 0 10px rgba(26, 255, 128, 0.1);
+  }
+
+  /* 3D Tilt Effect Base */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .transform-style-3d {
+    transform-style: preserve-3d;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(26, 255, 128, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(26, 255, 128, 0.6);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s infinite;
+}
+
+/* ========================================
+   AGRI-OS DESIGN SYSTEM ENHANCEMENTS
+   ======================================== */
+
+/* Agri-OS Color Tokens */
+:root {
+  --agri-black: #050505;
+  --agri-dark: #0a0a0a;
+  --agri-darker: #030303;
+  --agri-border: rgba(255, 255, 255, 0.1);
+  --agri-border-strong: rgba(255, 255, 255, 0.2);
+  --agri-emerald: #10b981;
+  --agri-emerald-dark: #059669;
+  --agri-emerald-glow: rgba(16, 185, 129, 0.3);
+  --agri-emerald-glow-strong: rgba(16, 185, 129, 0.6);
+  --agri-text-primary: #ffffff;
+  --agri-text-secondary: #a1a1aa;
+  --agri-text-muted: #71717a;
+  --agri-danger: #ef4444;
+  --agri-warning: #f59e0b;
+  --agri-success: #10b981;
+}
+
+/* Global Smooth Scrolling & Selection */
+* {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--agri-emerald-glow);
+  color: var(--agri-text-primary);
+}
+
+/* Agri-OS Utility Classes */
+.agri-glow {
+  box-shadow: 0 0 20px var(--agri-emerald-glow);
+}
+
+.agri-glow-strong {
+  box-shadow: 0 0 30px var(--agri-emerald-glow-strong);
+}
+
+.agri-pulse {
+  animation: agri-pulse 2s infinite;
+}
+
+.agri-bg-dark {
+  background: var(--agri-black);
+}
+
+.agri-bg-darker {
+  background: var(--agri-darker);
+}
+
+.agri-border {
+  border: 1px solid var(--agri-border);
+}
+
+.agri-text-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Agri-OS Animations */
+@keyframes agri-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 10px var(--agri-emerald-glow);
+  }
+
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 20px var(--agri-emerald-glow-strong);
+  }
+}
+
+@keyframes agri-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.agri-shimmer {
+  background: linear-gradient(90deg,
+      transparent,
+      var(--agri-emerald-glow),
+      transparent);
+  background-size: 1000px 100%;
+  animation: agri-shimmer 2s infinite;
+}
+
+@keyframes agri-glitch {
+  0% {
+    transform: translate(0);
+  }
+
+  20% {
+    transform: translate(-2px, 2px);
+  }
+
+  40% {
+    transform: translate(-2px, -2px);
+  }
+
+  60% {
+    transform: translate(2px, 2px);
+  }
+
+  80% {
+    transform: translate(2px, -2px);
+  }
+
+  100% {
+    transform: translate(0);
+  }
+}
+
+.agri-glitch:hover {
+  animation: agri-glitch 0.3s infinite;
+}
+
+@keyframes agri-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.agri-fade-in {
+  animation: agri-fade-in 0.6s ease-out;
+}
+
+/* Agri-OS Grid Background */
+.agri-grid-bg {
+  background-image:
+    linear-gradient(var(--agri-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--agri-border) 1px, transparent 1px);
+  background-size: 50px 50px;
+  background-position: -1px -1px;
+}
+
+/* Agri-OS Button Styles */
+.agri-btn-primary {
+  background: var(--agri-emerald);
+  color: var(--agri-black);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.agri-btn-primary:hover {
+  background: var(--agri-emerald-dark);
+  box-shadow: 0 0 20px var(--agri-emerald-glow);
+  transform: translateY(-2px);
+}
+
+.agri-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--agri-border);
+  color: var(--agri-text-primary);
+  transition: all 0.3s ease;
+}
+
+.agri-btn-ghost:hover {
+  border-color: var(--agri-emerald);
+  color: var(--agri-emerald);
+  box-shadow: 0 0 10px var(--agri-emerald-glow);
+}
+
+/* Agri-OS Card Styles */
+.agri-card {
+  background: var(--agri-dark);
+  border: 1px solid var(--agri-border);
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.agri-card:hover {
+  border-color: var(--agri-emerald);
+  box-shadow: 0 0 20px var(--agri-emerald-glow);
+}
+
+/* Responsive Font Sizes */
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* Performance: Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

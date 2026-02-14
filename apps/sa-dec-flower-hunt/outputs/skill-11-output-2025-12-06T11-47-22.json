@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:47:22.710Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, đây là một bài viết marketing theo yêu cầu của bạn, viết bằng tiếng Việt, giọng văn thân thiện, tập trung vào Sa Đéc và kêu gọi mọi người tương tác:\n\n**Tiêu đề: \"Bí Mật Vườn Hồng\" Sa Đéc: Hé Lộ Một Điều Bất Ngờ!**\n\nBạn đã bao giờ lạc bước giữa biển hoa rực rỡ của Sa Đéc chưa? Nếu chưa, thì bạn đang bỏ lỡ một trong những điều tuyệt vời nhất của miền Tây đấy! Cứ mỗi độ xuân về, Sa Đéc lại khoác lên mình một tấm áo mới, được dệt nên từ hàng ngàn, hàng vạn bông hoa đủ màu sắc, đủ hình dáng. Đi giữa những luống hoa, bạn sẽ cảm nhận được hương thơm ngọt ngào lan tỏa, nghe tiếng ong vo ve cần mẫn, và nhìn thấy nụ cười rạng rỡ của những người nông dân cần cù.\n\nSa Đéc không chỉ là một vựa hoa lớn, mà còn là nơi lưu giữ những giá trị văn hóa lâu đời. Từ bao đời nay, người dân Sa Đéc đã gắn bó với nghề trồng hoa như máu thịt. Họ truyền lại cho nhau những bí quyết chăm sóc hoa, những kinh nghiệm quý báu để tạo ra những giống hoa đẹp nhất, độc đáo nhất. Mỗi bông hoa ở Sa Đéc đều mang trong mình câu chuyện về sự cần cù, sáng tạo, và tình yêu thiên nhiên của người dân nơi đây.\n\nMình còn nhớ hồi nhỏ, mỗi lần theo bà ngoại ra chợ Sa Đéc, mình cứ ngẩn ngơ trước những gánh hoa tươi thắm. Bà ngoại thường mua một bó cúc vàng rực rỡ về cắm trong nhà, bảo rằng nó mang lại may mắn và tài lộc. Giờ lớn rồi, mình mới hiểu rằng, những bông hoa ấy không chỉ mang lại vẻ đẹp cho không gian sống, mà còn mang lại niềm vui và sự ấm áp cho cả gia đình.\n\nBạn có muốn tự mình khám phá vẻ đẹp của Sa Đéc không? Bạn có muốn mang những bông hoa tươi thắm từ Sa Đéc về trang trí cho ngôi nhà của mình không?\n\nVậy thì hãy chờ đón điều bất ngờ từ Sa Đéc Flower Hunt nhé! Chúng mình đang ấp ủ một điều bí mật, một món quà đặc biệt dành tặng cho những người yêu hoa. Hãy theo dõi trang của chúng mình để không bỏ lỡ cơ hội nhận được ưu đãi độc quyền này!\n\n**[Link đến trang Sa Đéc Flower Hunt]**\n\n**Thử đoán xem đó là gì? Chia sẻ dự đoán của bạn trong phần bình luận nhé!**\n\n**Tại sao bài viết này hiệu quả:**\n\n*   **Ngôn ngữ gần gũi:** Sử dụng từ ngữ thông thường, cách xưng hô thân thiện (\"bạn\", \"mình\") tạo cảm giác gần gũi và dễ tiếp cận.\n*   **Kể chuyện:** Chia sẻ kỷ niệm cá nhân giúp tạo sự đồng cảm và kết nối cảm xúc với độc giả.\n*   **Tập trung vào cảm xúc:** Mô tả vẻ đẹp của hoa, hương thơm, âm thanh và cảm xúc của người dân Sa Đéc để kích thích trí tưởng tượng và khơi gợi sự yêu thích.\n*   **Tạo sự tò mò:** \"Điều bí mật\" và \"món quà đặc biệt\" khiến người đọc tò mò và muốn tìm hiểu thêm.\n*   **Kêu gọi hành động rõ ràng:** Yêu cầu theo dõi trang và chia sẻ dự đoán tăng tương tác.\n*   **Nhấn mạnh giá trị văn hóa:** Giới thiệu về nghề trồng hoa truyền thống của Sa Đéc, tạo sự khác biệt so với các sản phẩm hoa khác.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

@@ -1,0 +1,259 @@
+{
+  "id": "00_MASTER-Agentic-BizPlan-OS",
+  "version": "1.0.0",
+  "title": "Master Frame – Business Plan 2026: Agentic Zero→IPO (VN/SEA)",
+  "type": "master_frame",
+  "description": "Hiến pháp tổng thể cho mọi kế hoạch kinh doanh trong Project Agentic Business Plan Zero→IPO (VN/SEA, 2026). Định nghĩa khung Business Plan 2026, các giai đoạn vòng đời Zero→IPO, và cách gắn layer Agentic + IPO/Governance lên từng block.",
+  "scope": {
+    "regions": [
+      "Vietnam",
+      "Southeast Asia"
+    ],
+    "stages": [
+      "Zero",
+      "Pre-Seed",
+      "Seed",
+      "Series A",
+      "Series B/C",
+      "Pre-IPO",
+      "Post-IPO (light)"
+    ],
+    "use_cases": [
+      "Ý tưởng mới (chưa có kế hoạch cũ)",
+      "Startup early stage cần chuẩn hoá plan cho gọi vốn",
+      "SME muốn chuyển mình thành mô hình có khả năng IPO khu vực",
+      "Tập đoàn/holding muốn spin-off unit mới theo chuẩn Agentic"
+    ]
+  },
+  "business_plan_frame": {
+    "overview": {
+      "note": "Đây là khung chuẩn. Không phải mọi dự án đều cần đầy đủ 100%, nhưng AI luôn xem đây là Default Map.",
+      "section_order": [
+        "0_meta_and_stage",
+        "1_vision_mission_story",
+        "2_market_and_customer",
+        "3_product_and_agentic_os",
+        "4_business_model_and_unit_economics",
+        "5_growth_engine_and_go_to_market",
+        "6_operations_risk_compliance",
+        "7_financials_and_ipo_roadmap",
+        "8_brand_story_psychology"
+      ]
+    },
+    "sections": [
+      {
+        "id": "0_meta_and_stage",
+        "label": "Meta & Stage",
+        "goal": "Định nghĩa ngắn gọn về business, ngành, khu vực, stage và tham vọng Zero→IPO.",
+        "subsections": [
+          "0.1 Business snapshot (Product / Service / Business Idea)",
+          "0.2 Ngành & khu vực (VN/SEA + các thị trường khác nếu có)",
+          "0.3 Stage hiện tại (Zero/Seed/A/B/Pre-IPO)",
+          "0.4 Mục tiêu 3–5 năm (growth, vùng lợi thế, exit/IPO options)"
+        ]
+      },
+      {
+        "id": "1_vision_mission_story",
+        "label": "Vision, Mission & Zero→IPO Story",
+        "goal": "Kể câu chuyện dài hạn, lý do tồn tại và phiên bản thành công khi chạm ngưỡng IPO.",
+        "subsections": [
+          "1.1 Vision (tương lai muốn tạo ra)",
+          "1.2 Mission (cách tạo ra giá trị ngày hôm nay)",
+          "1.3 Founder/Origin Story (vì sao team làm chuyện này)",
+          "1.4 Zero→IPO Narrative (đường cong phát triển lý tưởng)"
+        ]
+      },
+      {
+        "id": "2_market_and_customer",
+        "label": "Market & Customer [Business / Agentic / Governance]",
+        "goal": "Hiểu khách hàng, thị trường và bối cảnh pháp lý/IPO.",
+        "subsections": [
+          "2.1 Customer Profile & Personas",
+          "2.2 Jobs-to-be-done, pain points, dream state",
+          "2.3 Market sizing (TAM/SAM/SOM cho VN/SEA)",
+          "2.4 Cạnh tranh & landscape (direct / indirect / platform)",
+          "2.5 Quy định & chuẩn mực (nếu là ngành regulated: fintech, health, crypto, vv.)"
+        ]
+      },
+      {
+        "id": "3_product_and_agentic_os",
+        "label": "Product & Agentic Operating System",
+        "goal": "Mô tả sản phẩm/dịch vụ + kiến trúc Agentic hỗ trợ vận hành & tăng trưởng.",
+        "subsections": [
+          "3.1 Core product / service",
+          "3.2 Key features & value drivers",
+          "3.3 Agentic OS map: các Agent chính (Acquisition, Risk, Ops, Support…)",
+          "3.4 Data & feedback loop (vì sao agent càng chạy càng khôn)",
+          "3.5 Roadmap sản phẩm 12–24 tháng"
+        ]
+      },
+      {
+        "id": "4_business_model_and_unit_economics",
+        "label": "Business Model & Unit Economics",
+        "goal": "Làm rõ nguồn doanh thu, cấu trúc chi phí và đơn vị kinh tế cốt lõi.",
+        "subsections": [
+          "4.1 Revenue model (subscription, usage-based, take-rate, spread, fee…)",
+          "4.2 Cost structure (COGS, OPEX chính)",
+          "4.3 Unit economics (LTV, CAC, payback, contribution margin)",
+          "4.4 Agentic leverage: agent nào giúp cải thiện unit economics?",
+          "4.5 Scenario & sensitivity notes (chỉ khung, không cần số cụ thể nếu thiếu dữ liệu)"
+        ]
+      },
+      {
+        "id": "5_growth_engine_and_go_to_market",
+        "label": "Growth Engine (AARRR + Growth Agents)",
+        "goal": "Định nghĩa engine tăng trưởng và chiến lược go-to-market.",
+        "subsections": [
+          "5.1 AARRR view (Acquisition, Activation, Retention, Revenue, Referral)",
+          "5.2 Kênh chính (online/offline, partner, distributor, marketplace…)",
+          "5.3 Growth loops (referral, content, affiliate, network effects)",
+          "5.4 Growth Agents: agent nào phụ trách phần nào trong AARRR?",
+          "5.5 Milestones 0→100→1.000→10.000 khách hàng"
+        ]
+      },
+      {
+        "id": "6_operations_risk_compliance",
+        "label": "Operations, Risk & Compliance",
+        "goal": "Khung vận hành hàng ngày, quản trị rủi ro và tuân thủ.",
+        "subsections": [
+          "6.1 Operating model (team, quy trình chính, location)",
+          "6.2 Key risks (thị trường, sản phẩm, tài chính, pháp lý, công nghệ)",
+          "6.3 Compliance & governance (tối thiểu theo chuẩn VN/SEA cho ngành)",
+          "6.4 Agentic automation trong vận hành (monitoring, alerting, decision-support)",
+          "6.5 Chuẩn bị dài hạn cho yêu cầu IPO (reporting, audit trail, data room)"
+        ]
+      },
+      {
+        "id": "7_financials_and_ipo_roadmap",
+        "label": "Financial Plan & IPO Roadmap",
+        "goal": "Tổng quan tài chính và hành trình từ growth-stage đến IPO-ready.",
+        "subsections": [
+          "7.1 Revenue & cost trajectory (high-level, theo stage)",
+          "7.2 Funding plan (Seed → A → B → Pre-IPO; equity vs. debt)",
+          "7.3 Key financial KPIs trước khi IPO",
+          "7.4 IPO options (VN, SGX, dual listing… ở mức khung)",
+          "7.5 IPO readiness checklist tóm tắt"
+        ]
+      },
+      {
+        "id": "8_brand_story_psychology",
+        "label": "Brand, Story & Psychology",
+        "goal": "Góc nhìn brand, hành vi người dùng và narrative để fundraising & tăng trưởng.",
+        "subsections": [
+          "8.1 Brand position & core message",
+          "8.2 Ứng dụng tâm lý học (Reiss 16 motives, Freud, Rogers…)",
+          "8.3 Key narratives cho khách hàng & nhà đầu tư",
+          "8.4 Content & community strategy (nếu có)",
+          "8.5 Long-term moat: tại sao brand này đáng tồn tại 10–20 năm"
+        ]
+      }
+    ]
+  },
+  "agentic_layers": {
+    "overview": "Layer Agentic là cách mô tả hệ thống các ‘Agent’ (tác nhân) hỗ trợ vận hành business và tạo đòn bẩy Zero→IPO.",
+    "agent_types": [
+      {
+        "id": "insight_agent",
+        "role": "Tổng hợp dữ liệu thị trường/khách hàng, tạo insight & đề xuất.",
+        "touch_points": [
+          "2_market_and_customer",
+          "5_growth_engine_and_go_to_market"
+        ]
+      },
+      {
+        "id": "drafting_agent",
+        "role": "Hỗ trợ viết nội dung: deck, email, landing page, policy, training…",
+        "touch_points": [
+          "1_vision_mission_story",
+          "8_brand_story_psychology"
+        ]
+      },
+      {
+        "id": "ops_risk_agent",
+        "role": "Theo dõi rủi ro, checklist compliance, flag vấn đề cho người phụ trách.",
+        "touch_points": [
+          "6_operations_risk_compliance",
+          "7_financials_and_ipo_roadmap"
+        ]
+      },
+      {
+        "id": "growth_agent",
+        "role": "Đề xuất thí nghiệm growth, theo dõi KPI AARRR, báo cáo bất thường.",
+        "touch_points": [
+          "5_growth_engine_and_go_to_market",
+          "4_business_model_and_unit_economics"
+        ]
+      }
+    ],
+    "usage_notes": [
+      "Trong Project, không cần vẽ chi tiết implementation; chỉ cần map rõ Function → Agent → Input → Output → KPI → Human owner (file 02 sẽ đi sâu).",
+      "Mọi Agent đều là ‘supporting system’, không tự ý quyết định những thứ có rủi ro pháp lý/capital high-stake."
+    ]
+  },
+  "ipo_lifecycle": {
+    "stages": [
+      {
+        "id": "zero_to_seed",
+        "label": "Zero → Seed",
+        "focus": [
+          "Định nghĩa vấn đề & customer segment",
+          "Proof-of-concept / MVP",
+          "Unit economics cơ bản (nhỏ nhưng positive hướng về tương lai)"
+        ]
+      },
+      {
+        "id": "seed_to_series_a",
+        "label": "Seed → Series A",
+        "focus": [
+          "Tìm được repeatable go-to-market",
+          "Retention & cohort stable",
+          "Xây nền tảng dữ liệu và tracking cho Agentic sau này"
+        ]
+      },
+      {
+        "id": "series_a_to_growth",
+        "label": "Series A → B/C",
+        "focus": [
+          "Scale engine tăng trưởng",
+          "Chuẩn hoá vận hành & governance",
+          "Chuẩn hoá báo cáo tài chính & key metrics"
+        ]
+      },
+      {
+        "id": "pre_ipo",
+        "label": "Pre-IPO",
+        "focus": [
+          "Lock-in governance, compliance, audit trail",
+          "Tối ưu cấu trúc pháp lý & thuế (tuân thủ)",
+          "Xây câu chuyện IPO & equity story cho nhà đầu tư công chúng"
+        ]
+      }
+    ],
+    "usage_in_project": [
+      "Luôn gán mỗi IDEA vào 1 stage ‘chính’ + 1 stage ‘mục tiêu’ (vd: hiện tại Seed, target Pre-IPO trong 5–7 năm).",
+      "Khi sinh plan, AI phải tránh ‘over-IPO hoá’ cho stage quá sớm (Zero/Pre-Seed) – chỉ gợi ý các yếu tố cần chuẩn bị từ từ."
+    ]
+  },
+  "usage_in_project": {
+    "for_model": [
+      "Luôn xem file này là map tổng. Mỗi khi user gửi IDEA, trước tiên hãy dùng khung section_order để quyết định sẽ đi block nào trước.",
+      "Không bao giờ đổ full Business Plan 1 lần; thay vào đó xử lý theo từng section, mỗi response tối đa 1 block lớn + nếu cần thì 1–2 bảng phụ.",
+      "Khi cần chi tiết hoá cách refactor kế hoạch cũ hoặc mapping Agentic/IPO, hãy gọi sang các skill file: 01, 02, 03, 04.",
+      "Khi cần logic ngành cụ thể, hãy chọn 1 file industry_playbook (05–24) phù hợp và dùng làm ‘bộ lọc’ để tinh chỉnh gợi ý."
+    ],
+    "for_user": [
+      "User chỉ cần mô tả IDEA, không phải thuộc lòng khung. System tự map và hỏi xác nhận.",
+      "User có thể dừng ở bất kỳ section nào; bản plan vẫn có giá trị nội bộ (không bắt buộc full 8/8)."
+    ]
+  },
+  "content_rules": {
+    "language": "Tiếng Việt là chính, xen thuật ngữ tiếng Anh startup/finance khi cần.",
+    "marking_convention": {
+      "from_user": "[TỪ IDEA]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "missing": "[TODO – THIẾU DỮ LIỆU]"
+    },
+    "no_hard_numbers": "Không bịa số liệu tài chính chi tiết; nếu cần ví dụ, phải đánh dấu [GIẢ ĐỊNH]."
+  }
+}

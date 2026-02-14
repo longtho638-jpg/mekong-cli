@@ -1,0 +1,211 @@
+{
+  "id": "21_SKILL-Agentic-Execution-and-OKR-OS",
+  "version": "1.0.0",
+  "title": "Skill – Agentic Execution & OKR Operating System",
+  "type": "skill",
+  "description": "Kỹ năng chuyển Business Plan 2026 thành hệ thống thực thi: OKR, roadmap quý, sprint, Agentic workflow & nhịp vận hành (operating cadence) cho đội ngũ + agent.",
+  "intended_use": {
+    "primary": [
+      "Biến ý tưởng & kế hoạch kinh doanh thành hệ thống mục tiêu – kết quả then chốt (OKR) theo quý/năm.",
+      "Thiết kế roadmap thực thi 12–24 tháng, chia layer: chiến lược, tactical, agentic-automation.",
+      "Xác định nơi nào nên dùng Agent/AI để tự động hóa, nơi nào bắt buộc human-in-the-loop.",
+      "Thiết kế nhịp vận hành: họp tuần/tháng/quý, dashboard & review loop."
+    ],
+    "works_best_when": [
+      "Đã có Business Plan 2026 tương đối rõ (vision, chiến lược, growth, sản phẩm, tài chính).",
+      "Founder muốn biến plan thành chuỗi bước làm cụ thể, có kiểm soát & đo lường được.",
+      "Business có (hoặc sẽ có) một số agent/automation (data, marketing, ops, finance…)."
+    ],
+    "not_for": [
+      "Thiết kế hệ thống OKR chi tiết cho tập đoàn hàng chục nghìn người – chỉ phù hợp SME → growth.",
+      "Quản lý nhân sự day-to-day (lịch nghỉ phép, chấm công…) – đây là OS ở tầng chiến lược + thực thi."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json",
+      "02_SKILL-Agentic-Mapping-and-Design.json",
+      "04_SKILL-Gap-Report-and-Roadmap.json",
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "09_SKILL-Website-and-Landing-Narrative.json",
+      "10_SKILL-Content-Engine-and-Creative-System.json",
+      "11_SKILL-Sales-Playbook-and-Pipeline-Design.json",
+      "13_SKILL-Sales-Process-and-Channels.json",
+      "14_SKILL-GTM-Experiments-and-Bullseye.json",
+      "15_SKILL-AARRR-and-Lean-Analytics.json",
+      "17_SKILL-Risk-Downside-and-Scenario-OS.json",
+      "18_SKILL-Talent-and-Org-Design-OS.json",
+      "20_SKILL-Data-Room-and-Investor-Materials-OS.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "business_stage": {
+        "type": "string",
+        "required": false,
+        "description": "Giai đoạn: 'idea', 'pre_seed', 'seed', 'series_a', 'series_b', 'growth', 'pre_ipo'."
+      },
+      "time_horizon_months": {
+        "type": "number",
+        "required": false,
+        "description": "Khoảng thời gian muốn lập plan: 6, 12, 18, 24 (tháng)."
+      },
+      "north_star_metric": {
+        "type": "string",
+        "required": false,
+        "description": "North Star Metric nếu đã có (vd: MRR, GMV, active users…)."
+      },
+      "top_3_objectives_freeform": {
+        "type": "string",
+        "required": false,
+        "description": "Founder mô tả 2–3 mục tiêu lớn bằng ngôn ngữ tự nhiên; model sẽ map sang OKR."
+      },
+      "has_agentic_layer": {
+        "type": "boolean",
+        "required": false,
+        "description": "Business có dự định dùng Agentic/AI trong vận hành không?"
+      }
+    },
+    "assumptions": [
+      "Nếu business_stage trống, model suy luận từ Business Plan & đánh dấu [GIẢ ĐỊNH].",
+      "Nếu time_horizon_months trống, mặc định 12 tháng & đánh dấu [GIẢ ĐỊNH].",
+      "Nếu north_star_metric trống, đề xuất 1–2 gợi ý & đánh dấu [ĐỀ XUẤT]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "okr_tree": {
+        "description": "Cây OKR cấp công ty (và optional: cấp function chính).",
+        "fields": [
+          "company_objectives",
+          "company_key_results",
+          "function_level_okrs"
+        ]
+      },
+      "execution_roadmap": {
+        "description": "Roadmap thực thi theo quý/sprint.",
+        "fields": [
+          "timeframe",
+          "quarters",
+          "dependencies_notes"
+        ]
+      },
+      "agentic_execution_layer": {
+        "description": "Bản đồ chỗ nào dùng Agent/AI, chỗ nào human, và cách phối hợp.",
+        "fields": [
+          "candidate_agentic_areas",
+          "human_in_the_loop_points",
+          "tooling_and_data_requirements",
+          "monitoring_kpis_for_agents"
+        ]
+      },
+      "operating_cadence": {
+        "description": "Nhịp vận hành: họp, review, dashboard.",
+        "fields": [
+          "meeting_cadence_design",
+          "reporting_routines",
+          "retro_and_learning_loops"
+        ]
+      },
+      "risk_and_alignment_notes": {
+        "description": "Các cảnh báo để tránh 'OKR trên giấy' & misalignment giữa plan – execution.",
+        "fields": [
+          "misalignment_risks",
+          "over_automation_risks",
+          "under_automation_risks",
+          "recommendations_to_keep_alignment"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]",
+      "todo": "[TODO]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_extract_goals",
+      "label": "Trích xuất mục tiêu từ Business Plan",
+      "goal": "Hiểu business thực sự muốn đạt gì trong 12–24 tháng tới.",
+      "actions": [
+        "Tóm tắt lại 3–5 mục tiêu lớn xuất hiện xuyên suốt Business Plan 2026.",
+        "Hợp nhất với top_3_objectives_freeform (nếu user cung cấp).",
+        "Chuẩn hóa thành danh sách candidate objectives, gắn tag: growth, product, profitability, readiness (IPO), org."
+      ]
+    },
+    {
+      "step_id": "02_define_okr_tree",
+      "label": "Thiết kế cây OKR",
+      "goal": "Chuyển goals thành 3–5 Company Objectives với 2–4 KRs mỗi objective.",
+      "actions": [
+        "Chọn 3–5 company_objectives quan trọng nhất phù hợp stage & time_horizon.",
+        "Cho mỗi objective, sinh 2–4 company_key_results – có metric & hướng target nhưng không bịa số nếu plan chưa có.",
+        "Optional: nếu business đã rõ functions (Product, Tech, Growth, Ops, Finance), đề xuất function_level_okrs liên kết với company OKR."
+      ]
+    },
+    {
+      "step_id": "03_build_execution_roadmap",
+      "label": "Lập roadmap theo quý",
+      "goal": "Sắp xếp initiative theo thời gian, tránh nhồi nhét.",
+      "actions": [
+        "Chia time_horizon_months thành các quý (Q1, Q2, Q3, Q4…).",
+        "Nhóm key initiatives theo quý dựa trên dependencies (vd: phải xong product v1 mới chạy GTM mạnh).",
+        "Ghi rõ dependencies_notes (pháp lý, funding, tuyển dụng, infra…)."
+      ]
+    },
+    {
+      "step_id": "04_design_agentic_layer",
+      "label": "Thiết kế tầng Agentic Execution",
+      "goal": "Xác định chỗ dùng Agent/AI để tăng đòn bẩy nhưng vẫn kiểm soát được rủi ro.",
+      "actions": [
+        "Dò các process lặp lại, data-heavy trong plan (marketing, sales ops, reporting, risk monitoring…).",
+        "Tạo candidate_agentic_areas với giải thích why_agentic & risk_notes.",
+        "Đánh dấu human_in_the_loop_points quan trọng (approval, exception, governance).",
+        "Tóm tắt tooling_and_data_requirements + monitoring_kpis_for_agents."
+      ]
+    },
+    {
+      "step_id": "05_set_operating_cadence",
+      "label": "Thiết kế nhịp vận hành",
+      "goal": "Đảm bảo OKR & Agentic Execution được review liên tục.",
+      "actions": [
+        "Đề xuất meeting_cadence_design: weekly check-in, monthly ops review, quarterly strategy review.",
+        "Liệt kê reporting_routines cần có (dashboard định kỳ, narrative cập nhật cho investor/board…).",
+        "Mô tả retro_and_learning_loops: cuối quý review gì, điều chỉnh OKR & agent thế nào."
+      ]
+    },
+    {
+      "step_id": "06_alignment_and_risks",
+      "label": "Nhận diện rủi ro lệch pha",
+      "goal": "Giúp founder không rơi vào bẫy 'kế hoạch một đường, team/agent làm một nẻo'.",
+      "actions": [
+        "Liệt kê misalignment_risks phổ biến dựa trên nội dung plan (vd: OKR quá nhiều, không gắn KPI…).",
+        "Mô tả over_automation_risks & under_automation_risks trong bối cảnh Agentic.",
+        "Đưa ra recommendations_to_keep_alignment – ít nhưng rõ, dễ thực thi."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi Business Plan 2026 (bản đầu) đã được build xong và qua vòng Gap (skill 04).",
+      "Trước khi bắt đầu một quý mới & founder muốn convert plan thành OKR + roadmap thực thi.",
+      "Khi user hỏi: 'Giờ bắt tay làm thì bắt đầu từ đâu, tuần này làm gì, quý này ưu tiên gì?'."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả về bản tóm tắt OKR tree (objective + KRs) để user confirm.",
+      "Bước 2: Sau khi user đồng ý, hiển thị execution_roadmap (theo quý) + agentic_execution_layer.",
+      "Bước 3: Cuối cùng, chia sẻ operating_cadence & risk_and_alignment_notes để khoá lại thành hệ vận hành."
+    ]
+  },
+  "constraints": {
+    "no_forced_okrs": "Không ép mọi thứ thành OKR nếu bản chất là hoạt động nền (hygiene); có thể gắn vào checklist thay vì OKR.",
+    "no_fake_targets": "Không bịa số target; nếu thiếu số liệu thì để [TODO] hoặc gợi ý cách tự xác định mục tiêu.",
+    "agentic_responsibility": "Luôn nhấn mạnh agent chỉ hỗ trợ; trách nhiệm cuối cùng thuộc về con người/founder.",
+    "language": "Tiếng Việt, có thể dùng từ OKR, roadmap, sprint, cadence để giữ đúng ngữ cảnh."
+  }
+}

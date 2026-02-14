@@ -1,0 +1,239 @@
+{
+  "id": "07_SKILL-Brand-Positioning-and-Identity",
+  "version": "1.0.0",
+  "title": "Skill – Brand Positioning & Identity System",
+  "type": "skill",
+  "description": "Kỹ năng chuyển một business idea hoặc Business Plan 2026 thành hệ thống brand positioning & identity (định vị, USP, tagline, voice & tone, guideline cơ bản) có thể dùng trực tiếp cho marketing & product.",
+  "intended_use": {
+    "primary": [
+      "Xây brand foundation: brand position, promise, personality, USP, key messages.",
+      "Đồng bộ hoá brand với business model (05_SKILL) và customer psychology (06_SKILL).",
+      "Sinh guideline cơ bản cho logo concept, màu sắc, imagery, voice & tone để team triển khai tiếp."
+    ],
+    "works_best_when": [
+      "Đã có mô tả sản phẩm/dịch vụ, khách hàng mục tiêu và mô hình kiếm tiền ở mức cơ bản.",
+      "Đã chạy 06_SKILL-Customer-Psychology-and-Personas hoặc có ít nhất target audience rõ ràng."
+    ],
+    "not_for": [
+      "Thiết kế đồ hoạ chi tiết (logo vector, UI kit) – chỉ gợi ý concept & direction.",
+      "Rebranding corporate lớn với multi-country, multi-segment phức tạp – ở đây là khung nền tảng."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_plan_excerpt": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả ngắn về sản phẩm/dịch vụ, khách hàng mục tiêu và giá trị mang lại."
+      },
+      "market_position_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý vị thế mong muốn: 'premium', 'mass', 'value_for_money', 'enterprise', 'niche_pro', v.v."
+      },
+      "brand_personality_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý tính cách thương hiệu mong muốn: 'trustworthy', 'playful', 'bold', 'minimalist', 'luxury', v.v."
+      }
+    },
+    "assumptions": [
+      "Nếu user không nêu rõ định vị mong muốn, chọn hướng phù hợp với insights từ business model + psychology.",
+      "Không ép brand đi ngược unit economics (vd: cost-leadership mà branding như luxury)."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "brand_core": {
+        "description": "Nền tảng cốt lõi của brand.",
+        "fields": [
+          "brand_essence",
+          "brand_promise",
+          "one_line_positioning_statement",
+          "category_and_frame_of_reference"
+        ]
+      },
+      "positioning_statement_canon": {
+        "description": "Positioning statement đầy đủ dạng 'For X, who Y, we are Z that W, unlike A, we B'.",
+        "fields": [
+          "for_who",
+          "who_have",
+          "we_are",
+          "that_do",
+          "unlike",
+          "we_uniquely"
+        ]
+      },
+      "unique_selling_proposition": {
+        "description": "USP/UVP rõ ràng và ngắn gọn.",
+        "fields": [
+          "usp_long_form",
+          "usp_short_form",
+          "supporting_proofs_or_reasons_to_believe"
+        ]
+      },
+      "brand_personality_and_voice": {
+        "description": "Tính cách thương hiệu + voice & tone guideline.",
+        "fields": [
+          "personality_keywords",
+          "voice_principles",
+          "tone_by_context",
+          "words_to_use",
+          "words_to_avoid"
+        ]
+      },
+      "visual_direction_outline": {
+        "description": "Gợi ý định hướng visual (logo, màu sắc, imagery) ở level khung.",
+        "fields": [
+          "logo_concept_ideas",
+          "color_palette_ideas",
+          "imagery_style_ideas",
+          "do_and_dont_for_visuals"
+        ]
+      },
+      "key_messages_and_proof_points": {
+        "description": "Bộ thông điệp chính theo audience / use-case.",
+        "structure": {
+          "message_fields": [
+            "message_id",
+            "target_segment_or_persona",
+            "core_message",
+            "emotional_angle",
+            "rational_proof_points"
+          ]
+        }
+      },
+      "cta_and_offer_guidelines": {
+        "description": "Guide cho Call-to-Action và cấu trúc offer/irresistible offer.",
+        "fields": [
+          "primary_cta_patterns",
+          "secondary_cta_patterns",
+          "offer_components",
+          "scarcity_or_urgency_principles"
+        ]
+      },
+      "brand_guidelines_summary": {
+        "description": "Tóm tắt guideline dễ đưa cho designer/content/sales.",
+        "fields": [
+          "what_to_always_do",
+          "what_to_never_do",
+          "examples_of_on_brand",
+          "examples_of_off_brand"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_read_business_and_customer_context",
+      "label": "Đọc bối cảnh business & khách hàng",
+      "goal": "Hiểu business đang chơi ở đâu, cho ai, giải quyết cái gì trước khi định vị.",
+      "actions": [
+        "Tóm tắt nhanh category, target audience và giá trị cốt lõi từ idea_or_plan_excerpt.",
+        "Nếu có file 05/06 trong context, đồng bộ với business model & personas để tránh lệch."
+      ]
+    },
+    {
+      "step_id": "02_define_brand_core",
+      "label": "Định nghĩa brand core",
+      "goal": "Đặt xương sống: brand essence, promise, one-line positioning.",
+      "actions": [
+        "Tạo brand_essence dưới dạng 2–4 từ mô tả linh hồn của brand.",
+        "Viết brand_promise: điều brand cam kết thay đổi trong cuộc sống/công việc khách hàng.",
+        "Viết one_line_positioning_statement ngắn gọn, dễ lặp lại."
+      ]
+    },
+    {
+      "step_id": "03_write_positioning_statement_canon",
+      "label": "Positioning statement đầy đủ",
+      "goal": "Chuẩn hoá định vị theo cấu trúc kinh điển.",
+      "actions": [
+        "Điền các phần for_who, who_have, we_are, that_do, unlike, we_uniquely dựa trên context.",
+        "Đảm bảo statement logic, không hô khẩu hiệu chung chung."
+      ]
+    },
+    {
+      "step_id": "04_define_usp_and_proofs",
+      "label": "Xác định USP/UVP",
+      "goal": "Làm rõ vì sao brand này đáng chọn hơn lựa chọn khác.",
+      "actions": [
+        "Rút ra usp_long_form (1–3 câu) và usp_short_form (1 câu/phrase).",
+        "Liệt kê supporting_proofs_or_reasons_to_believe: số liệu, công nghệ, đội ngũ, đối tác, chứng nhận… nếu có, hoặc note [TODO] nếu thiếu."
+      ]
+    },
+    {
+      "step_id": "05_shape_personality_and_voice",
+      "label": "Định hình tính cách & giọng nói",
+      "goal": "Đảm bảo brand nói chuyện nhất quán với đúng kiểu khách hàng.",
+      "actions": [
+        "Chọn 3–5 personality_keywords (vd: Bold, Caring, Precise…).",
+        "Viết voice_principles: 3–5 nguyên tắc giọng nói.",
+        "Trong tone_by_context, mô tả cách biến đổi tone cho: website, email, social, sales deck, support.",
+        "Liệt kê words_to_use & words_to_avoid để team align."
+      ]
+    },
+    {
+      "step_id": "06_outline_visual_direction",
+      "label": "Phác thảo direction hình ảnh",
+      "goal": "Cho team thiết kế 'brief' đủ rõ để bắt tay vào làm.",
+      "actions": [
+        "Gợi ý 2–3 logo_concept_ideas (vd: biểu tượng tối giản, chữ cái cách điệu, biểu tượng trừu tượng gợi ngành).",
+        "Đề xuất 2–3 hướng color_palette_ideas (kèm cảm xúc liên quan).",
+        "Mô tả imagery_style_ideas: ảnh người thật, illustration, data viz, v.v.",
+        "Liệt kê do_and_dont_for_visuals: điều nên/không nên để tránh off-brand."
+      ]
+    },
+    {
+      "step_id": "07_map_key_messages_and_cta",
+      "label": "Thông điệp chính & CTA",
+      "goal": "Chuyển định vị thành messages & CTA dùng trong thực chiến.",
+      "actions": [
+        "Tạo 3–7 key messages mapped với các segment/persona chính.",
+        "Mỗi message có emotional_angle & rational_proof_points.",
+        "Xây primary_cta_patterns (vd: Start free trial, Book strategy call…) và secondary_cta_patterns (Learn more, Download guide…).",
+        "Đề xuất offer_components & nguyên tắc scarcity_or_urgency lành mạnh, không lố."
+      ]
+    },
+    {
+      "step_id": "08_summarize_brand_guidelines",
+      "label": "Tóm tắt guideline cho team",
+      "goal": "Để founder gửi 1 file là cả team hiểu brand.",
+      "actions": [
+        "Điền what_to_always_do & what_to_never_do bằng các rule dễ nhớ.",
+        "Cho 1–2 examples_of_on_brand & off_brand để minh hoạ.",
+        "Đảm bảo summary đủ ngắn để đọc trong 5–10 phút."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi hiểu khách hàng & business model (05, 06).",
+      "Trước khi đẻ content pillars, website copy, sales deck."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trình bày brand_core + positioning_statement_canon.",
+      "Bước 2: Trình bày USP, personality & voice, visual_direction_outline.",
+      "Bước 3: Đưa key_messages_and_proof_points + cta_and_offer_guidelines.",
+      "Bước 4: Kết thúc bằng brand_guidelines_summary để user có thể copy sang 1 file riêng."
+    ]
+  },
+  "constraints": {
+    "no_generic_slogans": "Tránh slogan chung chung kiểu 'giải pháp toàn diện' nếu không có context rõ.",
+    "respect_culture": "Tôn trọng khác biệt văn hoá VN/SEA, tránh dùng ví dụ hoặc imagery nhạy cảm.",
+    "language": "Output ưu tiên tiếng Việt, giữ một số cấu trúc positioning/branding tiếng Anh quen thuộc."
+  }
+}

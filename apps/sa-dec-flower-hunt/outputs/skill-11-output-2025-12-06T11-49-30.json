@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:49:30.297Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a compelling piece of content in Vietnamese, aiming for engagement and a friendly, inviting tone:\n\n**Title: Điều Bí Mật Nằm Giữa Những Cánh Hoa Sa Đéc... Bạn Dám Khám Phá?**\n\n(The Secret Hidden Among Sa Dec's Petals... Dare You Discover It?)\n\nNè nè, bạn có bao giờ tự hỏi, điều gì khiến Sa Đéc bỗng dưng rực rỡ mỗi độ xuân về không? Không chỉ là nắng ấm, không chỉ là đất đai màu mỡ, mà còn là cả một câu chuyện tình yêu, một di sản văn hóa được vun đắp qua bao thế hệ.\n\nNhắm mắt lại đi, tưởng tượng bạn đang đứng giữa một biển hoa. Hương thơm ngào ngạt của cúc mâm xôi, vẻ kiêu sa của hoa hồng, nét dịu dàng của hoa lan... tất cả hòa quyện vào nhau, tạo nên một bức tranh sống động khiến ai cũng phải ngỡ ngàng.\n\nSa Đéc không chỉ là nơi bán hoa. Đó là nơi những người nông dân miệt mài chăm chút từng cánh hoa, gửi gắm vào đó cả tâm huyết và niềm tự hào. Họ kể cho bạn nghe những câu chuyện về giống hoa quý hiếm, về kỹ thuật trồng trọt bí truyền, về những khó khăn và niềm vui trong cuộc sống. Đó là những câu chuyện không thể tìm thấy ở bất kỳ nơi nào khác.\n\nBạn có nhớ những ngày Tết thơ bé, khi cả gia đình cùng nhau đi chợ hoa chọn cành mai, chậu cúc để trang trí nhà cửa không?  Cái cảm giác háo hức, cái không khí rộn ràng đó... Sa Đéc mang đến cho bạn những cảm xúc chân thật như vậy, gợi nhớ về những ký ức đẹp đẽ và kết nối bạn với cội nguồn.\n\nVà bây giờ, chúng tôi có một bí mật muốn chia sẻ. Một điều bất ngờ nho nhỏ đang chờ đợi bạn trên Sa Dec Flower Hunt.  Không phải là hoa giảm giá, không phải là khuyến mãi rầm rộ... mà là một món quà tinh thần, một trải nghiệm đặc biệt mà chúng tôi tin rằng bạn sẽ trân trọng.\n\n**Bạn tò mò muốn biết điều gì đang chờ đợi bạn phải không?**\n\n**Hãy ghé thăm Sa Dec Flower Hunt ngay hôm nay và khám phá bí mật này!** [Link to Sa Dec Flower Hunt website]\n\n**Nhấn \"Thích\" nếu bạn cũng yêu hoa Sa Đéc và chia sẻ bài viết này để lan tỏa vẻ đẹp của quê hương!**\n\n---\n\n**Explanation of Choices:**\n\n*   **Catchy Title:** Uses intrigue and a question to draw the reader in.\n*   **Sensory Language:** Employs vivid descriptions of sights, smells, and feelings to immerse the reader in the Sa Dec flower market experience.\n*   **Emotional Connection:**  Taps into nostalgia and positive memories associated with flowers, especially during Tet (Vietnamese Lunar New Year).\n*   **Storytelling:** Focuses on the stories of the farmers and the cultural heritage, rather than just product features.\n*   **Mystery Element:**  The \"unknown offer\" is presented as a \"tinh thần\" (spiritual) gift or special experience, suggesting something more meaningful than a simple discount.\n*   **Informal Tone:** Uses phrases like \"Nè nè\" (Hey there!), questions, and exclamation marks to create a friendly and approachable tone.\n*   **Clear Call to Action:** Directs the reader to visit the website and engage with the content.\n*   **Share Prompt:** Encourages users to spread the word about Sa Dec and the Flower Hunt platform.\n*   **Avoidance of Corporate Speak:** Uses natural language and avoids jargon.  The tone is sincere and enthusiastic.\n\nThis approach aims to create a genuine connection with the audience, making them more likely to visit the platform and discover the \"secret\" for themselves.  The mystery element adds a layer of fun and excitement.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "status": "success",
+  "data": {
+    "executiveMessage": "CEO Report: All departments have executed their assignments.",
+    "strategicDirective": {
+      "type": "workflow_preset",
+      "workflowPreset": "gtm",
+      "outputDir": "outputs",
+      "outputFormat": "json"
+    },
+    "departmentsActivated": [
+      "Marketing",
+      "Sales"
+    ],
+    "departmentReports": [
+      {
+        "department": "Marketing",
+        "timestamp": "2025-12-06T11:14:17.370Z",
+        "report": {
+          "department_head": "Agent 11 (Storytelling)",
+          "output": {
+            "case_study_template": {
+              "structure": [
+                "The Origin (Challenge)",
+                "The Awakening (Solution)",
+                "The Future (Results)"
+              ],
+              "customer_profile": "Target: Gen Z & Millennials, eco-tourism enthusiasts [ĐỀ XUẤT]",
+              "challenge_section": "Context: Historic flower village digitization [ĐỀ XUẤT]",
+              "solution_section": "Vision: Reviving tradition with gamification - implementing Sa Dec Flower Hunt Platform [ĐỀ XUẤT]",
+              "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+              "call_to_action": "Join the Flower Hunt today!"
+            },
+            "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+            "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+          },
+          "metadata": {
+            "markings": {
+              "fromPlan": [],
+              "suggestions": [],
+              "assumptions": []
+            },
+            "dependenciesUsed": [],
+            "executionTime": 0,
+            "dataQuality": "high",
+            "configSnapshot": {
+              "temperature": 0.7
+            }
+          }
+        }
+      },
+      {
+        "department": "Sales",
+        "timestamp": "2025-12-06T11:14:17.370Z",
+        "report": {
+          "department_head": "Agent 13 (Sales Process)",
+          "output": {
+            "sales_process": {
+              "prospecting": "Source leads for B2C_direct_and_B2B_wholesale in Mekong Delta & Ho Chi Minh City [ĐỀ XUẤT]",
+              "qualification": "BANT adapted for Tickets: $10-20 (B2C) | Bulk: $500-5000 (B2B) deals",
+              "discovery": "Focus on: Farmers not tech-savvy, tourists need easy booking [ĐỀ XUẤT]",
+              "demo": "Showcase: Sa Dec Flower Hunt Platform (Goal: Automate B2C, keep B2B high-touch)",
+              "proposal": "Custom quote for B2B; Self-serve checkout for B2C",
+              "negotiation": "Volume discounts for B2B only",
+              "close": "Digital contract (B2B) / Instant ticket QR (B2C)"
+            },
+            "objection_handling": [
+              {
+                "objection": "Too expensive",
+                "response": "ROI focus: Cost vs value, payback period [ĐỀ XUẤT]"
+              },
+              {
+                "objection": "Need to think about it",
+                "response": "Uncover real concern, create urgency [ĐỀ XUẤT]"
+              },
+              {
+                "objection": "Happy with current solution",
+                "response": "Compare limitations, highlight gaps [ĐỀ XUẤT]"
+              }
+            ],
+            "sales_scripts": "Cold call, email templates, demo flow [ĐỀ XUẤT]",
+            "kpis": [
+              "Conversion rate by stage",
+              "Average deal size",
+              "Sales cycle length",
+              "Win rate"
+            ]
+          },
+          "metadata": {
+            "markings": {
+              "fromPlan": [],
+              "suggestions": [],
+              "assumptions": []
+            },
+            "dependenciesUsed": [],
+            "executionTime": 0,
+            "dataQuality": "high",
+            "configSnapshot": {
+              "temperature": 0.7
+            }
+          }
+        }
+      }
+    ],
+    "executionLog": "=== CEO STRATEGIC PLANNING ===\nDirective Type: workflow_preset\nWorkflow: gtm\n\nActivating Departments: Marketing, Sales\n\n--- Delegating to Marketing Department ---\n✅ Marketing completed\n\n--- Delegating to Sales Department ---\n✅ Sales completed",
+    "ceoSignature": "Agent 21 (MasterAgent)",
+    "timestamp": "2025-12-06T11:14:17.370Z"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:49:13.377Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Tuyệt vời! Here's a piece of content tailored for the Sa Dec Flower Hunt, focusing on beauty, heritage, emotion, and a clear call to action, all in a friendly, informal Vietnamese tone:\n\n**Tiêu đề: Bạn Có Tò Mò Về Điều Bất Ngờ Đang Chờ Đợi Ở Sa Đéc?**\n\nMọi người ơi, ai đã từng lạc bước giữa chợ hoa Sa Đéc vào một buổi sáng tinh mơ chưa? Cái không khí ấy…thật sự là một \"liều thuốc\" chữa lành tâm hồn đó!\n\nMình lớn lên ở miền Tây, tuổi thơ gắn liền với những cánh đồng lúa bát ngát và cả những vườn hoa đủ sắc màu. Nhưng phải công nhận, Sa Đéc luôn có một vị trí đặc biệt trong tim mình. Không chỉ vì hoa ở đây đẹp \"ná thở,\" mà còn vì cái hồn, cái tình của người trồng hoa nữa.\n\nBạn biết không, mỗi cành hoa, mỗi chậu kiểng ở Sa Đéc không chỉ là sản phẩm nông nghiệp đơn thuần đâu. Đó là cả một câu chuyện. Câu chuyện về những người nông dân cần cù, quanh năm một nắng hai sương chăm bón. Câu chuyện về những bí quyết gia truyền được truyền từ đời này sang đời khác. Và cả câu chuyện về niềm tự hào của một vùng đất đã nuôi dưỡng biết bao thế hệ bằng nghề trồng hoa.\n\nMình nhớ hồi bé, cứ mỗi dịp Tết đến, cả nhà lại kéo nhau ra Sa Đéc chọn hoa. Ba mình luôn chọn những cành mai vàng rực rỡ, mẹ thì thích những chậu cúc đại đóa thơm ngát. Còn mình, lúc nào cũng mê mẩn với những chậu vạn thọ bé xinh, tượng trưng cho sự trường thọ. Giờ nghĩ lại, những ký ức đó thật đẹp và đáng trân trọng biết bao.\n\nChính vì vậy, khi Sa Dec Flower Hunt ra đời, mình đã vô cùng hào hứng. Cuối cùng, chúng ta đã có một \"cầu nối\" để mang vẻ đẹp và giá trị của hoa Sa Đéc đến gần hơn với mọi người, dù bạn ở bất cứ đâu.\n\nMà này, bật mí cho bạn một điều bí mật nha! Sa Dec Flower Hunt đang có một bất ngờ \"to bự\" dành cho tất cả mọi người. Một món quà nhỏ xinh, chứa đựng cả tấm lòng của những người trồng hoa Sa Đéc.\n\n**Vậy, bất ngờ đó là gì?**\n\nChỉ cần bạn ghé thăm website của Sa Dec Flower Hunt và đăng ký nhận thông tin, bạn sẽ là một trong những người đầu tiên khám phá ra điều bí mật này!\n\n**Click ngay vào đây để không bỏ lỡ:** [Link to Sa Dec Flower Hunt Website]\n\nĐừng chần chừ nữa! Hãy cùng Sa Dec Flower Hunt khám phá vẻ đẹp và văn hóa của hoa Sa Đéc, và nhận món quà bất ngờ đầy ý nghĩa nhé! Chắc chắn bạn sẽ không thất vọng đâu!\n\n**P/S:** Nhớ chia sẻ bài viết này cho bạn bè và người thân cùng biết nha! Càng đông càng vui!\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

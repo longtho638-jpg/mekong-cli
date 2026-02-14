@@ -1,0 +1,197 @@
+{
+  "id": "05_SKILL-Business-Model-Patterns-and-Unit-Economics",
+  "version": "1.0.0",
+  "title": "Skill – Business Model Patterns & Unit Economics",
+  "type": "skill",
+  "description": "Kỹ năng nhận diện pattern mô hình kinh doanh và phác hoạ Unit Economics cốt lõi từ một business idea hoặc Business Plan 2026 – Agentic Zero→IPO.",
+  "intended_use": {
+    "primary": [
+      "Nhận diện business model archetype (SaaS B2B, Marketplace, Fintech, E‑commerce, Platform, Service, Hardware, v.v.).",
+      "Xây khung Unit Economics mức khái niệm (ARPU, LTV, CAC, Payback, Gross Margin) mà không bịa số.",
+      "Chuẩn hoá ngôn ngữ model để dùng chung cho các skill ngành dọc và IPO/Agentic."
+    ],
+    "works_best_when": [
+      "User đã mô tả rõ sản phẩm/dịch vụ, khách hàng mục tiêu, cách kiếm tiền (pricing, revenue streams).",
+      "Đã có Business Plan 2026 bản draft, hoặc ít nhất phần Business Model & Market."
+    ],
+    "not_for": [
+      "Lập dự toán tài chính chi tiết dòng tiền/tháng – chỉ làm level khung Unit Economics.",
+      "Tư vấn thuế/IFRS/Chuẩn mực kế toán – chỉ gợi ý logic kinh tế."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "01_SKILL-Refactor-Old-BizPlan-to-2026-Frame.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_plan_excerpt": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả idea hoặc trích đoạn Business Plan (product, khách hàng, revenue model, kênh bán)."
+      },
+      "segment_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý segment: 'B2B_SaaS','B2C_App','Marketplace','Fintech','Ecommerce','Hardware','Services',..."
+      },
+      "stage_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Gợi ý stage: 'zero','seed','series_a','growth','pre_ipo'."
+      }
+    },
+    "assumptions": [
+      "Nếu thiếu dữ liệu định lượng, chỉ xây khung chỉ số và đánh dấu rõ là [GIẢ ĐỊNH] khi gợi ý range.",
+      "Nếu idea lai nhiều model (vd SaaS + Marketplace), cho phép multi-archetype nhưng ghi chú rõ."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "business_model_archetype": {
+        "description": "Nhận diện 1–2 archetype chính + mô tả ngắn.",
+        "fields": [
+          "primary_archetype_code",
+          "secondary_archetype_code",
+          "why_these_archetypes",
+          "similar_reference_models_hint"
+        ]
+      },
+      "revenue_logic_map": {
+        "description": "Bản đồ hoá dòng tiền: ai trả tiền, trả cho cái gì, theo tần suất nào.",
+        "structure": {
+          "rows_fields": [
+            "revenue_stream_id",
+            "payer_type",
+            "revenue_mechanism",
+            "pricing_logic",
+            "frequency",
+            "key_drivers_notes"
+          ]
+        }
+      },
+      "unit_economics_frame": {
+        "description": "Khung Unit Economics ở level driver (chưa cần số chính xác).",
+        "fields": [
+          "core_metric_set",
+          "payback_logic_comment",
+          "ltv_logic_comment",
+          "margin_structure_comment"
+        ],
+        "core_metric_set_example": [
+          "ARPU_or_AOV",
+          "LTV_components",
+          "CAC_components",
+          "Churn_or_Retention_drivers",
+          "Gross_Margin_drivers"
+        ]
+      },
+      "cost_structure_outline": {
+        "description": "Phác thảo cost structure by bucket.",
+        "structure": {
+          "buckets": [
+            "cogs_or_direct_costs",
+            "marketing_and_growth",
+            "product_and_engineering",
+            "operations_and_support",
+            "general_and_admin"
+          ],
+          "fields_per_bucket": [
+            "bucket_name",
+            "typical_items",
+            "scaling_behavior_comment"
+          ]
+        }
+      },
+      "leverage_points_and_risks": {
+        "description": "Những điểm có thể tạo đòn bẩy và rủi ro chính trong model.",
+        "fields": [
+          "main_levers",
+          "structural_risks",
+          "scalability_constraints",
+          "notes_for_investors_or_ipo"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_detect_archetype",
+      "label": "Nhận diện archetype mô hình kinh doanh",
+      "goal": "Đặt tên đúng cho loại model để nói chuyện cho nhanh.",
+      "actions": [
+        "Phân tích idea_or_plan_excerpt để hiểu: bán cho ai (B2B/B2C/B2B2C), mô hình thu tiền, mức độ recurring vs one-off.",
+        "Match với 1–2 archetype: B2B_SaaS, Marketplace, Transaction_Fee, Subscription_Membership, Usage_Based, Advertising, Hardware_plus_Software, Services, Fintech_Interchange_or_Spread,...",
+        "Giải thích ngắn gọn trong why_these_archetypes [ĐỀ XUẤT]."
+      ]
+    },
+    {
+      "step_id": "02_map_revenue_logic",
+      "label": "Vẽ bản đồ revenue logic",
+      "goal": "Trả lời rõ: Ai trả? Trả vì cái gì? Trả bao nhiêu và bao lâu một lần?",
+      "actions": [
+        "Tách idea thành các revenue_stream_id khác nhau nếu có (vd: subscription, setup fee, transaction fee…).",
+        "Cho mỗi stream, điền payer_type, revenue_mechanism, pricing_logic, frequency, key_drivers_notes.",
+        "Đánh dấu phần nào là [TỪ PLAN], phần nào là [ĐỀ XUẤT] hoặc [GIẢ ĐỊNH]."
+      ]
+    },
+    {
+      "step_id": "03_build_unit_economics_frame",
+      "label": "Xây khung Unit Economics",
+      "goal": "Định nghĩa bộ chỉ số cốt lõi sẽ dùng về sau (AARRR, fundraising, IPO).",
+      "actions": [
+        "Dựa trên archetype & revenue_logic_map để chọn core_metric_set hợp lý.",
+        "Mô tả payback_logic_comment: dòng tiền thu về vs CAC theo thời gian.",
+        "Mô tả ltv_logic_comment: các yếu tố tạo nên LTV (ticket size, frequency, retention…).",
+        "Mô tả margin_structure_comment: chính model này ăn biên lợi nhuận ở đâu."
+      ]
+    },
+    {
+      "step_id": "04_outline_cost_structure",
+      "label": "Phác hoạ cost structure",
+      "goal": "Giúp team nhìn thấy chi phí theo bucket, không bị lẫn lộn.",
+      "actions": [
+        "Chia cost theo buckets: COGS, Marketing, Product/Engineering, Operations/Support, G&A.",
+        "Trong mỗi bucket, liệt kê typical_items [ĐỀ XUẤT] dựa trên archetype.",
+        "Ghi scaling_behavior_comment: chi phí nào scale tuyến tính, chi phí nào tạo operating leverage."
+      ]
+    },
+    {
+      "step_id": "05_identify_levers_and_risks",
+      "label": "Nhận diện đòn bẩy & rủi ro",
+      "goal": "Chỉ ra vài chỗ 'vặn nút' quan trọng và vài quả mìn nếu không để ý.",
+      "actions": [
+        "Dựa trên revenue_logic & cost_structure để liệt kê main_levers (vd: conversion rate, churn, take rate, utilization…).",
+        "Liệt kê structural_risks: phụ thuộc 1–2 đối tác lớn, regulation, network effects yếu, unit economics âm lâu dài…",
+        "Nêu scalability_constraints: thị trường ngách, phụ thuộc con người tay nghề cao, capex lớn…",
+        "Ghi notes_for_investors_or_ipo: góc nhìn nhà đầu tư/tổ chức khi đọc model này."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Ngay sau khi user mô tả idea Business Model lần đầu.",
+      "Hoặc sau khi đã có draft Business Plan 2026 nhưng chưa rõ Unit Economics."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Tóm tắt nhanh archetype & logic kiếm tiền.",
+      "Bước 2: Trình bày revenue_logic_map dạng bảng.",
+      "Bước 3: Trình bày khung Unit Economics + cost_structure_outline ngắn gọn.",
+      "Bước 4: Kết thúc bằng leverage_points_and_risks để founder/VC dễ tranh luận."
+    ]
+  },
+  "constraints": {
+    "no_fake_numbers": "Không tự bịa số liệu (ARPU, CAC, churn, v.v.) nếu user không cung cấp rõ – chỉ mô tả logic & mối quan hệ.",
+    "no_industry_specific_regulation_claims": "Không khẳng định chi tiết luật/giấy phép; chỉ nói ở mức generic, để skill khác (fintech/health/crypto…) xử lý.",
+    "language": "Output ưu tiên tiếng Việt, dùng thuật ngữ tài chính/biz model tiếng Anh khi cần."
+  }
+}

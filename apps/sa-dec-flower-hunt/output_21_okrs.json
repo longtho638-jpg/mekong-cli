@@ -1,0 +1,113 @@
+{
+  "skillId": "21",
+  "skillName": "Agentic Execution & OKRs",
+  "generatedAt": "2025-12-06T08:52:26.930Z",
+  "status": "success",
+  "data": {
+    "okr_framework": {
+      "company_level": {
+        "objective_1": {
+          "objective": "Become #1 [product category] in Vietnam by EOY [ĐỀ XUẤT]",
+          "key_results": [
+            "Achieve $5M ARR (from $1M current)",
+            "Reach 500 active customers (from 100)",
+            "NPS score >50",
+            "Net Dollar Retention >100%"
+          ]
+        },
+        "objective_2": {
+          "objective": "Build world-class product loved by users [ĐỀ XUẤT]",
+          "key_results": [
+            "Ship 5 major features from roadmap",
+            "Improve app performance (load time <2s)",
+            "User engagement: 3x DAU/MAU ratio",
+            "Churn rate <5% monthly"
+          ]
+        }
+      },
+      "team_level_okrs": {
+        "engineering": {
+          "objective": "Deliver reliable, scalable platform",
+          "krs": [
+            "99.9% uptime",
+            "50% faster page loads",
+            "Zero critical bugs in production"
+          ]
+        },
+        "sales": {
+          "objective": "Hit revenue targets profitably",
+          "krs": [
+            "$4M new ARR",
+            "CAC <$1000",
+            "20% of revenue from enterprise"
+          ]
+        },
+        "product": {
+          "objective": "Ship features users love",
+          "krs": [
+            "5 features launched",
+            "NPS >50",
+            "Feature adoption >60% within 30 days"
+          ]
+        }
+      }
+    },
+    "agentic_kpis": {
+      "ai_agent_performance": {
+        "customer_insight_agent": {
+          "metrics": [
+            "Churn prediction accuracy >80%",
+            "Weekly insights generated: 50+",
+            "Recommendations actioned: 30%"
+          ],
+          "review_frequency": "Weekly"
+        },
+        "pricing_agent": {
+          "metrics": [
+            "Revenue lift from dynamic pricing: +5%",
+            "Price recommendations accepted: 70%",
+            "Margin optimization: +2%"
+          ],
+          "review_frequency": "Daily"
+        },
+        "content_agent": {
+          "metrics": [
+            "Content pieces generated: 100/month",
+            "Quality score (human review) >4/5",
+            "Time saved: 20 hours/week"
+          ],
+          "review_frequency": "Weekly"
+        }
+      },
+      "human_ai_collaboration": {
+        "automation_rate": "Target: 40% of tasks automated by agents [GIẢ ĐỊNH]",
+        "human_oversight": "Critical decisions reviewed by humans within 24 hours",
+        "feedback_loop": "Weekly agent performance review, monthly model retraining"
+      }
+    },
+    "execution_cadence": {
+      "daily": "15-min standup, review key metrics dashboard",
+      "weekly": "Team OKR review, sprint planning, agent KPI review",
+      "monthly": "All-hands, OKR progress update, celebrate wins",
+      "quarterly": "OKR retrospective, set new OKRs, strategic planning"
+    },
+    "tools": {
+      "okr_tracking": "Lattice, 15Five, or custom dashboard [ĐỀ XUẤT]",
+      "project_management": "Linear, Asana, or Jira",
+      "metrics_dashboards": "Metabase, Looker, or custom BI"
+    }
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [
+      "02",
+      "05"
+    ],
+    "executionTime": 0,
+    "dataQuality": "high"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:48:56.047Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Tuyệt vời! Here's a piece of content crafted with a friendly, engaging tone, focusing on the beauty of Sa Dec flowers and the cultural heritage, with a call to action encouraging exploration:\n\n**Title: Bí Mật Hoa Sa Đéc: Khám Phá Bất Ngờ, Cảm Xúc Thăng Hoa!**\n\n(Ảnh: Một bức ảnh rực rỡ chụp cận cảnh những bông hoa Sa Đéc trong sương sớm, hoặc một người dân địa phương đang tỉ mỉ chăm sóc hoa.)\n\n\"Sa Đéc ơi, Sa Đéc!\" Nghe đến tên thôi là trong lòng đã rộn ràng những sắc màu. Có ai như tui không, mỗi lần nghĩ đến Sa Đéc là hình dung ra cả một biển hoa bạt ngàn, thơm ngát, lấp lánh dưới ánh mặt trời miền Tây?\n\nỞ đó, hoa không chỉ là hoa. Nó là cả một câu chuyện, một nét văn hóa độc đáo, là niềm tự hào của người dân nơi đây. Tui còn nhớ hồi nhỏ, mỗi độ xuân về, cả nhà lại háo hức rủ nhau xuống Sa Đéc, lạc vào mê cung của những vườn hoa. Cái cảm giác choáng ngợp, thích thú khi thấy đủ loại hoa khoe sắc, nào cúc mâm xôi vàng rực, nào thược dược đỏ thắm, nào huỳnh liên trắng tinh khôi... Nó khắc sâu vào ký ức, thành một phần tuổi thơ tươi đẹp.\n\nNhưng Sa Đéc đâu chỉ có vậy. Ẩn sau những cánh hoa rực rỡ kia là cả một cuộc sống cần cù, chịu thương chịu khó của những người nông dân. Họ chăm chút từng gốc cây, tưới tắm từng nhành hoa bằng mồ hôi và cả tình yêu. Họ không chỉ trồng hoa, mà còn vun đắp một di sản, một nét đẹp văn hóa truyền thống.\n\nVà nè, tui có một bí mật muốn bật mí cho mọi người! (Nhưng mà phải hứa là giữ bí mật cho tui nha :D) Sa Đéc không chỉ có những vườn hoa mình thấy bằng mắt đâu. Ở đây còn có… [Điểm dừng để tạo sự tò mò, không tiết lộ ngay lập tức].\n\nTui không kể hết ra đâu, để mọi người tự mình khám phá mới thú vị! Nhưng tui gợi ý nè: Hãy ghé thăm Sa Đéc Flower Hunt. Tui cam đoan mọi người sẽ tìm thấy nhiều điều bất ngờ, từ những loài hoa độc đáo, hiếm có, đến những câu chuyện cảm động về những người trồng hoa.\n\n**Vậy nên, còn chần chờ gì nữa? Nhấn vào nút \"Khám Phá Sa Đéc\" ngay bên dưới để bắt đầu hành trình khám phá vùng đất hoa Sa Đéc đầy màu sắc và cảm xúc! Tui tin chắc mọi người sẽ không thất vọng đâu!**\n\n(Button: Khám Phá Sa Đéc)\n\n---\n\n**Explanation of the choices:**\n\n*   **Title:** Uses alliteration and evokes a sense of mystery and excitement.\n*   **Tone:** Informal, conversational, and personal (\"tui,\" \"mọi người\").\n*   **Storytelling:** Relates a personal anecdote to connect with the audience's memories and emotions.\n*   **Highlights Cultural Heritage:** Emphasizes the hard work and dedication of the local farmers, connecting the flowers to the people and their tradition.\n*   **Builds Curiosity:** Creates intrigue by hinting at a hidden aspect of Sa Dec. The mention of “Sa Đéc Flower Hunt” builds a bridge to the e-commerce platform.\n*   **Call to Action:** Clear, direct, and encouraging, using a friendly tone.\n*   **Visual Suggestion:** A photo suggestion to enhance the content's appeal.\n*   **Keeps it vague regarding the \"Unknown Offer.\"** The call to action leads them to the Sa Dec Flower Hunt website to discover what the offer is. This maximizes engagement and directs traffic to the platform.\n\nThis approach aims to create an authentic and engaging experience for the general audience, driving them to explore the Sa Dec Flower Hunt platform and discover the beauty and cultural heritage of Sa Dec flowers.\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

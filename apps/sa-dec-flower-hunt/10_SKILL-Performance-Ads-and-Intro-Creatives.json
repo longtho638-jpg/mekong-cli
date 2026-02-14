@@ -1,0 +1,235 @@
+{
+  "id": "10_SKILL-Performance-Ads-and-Intro-Creatives",
+  "version": "1.0.0",
+  "title": "Skill – Performance Ads & Intro Creatives System",
+  "type": "skill",
+  "description": "Kỹ năng thiết kế bộ creative nền tảng cho paid/organic performance: ad concepts, hooks, copy khung cho Facebook/Instagram/LinkedIn/TikTok/YouTube, kèm script video giới thiệu & social bios đồng bộ brand.",
+  "intended_use": {
+    "primary": [
+      "Sinh bộ khung ý tưởng quảng cáo (ad concepts) cho 1 offer/landing cụ thể.",
+      "Viết social media bios (Instagram, LinkedIn, TikTok/Facebook) nhất quán với brand.",
+      "Tạo script video giới thiệu (Introduction Video Script) có thể dùng làm hero video / pinned video."
+    ],
+    "works_best_when": [
+      "Đã có brand positioning (07), content pillars (08), và landing/website narrative (09).",
+      "User đã rõ primary offer và CTA (signup, book call, mua hàng, join community…)."
+    ],
+    "not_for": [
+      "Tối ưu media buying (bid, targeting, budget) – đây là skill về creative & messaging.",
+      "Viết full long-form sales letter (sẽ thuộc skill khác)."
+    ]
+  },
+  "dependencies": {
+    "required_files": [
+      "00_MASTER-Agentic-BizPlan-OS.json"
+    ],
+    "optional_files": [
+      "05_SKILL-Business-Model-Patterns-and-Unit-Economics.json",
+      "06_SKILL-Customer-Psychology-and-Personas.json",
+      "07_SKILL-Brand-Positioning-and-Identity.json",
+      "08_SKILL-Content-Pillars-and-Top-of-Funnel.json",
+      "09_SKILL-Website-and-Landing-Narrative.json"
+    ]
+  },
+  "input_spec": {
+    "fields": {
+      "idea_or_offer": {
+        "type": "string",
+        "required": true,
+        "description": "Mô tả offer chính (sản phẩm/dịch vụ/gói/CTA) muốn chạy ads & video giới thiệu."
+      },
+      "primary_landing_url_or_summary": {
+        "type": "string",
+        "required": false,
+        "description": "URL hoặc tóm tắt nội dung landing/website mà ads sẽ đẩy traffic về."
+      },
+      "priority_persona_hint": {
+        "type": "string",
+        "required": false,
+        "description": "Persona/segment ưu tiên cho đợt chạy này (nếu có)."
+      },
+      "main_channels_hint": {
+        "type": "array",
+        "items": "string",
+        "required": false,
+        "description": "Kênh dự kiến: ['facebook','instagram','tiktok','youtube','linkedin', ...]."
+      }
+    },
+    "assumptions": [
+      "Nếu user không chỉ định kênh, ưu tiên Facebook/Instagram + TikTok (B2C) hoặc LinkedIn (B2B).",
+      "Không dùng claim phóng đại hoặc cam kết tài chính/y tế trái quy định; nếu ngành nhạy cảm, thêm [CẢNH BÁO]."
+    ]
+  },
+  "output_spec": {
+    "main_outputs": {
+      "creative_strategy_summary": {
+        "description": "Tóm tắt chiến lược creative cho đợt chạy.",
+        "fields": [
+          "primary_goal",
+          "primary_persona_or_segment",
+          "core_promise_or_offer",
+          "dominant_emotional_angle",
+          "supporting_rational_proofs"
+        ]
+      },
+      "ad_concepts": {
+        "description": "3–7 ad concepts chính, mỗi concept có storyline & biến thể hook.",
+        "structure": {
+          "concept_fields": [
+            "concept_id",
+            "concept_name",
+            "big_idea",
+            "core_hook",
+            "primary_emotion",
+            "rational_support_points",
+            "recommended_formats",
+            "best_fit_channels"
+          ]
+        }
+      },
+      "ad_variants_per_concept": {
+        "description": "Biến thể cụ thể: headline, primary text, description cho từng concept trên từng kênh.",
+        "structure": {
+          "fields_per_variant": [
+            "concept_id",
+            "channel",
+            "variant_id",
+            "headline",
+            "primary_text",
+            "description_or_body",
+            "cta_text",
+            "notes_for_creative_layout"
+          ]
+        }
+      },
+      "intro_video_script": {
+        "description": "Script cho video giới thiệu (1–3 phút) có thể dùng làm pinned/hero.",
+        "fields": [
+          "video_goal",
+          "target_audience",
+          "estimated_duration_seconds",
+          "structure_outline",
+          "scene_by_scene_script",
+          "cta_options"
+        ]
+      },
+      "social_bios": {
+        "description": "Social media bio cho Instagram, LinkedIn, TikTok/Facebook…",
+        "structure": {
+          "bio_fields": [
+            "platform",
+            "bio_text_short",
+            "bio_text_longer_optional",
+            "link_or_cta_hint",
+            "tone_notes"
+          ]
+        }
+      },
+      "creative_safety_and_compliance_notes": {
+        "description": "Nhắc nhở về compliance & risk (đặc biệt cho fintech/crypto/health).",
+        "fields": [
+          "sensitive_claims_to_avoid",
+          "recommended_disclaimers",
+          "platform_policy_risks",
+          "local_regulation_risks"
+        ]
+      }
+    },
+    "marking_convention": {
+      "from_plan": "[TỪ PLAN]",
+      "model_suggestion": "[ĐỀ XUẤT]",
+      "assumption": "[GIẢ ĐỊNH]"
+    }
+  },
+  "processing_pipeline": [
+    {
+      "step_id": "01_read_offer_and_context",
+      "label": "Đọc offer & bối cảnh",
+      "goal": "Hiểu chính xác đang bán gì, cho ai, trong frame nào.",
+      "actions": [
+        "Tóm tắt idea_or_offer thành 2–3 câu rõ ràng.",
+        "Đọc brand positioning (07) & personas (06) nếu có để chọn dominant angle.",
+        "Xác định primary_goal (lead, signup, purchase, book_call, community…)."
+      ]
+    },
+    {
+      "step_id": "02_define_creative_strategy_summary",
+      "label": "Định nghĩa chiến lược creative",
+      "goal": "Chốt big idea cho đợt chạy, không để ads nói lung tung.",
+      "actions": [
+        "Điền creative_strategy_summary: primary_goal, primary_persona_or_segment, core_promise_or_offer.",
+        "Chọn dominant_emotional_angle (vd: fear of missing out, relief, ambition, status, security…).",
+        "Liệt kê supporting_rational_proofs (vd: case, số liệu, testimonial, chứng nhận – nếu chưa có ghi [TODO])."
+      ]
+    },
+    {
+      "step_id": "03_generate_ad_concepts",
+      "label": "Sinh ad concepts",
+      "goal": "Tạo 3–7 khung concept khác biệt đủ để test.",
+      "actions": [
+        "Cho mỗi concept: đặt tên, mô tả big_idea, core_hook, primary_emotion.",
+        "Liên kết mỗi concept với 1–3 personas/segments nếu relevant.",
+        "Đề xuất recommended_formats & best_fit_channels cho từng concept."
+      ]
+    },
+    {
+      "step_id": "04_generate_ad_variants_per_concept",
+      "label": "Sinh biến thể ads theo kênh",
+      "goal": "Cho mỗi concept vài phiên bản copy cụ thể để A/B test.",
+      "actions": [
+        "Với mỗi concept & channel chính: tạo 2–4 variant.",
+        "Mỗi variant: headline, primary_text, description/body, cta_text, notes_for_creative_layout.",
+        "Giữ language tự nhiên, không spammy; đánh dấu [GIẢ ĐỊNH] nếu phải giả lập con số/lời chứng thực."
+      ]
+    },
+    {
+      "step_id": "05_write_intro_video_script",
+      "label": "Viết script video giới thiệu",
+      "goal": "Tạo video narrative 1–3 phút, dùng làm hero/pinned.",
+      "actions": [
+        "Xác định video_goal (explain, build trust, pre-sell, community…).",
+        "Đặt estimated_duration_seconds theo complexity (thường 60–180s).",
+        "Thiết kế structure_outline: hook → problem → solution → proof → CTA.",
+        "Viết scene_by_scene_script: mỗi scene gồm visual_direction, spoken_text, on_screen_text, notes.",
+        "Đề xuất 2–3 cta_options (vd: 'Đăng ký dùng thử', 'Book lịch tư vấn', 'Tham gia cộng đồng…')."
+      ]
+    },
+    {
+      "step_id": "06_generate_social_bios",
+      "label": "Viết social bios",
+      "goal": "Đảm bảo nhận diện ngắn gọn, rõ lợi ích & CTA.",
+      "actions": [
+        "Tạo bio cho Instagram (ngắn, giàu cảm xúc), LinkedIn (chuyên nghiệp, rõ value), TikTok/Facebook (dễ nhớ, gần gũi).",
+        "Mỗi bio: bio_text_short, bio_text_longer_optional, link_or_cta_hint, tone_notes.",
+        "Giữ nhất quán với brand voice (07)."
+      ]
+    },
+    {
+      "step_id": "07_add_safety_and_compliance_notes",
+      "label": "Thêm lưu ý safety & compliance",
+      "goal": "Giảm rủi ro policy và pháp lý.",
+      "actions": [
+        "Nếu business thuộc fintech/crypto/health/education/investment…: liệt kê sensitive_claims_to_avoid.",
+        "Gợi ý recommended_disclaimers cơ bản.",
+        "Đưa cảnh báo platform_policy_risks & local_regulation_risks cấp high-level để team kiểm tra với luật sư/compliance."
+      ]
+    }
+  ],
+  "usage_in_project": {
+    "when_to_use": [
+      "Sau khi đã có landing/website narrative (09) hoặc ít nhất hero + offer rõ ràng.",
+      "Khi user nói: 'Anh cần idea ads', 'Viết giúp anh ad cho offer này', hoặc 'Làm script video giới thiệu cho brand này'."
+    ],
+    "how_to_present_to_user": [
+      "Bước 1: Trả creative_strategy_summary + 3–5 ad_concepts để user chọn/tinh chỉnh.",
+      "Bước 2: Sau khi user OK 1–3 concept, trả ad_variants_per_concept cho các kênh chính.",
+      "Bước 3: Trả intro_video_script.",
+      "Bước 4: Cuối cùng trả social_bios + creative_safety_and_compliance_notes."
+    ]
+  },
+  "constraints": {
+    "no_misleading_claims": "Không được bịa cam kết thu nhập, lợi nhuận, chữa bệnh, v.v.",
+    "platform_friendly": "Giữ tone phù hợp với guideline quảng cáo của các nền tảng lớn.",
+    "language": "Ưu tiên tiếng Việt, có thể xen thuật ngữ ads/growth tiếng Anh khi cần."
+  }
+}

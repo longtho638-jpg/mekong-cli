@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:49:47.090Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, đây nè bạn ơi, thử nghía qua xem có \"dính\" không nha!\n\n**Chủ đề: Điều Bất Ngờ Giữa Vườn Hoa Sa Đéc**\n\nChào bạn,\n\nBạn có bao giờ đứng giữa một biển hoa rực rỡ, cảm thấy như lạc vào một thế giới khác chưa? Mình thì có rồi, và lần nào cũng là ở Sa Đéc, cái nôi của những loài hoa đẹp nhất miền Tây đó!\n\nNhớ hồi nhỏ, mỗi dịp Tết đến là cả nhà lại háo hức xuống Sa Đéc lựa hoa. Cái không khí nhộn nhịp, tiếng cười nói rộn ràng, mùi hương hoa thơm ngát... tất cả tạo nên một ký ức thật đẹp, ăn sâu vào tim mình. Giờ lớn rồi, bận rộn hơn, nhưng mỗi lần nhìn thấy hoa Sa Đéc, mình lại thấy Tết như đang đến gần, lại thấy nhớ nhà da diết.\n\nHoa ở Sa Đéc không chỉ đẹp, mà còn mang cả một câu chuyện. Nó là mồ hôi, là công sức, là cả tình yêu thương của những người nông dân chân chất. Họ cần mẫn chăm sóc từng gốc cây, vun xới từng cánh hoa, để mang đến cho chúng ta những sắc màu tươi thắm nhất. Nhìn những người nông dân cặm cụi giữa ruộng hoa, mình càng thêm trân trọng những giá trị truyền thống, những nét đẹp văn hóa mà họ đang gìn giữ.\n\nSa Đéc bây giờ không chỉ có những vườn hoa ngát hương. Nó còn là một điểm đến du lịch hấp dẫn, nơi bạn có thể khám phá những con đường hoa rực rỡ, thưởng thức những món ăn ngon đặc sản, và trải nghiệm cuộc sống bình dị của người dân địa phương.\n\nVà mình có một bí mật muốn chia sẻ với bạn nè! Sa Đéc Flower Hunt đang ấp ủ một điều bất ngờ nho nhỏ dành cho những ai yêu hoa, yêu Sa Đéc. Bật mí là nó sẽ giúp bạn mang cả vườn hoa về nhà đó! Để biết chi tiết thế nào, hãy theo dõi trang của Sa Đéc Flower Hunt nha. Mình hứa là bạn sẽ không thất vọng đâu!\n\n**Còn bây giờ, mình muốn hỏi bạn:**\n\n*   Bạn có kỷ niệm nào đẹp với hoa Sa Đéc không? Chia sẻ cho mình cùng biết với nha!\n*   Bạn thích loài hoa nào nhất ở Sa Đéc? Vì sao?\n\n**Đừng quên:** Nhấn \"Thích\" trang Sa Đéc Flower Hunt và theo dõi để không bỏ lỡ điều bất ngờ sắp tới nha! Biết đâu bạn sẽ là một trong những người may mắn nhất đó! 😉\n\n#SaDec #HoaSaDec #SaDecFlowerHunt #MienTay #AgriTech #KhamPha #YeuHoa #DieuBatNgo #TetDenRoi\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

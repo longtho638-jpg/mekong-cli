@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:38:13.555Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: Gen Z & Millennials who love eco-tourism, culture, and authentic experiences. Also local flower buyers. [ĐỀ XUẤT]",
+      "challenge_section": "Context: Sa Dec is a historic flower village. The project aims to digitize the experience, helping farmers sell more and tourists have fun finding 'rare' flowers. [ĐỀ XUẤT]",
+      "solution_section": "Vision: Reviving the old village with new tech (AI, Gamification). - implementing Sa Dec Flower Hunt: A gamified tourism & commerce platform connecting visitors with traditional flower growers in Sa Dec, Vietnam. [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, here's a piece of content tailored for your target audience, in Vietnamese, aimed at building trust and excitement for Sa Dec Flower Hunt:\n\n**Title: Lạc Giữa Vườn Hoa Sa Đéc: Không Chỉ Là Mua Hoa, Mà Là Một Chuyến Phiêu Lưu!**\n\nÊ, bạn ơi! Nghe đến Sa Đéc, bạn nghĩ đến gì? Chắc chắn là những cánh đồng hoa rực rỡ trải dài tít tắp rồi, đúng không? Nhưng mà, Sa Đéc không chỉ có hoa đẹp đâu nha, mà còn là cả một kho tàng văn hóa đang chờ bạn khám phá đó!\n\nTưởng tượng nè: Bạn đạp xe lang thang trên những con đường nhỏ xíu, hai bên là những ngôi nhà cổ kính nép mình bên dòng kênh xanh mát. Rồi đột nhiên, bạn lạc vào một vườn hoa cúc mâm xôi vàng óng ánh, đang độ nở rộ nhất. Bác nông dân hiền lành với nụ cười tươi rói, kể cho bạn nghe về giống hoa này, về cách chăm sóc tỉ mỉ để hoa nở đúng dịp Tết. Đó không chỉ là mua hoa, mà là cả một câu chuyện, một trải nghiệm bạn sẽ nhớ mãi.\n\nỞ Sa Đéc, mỗi loài hoa đều có một câu chuyện riêng. Từ hoa hồng kiêu sa, đến hoa cúc dịu dàng, rồi cả những giống hoa lạ mà bạn chưa từng thấy bao giờ. Bao đời nay, người dân Sa Đéc đã gắn bó với hoa, xem hoa như một phần không thể thiếu của cuộc sống.\n\nNhưng mà, có một sự thật là nhiều bác nông dân ở đây vẫn còn gặp khó khăn trong việc bán hoa, nhất là những giống hoa quý hiếm. Chính vì vậy, **Sa Dec Flower Hunt** ra đời!\n\nChúng mình tạo ra một sân chơi, nơi bạn không chỉ mua được những bó hoa tươi thắm nhất, mà còn được tham gia vào một hành trình khám phá đầy thú vị. Hãy tưởng tượng, bạn dùng app để săn lùng những giống hoa \"bí mật\" ẩn mình trong những vườn hoa rộng lớn. Mỗi khi tìm được một giống hoa quý hiếm, bạn sẽ được thưởng điểm, đổi quà, và còn được trò chuyện trực tiếp với người trồng hoa nữa chứ!\n\n**Sa Dec Flower Hunt** không chỉ là một sàn thương mại điện tử, mà còn là một cộng đồng, nơi bạn có thể kết nối với những người yêu hoa, chia sẻ những khoảnh khắc đẹp, và cùng nhau góp phần bảo tồn văn hóa trồng hoa truyền thống của Sa Đéc.\n\n**Vậy còn chần chừ gì nữa? Tải ngay app Sa Dec Flower Hunt và bắt đầu chuyến phiêu lưu của bạn thôi nào!  (Link tải app: [insert link here])**\n\n**Theo dõi chúng mình trên mạng xã hội để không bỏ lỡ những thông tin thú vị và những chương trình khuyến mãi hấp dẫn nha! (Link Facebook/Instagram)**\n\n**Cùng Sa Dec Flower Hunt, khám phá Sa Đéc theo một cách hoàn toàn mới!**\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}

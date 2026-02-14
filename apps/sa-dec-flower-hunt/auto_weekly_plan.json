@@ -1,0 +1,195 @@
+{
+  "bullseye_framework": {
+    "outer_ring_channels": [
+      {
+        "channel": "TV/Radio Ads",
+        "fit_score": "Low",
+        "why": "Too expensive for early stage [GIẢ ĐỊNH]"
+      },
+      {
+        "channel": "Billboard",
+        "fit_score": "Low",
+        "why": "Poor targeting [GIẢ ĐỊNH]"
+      },
+      {
+        "channel": "Cold calling",
+        "fit_score": "Low-Med",
+        "why": "Low conversion for B2C [ĐỀ XUẤT]"
+      },
+      {
+        "channel": "Trade shows",
+        "fit_score": "Medium",
+        "why": "Good for B2B, expensive [ĐỀ XUẤT]"
+      }
+    ],
+    "middle_ring_channels": [
+      {
+        "channel": "SEO/Content Marketing",
+        "fit_score": "High",
+        "why": "Long-term, scalable, low CAC [ĐỀ XUẤT]"
+      },
+      {
+        "channel": "Facebook/Instagram Ads",
+        "fit_score": "High",
+        "why": "VN market heavily uses social [TỪ PLAN]"
+      },
+      {
+        "channel": "Influencer partnerships",
+        "fit_score": "Med-High",
+        "why": "Trust-building, authentic [ĐỀ XUẤT]"
+      },
+      {
+        "channel": "Email marketing",
+        "fit_score": "Medium",
+        "why": "Nurture existing leads [ĐỀ XUẤT]"
+      },
+      {
+        "channel": "Referral program",
+        "fit_score": "High",
+        "why": "Viral loop, low CAC [ĐỀ XUẤT]"
+      }
+    ],
+    "inner_ring_channels": [
+      {
+        "channel": "Facebook Ads",
+        "fit_score": "Very High",
+        "why": "Primary acquisition channel for VN B2C [TỪ PLAN]"
+      },
+      {
+        "channel": "SEO + Content",
+        "fit_score": "Very High",
+        "why": "Sustainable, compounds over time [ĐỀ XUẤT]"
+      },
+      {
+        "channel": "Referral/WOM",
+        "fit_score": "Very High",
+        "why": "Best LTV/CAC, viral potential [ĐỀ XUẤT]"
+      }
+    ],
+    "outer_ring": [
+      "Facebook Ads (Default)"
+    ]
+  },
+  "prioritized_experiments": [
+    {
+      "experiment_id": "EXP_01",
+      "channel": "Facebook/Instagram Ads",
+      "hypothesis": "Targeted ads to urban 25-40 demo will yield CAC < $10 with 2% CTR [ĐỀ XUẤT]",
+      "test_design": {
+        "budget": "$500-1000 for MVP test [GIẢ ĐỊNH]",
+        "duration": "2 weeks",
+        "target_audience": "Urban professionals, interest-based targeting",
+        "creative_variants": "3-5 ad variations (image, video, carousel)",
+        "landing_page": "Dedicated LP with clear CTA",
+        "metrics_to_track": [
+          "Impressions",
+          "CTR",
+          "CPC",
+          "Conversion rate",
+          "CAC",
+          "ROAS"
+        ]
+      },
+      "success_criteria": "CAC < target, ROAS > 2x, conversion rate > 1.5% [ĐỀ XUẤT]",
+      "next_steps_if_success": "Scale budget 3-5x, optimize winning creatives [ĐỀ XUẤT]",
+      "next_steps_if_fail": "Test different targeting/creative, or pivot to channel #2 [ĐỀ XUẤT]"
+    },
+    {
+      "experiment_id": "EXP_02",
+      "channel": "SEO + Content Marketing",
+      "hypothesis": "Ranking for long-tail keywords will drive organic traffic at $0 CAC in 3-6 months [ĐỀ XUẤT]",
+      "test_design": {
+        "budget": "$0 (organic) + content creation time/cost [GIẢ ĐỊNH]",
+        "duration": "3 months",
+        "content_plan": "2-3 blog posts/week targeting buyer intent keywords",
+        "seo_tactics": "On-page optimization, backlink building, technical SEO",
+        "metrics_to_track": [
+          "Keyword rankings",
+          "Organic traffic",
+          "Bounce rate",
+          "Time on page",
+          "Conversions from organic"
+        ]
+      },
+      "success_criteria": "Top 10 rankings for 10+ keywords, 500+ organic visitors/month [ĐỀ XUẤT]",
+      "next_steps_if_success": "Double content output, expand keyword targets [ĐỀ XUẤT]",
+      "next_steps_if_fail": "Reassess keyword difficulty, improve content quality [GIẢ ĐỊNH]"
+    },
+    {
+      "experiment_id": "EXP_03",
+      "channel": "Referral Program",
+      "hypothesis": "20% of customers will refer friends with right incentive, K-factor > 0.5 [ĐỀ XUẤT]",
+      "test_design": {
+        "budget": "Referral incentives (discount/credit) [GIẢ ĐỊNH]",
+        "duration": "1 month",
+        "incentive_structure": "Referrer gets 10% off, referee gets 15% off first order",
+        "promotion": "In-app prompt, email campaign, post-purchase thank you",
+        "metrics_to_track": [
+          "Referral rate",
+          "K-factor",
+          "Viral cycle time",
+          "Referral CAC"
+        ]
+      },
+      "success_criteria": "K-factor > 0.3, referral CAC < 50% of paid CAC [ĐỀ XUẤT]",
+      "next_steps_if_success": "Increase incentive, add gamification [ĐỀ XUẤT]",
+      "next_steps_if_fail": "Test different incentive structure or timing [GIẢ ĐỊNH]"
+    }
+  ],
+  "gtm_roadmap": {
+    "month_1_2": {
+      "focus": "Test top 3 channels (Facebook Ads, SEO, Referral)",
+      "activities": [
+        "Launch experiments",
+        "Collect data",
+        "Initial optimization"
+      ],
+      "budget_allocation": "70% Facebook, 20% Content, 10% Referral setup [GIẢ ĐỊNH]"
+    },
+    "month_3_4": {
+      "focus": "Double down on winners, test 2 more channels from middle ring",
+      "activities": [
+        "Scale winning channels",
+        "Test influencer partnerships",
+        "Email nurture sequence"
+      ],
+      "budget_allocation": "Based on Month 1-2 ROAS [GIẢ ĐỊNH]"
+    },
+    "month_5_6": {
+      "focus": "Optimize + diversify channel mix",
+      "activities": [
+        "Multi-channel attribution",
+        "Retargeting campaigns",
+        "Community building"
+      ],
+      "budget_allocation": "Balanced portfolio based on LTV/CAC"
+    }
+  },
+  "channel_mix_strategy": {
+    "paid_vs_organic": "60% paid (fast growth), 40% organic (sustainable) [ĐỀ XUẤT]",
+    "short_term_vs_long_term": "Front-load paid for traction, build organic flywheel [ĐỀ XUẤT]",
+    "diversification_principle": "Don't rely on single channel - aim for 3+ proven channels [GIẢ ĐỊNH]"
+  },
+  "key_metrics_dashboard": {
+    "acquisition_metrics": [
+      "Traffic by channel",
+      "CAC by channel",
+      "Conversion rate"
+    ],
+    "engagement_metrics": [
+      "Time on site",
+      "Pages per session",
+      "Bounce rate"
+    ],
+    "retention_metrics": [
+      "Repeat purchase rate",
+      "Cohort retention",
+      "Churn rate"
+    ],
+    "financial_metrics": [
+      "ROAS",
+      "LTV/CAC ratio",
+      "Payback period"
+    ]
+  }
+}

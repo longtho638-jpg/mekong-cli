@@ -1,0 +1,21 @@
+{
+    "name": "garden-os",
+    "version": "1.0.0",
+    "description": "AGRIOS Farmer - Quản lý vườn hoa Sa Đéc",
+    "main": "src/app.jsx",
+    "scripts": {
+        "start": "zmp start",
+        "build": "zmp build",
+        "deploy": "zmp deploy"
+    },
+    "dependencies": {
+        "zmp-ui": "^1.0.0",
+        "zmp-sdk": "^2.0.0",
+        "@supabase/supabase-js": "^2.39.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "zmp-cli": "^1.0.0"
+    }
+}

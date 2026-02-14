@@ -1,0 +1,36 @@
+{
+  "skillId": "11",
+  "skillName": "Adventorial & Long-Form Storytelling",
+  "generatedAt": "2025-12-06T11:47:57.514Z",
+  "status": "success",
+  "data": {
+    "case_study_template": {
+      "structure": [
+        "The Origin (Challenge)",
+        "The Awakening (Solution)",
+        "The Future (Results)"
+      ],
+      "customer_profile": "Target: General Audience [ĐỀ XUẤT]",
+      "challenge_section": "Context: Generic market problem [ĐỀ XUẤT]",
+      "solution_section": "Vision: Generic solution - implementing Unknown Offer [ĐỀ XUẤT]",
+      "results_section": "Goal: Revitalized village economy and high tourist footfall [ĐỀ XUẤT]",
+      "call_to_action": "Join the Flower Hunt today!",
+      "ai_generated_content": "Okay, đây là một bài viết ngắn mình nghĩ sẽ thu hút mọi người, đặc biệt là những ai yêu hoa và muốn khám phá văn hóa Việt Nam:\n\n**Sa Đéc ơi, Có Gì Hấp Dẫn Đang Chờ Đợi Bạn? (Bí Mật Sắp Mở)**\n\nBạn đã bao giờ nghe đến Sa Đéc chưa? Nếu chưa thì thiệt là một thiếu sót lớn đó nha! Sa Đéc không chỉ là một thành phố yên bình bên dòng sông Tiền hiền hòa đâu, mà còn là \"vương quốc\" của hoa, nơi mà màu sắc và hương thơm tràn ngập khắp mọi nẻo đường.\n\nTưởng tượng mà xem, buổi sáng thức dậy, bạn sẽ được chào đón bởi những cánh đồng hoa bát ngát, đủ mọi sắc màu: từ cúc mâm xôi vàng rực rỡ như ánh mặt trời, đến hoa hồng nhung đỏ thắm như trái tim đang yêu, rồi cả những chậu vạn thọ cam óng ả, tượng trưng cho sự trường thọ và may mắn.  Không khí trong lành, thoang thoảng hương hoa, mọi muộn phiền dường như tan biến hết.\n\nNhưng Sa Đéc không chỉ có hoa. Nơi đây còn là nơi lưu giữ những nét văn hóa truyền thống độc đáo của miền Tây. Bạn có thể ghé thăm những ngôi nhà cổ kính trăm năm tuổi, nghe những câu chuyện kể về lịch sử và con người nơi đây. Hay đơn giản là lang thang trên những con đường nhỏ, ngắm nhìn nhịp sống chậm rãi và bình dị của người dân địa phương.\n\nMình còn nhớ lần đầu tiên đến Sa Đéc, mình đã hoàn toàn bị chinh phục bởi vẻ đẹp của nơi này.  Không chỉ là hoa, mà còn là con người, là văn hóa, là cả một bầu trời kỷ niệm ùa về. Mình đã mua rất nhiều hoa về trang trí nhà cửa, và mỗi lần nhìn ngắm chúng, mình lại nhớ về những khoảnh khắc tuyệt vời ở Sa Đéc.\n\nVà bây giờ, tụi mình ở Sa Dec Flower Hunt đang ấp ủ một bất ngờ nho nhỏ dành tặng cho những người yêu mến Sa Đéc như bạn.  Mình không thể bật mí ngay bây giờ được, nhưng mình tin chắc rằng nó sẽ làm bạn \"wow\" lên đó!\n\n**Muốn biết \"bất ngờ\" đó là gì không?**\n\n*   **Follow trang của Sa Dec Flower Hunt ngay để không bỏ lỡ nhé!** (Nhớ bật thông báo để nhận tin sớm nhất nha!)\n*   **Comment bên dưới \"Tôi muốn biết!\" để thể hiện sự háo hức của bạn nào!**\n\nMình hứa là sẽ sớm \"bật mí\" cho bạn thôi!  Hẹn gặp lại bạn ở Sa Đéc (hoặc trên trang của tụi mình) nha!  Yêu hoa, yêu Sa Đéc! ❤️\n"
+    },
+    "advertorial_format": "Native ad style, editorial tone, story-driven [ĐỀ XUẤT]",
+    "founder_story_arc": "Problem discovered → Solution built → Impact achieved [TỪ PLAN]"
+  },
+  "metadata": {
+    "markings": {
+      "fromPlan": [],
+      "suggestions": [],
+      "assumptions": []
+    },
+    "dependenciesUsed": [],
+    "executionTime": 0,
+    "dataQuality": "high",
+    "configSnapshot": {
+      "temperature": 0.7
+    }
+  }
+}
