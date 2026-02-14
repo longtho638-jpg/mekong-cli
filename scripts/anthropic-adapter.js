@@ -87,9 +87,18 @@ function getGoogleKey() {
         key, i, load: googleState[i].calls.length,
         blocked: now < googleState[i].blockedUntil,
         maxRpm: GOOGLE_ULTRA_KEYS.has(i) ? GOOGLE_MAX_PER_MIN_ULTRA : GOOGLE_MAX_PER_MIN_FREE,
-    })).filter(k => !k.blocked && k.load < k.maxRpm);
+    })).filter(k => !k.blocked && k.load < k.maxRpm
+        && k.i !== 0 // 虛實: SKIP G0 (billwill) — reserved for user's direct work!
+    );
     if (available.length === 0) return null;
-    const chosen = available[0]; // Ultra (G0) always first if available
+    // Prioritize G1 (cashback Ultra) first, then free keys
+    available.sort((a, b) => {
+        // Ultra first (G1), then by lowest load
+        const aUltra = GOOGLE_ULTRA_KEYS.has(a.i) ? 0 : 1;
+        const bUltra = GOOGLE_ULTRA_KEYS.has(b.i) ? 0 : 1;
+        return aUltra - bUltra || a.load - b.load;
+    });
+    const chosen = available[0]; // G1 (cashback) always first
     googleState[chosen.i].calls.push(now);
     googleState[chosen.i].total++;
     requestCount++;
