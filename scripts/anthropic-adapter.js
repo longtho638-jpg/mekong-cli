@@ -35,13 +35,13 @@ const OPENROUTER_MODEL = 'google/gemini-3-flash-preview';
 // Provider 3: Google AI Studio — Ultra billing (G0-G1) + free tier (G2-G5)
 const GOOGLE_KEYS = [
     'AIzaSyBzUAA7BQA2pQGiNWj80itzK5Az5vLBxVE', // G0: Ultra billwill — 1500 RPM!
-    'AIzaSyBDfd6uZFd_h9IAT6Q3JCu4Iu71dKXujNc', // G1: cashback — KEY TẠO TRƯỚC ULTRA, coi như free!
+    'AIzaSyBAGrl55-Pq6DOohzkkQW_2QXdhBkIMbaM', // G1: Ultra cashback — NEW KEY post-Ultra billing!
     'AIzaSyDMmu7gupLY_FuCfbKd2Wfqkbg4bUOpCBQ', // G2: free
     'AIzaSyC79sMC-4fLacJDpDpGmFZKxvsvwZMC2IQ', // G3: free
     'AIzaSyCWnycMZcCbKpBlXH8HzH_afwoYsF253cg', // G4: free
     'AIzaSyBShNgCxOG-HrjTtET3QA2uFQtNW-RtTSI', // G5: free
 ];
-const GOOGLE_ULTRA_KEYS = new Set([0]); // G0 only — G1 key tạo trước Ultra, chờ regenerate
+const GOOGLE_ULTRA_KEYS = new Set([0, 1]); // G0 billwill + G1 cashback = 2x Ultra!
 const GOOGLE_MODEL = 'gemini-2.5-flash';
 
 // ===== STATE =====
