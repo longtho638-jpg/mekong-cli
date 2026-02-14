@@ -12,6 +12,7 @@ const config = require('../config');
 
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
 const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
+const NO_GIT = 'CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations.';
 
 /**
  * Classify mission complexity based on task metadata and keyword analysis.
@@ -87,7 +88,7 @@ function buildAgentTeamBlock(taskId) {
  * @returns {{ prompt: string, timeout: number, mode: string }} Formatted mission prompt + timeout + binh phap mode
  */
 function generateMissionPrompt(task, project, complexity) {
-  const mission = `${VI_PREFIX}${task.cmd} in ${project}. ${FILE_LIMIT}`;
+  const mission = `${VI_PREFIX}${task.cmd} in ${project}. ${FILE_LIMIT} ${NO_GIT}`;
   const timeout = getTimeoutForComplexity(complexity);
 
   // 🔥 LỬA mode — Complex: Agent Teams parallel, max token burn, max output
