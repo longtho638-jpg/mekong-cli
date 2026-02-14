@@ -83,20 +83,24 @@ function getOllamaKey() {
 function getGoogleKey() {
     const now = Date.now();
     googleState.forEach(k => { k.calls = k.calls.filter(t => now - t < 60000); });
-    const available = GOOGLE_KEYS.map((key, i) => ({
+    const all = GOOGLE_KEYS.map((key, i) => ({
         key, i, load: googleState[i].calls.length,
         blocked: now < googleState[i].blockedUntil,
         maxRpm: GOOGLE_ULTRA_KEYS.has(i) ? GOOGLE_MAX_PER_MIN_ULTRA : GOOGLE_MAX_PER_MIN_FREE,
+        isUltra: GOOGLE_ULTRA_KEYS.has(i),
     })).filter(k => !k.blocked && k.load < k.maxRpm);
-    if (available.length === 0) return null;
-    // 虛實: billwill G0 OK for Gemini (user rarely uses Gemini here)
-    // Prioritize Ultra keys (G0, G1), then free by load
-    available.sort((a, b) => {
-        const aUltra = GOOGLE_ULTRA_KEYS.has(a.i) ? 0 : 1;
-        const bUltra = GOOGLE_ULTRA_KEYS.has(b.i) ? 0 : 1;
-        return aUltra - bUltra || a.load - b.load;
-    });
-    const chosen = available[0];
+    if (all.length === 0) return null;
+
+    // 虛實 70/30 Split: Ultra 70%, Free 30% — tránh limit + tránh detection
+    const ultra = all.filter(k => k.isUltra).sort((a, b) => a.load - b.load);
+    const free = all.filter(k => !k.isUltra).sort((a, b) => a.load - b.load);
+    let chosen;
+    if (ultra.length > 0 && free.length > 0) {
+        chosen = Math.random() < 0.7 ? ultra[0] : free[0];
+    } else {
+        chosen = (ultra[0] || free[0]);
+    }
+
     googleState[chosen.i].calls.push(now);
     googleState[chosen.i].total++;
     requestCount++;
@@ -529,13 +533,18 @@ function proxyToAntigravity(rawBody, isStream, res, requestModel) {
     antigravityState.total++;
     antigravityState.lastCall = Date.now();
 
-    // 虛實: Rewrite model in body to rotate across AG models
-    const agModel = getNextAGModel();
+    // 虛實: Claude models → pass through to AG (cashback has 100% Claude quota)
+    // Gemini models → rotate across AG_MODELS to spread fingerprint
+    const isClaudeModel = requestModel && requestModel.startsWith('claude-');
+    const agModel = isClaudeModel ? requestModel : getNextAGModel();
     let modifiedBody;
     try {
         const parsed = JSON.parse(rawBody);
         parsed.model = agModel;
         modifiedBody = JSON.stringify(parsed);
+        if (isClaudeModel) {
+            console.log(`[${ts()}] 🔥 CLAUDE→AG: ${agModel} (cashback Ultra route)`);
+        }
     } catch (e) {
         modifiedBody = rawBody;
     }
