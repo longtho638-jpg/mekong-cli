@@ -497,9 +497,9 @@ const ANTIGRAVITY_PORT = 9191;
 
 // 九變 (Jiu Bian) — Ch.8: 3 models rotation to spread fingerprint
 const AG_MODELS = [
-    'gemini-3-pro-high[1m]',      // Primary: best quality
-    'gemini-2.5-pro',              // Alternate: proven stable  
-    'gemini-3-flash',              // Fast: lightweight tasks
+    'gemini-3-pro-high',           // Primary: best quality (100% avail)
+    'gemini-3-flash',              // Fast: lightweight (100% avail)
+    'gemini-2.5-flash',            // Stable fallback (100% avail)
 ];
 let agModelIndex = 0;
 let antigravityState = { calls: 0, total: 0, blocked: false, blockedUntil: 0, lastCall: 0 };
