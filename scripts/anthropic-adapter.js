@@ -87,18 +87,16 @@ function getGoogleKey() {
         key, i, load: googleState[i].calls.length,
         blocked: now < googleState[i].blockedUntil,
         maxRpm: GOOGLE_ULTRA_KEYS.has(i) ? GOOGLE_MAX_PER_MIN_ULTRA : GOOGLE_MAX_PER_MIN_FREE,
-    })).filter(k => !k.blocked && k.load < k.maxRpm
-        && k.i !== 0 // 虛實: SKIP G0 (billwill) — reserved for user's direct work!
-    );
+    })).filter(k => !k.blocked && k.load < k.maxRpm);
     if (available.length === 0) return null;
-    // Prioritize G1 (cashback Ultra) first, then free keys
+    // 虛實: billwill G0 OK for Gemini (user rarely uses Gemini here)
+    // Prioritize Ultra keys (G0, G1), then free by load
     available.sort((a, b) => {
-        // Ultra first (G1), then by lowest load
         const aUltra = GOOGLE_ULTRA_KEYS.has(a.i) ? 0 : 1;
         const bUltra = GOOGLE_ULTRA_KEYS.has(b.i) ? 0 : 1;
         return aUltra - bUltra || a.load - b.load;
     });
-    const chosen = available[0]; // G1 (cashback) always first
+    const chosen = available[0];
     googleState[chosen.i].calls.push(now);
     googleState[chosen.i].total++;
     requestCount++;
