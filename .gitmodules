@@ -5,14 +5,19 @@
 	path = apps/84tea
 	url = https://github.com/longtho638-jpg/84tea.git
 
-[submodule "apex-os"]
-	path = apex-os
+[submodule "apps/apex-os"]
+	path = apps/apex-os
 	url = https://github.com/longtho638-jpg/apex-os.git
 
 [submodule "claudekit-engineer-dna"]
 	path = claudekit-engineer-dna
 	url = https://github.com/claudekit/claudekit-engineer.git
 
-[submodule "com-anh-duong-10x"]
-	path = com-anh-duong-10x
+[submodule "apps/com-anh-duong-10x"]
+	path = apps/com-anh-duong-10x
 	url = https://github.com/PHIHOANG160314/COM-ANH-DUONG.git
+
+[submodule "apps/anima119"]
+	path = apps/anima119
+	url = https://github.com/longtho638-jpg/anima119.git
+
