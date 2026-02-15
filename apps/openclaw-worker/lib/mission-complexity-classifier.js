@@ -9,10 +9,53 @@
  */
 
 const config = require('../config');
+const fs = require('fs');
+const path = require('path');
 
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
 const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
 const NO_GIT = 'CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations.';
+
+const HISTORY_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/mission-history.json');
+
+/**
+ * Adjust timeout based on project history (Self-Learning Feedback Loop)
+ * @param {string} project
+ * @param {number} baseTimeout
+ * @returns {number} Adjusted timeout in ms
+ */
+function adjustTimeout(project, baseTimeout) {
+  try {
+    let adjusted = baseTimeout || config.TIMEOUT_SIMPLE;
+
+    if (fs.existsSync(HISTORY_FILE)) {
+      const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
+      const projectMissions = history.filter(m => m.project === project).slice(-10);
+
+      if (projectMissions.length > 0) {
+        // Logic: Nếu thường xuyên timeout (thất bại và chạy > 90% timeout) -> +20%
+        const timeouts = projectMissions.filter(m => !m.success && m.durationMs > (adjusted * 0.9)).length;
+        if (timeouts >= 3) {
+          adjusted = Math.floor(adjusted * 1.2);
+        }
+
+        // Logic: Nếu luôn chạy nhanh (thành công và < 30% timeout) -> -20%
+        const fastRuns = projectMissions.filter(m => m.success && m.durationMs < (adjusted * 0.3)).length;
+        if (fastRuns >= 5) {
+          adjusted = Math.floor(adjusted * 0.8);
+        }
+      }
+    }
+
+    // Range: 5 min to 60 min
+    const MIN_TIMEOUT = 5 * 60 * 1000;
+    const MAX_TIMEOUT = 60 * 60 * 1000;
+
+    return Math.min(Math.max(adjusted, MIN_TIMEOUT), MAX_TIMEOUT);
+  } catch (e) {
+    return baseTimeout || config.TIMEOUT_SIMPLE;
+  }
+}
 
 /**
  * Classify mission complexity based on task metadata and keyword analysis.
@@ -47,13 +90,15 @@ function getTimeoutForComplexity(complexity) {
  */
 function classifyContentTimeout(text) {
   const lower = text.toLowerCase();
+  let complexity = 'simple';
   if (config.COMPLEXITY.COMPLEX_KEYWORDS.some(kw => lower.includes(kw))) {
-    return { complexity: 'complex', timeout: config.TIMEOUT_COMPLEX };
+    complexity = 'complex';
+  } else if (config.COMPLEXITY.MEDIUM_KEYWORDS.some(kw => lower.includes(kw))) {
+    complexity = 'medium';
   }
-  if (config.COMPLEXITY.MEDIUM_KEYWORDS.some(kw => lower.includes(kw))) {
-    return { complexity: 'medium', timeout: config.TIMEOUT_MEDIUM };
-  }
-  return { complexity: 'simple', timeout: config.TIMEOUT_SIMPLE };
+
+  const baseTimeout = getTimeoutForComplexity(complexity);
+  return { complexity, timeout: baseTimeout };
 }
 
 /**
@@ -89,7 +134,12 @@ function buildAgentTeamBlock(taskId) {
  */
 function generateMissionPrompt(task, project, complexity) {
   const mission = `${VI_PREFIX}${task.cmd} in ${project}. ${FILE_LIMIT} ${NO_GIT}`;
-  const timeout = getTimeoutForComplexity(complexity);
+
+  // Get base timeout based on complexity
+  const baseTimeout = getTimeoutForComplexity(complexity);
+
+  // Apply adaptive learning adjustment
+  const timeout = adjustTimeout(project, baseTimeout);
 
   // 🔥 LỬA mode — Complex: Agent Teams parallel, max token burn, max output
   if (complexity === 'complex') {
@@ -119,4 +169,4 @@ function isTeamMission(prompt) {
     lower.includes('teammates');
 }
 
-module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock, classifyContentTimeout, getTimeoutForComplexity };
+module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock, classifyContentTimeout, getTimeoutForComplexity, adjustTimeout };

@@ -113,4 +113,26 @@ function getDailyUsage() {
     }
 }
 
-module.exports = { countTokensBetween, recordMission, getDailyUsage, DAILY_BUDGET };
+/**
+ * Check if we have enough budget to run a mission
+ * @returns {boolean} true if under budget, false if exhausted
+ */
+function shouldUseBudget() {
+    try {
+        const usage = getDailyUsage();
+        if (usage.overBudget) {
+            console.log(`TOKEN_TRACKER: 🚫 Daily budget exhausted (${usage.tokens}/${DAILY_BUDGET}). Stopping dispatch.`);
+            return false;
+        }
+
+        if (usage.tokens > (DAILY_BUDGET * 0.8)) {
+             console.log(`TOKEN_TRACKER: ⚠️ Warning: 80% of daily budget used (${usage.tokens}/${DAILY_BUDGET}).`);
+        }
+
+        return true;
+    } catch (e) {
+        return true; // Fail open if error
+    }
+}
+
+module.exports = { countTokensBetween, recordMission, getDailyUsage, shouldUseBudget, DAILY_BUDGET };
