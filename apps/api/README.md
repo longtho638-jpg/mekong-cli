@@ -1,63 +1,64 @@
-# AgencyOS API Service
+# AgencyOS API
+================
 
-The API service is the entry point for the AgencyOS Money Layer. It is built with **FastAPI** and provides RESTful endpoints for managing users, wallets, transactions, and credit packs.
+## Overview
+The AgencyOS API is a robust and scalable application programming interface designed to provide a comprehensive set of tools and services for managing and interacting with AgencyOS. This repository contains the source code for the API, along with documentation and testing frameworks.
 
-## Tech Stack
-
-- **Framework**: FastAPI
-- **Database**: PostgreSQL (Async with SQLAlchemy + Alembic)
-- **Validation**: Pydantic
-- **Deployment**: Docker
+## Table of Contents
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Development](#development)
+- [Testing](#testing)
+- [Deployment](#deployment)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Getting Started
+To get started with the AgencyOS API, follow these steps:
 
-### Prerequisites
-
-- Python 3.11+
-- Docker & Docker Compose
-- Poetry (for dependency management)
-
-### Local Development
-
-1. **Install Dependencies**:
-   ```bash
-   poetry install
-   ```
-
-2. **Run Migrations**:
-   ```bash
-   # Generate migration
-   poetry run alembic revision --autogenerate -m "Initial migration"
-
-   # Apply migration
-   poetry run alembic upgrade head
-   ```
-
-3. **Start Server**:
-   ```bash
-   poetry run uvicorn main:app --reload --host 0.0.0.0 --port 8000
-   ```
-
-## Docker
-
-Build and run via the infrastructure Makefile:
-
-```bash
-cd ../../infrastructure
-make deploy-local
-```
+1. Clone the repository: `git clone https://github.com/your-repo/agencyos-api.git`
+2. Install dependencies: `pip install -r requirements.txt`
+3. Initialize the database: `alembic init`
+4. Run migrations: `alembic upgrade head`
+5. Start the API: `uvicorn main:app --host 0.0.0.0 --port 8000`
 
 ## Project Structure
+The project is organized into the following directories:
 
-```
-apps/api/
-├── alembic/            # Database migrations
-├── src/
-│   ├── models.py       # Database models (User, Wallet, Transaction)
-│   ├── config.py       # Environment configuration
-│   ├── database.py     # Database connection & session
-│   └── routers/        # API endpoints
-├── main.py             # App entry point
-├── Dockerfile          # Production Dockerfile
-└── pyproject.toml      # Dependencies
-```
+* `src`: Contains the source code for the API
+* `tests`: Contains unit tests and integration tests for the API
+* `alembic`: Contains database migration scripts
+* `docs`: Contains documentation for the API
+
+## Development
+To contribute to the development of the AgencyOS API, follow these steps:
+
+1. Create a new branch: `git checkout -b feature/new-feature`
+2. Make changes to the code: `git add .`
+3. Commit changes: `git commit -m "New feature"`
+4. Push changes: `git push origin feature/new-feature`
+5. Create a pull request: Submit a pull request to the main branch
+
+## Testing
+To run tests for the AgencyOS API, follow these steps:
+
+1. Install test dependencies: `pip install -r requirements.txt`
+2. Run unit tests: `pytest tests/unit`
+3. Run integration tests: `pytest tests/integration`
+
+## Deployment
+To deploy the AgencyOS API, follow these steps:
+
+1. Build the Docker image: `docker build -t agencyos-api .`
+2. Push the image to a registry: `docker push agencyos-api:latest`
+3. Deploy to a cloud platform: Follow the deployment instructions for your chosen cloud platform
+
+## Documentation
+For more information about the AgencyOS API, see the [CLAUDE.md](CLAUDE.md) file.
+
+## Contributing
+To contribute to the AgencyOS API, see the [CONTRIBUTING.md](CONTRIBUTING.md) file.
+
+## License
+The AgencyOS API is licensed under the [MIT License](LICENSE).

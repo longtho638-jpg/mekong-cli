@@ -1,0 +1,5 @@
+
+> openclaw-worker@2026.2.13 build
+> echo 'No build step required for worker'
+
+No build step required for worker

@@ -96,7 +96,7 @@ PRIORITY (highest wins):
 │           Claude Code CLI · Execution Engine                     │
 │         claude --model claude-opus-4-6-thinking                  │
 │    Executes /cook, /plan, /fix · Stays alive via expect brain    │
-│    Uses Antigravity Proxy (port 8080) for LLM calls              │
+│    Uses Antigravity Proxy (port 11436) for LLM calls             │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -131,8 +131,8 @@ PRIORITY (highest wins):
 | CLI Engine | Python 3.11+ · Typer · Rich · Pydantic |
 | Orchestration | Node.js (OpenClaw) · Expect (brain control) |
 | Gateway | FastAPI (local) · Cloudflare Workers (cloud) |
-| Proxy | Antigravity Proxy (port 8080, OpenAI-compatible) |
-| Model | claude-opus-4-6-thinking (via proxy) |
+| Proxy | Antigravity Proxy (port 11436, Anthropic-compatible) |
+| Model | gemini-3-flash-preview (via proxy) |
 
 ### Architecture
 
@@ -207,7 +207,7 @@ mekong version                # Show version (v0.2.0)
 All LLM calls route through Antigravity Proxy — never direct API.
 
 ```
-CC CLI ──→ http://127.0.0.1:8080 ──→ Proxy ──→ Claude/Gemini APIs
+CC CLI ──→ http://127.0.0.1:11436 ──→ Proxy v4 ──→ Ollama/OpenRouter/Google
                                        │
                                        ├── Load balancing across accounts
                                        ├── Automatic model fallback
@@ -216,9 +216,9 @@ CC CLI ──→ http://127.0.0.1:8080 ──→ Proxy ──→ Claude/Gemini A
 
 | Config | Value |
 |--------|-------|
-| `ANTHROPIC_BASE_URL` | `http://127.0.0.1:8080` |
-| `PROXY_PORT` | 8080 |
-| `MODEL_NAME` | `claude-opus-4-6-thinking` |
+| `ANTHROPIC_BASE_URL` | `http://127.0.0.1:11436` |
+| `PROXY_PORT` | 11436 |
+| `MODEL_NAME` | `gemini-3-flash-preview` |
 
 ### Error Recovery Protocol (ĐIỀU 52)
 

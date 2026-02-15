@@ -1,93 +1,101 @@
-# System Architecture: AgencyOS RaaS
+# Kiến Trúc Hệ Thống: AgencyOS RaaS
 
-## 1. High-Level Overview (Hub-and-Spoke)
+## 1. Tổng Quan Cấp Cao (Hub-and-Spoke)
 
-The AgencyOS Robot-as-a-Service (RaaS) platform follows a Hub-and-Spoke architecture designed for high scalability, separation of concerns, and asynchronous processing.
+Nền tảng AgencyOS Robot-as-a-Service (RaaS) tuân theo kiến trúc Hub-and-Spoke, được thiết kế cho khả năng mở rộng cao, phân tách mối quan tâm và xử lý bất đồng bộ.
+
+### Sơ Đồ Kiến Trúc
 
 ```mermaid
 graph TD
-    User[User / Client] -->|HTTP POST /v1/chat/completions| Gateway[RaaS Gateway (Cloudflare Workers)]
-    Gateway -->|Auth & Rate Limit| Engine[Engine API (Node.js/Fastify)]
+    User[User / Telegram] -->|File IPC / Tasks| TomHum[🦞 Tôm Hùm Daemon (OpenClaw)]
 
-    subgraph "Engine Layer (Dockerized)"
-        Engine -->|1. Persist Job (QUEUED)| DB[(PostgreSQL)]
-        Engine -->|2. Enqueue Job| Queue[(Redis BullMQ)]
-
-        Worker[Worker Service (Node.js)] -->|3. Poll Job| Queue
-        Worker -->|4. Update Status (PROCESSING)| DB
-        Worker -->|5. Execute Task| LLM[LLM Provider (Gemini/Claude)]
-        Worker -->|6. Update Status (COMPLETED/FAILED)| DB
+    subgraph "Hub Layer (Orchestration)"
+        TomHum -->|1. Dispatch Task| Queue[(Task Queue)]
+        TomHum -->|2. Spawn/Manage| Brain[Brain Process (CC CLI)]
+        TomHum -->|3. Auto-CTO| Quality[Quality Gates]
     end
 
-    User -->|HTTP GET /v1/jobs/:id| Gateway
-    Gateway -->|Fetch Status| Engine
-    Engine -->|Query| DB
+    subgraph "Spoke Layer (Execution)"
+        Brain -->|4. Execute Plan| FS[File System]
+        Brain -->|5. Git Ops| Git[Git Repository]
+        Brain -->|6. LLM Calls| Proxy[Antigravity Proxy :11436]
+    end
+
+    subgraph "Infrastructure Layer"
+        Proxy -->|Load Balance| Providers[Anthropic / Gemini / OpenAI]
+        FS -->|Logs & Telemetry| Dashboard[Observability]
+    end
 ```
 
-## 2. Core Components
+## 2. Các Thành Phần Cốt Lõi
 
-### 2.1. RaaS Gateway (Cloudflare Workers)
-- **Role**: Entry point for all API traffic.
-- **Responsibilities**:
-  - Authentication (API Keys).
-  - Rate Limiting.
-  - Request Routing.
-  - CORS handling.
+### 2.1. Tôm Hùm Daemon (OpenClaw Worker)
+- **Vị trí**: `apps/openclaw-worker/`
+- **Vai trò**: "Đại Tướng" - Điều phối viên trung tâm.
+- **Trách nhiệm**:
+  - Giám sát thư mục `tasks/` để nhận nhiệm vụ mới.
+  - Quản lý vòng đời của tiến trình Brain (CC CLI).
+  - Tự động sinh ra các nhiệm vụ bảo trì (Auto-CTO) khi rảnh rỗi.
+  - Bảo vệ tài nguyên hệ thống (M1 Cooling Daemon).
 
-### 2.2. Engine API (apps/engine)
-- **Technology**: Node.js, Fastify, Docker.
-- **Role**: The "Hub" that manages job ingestion and persistence.
-- **Responsibilities**:
-  - Validates request payloads (Zod).
-  - Persists job records to PostgreSQL.
-  - Pushes jobs to the Redis Queue.
-  - Provides endpoints to check job status.
+### 2.2. CC CLI (Claude Code)
+- **Vị trí**: Chạy dưới dạng tiến trình con của Tôm Hùm.
+- **Vai trò**: "Binh Sĩ" - Đơn vị thực thi.
+- **Trách nhiệm**:
+  - Nhận lệnh thông qua `stdin` (được inject bởi Tôm Hùm).
+  - Thực thi các lệnh `mekong cook`, `mekong plan`.
+  - Tương tác trực tiếp với File System và Git.
+  - Báo cáo kết quả về Tôm Hùm thông qua file IPC.
 
-### 2.3. Worker Service (apps/worker)
-- **Technology**: Node.js, BullMQ, Docker.
-- **Role**: The "Spoke" that executes tasks asynchronously.
-- **Responsibilities**:
-  - Consumes jobs from Redis.
-  - Updates job status in PostgreSQL (PROCESSING -> COMPLETED/FAILED).
-  - Executes the actual business logic (e.g., calling LLMs).
-  - Handles retries and failure reporting.
+### 2.3. Antigravity Proxy
+- **Cấu hình**: Port `11436`.
+- **Vai trò**: Cổng kết nối LLM tập trung.
+- **Trách nhiệm**:
+  - Cân bằng tải giữa các tài khoản và nhà cung cấp LLM.
+  - Quản lý hạn ngạch (Quota management).
+  - Tự động chuyển đổi (Failover) khi một model bị lỗi.
+  - Đảm bảo tính ẩn danh và ổn định cho các agent.
 
-### 2.4. Infrastructure
-- **Redis (BullMQ)**:
-  - Used for job queuing and pub/sub.
-  - ephemeral storage for active jobs.
-- **Database**:
-  - **Production**: PostgreSQL (Prisma) for long-term persistence, users, and credits.
-  - **Local Development**: SQLite (via Prisma) for zero-dependency setup.
+### 2.4. RaaS Gateway (Cloudflare Workers)
+- **Vị trí**: `apps/raas-gateway/`
+- **Vai trò**: API Gateway cho các yêu cầu từ bên ngoài (Web, Webhook).
+- **Trách nhiệm**:
+  - Xác thực API Key.
+  - Chuyển đổi HTTP Request thành File Task cho Tôm Hùm.
 
-## 3. Data Model (Prisma Schema)
+## 3. Luồng Dữ Liệu (Data Flow)
 
-### Job
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | UUID | Unique identifier |
-| `type` | String | Task type (e.g., `chat.completion`) |
-| `status` | Enum | `QUEUED`, `PROCESSING`, `COMPLETED`, `FAILED` |
-| `input` | JSON | Request payload (model, messages) |
-| `output` | JSON | Result payload |
-| `error` | String | Error message if failed |
-| `userId` | String | Foreign Key to User |
+### Quy trình Xử lý Nhiệm vụ (Task Processing)
+1.  **Nhận Nhiệm Vụ**: User hoặc hệ thống tạo file `tasks/mission_*.txt`.
+2.  **Phát Hiện**: Tôm Hùm phát hiện file mới, đọc nội dung.
+3.  **Lập Lịch**: Tôm Hùm đẩy nhiệm vụ vào hàng đợi ưu tiên.
+4.  **Thực Thi**:
+    - Tôm Hùm gọi CC CLI (Brain).
+    - CC CLI phân tích yêu cầu, gọi Proxy để lấy Plan.
+    - CC CLI thực thi các bước (sửa code, chạy test).
+5.  **Kiểm Tra (Verify)**:
+    - CC CLI chạy các kiểm tra Binh Pháp (Lint, Test, Build).
+    - Nếu thất bại -> Rollback hoặc Fix.
+    - Nếu thành công -> Báo cáo "DONE".
+6.  **Hoàn Tất**: Tôm Hùm di chuyển file task vào `tasks/processed/`.
 
-### User
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | UUID | Unique identifier |
-| `email` | String | User email |
-| `credits` | Int | Remaining credits |
+## 4. Mô Hình Dữ Liệu
 
-## 4. Deployment Strategy
-- **Containerization**: Docker & Docker Compose.
-- **Orchestration**:
-  - **Dev**: `npm run dev` (Local SQLite + Local Redis) or `docker-compose up`.
-  - **Prod**: Google Cloud Run (Serverless Containers) or VM.
-- **CI/CD**: GitHub Actions for build and test.
+### Task File Structure
+```text
+Filename: mission_PROJECT_TIMESTAMP.txt
+Content:
+- Project: <tên-dự-án>
+- Priority: <HIGH/LOW>
+- Description: <mô-tả-chi-tiết>
+```
 
-## 5. Security
-- **Service Token**: Internal authentication between Gateway and Engine.
-- **Environment Variables**: All secrets (DB URLs, Keys) managed via `.env`.
-- **Network Isolation**: Redis and Postgres are not exposed publicly in production; only accessible by Engine/Worker via private network.
+### Database (PostgreSQL)
+Lưu trữ thông tin người dùng, tín dụng (credits) và lịch sử giao dịch (dành cho lớp Web).
+
+## 5. Bảo Mật & An Toàn
+
+- **Sandbox**: CC CLI chạy trong môi trường được kiểm soát quyền (mặc dù cờ `--dangerously-skip-permissions` được bật để tự động hóa, nhưng Tôm Hùm giám sát chặt chẽ).
+- **Network Isolation**: Proxy chỉ cho phép các kết nối từ localhost hoặc các IP tin cậy.
+- **Resource Limits**: Daemon giám sát RAM và Nhiệt độ CPU để ngăn chặn quá tải trên thiết bị Edge (MacBook M1).

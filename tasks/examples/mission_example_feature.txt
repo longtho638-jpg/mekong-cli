@@ -1,8 +1,15 @@
-- Project: mekong-cli
+- Project: apps/sophia-ai-factory
 - Priority: MEDIUM
-- Description: This is a template for a new feature implementation. Describe the feature requirements and how it fits into the overall architecture.
+- Chapter: 第五篇 兵勢 (Energy/Momentum)
+- Mission: Implement Polar.sh Webhook for Subscription Automation.
+- Description: Integrate the Polar.sh 'subscription.created' webhook to automate user onboarding and tier assignment in the AI Factory ecosystem.
 - Instructions:
-  1. Use `/plan:hard` to design the feature.
-  2. Implement the core logic using `/cook`.
-  3. Add documentation in the `docs/` folder.
-  4. Verify with integration tests.
+  1. Create a new API route at `/api/webhooks/polar` using Hono.
+  2. Implement webhook signature verification using `POLAR_WEBHOOK_SECRET`.
+  3. On successful 'subscription.created', update the user's tier in the Supabase 'profiles' table.
+  4. Use `/preview --diagram` to visualize the webhook processing flow for the final report.
+  5. Verify the implementation using the Polar CLI to trigger a test webhook.
+- Success Criteria:
+  - Webhook verified and processed successfully.
+  - User tier updated in database.
+  - Zero exposed secrets in code.

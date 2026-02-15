@@ -1,7 +1,15 @@
 - Project: mekong-cli
 - Priority: LOW
-- Description: Use this mission to refactor existing code for better maintainability, performance, or type safety.
+- Chapter: 第三篇 謀攻 (Stratagem)
+- Mission: Modularity Sweep - Refactor Verifier Engine.
+- Description: The `verifier.py` module has exceeded 250 lines, violating our "File Size Management" rule (<200 lines). Refactor it into a cleaner, modular structure.
 - Instructions:
-  1. Scan the codebase for `: any` types or high cyclomatic complexity.
-  2. Refactor into smaller, focused modules (< 200 lines).
-  3. Ensure 100% test coverage post-refactor.
+  1. Identify logic in `verifier.py` that can be extracted into specialized sub-modules (e.g., `src/core/checkers/`).
+  2. Extract Shell and LLM verification logic into separate files.
+  3. Maintain the same public API for `RecipeVerifier` to ensure backward compatibility.
+  4. Run all existing tests in `tests/test_verifier.py` to ensure zero regressions.
+  5. Update the docstrings to reflect the new modular architecture.
+- Success Criteria:
+  - `verifier.py` is under 150 lines.
+  - All tests pass.
+  - No breaking changes to the external API.

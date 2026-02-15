@@ -1,1 +1,0 @@
-sophia-ai-factory: Run npm run build and fix all build errors. Report status.

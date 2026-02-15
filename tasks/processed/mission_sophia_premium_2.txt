@@ -1,1 +1,0 @@
-/cook "Sophia AI Factory Go-Live: 1) Verify Polar.sh payment integration works for $4999 Premium tier 2) Test subscription gating - free vs paid content access 3) Add professional onboarding flow for new users 4) Add demo mode with sample AI-generated videos 5) Ensure Telegram bot commands all respond correctly" in sophia-ai-factory

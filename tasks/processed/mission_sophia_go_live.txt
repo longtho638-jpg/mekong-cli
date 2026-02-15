@@ -1,1 +1,0 @@
-Fix all broken UI, add loading states, polish dashboard, ensure responsive mobile, verify Polar payment flow works in sophia-ai-factory

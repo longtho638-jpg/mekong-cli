@@ -1,1 +1,0 @@
-Execute a final Binh Pháp port verification. Confirm that Tôm Hùm is correctly using port 8046 for Qwen models and 8045 for Claude models. Respond with 'Ports Verified' when complete.

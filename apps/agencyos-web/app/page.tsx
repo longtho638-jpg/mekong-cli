@@ -14,19 +14,19 @@ export default function Home() {
       {/* Header */}
       <header className="z-10 container mx-auto flex items-center justify-between py-6 px-4">
         <div className="flex items-center gap-2 font-bold text-xl tracking-tighter">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
+          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center" role="img" aria-label="AgencyOS Logo">
             <span className="text-white">A</span>
           </div>
           AgencyOS
         </div>
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-          <Link href="#" className="hover:text-white transition-colors">Features</Link>
-          <Link href="#" className="hover:text-white transition-colors">Pricing</Link>
-          <Link href="#" className="hover:text-white transition-colors">Developers</Link>
+          <Link href="#" className="hover:text-white transition-colors" aria-label="Features">Features</Link>
+          <Link href="#" className="hover:text-white transition-colors" aria-label="Pricing">Pricing</Link>
+          <Link href="#" className="hover:text-white transition-colors" aria-label="Developers">Developers</Link>
         </nav>
         <div className="flex items-center gap-4">
-          <Link href="#" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors">Login</Link>
-          <Button variant="secondary" className="rounded-full px-6 bg-white text-black hover:bg-zinc-200">
+          <Link href="#" className="text-sm font-medium text-zinc-400 hover:text-white transition-colors" aria-label="Login">Login</Link>
+          <Button variant="secondary" className="rounded-full px-6 bg-white text-black hover:bg-zinc-200" aria-label="Get Started">
             Get Started
           </Button>
         </div>
@@ -34,43 +34,43 @@ export default function Home() {
 
       {/* Hero Section */}
       <main className="z-10 flex-1 flex flex-col items-center justify-center text-center px-4 pt-20 pb-32">
-        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-4 py-1.5 text-xs font-medium text-purple-400 backdrop-blur-md mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <Sparkles className="h-3 w-3" />
+        <div className="inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/50 px-4 py-1.5 text-xs font-medium text-purple-400 backdrop-blur-md mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700" aria-label="Results-as-a-Service Engine version 2.0">
+          <Sparkles className="h-3 w-3" aria-hidden="true" />
           <span>Results-as-a-Service Engine v2.0</span>
         </div>
 
         <h1 className="max-w-4xl text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-white/40 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          Don't buy tools. <br />
+          Don&apos;t buy tools. <br />
           <span className="text-white">Buy Deliverables.</span>
         </h1>
 
         <p className="max-w-2xl text-lg md:text-xl text-zinc-400 mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200">
-          The world's first RaaS platform. You pay for results—CEO leads, SEO articles, and competitor reports—executed by autonomous AI agents.
+          The world&apos;s first RaaS platform. You pay for results—CEO leads, SEO articles, and competitor reports—executed by autonomous AI agents.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center gap-4 animate-in fade-in slide-in-from-bottom-16 duration-1000 delay-300">
-          <Button size="lg" className="rounded-full px-8 h-12 text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0 shadow-lg shadow-purple-500/20">
-            Start RaaS Engine <ArrowRight className="ml-2 h-4 w-4" />
+          <Button size="lg" className="rounded-full px-8 h-12 text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 border-0 shadow-lg shadow-purple-500/20" aria-label="Start RaaS Engine">
+            Start RaaS Engine <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
           </Button>
-          <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base border-zinc-800 bg-black/50 hover:bg-zinc-900 text-zinc-300">
+          <Button size="lg" variant="outline" className="rounded-full px-8 h-12 text-base border-zinc-800 bg-black/50 hover:bg-zinc-900 text-zinc-300" aria-label="View Documentation">
             View Documentation
           </Button>
         </div>
 
         {/* Feature Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-32 max-w-6xl w-full px-4 text-left">
-          <FeatureCard 
-            icon={<Zap className="h-6 w-6 text-yellow-400" />}
+          <FeatureCard
+            icon={<Zap className="h-6 w-6 text-yellow-400" aria-hidden="true" aria-label="Instant Results" />}
             title="Instant Results"
             desc="No more waiting for freelancers. Agents work 24/7/365 at lightspeed."
           />
-          <FeatureCard 
-            icon={<Shield className="h-6 w-6 text-green-400" />}
+          <FeatureCard
+            icon={<Shield className="h-6 w-6 text-green-400" aria-hidden="true" aria-label="Enterprise Logic" />}
             title="Enterprise Logic"
             desc="Built on Mekong CLI and OpenClaw. Industrial-grade execution pipelines."
           />
-          <FeatureCard 
-            icon={<Globe className="h-6 w-6 text-blue-400" />}
+          <FeatureCard
+            icon={<Globe className="h-6 w-6 text-blue-400" aria-hidden="true" aria-label="Viral Ecosystem" />}
             title="Viral Ecosystem"
             desc="Open source developer kit (Zone B) powers the RaaS engine (Zone C)."
           />

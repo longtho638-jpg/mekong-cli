@@ -1,1 +1,0 @@
-Execute a final Binh Pháp verification scan on the mekong-cli project to ensure all recent proxy and model mapping fixes are stable and documented.

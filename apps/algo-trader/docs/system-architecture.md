@@ -5,8 +5,8 @@ Hệ thống tuân theo mô hình **Event-Driven** và **Modular Architecture**.
 
 ```mermaid
 graph TD
-    DP[DataProvider] -->|Candles| BE[BotEngine]
-    BE -->|Analyze| ST[Strategy]
+    DP[IDataProvider] -->|Candles| BE[BotEngine]
+    BE -->|Analyze| ST[IStrategy]
     ST -->|Signal| BE
     BE -->|Risk Check| RM[RiskManager]
     RM -->|Position Size| BE
@@ -14,35 +14,35 @@ graph TD
     EC -->|Order Result| OM[OrderManager]
     OM -->|Status| BE
     BE -->|Metrics| PA[PerformanceAnalyzer]
-    PA -->|Report| RP[Reporter]
+    PA -->|Report| RP[ConsoleReporter/HtmlReporter]
 ```
 
 ## Core Components
 
 ### 1. BotEngine (`src/core/BotEngine.ts`)
-Trung tâm điều phối của hệ thống. Nhận dữ liệu từ `DataProvider`, gửi đến `Strategy` để lấy tín hiệu, sau đó phối hợp với `RiskManager` và `OrderManager` để thực thi lệnh.
+Trung tâm điều phối của hệ thống. Nhận dữ liệu từ `IDataProvider`, gửi đến `IStrategy` để lấy tín hiệu, sau đó phối hợp với `RiskManager` và `OrderManager` để thực thi lệnh.
 
 ### 2. Strategy Layer (`src/strategies/`)
-Chứa các lớp triển khai logic giao dịch.
+Chứa các lớp triển khai logic giao dịch tuân thủ interface `IStrategy`.
 - **Technical Indicators**: RSI Crossover, SMA.
 - **Arbitrage**: Cross-Exchange, Triangular, Statistical.
 
 ### 3. Data Layer (`src/data/`)
-Định nghĩa cách thức lấy dữ liệu.
+Định nghĩa cách thức lấy dữ liệu qua interface `IDataProvider`.
 - `MockDataProvider`: Dùng cho testing và backtest.
-- `ExchangeDataProvider` (TBD): Dùng cho live trading qua CCXT.
+- `ExchangeDataProvider` (TBD): Dự kiến triển khai để lấy dữ liệu live qua CCXT.
 
 ### 4. Execution Layer (`src/execution/`)
-Tương tác trực tiếp với API của các sàn giao dịch thông qua thư viện CCXT.
+- `ExchangeClient`: Tương tác trực tiếp với API của các sàn giao dịch thông qua thư viện CCXT.
 
 ### 5. Risk & Order Management (`src/core/`)
 - `RiskManager`: Tính toán số lượng cần mua/bán để đảm bảo không vi phạm quy tắc quản lý vốn.
 - `OrderManager`: Lưu trữ và cập nhật trạng thái các lệnh đang mở.
 
 ## Data Flow
-1. `DataProvider` phát ra sự kiện `onCandle`.
-2. `BotEngine` nhận candle và chuyển cho `Strategy`.
-3. `Strategy` tính toán (indicators, arbitrage spreads) và trả về `ISignal` (BUY/SELL) hoặc `null`.
+1. `IDataProvider` phát ra sự kiện `onCandle`.
+2. `BotEngine` nhận candle và chuyển cho `IStrategy`.
+3. `IStrategy` tính toán (indicators, arbitrage spreads) và trả về `ISignal` (BUY/SELL) hoặc `null`.
 4. Nếu có tín hiệu, `BotEngine` gọi `RiskManager` để xác định volume.
 5. `BotEngine` gọi `ExchangeClient` để đặt lệnh.
 6. Kết quả lệnh được lưu vào `OrderManager`.

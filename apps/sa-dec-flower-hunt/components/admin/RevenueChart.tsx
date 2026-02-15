@@ -19,6 +19,16 @@ export function RevenueChart({ data = [] }: RevenueChartProps) {
         }));
     }, [data]);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const revenueFormatter = (value: any, name: any): [string | number, string] => {
+        const val = Array.isArray(value) ? value[0] : value;
+        const numValue = Number(val || 0);
+        if (name === 'revenue') {
+            return [new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numValue), 'Doanh thu'];
+        }
+        return [numValue, 'Đơn hàng'];
+    };
+
     // Don't render chart if no data or empty
     if (!chartData || chartData.length === 0) {
         return (
@@ -64,12 +74,7 @@ export function RevenueChart({ data = [] }: RevenueChartProps) {
                             borderRadius: '8px',
                             color: '#fff'
                         }}
-                        formatter={(value: number, name: string) => {
-                            if (name === 'revenue') {
-                                return [`${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)}`, 'Doanh thu'];
-                            }
-                            return [value, 'Đơn hàng'];
-                        }}
+                        formatter={revenueFormatter}
                     />
                     <Area
                         type="monotone"

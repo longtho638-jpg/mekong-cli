@@ -1,1 +1,0 @@
-/cook "Clean all console.log and debug statements from production code" in apex-os

@@ -18,6 +18,18 @@ const config = require('../config');
 
 const GATE_LOG = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/.gate-results.json');
 
+// 🔒 FORBIDDEN FILES — CC CLI CANNOT modify these. Gate will git checkout (rollback) any changes.
+// Chairman-only: Only humans can unlock by editing this list.
+const FORBIDDEN_FILES = [
+    'apps/openclaw-worker/config.js',
+    'apps/openclaw-worker/lib/brain-tmux.js',
+    'apps/openclaw-worker/lib/post-mission-gate.js',
+    'apps/openclaw-worker/task-watcher.js',
+    'scripts/anthropic-adapter.js',
+    'scripts/.env',
+    'restore_swarm.sh',
+];
+
 /**
  * 軍形 Gate: Run build verification for a project
  * @param {string} project - Project name (e.g., '84tea', 'anima119')
@@ -77,6 +89,25 @@ function pushIfGreen(project, missionId) {
         if (!status.trim()) {
             log(`GATE[${project}]: 📭 No changes to commit`);
             return { pushed: false, reason: 'no-changes' };
+        }
+
+        // 🔒 FORBIDDEN FILES ENFORCEMENT — rollback any locked file changes
+        const changedFiles = execSync('git diff --name-only HEAD', { cwd: config.MEKONG_DIR, encoding: 'utf-8' }).trim().split('\n').filter(Boolean);
+        const violations = changedFiles.filter(f => FORBIDDEN_FILES.some(fb => f.endsWith(fb) || f === fb));
+        if (violations.length > 0) {
+            log(`GATE[${project}]: 🔒 FORBIDDEN FILES VIOLATED: ${violations.join(', ')}`);
+            for (const v of violations) {
+                try {
+                    execSync(`git checkout -- "${v}"`, { cwd: config.MEKONG_DIR, encoding: 'utf-8' });
+                    log(`GATE[${project}]: 🔒 ROLLBACK: ${v}`);
+                } catch (e) { /* file might be new — rm it */ }
+            }
+            // Re-check if any changes remain after rollback
+            const remaining = execSync('git status --porcelain', { cwd: projectDir, encoding: 'utf-8' });
+            if (!remaining.trim()) {
+                log(`GATE[${project}]: 🔒 ALL changes were forbidden — nothing to push`);
+                return { pushed: false, reason: 'forbidden-only' };
+            }
         }
 
         // Stage only this project's changes  

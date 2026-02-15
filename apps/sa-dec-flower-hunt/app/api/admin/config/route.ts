@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     }
 
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
+    if (authError || !user || user.user_metadata?.role !== 'admin') {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     }
 
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
+    if (authError || !user || user.user_metadata?.role !== 'admin') {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

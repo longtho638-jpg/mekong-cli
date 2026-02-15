@@ -1,8 +1,17 @@
 {
 	"name": "openclaw-worker",
-	"version": "2026.2.9",
+	"version": "2026.2.13",
 	"private": true,
+	"description": "Autonomous AI Swarm Daemon for Mekong CLI",
+	"author": "Binh Phap Venture Studio",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/longtho638-jpg/mekong-cli.git",
+		"directory": "apps/openclaw-worker"
+	},
 	"scripts": {
+		"build": "echo 'No build step required for worker'",
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",

@@ -1,1 +1,0 @@
-mekong-cli: List all apps in apps/ directory, count lines of code for each, report a summary table.

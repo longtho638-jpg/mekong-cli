@@ -1,0 +1,10 @@
+Mục tiêu: Kiểm tra và đồng bộ hóa các bản dịch (i18n) trên toàn bộ codebase.
+
+Các bước thực hiện:
+1. Quét toàn bộ mã nguồn để tìm các chuỗi ký tự chưa được quốc tế hóa (hardcoded strings).
+2. Đảm bảo tất cả các key trong file vi.ts và en.ts đều khớp nhau.
+3. Kiểm tra các lỗi dịch thuật hoặc thiếu thông tin biến truyền vào (placeholders).
+4. Xác minh giao diện không bị vỡ khi chuyển đổi giữa các ngôn ngữ.
+5. Cập nhật tài liệu hướng dẫn thêm ngôn ngữ mới.
+
+Lệnh thực thi: /cook sync all i18n keys and verify translation coverage

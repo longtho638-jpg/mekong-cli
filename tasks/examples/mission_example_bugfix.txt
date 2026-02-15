@@ -1,8 +1,13 @@
 - Project: mekong-cli
-- Priority: LOW
-- Description: This is a template for a bug fix mission. Use it to describe the issue, the expected behavior, and any relevant logs or code snippets.
+- Priority: HIGH (Urgent)
+- Chapter: 第二篇 作戰 (Operations)
+- Mission: Fix the infinite loop in RecipeExecutor during OOM (137) events.
+- Description: The RecipeExecutor currently enters an infinite retry loop when a child process is killed by the OOM killer (Exit Code 137). This drains system resources and prevents graceful failure.
 - Instructions:
-  1. Identify the root cause of the bug.
-  2. Implement a fix following the Binh Phap quality standards.
-  3. Verify the fix with a new test case.
-  4. Ensure the build passes and no tech debt is introduced.
+  1. Reproduce the loop using a mocked shell failure in `tests/test_executor.py`.
+  2. Implement a maximum retry limit (default 3) and exponential backoff in the executor loop.
+  3. Ensure that exit code 137 triggers a specific "RESOURCE_EXHAUSTED" warning in the logs.
+  4. Verify the fix by running the full test suite: `python3 -m pytest tests/test_executor.py`.
+- Success Criteria:
+  - Executor terminates after 3 retries for code 137.
+  - Tests pass with 100% coverage on the new logic.

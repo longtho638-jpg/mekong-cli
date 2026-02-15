@@ -4,7 +4,7 @@
 Algo Trader là một hệ thống giao dịch tự động (Trading Bot) được xây dựng trên nền tảng Node.js và TypeScript. Bot được thiết kế theo kiến trúc modular, cho phép dễ dàng tích hợp các sàn giao dịch mới, chiến thuật mới và các phương pháp quản lý rủi ro khác nhau.
 
 ## Functional Requirements
-- **Data Acquisition**: Thu thập dữ liệu nến (OHLCV) từ các sàn giao dịch qua CCXT hoặc Mock Data.
+- **Data Acquisition**: Thu thập dữ liệu nến (OHLCV) từ các sàn giao dịch qua `ExchangeClient` hoặc `MockDataProvider`.
 - **Strategy Execution**: Hỗ trợ thực thi nhiều chiến thuật đồng thời hoặc độc lập.
 - **Arbitrage Support**:
     - **Cross-Exchange**: So sánh giá giữa 2 sàn.

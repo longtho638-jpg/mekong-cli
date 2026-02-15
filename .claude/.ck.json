@@ -56,15 +56,5 @@
     }
   },
   "hooks": {},
-  "assertions": [],
-  "kits": {
-    "ClaudeKit Engineer": {
-      "installedSettings": {
-        "hooks": [
-          "node $HOME/.claude/hooks/cook-after-plan-reminder.cjs"
-        ],
-        "mcpServers": []
-      }
-    }
-  }
+  "assertions": []
 }

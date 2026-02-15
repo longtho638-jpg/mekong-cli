@@ -6,7 +6,7 @@
 - Thêm chiến thuật **Cross-Exchange Arbitrage**: Khai thác chênh lệch giá giữa các sàn.
 - Thêm chiến thuật **Triangular Arbitrage**: Khai thác chênh lệch giá 3 cặp tiền.
 - Thêm chiến thuật **Statistical Arbitrage**: Giao dịch cặp dựa trên hồi quy Z-Score.
-- Cập nhật thư viện `Indicators` hỗ trợ: `standardDeviation`, `zScore`, `correlation`.
+- Cập nhật lớp `Indicators` (`src/analysis/indicators.ts`) hỗ trợ: `standardDeviation`, `zScore`, `correlation`.
 - Khởi tạo hệ thống tài liệu chuẩn hóa trong `./docs`:
     - `codebase-summary.md`
     - `project-overview-pdr.md`

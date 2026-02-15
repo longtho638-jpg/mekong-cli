@@ -1,1 +1,0 @@
-Verification of v11.0 Load Balancer. Please execute a simple !date command.

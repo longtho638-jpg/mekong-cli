@@ -1,1 +1,0 @@
-/cook "Sophia AI Factory Production Hardening: 1) Run full Lighthouse audit and fix to score 90+ on all metrics 2) Add proper meta tags, OG images, SEO for landing page 3) Implement proper error boundaries and 404/500 pages 4) Add analytics tracking for conversion funnel 5) Final security audit - CSP headers, API key protection" in sophia-ai-factory

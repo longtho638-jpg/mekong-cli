@@ -61,8 +61,10 @@ class AutonomousEngine:
         """Lazy load subsystems with LLM injection."""
         from .llm_client import LLMClient
 
-        # Inject the key we just created
-        llm = LLMClient(gemini_key="AIzaSyBeFTNIvKtav1DoZKFACQVyrgNusRODfcg")
+        # Inject the key from environment variable
+        import os
+        gemini_key = os.getenv("GEMINI_API_KEY", "")
+        llm = LLMClient(gemini_key=gemini_key)
 
         if self._memory is None:
             try:

@@ -1,1 +1,0 @@
-/cook "Run comprehensive ESLint strict mode audit - fix all any types, unused vars, missing return types across entire codebase"

@@ -1,5 +1,0 @@
-PROJECT: Sophia AI Factory
-MISSION: Sophia AGI Mission (Phase 1-3)
-CONTEXT: Đưa Sophia AI Factory lên trạng thái AGI 100/100. Tập trung vào 4.6 (Opus 4.6) chuẩn đét.
-TASK: Follow instructions in apps/sophia-ai-factory/plans/sophia-agi-cook-task.md
-COMMAND: /binh-phap implement: "Sophia AGI Mission Phase 1-3" --plan apps/sophia-ai-factory/plans/sophia-agi-cook-task.md

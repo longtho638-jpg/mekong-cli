@@ -1,30 +1,42 @@
 const path = require('path');
 
-const MEKONG_DIR = process.env.MEKONG_DIR || '/Users/macbookprom1/mekong-cli';
+const MEKONG_DIR = process.env.MEKONG_DIR || path.join(process.env.HOME || '', 'mekong-cli');
 
-module.exports = {
+// ═══════════════════════════════════════════════════════════════
+// 🔒 IRON CONFIG — KHOÁ CỨNG: CẤM THAY ĐỔI (kể cả Tôm Hùm)
+// Approved by Chairman — Only modifiable by direct human edit
+// Date locked: 2026-02-15 | Version: v1.1.0-BMAD-DNA
+// DNA FUSION: ClaudeKit × BMAD-METHOD — 風林火山 + ⛰️NÚI
+// ═══════════════════════════════════════════════════════════════
+
+const config = {
   MEKONG_DIR,
   OPENCLAW_HOME: process.env.OPENCLAW_HOME || path.join(process.env.HOME || '', '.openclaw'),
   WATCH_DIR: path.join(MEKONG_DIR, 'tasks'),
   PROCESSED_DIR: path.join(MEKONG_DIR, 'tasks', 'processed'),
-  LOG_FILE: process.env.TOM_HUM_LOG || '/Users/macbookprom1/tom_hum_cto.log',
-  THERMAL_LOG: process.env.TOM_HUM_THERMAL_LOG || '/Users/macbookprom1/tom_hum_thermal.log',
+  REJECTED_DIR: path.join(MEKONG_DIR, 'tasks', 'rejected'),
+  LOG_FILE: process.env.TOM_HUM_LOG || path.join(process.env.HOME || '', 'tom_hum_cto.log'),
+  THERMAL_LOG: process.env.TOM_HUM_THERMAL_LOG || path.join(process.env.HOME || '', 'tom_hum_thermal.log'),
   MISSION_FILE: '/tmp/tom_hum_next_mission.txt',
   DONE_FILE: '/tmp/tom_hum_mission_done',
-  TASK_PATTERN: /^mission_.*\.txt$/,
+  TASK_PATTERN: /^(?:CRITICAL_|HIGH_|MEDIUM_|LOW_)?mission_.*\.txt$/,
   MISSION_TIMEOUT_MS: 45 * 60 * 1000,
-  TIMEOUT_SIMPLE: 15 * 60 * 1000,   // 15 phút
-  TIMEOUT_MEDIUM: 30 * 60 * 1000,   // 30 phút
-  TIMEOUT_COMPLEX: 45 * 60 * 1000,  // 45 phút
-  POLL_INTERVAL_MS: 1000, // PROJECT FLASH: 1s Polling
+  TIMEOUT_SIMPLE: 15 * 60 * 1000,     // 15 phút — 🌪️GIÓ
+  TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 phút — 🌲RỪNG
+  TIMEOUT_COMPLEX: 45 * 60 * 1000,    // 45 phút — 🔥LỬA
+  TIMEOUT_STRATEGIC: 60 * 60 * 1000,  // 60 phút — ⛰️NÚI (BMAD workflows)
+  POLL_INTERVAL_MS: 200, // ⚡ WARP SPEED: 200ms Polling
   COOLING_INTERVAL_MS: 90000,
-  AUTO_CTO_EMPTY_THRESHOLD: 2, // 2 polls × 2s = 4s idle → generate next task
+  AUTO_CTO_EMPTY_THRESHOLD: 10, // 10 polls × 0.2s = 2s idle → generate next task
   STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
-  PROXY_PORT: process.env.PROXY_PORT ? parseInt(process.env.PROXY_PORT) : 11434, // Native Ollama Anthropic-compatible port (0.14.x+)
+  API_RATE_GATE_MS: 0, // 🛡️ PROXY_RULES §4: Nuclear Speed — AG Ultra UNLIMITED, zero gap
+  // 🔒 LOCKED — DO NOT CHANGE (2026-02-15) — Port must match running anthropic-adapter.js
+  PROXY_PORT: process.env.PROXY_PORT ? parseInt(process.env.PROXY_PORT) : 11436,
   // Anthropic Adapter (translates /v1/messages → /v1/chat/completions for Ollama)
-  CLOUD_BRAIN_URL: process.env.CLOUD_BRAIN_URL || 'http://localhost:11436',
+  // 🔒 LOCKED — must be same as PROXY_PORT
+  CLOUD_BRAIN_URL: process.env.CLOUD_BRAIN_URL || 'http://127.0.0.1:11436',
   QWEN_PROXY_PORT: 8081, // Qwen/VLLM dedicated port
-  MODEL_NAME: process.env.MODEL_NAME || 'qwen3-coder-next', // Cloud Model (80B A100)
+  MODEL_NAME: process.env.MODEL_NAME || 'claude-sonnet-4-5-20250514', // Sonnet 4.5 via Antigravity Proxy
   // 虛實 Binh Phap Model Hierarchy — tiết kiệm, không lãng phí
   // 🌪️GIÓ (Simple) → qwen3-coder-next (fast, cheap)
   // 🌲RỪNG (Medium) → qwen3-coder-next (balanced)
@@ -33,25 +45,38 @@ module.exports = {
   USE_GH_MODELS: false,
   GH_MODEL_NAME: 'deepseek-coder-v2',
   WORKER_MODEL_NAME: 'deepseek-coder-v2', // "Strongest" Local Model
-  FALLBACK_MODEL_NAME: 'gemini-3-flash', // P2+: Gemini (cashback 100%)
+  FALLBACK_MODEL_NAME: 'gemini-3-flash', // v2026.2.15: Aligned with PROXY_RULES.md (gemini-3-flash)
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
   // Engine selection: 'antigravity' (default, port 11436) or 'qwen' (port 8081)
+  // 🔒 LOCKED — 'antigravity' uses port 11436 → upstream AG 9191 + Google fallback
   ENGINE: process.env.TOM_HUM_ENGINE || 'antigravity',
-  PROJECTS: ['mekong-cli', 'agencyos-web', 'sophia-ai-factory', 'wellnexus', 'apex-os', '84tea', 'anima119', 'sa-dec-flower-hunt'],
+  // 🎯 FOCUSED DELIVERY MODE — Only client projects (Feb 14 2026)
+  // Original: ['mekong-cli', 'agencyos-web', 'sophia-ai-factory', 'wellnexus', 'apex-os', '84tea', 'anima119', 'sa-dec-flower-hunt'],
+  PROJECTS: ['84tea', 'anima119', 'wellnexus'],
+
+  // Self-Healer (v2026.2.13)
+  HEALTH_CHECK_INTERVAL_MS: 30_000,
+  PROXY_PING_TIMEOUT_MS: 5_000,
+  MAX_RECOVERY_ATTEMPTS: 3,
+  STALE_OUTPUT_THRESHOLD_MS: 3 * 60_000,
+  MODEL_FALLBACK_CHAIN: ['claude-sonnet-4-5-20250514', 'gemini-3-flash', 'qwen3-coder-next'],
 
   // ANTIGRAVITY GOD MODE
   ANTIGRAVITY_KEY: 'GOD_MODE_ACTIVE',
-  FULL_CLI_MODE: false, // P0 is CTO/Monitor, P1-P3 are Workers
+  FULL_CLI_MODE: true, // P0 IS CC CLI — no monitor pane
 
   // Agent Team orchestration
-  AGENT_TEAM_SIZE_DEFAULT: 4, // 虛實: P0 (CTO) + P1-P3 (Workers) — 1 chạy 2 nghỉ, tuần tự không sập proxy
+  // Agent Team orchestration
+  AGENT_TEAM_SIZE_DEFAULT: 1, // 🦞 1-Tab: P0 = CC CLI only
+  MAX_CONCURRENT_MISSIONS: 1, // 🐉 1 Worker = 1 mission at a time
   AGENT_TEAM_TIMEOUT_MS: 4 * 60 * 60 * 1000, // 4 hours for deep missions
 
   // Complexity classification keywords
   COMPLEXITY: {
+    STRATEGIC_KEYWORDS: ['bmad', 'product brief', 'prd', 'user story', 'epic', 'sprint planning', 'from scratch', 'greenfield', 'full lifecycle', 'new system', 'new module', 'quick-spec', 'dev-story', 'code-review bmad', 'retrospective'],
     COMPLEX_KEYWORDS: ['refactor', 'redesign', 'migrate', 'rewrite', 'overhaul', 'architecture', 'cross-module', 'full-stack', 'multi-project', 'monorepo', 'security audit', 'tech debt', 'performance audit', 'deep scan', 'binh phap', 'evolution', 'synthesis', 'agi'],
     MEDIUM_KEYWORDS: ['feature', 'implement', 'security', 'audit', 'multi-file', 'integration', 'api', 'database', 'auth', 'testing'],
-    // Anything not matching COMPLEX or MEDIUM is SIMPLE
+    // Priority: STRATEGIC > COMPLEX > MEDIUM > SIMPLE
   },
 
   // Agent Team subagent roles for parallel execution
@@ -81,5 +106,31 @@ module.exports = {
     { id: 'agi_evolution', complexity: 'complex', cmd: 'AGI Evolution: Research and implement new autonomous capabilities. Self-improve internal logic.' },
     { id: 'knowledge_synthesis', complexity: 'complex', cmd: 'Knowledge Synthesis: Consolidate learnings from recent missions into Knowledge Items.' },
     { id: 'self_correction', complexity: 'complex', cmd: 'Self-Correction: Analyze recent failures and implement systemic fixes.' },
+    // ⛰️ NÚI — BMAD Strategic Tasks (DNA Fusion)
+    { id: 'bmad_quick_spec', complexity: 'strategic', cmd: 'BMAD: Run /bmad-bmm-quick-spec to analyze codebase and generate tech-spec for top improvements' },
+    { id: 'bmad_code_review', complexity: 'strategic', cmd: 'BMAD: Run /bmad-bmm-code-review for comprehensive adversarial quality review across all code facets' },
+    { id: 'bmad_retrospective', complexity: 'strategic', cmd: 'BMAD: Run /bmad-bmm-retrospective to analyze recent work patterns and suggest process improvements' },
   ],
 };
+
+// 🔒 IRON LOCK: Object.freeze prevents runtime modification
+// CC CLI, Tôm Hùm, or any agent cannot change these values programmatically
+Object.freeze(config);
+Object.freeze(config.COMPLEXITY);
+Object.freeze(config.AGENT_TEAM_ROLES);
+Object.freeze(config.BINH_PHAP_TASKS);
+Object.freeze(config.MODEL_FALLBACK_CHAIN);
+
+// 🧬 DNA FUSION: BMAD × ClaudeKit — Slash command mapping
+// Strategic missions use BMAD slash commands instead of /cook
+config.BMAD_WORKFLOW_MAP = Object.freeze({
+  quick: '/bmad-bmm-quick-spec',       // Quick tech-spec generation
+  dev: '/bmad-bmm-dev-story',          // Story-driven implementation
+  review: '/bmad-bmm-code-review',     // Adversarial code review
+  retro: '/bmad-bmm-retrospective',    // Sprint retrospective
+  prd: '/bmad-bmm-create-prd',         // Full PRD creation
+  arch: '/bmad-bmm-create-architecture', // Architecture design
+  epics: '/bmad-bmm-create-epics-and-stories', // Epic & story decomposition
+});
+
+module.exports = config;

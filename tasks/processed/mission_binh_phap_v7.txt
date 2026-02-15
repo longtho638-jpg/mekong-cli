@@ -1,4 +1,0 @@
-Execute a 'Binh Pháp Rapid Heartbeat':
-1. Confirm connectivity to http://127.0.0.1:8046/health (Qwen Bridge).
-2. List the last 3 missions in ~/mekong-cli/tasks/processed.
-3. Respond with "🦞 Tôm Hùm v11.0 Deep Watch Active".

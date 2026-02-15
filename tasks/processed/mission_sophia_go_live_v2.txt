@@ -1,1 +1,0 @@
-Fix all broken UI components, add loading states and skeleton screens, polish the dashboard layout, ensure fully responsive mobile design, verify the Polar subscription payment flow works end-to-end in sophia-ai-factory

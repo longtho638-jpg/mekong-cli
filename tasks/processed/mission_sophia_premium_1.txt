@@ -1,1 +1,0 @@
-/cook "Sophia AI Factory Premium Polish: 1) Fix ALL broken UI components and dead links 2) Ensure video generation pipeline works end-to-end with real preview 3) Add loading states, error handling, empty states for ALL pages 4) Polish the dashboard with real metrics and charts 5) Ensure responsive design works on mobile/tablet" in sophia-ai-factory

@@ -38,14 +38,43 @@ try:
 except: print('PARSE_ERR')
 " 2>/dev/null)
 
-  # === WORKER STATUS (虛實: 1 chạy 2 nghỉ) ===
+  # === WORKER STATUS (虛實: Ultimate Resilience v5) ===
   W=""
   DEAD_WORKERS=""
   for p in 1 2 3; do
-    s=$(tmux capture-pane -t ${SESSION}:0.$p -p -S -5 2>/dev/null | grep -oE '(Sautéing|Cooking|Roosting|Herding|Forging|Simmering|Deciphering|Embellishing|Cooked|Hatching|Meandering|Sublimating|Perambulating|Transfiguring|Elucidating|Processing|Wandering|Exploring|Osmosing|Vibing|GATE|GREEN|RED|bypass|idle|Compacting|Error|killed|zsh)' | tail -1)
-    W="$W P$p:${s:-?}"
-    if [ "$s" = "zsh" ] || [ "$s" = "killed" ]; then
+    # Capture buffer
+    BUFFER=$(tmux capture-pane -t ${SESSION}:0.$p -p -S -10 2>/dev/null)
+    # Get last non-empty line
+    LAST_LINE=$(echo "$BUFFER" | sed '/^$/d' | tail -1)
+    
+    # 🔖 Trạng thái máy
+    ST=$(echo "$BUFFER" | grep -oE '(Sautéing|Cooking|Roosting|Herding|Forging|Simmering|Deciphering|Embellishing|Cooked|Hatching|Meandering|Sublimating|Perambulating|Transfiguring|Elucidating|Processing|Wandering|Exploring|Osmosing|Vibing|GATE|GREEN|RED|bypass|idle|Compacting|Error|killed|zsh|❯|What should Claude do|Press up to edit|Context left)' | tail -1)
+    
+    W="$W P$p:${ST:-?}"
+
+    # 1. Recovery cho máy chết
+    if echo "$LAST_LINE" | grep -qE '(zsh|killed|closed|command not found)'; then
       DEAD_WORKERS="$DEAD_WORKERS $p"
+    fi
+
+    # 2. ⚡ AUTO-KICK FORCE: Nếu đứng rình quá lâu hoặc cần nén bộ nhớ
+    # Check if we are at a prompt or asking for input
+    if echo "$BUFFER" | grep -qE '(❯|What should Claude do|Context left until auto-compact|bypass permissions on)'; then
+        # Kiểm tra sự thay đổi màn hình (Checksum)
+        CK_PATH="/tmp/p$p_checksum.txt"
+        CUR_CK=$(echo "$BUFFER" | cksum | awk '{print $1}')
+        OLD_CK=$(cat "$CK_PATH" 2>/dev/null)
+        
+        if [ "$CUR_CK" = "$OLD_CK" ]; then
+            echo "[$TS] 🚨 P$p STALLED (Stasis) — Super Kick active!"
+            # Gửi dãy phím phá băng: Ctrl+C (để huỷ input treo) -> Enter -> Enter
+            tmux send-keys -t ${SESSION}:0.$p C-c
+            sleep 0.5
+            tmux send-keys -t ${SESSION}:0.$p Enter
+            sleep 0.5
+            tmux send-keys -t ${SESSION}:0.$p Enter
+        fi
+        echo "$CUR_CK" > "$CK_PATH"
     fi
   done
 
@@ -138,5 +167,5 @@ for r in results[-5:]:
     echo ""
   fi
 
-  sleep 60
+  sleep 30
 done

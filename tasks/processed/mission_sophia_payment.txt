@@ -1,1 +1,0 @@
-Sophia AI Factory payment integration - Set up Polar.sh subscription gating with 3 tiers Free/Pro/Premium, implement payment webhook handler, add subscription status to user dashboard, create upgrade/downgrade flow, test full payment lifecycle in sophia-ai-factory

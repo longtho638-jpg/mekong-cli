@@ -2,7 +2,7 @@
   "includeCoAuthoredBy": false,
   "statusLine": {
     "type": "command",
-    "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/statusline.cjs",
+    "command": "node .claude/statusline.cjs",
     "padding": 0
   },
   "hooks": {
@@ -12,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-init.cjs"
+            "command": "node .claude/hooks/session-init.cjs"
           }
         ]
       }
@@ -23,7 +23,18 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/subagent-init.cjs"
+            "command": "node .claude/hooks/subagent-init.cjs"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "Plan",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/cook-after-plan-reminder.cjs"
           }
         ]
       }
@@ -33,11 +44,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/dev-rules-reminder.cjs"
+            "command": "node .claude/hooks/dev-rules-reminder.cjs"
           },
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/usage-context-awareness.cjs",
+            "command": "node .claude/hooks/usage-context-awareness.cjs",
             "timeout": 30
           }
         ]
@@ -49,7 +60,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/descriptive-name.cjs"
+            "command": "node .claude/hooks/descriptive-name.cjs"
           }
         ]
       },
@@ -58,11 +69,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/scout-block.cjs"
+            "command": "node .claude/hooks/scout-block.cjs"
           },
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/privacy-block.cjs"
+            "command": "node .claude/hooks/privacy-block.cjs"
           }
         ]
       }
@@ -73,7 +84,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/post-edit-simplify-reminder.cjs"
+            "command": "node .claude/hooks/post-edit-simplify-reminder.cjs"
           }
         ]
       },
@@ -82,19 +93,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/usage-context-awareness.cjs"
-          }
-        ]
-      }
-    ],
-    "SubagentStop": [
-      {
-        "matcher": "Plan",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/cook-after-plan-reminder.cjs",
-            "_origin": "engineer"
+            "command": "node .claude/hooks/usage-context-awareness.cjs"
           }
         ]
       }

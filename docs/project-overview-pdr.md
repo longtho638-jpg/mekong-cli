@@ -1,70 +1,68 @@
-# Project Overview & Product Development Requirements (PDR)
+# Tổng Quan Dự Án & Yêu Cầu Phát Triển Sản Phẩm (PDR)
 
-**Version:** 2.0.0
-**Derived From:** `MASTER_PRD.md`
+**Phiên bản:** 2.1.0
+**Dựa trên:** `MASTER_PRD.md`
 
-## 1. Project Overview
-**AgencyOS (Mekong CLI)** is a Robot-as-a-Service (RaaS) platform designed to transform the agency model from service-based to outcome-based. It employs a Hub-and-Spoke architecture to orchestrate AI agents that deliver tangible results (leads, content, reports) rather than just tools.
+## 1. Tổng Quan Dự Án
+**AgencyOS (Mekong CLI)** là nền tảng Robot-as-a-Service (RaaS) được thiết kế để chuyển đổi mô hình agency từ dựa trên dịch vụ sang dựa trên kết quả (outcome-based). Hệ thống sử dụng kiến trúc Hub-and-Spoke để điều phối các AI agent nhằm cung cấp kết quả hữu hình (leads, nội dung, báo cáo) thay vì chỉ cung cấp công cụ.
 
-### Core Philosophy
-> "We don't sell tools. We sell Deliverables."
+### Triết Lý Cốt Lõi
+> "Chúng ta không bán công cụ. Chúng ta bán Kết Quả (Deliverables)."
 
-### Key Components
-1.  **Money Layer (Spoke 1)**: A Next.js web platform for non-technical agency owners to purchase credits and order results.
-2.  **Viral Layer (Spoke 2)**: An Open Source Developer Kit (CLI + Recipes) for developers to build and share agent workflows.
-3.  **Engine Layer (Hub)**: The centralized backend infrastructure (OpenClaw, BullMQ, PostgreSQL) that orchestrates the execution of tasks.
+### Các Thành Phần Chính
+1.  **Lớp Tài Chính (Spoke 1)**: Nền tảng web Next.js dành cho chủ agency (non-tech) để mua tín dụng và đặt hàng kết quả.
+2.  **Lớp Lan Truyền (Spoke 2)**: Bộ công cụ Open Source Developer Kit (CLI + Recipes) cho lập trình viên xây dựng và chia sẻ quy trình agent.
+3.  **Lớp Động Cơ (Hub)**: Hạ tầng backend tập trung (OpenClaw, BullMQ, PostgreSQL) điều phối việc thực thi nhiệm vụ thông qua **Tôm Hùm Daemon**.
 
-## 2. Product Development Requirements (PDR)
+## 2. Yêu Cầu Phát Triển Sản Phẩm (PDR)
 
-### 2.1 Functional Requirements
+### 2.1 Yêu Cầu Chức Năng (Functional Requirements)
 
-#### A. Authentication & User Management
-- **FR-AUTH-01**: System must support API Key authentication for the CLI.
-- **FR-AUTH-02**: Web platform must support user signup/login via Supabase Auth.
-- **FR-AUTH-03**: Users must have a credit balance (AgencyCoin).
+#### A. Xác Thực & Quản Lý Người Dùng
+- **FR-AUTH-01**: Hệ thống hỗ trợ xác thực API Key cho CLI.
+- **FR-AUTH-02**: Nền tảng Web hỗ trợ đăng ký/đăng nhập qua Supabase Auth.
+- **FR-AUTH-03**: Người dùng có số dư tín dụng (AgencyCoin) để chi trả cho các tác vụ.
 
-#### B. Job Execution (Engine)
-- **FR-JOB-01**: System must accept job requests via REST API (`POST /v1/chat/completions`).
-- **FR-JOB-02**: Jobs must be validated against defined schemas (Zod).
-- **FR-JOB-03**: Jobs must be persisted to the database before queuing (Reliability).
-- **FR-JOB-04**: Jobs must be executed asynchronously via a worker queue (Redis/BullMQ).
-- **FR-JOB-05**: System must support "Compensation Transactions" to handle failures gracefully.
-- **FR-JOB-06**: System must handle concurrency issues (SQLite busy states) with retry logic.
+#### B. Thực Thi Công Việc (Engine & Tôm Hùm)
+- **FR-JOB-01**: Hệ thống tiếp nhận yêu cầu qua REST API hoặc File IPC (`tasks/`).
+- **FR-JOB-02**: Tôm Hùm (OpenClaw) tự động phát hiện và điều phối nhiệm vụ tới CC CLI.
+- **FR-JOB-03**: Mọi cuộc gọi LLM phải đi qua **Antigravity Proxy** (Port 11436) để quản lý quota.
+- **FR-JOB-04**: Hệ thống hỗ trợ cơ chế "Auto-CTO" để tự động sinh ra các task bảo trì chất lượng code.
 
-#### C. CLI & Recipes
-- **FR-CLI-01**: CLI must allow users to list, search, and run recipes.
-- **FR-CLI-02**: Recipes must be defined in a standard format (Markdown/JSON).
-- **FR-CLI-03**: CLI must provide an interactive UI for module selection.
+#### C. CLI & Công Thức (Recipes)
+- **FR-CLI-01**: CLI (Mekong Cook) cho phép người dùng lập kế hoạch (Plan), thực thi (Execute) và kiểm tra (Verify).
+- **FR-CLI-02**: Công thức (Recipes) được định nghĩa bằng Markdown/JSON chuẩn hóa.
+- **FR-CLI-03**: Tích hợp chặt chẽ với Binh Pháp Quality Gates (kiểm tra type safety, security, performance).
 
-### 2.2 Non-Functional Requirements
+### 2.2 Yêu Cầu Phi Chức Năng (Non-Functional Requirements)
 
-#### A. Performance
-- **NFR-PERF-01**: API response time for job submission < 200ms.
-- **NFR-PERF-02**: Worker must process jobs within 5 seconds of queuing (assuming available capacity).
+#### A. Hiệu Năng
+- **NFR-PERF-01**: Thời gian phản hồi API cho việc gửi job < 200ms.
+- **NFR-PERF-02**: Build time cho các dự án con phải < 10s (Binh Pháp Gate).
 
-#### B. Reliability & Resilience
-- **NFR-REL-01**: System must implement retry logic for transient failures (e.g., DB locks).
-- **NFR-REL-02**: System must clean up "Zombie Jobs" (stuck in PROCESSING) on startup.
-- **NFR-REL-03**: Critical data (credits, job status) must be stored in a durable database (PostgreSQL in Prod).
+#### B. Độ Tin Cậy & Khả Năng Phục Hồi
+- **NFR-REL-01**: Hệ thống tự động retry khi gặp lỗi mạng hoặc lỗi LLM tạm thời.
+- **NFR-REL-02**: Tôm Hùm Daemon có khả năng tự phục hồi (respawn) khi process con bị crash.
+- **NFR-REL-03**: Dữ liệu quan trọng (credits, trạng thái job) được lưu trữ bền vững trong PostgreSQL.
 
-#### C. Scalability
-- **NFR-SCALE-01**: Architecture must support horizontal scaling of Worker nodes.
-- **NFR-SCALE-02**: Queue system must handle high throughput without data loss.
+#### C. Khả Năng Mở Rộng
+- **NFR-SCALE-01**: Kiến trúc hỗ trợ mở rộng ngang các Worker node.
+- **NFR-SCALE-02**: Hỗ trợ thực thi song song (Agent Teams) trên nhiều worktree.
 
-#### D. Security
-- **NFR-SEC-01**: API Keys must be rotated and secured.
-- **NFR-SEC-02**: Database access must be restricted to internal services.
-- **NFR-SEC-03**: Inputs must be sanitized to prevent injection attacks.
+#### D. Bảo Mật
+- **NFR-SEC-01**: API Keys phải được luân chuyển và bảo vệ.
+- **NFR-SEC-02**: Tuân thủ quy tắc "Không commit secrets" (được kiểm tra bởi Binh Pháp).
+- **NFR-SEC-03**: Input đầu vào được validate chặt chẽ (Zod/Pydantic) để chống injection.
 
-## 3. Architecture Summary
+## 3. Tóm Tắt Kiến Trúc
 - **Frontend**: Next.js 14, Tailwind CSS.
 - **Backend API**: Node.js, Fastify.
-- **Worker**: Node.js, BullMQ.
+- **Worker (Tôm Hùm)**: Node.js, OpenClaw Autonomous Daemon.
+- **CLI Engine**: Python 3.11, Typer.
 - **Database**: PostgreSQL (Prod), SQLite (Dev).
-- **Queue**: Redis.
-- **Gateway**: Cloudflare Workers.
+- **Proxy**: Antigravity Proxy (Load balancing LLM).
 
-## 4. Success Metrics
-- **Stability**: Zero "Ghost Jobs" (jobs lost in transit).
-- **Availability**: 99.9% uptime for the Engine API.
-- **Performance**: Average job turnaround time < target SLA per recipe type.
+## 4. Chỉ Số Thành Công
+- **Ổn định**: Không có "Ghost Jobs" (job bị mất trạng thái).
+- **Sẵn sàng**: 99.9% uptime cho Engine API.
+- **Chất lượng**: 100% code được merge phải vượt qua Binh Pháp Quality Gates.

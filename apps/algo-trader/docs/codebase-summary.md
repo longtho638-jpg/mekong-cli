@@ -4,17 +4,17 @@
 Algo Trader là một modular trading bot được thiết kế để thực thi các chiến thuật giao dịch tự động. Hệ thống hỗ trợ nhiều loại chiến thuật từ các chỉ báo kỹ thuật truyền thống (RSI, SMA) đến các chiến thuật Arbitrage phức tạp.
 
 ## Project Structure
-- `src/core/`: Chứa các thành phần cốt lõi của bot (Engine, Risk Manager, Order Manager).
+- `src/core/`: Chứa các thành phần cốt lõi của bot (`BotEngine`, `RiskManager`, `OrderManager`).
 - `src/strategies/`: Chứa các triển khai chiến thuật giao dịch.
 - `src/interfaces/`: Định nghĩa các contracts cho hệ thống.
-- `src/data/`: Các data providers (Mock, Exchange).
-- `src/execution/`: Xử lý tương tác với các sàn giao dịch.
-- `src/analysis/`: Các công cụ tính toán chỉ báo kỹ thuật.
+- `src/data/`: Các data providers (`MockDataProvider`).
+- `src/execution/`: Xử lý tương tác với các sàn giao dịch (`ExchangeClient`).
+- `src/analysis/`: Các công cụ tính toán chỉ báo kỹ thuật (`Indicators`).
 - `src/reporting/`: Các công cụ báo cáo và phân tích hiệu suất.
 - `src/ui/`: Giao diện dòng lệnh (CLI).
 
 ## Key Components
-- **BotEngine**: Điều phối luồng dữ liệu từ DataProvider qua Strategy đến Execution.
+- **BotEngine**: Điều phối luồng dữ liệu từ `IDataProvider` qua `IStrategy` đến `IExchange`.
 - **RiskManager**: Quản lý rủi ro và tính toán khối lượng lệnh.
 - **OrderManager**: Theo dõi và quản lý trạng thái các lệnh.
 - **StrategyLoader**: Tải các chiến thuật từ file cấu hình.

@@ -1,178 +1,136 @@
-# 🚀 AgencyOS Landing - Premium Marketing Site
+```markdown
+# AgencyOS Landing Page
 
-<div align="center">
+A modern, high-performance landing page for AgencyOS — a next-generation AI agency platform powered by advanced language models and automation.
 
-![MAX WOW](https://img.shields.io/badge/MAX-WOW-8b5cf6?style=for-the-badge&logo=sparkles&logoColor=white)
-![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind](https://img.shields.io/badge/Tailwind-4.0-06B6D4?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![AgencyOS Landing Page](https://via.placeholder.com/1200x600?text=AgencyOS+Landing+Page+Preview)
 
-**Flagship marketing experience with glassmorphism design and dark mode**
+## Overview
 
-[🎨 Features](#-features) • [🚀 Quick Start](#-quick-start) • [🎯 Tech Stack](#-tech-stack)
+AgencyOS Landing is the public-facing website for [AgencyOS](https://agencyos.ai), designed to showcase AI-powered agency workflows, agent ecosystems, and enterprise automation capabilities. Built with Next.js 16, React 19, and Tailwind CSS 4, it delivers blazing-fast performance, internationalization support, and seamless animations for an immersive user experience.
 
-</div>
+## Tech Stack
 
----
+- **Framework**: Next.js 16.1.6 (with Turbopack)
+- **Runtime**: React 19.2.3 + React DOM 19.2.3
+- **Styling**: Tailwind CSS 4 + `tailwind-merge` + `class-variance-authority` + `clsx`
+- **Animation**: Framer Motion 12.33.0 + Lenis (smooth scrolling)
+- **Internationalization**: next-intl 4.8.2
+- **Validation**: Zod 4.3.6
+- **Icons**: Lucide React 0.563.0
+- **Accordion**: Radix UI Accordion 1.2.12
+- **Testing**: Vitest 3.1.1
+- **Linting**: ESLint 9 + `eslint-config-next`
+- **Type Safety**: TypeScript 5 + @types/react 19
+- **Build Analyzer**: @next/bundle-analyzer
+- **Compiler**: Babel Plugin React Compiler (experimental)
 
-## ✨ Features
+## Features
 
-### 🎨 **Premium Visual Design**
-- **Glassmorphism effects** on interactive components
-- **Dark mode** as default with WCAG AA contrast
-- **Micro-animations** on all state transitions
-- **Gradient accents** (Purple → Pink → Cyan)
+- ✅ Server-side rendering & static site generation
+- ✅ Full internationalization (i18n) support
+- ✅ Smooth scrolling with Lenis
+- ✅ Responsive, mobile-first design
+- ✅ Animated components with Framer Motion
+- ✅ Type-safe forms and validation with Zod
+- ✅ Optimized asset loading and image handling
+- ✅ ESLint + TypeScript for enterprise-grade code quality
+- ✅ Built-in test suite with Vitest
+- ✅ Dockerized for consistent deployment
+- ✅ Vercel & Docker deployment ready
 
-### ⚡ **Performance Optimized**
-- Next.js App Router with server components
-- Optimized fonts (Inter Display + JetBrains Mono)
-- Code splitting with React.lazy
-- WebP image optimization
+## Getting Started
 
-### 📱 **Mobile-First Responsive**
-- Breakpoints: 375px → 1536px
-- Touch-optimized interactions
-- Progressive enhancement
+### Prerequisites
 
----
+- Node.js 18+ (recommended)
+- npm or yarn
 
-## 🚀 Quick Start
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/agencyos/agencyos-landing.git
+cd agencyos-landing
+
 # Install dependencies
-pnpm install
+npm install
 
-# Development server
-pnpm dev
-# → http://localhost:3000
-
-# Production build
-pnpm build
-pnpm start
+# Copy environment template
+cp .env.example .env.local
 ```
 
----
-
-## 🎯 Tech Stack
-
-### Framework
-- **Next.js 16** - App Router, Server Components
-- **React 19** - React Compiler enabled
-- **TypeScript 5.0+** - Strict mode
-
-### Styling
-- **Tailwind CSS 4.0** - Utility-first
-- **Framer Motion 12** - Animations
-- **Lucide React** - Icon system
-- **CVA** - Component variants
-
-### Deployment
-- **Vercel** - Edge deployment
-- **GitHub Actions** - CI/CD pipeline
-- **Analytics** - Vercel Analytics
-
----
-
-## 🎨 Design System
-
-### Color Palette
-```js
-colors: {
-  dark: {
-    bg: '#0a0a0f',
-    surface: '#13131a',
-    card: '#1a1a24',
-    border: '#2a2a3a',
-    text: '#e5e5f0',
-    muted: '#9090a0'
-  },
-  accent: {
-    primary: '#8b5cf6',   // Purple
-    secondary: '#ec4899', // Pink
-    tertiary: '#06b6d4'   // Cyan
-  }
-}
-```
-
-### Typography
-- **Headings**: Inter Display (900 weight)
-- **Body**: Inter (400-600)
-- **Code**: JetBrains Mono (400-600)
-
-### Animations
-```tsx
-const fadeInUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] }
-};
-```
-
----
-
-## 📁 Project Structure
-
-```
-apps/agencyos-landing/
-├── app/                    # Next.js App Router
-│   ├── layout.tsx          # Root layout
-│   ├── page.tsx            # Home page
-│   └── globals.css         # Global styles
-├── components/             # React components
-│   ├── ui/                 # Base UI components
-│   ├── sections/           # Page sections
-│   └── layout/             # Layout components
-├── lib/                    # Utilities
-├── public/                 # Static assets
-└── tailwind.config.ts      # Tailwind configuration
-```
-
----
-
-## 🧪 Development
+### Development
 
 ```bash
-# Type checking
-pnpm type-check
-
-# Linting
-pnpm lint
-
-# Format
-pnpm format
+npm run dev
 ```
 
----
+Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-## 🚢 Deployment
+### Build & Production
 
-Automatic deployment via Vercel:
 ```bash
-git push origin main
-# → Triggers GitHub Actions → Vercel deployment
+# Build for production
+npm run build
+
+# Start production server
+npm run start
 ```
 
-Manual deployment:
+### Linting & Type Checking
+
 ```bash
-pnpm build
-vercel --prod
+# Run ESLint
+npm run lint
+
+# Run TypeScript type checking
+npm run typecheck
 ```
 
+### Testing
+
+```bash
+# Run tests
+npm run test
+```
+
+## Deployment
+
+### Vercel
+
+Deploy with one click using the [Vercel Platform](https://vercel.com/new):
+
+- Push to GitHub
+- Import repository into Vercel
+- Environment variables will be auto-detected from `.env.local`
+
+### Docker
+
+Build and run with Docker:
+
+```bash
+docker build -t agencyos-landing .
+docker run -p 3000:3000 agencyos-landing
+```
+
+## Documentation
+
+- **Agent Ecosystem**: See [AGENTS.md](AGENTS.md) for details on AI agents integrated into AgencyOS
+- **Claude Integration**: Learn about Claude-specific configurations in [CLAUDE.md](CLAUDE.md)
+- **Gemini Integration**: Details on Google Gemini usage in [GEMINI.md](GEMINI.md)
+- **Audit & Compliance**: Review security and compliance practices in [AUDIT.md](AUDIT.md)
+- **Developer Docs**: Visit the [docs/](docs/) directory for architecture and API references
+
+## Contributing
+
+Contributions are welcome! Please read our [Contribution Guidelines](CONTRIBUTING.md) (to be added) and open an issue or PR.
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+
 ---
 
-## 🎯 Quality Gates
-
-- ✅ Build passes with 0 TypeScript errors
-- ✅ Dark mode contrast meets WCAG AA
-- ✅ Mobile viewport tested (375px - 1536px)
-- ✅ Lighthouse score: 90+ on all metrics
-
----
-
-<div align="center">
-
-**Part of Mekong CLI Hub Architecture**
-
-[← Back to Root](../../README.md) • [Documentation](../../docs/)
-
-</div>
+© 2025 AgencyOS. Built with ❤️ for the future of AI agencies.
+```

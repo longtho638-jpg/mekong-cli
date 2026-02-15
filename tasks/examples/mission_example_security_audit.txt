@@ -1,8 +1,15 @@
 - Project: mekong-cli
-- Priority: HIGH
-- Description: Perform a deep security audit of the current module.
+- Priority: CRITICAL
+- Chapter: 第四篇 軍形 (Security/Disposition)
+- Mission: Deep Security Audit & Hardening.
+- Description: Conduct a comprehensive security audit of the core engine to ensure the "Invincibility" standard of Binh Phap is met.
 - Instructions:
-  1. Check for exposed secrets or API keys.
-  2. Verify input validation using Pydantic/Zod.
-  3. Check for vulnerable dependencies via `npm audit` or `pip audit`.
-  4. Ensure secure communication protocols are enforced.
+  1. Scan all source code for exposed secrets or hardcoded API keys using `grep`.
+  2. Verify that all external inputs are validated using Pydantic schemas.
+  3. Run `npm audit` and `pip-audit` to identify and fix vulnerable dependencies.
+  4. Ensure that the Antigravity Proxy only accepts requests from localhost by default.
+  5. Check for any usage of `eval()` or unsafe shell execution patterns.
+- Success Criteria:
+  - 0 High/Critical vulnerabilities found.
+  - All input validation gates confirmed.
+  - Security report generated in `plans/reports/security-audit-report.md`.

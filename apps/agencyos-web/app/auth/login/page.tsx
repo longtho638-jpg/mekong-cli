@@ -11,9 +11,29 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  function isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function isValidPassword(password: string): boolean {
+    return password.length >= 6;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+
+    // Client-side input validation
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+
+    if (!isValidPassword(password)) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
     setLoading(true);
 
     const supabase = createClient();
@@ -38,7 +58,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold">Sign In</h1>
 
         {error && (
-          <p className="text-sm text-red-500">{error}</p>
+          <p id="login-error" className="text-sm text-red-500" aria-live="assertive" role="alert">{error}</p>
         )}
 
         <div className="space-y-2">
@@ -53,6 +73,8 @@ export default function LoginPage() {
             required
             className="w-full rounded border px-3 py-2 text-sm"
             placeholder="you@example.com"
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? "login-error" : undefined}
           />
         </div>
 
@@ -68,6 +90,8 @@ export default function LoginPage() {
             required
             className="w-full rounded border px-3 py-2 text-sm"
             placeholder="Your password"
+            aria-invalid={error ? "true" : undefined}
+            aria-describedby={error ? "login-error" : undefined}
           />
         </div>
 

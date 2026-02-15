@@ -1,0 +1,11 @@
+# Mission: Hello World
+Goal: Verify that the Mekong CLI task system is working correctly.
+
+Steps:
+1. Create a file named `hello_world.txt` in the root directory.
+2. Write "Hello, Mekong!" to that file.
+3. Delete the file.
+
+Verification:
+- File `hello_world.txt` should be created and then deleted.
+- Terminal should show success messages for each step.

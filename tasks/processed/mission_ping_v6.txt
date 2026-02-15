@@ -1,1 +1,0 @@
-Respond with "Tôm Hùm v10.5 High Frequency Heartbeat Online" and then run 'ls -F mekong-cli'.

@@ -112,10 +112,12 @@ preboot_check() {
   ok "ĐẠO: Core files present"
 
   # 2. THIÊN — Check Antigravity Proxy
-  if curl -s --max-time 2 http://127.0.0.1:8080/health > /dev/null 2>&1; then
-    ok "THIÊN: Antigravity Proxy running on :8080"
+  if curl -s --max-time 2 http://127.0.0.1:9191/health > /dev/null 2>&1; then
+    ok "THIÊN: AG Ultra Proxy running on :9191 (2 Ultra accounts)"
   else
-    warn "THIÊN: Antigravity Proxy not detected on :8080 (optional)"
+    warn "THIÊN: AG Ultra Proxy not detected on :9191 — starting..."
+    PORT=9191 nohup antigravity-claude-proxy start > $MEKONG_DIR/logs/ag-proxy.log 2>&1 &
+    sleep 3
   fi
 
   # 3. ĐỊA — Check directories
@@ -300,10 +302,10 @@ status_swarm() {
 
   # Proxy
   echo ""
-  if curl -s --max-time 2 http://127.0.0.1:8080/health > /dev/null 2>&1; then
-    ok "Antigravity Proxy: Online (:8080)"
+  if curl -s --max-time 2 http://127.0.0.1:9191/health > /dev/null 2>&1; then
+    ok "AG Ultra Proxy: Online (:9191)"
   else
-    warn "Antigravity Proxy: Offline"
+    warn "AG Ultra Proxy: Offline (:9191)"
   fi
 
   # Queue

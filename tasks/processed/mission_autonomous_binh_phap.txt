@@ -1,1 +1,0 @@
-Execute a comprehensive Binh Pháp scan across the mekong-cli ecosystem (sophia, anima119, 84tea, apex-os) and remediate any critical gaps or technical debt to maintain the 100/100 Diamond Standard.

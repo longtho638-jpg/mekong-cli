@@ -1,6 +1,6 @@
 "use client"
 
-import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts"
 
 const data = [
     { name: "T2", total: 1500000 },
@@ -13,6 +13,13 @@ const data = [
 ]
 
 export function PartnerRevenueChart() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const partnerRevenueFormatter = (value: any): [string, string] => {
+        const val = Array.isArray(value) ? value[0] : value;
+        const numValue = Number(val || 0);
+        return [new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(numValue), 'Doanh thu'];
+    };
+
     return (
         <div className="h-[200px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
@@ -37,7 +44,7 @@ export function PartnerRevenueChart() {
                             border: 'none',
                             boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                         }}
-                        formatter={(value: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)}
+                        formatter={partnerRevenueFormatter}
                     />
                     <Area
                         type="monotone"

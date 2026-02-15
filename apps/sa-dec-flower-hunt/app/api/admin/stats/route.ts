@@ -15,7 +15,7 @@ const DEMO_STATS = {
 
 export async function GET(request: NextRequest) {
     // 🎯 DEMO MODE: Allow bypass for go-live testing
-    const demoMode = request.headers.get('X-Demo-Mode') === 'true';
+    const demoMode = process.env.NODE_ENV === 'development' && request.headers.get('X-Demo-Mode') === 'true';
     if (demoMode) {
         return NextResponse.json(DEMO_STATS);
     }
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
+    if (authError || !user || user.user_metadata?.role !== 'admin') {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

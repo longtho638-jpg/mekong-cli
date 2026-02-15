@@ -20,6 +20,7 @@ Applications deployed as services or user interfaces.
 - **`sophia-proposal`**: Proposal generation agent.
 - **`sophia-video-bot`**: Video bot agent.
 - **`84tea`**: F&B POS application (vertical integration).
+- **`algo-trader`**: Modular algo trading bot supporting technical indicators and arbitrage strategies (Cross-Exchange, Triangular, Statistical).
 
 ### 📦 Packages (`/packages`)
 Shared libraries and SDKs used across apps and the CLI.

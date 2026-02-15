@@ -1,1 +1,0 @@
-mekong-cli: List all directories in apps/ and count how many files each has. Report a table.

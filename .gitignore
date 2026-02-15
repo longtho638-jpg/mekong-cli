@@ -75,6 +75,15 @@ products/paid/*.zip
 ehthumbs.db
 Thumbs.db
 
+# System & Agent State
+.clawhub/
+.entire/
+.mekong/
+.gemini/
+.claudekit/
+.anthropic/
+.opencode/
+
 # Open Core - Private Business Strategy (Binh Pháp)
 plans/internal/
 dna/pricing/
@@ -93,3 +102,44 @@ local_db.json
 .vercel
 repomix-output.xml
 release-manifest.json
+
+# Logs & Temporary Files
+logs/
+memory/
+signals/
+temp_well/
+*.log
+**/logs/
+**/*.log
+**/*.txt.bak
+**/tsc_errors*.txt
+**/tsc_results_*.txt
+**/vitest_results*.txt
+**/eslint_report*.txt
+**/eslint_errors*.txt
+**/eslint_errors*.json
+**/eslint_chart_results*.txt
+**/.gate-results.json
+
+# Tasks & Missions (Ignore processed and archive, keep examples)
+tasks/processed/
+tasks/archive/
+**/tasks/mission_*.txt
+!tasks/examples/
+
+# Dataset & Mission Wins (Private)
+**/wins.jsonl
+dataset/
+
+# 🛡️ SECURITY: Never commit API keys
+.env
+*.env
+scripts/.env
+token.txt
+RULES_*.md
+**/RULES_*.md
+**/*.pem
+**/*.key
+**/*.cert
+**/deployment-keys/
+.metadata_never_index

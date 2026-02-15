@@ -1,1 +1,0 @@
-Fix all broken UI in Sophia AI Factory, add loading states, polish dashboard, ensure responsive mobile, verify Polar subscription payment in sophia-ai-factory

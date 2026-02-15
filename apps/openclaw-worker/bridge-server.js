@@ -62,7 +62,7 @@ const server = http.createServer(async (req, res) => {
           // I should verify where `task-watcher.js` looks.
           // config.js says `WATCH_DIR: path.join(MEKONG_DIR, 'tasks')`.
           // So I should write to `tasks/` folder!
-          const taskDir = process.env.MEKONG_DIR ? `${process.env.MEKONG_DIR}/tasks` : '/Users/macbookprom1/mekong-cli/tasks';
+          const taskDir = process.env.MEKONG_DIR ? `${process.env.MEKONG_DIR}/tasks` : path.join(__dirname, '../../tasks');
           const taskFile = `${taskDir}/mission_${taskId}.txt`;
           fs.writeFileSync(taskFile, data.task);
           console.log(`Task written to ${taskFile}`);

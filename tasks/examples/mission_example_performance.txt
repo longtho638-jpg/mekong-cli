@@ -1,0 +1,11 @@
+Mục tiêu: Audit và tối ưu hóa hiệu năng cho ứng dụng, đảm bảo Core Web Vitals đạt điểm xanh.
+
+Các bước thực hiện:
+1. Chạy Lighthouse Performance audit cho các trang quan trọng.
+2. Phân tích bundle size và xác định các thư viện tốn dung lượng.
+3. Kiểm tra việc tối ưu hóa hình ảnh (WebP, lazy loading).
+4. Kiểm tra việc sử dụng React.lazy hoặc Next.js dynamic imports.
+5. Đề xuất các cải tiến về caching và server-side rendering.
+6. Viết báo cáo chi tiết về các chỉ số LCP, FID, CLS.
+
+Lệnh thực thi: /review:codebase performance optimization audit

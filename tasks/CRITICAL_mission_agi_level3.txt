@@ -1,0 +1,28 @@
+UPGRADE Tôm Hùm AGI Level 3: Self-Testing Gate + Mission Journal
+
+Đọc apps/openclaw-worker/AGI_ROADMAP.md trước khi bắt đầu.
+
+TARGET FILES:
+1. apps/openclaw-worker/lib/post-mission-gate.js (TẠO MỚI)
+2. apps/openclaw-worker/lib/mission-journal.js (TẠO MỚI) 
+3. apps/openclaw-worker/lib/task-queue.js (SỬA)
+
+YÊU CẦU:
+
+1. post-mission-gate.js:
+   - Export: runPostMissionGate(projectDir, missionId) → { build: boolean, output: string }
+   - Chạy `npm run build` trong projectDir, capture output
+   - Nếu GREEN → git add + commit
+   - Nếu RED → tạo fix mission file trong tasks/
+
+2. mission-journal.js:
+   - Export: recordMission(data), getHistory(), getStats()
+   - Lưu vào data/mission-history.json  
+   - Record: { timestamp, project, missionId, duration, success, buildResult, tokensUsed }
+   - getStats() → { totalMissions, successRate, avgDuration }
+
+3. task-queue.js:
+   - Import post-mission-gate, gọi sau mission COMPLETE
+   - Import mission-journal, gọi recordMission
+
+npm run build phải GREEN cho openclaw-worker

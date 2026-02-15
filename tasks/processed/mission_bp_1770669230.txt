@@ -1,1 +1,0 @@
-/cook Fix Binh Phap Standard: OSS Test Suite. pytest not found.

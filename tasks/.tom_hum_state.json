@@ -1,18 +1,14 @@
 {
   "completedTasks": {
     "84tea": [
-      "console_cleanup"
-    ],
-    "apex-os": [
-      "console_cleanup"
-    ],
-    "sophia-ai-factory": [
-      "console_cleanup"
-    ],
-    "anima119": [
-      "console_cleanup"
+      "binh_phap_deep_scan",
+      "10x_architecture",
+      "console_cleanup",
+      "type_safety",
+      "a11y_audit",
+      "security_scan",
+      "perf_audit"
     ]
   },
-  "lastAutoScan": 0,
-  "autoScanCycle": 5
+  "currentProjectIdx": 0
 }

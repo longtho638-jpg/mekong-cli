@@ -38,8 +38,8 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/admin') &&
     !request.nextUrl.pathname.startsWith('/admin/ipo') &&
     !request.nextUrl.pathname.startsWith('/admin/leadership')) {
-    if (!user) {
-      // If not logged in, redirect to home or login
+    if (!user || user.user_metadata?.role !== 'admin') {
+      // If not logged in or not admin, redirect to home or login
       // We can also redirect to a dedicated /login page if it exists
       return NextResponse.redirect(new URL('/', request.url));
     }
@@ -49,7 +49,7 @@ export async function middleware(request: NextRequest) {
 
   // 2. Protect Farmer Routes
   if (request.nextUrl.pathname.startsWith('/farmer')) {
-    if (!user) {
+    if (!user || user.user_metadata?.role !== 'farmer') {
         return NextResponse.redirect(new URL('/', request.url));
     }
   }

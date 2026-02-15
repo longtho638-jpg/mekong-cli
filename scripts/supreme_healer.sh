@@ -45,8 +45,8 @@ check_port() {
 log "--- SUPREME HEALER ONLINE ---"
 
 while true; do
-    # 1. Check Antigravity Proxy (Port 8080/8045/8046)
-    check_port "Antigravity Proxy" 8045 "antigravity-claude-proxy start --fallback > /dev/null 2>&1 &"
+    # 1. Check AG Proxy (Port 9191) — antigravity-claude-proxy (2 Ultra accounts)
+    check_port "AG Proxy (antigravity-claude-proxy)" 9191 "PORT=9191 nohup antigravity-claude-proxy start > $MEKONG_DIR/logs/ag-proxy.log 2>&1 &"
     
     # 2. Check Qwen Bridge
     check_port "Qwen Bridge" 8081 "nohup python3 -u $QWEN_BRIDGE > $MEKONG_DIR/logs/qwen_bridge.log 2>&1 &"

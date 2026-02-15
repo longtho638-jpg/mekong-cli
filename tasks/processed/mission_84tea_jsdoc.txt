@@ -1,1 +1,0 @@
-/cook "Add comprehensive JSDoc documentation to all exported functions and components - minimum 50 functions need docs"

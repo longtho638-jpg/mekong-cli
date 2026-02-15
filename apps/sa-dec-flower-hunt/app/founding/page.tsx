@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { createClient } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import {
     Heart,
     Sparkles,
@@ -21,13 +21,7 @@ import {
     MessageCircle
 } from 'lucide-react'
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
-// Typewriter effect hook
-function useTypewriter(text: string, speed: number = 50) {
+const useTypewriter = (text: string, speed: number = 50) => {
     const [displayText, setDisplayText] = useState('')
     const [isComplete, setIsComplete] = useState(false)
 
@@ -71,6 +65,8 @@ export default function Founding10Page() {
     // Fetch current slots from database
     useEffect(() => {
         async function fetchSlots() {
+            if (!supabase) return;
+
             const { count } = await supabase
                 .from('founding_customers')
                 .select('*', { count: 'exact', head: true })
@@ -85,6 +81,10 @@ export default function Founding10Page() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if (!supabase) {
+            setFormState('error')
+            return
+        }
         setFormState('submitting')
 
         try {

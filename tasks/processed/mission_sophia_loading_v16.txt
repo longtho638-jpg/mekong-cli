@@ -1,1 +1,0 @@
-Add skeleton loading screens to sophia-ai-factory campaign dashboard. Add shimmer animation placeholders for campaign cards, video preview, and stats section while data loads.

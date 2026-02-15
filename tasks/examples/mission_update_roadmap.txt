@@ -1,0 +1,11 @@
+# Mission: Documentation Update
+Goal: Update the project roadmap with the latest progress.
+
+Steps:
+1. Read `docs/project-roadmap.md`.
+2. Identify completed tasks.
+3. Update the status of those tasks to "Complete".
+
+Verification:
+- `docs/project-roadmap.md` should be updated.
+- No syntax errors in the markdown file.

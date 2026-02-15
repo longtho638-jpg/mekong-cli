@@ -6,7 +6,6 @@
 node_modules
 dist
 build
-!build
 .next
 .nuxt
 

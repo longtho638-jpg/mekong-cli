@@ -1,10 +1,18 @@
 {
-  "name": "mekong-cli-lean",
+  "name": "mekong-cli",
   "version": "2.1.33",
   "private": true,
-  "description": "$1M Bootstrap - Lean Revenue Architecture",
+  "description": "RaaS Agency Operating System - Powered by Binh Phap & ClaudeKit DNA",
   "author": "Binh Phap Venture Studio",
   "license": "MIT",
+  "homepage": "https://agencyos.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/longtho638-jpg/mekong-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/longtho638-jpg/mekong-cli/issues"
+  },
   "workspaces": [
     "frontend",
     "packages/*",
@@ -30,7 +38,7 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "turbo": "^1.11.0"
+    "turbo": "^2.1.3"
   },
   "engines": {
     "node": ">=18.0.0",

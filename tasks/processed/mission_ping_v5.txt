@@ -1,1 +1,0 @@
-Respond with "Tôm Hùm is Online" and then list the contents of the current directory.

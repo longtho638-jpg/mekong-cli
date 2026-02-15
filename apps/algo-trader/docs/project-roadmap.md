@@ -2,8 +2,8 @@
 
 ## Phase 1: Foundation (Completed)
 - [x] Thiết lập cấu trúc dự án Modular.
-- [x] Triển khai BotEngine cơ bản.
-- [x] Tích hợp CCXT và DataProvider.
+- [x] Triển khai `BotEngine` cơ bản.
+- [x] Tích hợp CCXT và `IDataProvider`.
 - [x] Triển khai chiến thuật RSI + SMA.
 - [x] Hệ thống báo cáo Console & HTML.
 

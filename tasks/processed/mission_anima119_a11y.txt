@@ -1,1 +1,0 @@
-Binh Pháp Front 7: Audit and fix accessibility in anima119 - alt text, ARIA labels, semantic HTML
