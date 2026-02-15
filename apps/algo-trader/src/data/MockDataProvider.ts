@@ -70,13 +70,25 @@ export class MockDataProvider implements IDataProvider {
     const low = Math.min(startPrice, close) * (1 - Math.random() * 0.002);
     const volume = Math.floor(Math.random() * 1000) + 100;
 
+    // Generate metadata for arbitrage testing
+    // exchangeBPrice: Price for Cross-Exchange (slightly different from current)
+    // priceETH_BTC, priceETH_USDT: Prices for Triangular (BTC/USDT -> ETH/BTC -> ETH/USDT)
+    // priceB: Price for Statistical (correlated assets)
+    const metadata: Record<string, any> = {
+      exchangeBPrice: close * (1 + (Math.random() - 0.5) * 0.005), // Spread up to 0.5%
+      priceETH_BTC: 0.05 * (1 + (Math.random() - 0.5) * 0.002),
+      priceETH_USDT: (close * 0.05) * (1 + (Math.random() - 0.5) * 0.002),
+      priceB: close * 1.2 * (1 + (Math.random() - 0.5) * 0.001) // High correlation with price A
+    };
+
     return {
       timestamp,
       open: startPrice,
       high,
       low,
       close,
-      volume
+      volume,
+      metadata
     };
   }
 }
