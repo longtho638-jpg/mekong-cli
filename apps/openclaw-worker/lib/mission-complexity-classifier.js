@@ -19,6 +19,24 @@ const NO_GIT = 'CRITICAL: DO NOT run git commit, git push, or /check-and-commit.
 const HISTORY_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/mission-history.json');
 
 /**
+ * Safe JSON parse with backup for corrupted files
+ * @param {string} filePath
+ * @returns {Array}
+ */
+function safeLoadHistory(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (e) {
+    try {
+      const backupPath = `${filePath}.bak.${Date.now()}`;
+      fs.copyFileSync(filePath, backupPath);
+    } catch (copyErr) { /* ignore */ }
+    return [];
+  }
+}
+
+/**
  * Adjust timeout based on project history (Self-Learning Feedback Loop)
  * @param {string} project
  * @param {number} baseTimeout
@@ -28,12 +46,11 @@ function adjustTimeout(project, baseTimeout) {
   try {
     let adjusted = baseTimeout || config.TIMEOUT_SIMPLE;
 
-    if (fs.existsSync(HISTORY_FILE)) {
-      const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
-      const projectMissions = history.filter(m => m.project === project).slice(-10);
+    const history = safeLoadHistory(HISTORY_FILE);
+    const projectMissions = history.filter(m => m.project === project).slice(-10);
 
-      if (projectMissions.length > 0) {
-        // Logic: Nếu thường xuyên timeout (thất bại và chạy > 90% timeout) -> +20%
+    if (projectMissions.length > 0) {
+      // Logic: Nếu thường xuyên timeout (thất bại và chạy > 90% timeout) -> +20%
         const timeouts = projectMissions.filter(m => !m.success && m.durationMs > (adjusted * 0.9)).length;
         if (timeouts >= 3) {
           adjusted = Math.floor(adjusted * 1.2);
@@ -45,7 +62,6 @@ function adjustTimeout(project, baseTimeout) {
           adjusted = Math.floor(adjusted * 0.8);
         }
       }
-    }
 
     // Range: 5 min to 60 min
     const MIN_TIMEOUT = 5 * 60 * 1000;

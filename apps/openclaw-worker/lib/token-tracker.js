@@ -19,16 +19,49 @@ const DAILY_BUDGET = 50000; // 🔒 Alert threshold
 const TOKEN_REGEX = /\[(\d{2}:\d{2}:\d{2})\]\s+[✅❌]\s+(\d+)tok/;
 
 /**
+ * Safely read a file line by line synchronously without loading it all into memory.
+ * @param {string} filePath
+ * @param {function(string): void} callback
+ */
+function readLinesSync(filePath, callback) {
+    if (!fs.existsSync(filePath)) return;
+
+    let fd;
+    try {
+        fd = fs.openSync(filePath, 'r');
+        const bufferSize = 64 * 1024; // 64KB
+        const buffer = Buffer.alloc(bufferSize);
+        let leftOver = '';
+        let bytesRead = 0;
+
+        while ((bytesRead = fs.readSync(fd, buffer, 0, bufferSize, null)) !== 0) {
+            const chunk = buffer.toString('utf8', 0, bytesRead);
+            const lines = (leftOver + chunk).split('\n');
+            leftOver = lines.pop(); // Keep the last partial line
+
+            for (const line of lines) {
+                callback(line);
+            }
+        }
+        if (leftOver) {
+            callback(leftOver);
+        }
+    } catch (e) {
+        // Ignore read errors
+    } finally {
+        if (fd !== undefined) fs.closeSync(fd);
+    }
+}
+
+/**
  * Count tokens used between two Date objects by scraping proxy log.
- * @param {Date} startTime 
+ * Uses stream-like reading to avoid OOM on large logs.
+ * @param {Date} startTime
  * @param {Date} endTime
  * @returns {{ tokens: number, requests: number, model: string }}
  */
 function countTokensBetween(startTime, endTime) {
     try {
-        if (!fs.existsSync(PROXY_LOG)) return { tokens: 0, requests: 0, model: 'unknown' };
-
-        const lines = fs.readFileSync(PROXY_LOG, 'utf-8').split('\n');
         const startHMS = formatHMS(startTime);
         const endHMS = formatHMS(endTime);
 
@@ -36,11 +69,12 @@ function countTokensBetween(startTime, endTime) {
         let requestCount = 0;
         let lastModel = 'unknown';
 
-        for (const line of lines) {
+        readLinesSync(PROXY_LOG, (line) => {
             const match = line.match(TOKEN_REGEX);
-            if (!match) continue;
+            if (!match) return;
 
             const [, timeStr, tokStr] = match;
+            // Simple string comparison for HMS works within the same day
             if (timeStr >= startHMS && timeStr <= endHMS) {
                 totalTokens += parseInt(tokStr);
                 requestCount++;
@@ -48,7 +82,7 @@ function countTokensBetween(startTime, endTime) {
                 const modelMatch = line.match(/\(([^)]+)\)/);
                 if (modelMatch) lastModel = modelMatch[1];
             }
-        }
+        });
 
         return { tokens: totalTokens, requests: requestCount, model: lastModel };
     } catch (e) {
@@ -61,8 +95,27 @@ function formatHMS(date) {
 }
 
 /**
+ * Safe JSON parse with backup for corrupted files
+ * @param {string} filePath
+ * @returns {Array}
+ */
+function safeLoadHistory(filePath) {
+    if (!fs.existsSync(filePath)) return [];
+    try {
+        return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    } catch (e) {
+        console.error(`TOKEN_TRACKER: ❌ Corrupt JSON in ${path.basename(filePath)}. Backing up and resetting.`);
+        try {
+            const backupPath = `${filePath}.bak.${Date.now()}`;
+            fs.copyFileSync(filePath, backupPath);
+        } catch (copyErr) { /* ignore */ }
+        return [];
+    }
+}
+
+/**
  * Record completed mission token usage.
- * @param {string} missionId 
+ * @param {string} missionId
  * @param {string} project
  * @param {number} tokens
  * @param {number} durationSec
@@ -70,10 +123,7 @@ function formatHMS(date) {
  */
 function recordMission(missionId, project, tokens, durationSec, model) {
     try {
-        let records = [];
-        if (fs.existsSync(USAGE_FILE)) {
-            records = JSON.parse(fs.readFileSync(USAGE_FILE, 'utf-8'));
-        }
+        let records = safeLoadHistory(USAGE_FILE);
 
         records.push({
             ts: new Date().toISOString(),
@@ -96,11 +146,9 @@ function recordMission(missionId, project, tokens, durationSec, model) {
  */
 function getDailyUsage() {
     try {
-        if (!fs.existsSync(USAGE_FILE)) return { tokens: 0, missions: 0, overBudget: false };
-
-        const records = JSON.parse(fs.readFileSync(USAGE_FILE, 'utf-8'));
+        const records = safeLoadHistory(USAGE_FILE);
         const today = new Date().toISOString().slice(0, 10);
-        const todayRecords = records.filter(r => r.ts.startsWith(today));
+        const todayRecords = records.filter(r => r.ts && r.ts.startsWith(today));
 
         const tokens = todayRecords.reduce((sum, r) => sum + (r.tokens || 0), 0);
         return {

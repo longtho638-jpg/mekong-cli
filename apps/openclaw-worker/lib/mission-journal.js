@@ -42,10 +42,7 @@ function recordMission(data) {
       efficiency: data.success ? (data.tokensUsed / 1000) * (data.durationMs / 60000) : 999
     };
 
-    let history = [];
-    if (fs.existsSync(HISTORY_FILE)) {
-      history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
-    }
+    let history = safeLoadHistory(HISTORY_FILE);
 
     history.push(entry);
 
@@ -62,6 +59,25 @@ function recordMission(data) {
 
   } catch (error) {
     log(`JOURNAL ERROR: Failed to record mission: ${error.message}`);
+  }
+}
+
+/**
+ * Safe JSON parse with backup for corrupted files
+ * @param {string} filePath
+ * @returns {Array}
+ */
+function safeLoadHistory(filePath) {
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+  } catch (e) {
+    log(`JOURNAL: ❌ Corrupt JSON in ${path.basename(filePath)}. Backing up and resetting.`);
+    try {
+      const backupPath = `${filePath}.bak.${Date.now()}`;
+      fs.copyFileSync(filePath, backupPath);
+    } catch (copyErr) { /* ignore */ }
+    return [];
   }
 }
 
@@ -182,8 +198,7 @@ function countTokensBetween(startTime, endTime) {
  */
 function getStats() {
   try {
-    if (!fs.existsSync(HISTORY_FILE)) return { total: 0, successRate: 0 };
-    const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
+    const history = safeLoadHistory(HISTORY_FILE);
     const total = history.length;
     const success = history.filter(m => m.success).length;
     const durations = history.filter(m => typeof m.durationMs === 'number').map(m => m.durationMs);
@@ -204,8 +219,7 @@ function getStats() {
  */
 function getHistory() {
   try {
-    if (!fs.existsSync(HISTORY_FILE)) return [];
-    return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
+    return safeLoadHistory(HISTORY_FILE);
   } catch (e) {
     return [];
   }
@@ -218,9 +232,9 @@ function getHistory() {
  */
 function getProjectPriority(project) {
   try {
-    if (!fs.existsSync(HISTORY_FILE)) return 5; // Default neutral priority
+    const history = safeLoadHistory(HISTORY_FILE);
+    if (history.length === 0) return 5;
 
-    const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
     const projectMissions = history.filter(m => m.project === project).slice(-20); // Last 20 missions
 
     if (projectMissions.length === 0) return 5;
