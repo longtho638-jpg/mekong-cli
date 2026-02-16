@@ -11,11 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
-
-// Forbidden import replaced with local logger
-function log(msg) {
-  console.log(`[JOURNAL] ${msg}`);
-}
+const { log } = require('./brain-tmux');
 
 const HISTORY_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/mission-history.json');
 const DATA_DIR = path.dirname(HISTORY_FILE);
@@ -46,7 +42,10 @@ function recordMission(data) {
       efficiency: data.success ? (data.tokensUsed / 1000) * (data.durationMs / 60000) : 999
     };
 
-    let history = safeLoadHistory(HISTORY_FILE);
+    let history = [];
+    if (fs.existsSync(HISTORY_FILE)) {
+      history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
+    }
 
     history.push(entry);
 
@@ -63,25 +62,6 @@ function recordMission(data) {
 
   } catch (error) {
     log(`JOURNAL ERROR: Failed to record mission: ${error.message}`);
-  }
-}
-
-/**
- * Safe JSON parse with backup for corrupted files
- * @param {string} filePath
- * @returns {Array}
- */
-function safeLoadHistory(filePath) {
-  if (!fs.existsSync(filePath)) return [];
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-  } catch (e) {
-    log(`JOURNAL: ❌ Corrupt JSON in ${path.basename(filePath)}. Backing up and resetting.`);
-    try {
-      const backupPath = `${filePath}.bak.${Date.now()}`;
-      fs.copyFileSync(filePath, backupPath);
-    } catch (copyErr) { /* ignore */ }
-    return [];
   }
 }
 
@@ -202,7 +182,8 @@ function countTokensBetween(startTime, endTime) {
  */
 function getStats() {
   try {
-    const history = safeLoadHistory(HISTORY_FILE);
+    if (!fs.existsSync(HISTORY_FILE)) return { total: 0, successRate: 0 };
+    const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
     const total = history.length;
     const success = history.filter(m => m.success).length;
     const durations = history.filter(m => typeof m.durationMs === 'number').map(m => m.durationMs);
@@ -223,7 +204,8 @@ function getStats() {
  */
 function getHistory() {
   try {
-    return safeLoadHistory(HISTORY_FILE);
+    if (!fs.existsSync(HISTORY_FILE)) return [];
+    return JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
   } catch (e) {
     return [];
   }
@@ -236,9 +218,9 @@ function getHistory() {
  */
 function getProjectPriority(project) {
   try {
-    const history = safeLoadHistory(HISTORY_FILE);
-    if (history.length === 0) return 5;
+    if (!fs.existsSync(HISTORY_FILE)) return 5; // Default neutral priority
 
+    const history = JSON.parse(fs.readFileSync(HISTORY_FILE, 'utf-8'));
     const projectMissions = history.filter(m => m.project === project).slice(-20); // Last 20 missions
 
     if (projectMissions.length === 0) return 5;
@@ -258,24 +240,6 @@ function getProjectPriority(project) {
     // Boost if recent missions were successful (momentum)
     const recent = projectMissions.slice(-3);
     if (recent.every(m => m.success)) priority += 1;
-
-    // Efficiency Factor (Level 5 Update)
-    // Lower efficiency score is better. Formula: (tokens/1000) * (minutes)
-    const successMissions = projectMissions.filter(m => m.success && typeof m.efficiency === 'number');
-    if (successMissions.length > 0) {
-      const avgEfficiency = successMissions.reduce((sum, m) => sum + m.efficiency, 0) / successMissions.length;
-
-      // Highly efficient (< 5) -> Boost
-      if (avgEfficiency < 5) {
-        priority += 1;
-        log(`JOURNAL: 🚀 Project ${project} is highly efficient (Score: ${avgEfficiency.toFixed(1)}). Priority boost.`);
-      }
-      // Inefficient (> 50) -> Penalize
-      else if (avgEfficiency > 50) {
-        priority -= 1;
-        log(`JOURNAL: 🐢 Project ${project} is inefficient (Score: ${avgEfficiency.toFixed(1)}). Priority penalty.`);
-      }
-    }
 
     // Cap at 1-10
     return Math.max(1, Math.min(10, priority));

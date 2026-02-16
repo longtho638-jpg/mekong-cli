@@ -28,13 +28,14 @@ const fs = require('fs');
 const config = require('../config');
 
 const TMUX_SESSION = 'tom_hum_brain';
-const COMPACT_EVERY_N = 10; // Relaxed: Compact every 10 missions
-const CLEAR_EVERY_N = 5;    // Relaxed: Clear every 5 missions
+const COMPACT_EVERY_N = 50; // Relaxed: Compact every 50 missions (was 10)
+const CLEAR_EVERY_N = 25;    // Relaxed: Clear every 25 missions (was 5)
 const MAX_RESPAWNS_PER_HOUR = 5;
 const RESPAWN_COOLDOWN_MS = 5 * 60 * 1000;
 const PROMPT_FILE = '/tmp/tom_hum_prompt.txt';
-const MIN_MISSION_SECONDS = 15;   // SPEED BOOST: Reduced from 45s for faster local inference
-const IDLE_CONFIRM_POLLS = 3;     // Consecutive idle polls required for completion
+// 🔒 LOCKED — DO NOT REDUCE (2026-02-15) — prevents false mission completion
+const MIN_MISSION_SECONDS = 60;   // Must wait 60s before idle-no-busy can trigger
+const IDLE_CONFIRM_POLLS = 5;     // 5 consecutive idle polls required
 
 // --- DETECTION PATTERNS ---
 
@@ -67,19 +68,15 @@ const APPROVE_PATTERNS = [
   /Do you want to run this command\?/,
   /Do you want to proceed\?/,
   /Do you want to execute this code\?/,
-  /terraform apply/,
-  /npm install/,
-  /Allow this/i,
   /Enter your API key/, // Legacy prompt
-  /Do you want to use this API key\?/, // <--- NEW: Custom Key Confirmation
+  /Do you want to use this API key\?/,
   /\(y\/n\)/i, /\[y\/n\]/i, /\[Y\/n\]/i,
-  /Do you want to continue/i,
   /Approve\?/i, /Confirm\?/i,
-  /Press Enter/i, /waiting for input/i,
-  /Would you like to/i, /Should I /i,
-  /Use arrow keys to select/i, // More specific for menus
+  /Use arrow keys to select/i,
   /Select an option/i,
-  /Approve this code change/i, /2\.\s+No\s+\(recommended\)/i, // Catch the menu state directly
+  /2\.\s+No\s+\(recommended\)/i, // Bypass permissions menu
+  /1\.\s+Yes,\s+I accept/i, // Bypass permissions option 1
+  /By proceeding, you accept all responsibility/i, // Bypass disclaimer
 ];
 
 // CC CLI context exhaustion
@@ -169,7 +166,8 @@ function hasPrompt(output) {
 }
 
 function hasApproveQuestion(output) {
-  const tail = getCleanTail(output, 10).join('\n');
+  // 🔒 ONLY check LAST 3 LINES to avoid matching CC CLI response text in scrollback
+  const tail = getCleanTail(output, 3).join('\n');
   return APPROVE_PATTERNS.some(p => p.test(tail));
 }
 
@@ -221,12 +219,7 @@ function pasteText(text) {
 
 function sendEnter() {
   const target = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
-  // AGGRESSIVE ENTER STRATEGY (v31 Fix)
   tmuxExec(`tmux send-keys -t ${target} Enter`);
-  execSync('sleep 0.2');
-  tmuxExec(`tmux send-keys -t ${target} C-m`); // Force Carriage Return
-  execSync('sleep 0.2');
-  tmuxExec(`tmux send-keys -t ${target} Enter`); // Double tap
 }
 
 function sendCtrlC() {
@@ -382,6 +375,7 @@ function spawnBrain() {
   }
 
   tmuxExec(`tmux new-session -d -s ${TMUX_SESSION} -n brain -x 200 -y 50`);
+  tmuxExec(`tmux set-option -t ${TMUX_SESSION} remain-on-exit on`);  // 🔒 Pane stays open on crash
   tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.0 '${p0Cmd}' Enter`);
   tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.0 -T "${p0Title}"`);
 
@@ -393,16 +387,11 @@ function spawnBrain() {
     tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} '${geminiCmd}' Enter`);
   }
 
-  // AUTO-ACCEPT Bypass Permissions for all Workers
-  log('BRAIN: Auto-accepting Bypass Permissions for all panes...');
+  // 🔒 REMOVED: Auto-accept bypass permissions — CC CLI uses --dangerously-skip-permissions
+  // Sending '2' during boot was going to CC CLI as user input → "LỖI: Task bị từ chối"
+  // If bypass prompt appears during missions, state machine handles it (line 675)
+  log('BRAIN: Waiting for CC CLI to initialize...');
   execSync('sleep 8');
-  for (let i = 0; i < teamSize; i++) {
-    // Only workers (and P0 if God Mode)
-    if (i === 0 && !config.FULL_CLI_MODE) continue;
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} 2`);
-    execSync('sleep 1');
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} Enter`);
-  }
 
   // Set initial focus to P0 (if God Mode) or P1
   const startPane = config.FULL_CLI_MODE ? 0 : 1;
@@ -426,7 +415,7 @@ function rotateWorker() {
   const minIdx = config.FULL_CLI_MODE ? 0 : 1;
   if (currentWorkerIdx >= teamSize) currentWorkerIdx = minIdx;
 
-  log(`DISPATCH: → Worker P${currentWorkerIdx} (1 chạy, ${teamSize - 2} nghỉ)`);
+  log(`DISPATCH: → Worker P${currentWorkerIdx} (${teamSize} total)`);
   tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.${currentWorkerIdx}`);
   return currentWorkerIdx;
 }
@@ -441,8 +430,15 @@ function killBrain() {
 function isBrainAlive() {
   if (!isSessionAlive()) return false;
   try {
-    execSync('pgrep -f "claude"', { timeout: 3000 });
-    return true;
+    // 🔒 Check tmux pane content for CC CLI indicators instead of pgrep
+    // pgrep -f "claude" is unreliable — sometimes misses idle CC CLI process
+    const output = execSync(
+      `tmux capture-pane -t ${TMUX_SESSION}:0.0 -p 2>/dev/null`,
+      { encoding: 'utf-8', timeout: 3000 }
+    );
+    // CC CLI shows these when alive (idle or busy)
+    const aliveIndicators = [/❯/, /Claude Code/i, /bypass permissions/i, /claude-/i, /✻/];
+    return aliveIndicators.some(p => p.test(output));
   } catch (e) { return false; }
 }
 
@@ -493,17 +489,46 @@ async function respawnBrain(useContinue = true) {
 
   // REUSE spawnBrain() logic to ensure P0=Monitor, P1..=Workers layout
   spawnBrain();
+  await sleep(8000); // Wait for CC CLI to fully boot before accepting missions
 
   log(`RESPAWN: Session rebuilt via spawnBrain()`);
   return waitForPrompt(120000);
 }
 
+// --- Mission Lock (prevents double-dispatch) ---
+const MISSION_LOCK = require('path').join(__dirname, '..', '.mission-active.lock');
+
+function isMissionActive() {
+  try { return fs.existsSync(MISSION_LOCK); } catch { return false; }
+}
+
+function setMissionLock(missionNum) {
+  try { fs.writeFileSync(MISSION_LOCK, `mission_${missionNum}_${Date.now()}`); } catch { }
+}
+
+function clearMissionLock() {
+  try { fs.unlinkSync(MISSION_LOCK); } catch { }
+}
+
 // --- Core: run mission via tmux (state machine) ---
 
 async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
+  // 🔒 Ch.12 火攻: Check lock FIRST — refuse if another mission active
+  if (isMissionActive()) {
+    log(`MISSION BLOCKED: Another mission still active — refusing dispatch`);
+    return { success: false, result: 'mission_locked', elapsed: 0 };
+  }
+
   missionCount++;
   const num = missionCount;
   const startTime = Date.now();
+  const missionStartDate = new Date();
+
+  // Set lock AFTER check passes
+  setMissionLock(num);
+
+  // 作戰 Token Tracker
+  const { countTokensBetween, recordMission, getDailyUsage } = require('./token-tracker');
 
   log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
   log(`PROJECT: ${projectDir} | MODE: tmux-interactive${modelOverride ? ` | MODEL: ${modelOverride} 🔥` : ''}`);
@@ -549,31 +574,56 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     /Press up to edit queued/i,
   ];
 
-  // ... (patterns remain)
 
-  function sendEnter() {
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Enter`);
-  }
-
-  // ... (helpers remain)
+  // sendEnter / sendCtrlC use the outer (correctly-targeted) definitions
 
   // SAFETY CHECK: Ensure Claude is actually running before dispatching
   // If we paste into a raw ZSH shell, we get "Command not found" errors.
   const checkOutput = capturePane();
   if (!isBrainAlive() || isShellPrompt(checkOutput)) {
     log(`CRITICAL: Brain died or dropped to shell! check=${!isBrainAlive()} shell=${isShellPrompt(checkOutput)}`);
-    // Attempt rapid recovery
     const respawnSuccess = await respawnBrain(true);
     if (!respawnSuccess) {
+      clearMissionLock();
       return { success: false, result: 'brain_died_fatal', elapsed: 0 };
     }
-    // Give post-respawn some time to settle
     await sleep(5000);
+  }
+
+  // 🛡️ ANTI-STACKING GUARD: Wait for CC CLI to be TRULY idle before dispatching
+  // Prevents "queued messages" bug where commands pile up
+  // 🔒 Ch.2 作戰: 120s timeout (12×10s) — complex missions need time to finish
+  for (let waitAttempt = 0; waitAttempt < 12; waitAttempt++) {
+    const preDispatch = capturePane();
+    const preState = detectState(preDispatch);
+    if (preState === 'busy') {
+      log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
+      await sleep(10000);
+      continue;
+    }
+    if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
+      break; // Safe to dispatch
+    }
+    if (preState === 'question') {
+      log(`ANTI-STACK: CC CLI has pending question — auto-approving first`);
+      tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${currentWorkerIdx} y Enter`);
+      await sleep(3000);
+      continue;
+    }
+    break;
+  }
+
+  // Final check: if STILL busy after 120s, abort this mission
+  const finalCheck = capturePane();
+  if (isBusy(finalCheck)) {
+    log(`ANTI-STACK: CC CLI still busy after 120s wait — ABORTING mission #${num}`);
+    clearMissionLock();
+    return { success: false, result: 'busy_blocked', elapsed: 0 };
   }
 
   // Dispatch via paste-buffer (reliable for long text + special chars)
   pasteText(fullPrompt);
-  await sleep(3000); // FIXED: Increased from 1000ms to allow TUI to render large pastes
+  await sleep(3000);
   sendEnter();
   log(`DISPATCHED: Mission #${num} sent to tmux`);
 
@@ -601,6 +651,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       const elapsed = Math.round((Date.now() - startTime) / 1000);
       log(`BRAIN DIED: Mission #${num} (${elapsed}s)`);
       await respawnBrain(true);
+      clearMissionLock();
       return { success: false, result: 'brain_died', elapsed };
     }
 
@@ -615,11 +666,11 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       kickStartCount++;
       await sleep(2000);
       continue;
-      continue;
     }
 
     // STUCK INTERVENTION (Parallel Cooling): Kill stuck task if Hot & Long
     if (checkStuckIntervention(elapsedSec, num)) {
+      clearMissionLock();
       return { success: false, result: 'killed_stuck', elapsed: elapsedSec };
     }
 
@@ -631,6 +682,12 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
         }
         const usage = parseContextUsage(output);
         log(`COMPLETE: Mission #${num} (${elapsedSec}s) [cooked-pattern]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+        // 作戰 Token tracking
+        const tk1 = countTokensBetween(missionStartDate, new Date());
+        log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model})`);
+        recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
+        const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
+        clearMissionLock();
         return { success: true, result: 'done', elapsed: elapsedSec };
       }
 
@@ -690,6 +747,11 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
           if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
             const usage = parseContextUsage(output);
             log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+            const tk2 = countTokensBetween(missionStartDate, new Date());
+            log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model})`);
+            recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
+            const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
+            clearMissionLock();
             return { success: true, result: 'done', elapsed: elapsedSec };
           }
         } else if (elapsedSec > MIN_MISSION_SECONDS) {
@@ -697,6 +759,11 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
           idleConfirmCount++;
           if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
             log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
+            const tk3 = countTokensBetween(missionStartDate, new Date());
+            log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model})`);
+            recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
+            const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
+            clearMissionLock();
             return { success: true, result: 'done', elapsed: elapsedSec };
           }
         }
@@ -721,6 +788,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
   const elapsed = Math.round((Date.now() - startTime) / 1000);
   log(`TIMEOUT: Mission #${num} exceeded ${Math.round(timeoutMs / 1000)}s — sending Ctrl+C`);
   sendCtrlC();
+  clearMissionLock();
   return { success: false, result: 'timeout', elapsed };
 }
 
