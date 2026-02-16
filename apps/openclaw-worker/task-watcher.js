@@ -90,6 +90,8 @@ process.on('unhandledRejection', (reason) => {
 const { spawnBrain, killBrain, log } = require('./lib/brain-tmux');
 const { startWatching, stopWatching } = require('./lib/task-queue');
 const { startAutoCTO, stopAutoCTO } = require('./lib/auto-cto-pilot');
+const { startScanner, stopScanner } = require('./lib/project-scanner');
+const { startLearningEngine, stopLearningEngine } = require('./lib/learning-engine');
 const { startCooling, stopCooling } = require('./lib/m1-cooling-daemon');
 const { startMonitor: startHealer, stopMonitor: stopHealer } = require('./lib/self-healer');
 
@@ -172,6 +174,10 @@ safeBoot('validateDivisions', validateDivisions);
 // 始計 BINH PHÁP: Auto-CTO RE-ENABLED — "多算勝" (tính nhiều thì thắng)
 // Hậu cần tạo pre-analyzed tasks → CC CLI chỉ execute, không scan
 safeBoot('startAutoCTO', startAutoCTO);
+// AGI Level 4: Self-Planning Scanner
+safeBoot('startScanner', startScanner);
+// AGI Level 5: Self-Learning Engine (Dụng Gián)
+safeBoot('startLearningEngine', startLearningEngine);
 safeBoot('startCooling', startCooling);
 safeBoot('startHealer', startHealer);
 
@@ -190,6 +196,8 @@ function shutdown(sig) {
   clearInterval(keepalive);
   try { stopWatching(); } catch (e) { log(`Shutdown error (stopWatching): ${e.message}`); }
   try { stopAutoCTO(); } catch (e) { log(`Shutdown error (stopAutoCTO): ${e.message}`); }
+  try { stopScanner(); } catch (e) { log(`Shutdown error (stopScanner): ${e.message}`); }
+  try { stopLearningEngine(); } catch (e) { log(`Shutdown error (stopLearningEngine): ${e.message}`); }
   try { stopCooling(); } catch (e) { log(`Shutdown error (stopCooling): ${e.message}`); }
   try { stopHealer(); } catch (e) { log(`Shutdown error (stopHealer): ${e.message}`); }
   // 🔒 DO NOT killBrain() — tmux must survive task-watcher restarts
@@ -202,11 +210,15 @@ function shutdown(sig) {
 process.on('SIGUSR1', () => {
   log('Received SIGUSR1 — in-process restart (clearing stale state)');
   try { stopWatching(); } catch (e) { }
+  try { stopScanner(); } catch (e) { }
+  try { stopLearningEngine(); } catch (e) { }
   try { stopCooling(); } catch (e) { }
   try { stopHealer(); } catch (e) { }
   clearStaleState();
   safeBoot('spawnBrain', spawnBrain);
   safeBoot('startWatching', startWatching);
+  safeBoot('startScanner', startScanner);
+  safeBoot('startLearningEngine', startLearningEngine);
   safeBoot('startCooling', startCooling);
   safeBoot('startHealer', startHealer);
   log('SIGUSR1 restart complete — all modules re-initialized');

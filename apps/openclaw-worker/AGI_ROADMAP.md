@@ -15,18 +15,19 @@ AGI = Autonomous General Intelligence - khả năng **tự nhận task → tự 
 - Mission lock → chống double-dispatch
 - Thermal gate → cooling khi quá nóng
 
-### Level 3: Self-Testing 🔄 (ĐANG LÀM)
-- Sau khi code xong → tự chạy `npm run build`
-- Build RED → tự tạo fix mission
-- Build GREEN → tự commit + push
+### Level 3: Self-Testing ✅ (ĐÃ ĐẠT - FULLY HARDENED)
+- Sau khi code xong → tự chạy `npm run build` (Verified)
+- Build RED → tự tạo fix mission (Verified)
+- Build GREEN → tự commit + push (Fixed missing push logic)
+- Ghi nhận lịch sử mission vào `mission-history.json` (Fixed tmux session mismatch)
 
-### Level 4: Self-Planning ❌ (CẦN LÀM)
-- Scan codebase → tìm improvements 
-- Tự tạo TODO list từ analysis
-- Prioritize tasks theo impact/effort
-- Tự chia task lớn thành nhiều task nhỏ
+### Level 4: Self-Planning ✅ (ĐÃ ĐẠT)
+- Scan codebase → tìm improvements (Health Report)
+- Tự tạo TODO list từ phân tích tự động
+- Prioritize tasks theo impact/effort (via Gemini Analysis)
+- Tự tạo HIGH priority mission files cho project
 
-### Level 5: Self-Learning ❌ (CẦN LÀM)
+### Level 5: Self-Learning ✅ (ĐÃ ĐẠT)
 - Sau mỗi mission → phân tích result
 - Ghi nhận pattern: cái gì work, cái gì fail
 - Cập nhật BINH_PHAP_MASTER.md từ lessons learned

@@ -1,6 +1,6 @@
 # OpenClaw Worker — TOM HUM Autonomous Daemon
 
-**Version:** v2026.2.9
+**Version:** v2026.2.16
 
 > **Chapter 9 Xing Jun** — On the march, seek high ground and reliable water sources
 >
@@ -24,7 +24,7 @@
 | Proxy | Antigravity Proxy v4 (port 11436, Anthropic-compatible) |
 | Model | gemini-3-flash-preview (via proxy) |
 
-## Architecture (v2026.2.9 Dual-Mode, Dual-Engine Brain)
+## Architecture (v2026.2.16 AGI Level 5 Edition)
 
 ```
 apps/openclaw-worker/
@@ -34,13 +34,37 @@ apps/openclaw-worker/
     ├── brain-process-manager.js # Dual-mode, dual-engine brain v2026.2.9
     ├── mission-recovery.js      # Model failover & context overflow recovery
     ├── mission-dispatcher.js    # Prompt building, project routing, runMission()
-    ├── task-queue.js            # File watching (fs.watch + poll), FIFO queue
+    ├── task-queue.js            # FIFO queue, AGI L3 Gate & Journal integration
     ├── auto-cto-pilot.js        # Self-CTO: generates Binh Phap quality tasks
     ├── m1-cooling-daemon.js     # M1 thermal/RAM protection
+    ├── post-mission-gate.js     # AGI Level 3: Self-Testing CI/CD Gate
+    ├── mission-journal.js       # AGI Level 3: Mission history journal
+    ├── project-scanner.js       # AGI Level 4: Self-Planning Scanner (Shi Ji)
+    ├── learning-engine.js       # AGI Level 5: Self-Learning Engine (Yong Jian)
     └── live-mission-viewer.js   # Real-time colored log viewer for VS Code terminal
 ```
 
 ## Key Files & Contracts
+
+### post-mission-gate.js — AGI Level 3 (Jun Xing)
+- Automates `npm run build` verification after mission completion.
+- GREEN build triggers automatic `git commit`.
+- RED build triggers automatic high-priority fix mission creation.
+
+### project-scanner.js — AGI Level 4 (Shi Ji)
+- Autonomous scanning for tech debt (TODO/FIXME), git status, and build issues.
+- Uses LLM to prioritize and auto-generate new missions in `tasks/`.
+- Runs every 30 minutes to maintain project health.
+
+### learning-engine.js — AGI Level 5 (Yong Jian)
+- Analyzes historical mission patterns from `data/mission-history.json`.
+- Identifies failure modes and suggests strategy adjustments.
+- Generates `data/learning-insights.json` to guide future missions.
+
+### mission-journal.js — AGI L3/L5 Foundation
+- Records mission telemetry: duration, success, tokens, build status.
+- Persists history in `data/mission-history.json`.
+- Provides stats aggregation (success rate, avg duration).
 
 ### config.js — Single Source of Truth
 - `MEKONG_DIR` — Root project directory
@@ -141,6 +165,8 @@ node apps/openclaw-worker/lib/live-mission-viewer.js
 ## Quality Gates (Binh Phap)
 
 - All missions must use `/cook` or `/binh-phap` prefix (DIEU 47)
+- **AGI Level 3 Gate:** `post-mission-gate.js` verifies build status after completion.
+- **AGI Level 3 Journal:** `mission-journal.js` logs all mission outcomes for self-learning.
 - Sequential processing only (no parallel missions)
 - M1 cooling daemon kills resource hogs every 90s
 - Auto-CTO generates quality tasks when queue empty for 5min

@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **OpenClaw Worker (Tôm Hùm)**: Upgraded to **AGI Level 5 (Self-Learning Edition)**.
+  - **Level 3 (Post-Mission Gate)**: Automated build verification and Git commit on success.
+  - **Level 3 (Mission Journal)**: Telemetry collection (duration, success rate, token usage).
+  - **Level 4 (Project Scanner)**: Autonomous tech debt scanning and mission auto-generation.
+  - **Level 5 (Learning Engine)**: Pattern analysis of mission history to optimize strategies.
 - **Agents**: Added core autonomous agents (`LeadHunter`, `ContentWriter`, `RecipeCrawler`) for the Genesis Protocol.
 - **CLI**: Added interactive UI (`mekong ui`) for module selection and execution.
 - **Engine Layer**: Implemented Hub-and-Spoke RaaS Architecture.

@@ -27,6 +27,7 @@ const config = {
   TIMEOUT_STRATEGIC: 60 * 60 * 1000,  // 60 phút — ⛰️NÚI (BMAD workflows)
   POLL_INTERVAL_MS: 200, // ⚡ WARP SPEED: 200ms Polling
   COOLING_INTERVAL_MS: 90000,
+  SCANNER_INTERVAL_MS: 30 * 60 * 1000, // 30 mins — Level 4 Scanner
   AUTO_CTO_EMPTY_THRESHOLD: 10, // 10 polls × 0.2s = 2s idle → generate next task
   STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
   API_RATE_GATE_MS: 0, // 🛡️ PROXY_RULES §4: Nuclear Speed — AG Ultra UNLIMITED, zero gap

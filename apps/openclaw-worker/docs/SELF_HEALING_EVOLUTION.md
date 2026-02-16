@@ -60,12 +60,21 @@ Recovery strategies follow a **Graduated Escalation Protocol** to minimize downt
     *   **Proxy Recycle:** `restartProxy()` kills `anthropic-adapter.js` and spawns a new instance on port 11436.
     *   **Model Failover:** If `gemini-flash` fails, `lib/mission-recovery.js` rotates configuration to next provider in `MODEL_FALLBACK_CHAIN`.
 
-### 3.3 Level 3: Nuclear Respawn (Full Reset)
-*   **Action:** Destroy and recreate the brain environment.
-*   **Triggers:** Shell drop, session death, repeated failures.
+### 3.3 Level 3: Self-Testing Gate (CI/CD Safety)
+*   **Action:** Verify project integrity after mission completion.
+*   **Component:** `lib/post-mission-gate.js`
+*   **Triggers:** Mission success signal from CC CLI.
 *   **Mechanisms:**
-    *   **Brain Transplant:** `respawnBrain()` executes `tmux kill-session` -> `spawnBrain()`.
-    *   **WAL Replay:** `task-watcher.js` reads `.wal.json` and re-queues the crashed mission to ensure zero data loss.
+    *   **Build Verification:** Runs `npm run build` in the target project directory.
+    *   **Auto-Commit:** Performs `git commit` only if build is GREEN.
+    *   **Fix-Loop Generation:** If build is RED, automatically creates a `HIGH_priority` fix mission to resolve the regression.
+
+### 3.4 Level 5 Foundation: Mission Journal (Introspective Learning)
+*   **Action:** Record and analyze mission telemetry for future self-optimization.
+*   **Component:** `lib/mission-journal.js`
+*   **Mechanisms:**
+    *   **Telemetry Recording:** Logs duration, result, and token usage to `mission-history.json`.
+    *   **Stats Engine:** Aggregates performance metrics to identify common failure modes.
 
 ---
 
@@ -100,6 +109,8 @@ Resources are managed dynamically to optimize throughput on constrained hardware
 | **Stale Output** | `lib/self-healer.js` | `lib/self-healer.js` (Kickstart) |
 | **Context Overflow**| `lib/mission-recovery.js`| `lib/mission-recovery.js` (Truncate) |
 | **Overheating** | `lib/m1-cooling-daemon.js`| `lib/m1-cooling-daemon.js` (Kill/Wait) |
+| **Regression**   | `lib/post-mission-gate.js` | `lib/post-mission-gate.js` (Fix Mission) |
+| **Experience**   | `lib/mission-journal.js`  | `lib/mission-journal.js` (Telemetry) |
 
 ## 6. Future Evolution
 
