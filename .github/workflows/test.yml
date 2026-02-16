@@ -15,4 +15,6 @@ jobs:
           pip install -r requirements.txt
           pip install pytest pytest-cov
       - name: Run tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: pytest
