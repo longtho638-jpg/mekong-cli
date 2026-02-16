@@ -11,7 +11,11 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
-const { log } = require('./brain-tmux');
+
+// Forbidden import replaced with local logger
+function log(msg) {
+  console.log(`[JOURNAL] ${msg}`);
+}
 
 const HISTORY_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/mission-history.json');
 const DATA_DIR = path.dirname(HISTORY_FILE);
@@ -254,6 +258,24 @@ function getProjectPriority(project) {
     // Boost if recent missions were successful (momentum)
     const recent = projectMissions.slice(-3);
     if (recent.every(m => m.success)) priority += 1;
+
+    // Efficiency Factor (Level 5 Update)
+    // Lower efficiency score is better. Formula: (tokens/1000) * (minutes)
+    const successMissions = projectMissions.filter(m => m.success && typeof m.efficiency === 'number');
+    if (successMissions.length > 0) {
+      const avgEfficiency = successMissions.reduce((sum, m) => sum + m.efficiency, 0) / successMissions.length;
+
+      // Highly efficient (< 5) -> Boost
+      if (avgEfficiency < 5) {
+        priority += 1;
+        log(`JOURNAL: 🚀 Project ${project} is highly efficient (Score: ${avgEfficiency.toFixed(1)}). Priority boost.`);
+      }
+      // Inefficient (> 50) -> Penalize
+      else if (avgEfficiency > 50) {
+        priority -= 1;
+        log(`JOURNAL: 🐢 Project ${project} is inefficient (Score: ${avgEfficiency.toFixed(1)}). Priority penalty.`);
+      }
+    }
 
     // Cap at 1-10
     return Math.max(1, Math.min(10, priority));

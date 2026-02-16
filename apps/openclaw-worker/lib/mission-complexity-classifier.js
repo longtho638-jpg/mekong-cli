@@ -52,13 +52,19 @@ function adjustTimeout(project, baseTimeout) {
     if (projectMissions.length > 0) {
       // Logic: Nếu thường xuyên timeout (thất bại và chạy > 90% timeout) -> +20%
         const timeouts = projectMissions.filter(m => !m.success && m.durationMs > (adjusted * 0.9)).length;
-        if (timeouts >= 3) {
+        if (timeouts > 3) {
           adjusted = Math.floor(adjusted * 1.2);
         }
 
-        // Logic: Nếu luôn chạy nhanh (thành công và < 30% timeout) -> -20%
-        const fastRuns = projectMissions.filter(m => m.success && m.durationMs < (adjusted * 0.3)).length;
-        if (fastRuns >= 5) {
+        // Logic: Nếu luôn chạy nhanh (thành công và < 60% timeout) -> -20%
+        const fastRuns = projectMissions.filter(m => m.success && m.durationMs < (adjusted * 0.6)).length;
+        if (fastRuns > 6) {
+          adjusted = Math.floor(adjusted * 0.8);
+        }
+
+        // Logic: Nếu luôn chạy RẤT nhanh (thành công và < 30% timeout) -> -20%
+        const veryFastRuns = projectMissions.filter(m => m.success && m.durationMs < (adjusted * 0.3)).length;
+        if (veryFastRuns > 5) {
           adjusted = Math.floor(adjusted * 0.8);
         }
       }
