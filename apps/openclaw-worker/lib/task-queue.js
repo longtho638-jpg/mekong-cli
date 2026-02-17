@@ -1,12 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
-const { log } = require('./brain-tmux');
+const { log } = require('./brain-process-manager');
 const { executeTask, detectProjectDir } = require('./mission-dispatcher');
 const { classifyContentTimeout } = require('./mission-complexity-classifier');
 const { pauseIfOverheating, waitForSafeTemperature } = require('./m1-cooling-daemon');
 const { runPostMissionGate } = require('./post-mission-gate');
 const { recordMission, countTokensBetween } = require('./mission-journal');
+const { reflectOnMission } = require('./post-mortem-reflector');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 let isProcessing = false;
@@ -83,6 +84,17 @@ async function processQueue() {
         duration: durationMs,
         buildResult,
         tokensUsed: tokens
+      });
+
+      // === 回光返照 POST-MORTEM (AGI Evolution — Persistent Learning) ===
+      await reflectOnMission({
+        project: projectShortName || 'unknown',
+        missionId,
+        success: !!(result && result.success),
+        duration: durationMs,
+        tokensUsed: tokens,
+        buildResult,
+        content
       });
 
       fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));

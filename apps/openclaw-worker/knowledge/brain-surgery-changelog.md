@@ -168,6 +168,53 @@ log(`Archived after retry: ${taskFile}`);
 
 ---
 
-_Last Updated: 2026-02-17 19:28_
-_Files Changed: 3 (brain-process-manager.js, mission-dispatcher.js, task-queue.js)_
-_Lines Changed: 15 (+8 -7)_
+_Last Updated: 2026-02-17 19:36 (Round 2)_
+_Files Changed Round 1: 3 (brain-process-manager.js, mission-dispatcher.js, task-queue.js)_
+_Files Changed Round 2: 2 (task-queue.js, post-mortem-reflector.js)_
+_Total Lines Changed: +5 -4_
+
+---
+
+## 🔄 ROUND 2 SURGERY (2026-02-17 19:36)
+
+### Additional Cleanup: Remaining brain-tmux Imports
+
+**Discovery:** Round 1 missed 2 files still importing from legacy `brain-tmux.js`
+
+#### YẾU #2b: task-queue.js Stale Import
+
+**BEFORE:**
+```javascript
+// Line 4
+const { log } = require('./brain-tmux');
+```
+
+**AFTER:**
+```javascript
+const { log } = require('./brain-process-manager');
+```
+
+#### YẾU #2c: post-mortem-reflector.js Stale Import
+
+**BEFORE:**
+```javascript
+// Line 17
+const { log } = require('./brain-tmux');
+```
+
+**AFTER:**
+```javascript
+const { log } = require('./brain-process-manager');
+```
+
+**Impact:**
+- ✅ **100% brain-tmux purge** — All lib/ modules now use canonical brain-process-manager
+- ✅ Architecture consistency across entire codebase
+- ✅ Enables safe deprecation of brain-tmux.js in future
+
+**Score:**
+- SEVERITY: 8/10 (would crash when brain-tmux not available)
+- FIXABILITY: 10/10 (2-line change)
+- **Total Impact:** 80 points
+
+
