@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --cyber-cyan: #00f0ff;
+    --cyber-magenta: #ff00aa;
+    --cyber-purple: #8b5cf6;
+    --cyber-green: #00ff88;
+    --cyber-bg: #0a0a0f;
+    --cyber-surface: #12121a;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--cyber-bg);
+    color: #e0e0e0;
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: rgba(0, 240, 255, 0.3);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .cyber-text-gradient {
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta), var(--cyber-purple));
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shimmer 3s ease-in-out infinite;
+  }
+
+  .cyber-border {
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    background: rgba(18, 18, 26, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .cyber-card {
+    @apply cyber-border;
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .cyber-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+    opacity: 0.5;
+  }
+
+  .cyber-card:hover {
+    border-color: rgba(0, 240, 255, 0.3);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 240, 255, 0.1);
+  }
+
+  .cyber-btn-primary {
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
+    color: #0a0a0f;
+    font-weight: 700;
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.875rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cyber-btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg, var(--cyber-cyan), var(--cyber-magenta));
+    border-radius: 14px;
+    z-index: -1;
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 0.3s ease;
+  }
+
+  .cyber-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.3);
+  }
+
+  .cyber-btn-primary:hover::before {
+    opacity: 1;
+  }
+
+  .cyber-btn-outline {
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    color: var(--cyber-cyan);
+    padding: 0.875rem 2rem;
+    border-radius: 12px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+  }
+
+  .cyber-btn-outline:hover {
+    background: rgba(0, 240, 255, 0.1);
+    border-color: var(--cyber-cyan);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+  }
+
+  .cyber-grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .glow-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    animation: glow-pulse 4s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

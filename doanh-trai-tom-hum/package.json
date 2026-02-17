@@ -1,0 +1,22 @@
+{
+    "name": "doanh-trai-tom-hum",
+    "version": "0.1.0",
+    "private": true,
+    "description": "🦞 Lobster Empire — ROI-as-a-Service Platform",
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "clean": "turbo run clean",
+        "db:generate": "turbo run db:generate",
+        "db:push": "turbo run db:push"
+    },
+    "devDependencies": {
+        "turbo": "^2.3.0",
+        "typescript": "^5.3.3"
+    },
+    "packageManager": "pnpm@9.0.0",
+    "engines": {
+        "node": ">=20"
+    }
+}

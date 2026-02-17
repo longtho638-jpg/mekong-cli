@@ -1,0 +1,123 @@
+// ===========================================
+// 🦞 LOBSTER EMPIRE — DATABASE SCHEMA
+// ===========================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---- CORE MODELS ----
+
+model Mission {
+  id        String          @id @default(cuid())
+  title     String
+  status    MissionStatus   @default(TODO)
+  priority  MissionPriority @default(MEDIUM)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([status])
+  @@index([priority])
+  @@map("missions")
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  avatar        String?
+  role          UserRole       @default(USER)
+  walletAddress String?        @unique
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  // Relations
+  subscriptions Subscription[]
+  agentSessions AgentSession[]
+
+  @@map("users")
+}
+
+model Subscription {
+  id        String             @id @default(cuid())
+  userId    String
+  plan      SubscriptionPlan   @default(GENESIS)
+  status    SubscriptionStatus @default(ACTIVE)
+  startDate DateTime           @default(now())
+  endDate   DateTime?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model AgentSession {
+  id        String       @id @default(cuid())
+  userId    String
+  agentId   String
+  agentName String
+  status    AgentStatus  @default(ACTIVE)
+  config    Json?
+  metrics   Json?
+  startedAt DateTime     @default(now())
+  endedAt   DateTime?
+  createdAt DateTime     @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([agentId])
+  @@map("agent_sessions")
+}
+
+// ---- ENUMS ----
+
+enum UserRole {
+  USER
+  COMMANDER
+  EMPEROR
+  ADMIN
+}
+
+enum SubscriptionPlan {
+  GENESIS
+  COMMANDER
+  EMPEROR
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAUSED
+  CANCELLED
+  EXPIRED
+}
+
+enum AgentStatus {
+  ACTIVE
+  STANDBY
+  TERMINATED
+  ERROR
+}
+
+enum MissionStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
+
+enum MissionPriority {
+  LOW
+  MEDIUM
+  HIGH
+}

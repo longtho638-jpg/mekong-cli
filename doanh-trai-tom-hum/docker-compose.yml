@@ -1,0 +1,91 @@
+# ===========================================
+# 🦞 LOBSTER EMPIRE — Docker Compose
+# Full-stack deployment: Frontend + Backend + Database
+# ===========================================
+
+version: "3.9"
+
+services:
+  # ---- PostgreSQL Database ----
+  db:
+    image: postgres:16-alpine
+    container_name: lobster-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lobster
+      POSTGRES_PASSWORD: lobster_secret_2026
+      POSTGRES_DB: lobster_empire
+    ports:
+      - "5432:5432"
+    volumes:
+      - lobster-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U lobster" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lobster-net
+
+  # ---- Backend API (Hono.js) ----
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: lobster-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      PORT: 8000
+      NODE_ENV: production
+      DATABASE_URL: postgresql://lobster:lobster_secret_2026@db:5432/lobster_empire
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lobster-net
+
+  # ---- Frontend (Next.js) ----
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: lobster-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://api:8000
+    depends_on:
+      - api
+    networks:
+      - lobster-net
+
+  # ---- Brain Agent Core (Python FastAPI) ----
+  brain:
+    build:
+      context: ./packages/brain
+      dockerfile: Dockerfile
+    container_name: lobster-brain
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    environment:
+      BRAIN_ENV: production
+      DATABASE_URL: postgresql://lobster:lobster_secret_2026@db:5432/lobster_empire
+      API_URL: http://api:8000
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lobster-net
+
+volumes:
+  lobster-db-data:
+    driver: local
+
+networks:
+  lobster-net:
+    driver: bridge
