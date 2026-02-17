@@ -28,7 +28,7 @@ const priorityColors = {
 };
 
 export function MissionList({ initialMissions }: Props) {
-  const [missions] = useState<Mission[]>(initialMissions);
+  const missions = initialMissions;
 
   if (missions.length === 0) {
     return (

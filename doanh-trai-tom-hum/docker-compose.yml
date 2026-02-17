@@ -3,8 +3,6 @@
 # Full-stack deployment: Frontend + Backend + Database
 # ===========================================
 
-version: "3.9"
-
 services:
   # ---- PostgreSQL Database ----
   db:
@@ -20,7 +18,7 @@ services:
     volumes:
       - lobster-db-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U lobster" ]
+      test: [ "CMD-SHELL", "pg_isready -U lobster -d lobster_empire" ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -30,8 +28,8 @@ services:
   # ---- Backend API (Hono.js) ----
   api:
     build:
-      context: ./apps/api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/api/Dockerfile
     container_name: lobster-api
     restart: unless-stopped
     ports:
@@ -49,15 +47,16 @@ services:
   # ---- Frontend (Next.js) ----
   web:
     build:
-      context: ./apps/web
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: apps/web/Dockerfile
     container_name: lobster-web
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: production
-      NEXT_PUBLIC_API_URL: http://api:8000
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      INTERNAL_API_URL: http://api:8000
     depends_on:
       - api
     networks:

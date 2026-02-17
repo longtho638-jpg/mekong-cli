@@ -18,6 +18,7 @@ help:
 	@echo "║  make build    → Build all packages      ║"
 	@echo "║  make clean    → Clean everything        ║"
 	@echo "║  make logs     → Docker logs             ║"
+	@echo "║  make db-generate → Gen Prisma Client    ║"
 	@echo "║  make db-studio→ Open Prisma Studio      ║"
 	@echo "╚══════════════════════════════════════════╝"
 	@echo ""
@@ -59,6 +60,10 @@ down:
 # Docker logs
 logs:
 	docker compose logs -f
+
+# Generate Prisma Client
+db-generate:
+	cd packages/db && pnpm db:generate
 
 # Open Prisma Studio
 db-studio:

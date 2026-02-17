@@ -14,8 +14,9 @@ type Mission = {
 };
 
 async function getMissions(): Promise<Mission[]> {
+  const apiUrl = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   try {
-    const res = await fetch('http://localhost:8000/api/missions', {
+    const res = await fetch(`${apiUrl}/api/missions`, {
       cache: 'no-store',
     });
     const data = await res.json();
