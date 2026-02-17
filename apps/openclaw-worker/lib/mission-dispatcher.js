@@ -149,7 +149,33 @@ function buildPrompt(taskContent) {
     }
   }
 
+  // 🤖 NEW INTENTS (CI, BOOTSTRAP, TEST) - Added 2026-02-18
+  // Doc: knowledge/claudekit-brain.md
+  const lowerSafe = safe.toLowerCase();
+
+  // 1. CI Intent
+  if (lowerSafe.includes('ci/cd') || lowerSafe.includes('pipeline') || lowerSafe.includes('build fail')) {
+    return `${mandatePrefix}/plan:ci "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+  }
+
+  // 2. BOOTSTRAP Intent
+  if (lowerSafe.includes('new project') || lowerSafe.includes('bootstrap') || lowerSafe.includes('khoi tao')) {
+    return `${mandatePrefix}/bootstrap:auto:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+  }
+
+  // 3. TEST Intent
+  if (lowerSafe.includes('test') || lowerSafe.includes('kiem thu')) {
+    // Pass safe text as arg in case /test supports filtering or context
+    return `${mandatePrefix}/test "${VI_PREFIX}${safe}"`;
+  }
+
   const intent = detectIntent(safe);
+
+  // MULTI_FIX: parallel bug fixing (2+ bug/error keywords detected)
+  if (intent === 'MULTI_FIX') return `${mandatePrefix}/fix "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel --auto`;
+
+  // STRATEGIC: large-scale architecture/redesign → deep parallel planning
+  if (intent === 'STRATEGIC') return `${mandatePrefix}/plan:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
 
   if (isComplexRawMission(safe.toLowerCase())) {
     // If exceptionally hot, don't even use plan:parallel, just cook to avoid bailing
