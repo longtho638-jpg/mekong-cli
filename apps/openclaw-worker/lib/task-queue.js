@@ -10,7 +10,7 @@ const { recordMission, countTokensBetween } = require('./mission-journal');
 const { reflectOnMission } = require('./post-mortem-reflector');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-let isProcessing = false;
+let activeCount = 0;
 let currentTaskFile = null;
 const queue = [];
 const processingSet = new Set(); // 🔒 Track files being processed to prevent re-enqueue
@@ -18,8 +18,9 @@ let pollIntervalRef = null;
 let watcher = null;
 
 async function processQueue() {
-  if (isProcessing || queue.length === 0) return;
-  isProcessing = true;
+  // Allow up to MAX_CONCURRENT_MISSIONS parallel tasks
+  if (activeCount >= config.MAX_CONCURRENT_MISSIONS || queue.length === 0) return;
+  activeCount++;
 
   // NOTE: Thermal gate removed here — brain-tmux.runMission() handles it.
   // Double thermal gate caused CTO to freeze indefinitely.
@@ -92,8 +93,9 @@ async function processQueue() {
   } finally {
     processingSet.delete(taskFile); // 🔒 Remove from processing set
     currentTaskFile = null;
-    isProcessing = false;
-    processQueue();
+    activeCount--;
+    // Trigger next task if queue has more
+    if (queue.length > 0) processQueue();
   }
 }
 
@@ -144,6 +146,6 @@ function stopWatching() {
   }
 }
 
-function isQueueEmpty() { return queue.length === 0 && !isProcessing; }
+function isQueueEmpty() { return queue.length === 0 && activeCount === 0; }
 
 module.exports = { startWatching, stopWatching, isQueueEmpty, enqueue };

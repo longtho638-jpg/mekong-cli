@@ -28,8 +28,9 @@ const fs = require('fs');
 const config = require('../config');
 
 const TMUX_SESSION = 'tom_hum_brain';
-const COMPACT_EVERY_N = 50; // Relaxed: Compact every 50 missions (was 10)
-const CLEAR_EVERY_N = 25;    // Relaxed: Clear every 25 missions (was 5)
+const COMPACT_EVERY_N = 50; // Compact every 50 missions
+// 🧬 FIX #3: REMOVE /clear — CC CLI's /compact handles cleanup better
+// CLEAR_EVERY_N removed — /clear is redundant with /compact
 const MAX_RESPAWNS_PER_HOUR = 5;
 const RESPAWN_COOLDOWN_MS = 5 * 60 * 1000;
 const PROMPT_FILE = '/tmp/tom_hum_prompt.txt';
@@ -42,15 +43,14 @@ const IDLE_CONFIRM_POLLS = 5;     // 5 consecutive idle polls required
 // CC CLI activity indicators (present continuous = actively processing)
 const BUSY_PATTERNS = [
   /Photosynthesizing/i, /Crunching/i, /Saut[eé]ing/i,
-  /Crunching/i, /Saut[eé]ing/i,
   /Marinating/i, /Fermenting/i, /Braising/i,
   /Reducing/i, /Blanching/i, /Thinking/i,
   /Churning/i, /Cooking/i, /Toasting/i,
   /Simmering/i, /Steaming/i, /Grilling/i, /Roasting/i,
-  /Reticulating/i,                      // CC CLI processing status
-  /Vibing/i,                           // ClaudeKit status
+  /Levitating/i,                       // CC CLI status (Finalizing/Summarizing)
+  /Osmosing/i,                         // CC CLI status (Context ingestion)
+  /Computing/i, /Reading/i, /Executing/i, /Indexing/i, // CC CLI v2.9.1 indicators
   /✻\s+\w+ing/,                        // General: ✻ + any gerund verb
-  // FIXED: Detect BOTH Up (Upload) and Down (Download) arrows
   /\d+[ms]\s+\d+[ms]\s*·\s*[↑↓]/,      // Timer + arrow: "4m 27s · ↑"
   /[↑↓]\s*[\d.]+k?\s*tokens/i,         // Counter: "↑ 0 tokens" or "↓ 4.5k tokens"
   /queued messages/i,
@@ -69,15 +69,16 @@ const APPROVE_PATTERNS = [
   /Do you want to run this command\?/,
   /Do you want to proceed\?/,
   /Do you want to execute this code\?/,
-  /Enter your API key/, // Legacy prompt
+  /Enter your API key/,
   /Do you want to use this API key\?/,
   /\(y\/n\)/i, /\[y\/n\]/i, /\[Y\/n\]/i,
   /Approve\?/i, /Confirm\?/i,
+  /Do you want to allow/i,             // Specific TUI permission prompt
   /Use arrow keys to select/i,
   /Select an option/i,
-  /2\.\s+No\s+\(recommended\)/i, // Bypass permissions menu
-  /1\.\s+Yes,\s+I accept/i, // Bypass permissions option 1
-  /By proceeding, you accept all responsibility/i, // Bypass disclaimer
+  /2\.\s+No\s+\(recommended\)/i,
+  /1\.\s+Yes,\s+I accept/i,
+  /By proceeding, you accept all responsibility/i,
 ];
 
 // CC CLI context exhaustion
@@ -127,8 +128,9 @@ function isSessionAlive() {
   } catch (e) { return false; }
 }
 
-function capturePane() {
-  const target = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
+function capturePane(workerIdx) {
+  const idx = workerIdx !== undefined ? workerIdx : currentWorkerIdx;
+  const target = `${TMUX_SESSION}:0.${idx}`;
   return tmuxExec(`tmux capture-pane -t ${target} -p -S -50`);
 }
 
@@ -210,21 +212,26 @@ function detectState(output) {
 
 // --- Text dispatch ---
 
-function pasteText(text) {
-  fs.writeFileSync(PROMPT_FILE, text);
-  tmuxExec(`tmux load-buffer ${PROMPT_FILE}`);
-  const target = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
+function pasteText(text, workerIdx) {
+  const idx = workerIdx !== undefined ? workerIdx : currentWorkerIdx;
+  // Per-worker prompt file to prevent race condition
+  const promptFile = `/tmp/tom_hum_prompt_P${idx}.txt`;
+  fs.writeFileSync(promptFile, text);
+  tmuxExec(`tmux load-buffer ${promptFile}`);
+  const target = `${TMUX_SESSION}:0.${idx}`;
   tmuxExec(`tmux paste-buffer -t ${target}`);
-  try { fs.unlinkSync(PROMPT_FILE); } catch (e) { }
+  try { fs.unlinkSync(promptFile); } catch (e) { }
 }
 
-function sendEnter() {
-  const target = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
+function sendEnter(workerIdx) {
+  const idx = workerIdx !== undefined ? workerIdx : currentWorkerIdx;
+  const target = `${TMUX_SESSION}:0.${idx}`;
   tmuxExec(`tmux send-keys -t ${target} Enter`);
 }
 
-function sendCtrlC() {
-  const target = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
+function sendCtrlC(workerIdx) {
+  const idx = workerIdx !== undefined ? workerIdx : currentWorkerIdx;
+  const target = `${TMUX_SESSION}:0.${idx}`;
   tmuxExec(`tmux send-keys -t ${target} C-c`);
 }
 
@@ -403,21 +410,27 @@ function spawnBrain() {
 }
 
 /**
- * 虛實 (Xu Shi) — 1 chạy 2 nghỉ Strategy
- * Round-robin P1→P2→P3: daemon bay vào pane để chạy
- * task-queue isProcessing mutex = chỉ 1 active tại 1 thời điểm
- * Pane nghỉ = idle ở prompt, visible nhưng không tốn proxy
+ * 虛實 (Xu Shi) — PARALLEL TEAM Strategy
+ * Find first IDLE worker (not locked) instead of round-robin.
+ * Each worker has its own lock file: .mission-active-P{idx}.lock
  */
-function rotateWorker() {
-  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 4;
-  currentWorkerIdx++;
-
-  // Wrap: P1 → P2 → P3 → P1...
+function findIdleWorker() {
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 3;
   const minIdx = config.FULL_CLI_MODE ? 0 : 1;
-  if (currentWorkerIdx >= teamSize) currentWorkerIdx = minIdx;
+  for (let i = minIdx; i < teamSize; i++) {
+    if (!isWorkerBusy(i)) {
+      log(`DISPATCH: → Worker P${i} (idle) — ${teamSize} total`);
+      tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.${i}`);
+      return i;
+    }
+  }
+  return -1; // All busy
+}
 
-  log(`DISPATCH: → Worker P${currentWorkerIdx} (${teamSize} total)`);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.${currentWorkerIdx}`);
+// Legacy: keep rotateWorker as alias for backward compat
+function rotateWorker() {
+  const idx = findIdleWorker();
+  if (idx >= 0) currentWorkerIdx = idx;
   return currentWorkerIdx;
 }
 
@@ -452,18 +465,8 @@ function parseContextUsage(output) {
   return match ? parseInt(match[1]) : -1;
 }
 
-async function manageContext() {
-  if (missionCount > 0 && missionCount % CLEAR_EVERY_N === 0) {
-    log(`CONTEXT: /clear (mission #${missionCount})`);
-    pasteText('/clear');
-    await sleep(1000);
-    sendEnter();
-    await sleep(5000);
-    await waitForPrompt(30000);
-    return true;
-  }
-  return false;
-}
+// 🧬 FIX #3: REMOVE manageContext() — /clear is redundant with /compact
+// Only use /compact every 50 missions for context cleanup
 
 async function compactIfNeeded() {
   if (missionCount > 0 && missionCount % COMPACT_EVERY_N === 0) {
@@ -496,28 +499,45 @@ async function respawnBrain(useContinue = true) {
   return waitForPrompt(120000);
 }
 
-// --- Mission Lock (prevents double-dispatch) ---
-const MISSION_LOCK = require('path').join(__dirname, '..', '.mission-active.lock');
+// --- Per-Worker Mission Lock (enables parallel dispatch) ---
+function workerLockFile(idx) {
+  return require('path').join(__dirname, '..', `.mission-active-P${idx}.lock`);
+}
 
+function isWorkerBusy(idx) {
+  try { return fs.existsSync(workerLockFile(idx)); } catch { return false; }
+}
+
+// Legacy single-lock check: returns true if ANY worker is busy
 function isMissionActive() {
-  try { return fs.existsSync(MISSION_LOCK); } catch { return false; }
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 3;
+  for (let i = 0; i < teamSize; i++) {
+    if (isWorkerBusy(i)) return true;
+  }
+  return false;
 }
 
-function setMissionLock(missionNum) {
-  try { fs.writeFileSync(MISSION_LOCK, `mission_${missionNum}_${Date.now()}`); } catch { }
+function setWorkerLock(idx, missionNum) {
+  try { fs.writeFileSync(workerLockFile(idx), `mission_${missionNum}_P${idx}_${Date.now()}`); } catch { }
 }
 
-function clearMissionLock() {
-  try { fs.unlinkSync(MISSION_LOCK); } catch { }
+function clearWorkerLock(idx) {
+  try { fs.unlinkSync(workerLockFile(idx)); } catch { }
 }
+
+// Legacy aliases for backward compat
+const MISSION_LOCK = require('path').join(__dirname, '..', '.mission-active.lock');
+function setMissionLock(num) { setWorkerLock(currentWorkerIdx, num); }
+function clearMissionLock() { clearWorkerLock(currentWorkerIdx); }
 
 // --- Core: run mission via tmux (state machine) ---
 
 async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
-  // 🔒 Ch.12 火攻: Check lock FIRST — refuse if another mission active
-  if (isMissionActive()) {
-    log(`MISSION BLOCKED: Another mission still active — refusing dispatch`);
-    return { success: false, result: 'mission_locked', elapsed: 0 };
+  // 🔒 PARALLEL: Find idle worker instead of blocking all
+  const workerIdx = findIdleWorker();
+  if (workerIdx === -1) {
+    log(`MISSION BLOCKED: All ${config.AGENT_TEAM_SIZE_DEFAULT} workers busy — refusing dispatch`);
+    return { success: false, result: 'all_workers_busy', elapsed: 0 };
   }
 
   missionCount++;
@@ -525,269 +545,258 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
   const startTime = Date.now();
   const missionStartDate = new Date();
 
-  // Set lock AFTER check passes
-  setMissionLock(num);
+  // Set PER-WORKER lock immediately
+  setWorkerLock(workerIdx, num);
+  currentWorkerIdx = workerIdx; // Set for backward-compat functions
 
   // 🔒 CRITICAL FIX: Wrap entire mission in try-finally to ensure lock cleanup
   try {
     // 作戰 Token Tracker
     const { countTokensBetween, recordMission, getDailyUsage } = require('./token-tracker');
 
-    log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
-    log(`PROJECT: ${projectDir} | MODE: tmux-interactive${modelOverride ? ` | MODEL: ${modelOverride} 🔥` : ''}`);
+    log(`MISSION #${num} → P${workerIdx}: ${prompt.slice(0, 150)}...`);
+    log(`PROJECT: ${projectDir} | MODE: tmux-parallel | WORKER: P${workerIdx}${modelOverride ? ` | MODEL: ${modelOverride} 🔥` : ''}`);
 
     // Thermal gate
     const { waitForSafeTemperature } = require('./m1-cooling-daemon');
     await waitForSafeTemperature();
 
-  // Context management
-  await manageContext();
-  await compactIfNeeded();
+    // 🧬 FIX #3: Only /compact, no /clear
+    await compactIfNeeded();
 
-  // Rotate to next worker pane (Round Robin P1..N)
-  rotateWorker();
-
-  // 虛實 Model Switch: Opus for complex
-  if (modelOverride) {
-    log(`🔥 SWITCHING MODEL → ${modelOverride} (Binh Phap: chỉ dùng khi thật sự cần)`);
-    pasteText(`/model ${modelOverride}`);
-    await sleep(2000);
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Enter`);
-    await sleep(3000); // Wait for model switch
-  }
-
-  // Build full prompt
-  let fullPrompt = prompt;
-  if (projectDir && projectDir !== config.MEKONG_DIR) {
-    fullPrompt = `First cd to ${projectDir} then: ${prompt}`;
-  }
-
-  // CC CLI activity indicators (present continuous = actively processing)
-  const BUSY_PATTERNS = [
-    /Photosynthesizing/i, /Crunching/i, /Saut[eé]ing/i,
-    /Marinating/i, /Fermenting/i, /Braising/i,
-    /Reducing/i, /Blanching/i, /Thinking/i,
-    /Churning/i, /Cooking/i, /Toasting/i,
-    /Simmering/i, /Steaming/i, /Grilling/i, /Roasting/i,
-    /Vibing/i,                           // ClaudeKit status
-    /✻\s+\w+ing/,                        // General: ✻ + any gerund verb
-    /\d+[ms]\s+\d+[ms]\s*·\s*↓/,         // Timer + download: "4m 27s · ↓"
-    /↓\s*[\d.]+k?\s*tokens/i,            // Download counter: "↓ 4.5k tokens"
-    /queued messages/i,
-    /Press up to edit queued/i,
-  ];
-
-
-  // sendEnter / sendCtrlC use the outer (correctly-targeted) definitions
-
-  // SAFETY CHECK: Ensure Claude is actually running before dispatching
-  // If we paste into a raw ZSH shell, we get "Command not found" errors.
-  const checkOutput = capturePane();
-  if (!isBrainAlive() || isShellPrompt(checkOutput)) {
-    log(`CRITICAL: Brain died or dropped to shell! check=${!isBrainAlive()} shell=${isShellPrompt(checkOutput)}`);
-    const respawnSuccess = await respawnBrain(true);
-    if (!respawnSuccess) {
-      return { success: false, result: 'brain_died_fatal', elapsed: 0 };
-    }
-    await sleep(5000);
-  }
-
-  // 🛡️ ANTI-STACKING GUARD: Wait for CC CLI to be TRULY idle before dispatching
-  // Prevents "queued messages" bug where commands pile up
-  // 🔒 Ch.2 作戰: 120s timeout (12×10s) — complex missions need time to finish
-  for (let waitAttempt = 0; waitAttempt < 12; waitAttempt++) {
-    const preDispatch = capturePane();
-    const preState = detectState(preDispatch);
-    if (preState === 'busy') {
-      log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
-      await sleep(10000);
-      continue;
-    }
-    if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
-      break; // Safe to dispatch
-    }
-    if (preState === 'question') {
-      log(`ANTI-STACK: CC CLI has pending question — auto-approving first`);
-      tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${currentWorkerIdx} y Enter`);
-      await sleep(3000);
-      continue;
-    }
-    break;
-  }
-
-  // Final check: if STILL busy after 120s, abort this mission
-  const finalCheck = capturePane();
-  if (isBusy(finalCheck)) {
-    log(`ANTI-STACK: CC CLI still busy after 120s wait — ABORTING mission #${num}`);
-    return { success: false, result: 'busy_blocked', elapsed: 0 };
-  }
-
-  // Dispatch via paste-buffer (reliable for long text + special chars)
-  pasteText(fullPrompt);
-  await sleep(3000);
-  sendEnter();
-  log(`DISPATCHED: Mission #${num} sent to tmux`);
-
-  // ═══════════════════════════════════════════════════════════════
-  // STATE MACHINE: DISPATCHED → BUSY → DONE
-  //
-  // CC CLI TUI always renders ❯ even when busy — hasPrompt() alone
-  // is NOT reliable. We track wasBusy and require either:
-  //   (a) Completion pattern found (Cooked/Sautéed for Xm Ys)
-  //   (b) Was BUSY → 3x consecutive IDLE polls
-  //   (c) Never saw BUSY but elapsed > 45s → 3x consecutive IDLE
-  // ═══════════════════════════════════════════════════════════════
-
-  let wasBusy = false;
-  let idleConfirmCount = 0;
-  const deadline = Date.now() + timeoutMs;
-  let lastLogTime = Date.now();
-  let kickStartCount = 0;
-
-  // Give CC CLI time to parse prompt and begin processing
-  await sleep(5000); // Reduced initial sleep to check for early failures
-
-  while (Date.now() < deadline) {
-    if (!isSessionAlive()) {
-      const elapsed = Math.round((Date.now() - startTime) / 1000);
-      log(`BRAIN DIED: Mission #${num} (${elapsed}s)`);
-      await respawnBrain(true);
-      return { success: false, result: 'brain_died', elapsed };
-    }
-
-    const output = capturePane();
-    const state = detectState(output);
-    const elapsedSec = Math.round((Date.now() - startTime) / 1000);
-
-    // KICK-START: If idle and never busy in first 30s, press Enter again
-    if (state === 'idle' && !wasBusy && elapsedSec < 30 && kickStartCount < 2) {
-      log(`KICK-START: Idle detected early (${elapsedSec}s) — sending Enter again...`);
-      sendEnter();
-      kickStartCount++;
+    // 虛實 Model Switch: Opus for complex
+    if (modelOverride) {
+      log(`🔥 SWITCHING MODEL → ${modelOverride} (Binh Phap: chỉ dùng khi thật sự cần)`);
+      pasteText(`/model ${modelOverride}`);
       await sleep(2000);
-      continue;
+      tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Enter`);
+      await sleep(3000); // Wait for model switch
     }
 
-    // STUCK INTERVENTION (Parallel Cooling): Kill stuck task if Hot & Long
-    if (checkStuckIntervention(elapsedSec, num)) {
-      return { success: false, result: 'killed_stuck', elapsed: elapsedSec };
+    // Build full prompt
+    let fullPrompt = prompt;
+    if (projectDir && projectDir !== config.MEKONG_DIR) {
+      fullPrompt = `First cd to ${projectDir} then: ${prompt}`;
     }
 
-    switch (state) {
-      case 'complete': {
-        // Guard against stale completion from previous mission still in scrollback
-        if (!wasBusy && elapsedSec < MIN_MISSION_SECONDS) {
-          break; // Likely stale — wait for BUSY or more elapsed time
-        }
-        const usage = parseContextUsage(output);
-        log(`COMPLETE: Mission #${num} (${elapsedSec}s) [cooked-pattern]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
-        // 作戰 Token tracking
-        const tk1 = countTokensBetween(missionStartDate, new Date());
-        log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model})`);
-        recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
-        const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
-        return { success: true, result: 'done', elapsed: elapsedSec };
+    // CC CLI state machine loops until DONE or error
+    // (The line "let lastState = 'dispatched';" was removed as it was not used and the comment was incorrect)
+
+    // SAFETY CHECK: Ensure Claude is actually running before dispatching
+    // If we paste into a raw ZSH shell, we get "Command not found" errors.
+    const checkOutput = capturePane(workerIdx);
+    if (!isBrainAlive() || isShellPrompt(checkOutput)) {
+      log(`CRITICAL: Brain died or dropped to shell! check=${!isBrainAlive()} shell=${isShellPrompt(checkOutput)}`);
+      const respawnSuccess = await respawnBrain(true);
+      if (!respawnSuccess) {
+        return { success: false, result: 'brain_died_fatal', elapsed: 0 };
+      }
+      await sleep(5000);
+    }
+
+    // 🛡️ ANTI-STACKING GUARD: Wait for CC CLI to be TRULY idle before dispatching
+    // Prevents "queued messages" bug where commands pile up
+    // 🔒 Ch.2 作戰: 120s timeout (12×10s) — complex missions need time to finish
+    for (let waitAttempt = 0; waitAttempt < 12; waitAttempt++) {
+      const preDispatch = capturePane(workerIdx);
+      const preState = detectState(preDispatch);
+      if (preState === 'busy') {
+        log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
+        await sleep(10000);
+        continue;
+      }
+      if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
+        break; // Safe to dispatch
+      }
+      if (preState === 'question') {
+        log(`ANTI-STACK: CC CLI has pending question — auto-approving first`);
+        tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${workerIdx} y Enter`);
+        await sleep(3000);
+        continue;
+      }
+      break;
+    }
+
+    // Final check: if STILL busy after 120s, abort this mission
+    const finalCheck = capturePane(workerIdx);
+    if (isBusy(finalCheck)) {
+      log(`ANTI-STACK: P${workerIdx} still busy after 120s — ABORTING mission #${num}`);
+      return { success: false, result: 'busy_blocked', elapsed: 0 };
+    }
+
+    // Dispatch via paste-buffer (reliable for long text + special chars)
+    pasteText(fullPrompt, workerIdx);
+    await sleep(3000);
+    sendEnter(workerIdx);
+    log(`DISPATCHED: Mission #${num} sent to P${workerIdx}`);
+
+    // ═══════════════════════════════════════════════════════════════
+    // STATE MACHINE: DISPATCHED → BUSY → DONE
+    //
+    // CC CLI TUI always renders ❯ even when busy — hasPrompt() alone
+    // is NOT reliable. We track wasBusy and require either:
+    //   (a) Completion pattern found (Cooked/Sautéed for Xm Ys)
+    //   (b) Was BUSY → 3x consecutive IDLE polls
+    //   (c) Never saw BUSY but elapsed > 45s → 3x consecutive IDLE
+    // ═══════════════════════════════════════════════════════════════
+
+    let wasBusy = false;
+    let idleConfirmCount = 0;
+    const deadline = Date.now() + timeoutMs;
+    let lastLogTime = Date.now();
+    let kickStartCount = 0;
+
+    // Give CC CLI time to parse prompt and begin processing
+    await sleep(5000); // Reduced initial sleep to check for early failures
+
+    while (Date.now() < deadline) {
+      if (!isSessionAlive()) {
+        const elapsed = Math.round((Date.now() - startTime) / 1000);
+        log(`BRAIN DIED: Mission #${num} (${elapsed}s)`);
+        await respawnBrain(true);
+        return { success: false, result: 'brain_died', elapsed };
       }
 
-      case 'busy':
-        if (!wasBusy) log(`BUSY: Mission #${num} — CC CLI started processing`);
-        wasBusy = true;
-        idleConfirmCount = 0;
-        break;
+      const output = capturePane(workerIdx);
+      const state = detectState(output);
+      const elapsedSec = Math.round((Date.now() - startTime) / 1000);
 
-      case 'question':
-        log(`QUESTION: Mission #${num} — auto-approving`);
-        const targetPane = `${TMUX_SESSION}:0.${currentWorkerIdx}`;
+      // KICK-START: DISABLED — was root cause of x2 dispatch bug!
+      // sendEnter() re-submitted the already-pasted prompt, creating duplicate tasks.
+      // If CC CLI doesn't start processing within 30s, it means the prompt wasn't
+      // received — but re-sending Enter makes it WORSE (submits twice).
+      if (state === 'idle' && !wasBusy && elapsedSec < 30 && kickStartCount < 1) {
+        log(`WAITING: CC CLI idle (${elapsedSec}s) — waiting for processing to start...`);
+        kickStartCount++;
+        await sleep(5000);
+        continue;
+      }
 
-        // SPECIAL CASE: API Key Confirmation (Needs "1" + Enter for "Yes")
-        // Matches the "2. No (recommended)" text which is selected by default
-        if (/2\.\s+No\s+\(recommended\)/i.test(output)) {
-          log(`QUESTION: API Key detected in P${currentWorkerIdx} — selecting '1. Yes'`);
-          // Spam 1 and Enter for a few seconds to ensure TUI registers it
-          for (let i = 0; i < 3; i++) {
-            tmuxExec(`tmux send-keys -t ${targetPane} 1`);
+      // STUCK INTERVENTION (Parallel Cooling): Kill stuck task if Hot & Long
+      if (checkStuckIntervention(elapsedSec, num)) {
+        return { success: false, result: 'killed_stuck', elapsed: elapsedSec };
+      }
+
+      switch (state) {
+        case 'complete': {
+          // Guard against stale completion from previous mission still in scrollback
+          if (!wasBusy && elapsedSec < MIN_MISSION_SECONDS) {
+            break; // Likely stale — wait for BUSY or more elapsed time
+          }
+          const usage = parseContextUsage(output);
+          log(`COMPLETE: Mission #${num} (${elapsedSec}s) [cooked-pattern]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+          // 作戰 Token tracking
+          const tk1 = countTokensBetween(missionStartDate, new Date());
+          log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model})`);
+          recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
+          const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
+          return { success: true, result: 'done', elapsed: elapsedSec };
+        }
+
+        case 'busy':
+          if (!wasBusy) log(`BUSY: Mission #${num} — CC CLI started processing`);
+          wasBusy = true;
+          idleConfirmCount = 0;
+          break;
+
+        case 'question':
+          log(`QUESTION: Mission #${num} — auto-approving`);
+          const targetPane = `${TMUX_SESSION}:0.${workerIdx}`;
+
+          // SPECIAL CASE: API Key Confirmation (Needs "1" + Enter for "Yes")
+          // Matches the "2. No (recommended)" text which is selected by default
+          if (/2\.\s+No\s+\(recommended\)/i.test(output)) {
+            log(`QUESTION: API Key detected in P${workerIdx} — selecting '1. Yes'`);
+            // Spam 1 and Enter for a few seconds to ensure TUI registers it
+            for (let i = 0; i < 3; i++) {
+              tmuxExec(`tmux send-keys -t ${targetPane} 1`);
+              await sleep(500);
+              tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
+              await sleep(500);
+            }
+          }
+          // SPECIAL CASE: Kick-Start waiting for Enter (bypass permissions)
+          // Matches both the disclaimer text and the TUI summary line
+          else if (/By proceeding, you accept all responsibility/i.test(output) ||
+            /Yes, I accept/i.test(output) ||
+            /⏵⏵\s+bypass\s+permissions/i.test(output)) {
+            log(`QUESTION: Bypass Permissions TUI detected — selecting '2. No (recommended)' via Down+Enter`);
+            // The TUI menu for bypass usually has "Yes" at 1 and "No" at 2. 
+            // We want "No (recommended)" to proceed with the mission.
+            tmuxExec(`tmux send-keys -t ${targetPane} Down`);
             await sleep(500);
             tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
-            await sleep(500);
           }
-        }
-        // SPECIAL CASE: Kick-Start waiting for Enter (bypass permissions)
-        else if (/By proceeding, you accept all responsibility/i.test(output) || /Yes, I accept/i.test(output)) {
-          log(`QUESTION: Bypass Permissions prompt — ACCEPTING with '2' + Enter`);
-          tmuxExec(`tmux send-keys -t ${targetPane} 2`);
-          await sleep(500);
-          tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
-        }
-        // SPECIAL CASE: Legacy API Key Prompt
-        else if (/Enter your API key/i.test(output)) {
-          log(`QUESTION: Legacy API Key prompt detected — sending Enter`);
-          tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
-        } else {
-          // Default "Yes" for simple prompts
-          log(`QUESTION: Generic question detected — sending 'y' Enter`);
-          tmuxExec(`tmux send-keys -t ${targetPane} y Enter`);
-        }
-        await sleep(3000);
-        idleConfirmCount = 0;
-        continue; // Re-check immediately
-
-      case 'context_limit':
-        log(`CONTEXT LIMIT: Mission #${num} — sending /clear`);
-        tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
-        await sleep(5000);
-        idleConfirmCount = 0;
-        continue;
-
-      case 'idle':
-        if (wasBusy) {
-          // Was processing, now idle — confirm over multiple polls
-          idleConfirmCount++;
-          if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
-            const usage = parseContextUsage(output);
-            log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
-            const tk2 = countTokensBetween(missionStartDate, new Date());
-            log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model})`);
-            recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
-            const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
-            return { success: true, result: 'done', elapsed: elapsedSec };
+          // SPECIAL CASE: Legacy API Key Prompt
+          else if (/Enter your API key/i.test(output)) {
+            log(`QUESTION: Legacy API Key prompt detected — sending Enter`);
+            tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
+          } else {
+            // SAFE: Do NOT spam 'y' if we don't recognize the prompt.
+            // Just wait for timeout or manual intervention.
+            log(`QUESTION: Unrecognized question detected — WAITING (No auto-approving to avoid 'y' spam)`);
           }
-        } else if (elapsedSec > MIN_MISSION_SECONDS) {
-          // Never saw BUSY — might be very fast or isBusy missed it
-          idleConfirmCount++;
-          if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
-            log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
-            const tk3 = countTokensBetween(missionStartDate, new Date());
-            log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model})`);
-            recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
-            const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
-            return { success: true, result: 'done', elapsed: elapsedSec };
-          }
-        }
-        break;
+          await sleep(3000);
+          idleConfirmCount = 0;
+          continue; // Re-check immediately
 
-      default: // 'unknown' — can't classify, reset idle counter
-        idleConfirmCount = 0;
-        break;
+        case 'context_limit':
+          log(`CONTEXT LIMIT: Mission #${num} — sending /clear`);
+          tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
+          await sleep(5000);
+          idleConfirmCount = 0;
+          continue;
+
+        case 'idle':
+          if (wasBusy) {
+            // Was processing, now idle — confirm over multiple polls
+            idleConfirmCount++;
+            if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
+              const usage = parseContextUsage(output);
+              log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+              const tk2 = countTokensBetween(missionStartDate, new Date());
+              log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model})`);
+              recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
+              const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
+              return { success: true, result: 'done', elapsed: elapsedSec };
+            }
+          } else if (elapsedSec > MIN_MISSION_SECONDS) {
+            // Never saw BUSY — might be very fast or isBusy missed it
+            idleConfirmCount++;
+            if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
+              log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
+              const tk3 = countTokensBetween(missionStartDate, new Date());
+              log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model})`);
+              recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
+              const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
+              return { success: true, result: 'done', elapsed: elapsedSec };
+            }
+          }
+          break;
+
+        default: // 'unknown' — can't classify, reset idle counter
+          idleConfirmCount = 0;
+          break;
+      }
+
+      // Progress logging every 60s
+      if (Date.now() - lastLogTime > 60000) {
+        log(`Mission #${num} [${state}] — ${elapsedSec}s${wasBusy ? ' (was-busy)' : ''}`);
+        lastLogTime = Date.now();
+      }
+
+      // PROJECT FLASH: Ultra Speed Polling (1s)
+      await sleep(1000);
     }
 
-    // Progress logging every 60s
-    if (Date.now() - lastLogTime > 60000) {
-      log(`Mission #${num} [${state}] — ${elapsedSec}s${wasBusy ? ' (was-busy)' : ''}`);
-      lastLogTime = Date.now();
-    }
-
-    // PROJECT FLASH: Ultra Speed Polling (1s)
-    await sleep(1000);
-  }
-
-  // Timeout — send Ctrl+C and report
-  const elapsed = Math.round((Date.now() - startTime) / 1000);
-  log(`TIMEOUT: Mission #${num} exceeded ${Math.round(timeoutMs / 1000)}s — sending Ctrl+C`);
-  sendCtrlC();
-  return { success: false, result: 'timeout', elapsed };
+    // Timeout — send Ctrl+C and report
+    const elapsed = Math.round((Date.now() - startTime) / 1000);
+    log(`TIMEOUT: Mission #${num} on P${workerIdx} exceeded ${Math.round(timeoutMs / 1000)}s — sending Ctrl+C`);
+    sendCtrlC(workerIdx);
+    return { success: false, result: 'timeout', elapsed };
   } finally {
-    // 🔒 GUARANTEED CLEANUP: Always clear lock on exit (success/fail/crash)
-    clearMissionLock();
+    // 🔒 GUARANTEED CLEANUP: Always clear per-worker lock on exit
+    clearWorkerLock(workerIdx);
   }
 }
 

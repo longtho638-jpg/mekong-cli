@@ -107,16 +107,110 @@ function classifyContentTimeout(text) {
  * @param {string} taskId - Task identifier for role lookup
  * @returns {string} Agent Team instruction text
  */
-function buildAgentTeamBlock(taskId) {
+/**
+ * Build Agent Team instruction block for complex missions.
+ * 10x OPTIMIZED: Specific subtask decomposition per role.
+ * Each subagent gets EXPLICIT scope → no overlap, no duplicate work.
+ * 
+ * BINH_PHAP 奇正相生: 1 CC CLI = CHÍNH (main) + KỲ (subagents)
+ * When /cook finishes → ALL subagents complete synchronously → "xong là xong hẳn"
+ * 
+ * @param {string} taskId - Task identifier for role lookup
+ * @param {string} taskDescription - Raw task description for context
+ * @returns {string} Agent Team instruction text
+ */
+function buildAgentTeamBlock(taskId, taskDescription = '') {
   const roles = config.AGENT_TEAM_ROLES[taskId] || config.AGENT_TEAM_ROLES.default;
-  const roleList = roles.map((r, i) => `(${i + 1}) ${r}`).join(', ');
+
+  // 10x: Generate SPECIFIC subtask per role instead of generic "spawn N agents"
+  const roleInstructions = {
+    'code-reviewer': 'SCOPE: Review code quality, naming, DRY violations, complexity. Use /review:codebase.',
+    'tester': 'SCOPE: Write/fix unit tests. Verify coverage. Use /test and /test:ui.',
+    'debugger': 'SCOPE: Find runtime errors and edge cases. Use /debug command.',
+    'fullstack-developer': 'SCOPE: Implement the core feature. Use /cook.',
+    'researcher': 'SCOPE: Research best practices and examples. Use /ask and /search.',
+    'architect': 'SCOPE: Design system architecture and API contracts. Use /plan:hard.',
+    'planner': 'SCOPE: Break task into subtasks. Use /plan:hard or /plan:two.',
+    'security-auditor': 'SCOPE: Check for vulnerabilities. Use /review:codebase.',
+  };
+
+  const subtasks = roles.map((role, i) => {
+    const instruction = roleInstructions[role] || `SCOPE: Handle ${role} responsibilities.`;
+    return `Subagent ${i + 1} (${role}): ${instruction}`;
+  });
+
   return [
-    'AGENT TEAM: Activate Agent Teams.',
-    `Spawn ${roles.length} parallel subagents: ${roleList}.`,
-    'Launch them in parallel.',
-    'Wait for all to complete, then consolidate findings.',
-    'IMPORTANT: DO NOT use XML tags like <invoke>. Use natural language or slash commands only.',
+    'PARALLEL TEAM EXECUTION (風林火山 🔥LỬA):',
+    `Launch ${roles.length} parallel subagents simultaneously.`,
+    ...subtasks,
+    'RULES: (1) Each subagent works independently — NO waiting for others.',
+    '(2) Each subagent commits its own changes.',
+    '(3) Main thread waits for ALL to finish, then consolidates.',
+    '(4) If conflict detected, main thread resolves.',
+    'IMPORTANT: DO NOT use XML tags. Use Task tool or natural language.',
   ].join(' ');
+}
+
+/**
+ * 10x PARALLEL: Build a decomposed prompt that splits a complex task
+ * into multiple sequential /cook calls within 1 CC CLI session.
+ * 
+ * Pattern: /cook "subtask1" → /cook "subtask2" → /cook "subtask3"
+ * CC CLI handles each synchronously — when last /cook finishes, ALL done.
+ * 
+ * @param {string} task - Raw task description 
+ * @param {string} taskId - Task ID for role lookup
+ * @returns {string} Multi-step /cook prompt
+ */
+function buildDecomposedPrompt(task, taskId) {
+  // Auto-detect decomposition patterns
+  const lower = task.toLowerCase();
+
+  // Pattern 1: Task has numbered steps → extract and parallelize
+  const steps = task.match(/\d+\.\s+[^\d]+/g);
+  if (steps && steps.length >= 2) {
+    const cookSteps = steps.map((step, i) => {
+      const clean = step.replace(/^\d+\.\s+/, '').trim();
+      return `Step ${i + 1}: ${clean}`;
+    });
+    return [
+      `MULTI-PHASE EXECUTION (${cookSteps.length} steps):`,
+      ...cookSteps,
+      'Execute ALL steps. Verify each step before moving to next.',
+      'When ALL steps complete → report summary.',
+    ].join(' ');
+  }
+
+  // Pattern 2: Task mentions multiple files/components → split by component
+  const componentPatterns = task.match(/(?:apps?|lib|components?|pages?|api)\/[\w-]+/g);
+  if (componentPatterns && componentPatterns.length >= 2) {
+    const unique = [...new Set(componentPatterns)];
+    return [
+      `COMPONENT-PARALLEL EXECUTION (${unique.length} components):`,
+      ...unique.map((comp, i) => `Component ${i + 1}: Apply changes to ${comp}`),
+      'Work on each component independently. Verify all compile.',
+    ].join(' ');
+  }
+
+  // Pattern 3: Default → use Agent Team block
+  return buildAgentTeamBlock(taskId, task);
+}
+
+/**
+ * Detect MISSION INTENT to map to specialized ClaudeKit commands.
+ * Rule 13: Command Obsession — Always use the most powerful tool.
+ * @param {string} text - Raw mission text
+ * @returns {'BUILD'|'FIX'|'REVIEW'|'RESEARCH'|'PLAN'}
+ */
+function detectIntent(text) {
+  const lower = text.toLowerCase();
+
+  if (lower.includes('research') || lower.includes('tìm hiểu') || lower.includes('khảo sát')) return 'RESEARCH';
+  if (lower.includes('bug') || lower.includes('fix') || lower.includes('lỗi') || lower.includes('sửa')) return 'FIX';
+  if (lower.includes('review') || lower.includes('audit') || lower.includes('kiểm tra')) return 'REVIEW';
+  if (lower.includes('plan') || lower.includes('kế hoạch') || lower.includes('thiết kế')) return 'PLAN';
+
+  return 'BUILD'; // Default intent
 }
 
 /**
@@ -141,10 +235,10 @@ function generateMissionPrompt(task, project, complexity) {
   // Apply adaptive learning adjustment
   const timeout = adjustTimeout(project, baseTimeout);
 
-  // 🔥 LỬA mode — Complex: Agent Teams parallel, max token burn, max output
+  // 🔥 LỬA mode — Complex: 10x parallel decomposition, max token burn
   if (complexity === 'complex') {
-    const teamBlock = buildAgentTeamBlock(task.id);
-    return { prompt: `/cook "${mission} ${teamBlock}" --auto`, timeout, mode: '🔥LỬA' };
+    const decomposed = buildDecomposedPrompt(task.cmd, task.id);
+    return { prompt: `/cook "${mission} ${decomposed}" --auto`, timeout, mode: '🔥LỬA' };
   }
 
   // 🌲 RỪNG mode — Medium: standard /cook with auto, balanced
@@ -169,4 +263,4 @@ function isTeamMission(prompt) {
     lower.includes('teammates');
 }
 
-module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock, classifyContentTimeout, getTimeoutForComplexity, adjustTimeout };
+module.exports = { classifyComplexity, generateMissionPrompt, isTeamMission, buildAgentTeamBlock, buildDecomposedPrompt, classifyContentTimeout, getTimeoutForComplexity, adjustTimeout, detectIntent };

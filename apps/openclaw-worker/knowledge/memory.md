@@ -11,6 +11,22 @@
 
 | Date | Project | Mission | Lesson | Tokens | Efficiency |
 |------|---------|---------|--------|--------|------------|
+| 2026-02-17 | genesis | HIGH_mission_genesis_phase3_fe | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | genesis | CRITICAL_mission_genesis_10x_p | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | test | HIGH_mission_test_single_dispa | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | raas | CRITICAL_mission_raas_producti | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | openclaw | mentor_lesson_001 | 🎓 LESSON: Import cleanup — 5 modules still had brain-tmux (post-mission-gate, mission-journal, auto-cto-pilot, learning-engine, project-scanner) | 0 | N/A |
 | 2026-02-17 | monitor-test | mentor_001 | Clean success in 5min — good pattern | 200 | 40/min |
 | 2026-02-17 | apex-os | build_fail_002 | FAILED — Cannot find module ./missing-dep | 800 | 400/min |
@@ -22,6 +38,7 @@
 
 > Patterns lỗi lặp lại → ghi lại để KHÔNG bao giờ mắc lại.
 
+- **2026-02-17** [openclaw]: **MISSION LOCK LEAK** — `.mission-active.lock` không tự xóa vì `clearMissionLock()` chỉ ở return statements, KHÔNG có finally block. Nếu mission crash giữa chừng → lock persist forever → missions bị BLOCKED indefinitely. **FIX:** Wrap `runMission()` trong try-finally, gọi `clearMissionLock()` trong finally để GUARANTEE cleanup dù success/fail/crash.
 - **2026-02-17** [openclaw]: brain-tmux sprawl — After refactoring to brain-process-manager, 10 modules still imported brain-tmux → systematic purge needed
 - **2026-02-17** [openclaw]: Import audit blind spot — Fixed mission-dispatcher but missed post-mission-gate, journal, cto-pilot, learning-engine, scanner
 - **2026-02-17** [openclaw]: "LLM Analysis failed: fetch failed" → project-scanner.js crashed on require('./brain-tmux').log
@@ -32,7 +49,7 @@
 
 > Patterns thành công → tái sử dụng cho missions tương lai.
 
-
+- **2026-02-17** [openclaw]: AGI Evolution code loaded successfully — BINH_PHAP_VERIFIED (Ch.4 軍形: 先為不可勝)
 - **2026-02-17** [monitor-test]: Efficient mission — 40 tokens/min in 5min
 - **2026-02-17** [test-project]: Efficient mission — 50 tokens/min in 10min
 ---
