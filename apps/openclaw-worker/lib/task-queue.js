@@ -57,6 +57,7 @@ async function processQueue() {
           log(`GATE: AGI Level 3 verify for ${taskFile} in ${retryProjectDir}...`);
         }
       }
+      processingSet.delete(taskFile); // 🔒 Remove BEFORE rename to prevent leak
       fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
       log(`Archived after retry: ${taskFile}`);
     } else {

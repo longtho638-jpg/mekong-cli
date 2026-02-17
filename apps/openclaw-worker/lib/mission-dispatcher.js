@@ -11,7 +11,7 @@
 
 const path = require('path');
 const config = require('../config');
-const { log, runMission } = require('./brain-tmux');
+const { log, runMission } = require('./brain-process-manager');
 const { isTeamMission, buildAgentTeamBlock } = require('./mission-complexity-classifier');
 
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';

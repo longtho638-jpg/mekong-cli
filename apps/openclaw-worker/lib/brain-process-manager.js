@@ -65,13 +65,14 @@ async function runMission(prompt, projectDir, timeoutMs) {
   fs.writeFileSync(config.MISSION_FILE, fullPrompt);
 
   // Wait for mission file to be consumed (confirms handoff)
-  const consumeDeadline = Date.now() + 30000;
+  // Use config-based timeout: 60 poll intervals (default 200ms × 60 = 12s)
+  const consumeDeadline = Date.now() + (config.POLL_INTERVAL_MS * 60);
   while (fs.existsSync(config.MISSION_FILE)) {
     if (Date.now() > consumeDeadline) {
-      log(`WARN: Mission file not consumed within 30s`);
+      log(`WARN: Mission file not consumed within ${Math.round(config.POLL_INTERVAL_MS * 60 / 1000)}s`);
       break;
     }
-    await sleep(500);
+    await sleep(config.POLL_INTERVAL_MS);
   }
   log(`Mission file consumed — polling for done signal`);
 
@@ -79,10 +80,12 @@ async function runMission(prompt, projectDir, timeoutMs) {
   return new Promise((resolve) => {
     let resolved = false;
 
+    // Heartbeat interval = 10% of mission timeout (adaptive logging)
+    const heartbeatInterval = Math.max(60000, Math.floor(timeoutMs * 0.1));
     const heartbeat = setInterval(() => {
       const elapsed = Math.round((Date.now() - startTime) / 1000);
-      log(`Mission #${num} working — ${elapsed}s`);
-    }, 60000);
+      log(`Mission #${num} working — ${elapsed}s / ${Math.round(timeoutMs / 1000)}s`);
+    }, heartbeatInterval);
 
     const cleanup = () => {
       clearInterval(heartbeat);
