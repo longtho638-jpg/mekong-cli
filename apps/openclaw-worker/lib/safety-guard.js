@@ -19,7 +19,7 @@ const config = require('../config');
 
 function log(msg) {
     try {
-        const { log: brainLog } = require('./brain-tmux');
+        const { log: brainLog } = require('./brain-process-manager');
         brainLog(msg);
     } catch (e) {
         const ts = new Date().toISOString().slice(11, 19);

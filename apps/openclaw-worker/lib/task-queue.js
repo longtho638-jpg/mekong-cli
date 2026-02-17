@@ -21,9 +21,8 @@ async function processQueue() {
   if (isProcessing || queue.length === 0) return;
   isProcessing = true;
 
-  // Thermal gate: block until system is cool enough
-  await pauseIfOverheating();
-  await waitForSafeTemperature();
+  // NOTE: Thermal gate removed here — brain-tmux.runMission() handles it.
+  // Double thermal gate caused CTO to freeze indefinitely.
 
   const taskFile = queue.shift();
   currentTaskFile = taskFile;
@@ -44,23 +43,11 @@ async function processQueue() {
 
     // 🔒 If mission was BLOCKED (not executed), wait for active mission to finish
     if (result && (result.result === 'mission_locked' || result.result === 'busy_blocked')) {
-      log(`BLOCKED: ${taskFile} — waiting for active mission to complete (polling every 30s)...`);
-      // 作戰: Wait for lock to clear instead of releasing to queue (Teaching #12+)
-      while (fs.existsSync(path.join(path.dirname(config.WATCH_DIR), '.mission-active.lock'))) {
-        await sleep(30000);
-      }
-      log(`UNBLOCKED: ${taskFile} — lock cleared, re-processing now`);
-      // Re-process: file is still in processingSet, just restart executeTask
-      const retryResult = await executeTask(content, taskFile, timeout, complexity);
-      if (retryResult && retryResult.success) {
-        const retryProjectDir = detectProjectDir(content);
-        if (retryProjectDir) {
-          log(`GATE: AGI Level 3 verify for ${taskFile} in ${retryProjectDir}...`);
-        }
-      }
-      processingSet.delete(taskFile); // 🔒 Remove BEFORE rename to prevent leak
-      fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
-      log(`Archived after retry: ${taskFile}`);
+      // RE-ENQUEUE instead of archive — task was never executed!
+      log(`BLOCKED: ${taskFile} — re-enqueueing (will retry in 30s)`);
+      processingSet.delete(taskFile);
+      await sleep(30000); // Wait 30s before retry
+      queue.push(taskFile); // Put back in queue
     } else {
       let buildResult = { build: false, output: 'not_run' };
       const projectMatch = taskFile.match(/^(?:HIGH_|MEDIUM_|LOW_|CRITICAL_)?mission_([a-z0-9_-]+?)_(?:auto_)?/i);

@@ -22,7 +22,7 @@ const config = require('../config');
 // Import log lazily to avoid circular dependency
 let _log;
 function log(msg) {
-  if (!_log) _log = require('./brain-tmux').log;
+  if (!_log) _log = require('./brain-process-manager').log;
   _log(msg);
 }
 

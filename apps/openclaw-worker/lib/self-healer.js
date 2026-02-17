@@ -23,7 +23,7 @@ const { sendTelegram } = require('./telegram-client');
 let _log;
 function log(msg) {
     if (!_log) {
-        try { _log = require('./brain-tmux').log; } catch (e) { _log = console.log; }
+        try { _log = require('./brain-process-manager').log; } catch (e) { _log = console.log; }
     }
     _log(`[healer] ${msg}`);
 }

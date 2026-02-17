@@ -528,15 +528,17 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
   // Set lock AFTER check passes
   setMissionLock(num);
 
-  // 作戰 Token Tracker
-  const { countTokensBetween, recordMission, getDailyUsage } = require('./token-tracker');
+  // 🔒 CRITICAL FIX: Wrap entire mission in try-finally to ensure lock cleanup
+  try {
+    // 作戰 Token Tracker
+    const { countTokensBetween, recordMission, getDailyUsage } = require('./token-tracker');
 
-  log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
-  log(`PROJECT: ${projectDir} | MODE: tmux-interactive${modelOverride ? ` | MODEL: ${modelOverride} 🔥` : ''}`);
+    log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
+    log(`PROJECT: ${projectDir} | MODE: tmux-interactive${modelOverride ? ` | MODEL: ${modelOverride} 🔥` : ''}`);
 
-  // Thermal gate
-  const { waitForSafeTemperature } = require('./m1-cooling-daemon');
-  await waitForSafeTemperature();
+    // Thermal gate
+    const { waitForSafeTemperature } = require('./m1-cooling-daemon');
+    await waitForSafeTemperature();
 
   // Context management
   await manageContext();
@@ -585,7 +587,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     log(`CRITICAL: Brain died or dropped to shell! check=${!isBrainAlive()} shell=${isShellPrompt(checkOutput)}`);
     const respawnSuccess = await respawnBrain(true);
     if (!respawnSuccess) {
-      clearMissionLock();
       return { success: false, result: 'brain_died_fatal', elapsed: 0 };
     }
     await sleep(5000);
@@ -618,7 +619,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
   const finalCheck = capturePane();
   if (isBusy(finalCheck)) {
     log(`ANTI-STACK: CC CLI still busy after 120s wait — ABORTING mission #${num}`);
-    clearMissionLock();
     return { success: false, result: 'busy_blocked', elapsed: 0 };
   }
 
@@ -652,7 +652,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       const elapsed = Math.round((Date.now() - startTime) / 1000);
       log(`BRAIN DIED: Mission #${num} (${elapsed}s)`);
       await respawnBrain(true);
-      clearMissionLock();
       return { success: false, result: 'brain_died', elapsed };
     }
 
@@ -671,7 +670,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
 
     // STUCK INTERVENTION (Parallel Cooling): Kill stuck task if Hot & Long
     if (checkStuckIntervention(elapsedSec, num)) {
-      clearMissionLock();
       return { success: false, result: 'killed_stuck', elapsed: elapsedSec };
     }
 
@@ -688,7 +686,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
         log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model})`);
         recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
         const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
-        clearMissionLock();
         return { success: true, result: 'done', elapsed: elapsedSec };
       }
 
@@ -752,7 +749,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
             log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model})`);
             recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
             const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
-            clearMissionLock();
             return { success: true, result: 'done', elapsed: elapsedSec };
           }
         } else if (elapsedSec > MIN_MISSION_SECONDS) {
@@ -764,7 +760,6 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
             log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model})`);
             recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
             const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
-            clearMissionLock();
             return { success: true, result: 'done', elapsed: elapsedSec };
           }
         }
@@ -789,8 +784,11 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
   const elapsed = Math.round((Date.now() - startTime) / 1000);
   log(`TIMEOUT: Mission #${num} exceeded ${Math.round(timeoutMs / 1000)}s — sending Ctrl+C`);
   sendCtrlC();
-  clearMissionLock();
   return { success: false, result: 'timeout', elapsed };
+  } finally {
+    // 🔒 GUARANTEED CLEANUP: Always clear lock on exit (success/fail/crash)
+    clearMissionLock();
+  }
 }
 
 // --- SYSTEM MONITORING (User Request: "Giám sát nhiệt độ & API") ---

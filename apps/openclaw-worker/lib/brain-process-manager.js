@@ -27,7 +27,7 @@ function log(msg) {
   const timestamp = new Date().toISOString().slice(11, 19);
   const formatted = `[${timestamp}] [tom-hum] ${msg}\n`;
   process.stderr.write(formatted);
-  try { fs.appendFileSync(config.LOG_FILE, formatted); } catch (e) {}
+  try { fs.appendFileSync(config.LOG_FILE, formatted); } catch (e) { }
 }
 
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
@@ -55,7 +55,7 @@ async function runMission(prompt, projectDir, timeoutMs) {
   log(`PROJECT: ${projectDir} | MODE: external`);
 
   // Clean done file before dispatching
-  try { fs.unlinkSync(config.DONE_FILE); } catch (e) {}
+  try { fs.unlinkSync(config.DONE_FILE); } catch (e) { }
 
   // Write mission file — external brain picks it up
   let fullPrompt = prompt;
@@ -120,13 +120,13 @@ async function runMission(prompt, projectDir, timeoutMs) {
           const signal = fs.readFileSync(config.DONE_FILE, 'utf-8').trim();
           resolved = true;
           cleanup();
-          try { fs.unlinkSync(config.DONE_FILE); } catch (e) {}
+          try { fs.unlinkSync(config.DONE_FILE); } catch (e) { }
           const elapsed = Math.round((Date.now() - startTime) / 1000);
           const success = signal !== 'timeout';
           log(`${success ? 'COMPLETE' : 'TIMEOUT'}: Mission #${num} (${elapsed}s, signal=${signal})`);
           resolve({ success, result: success ? 'done' : 'timeout', elapsed });
         }
-      } catch (e) {}
+      } catch (e) { }
     }, config.POLL_INTERVAL_MS);
   });
 }
@@ -139,4 +139,8 @@ function killBrain() {
   log('BRAIN MODE: external — CC CLI managed externally. No kill.');
 }
 
-module.exports = { spawnBrain, killBrain, isBrainAlive, runMission, log };
+// ⚠️ CRITICAL: runMission is NOT exported here!
+// The ONLY working runMission lives in brain-tmux.js (uses tmux paste+sendEnter)
+// This file's runMission uses file-based IPC which has NO reader — BROKEN.
+// NEVER re-add runMission to these exports. See: knowledge/memory.md GOTCHAS.
+module.exports = { spawnBrain, killBrain, isBrainAlive, log };

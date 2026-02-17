@@ -10,7 +10,7 @@
 
 const config = require('../config');
 
-const { log } = require('./brain-tmux');
+const { log } = require('./brain-process-manager');
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';

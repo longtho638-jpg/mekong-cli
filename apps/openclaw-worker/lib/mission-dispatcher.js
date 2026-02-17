@@ -11,8 +11,12 @@
 
 const path = require('path');
 const config = require('../config');
-const { log, runMission } = require('./brain-process-manager');
+// ⚠️ CRITICAL: runMission MUST come from brain-tmux (tmux paste dispatch)
+// brain-process-manager does NOT export runMission (file-based = BROKEN)
+const { log } = require('./brain-process-manager');
+const { runMission } = require('./brain-tmux');
 const { isTeamMission, buildAgentTeamBlock } = require('./mission-complexity-classifier');
+const { getTopLessons } = require('./post-mortem-reflector');
 
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
 const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
@@ -61,14 +65,18 @@ function buildPrompt(taskContent) {
   // Don't double-wrap if already has /binh-phap or /cook
   if (safe.includes('/binh-phap') || safe.includes('/cook')) return safe;
 
+  // 🧠 Inject persistent memory (top lessons + gotchas) into prompt
+  const memoryCtx = getTopLessons(10);
+  const memoryPrefix = memoryCtx ? `${memoryCtx}\n\n` : '';
+
   // Complex raw missions → Agent Team prompt
   const lower = safe.toLowerCase();
   if (isComplexRawMission(lower)) {
     const teamBlock = buildAgentTeamBlock('default');
-    return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${teamBlock}" --auto`;
+    return `${memoryPrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${teamBlock}" --auto`;
   }
 
-  return `/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --auto`;
+  return `${memoryPrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --auto`;
 }
 
 /**
