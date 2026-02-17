@@ -261,7 +261,7 @@ async function waitForPrompt(timeoutMs = 120000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (hasPrompt(capturePane())) return true;
-    await sleep(3000);
+    await sleep(2000);
   }
   return false;
 }
@@ -495,7 +495,7 @@ async function compactIfNeeded() {
     pasteText('/compact');
     await sleep(1000);
     sendEnter();
-    await sleep(10000);
+    await sleep(2000);
     await waitForPrompt(60000);
   }
 }
@@ -510,11 +510,11 @@ async function respawnBrain(useContinue = true) {
   }
   respawnTimestamps.push(Date.now());
   killBrain();
-  await sleep(5000); // Wait for cleanup
+  await sleep(2000); // Wait for cleanup
 
   // REUSE spawnBrain() logic to ensure P0=Monitor, P1..=Workers layout
   spawnBrain();
-  await sleep(8000); // Wait for CC CLI to fully boot before accepting missions
+  await sleep(2000); // Wait for CC CLI to fully boot before accepting missions
 
   log(`RESPAWN: Session rebuilt via spawnBrain()`);
   return waitForPrompt(120000);
@@ -623,7 +623,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       if (!respawnSuccess) {
         return { success: false, result: 'brain_died_fatal', elapsed: 0 };
       }
-      await sleep(5000);
+      await sleep(2000);
     }
 
     // 🛡️ ANTI-STACKING GUARD: Wait for CC CLI to be TRULY idle before dispatching
@@ -634,7 +634,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       const preState = detectState(preDispatch);
       if (preState === 'busy') {
         log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
-        await sleep(10000);
+        await sleep(2000);
         continue;
       }
       if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
@@ -643,7 +643,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       if (preState === 'question') {
         log(`ANTI-STACK: CC CLI has pending question — auto-approving first`);
         tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${workerIdx} y Enter`);
-        await sleep(3000);
+        await sleep(1000);
         continue;
       }
       break;
@@ -668,7 +668,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
 
     // Dispatch via paste-buffer (reliable for long text + special chars)
     pasteText(fullPrompt, workerIdx);
-    await sleep(3000);
+    await sleep(2000);
     sendEnter(workerIdx);
     log(`DISPATCHED: Mission #${num} sent to P${workerIdx}`);
 
@@ -710,7 +710,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       if (state === 'idle' && !wasBusy && elapsedSec < 30 && kickStartCount < 1) {
         log(`WAITING: CC CLI idle (${elapsedSec}s) — waiting for processing to start...`);
         kickStartCount++;
-        await sleep(5000);
+        await sleep(2000);
         continue;
       }
 
@@ -797,7 +797,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
         case 'context_limit':
           log(`CONTEXT LIMIT: Mission #${num} — sending /clear`);
           tmuxExec(`tmux send-keys -t ${TMUX_SESSION} '/clear' Enter`);
-          await sleep(5000);
+          await sleep(2000);
           idleConfirmCount = 0;
           continue;
 

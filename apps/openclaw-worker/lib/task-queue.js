@@ -114,7 +114,8 @@ async function processQueue() {
 function enqueue(filename) {
   if (filename && config.TASK_PATTERN.test(filename)) {
     const filePath = path.join(config.WATCH_DIR, filename);
-    if (fs.existsSync(filePath) && !queue.includes(filename) && filename !== currentTaskFile && !processingSet.has(filename)) {
+    const processedPath = path.join(config.PROCESSED_DIR, filename);
+    if (fs.existsSync(filePath) && !queue.includes(filename) && filename !== currentTaskFile && !processingSet.has(filename) && !fs.existsSync(processedPath)) {
       log(`DETECTED: ${filename}`);
       queue.push(filename);
       processQueue();
