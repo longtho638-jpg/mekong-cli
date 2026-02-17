@@ -27,9 +27,9 @@ function log(msg) {
 }
 
 const THERMAL_LOG = config.THERMAL_LOG || '/Users/macbookprom1/tom_hum_thermal.log';
-const OVERHEAT_LOAD = 18;    // Tightened for thermal safety
-const OVERHEAT_RAM_MB = 150;  // Higher reserve
-const SAFE_LOAD = 10;        // Safe resume level (v4: slightly more forgiving)
+const OVERHEAT_LOAD = 30;    // 🔒 Chairman Fix: M1 load 12 is NORMAL, stop false pauses
+const OVERHEAT_RAM_MB = 100;  // Lower threshold — 16GB Mac can handle it
+const SAFE_LOAD = 20;        // Resume at 20 — was blocking at 10 causing STALL loops
 const SAFE_RAM_MB = 300;     // Safe resume level
 const CRITICAL_LOAD = 40;    // Nuclear intervention
 const PROPORTIONAL_DELAY_MS = 2000; // 2s per load point (v4: faster feedback)
@@ -43,7 +43,7 @@ let thermalLogRef = null;
 let overheating = false;
 let lastLoad = 0;
 let lastLoadTime = Date.now();
-const VELOCITY_THRESHOLD = 1.0; // 1.0 load increase per 30s is dangerous
+const VELOCITY_THRESHOLD = 5.0; // 🔒 Chairman Fix: 1.0 was too sensitive, velocity 3.6 is normal
 
 // --- System metrics ---
 

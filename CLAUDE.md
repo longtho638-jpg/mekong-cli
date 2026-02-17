@@ -96,7 +96,7 @@ PRIORITY (highest wins):
 │           Claude Code CLI · Execution Engine                     │
 │         claude --model claude-opus-4-6-thinking                  │
 │    Executes /cook, /plan, /fix · Stays alive via expect brain    │
-│    Uses Antigravity Proxy (port 11436) for LLM calls             │
+│    Uses Antigravity Proxy (port 9191) for LLM calls              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -131,7 +131,7 @@ PRIORITY (highest wins):
 | CLI Engine | Python 3.11+ · Typer · Rich · Pydantic |
 | Orchestration | Node.js (OpenClaw) · Expect (brain control) |
 | Gateway | FastAPI (local) · Cloudflare Workers (cloud) |
-| Proxy | Antigravity Proxy (port 11436, Anthropic-compatible) |
+| Proxy | Antigravity Proxy (port **9191**, Anthropic-compatible) |
 | Model | gemini-3-flash-preview (via proxy) |
 
 ### Architecture
@@ -207,18 +207,19 @@ mekong version                # Show version (v0.2.0)
 All LLM calls route through Antigravity Proxy — never direct API.
 
 ```
-CC CLI ──→ http://127.0.0.1:11436 ──→ Proxy v4 ──→ Ollama/OpenRouter/Google
+CC CLI ──→ http://localhost:9191 ──→ Antigravity Proxy ──→ Google Cloud/Anthropic
                                        │
                                        ├── Load balancing across accounts
                                        ├── Automatic model fallback
-                                       └── Quota management
+                                       ├── Date-suffix model alias resolution
+                                       └── Quota management + rate limit rotation
 ```
 
 | Config | Value |
 |--------|-------|
-| `ANTHROPIC_BASE_URL` | `http://127.0.0.1:11436` |
-| `PROXY_PORT` | 11436 |
-| `MODEL_NAME` | `gemini-3-flash-preview` |
+| `ANTHROPIC_BASE_URL` | `http://localhost:9191` |
+| `PROXY_PORT` | **9191** (🔒 CẤM THAY ĐỔI — xem ĐIỀU 56) |
+| `MODEL_NAME` | `gemini-3-pro-high` |
 
 ### Error Recovery Protocol (ĐIỀU 52)
 
@@ -741,10 +742,41 @@ git push origin main
 | 53 | M1 Resource Management | 第二篇 |
 | 54 | Tôm Hùm Tự Trị (Autonomous Dispatch) | 第九篇 |
 | 55 | Ngôn Ngữ — Tiếng Việt Bắt Buộc | Hiến Pháp |
+| **56** | **Antigravity Proxy Port 9191 — CẤM QUÊN** | **第二篇** |
 
 *ĐIỀU 1-46: Inherited from global `~/.claude/CLAUDE.md` rules (CC CLI supervision, i18n sync, production verification, skill activation, browser discipline, etc.)*
 
 ---
 
-_Genesis: 2026-02-06 | Hiến Pháp v2.1: 2026-02-11_
+---
+
+## ĐIỀU 56 — ANTIGRAVITY PROXY PORT 9191 (🔒 KHÓA CỨNG)
+
+> **CẤM QUÊN. CẤM THAY ĐỔI PORT. MỌI AGENT PHẢI ĐỌC.**
+
+```
+🔒 PROXY PORT = 9191 — LOCKED PERMANENTLY
+🔒 ANTHROPIC_BASE_URL = http://localhost:9191
+🔒 STARTUP: PORT=9191 antigravity-claude-proxy
+🔒 settings.json: "ANTHROPIC_BASE_URL": "http://localhost:9191"
+🔒 .zshrc: export ANTHROPIC_BASE_URL=http://localhost:9191
+```
+
+### Lý do khóa cứng (2026-02-17):
+- Port 8080 = default proxy nhưng bị conflict với nhiều service
+- Port 9191 = production port, đã verified stable
+- CC CLI settings.json PHẢI match port proxy
+- Nếu restart proxy PHẢI dùng `PORT=9191`
+- 5 lần ConnectionRefused debug mất 2 tiếng vì port sai
+
+### Troubleshooting ConnectionRefused:
+1. Check proxy alive: `curl http://localhost:9191/health`
+2. Check settings.json: `grep ANTHROPIC_BASE_URL ~/.claude/settings.json`
+3. Check .zshrc: `grep ANTHROPIC_BASE_URL ~/.zshrc`
+4. Restart proxy: `PORT=9191 nohup antigravity-claude-proxy &`
+5. Restart CC CLI AFTER proxy is alive
+
+---
+
+_Genesis: 2026-02-06 | Hiến Pháp v2.2: 2026-02-17_
 _ClaudeKit DNA v2.9.1+ | Agent Teams + BMAD + Binh Pháp + Tôm Hùm v29.0_

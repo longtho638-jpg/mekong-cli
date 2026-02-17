@@ -185,6 +185,46 @@ respect_order:
   - Chủ Soái can override ALL rules via direct command
 ```
 
+
 ---
 
-_Quân Luật Tôm Hùm v1.0.0 | Doanh Trại OpenClaw | 2026-02-11_
+## ĐIỀU 10: CLAUDEKIT BẮT BUỘC — CẤM QUÊN (Chairman Decree 2026-02-17)
+
+> **🔒 IRON RULE — KHÔNG AGENT NÀO ĐƯỢC QUÊN, KỂ CẢ CTO**
+
+```yaml
+claudekit_mandate:
+  # MỌI task PHẢI dùng ClaudeKit command — CẤM gửi raw text
+  commands:
+    simple:    '/cook "task" --auto'
+    medium:    '/cook "task" --auto'
+    complex:   '/plan:hard "task"'
+    strategic: '/plan:parallel "task"' hoặc '/binh-phap implement: task'
+    debug:     '/debug "issue"'
+    review:    '/review "target"'
+
+  multi_threading:
+    # ĐA LUỒNG BẮT BUỘC khi load < 12
+    enabled: true
+    min_subagents: 3      # Tối thiểu 3 subagents
+    max_subagents: 10+    # Commander Rule 13: ÁM ẢNH efficiency
+    mode: 'parallel'       # Chạy đồng thời, KHÔNG tuần tự
+
+  deep_thinking:
+    # DEEP 10x REASONING BẮT BUỘC
+    enabled: true
+    model_preference: 'claude-sonnet-4-5'  # Qua AG Proxy dual-Ultra
+    thinking_budget: 'extended'
+    chain_of_thought: true
+
+vi_pham:
+  # Agent gửi raw text không có ClaudeKit command = PHẢN QUÂN
+  action: 'BLOCK dispatch + warning log + auto-retry với đúng command'
+```
+
+**Không ngoại lệ. Không override. Chairman đã lệnh.**
+
+---
+
+_Quân Luật Tôm Hùm v1.1.0 | Doanh Trại OpenClaw | 2026-02-17_
+_Updated: +ĐIỀU 10 ClaudeKit Bắt Buộc (Chairman Decree)_

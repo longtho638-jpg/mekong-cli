@@ -59,5 +59,19 @@ module.exports = {
       watch: false,
       restart_delay: 5000,
     },
+    {
+      // 🔒 ĐIỀU 56: PORT 9191 — KHÓA CỨNG, CẤM THAY ĐỔI
+      name: 'antigravity-proxy',
+      script: 'antigravity-claude-proxy',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '300M',
+      env: {
+        PORT: 9191,
+        FALLBACK: 'true',
+        NODE_ENV: 'production',
+      },
+    },
   ],
 };

@@ -25,16 +25,17 @@ const config = {
   TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 phút — 🌲RỪNG
   TIMEOUT_COMPLEX: 45 * 60 * 1000,    // 45 phút — 🔥LỬA
   TIMEOUT_STRATEGIC: 60 * 60 * 1000,  // 60 phút — ⛰️NÚI (BMAD workflows)
-  POLL_INTERVAL_MS: 200, // ⚡ WARP SPEED: 200ms Polling
+  POLL_INTERVAL_MS: 100, // ⚡ WARP SPEED: 100ms Polling (FIX #1: CTO phản xạ)
   COOLING_INTERVAL_MS: 90000,
   SCANNER_INTERVAL_MS: 30 * 60 * 1000, // 30 mins — Level 4 Scanner
   AUTO_CTO_EMPTY_THRESHOLD: 10, // 10 polls × 0.2s = 2s idle → generate next task
   STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
   API_RATE_GATE_MS: 0, // 🛡️ PROXY_RULES §4: Nuclear Speed — AG Ultra UNLIMITED, zero gap
   // 🔒 LOCKED — DO NOT CHANGE (2026-02-15) — Port must match running anthropic-adapter.js
+  // 🦞 LOBSTER PILOT v1.0: Route through ADAPTER (11436) for dual-Ultra rotation (9191+9192)
   PROXY_PORT: process.env.PROXY_PORT ? parseInt(process.env.PROXY_PORT) : 11436,
-  // Anthropic Adapter (translates /v1/messages → /v1/chat/completions for Ollama)
-  // 🔒 LOCKED — must be same as PROXY_PORT
+  // Anthropic Adapter (translates /v1/messages → dual AG Proxy rotation)
+  // 🦞 LOBSTER: Cân bằng tải 2 acc Ultra qua adapter
   CLOUD_BRAIN_URL: process.env.CLOUD_BRAIN_URL || 'http://127.0.0.1:11436',
   QWEN_PROXY_PORT: 8081, // Qwen/VLLM dedicated port
   MODEL_NAME: process.env.MODEL_NAME || 'claude-sonnet-4-5-20250514', // Sonnet 4.5 via Antigravity Proxy
@@ -68,8 +69,8 @@ const config = {
 
   // Agent Team orchestration
   // Agent Team orchestration
-  AGENT_TEAM_SIZE_DEFAULT: 1, // 🦞 1-Tab: P0 = CC CLI only
-  MAX_CONCURRENT_MISSIONS: 1, // 🐉 1 Worker = 1 mission at a time
+  AGENT_TEAM_SIZE_DEFAULT: 1, // 🦞 1-Tab: CC CLI handles parallelism internally via /plan:parallel subagents
+  MAX_CONCURRENT_MISSIONS: 1, // 🐉 1 Worker + internal subagents = lighter thermal load than 3 tabs
   AGENT_TEAM_TIMEOUT_MS: 4 * 60 * 60 * 1000, // 4 hours for deep missions
 
   // Complexity classification keywords

@@ -94,6 +94,7 @@ const { startScanner, stopScanner } = require('./lib/project-scanner');
 const { startLearningEngine, stopLearningEngine } = require('./lib/learning-engine');
 const { startCooling, stopCooling } = require('./lib/m1-cooling-daemon');
 const { startMonitor: startHealer, stopMonitor: stopHealer } = require('./lib/self-healer');
+const { startLobsterPilot, stopLobsterPilot } = require('./lib/lobster-proxy-pilot');
 
 // --- v2026.2.13: Write-ahead queue for crash recovery (#15636) ---
 const WAL_FILE = path.join(config.WATCH_DIR, '.wal.json');
@@ -161,10 +162,11 @@ try {
 clearStaleState();
 
 // --- Boot ---
-log('--- MISSION CONTROL v2026.2.13 ONLINE (Tmux Interactive) ---');
+log('--- MISSION CONTROL v2026.2.17 ONLINE (FIX: CTO phản xạ) ---');
 
-safeBoot('spawnBrain', spawnBrain);
+// FIX #2: Task queue PHẢI ưu tiên số 1 — scan TRƯỚC spawn brain
 safeBoot('startWatching', startWatching);
+safeBoot('spawnBrain', spawnBrain);
 // 防 PROXY_RULES: Validate config alignment BEFORE dispatching any mission
 const { validateProxyRules } = require('./lib/proxy-rules-validator');
 safeBoot('validateProxyRules', validateProxyRules);
@@ -180,8 +182,10 @@ safeBoot('startScanner', startScanner);
 safeBoot('startLearningEngine', startLearningEngine);
 safeBoot('startCooling', startCooling);
 safeBoot('startHealer', startHealer);
+// 🦞 Lobster Proxy Pilot (Guardian of Quota)
+safeBoot('startLobsterPilot', startLobsterPilot);
 
-log('始計 + 防 + 🏯: Brain + Task Queue + Auto-CTO + M1 Cooling + Self-Healer + Registry ACTIVE');
+log('始計 + 防 + 🏯: Task Queue PRIORITY #1 → Brain + Auto-CTO + Scanner + Cooling + Healer + Registry ACTIVE');
 
 // --- Keepalive: prevent Node from exiting when event loop is idle ---
 const keepalive = setInterval(() => { }, 60000);
@@ -200,6 +204,7 @@ function shutdown(sig) {
   try { stopLearningEngine(); } catch (e) { log(`Shutdown error (stopLearningEngine): ${e.message}`); }
   try { stopCooling(); } catch (e) { log(`Shutdown error (stopCooling): ${e.message}`); }
   try { stopHealer(); } catch (e) { log(`Shutdown error (stopHealer): ${e.message}`); }
+  try { stopLobsterPilot(); } catch (e) { log(`Shutdown error (stopLobsterPilot): ${e.message}`); }
   // 🔒 DO NOT killBrain() — tmux must survive task-watcher restarts
   // CC CLI context is precious — killing it loses mission progress
   log('All modules stopped (brain preserved). Goodbye.');
@@ -214,6 +219,7 @@ process.on('SIGUSR1', () => {
   try { stopLearningEngine(); } catch (e) { }
   try { stopCooling(); } catch (e) { }
   try { stopHealer(); } catch (e) { }
+  try { stopLobsterPilot(); } catch (e) { }
   clearStaleState();
   safeBoot('spawnBrain', spawnBrain);
   safeBoot('startWatching', startWatching);
@@ -221,6 +227,7 @@ process.on('SIGUSR1', () => {
   safeBoot('startLearningEngine', startLearningEngine);
   safeBoot('startCooling', startCooling);
   safeBoot('startHealer', startHealer);
+  safeBoot('startLobsterPilot', startLobsterPilot);
   log('SIGUSR1 restart complete — all modules re-initialized');
 });
 

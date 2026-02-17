@@ -11,6 +11,12 @@
 
 | Date | Project | Mission | Lesson | Tokens | Efficiency |
 |------|---------|---------|--------|--------|------------|
+| 2026-02-17 | genesis | HIGH_mission_genesis_raas_2026 | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | genesis | HIGH_mission_genesis_raas_full | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung1 | HIGH_mission_mung1_genesis_pha | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | genesis | HIGH_mission_genesis_phase3_fe | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | genesis | HIGH_mission_genesis_full_raas | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | mung1 | HIGH_mission_mung1_genesis_pha | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | genesis | HIGH_mission_genesis_phase3_fe | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | mung | HIGH_mission_mung_1_tet_genesi | FAILED — not_run | 0 | 0/min |
