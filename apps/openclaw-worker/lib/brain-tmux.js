@@ -79,6 +79,13 @@ const APPROVE_PATTERNS = [
   /2\.\s+No\s+\(recommended\)/i,
   /1\.\s+Yes,\s+I accept/i,
   /By proceeding, you accept all responsibility/i,
+  // 🧬 FIX Bug #2: ADD decision-request patterns
+  /muốn.*làm gì/i,                     // "Bạn muốn tôi làm gì tiếp theo?"
+  /USER DECISION/i,                    // "USER DECISION REQUIRED"
+  /Khuyến nghị.*chọn/i,                // "Khuyến nghị: Chọn Option A"
+  /Options?:/i,                        // "Options: A) ... B) ..."
+  /What would you like/i,              // "What would you like me to do?"
+  /Which option/i,                     // "Which option do you prefer?"
 ];
 
 // CC CLI context exhaustion
@@ -91,6 +98,10 @@ const CONTEXT_LIMIT_PATTERNS = [
 
 let missionCount = 0;
 let respawnTimestamps = [];
+// 🧬 FIX Bug #1: DUPLICATE DISPATCH PREVENTION
+// Track recent mission hashes (prompt content) to prevent duplicate dispatch
+const recentMissionHashes = new Set();
+const DEDUP_WINDOW_SIZE = 20; // Track last 20 missions
 
 // --- Logging ---
 
@@ -102,6 +113,13 @@ function log(msg) {
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// 🧬 FIX Bug #1: Simple hash function for mission deduplication
+function hashPrompt(prompt) {
+  // Use first 100 chars + length as fingerprint (fast, good enough)
+  const sample = prompt.slice(0, 100).toLowerCase().replace(/\s+/g, '');
+  return `${sample}_${prompt.length}`;
+}
 
 /** Strip ANSI escape codes + control characters from captured tmux text */
 function stripAnsi(text) {
@@ -169,8 +187,8 @@ function hasPrompt(output) {
 }
 
 function hasApproveQuestion(output) {
-  // 🔒 ONLY check LAST 3 LINES to avoid matching CC CLI response text in scrollback
-  const tail = getCleanTail(output, 3).join('\n');
+  // 🧬 FIX Bug #6: EXTEND to 15 lines — questions can appear mid-scrollback
+  const tail = getCleanTail(output, 15).join('\n');
   return APPROVE_PATTERNS.some(p => p.test(tail));
 }
 
@@ -533,6 +551,21 @@ function clearMissionLock() { clearWorkerLock(currentWorkerIdx); }
 // --- Core: run mission via tmux (state machine) ---
 
 async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
+  // 🧬 FIX Bug #1: DUPLICATE DISPATCH DETECTION
+  const promptHash = hashPrompt(prompt);
+  if (recentMissionHashes.has(promptHash)) {
+    log(`DUPLICATE MISSION REJECTED: Hash ${promptHash.slice(0, 20)}... already dispatched recently`);
+    return { success: false, result: 'duplicate_rejected', elapsed: 0 };
+  }
+
+  // Track this mission hash
+  recentMissionHashes.add(promptHash);
+  // Maintain sliding window (keep last N)
+  if (recentMissionHashes.size > DEDUP_WINDOW_SIZE) {
+    const firstHash = Array.from(recentMissionHashes)[0];
+    recentMissionHashes.delete(firstHash);
+  }
+
   // 🔒 PARALLEL: Find idle worker instead of blocking all
   const workerIdx = findIdleWorker();
   if (workerIdx === -1) {
@@ -564,14 +597,10 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     // 🧬 FIX #3: Only /compact, no /clear
     await compactIfNeeded();
 
-    // 虛實 Model Switch: Opus for complex
-    if (modelOverride) {
-      log(`🔥 SWITCHING MODEL → ${modelOverride} (Binh Phap: chỉ dùng khi thật sự cần)`);
-      pasteText(`/model ${modelOverride}`);
-      await sleep(2000);
-      tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Enter`);
-      await sleep(3000); // Wait for model switch
-    }
+    // 🔒 Chairman Fix: MODEL OVERRIDE DISABLED — AG Proxy routes all models automatically
+    // Bug #3: /model claude-opus → proxy returns "invalid model" → garbles dispatch
+    // Proxy đã tự route: mọi model → gemini-3-pro-high
+    // if (modelOverride) { ... } — REMOVED
 
     // Build full prompt
     let fullPrompt = prompt;
@@ -623,6 +652,16 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       log(`ANTI-STACK: P${workerIdx} still busy after 120s — ABORTING mission #${num}`);
       return { success: false, result: 'busy_blocked', elapsed: 0 };
     }
+
+    // 🔒 Chairman Fix: CLEAR INPUT LINE before dispatch
+    // Bug: CC CLI may have stale text ("commit and push this") in input
+    // → paste-buffer appends to it → garbled prompt → mission fails
+    // 陣法 (Dàn Trận): Clear battlefield before deploying troops
+    const targetPane = `${TMUX_SESSION}:0.${workerIdx}`;
+    tmuxExec(`tmux send-keys -t ${targetPane} Escape`);
+    await sleep(200);
+    tmuxExec(`tmux send-keys -t ${targetPane} C-u`);
+    await sleep(300);
 
     // Dispatch via paste-buffer (reliable for long text + special chars)
     pasteText(fullPrompt, workerIdx);
@@ -732,11 +771,23 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
             log(`QUESTION: Legacy API Key prompt detected — sending Enter`);
             tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
           } else {
-            // SAFE: Do NOT spam 'y' if we don't recognize the prompt.
-            // Just wait for timeout or manual intervention.
-            log(`QUESTION: Unrecognized question detected — WAITING (No auto-approving to avoid 'y' spam)`);
+            // 🧬 FIX Bug #2: AUTO-SELECT RECOMMENDED instead of WAIT
+            // If question contains "(Recommended)" or "Option A" → auto-select it
+            // Otherwise send Enter (default choice)
+            if (/\(Recommended\)/i.test(output)) {
+              log(`QUESTION: Auto-selecting (Recommended) option via Enter`);
+              tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
+            } else if (/Option A/i.test(output)) {
+              log(`QUESTION: Auto-selecting Option A (recommended pattern)`);
+              tmuxExec(`tmux send-keys -t ${targetPane} a Enter`);
+            } else {
+              // Generic decision: send Enter (usually default = recommended)
+              log(`QUESTION: Unrecognized question — auto-selecting default via Enter`);
+              tmuxExec(`tmux send-keys -t ${targetPane} Enter`);
+            }
           }
-          await sleep(3000);
+          // 🧬 FIX Bug #7: Reduce question response delay 3000ms → 1000ms
+          await sleep(1000);
           idleConfirmCount = 0;
           continue; // Re-check immediately
 
