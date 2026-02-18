@@ -43,7 +43,7 @@ let thermalLogRef = null;
 let overheating = false;
 let lastLoad = 0;
 let lastLoadTime = Date.now();
-const VELOCITY_THRESHOLD = 5.0; // 🔒 Chairman Fix: 1.0 was too sensitive, velocity 3.6 is normal
+const VELOCITY_THRESHOLD = 10.0; // 🔒 Chairman Fix v2: 5.0 still false-triggers during scanner npm builds (velocity 5.93 at load 19)
 
 // --- System metrics ---
 
@@ -97,11 +97,48 @@ const RESOURCE_HOGS = [
 ];
 
 function killResourceHogs() {
-  log(`ANNILHILATION: Clearing multi-threaded debris...`);
-  for (const proc of RESOURCE_HOGS) {
-    try {
-      execSync(`pkill -9 -f "${proc}" 2>/dev/null`);
-    } catch (e) { }
+  // 🔒 Safety Fix: Only kill processes that are actually consuming high CPU
+  // AND match the target list. Uses SIGTERM instead of SIGKILL.
+  try {
+    const output = execSync('ps -A -o pid,pcpu,command', { encoding: 'utf-8', timeout: 5000 });
+    const lines = output.trim().split('\n').slice(1);
+    const SELF_PID = process.pid;
+
+    let killedCount = 0;
+
+    for (const line of lines) {
+      const parts = line.trim().split(/\s+/);
+      if (parts.length < 3) continue;
+
+      const pid = parseInt(parts[0], 10);
+      const cpu = parseFloat(parts[1]);
+      const cmd = parts.slice(2).join(' ');
+
+      // 1. Safety: Never kill self or parent
+      if (pid === SELF_PID || pid === process.ppid) continue;
+
+      // 2. Safety: Only target specific tools
+      const isTarget = RESOURCE_HOGS.some(hog => cmd.includes(hog));
+      if (!isTarget) continue;
+
+      // 3. Safety: Don't kill unless actually hogging (>20% CPU)
+      if (cpu < 20.0) continue;
+
+      try {
+        log(`Resource Monitor: High CPU (${cpu}%) detected on ${cmd.substring(0, 30)}... (PID ${pid})`);
+        // Try gentle kill first
+        process.kill(pid, 'SIGTERM');
+        killedCount++;
+      } catch (e) {
+        log(`Failed to signal PID ${pid}: ${e.message}`);
+      }
+    }
+
+    if (killedCount > 0) {
+      log(`Resource Monitor: Sent SIGTERM to ${killedCount} processes to reduce load.`);
+    }
+  } catch (e) {
+    // Ignore ps errors
   }
 }
 
@@ -138,7 +175,9 @@ function checkOverheatStatus() {
   lastLoadTime = now;
 
   const subagents = getSubagentCount();
-  const isOverheated = load1 > OVERHEAT_LOAD || (freeMB >= 0 && freeMB < OVERHEAT_RAM_MB) || thermal || velocity > VELOCITY_THRESHOLD || subagents > (config.AGENT_TEAM_SIZE_DEFAULT * 4);
+  // 🔒 Chairman Fix v2: velocity only triggers overheat IF load is also above SAFE threshold
+  const velocityOverheat = velocity > VELOCITY_THRESHOLD && load1 > SAFE_LOAD;
+  const isOverheated = load1 > OVERHEAT_LOAD || (freeMB >= 0 && freeMB < OVERHEAT_RAM_MB) || thermal || velocityOverheat || subagents > (config.AGENT_TEAM_SIZE_DEFAULT * 4);
   const isSafe = load1 < SAFE_LOAD && (freeMB < 0 || freeMB > SAFE_RAM_MB) && velocity < 0.2 && subagents <= config.AGENT_TEAM_SIZE_DEFAULT;
 
   // Hysteresis: only change state at clear thresholds
@@ -211,8 +250,8 @@ async function preemptiveCool(complexity) {
   killResourceHogs();
   purgeSystemCaches();
 
-  // Wait for load to be exceptionally low before starting a massive parallel task
-  const DEEP_SAFE_LOAD = 5;
+  // 🔒 Chairman Fix: M1 load 7-10 is NORMAL with active CC CLI. Old value 5 caused permanent PREEMPTIVE WAIT.
+  const DEEP_SAFE_LOAD = 15;
   while (getLoadAverage() > DEEP_SAFE_LOAD) {
     const current = getLoadAverage();
     log(`PREEMPTIVE WAIT: Waiting for deep safe load < ${DEEP_SAFE_LOAD} (Current: ${current})`);
@@ -260,4 +299,15 @@ function stopCooling() {
   if (thermalLogRef) { clearInterval(thermalLogRef); thermalLogRef = null; }
 }
 
-module.exports = { startCooling, stopCooling, isOverheating, pauseIfOverheating, waitForSafeTemperature, preemptiveCool, getLoadAverage };
+// 🧊 DEEP COOLING: Load-gate for scanner operations (npm build/test/lint)
+const SCAN_SAFE_LOAD = 8; // Only allow scanning when load < 8
+function isSafeToScan() {
+  const load = getLoadAverage();
+  if (load > SCAN_SAFE_LOAD) {
+    log(`🧊 SCAN BLOCKED: load ${load.toFixed(1)} > ${SCAN_SAFE_LOAD} — too hot for npm build/test`);
+    return false;
+  }
+  return true;
+}
+
+module.exports = { startCooling, stopCooling, isOverheating, pauseIfOverheating, waitForSafeTemperature, preemptiveCool, getLoadAverage, isSafeToScan };

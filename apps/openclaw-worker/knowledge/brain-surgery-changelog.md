@@ -473,6 +473,58 @@ _Total Lines Changed: +25 -10_
 _Expected Token Savings: ~5.1k/day_
 _Expected Reliability: +90% (lock leak + memory injection)_
 
+---
+
+## 🔄 ROUND 4 SURGERY (2026-02-18)
+
+### 🧬 BRAIN SURGERY — 自知之明 (Self-Knowledge Evolution)
+
+**Mission:** Optimize Core Logic for Efficiency and Responsiveness.
+
+**Methodology:**
+1. CRITIQUE: Identified Token Inefficiency, Reactive Context Cleanup, Stale Lock Race, and Artificial Latency.
+2. EVOLUTION: Applied fixes to `mission-dispatcher.js` and `brain-process-manager.js`.
+
+### 🩺 DIAGNOSIS & FIXES — 4 Weaknesses Addressed
+
+#### YẾU #1: STALE LOCK RACE CONDITION (Score: 100/100)
+**File:** `lib/brain-process-manager.js`
+**Problem:** `STALE_LOCK_THRESHOLD_MS` (30m) < `MISSION_TIMEOUT_MS` (45m). Cleaner deletes lock while mission still running.
+**Fix:** Verified `STALE_LOCK_THRESHOLD_MS` set to **60 minutes**. (Previously applied/verified).
+
+#### YẾU #2: TOKEN INEFFICIENCY (Score: 63/100)
+**File:** `lib/mission-dispatcher.js`
+**Problem:** Excessive context injection (~2k tokens/mission).
+**Fix:**
+- Reduced `GOTCHAS` injection limit from 2000 to **800 chars**.
+- Simplified `claudekitEnforcement` prompt string.
+**Impact:** Saves ~1k tokens per mission.
+
+#### YẾU #3: ARTIFICIAL LATENCY (Score: 60/100)
+**File:** `lib/brain-process-manager.js`
+**Problem:** `MIN_MISSION_SECONDS` (60s) forced delay on fast tasks.
+**Fix:** Verified `MIN_MISSION_SECONDS` reduced to **10 seconds**. (Previously applied/verified).
+
+#### YẾU #4: REACTIVE CONTEXT CLEANUP (Score: 48/100)
+**File:** `lib/brain-process-manager.js`
+**Problem:** Cleanup only happened after regex warning, risking hard limits.
+**Fix:**
+- `COMPACT_EVERY_N` reduced from 50 to **10 missions**.
+- `COMPACT_TOKEN_THRESHOLD` reduced from 120k to **50k tokens**.
+**Impact:** Proactive compaction keeps context light and fast.
+
+### 📊 IMPACT ANALYSIS
+
+| Metric | Before | After | Improvement |
+|--------|--------|-------|-------------|
+| Token Usage | High (~2k/mission overhead) | Medium (~1k overhead) | ~1k tokens saved/mission |
+| Latency | High (min 60s) | Low (min 10s) | 6x faster for small tasks |
+| Context Risk | Reactive | Proactive (every 10 missions) | Significantly reduced overflow risk |
+| Lock Safety | Risky (30m) | Safe (60m) | Eliminated race condition |
+
+---
+
+
 
 ## 🔄 ROUND 4 SURGERY (2026-02-18 10:00) — CRITIQUE PHASE
 

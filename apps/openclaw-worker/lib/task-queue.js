@@ -19,9 +19,13 @@ function getPriority(filename) {
   return 4; // No prefix = lowest priority
 }
 
+const MAX_RETRIES = 5;
+const retryCounts = new Map();
+
 let activeCount = 0;
 let currentTaskFile = null;
 const queue = [];
+const queuedSet = new Set(); // 🔒 O(1) Lookup for queued items (Bug #2)
 const processingSet = new Set(); // 🔒 Track files being processed to prevent re-enqueue
 let pollIntervalRef = null;
 let watcher = null;
@@ -38,6 +42,7 @@ async function processQueue() {
   // Double thermal gate caused CTO to freeze indefinitely.
 
   const taskFile = queue.shift();
+  queuedSet.delete(taskFile); // 🔒 Remove from deduplication set
   currentTaskFile = taskFile;
   processingSet.add(taskFile); // 🔒 Mark as processing
   const filePath = path.join(config.WATCH_DIR, taskFile);
@@ -45,6 +50,16 @@ async function processQueue() {
   try {
     if (!fs.existsSync(filePath)) {
       log(`Ghost file ignored: ${taskFile}`);
+      retryCounts.delete(taskFile);
+      return;
+    }
+
+    // 🧬 BRAIN SURGERY: Recursion Limit (stop infinite fix loops)
+    const fixDepth = (taskFile.match(/_fix_/g) || []).length;
+    if (fixDepth > 3) {
+      log(`🛑 RECURSION LIMIT EXCEEDED: ${taskFile} (Depth ${fixDepth}). Archiving to prevent infinite loop.`);
+      fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
+      retryCounts.delete(taskFile);
       return;
     }
     const content = fs.readFileSync(filePath, 'utf-8').trim();
@@ -56,12 +71,29 @@ async function processQueue() {
 
     // 🔒 If mission was BLOCKED (not executed), wait for active mission to finish
     if (result && (result.result === 'mission_locked' || result.result === 'busy_blocked')) {
-      // RE-ENQUEUE instead of archive — task was never executed!
-      log(`BLOCKED: ${taskFile} — re-enqueueing (will retry in 30s)`);
-      processingSet.delete(taskFile);
-      await sleep(30000); // Wait 30s before retry
-      queue.push(taskFile); // Put back in queue
+      const retries = retryCounts.get(taskFile) || 0;
+
+      if (retries >= MAX_RETRIES) {
+        log(`BLOCKED: ${taskFile} — MAX RETRIES EXCEEDED (${MAX_RETRIES}). Archiving.`);
+        retryCounts.delete(taskFile);
+
+        // Treat as processed (archived) to unblock queue
+        if (fs.existsSync(filePath)) {
+           fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
+        }
+      } else {
+        // RE-ENQUEUE instead of archive — task was never executed!
+        retryCounts.set(taskFile, retries + 1);
+        log(`BLOCKED: ${taskFile} — re-enqueueing (attempt ${retries + 1}/${MAX_RETRIES}) (will retry in 30s)`);
+
+        // processingSet.delete(taskFile); // REMOVED: Let finally block handle cleanup to avoid ghost state
+        await sleep(30000); // Wait 30s before retry
+        queue.push(taskFile); // Put back in queue
+        queuedSet.add(taskFile); // 🔒 Re-add to set
+      }
     } else {
+      retryCounts.delete(taskFile); // Reset retries on success/execution
+
       let buildResult = { build: false, output: 'not_run' };
       const projectMatch = taskFile.match(/^(?:HIGH_|MEDIUM_|LOW_|CRITICAL_)?mission_([a-z0-9_-]+?)_(?:auto_)?/i);
       const projectShortName = projectMatch ? projectMatch[1].replace(/_/g, '-') : null;
@@ -97,8 +129,10 @@ async function processQueue() {
         content
       });
 
-      fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
-      log(`Archived: ${taskFile}`);
+      if (fs.existsSync(filePath)) {
+        fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
+        log(`Archived: ${taskFile}`);
+      }
     }
   } catch (error) {
     log(`Error processing ${taskFile}: ${error.message}`);
@@ -115,9 +149,14 @@ function enqueue(filename) {
   if (filename && config.TASK_PATTERN.test(filename)) {
     const filePath = path.join(config.WATCH_DIR, filename);
     const processedPath = path.join(config.PROCESSED_DIR, filename);
-    if (fs.existsSync(filePath) && !queue.includes(filename) && filename !== currentTaskFile && !processingSet.has(filename) && !fs.existsSync(processedPath)) {
+    
+    // 🧬 FIX Bug #2: Use queuedSet for O(1) atomic deduplication
+    const isDuplicate = queuedSet.has(filename) || processingSet.has(filename) || filename === currentTaskFile;
+
+    if (fs.existsSync(filePath) && !isDuplicate && !fs.existsSync(processedPath)) {
       log(`DETECTED: ${filename}`);
       queue.push(filename);
+      queuedSet.add(filename); // 🔒 Add to deduplication set
       processQueue();
     }
   }
@@ -139,7 +178,8 @@ function startWatching() {
     try {
       const files = fs.readdirSync(config.WATCH_DIR);
       const tasks = files.filter(f => config.TASK_PATTERN.test(f));
-      const newTasks = tasks.filter(f => !queue.includes(f) && f !== currentTaskFile);
+      // 🧬 FIX Bug #2: Check queuedSet instead of O(n) array includes
+      const newTasks = tasks.filter(f => !queuedSet.has(f) && !processingSet.has(f) && f !== currentTaskFile);
       if (newTasks.length > 0) {
         log(`Poll found new: ${newTasks.join(', ')}`);
       }

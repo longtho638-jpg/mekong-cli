@@ -11,6 +11,35 @@
 
 | Date | Project | Mission | Lesson | Tokens | Efficiency |
 |------|---------|---------|--------|--------|------------|
+| 2026-02-18 | fix | HIGH_mission_fix_anima119_fix_ | Clean success in 1min — good pattern | 0 | 0/min |
+| 2026-02-18 | hyperskill | HIGH_mission_hyperskill_genera | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | Code worked but BUILD FAILED — check types/lint | 0 | 0/min |
+| 2026-02-18 | lobsterboard | MEDIUM_mission_lobsterboard_da | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | fix | HIGH_mission_fix_debug_ping_v2 | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | debug | mission_debug_ping_v2 | Code worked but BUILD FAILED — check types/lint | 0 | 0/min |
+| 2026-02-18 | brain | CRITICAL_mission_brain_surgery | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | brain | CRITICAL_mission_brain_surgery | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_li | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | anima119 | MEDIUM_mission_anima119_fix_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | unknown | MEDIUM_proxy_recovery_final_te | FAILED — not_run | 0 | 0/min |
+| 2026-02-18 | unknown | CRITICAL_brain_surgery | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | evolution | CRITICAL_mission_evolution_sur | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | strategic | HIGH_mission_strategic_10x_arc | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | strategic | HIGH_mission_strategic_10x_arc | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | AGI | CRITICAL_mission_AGI_INFINITE_ | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | GENESIS | CRITICAL_mission_GENESIS_AGI_U | FAILED — not_run | 0 | 0/min |
+| 2026-02-17 | GENESIS | HIGH_mission_GENESIS_DASHBOARD | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | genesis | HIGH_mission_genesis_raas_2026 | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | genesis | HIGH_mission_genesis_raas_full | FAILED — not_run | 0 | 0/min |
 | 2026-02-17 | mung1 | HIGH_mission_mung1_genesis_pha | FAILED — not_run | 0 | 0/min |
@@ -55,6 +84,7 @@
 
 > Patterns thành công → tái sử dụng cho missions tương lai.
 
+- **2026-02-18** [fix]: Efficient mission — 0 tokens/min in 1min
 - **2026-02-17** [openclaw]: AGI Evolution code loaded successfully — BINH_PHAP_VERIFIED (Ch.4 軍形: 先為不可勝)
 - **2026-02-17** [monitor-test]: Efficient mission — 40 tokens/min in 5min
 - **2026-02-17** [test-project]: Efficient mission — 50 tokens/min in 10min
