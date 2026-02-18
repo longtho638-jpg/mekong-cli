@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "74dba32ef1bc",
+  "session_id": "a27fd11a-49f4-42e1-8262-3b7a977fbf10",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-18T15:49:54.335528Z",
+  "branch": "master",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "apps/openclaw-worker/plans/260217-2100-mega-cto-pipeline-overhaul-14-bugs/plan.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "3958d791-b033-45f1-9be2-d0ff95d2cc27",
+  "token_usage": {
+    "input_tokens": 953772,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 4737880,
+    "output_tokens": 22263,
+    "api_call_count": 44
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-18T15:49:54.099014Z",
+    "agent_lines": 0,
+    "human_added": 0,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 0,
+    "agent_percentage": 0
+  },
+  "transcript_path": ".claude/projects/-Users-macbookprom1-mekong-cli/a27fd11a-49f4-42e1-8262-3b7a977fbf10.jsonl"
+}
