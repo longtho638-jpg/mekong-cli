@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "8a6465e7bed1",
+  "session_id": "a27fd11a-49f4-42e1-8262-3b7a977fbf10",
+  "strategy": "manual-commit",
+  "created_at": "2026-02-18T15:45:59.449012Z",
+  "branch": "master",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/openclaw-worker/task-watcher.js",
+    "apps/openclaw-worker/README.md",
+    "apps/openclaw-worker/config.js",
+    "apps/openclaw-worker/lib/brain-process-manager.js",
+    "apps/openclaw-worker/lib/m1-cooling-daemon.js",
+    "apps/openclaw-worker/plans/260217-2100-mega-cto-pipeline-overhaul-14-bugs/phase-06-integration-testing.md"
+  ],
+  "agent": "Claude Code",
+  "transcript_identifier_at_start": "3958d791-b033-45f1-9be2-d0ff95d2cc27",
+  "checkpoint_transcript_start": 1102,
+  "transcript_lines_at_start": 1102,
+  "token_usage": {
+    "input_tokens": 953772,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 4737880,
+    "output_tokens": 22263,
+    "api_call_count": 44
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-02-18T15:45:59.216969Z",
+    "agent_lines": 72,
+    "human_added": 2228,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2300,
+    "agent_percentage": 3.130434782608696
+  },
+  "transcript_path": ".claude/projects/-Users-macbookprom1-mekong-cli/a27fd11a-49f4-42e1-8262-3b7a977fbf10.jsonl"
+}

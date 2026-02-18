@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.4.5",
+  "checkpoint_id": "8a6465e7bed1",
+  "strategy": "manual-commit",
+  "branch": "master",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "apps/openclaw-worker/README.md",
+    "apps/openclaw-worker/config.js",
+    "apps/openclaw-worker/lib/brain-process-manager.js",
+    "apps/openclaw-worker/lib/m1-cooling-daemon.js",
+    "apps/openclaw-worker/plans/260217-2100-mega-cto-pipeline-overhaul-14-bugs/phase-06-integration-testing.md",
+    "apps/openclaw-worker/task-watcher.js"
+  ],
+  "sessions": [
+    {
+      "metadata": "/8a/6465e7bed1/0/metadata.json",
+      "transcript": "/8a/6465e7bed1/0/full.jsonl",
+      "context": "/8a/6465e7bed1/0/context.md",
+      "content_hash": "/8a/6465e7bed1/0/content_hash.txt",
+      "prompt": "/8a/6465e7bed1/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 953772,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 4737880,
+    "output_tokens": 22263,
+    "api_call_count": 44
+  }
+}
