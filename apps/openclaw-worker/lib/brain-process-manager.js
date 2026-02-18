@@ -29,18 +29,42 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+const { perceiveMissionResult, needsReverification, getPerceptionStats } = require('./perception-engine');
+const { getAdaptivePollingMs } = require('./throughput-maximizer');
 
 const TMUX_SESSION = 'tom_hum_brain';
-const COMPACT_EVERY_N = 10; // Compact every 10 missions (Proactive)
-const COMPACT_TOKEN_THRESHOLD = 50000; // 50k tokens (Keep context lean)
+const COMPACT_EVERY_N = 7; // Compact every 7 missions (was 10 — keep context lean for speed)
+const COMPACT_TOKEN_THRESHOLD = 30000; // 30k tokens (was 50k — compact EARLIER = faster missions)
 // 🧬 FIX #3: REMOVE /clear — CC CLI's /compact handles cleanup better
 // CLEAR_EVERY_N removed — /clear is redundant with /compact
 const MAX_RESPAWNS_PER_HOUR = 5;
 const RESPAWN_COOLDOWN_MS = 5 * 60 * 1000;
 const PROMPT_FILE = '/tmp/tom_hum_prompt.txt';
-// 🔒 LOCKED — DO NOT REDUCE (2026-02-15) — prevents false mission completion
 const MIN_MISSION_SECONDS = 10;   // Reduced 60s -> 10s (Brain Surgery 260218)
-const IDLE_CONFIRM_POLLS = 5;     // 5 consecutive idle polls required
+// 🌊 PARALLEL FIX: More polls needed to confirm idle (CC CLI shows ❯ briefly before processing)
+const IDLE_CONFIRM_POLLS = config.MAX_CONCURRENT_MISSIONS > 1 ? 8 : 5;
+
+// 🧬 Level 8.5: Perception Feedback Loop — auto-retry on D/F
+function createRetryMission(num, prompt, perception) {
+  try {
+    // Rate limit: don't retry retries (prevent infinite loop)
+    if (prompt.includes('PERCEPTION_RETRY')) return;
+    if (perception.score >= 40) return; // Only retry D/F
+
+    const retryPrompt = `PERCEPTION_RETRY Mission #${num}\n` +
+      `⚠️ Previous attempt scored ${perception.score}/100 (Grade ${perception.grade})\n` +
+      `Issues: ${perception.reasons.filter(r => r.startsWith('-')).join(', ')}\n` +
+      `Files attempted: ${perception.filesChanged.join(', ') || 'none detected'}\n\n` +
+      `RETRY the original task with EXTRA CARE:\n${prompt.slice(0, 500)}\n\n` +
+      `CRITICAL: Ensure build passes + files actually change this time.`;
+
+    const filename = `HIGH_perception_retry_${num}_${Date.now()}.txt`;
+    fs.writeFileSync(path.join(config.WATCH_DIR, filename), retryPrompt);
+    log(`🧬 PERCEPTION RETRY: Created ${filename} (Score=${perception.score} Grade=${perception.grade})`);
+  } catch (e) {
+    log(`PERCEPTION RETRY ERROR: ${e.message}`);
+  }
+}
 
 // --- DETECTION PATTERNS ---
 
@@ -110,6 +134,7 @@ let respawnTimestamps = [];
 // Track recent mission hashes (prompt content) to prevent duplicate dispatch
 const recentMissionHashes = new Set();
 const DEDUP_WINDOW_SIZE = 20; // Track last 20 missions
+const recentAntiStackHits = new Map(); // Track consecutive anti-stack hits per worker
 
 // --- Logging ---
 
@@ -157,7 +182,7 @@ function isSessionAlive() {
 function capturePane(workerIdx) {
   const idx = workerIdx !== undefined ? workerIdx : currentWorkerIdx;
   const target = `${TMUX_SESSION}:0.${idx}`;
-  return tmuxExec(`tmux capture-pane -t ${target} -p -S -50`);
+  return tmuxExec(`tmux capture-pane -t ${target} -p -S -30`); // 🔥 Speed: 50→30 lines = less tmux I/O
 }
 
 /** Get clean last N lines from captured tmux output */
@@ -220,19 +245,30 @@ function isShellPrompt(output) {
   return false;
 }
 
-/** Unified state detection from tmux output.
- *  Returns: 'busy' | 'complete' | 'context_limit' | 'question' | 'idle' | 'unknown'
- *  CRITICAL: BUSY checked BEFORE completion — prevents stale "Cooked for"
- *  in scrollback from overriding active processing indicators. */
+/** 🔥 SPEED: Single-pass state detection — parse output ONCE, check all patterns.
+ *  Before: 6 separate getCleanTail() calls per poll = 6× string parsing
+ *  After: 1 parse, reuse for all checks
+ *  Returns: 'busy' | 'complete' | 'context_limit' | 'question' | 'idle' | 'unknown' */
 function detectState(output) {
-  if (hasContextLimit(output)) return 'context_limit';
-  // BUG FIX: Prompts (Questions) can appear while "Busy" text is still visible (e.g. Osmosing...)
-  // We must handle questions FIRST to unblock.
-  if (hasApproveQuestion(output)) return 'question';
+  // Parse ONCE — reuse for all pattern checks
+  const tail15 = getCleanTail(output, 15).join('\n');
+  const tail25 = getCleanTail(output, 25).join('\n');
+  const tail10lines = getCleanTail(output, 10);
 
-  if (isBusy(output)) return 'busy';
-  if (hasCompletionPattern(output)) return 'complete';
-  if (hasPrompt(output)) return 'idle';
+  // Context limit (highest priority)
+  if (CONTEXT_LIMIT_PATTERNS.some(p => p.test(tail15))) return 'context_limit';
+  // Questions (must handle before busy — unblock!)
+  if (APPROVE_PATTERNS.some(p => p.test(tail15))) return 'question';
+  // Busy (active processing)
+  if (BUSY_PATTERNS.some(p => p.test(tail25))) return 'busy';
+  // Completion pattern
+  if (COMPLETION_PATTERNS.some(p => p.test(tail25))) return 'complete';
+  // Idle (prompt visible, not busy)
+  for (const line of tail10lines) {
+    const t = line.trim();
+    if (!t) continue;
+    if (t.includes('❯') || /^>\s*$/.test(t)) return 'idle';
+  }
   return 'unknown';
 }
 
@@ -266,7 +302,7 @@ async function waitForPrompt(timeoutMs = 120000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (hasPrompt(capturePane())) return true;
-    await sleep(1000);
+    await sleep(500); // 🔥 Speed: 1000→500ms — check 2× faster
   }
   return false;
 }
@@ -416,7 +452,7 @@ function spawnBrain() {
   // Create additional panes - WORKERS (Gemini 3 Pro High)
   for (let i = 1; i < teamSize; i++) {
     tmuxExec(`tmux split-window -t ${TMUX_SESSION}:0`);
-    tmuxExec(`tmux select-layout -t ${TMUX_SESSION}:0 tiled`);
+    tmuxExec(`tmux select-layout -t ${TMUX_SESSION}:0 even-horizontal`);
     execSync('sleep 1'); // Stagger boot to prevent API rate spikes
     tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} '${geminiCmd}' Enter`);
   }
@@ -436,16 +472,38 @@ function spawnBrain() {
 }
 
 /**
- * 虛實 (Xu Shi) — PARALLEL TEAM Strategy
- * Find first IDLE worker (not locked) instead of round-robin.
- * Each worker has its own lock file: .mission-active-P{idx}.lock
+ * 奇正相生 (Ch.5 兵勢) — CHÍNH/KỲ Worker Partitioning
+ *
+ * P0 = CHÍNH (正) — Manual/Antigravity core tasks. Stable, priority.
+ * P1+ = KỲ (奇) — Auto-CTO project scans. Expendable, auto-generated.
+ *
+ * source='manual' → Prefer P0, overflow to P1 if P0 busy
+ * source='auto'   → ONLY P1+ workers. NEVER interrupt P0.
+ *
+ * 有所不爭 (Ch.8 九變) — Auto-CTO must NOT compete for P0.
  */
-function findIdleWorker() {
+function findIdleWorker(source = 'manual') {
   const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 3;
   const minIdx = config.FULL_CLI_MODE ? 0 : 1;
+
+  // 奇正 KỲ: Auto-CTO tasks → P1+ ONLY (never touch P0)
+  if (source === 'auto' && teamSize > 1) {
+    const kyMin = Math.max(minIdx, 1); // Start from P1
+    for (let i = kyMin; i < teamSize; i++) {
+      if (!isWorkerBusy(i)) {
+        log(`DISPATCH [KỲ 奇]: → Worker P${i} (idle, auto-task) — ${teamSize} total`);
+        tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.${i}`);
+        return i;
+      }
+    }
+    log(`DISPATCH [KỲ 奇]: All KỲ workers busy — 有所不爭 (refuse, don't touch P0)`);
+    return -1; // Don't fall through to P0!
+  }
+
+  // 正 CHÍNH: Manual tasks → Prefer P0, overflow to P1
   for (let i = minIdx; i < teamSize; i++) {
     if (!isWorkerBusy(i)) {
-      log(`DISPATCH: → Worker P${i} (idle) — ${teamSize} total`);
+      log(`DISPATCH [CHÍNH 正]: → Worker P${i} (idle, manual-task) — ${teamSize} total`);
       tmuxExec(`tmux select-pane -t ${TMUX_SESSION}:0.${i}`);
       return i;
     }
@@ -496,19 +554,19 @@ function parseContextUsage(output) {
 
 async function compactIfNeeded() {
   const shouldCompact = (missionCount > 0 && missionCount % COMPACT_EVERY_N === 0) ||
-                        (tokensSinceCompact > COMPACT_TOKEN_THRESHOLD);
+    (tokensSinceCompact > COMPACT_TOKEN_THRESHOLD);
 
   if (shouldCompact) {
     const reason = tokensSinceCompact > COMPACT_TOKEN_THRESHOLD ?
-      `Token Threshold (${Math.round(tokensSinceCompact/1000)}k > ${Math.round(COMPACT_TOKEN_THRESHOLD/1000)}k)` :
+      `Token Threshold (${Math.round(tokensSinceCompact / 1000)}k > ${Math.round(COMPACT_TOKEN_THRESHOLD / 1000)}k)` :
       `Mission Count (${missionCount})`;
 
     log(`CONTEXT: /compact triggered by ${reason}`);
     pasteText('/compact');
-    await sleep(1000);
+    await sleep(800); // 🔥 Speed: 1000→800ms
     sendEnter();
-    await sleep(2000);
-    await waitForPrompt(60000);
+    await sleep(1500); // 🔥 Speed: 2000→1500ms
+    await waitForPrompt(30000); // 🔥 Speed: 60s→30s max wait
     tokensSinceCompact = 0; // Reset counter
   }
 }
@@ -581,6 +639,16 @@ function setWorkerLock(idx, missionNum) {
   try { fs.writeFileSync(workerLockFile(idx), `mission_${missionNum}_P${idx}_${Date.now()}`); } catch { }
 }
 
+function touchWorkerLock(idx) {
+  try {
+    const lockPath = workerLockFile(idx);
+    if (fs.existsSync(lockPath)) {
+      const now = new Date();
+      fs.utimesSync(lockPath, now, now);
+    }
+  } catch (e) { }
+}
+
 function clearWorkerLock(idx) {
   try { fs.unlinkSync(workerLockFile(idx)); } catch { }
 }
@@ -592,7 +660,7 @@ function clearMissionLock() { clearWorkerLock(currentWorkerIdx); }
 
 // --- Core: run mission via tmux (state machine) ---
 
-async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
+async function runMission(prompt, projectDir, timeoutMs, modelOverride, source = 'manual') {
   // 🧬 FIX Bug #1: DUPLICATE DISPATCH DETECTION
   const promptHash = hashPrompt(prompt);
   if (recentMissionHashes.has(promptHash)) {
@@ -608,10 +676,10 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     recentMissionHashes.delete(firstHash);
   }
 
-  // 🔒 PARALLEL: Find idle worker instead of blocking all
-  const workerIdx = findIdleWorker();
+  // 🔒 奇正相生: Find idle worker with source-aware partitioning
+  const workerIdx = findIdleWorker(source);
   if (workerIdx === -1) {
-    log(`MISSION BLOCKED: All ${config.AGENT_TEAM_SIZE_DEFAULT} workers busy — refusing dispatch`);
+    log(`MISSION BLOCKED: All ${config.AGENT_TEAM_SIZE_DEFAULT} workers busy (source=${source}) — refusing dispatch`);
     return { success: false, result: 'all_workers_busy', elapsed: 0 };
   }
 
@@ -665,20 +733,27 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       await sleep(2000);
     }
 
-    // 🛡️ ANTI-STACKING GUARD: Wait for CC CLI to be TRULY idle before dispatching
-    // Prevents "queued messages" bug where commands pile up
-    // 🔒 Ch.2 作戰: 120s timeout (12×10s) — complex missions need time to finish
-    for (let waitAttempt = 0; waitAttempt < 12; waitAttempt++) {
+    // 🛡️ ANTI-STACKING GUARD v3: Smart wait + Hot State Optimization
+    // 🔥 Speed: 6×500ms = 3s max. If hot/stuck, reduce to 3×500ms = 1.5s.
+    const isHot = getSystemMetrics().load > 2.5;
+    const maxRetries = isHot ? 3 : 6;
+    let hitBusy = false;
+
+    for (let waitAttempt = 0; waitAttempt < maxRetries; waitAttempt++) {
       const preDispatch = capturePane(workerIdx);
       const preState = detectState(preDispatch);
+
       if (preState === 'busy') {
-        log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
-        await sleep(1000);
+        hitBusy = true;
+        log(`ANTI-STACK: CC CLI busy (attempt ${waitAttempt + 1}/${maxRetries}) — waiting 500ms...`);
+        await sleep(500);
         continue;
       }
+
       if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
         break; // Safe to dispatch
       }
+
       if (preState === 'question') {
         log(`ANTI-STACK: CC CLI has pending question — auto-approving first`);
         tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${workerIdx} y Enter`);
@@ -688,10 +763,24 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       break;
     }
 
+    // 🧬 Bottleneck Fix: Track retry count per worker
+    const prevHits = recentAntiStackHits.get(workerIdx) || 0;
+    if (hitBusy) {
+      recentAntiStackHits.set(workerIdx, prevHits + 1);
+      if (prevHits + 1 >= 3) {
+        log(`ANTI-STACK: Worker P${workerIdx} stuck BUSY 3x consecutively — forcing /compact`);
+        tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${workerIdx} '/compact' Enter`);
+        await sleep(2000);
+        recentAntiStackHits.set(workerIdx, 0);
+      }
+    } else {
+      recentAntiStackHits.set(workerIdx, 0); // Reset on clean dispatch
+    }
+
     // Final check: if STILL busy after 120s, abort this mission
     const finalCheck = capturePane(workerIdx);
     if (isBusy(finalCheck)) {
-      log(`ANTI-STACK: P${workerIdx} still busy after 120s — ABORTING mission #${num}`);
+      log(`ANTI-STACK: P${workerIdx} still busy after 3s — ABORTING mission #${num}`);
       return { success: false, result: 'busy_blocked', elapsed: 0 };
     }
 
@@ -707,7 +796,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
 
     // Dispatch via paste-buffer (reliable for long text + special chars)
     pasteText(fullPrompt, workerIdx);
-    await sleep(2000);
+    await sleep(800); // 🔥 Speed: was 2000ms — 800ms is enough for tmux paste
     sendEnter(workerIdx);
     log(`DISPATCHED: Mission #${num} sent to P${workerIdx}`);
 
@@ -728,7 +817,8 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     let kickStartCount = 0;
 
     // Give CC CLI time to parse prompt and begin processing
-    await sleep(1000); // 🧬 AGI BRAIN UPGRADE: Reduced from 2000→1000 for faster response
+    // 🌊 PARALLEL FIX: 2s wait for parallel mode (CC CLI needs time to parse + start)
+    await sleep(config.MAX_CONCURRENT_MISSIONS > 1 ? 2000 : 500);
 
     while (Date.now() < deadline) {
       if (!isSessionAlive()) {
@@ -766,13 +856,19 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
           }
           const usage = parseContextUsage(output);
           log(`COMPLETE: Mission #${num} (${elapsedSec}s) [cooked-pattern]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+          // 🧬 Level 8: Perception — VERIFY actual result
+          const perception1 = perceiveMissionResult(num, prompt, workerIdx);
+          if (needsReverification(perception1)) {
+            log(`⚠️ PERCEPTION: Mission #${num} Score=${perception1.score} Grade=${perception1.grade} — NEEDS RE-VERIFICATION`);
+            createRetryMission(num, prompt, perception1);
+          }
           // 作戰 Token tracking
           const tk1 = countTokensBetween(missionStartDate, new Date());
           tokensSinceCompact += tk1.tokens; // Accumulate for proactive cleanup
-          log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+          log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
           recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
           const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
-          return { success: true, result: 'done', elapsed: elapsedSec };
+          return { success: true, result: 'done', elapsed: elapsedSec, perception: perception1 };
         }
 
         case 'busy':
@@ -848,24 +944,36 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
             if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
               const usage = parseContextUsage(output);
               log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
+              // 🧬 Level 8: Perception
+              const perception2 = perceiveMissionResult(num, prompt, workerIdx);
+              if (needsReverification(perception2)) {
+                log(`⚠️ PERCEPTION: Mission #${num} Score=${perception2.score} Grade=${perception2.grade} — NEEDS RE-VERIFICATION`);
+                createRetryMission(num, prompt, perception2);
+              }
               const tk2 = countTokensBetween(missionStartDate, new Date());
               tokensSinceCompact += tk2.tokens;
-              log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+              log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
               recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
               const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
-              return { success: true, result: 'done', elapsed: elapsedSec };
+              return { success: true, result: 'done', elapsed: elapsedSec, perception: perception2 };
             }
           } else if (elapsedSec > MIN_MISSION_SECONDS) {
             // Never saw BUSY — might be very fast or isBusy missed it
             idleConfirmCount++;
             if (idleConfirmCount >= IDLE_CONFIRM_POLLS) {
               log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
+              // 🧬 Level 8: Perception
+              const perception3 = perceiveMissionResult(num, prompt, workerIdx);
+              if (needsReverification(perception3)) {
+                log(`⚠️ PERCEPTION: Mission #${num} Score=${perception3.score} Grade=${perception3.grade} — NEEDS RE-VERIFICATION`);
+                createRetryMission(num, prompt, perception3);
+              }
               const tk3 = countTokensBetween(missionStartDate, new Date());
               tokensSinceCompact += tk3.tokens;
-              log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+              log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
               recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
               const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
-              return { success: true, result: 'done', elapsed: elapsedSec };
+              return { success: true, result: 'done', elapsed: elapsedSec, perception: perception3 };
             }
           }
           break;
@@ -875,14 +983,14 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
           break;
       }
 
-      // Progress logging every 60s
-      if (Date.now() - lastLogTime > 60000) {
+      // Progress logging every 30s (was 60s — faster feedback)
+      if (Date.now() - lastLogTime > 30000) {
         log(`Mission #${num} [${state}] — ${elapsedSec}s${wasBusy ? ' (was-busy)' : ''}`);
         lastLogTime = Date.now();
       }
 
-      // PROJECT FLASH: Ultra Speed Polling (500ms for parallel mode)
-      await sleep(500);
+      // 🌊 THROUGHPUT: Adaptive polling — fast when busy, slow when idle
+      await sleep(getAdaptivePollingMs(state, wasBusy));
     }
 
     // Timeout — send Ctrl+C and report
@@ -891,6 +999,11 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     sendCtrlC(workerIdx);
     return { success: false, result: 'timeout', elapsed };
   } finally {
+    // 🌊 PARALLEL FIX: Post-mission cooldown before releasing lock
+    // Without this, next task dispatches before CC CLI fully settles
+    if (config.MAX_CONCURRENT_MISSIONS > 1) {
+      await sleep(2000); // 2s cooldown between missions on same worker
+    }
     // 🔒 GUARANTEED CLEANUP: Always clear per-worker lock on exit
     clearWorkerLock(workerIdx);
   }
@@ -921,7 +1034,7 @@ function isOverheating() {
   if (metrics.load > 4.0) {
     // ACTIVE INTERVENTION: Monitor & Support
     const coolingTime = 10000; // 10s Cooling Nap
-    try { fs.appendFileSync(config.THERMAL_LOG, `[${new Date().toISOString()}] 🔥 HIGH LOAD (${metrics.load}). Intervening... Sleeping ${coolingTime / 1000}s\n`); } catch(e) {}
+    try { fs.appendFileSync(config.THERMAL_LOG, `[${new Date().toISOString()}] 🔥 HIGH LOAD (${metrics.load}). Intervening... Sleeping ${coolingTime / 1000}s\n`); } catch (e) { }
 
     // We intentionally block here to force the system to slow down.
     // This supports the machine as requested ("can thiệp hỗ trợ").
