@@ -87,7 +87,7 @@ process.on('unhandledRejection', (reason) => {
 });
 
 // --- Import modules ---
-const { spawnBrain, killBrain, log } = require('./lib/brain-tmux');
+const { spawnBrain, killBrain, log } = require('./lib/brain-process-manager');
 const { startWatching, stopWatching } = require('./lib/task-queue');
 const { startAutoCTO, stopAutoCTO } = require('./lib/auto-cto-pilot');
 const { startScanner, stopScanner } = require('./lib/project-scanner');
@@ -95,6 +95,19 @@ const { startLearningEngine, stopLearningEngine } = require('./lib/learning-engi
 const { startCooling, stopCooling } = require('./lib/m1-cooling-daemon');
 const { startMonitor: startHealer, stopMonitor: stopHealer } = require('./lib/self-healer');
 const { startLobsterPilot, stopLobsterPilot } = require('./lib/lobster-proxy-pilot');
+// AGI Level 6: Self-Evolving Engine
+const { checkEvolutionTriggers } = require('./lib/evolution-engine');
+// AGI Level 7: Multi-Project Commander
+const { startCommander, stopCommander } = require('./lib/project-commander');
+let evolutionInterval = null;
+function startEvolutionEngine() {
+  checkEvolutionTriggers(); // Run immediately on boot
+  evolutionInterval = setInterval(checkEvolutionTriggers, 2 * 60 * 60 * 1000); // Every 2h
+  log('BOOT OK: startEvolutionEngine (Level 6)');
+}
+function stopEvolutionEngine() {
+  if (evolutionInterval) { clearInterval(evolutionInterval); evolutionInterval = null; }
+}
 
 // --- v2026.2.13: Write-ahead queue for crash recovery (#15636) ---
 const WAL_FILE = path.join(config.WATCH_DIR, '.wal.json');
@@ -165,6 +178,8 @@ clearStaleState();
 log('--- MISSION CONTROL v2026.2.17 ONLINE (FIX: CTO phản xạ) ---');
 
 // FIX #2: Task queue PHẢI ưu tiên số 1 — scan TRƯỚC spawn brain
+// Archive processed missions AFTER dispatch
+const { archiveProcessedMissions } = require('./lib/task-queue');
 safeBoot('startWatching', startWatching);
 safeBoot('spawnBrain', spawnBrain);
 // 防 PROXY_RULES: Validate config alignment BEFORE dispatching any mission
@@ -180,6 +195,10 @@ safeBoot('startAutoCTO', startAutoCTO);
 safeBoot('startScanner', startScanner);
 // AGI Level 5: Self-Learning Engine (Dụng Gián)
 safeBoot('startLearningEngine', startLearningEngine);
+// AGI Level 6: Self-Evolving Engine (九地)
+safeBoot('startEvolutionEngine', startEvolutionEngine);
+// AGI Level 7: Multi-Project Commander (火攻)
+safeBoot('startCommander', startCommander);
 safeBoot('startCooling', startCooling);
 safeBoot('startHealer', startHealer);
 // 🦞 Lobster Proxy Pilot (Guardian of Quota)
@@ -202,6 +221,8 @@ function shutdown(sig) {
   try { stopAutoCTO(); } catch (e) { log(`Shutdown error (stopAutoCTO): ${e.message}`); }
   try { stopScanner(); } catch (e) { log(`Shutdown error (stopScanner): ${e.message}`); }
   try { stopLearningEngine(); } catch (e) { log(`Shutdown error (stopLearningEngine): ${e.message}`); }
+  try { stopEvolutionEngine(); } catch (e) { log(`Shutdown error (stopEvolutionEngine): ${e.message}`); }
+  try { stopCommander(); } catch (e) { log(`Shutdown error (stopCommander): ${e.message}`); }
   try { stopCooling(); } catch (e) { log(`Shutdown error (stopCooling): ${e.message}`); }
   try { stopHealer(); } catch (e) { log(`Shutdown error (stopHealer): ${e.message}`); }
   try { stopLobsterPilot(); } catch (e) { log(`Shutdown error (stopLobsterPilot): ${e.message}`); }
@@ -217,6 +238,8 @@ process.on('SIGUSR1', () => {
   try { stopWatching(); } catch (e) { }
   try { stopScanner(); } catch (e) { }
   try { stopLearningEngine(); } catch (e) { }
+  try { stopEvolutionEngine(); } catch (e) { }
+  try { stopCommander(); } catch (e) { }
   try { stopCooling(); } catch (e) { }
   try { stopHealer(); } catch (e) { }
   try { stopLobsterPilot(); } catch (e) { }
@@ -225,6 +248,8 @@ process.on('SIGUSR1', () => {
   safeBoot('startWatching', startWatching);
   safeBoot('startScanner', startScanner);
   safeBoot('startLearningEngine', startLearningEngine);
+  safeBoot('startEvolutionEngine', startEvolutionEngine);
+  safeBoot('startCommander', startCommander);
   safeBoot('startCooling', startCooling);
   safeBoot('startHealer', startHealer);
   safeBoot('startLobsterPilot', startLobsterPilot);

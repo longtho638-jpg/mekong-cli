@@ -261,7 +261,7 @@ async function waitForPrompt(timeoutMs = 120000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if (hasPrompt(capturePane())) return true;
-    await sleep(2000);
+    await sleep(1000);
   }
   return false;
 }
@@ -521,12 +521,38 @@ async function respawnBrain(useContinue = true) {
 }
 
 // --- Per-Worker Mission Lock (enables parallel dispatch) ---
+const STALE_LOCK_THRESHOLD_MS = 30 * 60 * 1000; // 30min — Ch.2 作戰: 日費千金
+
 function workerLockFile(idx) {
   return require('path').join(__dirname, '..', `.mission-active-P${idx}.lock`);
 }
 
+/**
+ * Level 6 Fix: Auto-clean stale locks
+ * If lock file age > 30min, mission is dead — clean up
+ * Prevents MISSION BLOCKED false positive
+ */
+function autoCleanStaleLock(idx) {
+  const lockPath = workerLockFile(idx);
+  try {
+    if (!fs.existsSync(lockPath)) return;
+    const stat = fs.statSync(lockPath);
+    const ageMs = Date.now() - stat.mtimeMs;
+    if (ageMs > STALE_LOCK_THRESHOLD_MS) {
+      const content = fs.readFileSync(lockPath, 'utf-8').trim();
+      fs.unlinkSync(lockPath);
+      log(`[HEALER] 🔓 Stale lock P${idx} cleaned (age: ${Math.round(ageMs / 60000)}min, was: ${content})`);
+    }
+  } catch (e) {
+    // Lock disappeared between checks — safe to ignore
+  }
+}
+
 function isWorkerBusy(idx) {
-  try { return fs.existsSync(workerLockFile(idx)); } catch { return false; }
+  try {
+    autoCleanStaleLock(idx); // Level 6: always clean before checking
+    return fs.existsSync(workerLockFile(idx));
+  } catch { return false; }
 }
 
 // Legacy single-lock check: returns true if ANY worker is busy
@@ -634,7 +660,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
       const preState = detectState(preDispatch);
       if (preState === 'busy') {
         log(`ANTI-STACK: CC CLI still busy (attempt ${waitAttempt + 1}/12) — waiting 10s...`);
-        await sleep(2000);
+        await sleep(1000);
         continue;
       }
       if (preState === 'idle' || preState === 'complete' || preState === 'unknown') {
@@ -689,7 +715,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     let kickStartCount = 0;
 
     // Give CC CLI time to parse prompt and begin processing
-    await sleep(2000); // 🧬 FIX #5: Reduced from 5000→2000 for faster CTO response
+    await sleep(1000); // 🧬 AGI BRAIN UPGRADE: Reduced from 2000→1000 for faster response
 
     while (Date.now() < deadline) {
       if (!isSessionAlive()) {
@@ -839,8 +865,8 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
         lastLogTime = Date.now();
       }
 
-      // PROJECT FLASH: Ultra Speed Polling (1s)
-      await sleep(1000);
+      // PROJECT FLASH: Ultra Speed Polling (500ms for parallel mode)
+      await sleep(500);
     }
 
     // Timeout — send Ctrl+C and report

@@ -6,7 +6,7 @@
 
 const WorkerPool = require('./worker-pool');
 const config = require('../../config');
-const { log } = require('../brain-tmux'); // Re-use logger for consistency
+const { log } = require('../brain-process-manager'); // Re-use logger for consistency
 
 const { diagnoseFailure, getFallbackModel, truncatePrompt } = require('../mission-recovery');
 

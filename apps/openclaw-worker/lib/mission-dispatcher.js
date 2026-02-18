@@ -11,12 +11,49 @@
 
 const path = require('path');
 const config = require('../config');
-// ⚠️ CRITICAL: runMission MUST come from brain-tmux (tmux paste dispatch)
-// brain-process-manager does NOT export runMission (file-based = BROKEN)
-const { log } = require('./brain-process-manager');
-const { runMission } = require('./brain-tmux');
-const { isTeamMission, buildAgentTeamBlock, buildDecomposedPrompt, detectIntent } = require('./mission-complexity-classifier');
-const { getTopLessons } = require('./post-mortem-reflector');
+
+// 🛡️ Safe Logger Import
+let log = console.log;
+try {
+  const bpm = require('./brain-process-manager');
+  if (bpm.log) log = bpm.log;
+} catch (e) {
+  console.error(`WARN: brain-process-manager not found (${e.message}). Using console.log.`);
+}
+
+// 🛡️ Fallback: Try brain-process-manager
+let runMission;
+try {
+  const bpm = require('./brain-process-manager');
+  runMission = bpm.runMission;
+} catch (e) {
+  log(`CRITICAL: brain-process-manager not found!`);
+  runMission = async () => ({ success: false, result: 'no_brain_module', elapsed: 0 });
+}
+
+// 🛡️ Safe Module Imports
+let isTeamMission = () => false;
+let buildAgentTeamBlock = () => '';
+let buildDecomposedPrompt = () => '';
+let detectIntent = () => 'COOK';
+
+try {
+  const mcc = require('./mission-complexity-classifier');
+  isTeamMission = mcc.isTeamMission || isTeamMission;
+  buildAgentTeamBlock = mcc.buildAgentTeamBlock || buildAgentTeamBlock;
+  buildDecomposedPrompt = mcc.buildDecomposedPrompt || buildDecomposedPrompt;
+  detectIntent = mcc.detectIntent || detectIntent;
+} catch (e) {
+  log(`WARN: mission-complexity-classifier not found: ${e.message}`);
+}
+
+let getTopLessons = () => '';
+try {
+  const pmr = require('./post-mortem-reflector');
+  getTopLessons = pmr.getTopLessons || getTopLessons;
+} catch (e) {
+  log(`WARN: post-mortem-reflector not found: ${e.message}`);
+}
 
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
 const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
@@ -109,7 +146,8 @@ function buildPrompt(taskContent) {
       const memoryContent = require('fs').readFileSync(memoryFile, 'utf-8');
       // Extract GOTCHAS section (most critical)
       const gotchasMatch = memoryContent.match(/## GOTCHAS[\s\S]*?(?=##|$)/);
-      const gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 800) : ''; // Limit to 800 chars
+      // Token efficiency: Limit to 2000 chars (was 800)
+      const gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 2000) : '';
       memoryPrefix += gotchas ? `📜 MEMORY (GOTCHAS):\n${gotchas}\n\n` : '';
     }
   } catch (e) { /* silent fail — memory is optional */ }
@@ -133,7 +171,41 @@ function buildPrompt(taskContent) {
   // 🔒 IRON RULE (Chairman Decree 2026-02-17): MỌI prompt PHẢI dùng ClaudeKit command.
   // CẤM gửi raw text. PHẢI có /cook, /plan:hard, /debug, /plan:parallel, /review.
   // Đa luồng (10+ subagents) + Deep 10x thinking = BẮT BUỘC khi không overheat.
-  const claudekitEnforcement = 'CLAUDEKIT MANDATORY: Mọi task PHẢI dùng ClaudeKit commands (/cook, /plan:hard, /debug). PHẢI bật đa luồng subagents. PHẢI deep thinking. ';
+  // Deep Reference: knowledge/CLAUDEKIT_DEEP_REFERENCE.md (28 commands, 13 agents, 50+ skills)
+
+  // Calculate complexity for token optimization
+  const s = safe.toLowerCase();
+  const isBugFix = /\b(debug|fix|error|bug|broken|fail|crash|500|404)\b/i.test(s);
+  const isReview = /\b(review|audit|security|scan)\b/i.test(s);
+  const isDocs = /\b(document|docs|readme|changelog)\b/i.test(s);
+  const isCI = /\b(ci|cd|build.*fail|pipeline|deploy)\b/i.test(s);
+  const isCRO = /\b(conver|cro|optimize.*rate|a\/b)\b/i.test(s);
+  const isTest = /\b(test|spec|coverage|e2e)\b/i.test(s);
+  const isComplex = s.length > 300 || /\b(architect|refactor|migrate|overhaul|redesign|multi)\b/i.test(s);
+  const isStrategic = /\b(strateg|portfolio|cross.?project|multi.?project)\b/i.test(s);
+
+  const claudekitRouting = (() => {
+    if (isBugFix) return 'USE: /debug "issue" --parallel → /plan:fast "fix" → /cook "apply" --parallel --auto → /test → /check-and-commit. [軍形Ch.4+行軍Ch.9] ';
+    if (isReview) return 'USE: /review:codebase --parallel (PARALLEL multi-agent audit). [謀攻Ch.3: 知己知彼] ';
+    if (isDocs) return 'USE: /docs:update --parallel (or /docs:init, /docs:summarize). [用間Ch.13: 情報] ';
+    if (isCI) return 'USE: /plan:ci → analyze CI failures → /cook "fix" --parallel --auto → /test. [行軍Ch.9: 偵察先行] ';
+    if (isCRO) return 'USE: /plan:cro → conversion optimization plan → /cook --parallel --auto. [虛實Ch.6: 避實擊虛] ';
+    if (isTest) return 'USE: /test (unit) or /test:ui (E2E/visual). [軍形Ch.4: 先為不可勝] ';
+    if (isStrategic) return 'USE: /plan:parallel "task" [5] → multi-researcher deep analysis → phased /cook --parallel --auto. [兵勢Ch.5: 奇正相生] ';
+    if (isComplex) return 'USE: /plan:hard "task" → detailed plan with research → /cook "implement as planned" --parallel --auto → /test → /check-and-commit. [謀攻Ch.3: 上兵伐謀] ';
+    return 'USE: /cook "task" --parallel --auto. 🔥LỬA mode BẮT BUỘC. [作戰Ch.2: 兵貴勝不貴久] ';
+  })();
+
+  // Token Efficiency: Dynamic Context Injection
+  let claudekitEnforcement;
+  if (!isComplex && !isStrategic && safe.length < 200) {
+    // Simple task: Minimal prompt
+    claudekitEnforcement = `CLAUDEKIT v2.9.1: ${claudekitRouting}CẤM raw text. PHẢI dùng ClaudeKit commands.`;
+  } else {
+    // Complex task: Full context
+    claudekitEnforcement = `CLAUDEKIT v2.9.1 MANDATORY: ${claudekitRouting}CẤM raw text. PHẢI dùng ClaudeKit commands. Available: /cook /plan:hard /plan:fast /plan:parallel /plan:ci /plan:cro /debug /test /test:ui /review /review:codebase /docs:update /check-and-commit /kanban /watzup /journal /ask. Agents: planner, fullstack-developer, debugger, tester, code-reviewer, researcher (auto-orchestrated). Đa luồng 10+ subagents + deep thinking BẮT BUỘC. `;
+  }
+
   const mandatePrefix = `${memoryPrefix}${adaptiveMandate}${claudekitEnforcement}`;
 
   // 🔥 NEW: Multi-Cook Chaining for complex tasks (check BEFORE intent detection)
@@ -172,7 +244,7 @@ function buildPrompt(taskContent) {
   const intent = detectIntent(safe);
 
   // MULTI_FIX: parallel bug fixing (2+ bug/error keywords detected)
-  if (intent === 'MULTI_FIX') return `${mandatePrefix}/fix "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel --auto`;
+  if (intent === 'MULTI_FIX') return `${mandatePrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} PHẢI dùng đa luồng 10+ subagents." --parallel --auto`;
 
   // STRATEGIC: large-scale architecture/redesign → deep parallel planning
   if (intent === 'STRATEGIC') return `${mandatePrefix}/plan:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
@@ -185,15 +257,15 @@ function buildPrompt(taskContent) {
     }
 
     const decomposed = buildDecomposedPrompt(safe, 'default');
-    if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+    if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel`;
     if (intent === 'PLAN' || intent === 'RESEARCH') return `${mandatePrefix}/plan:hard "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
-    if (intent === 'REVIEW') return `${mandatePrefix}/review:codebase "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+    if (intent === 'REVIEW') return `${mandatePrefix}/review:codebase "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel`;
 
     return `${mandatePrefix}/plan:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${decomposed}"`;
   }
 
-  if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}" --fast`;
-  if (intent === 'REVIEW') return `${mandatePrefix}/review "${VI_PREFIX}${safe}"`;
+  if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}" --parallel`;
+  if (intent === 'REVIEW') return `${mandatePrefix}/review "${VI_PREFIX}${safe}" --parallel`;
 
   return `${mandatePrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} PHẢI dùng đa luồng 10+ subagents parallel. 風林火山: 🔥LỬA mode — Agent Teams parallel execution." --parallel --auto`;
 }
