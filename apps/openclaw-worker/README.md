@@ -55,9 +55,7 @@ openclaw-worker/
 ├── config.js                    # ⚙️ Configuration
 ├── restore_swarm.sh             # 🦞 One-command launcher
 ├── lib/
-│   ├── brain-tmux.js            # Tmux interactive mode (default)
-│   ├── brain-headless-per-mission.js  # Headless claude -p mode
-│   ├── brain-vscode-terminal.js # VS Code terminal mode
+│   ├── brain-process-manager.js # Unified Brain Manager
 │   ├── task-queue.js            # File watcher + dispatch queue
 │   ├── mission-dispatcher.js    # Prompt builder + routing
 │   ├── self-healer.js           # Auto-recovery + health checks
@@ -66,18 +64,16 @@ openclaw-worker/
     └── processed/               # Completed missions archived here
 ```
 
-## 🧠 Three Brain Modes
+## 🧠 Brain Modes
 
-| Mode | File | Best For |
-|------|------|----------|
-| **Tmux Interactive** | `brain-tmux.js` | Visual — see ClaudeKit TUI |
-| **Headless** | `brain-headless-per-mission.js` | Servers — no display needed |
-| **VS Code Terminal** | `brain-vscode-terminal.js` | VS Code / Antigravity users |
+The **Brain Process Manager** (`lib/brain-process-manager.js`) handles all execution modes automatically:
 
-Switch in `task-watcher.js` line 40:
-```javascript
-const { spawnBrain, killBrain, log } = require('./lib/brain-tmux');
-```
+| Mode | Description |
+|------|-------------|
+| **Tmux Interactive** | Visual mode running inside tmux (default) |
+| **Direct Process** | Headless mode for server environments |
+
+Switch via `config.js` or environment variables.
 
 ## ⚙️ Configuration
 

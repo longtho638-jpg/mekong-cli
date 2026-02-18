@@ -43,7 +43,7 @@ let thermalLogRef = null;
 let overheating = false;
 let lastLoad = 0;
 let lastLoadTime = Date.now();
-const VELOCITY_THRESHOLD = 10.0; // 🔒 Chairman Fix v2: 5.0 still false-triggers during scanner npm builds (velocity 5.93 at load 19)
+const VELOCITY_THRESHOLD = 5.0; // 🔒 Chairman Fix v3: 5.0 tuned for Sub-5s response (Bug #13)
 
 // --- System metrics ---
 

@@ -1,5 +1,5 @@
 /**
- * Brain Process Manager (formerly brain-tmux)
+ * Brain Process Manager
  *
  * Manages the CC CLI process via tmux session for robustness and interactivity.
  *

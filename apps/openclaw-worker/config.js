@@ -27,7 +27,7 @@ const config = {
   TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 phút — 🌲RỪNG
   TIMEOUT_COMPLEX: 60 * 60 * 1000,    // 60 phút — 🔥LỬA
   TIMEOUT_STRATEGIC: 90 * 60 * 1000,  // 90 phút — ⛰️NÚI (BMAD workflows)
-  POLL_INTERVAL_MS: 2000, // ⚡ NORMAL SPEED: 2000ms Polling (Fixed Bug #1: High CPU)
+  POLL_INTERVAL_MS: 100, // ⚡ ULTRA SPEED: 100ms Polling (Bug #14: Sub-5s response)
   COOLING_INTERVAL_MS: 90000,
   SCANNER_INTERVAL_MS: 30 * 60 * 1000, // 30 mins — Level 4 Scanner
   AUTO_CTO_EMPTY_THRESHOLD: 10, // 10 polls × 0.2s = 2s idle → generate next task

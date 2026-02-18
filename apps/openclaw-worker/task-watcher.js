@@ -15,7 +15,7 @@
  *
  * Modules:
  *   config.js                    — All constants, paths, env vars
- *   lib/brain-tmux.js            — Tmux brain (CC CLI interactive session)
+ *   lib/brain-process-manager.js — Unified Brain Manager (Tmux/Direct/Headless)
  *   lib/mission-dispatcher.js    — Prompt building, project routing
  *   lib/task-queue.js            — File watching, queuing, archiving
  *   lib/auto-cto-pilot.js        — Binh Phap auto-task generation
