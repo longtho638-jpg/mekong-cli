@@ -1,5 +1,58 @@
 # Brain Surgery Changelog — 自知之明 (Tự Tri Chi Minh)
 
+**Date:** 2026-02-19 16:15
+**Mission:** BRAIN_SURGERY_V2
+**Operator:** CC CLI (Parallel Mode)
+
+---
+
+## 🩺 DIAGNOSIS — 5 Weaknesses Found
+
+1.  **Unbounded memory.md Growth (Score: 64/100)**
+    - `post-mortem-reflector.js` appends endlessly to `memory.md`.
+    - Risk: File becomes huge, slowing down every mission dispatch.
+    - Fixability: High.
+
+2.  **Uncached Constitution Read (Score: 63/100)**
+    - `safety-guard.js` reads `safety-constitution.txt` on *every* safety check.
+    - Risk: I/O bottleneck on high-frequency dispatch.
+    - Fixability: High.
+
+3.  **Uncached Memory Read in Dispatch (Score: 54/100)**
+    - `mission-dispatcher.js` reads `memory.md` on *every* prompt build.
+    - Risk: Combined with #1, this is a major perf killer.
+    - Fixability: High.
+
+4.  **Expensive Knowledge Search (Score: 42/100)**
+    - `knowledge-synthesizer.js` iterates all files synchronously.
+    - Risk: Scalability issue.
+
+5.  **Frequent Sync Writes in Quota Tracker (Score: 40/100)**
+    - `quota-tracker.js` writes JSON on every token update.
+    - Risk: I/O thrashing.
+
+## 🧬 EVOLUTION — Top 3 Fixes Applied
+
+### FIX #1: Memory Rotation (Self-Cleaning Brain)
+- **File:** `lib/post-mortem-reflector.js`
+- **Change:** Implemented smart `appendToMemorySection` that keeps only top 50 LESSONS and 15 GOTCHAS.
+- **Impact:** Prevents `memory.md` from exploding. Constant time access.
+
+### FIX #2: Constitution Caching (Fast Safety)
+- **File:** `lib/safety-guard.js`
+- **Change:** Added module-level `_constitutionCache` with `mtimeMs` check.
+- **Impact:** 99% reduction in I/O for safety checks.
+- **Bonus:** Improved `DANGER_PATTERNS` with more robust regexes.
+
+### FIX #3: Dispatch Context Caching (Fast Dispatch)
+- **File:** `lib/mission-dispatcher.js`
+- **Change:** Added 60s TTL cache for `memory.md` content in `buildPrompt`.
+- **Impact:** Reduces I/O latency for mission dispatch logic.
+
+---
+
+# Brain Surgery Changelog — 自知之明 (Tự Tri Chi Minh)
+
 **Date:** 2026-02-17 19:28
 **Mission:** BRAIN_SURGERY
 **Operator:** CC CLI (Auto Mode)

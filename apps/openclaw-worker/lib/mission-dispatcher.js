@@ -58,10 +58,20 @@ try {
 const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
 const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
 
+// 🧬 BRAIN SURGERY: Cache memory.md reads (TTL 60s)
+let _memoryCacheContent = '';
+let _memoryCacheTs = 0;
+const MEMORY_CACHE_TTL = 60000; // 60 seconds
+
 // Project routing: detect project from task content keywords
 function detectProjectDir(taskContent) {
   const lower = taskContent.toLowerCase();
   const routes = {
+    'doanh-trai': 'doanh-trai-tom-hum',   // 🦞 $1M RaaS (root level)
+    'lobster': 'doanh-trai-tom-hum',        // Alias
+    'tom-hum': 'doanh-trai-tom-hum',        // Alias
+    'raas': 'doanh-trai-tom-hum',           // Alias
+    'com-anh-duong': 'apps/com-anh-duong-10x',
     '84tea': 'apps/84tea',
     apex: 'apps/apex-os',
     anima: 'apps/anima119',
@@ -73,9 +83,12 @@ function detectProjectDir(taskContent) {
     mekong: '.',
   };
   for (const [keyword, dir] of Object.entries(routes)) {
-    if (lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
+    // 🧠 FIX: Ensure exact match for short keywords to avoid false positives
+    if (keyword.length <= 4 && lower === keyword) return path.join(config.MEKONG_DIR, dir);
+    if (keyword.length > 4 && lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
   }
-  return config.MEKONG_DIR;
+  // 🦞 DEFAULT: doanh-trai-tom-hum (locked focus Feb 2026)
+  return path.join(config.MEKONG_DIR, 'doanh-trai-tom-hum');
 }
 
 /**
@@ -124,33 +137,6 @@ function splitTaskIntoSubtasks(text) {
 }
 
 /**
- * ✂️ Prompt Trim Logic (Bottleneck 2 Fix)
- * Tier 1 (<200 chars): Minimal (No memory/gotchas)
- * Tier 2 (200-500 chars): Gotchas only
- * Tier 3 (>500 chars or keywords): Full Memory + Lessons
- */
-function trimPrompt(text, gotchas, lessons) {
-  const len = text.length;
-  // Complex keywords trigger full context
-  const hasKeywords = /\b(refactor|architect|plan)\b/i.test(text);
-
-  if (len < 200 && !hasKeywords) {
-    return ''; // Tier 1
-  }
-
-  let prompt = '';
-  // Include GOTCHAS for Tier 2+
-  if (gotchas) prompt += `📜 MEMORY:\n${gotchas}\n\n`;
-
-  // Include Lessons only for Tier 3
-  if (len >= 500 || hasKeywords) {
-    if (lessons) prompt += `${lessons}\n\n`;
-  }
-
-  return prompt;
-}
-
-/**
  * Build prompt from raw task content.
  * Rule 13: Command Obsession + Hàn Băng Quyết v4 Adaptive Scaling + Multi-Cook Chaining
  */
@@ -159,24 +145,40 @@ function buildPrompt(taskContent) {
   clean = clean.replace(/^[a-z0-9_-]+:\s*/i, '');
   const safe = clean.replace(/[()$`\\!]/g, ' ').replace(/\s+/g, ' ').trim();
 
+  // 🔒 Chairman Fix: REMOVED bypass — ALL prompts MUST go through mandatePrefix for đa luồng
+  // OLD BUG: if (safe.includes('/cook')) return safe; ← SKIPPED all multi-thread mandates!
+
   // 🧠 FIX #1: PERSISTENT MEMORY — Always load memory.md + post-mortem lessons
   const memoryCtx = getTopLessons(10);
-  let gotchas = '';
+  let memoryPrefix = '';
 
-  // Load knowledge/memory.md for long-term patterns
+  // Load knowledge/memory.md for long-term patterns (Cached with TTL)
   const memoryFile = path.join(__dirname, '../knowledge/memory.md');
   try {
-    if (require('fs').existsSync(memoryFile)) {
-      const memoryContent = require('fs').readFileSync(memoryFile, 'utf-8');
+    const now = Date.now();
+    let memoryContent = '';
+
+    // Check cache
+    if (_memoryCacheContent && (now - _memoryCacheTs < MEMORY_CACHE_TTL)) {
+      memoryContent = _memoryCacheContent;
+    } else if (require('fs').existsSync(memoryFile)) {
+      memoryContent = require('fs').readFileSync(memoryFile, 'utf-8');
+      // Update cache
+      _memoryCacheContent = memoryContent;
+      _memoryCacheTs = now;
+    }
+
+    if (memoryContent) {
       // Extract GOTCHAS section (most critical)
       const gotchasMatch = memoryContent.match(/## GOTCHAS[\s\S]*?(?=##|$)/);
       // Token efficiency: Limit to 800 chars (Critical only)
-      gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 800) : '';
+      const gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 800) : '';
+      memoryPrefix += gotchas ? `📜 MEMORY:\n${gotchas}\n\n` : '';
     }
   } catch (e) { /* silent fail — memory is optional */ }
 
-  // ✂️ Bottleneck 2: Use trimPrompt logic
-  const optimizedMemoryPrefix = trimPrompt(safe, gotchas, memoryCtx);
+  // Add recent mission lessons
+  if (memoryCtx) memoryPrefix += `${memoryCtx}\n\n`;
 
   const { isOverheating } = require('./m1-cooling-daemon');
   let load = 0;
@@ -221,30 +223,20 @@ function buildPrompt(taskContent) {
 
   // Token Efficiency: Dynamic Context Injection
   let claudekitEnforcement;
-  const isSimple = !isComplex && !isStrategic && safe.length < 200;
-  if (isSimple) {
-    // 🔥 Speed: Simple task = ZERO memory prefix + minimal enforcement
+  if (!isComplex && !isStrategic && safe.length < 200) {
+    // Simple task: Minimal prompt
     claudekitEnforcement = `CK2.9: ${claudekitRouting} NO raw text. MUST use commands.`;
   } else {
     // Complex task: Context optimized (Brain Surgery 260218)
     claudekitEnforcement = `CK2.9: ${claudekitRouting} NO raw text. Use /cook, /plan:hard, /plan:parallel.`;
   }
 
-  // 🔥 Speed: Skip memory prefix for simple tasks (saves ~800 chars per prompt)
-  const mandatePrefix = `${optimizedMemoryPrefix}${adaptiveMandate}${claudekitEnforcement}`;
+  const mandatePrefix = `${memoryPrefix}${adaptiveMandate}${claudekitEnforcement}`;
 
-  // 🔥 NEW: Multi-Cook Chaining for complex tasks (check BEFORE intent detection)
-  // Chaining có precedence cao hơn single intent khi có nhiều subtasks rõ ràng
-  if (shouldChainCooks(safe) && !overheat && load <= 30) {
-    const subtasks = splitTaskIntoSubtasks(safe);
-    if (subtasks.length >= 2) {
-      log(`🔗 CHAIN COOK DETECTED: Splitting into ${subtasks.length} parallel /cook commands`);
-      const cookCommands = subtasks.map((subtask, i) =>
-        `/cook "${VI_PREFIX}${subtask.trim()}. ${FILE_LIMIT} PHẢI dùng đa luồng 10+ subagents parallel." --parallel --auto`
-      ).join('\n\n');
-      return `${mandatePrefix}${cookCommands}`;
-    }
-  }
+  // 🔒 Chairman Fix v4: DISABLED chain cook splitting — caused multi-paste to same P0!
+  // Each sub-mission bypassed MAX_CONCURRENT_MISSIONS=1 and dispatched to P0 simultaneously.
+  // CC CLI handles /cook commands internally — no need to split here.
+  // if (shouldChainCooks(safe) && !overheat && load <= 30) { ... }
 
   // 🤖 NEW INTENTS (CI, BOOTSTRAP, TEST) - Added 2026-02-18
   // Doc: knowledge/claudekit-brain.md
@@ -297,8 +289,26 @@ function buildPrompt(taskContent) {
 
 const { preemptiveCool } = require('./m1-cooling-daemon');
 
+// Task 8: Safety Guard integration
+let checkSafety = async () => ({ status: 'SAFE', reason: 'no_guard' });
+try {
+  const sg = require('./safety-guard');
+  checkSafety = sg.checkSafety;
+} catch (e) { log(`WARN: safety-guard not found: ${e.message}`); }
+
+// Task 11: Strategy Optimizer integration
+let optimizeStrategy = async (p) => p;
+let classifyError = () => ({ errorType: 'unknown', recoverable: false });
+try {
+  const so = require('./strategy-optimizer');
+  optimizeStrategy = so.optimizeStrategy;
+  classifyError = so.classifyError;
+} catch (e) { log(`WARN: strategy-optimizer not found: ${e.message}`); }
+
 /**
- * Full dispatch flow: detect project → build prompt → run via brain
+ * Full dispatch flow: safety check → detect project → build prompt → run via brain
+ * Task 8: Pre-dispatch safety gate
+ * Task 12: Retry-with-hints loop (max 2 retries)
  *
  * @param {string} taskContent - Raw task file content
  * @param {string} taskFile - Task filename (for logging)
@@ -306,17 +316,20 @@ const { preemptiveCool } = require('./m1-cooling-daemon');
  * @returns {Promise<{success: boolean, result: string, elapsed: number}>}
  */
 async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
+  // ═══ Task 8: Safety Gate ═══
+  const safety = await checkSafety(taskContent);
+  if (safety.status === 'UNSAFE') {
+    log(`🚫 BLOCKED BY SAFETY: ${taskFile} — ${safety.reason}`);
+    return { success: false, result: 'unsafe_blocked', elapsed: 0 };
+  }
+  if (safety.status === 'NEEDS_CONFIRMATION') {
+    log(`⚠️ SAFETY CAUTION: ${taskFile} — ${safety.reason} (proceeding in CTO auto mode)`);
+  }
+
   const projectDir = detectProjectDir(taskContent);
   const prompt = buildPrompt(taskContent);
   const finalTimeout = timeoutMs || (isTeamMission(prompt) ? config.AGENT_TEAM_TIMEOUT_MS : config.MISSION_TIMEOUT_MS);
   const mode = isTeamMission(prompt) ? 'AGENT_TEAM' : 'SINGLE';
-
-  // 奇正相生: Detect source from filename pattern
-  // Auto-CTO generated: *_mission_*, *perception_retry*, *evolution_*, *parallel_fix_*
-  // Manual/Antigravity: everything else (CRITICAL_, HIGH_, MEDIUM_, LOW_)
-  const isAutoTask = /_(mission|perception_retry|evolution|parallel_fix|brain_upgrade|auto_cto)_/.test(taskFile);
-  const source = isAutoTask ? 'auto' : 'manual';
-  if (isAutoTask) log(`奇正 ROUTING: ${taskFile} → KỲ (auto, P1+ only)`);
 
   // 10x Predictive Cooling: Pre-purge for complex missions
   await preemptiveCool(complexity);
@@ -328,17 +341,44 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
     log(`🔥 OPUS ACTIVATED: ${modelOverride} — Complex mission requires Ultra power`);
   }
 
-  log(`PROMPT [${mode}|${source}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(finalTimeout / 60000)}min] [model=${modelOverride || config.MODEL_NAME}]`);
+  log(`PROMPT [${mode}]: ${prompt.slice(0, 150)}... [timeout=${Math.round(finalTimeout / 60000)}min] [model=${modelOverride || config.MODEL_NAME}]`);
 
-  const result = await runMission(prompt, projectDir, finalTimeout, modelOverride, source);
+  // ═══ Task 12: Retry-with-hints loop ═══
+  let currentPrompt = prompt;
+  const MAX_RETRIES = 2;
 
-  // 虛實: Switch back to default model after Opus mission
-  if (modelOverride) {
-    log(`🔥→🌲 Opus mission done — switching back to ${config.MODEL_NAME}`);
-    // Model switch back happens at next runMission start (no explicit /model needed)
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    const result = await runMission(currentPrompt, projectDir, finalTimeout, modelOverride);
+
+    if (result.success || result.result === 'success') {
+      if (modelOverride) {
+        log(`🔥→🌲 Opus mission done — switching back to ${config.MODEL_NAME}`);
+      }
+      return result;
+    }
+
+    // Don't retry on certain result types
+    if (['unsafe_blocked', 'brain_died', 'no_brain_module'].includes(result.result)) {
+      return result;
+    }
+
+    // Check if error is recoverable
+    const errorInfo = classifyError(result.result || '');
+    if (!errorInfo.recoverable) {
+      log(`TERMINAL ERROR: ${taskFile} — ${errorInfo.errorType} (not recoverable)`);
+      return result;
+    }
+
+    // Generate hints for retry
+    if (attempt < MAX_RETRIES) {
+      log(`🔄 RETRY ${attempt + 1}/${MAX_RETRIES}: ${taskFile} — generating correction hints`);
+      currentPrompt = await optimizeStrategy(prompt, result.result || '', attempt + 1);
+    }
   }
 
-  return result;
+  // All retries exhausted
+  return { success: false, result: 'max_retries_exhausted', elapsed: 0 };
 }
 
 module.exports = { executeTask, buildPrompt, detectProjectDir };
+

@@ -129,15 +129,14 @@ function detectGotchaPattern(data) {
 }
 
 /**
- * Append a line to a specific section in memory.md
- * @param {string} section - 'LESSONS', 'GOTCHAS', or 'STRENGTHS'  
+ * Append a line to a specific section in memory.md (with Rotation)
+ * @param {string} section - 'LESSONS', 'GOTCHAS', or 'STRENGTHS'
  * @param {string} line - the line to append
  */
 function appendToMemorySection(section, line) {
     try {
         if (!fs.existsSync(MEMORY_FILE)) {
             log(`REFLECTOR: memory.md not found, creating...`);
-            // Create minimal memory file
             fs.writeFileSync(MEMORY_FILE, `# 🧠 TÔM HÙM MEMORY\n\n## LESSONS\n\n## GOTCHAS\n\n## STRENGTHS\n`);
         }
 
@@ -155,71 +154,94 @@ function appendToMemorySection(section, line) {
 
         const headerIndex = content.indexOf(header);
         if (headerIndex === -1) {
-            // Section not found, append at end
             content += `\n${header}\n\n${line}\n`;
         } else {
-            // Find the end of the header line
+            // Find insertion point (top of list/table)
+            let insertPos = -1;
             const afterHeader = content.indexOf('\n', headerIndex);
+
             if (afterHeader === -1) {
                 content += `\n${line}\n`;
             } else {
-                // Find the table header line (for LESSONS) or first content line
-                // Insert after the first blank line or separator after header
-                let insertPos = afterHeader + 1;
-
-                // Skip past table headers and separators for LESSONS
                 if (section === 'LESSONS') {
-                    // Find the table rows area (after |---|)
+                    // Find table start (after |---|)
                     const tableHeaderEnd = content.indexOf('|---', headerIndex);
                     if (tableHeaderEnd !== -1) {
                         const afterTableHeader = content.indexOf('\n', tableHeaderEnd);
-                        if (afterTableHeader !== -1) {
-                            insertPos = afterTableHeader + 1;
-                        }
+                        if (afterTableHeader !== -1) insertPos = afterTableHeader + 1;
+                    }
+                } else {
+                    // Find first blank line or placeholder
+                    const nextSection = content.indexOf('## ', headerIndex + 5);
+                    const sectionEnd = nextSection !== -1 ? nextSection : content.length;
+
+                    // Look for placeholder to replace
+                    const placeholder = content.indexOf('- _(', headerIndex);
+                    if (placeholder !== -1 && placeholder < sectionEnd) {
+                         const placeholderEnd = content.indexOf('\n', placeholder);
+                         content = content.slice(0, placeholder) + content.slice(placeholderEnd + 1);
+                         insertPos = placeholder;
+                    } else {
+                        // Insert after header + newline
+                        insertPos = afterHeader + 1;
+                        // Skip empty lines
+                        while (insertPos < content.length && content[insertPos] === '\n') insertPos++;
                     }
                 }
 
-                // For GOTCHAS/STRENGTHS, find first blank line or "- _(" placeholder
-                if (section !== 'LESSONS') {
-                    // Remove placeholder if present
-                    const placeholder = content.indexOf('- _(Chưa có', headerIndex);
-                    if (placeholder !== -1 && placeholder < headerIndex + 200) {
-                        const placeholderEnd = content.indexOf('\n', placeholder);
-                        if (placeholderEnd !== -1) {
-                            content = content.slice(0, placeholder) + content.slice(placeholderEnd + 1);
-                        }
-                    }
-                    // Re-find insert position after potential removal
-                    const newAfterHeader = content.indexOf('\n', content.indexOf(header));
-                    insertPos = newAfterHeader + 1;
-                    // Skip blank lines and description
-                    while (insertPos < content.length && (content[insertPos] === '\n' || content[insertPos] === '>')) {
-                        insertPos = content.indexOf('\n', insertPos) + 1;
-                        if (insertPos === 0) break; // indexOf returned -1
-                    }
-                }
-
-                // Remove placeholder row for LESSONS
-                if (section === 'LESSONS') {
-                    const placeholder = content.indexOf('| _Chưa có mission', headerIndex);
-                    if (placeholder !== -1) {
-                        const placeholderEnd = content.indexOf('\n', placeholder);
-                        if (placeholderEnd !== -1) {
-                            content = content.slice(0, placeholder) + content.slice(placeholderEnd + 1);
-                            // Recalculate insertPos
-                            const tableHeaderEnd2 = content.indexOf('|---', headerIndex);
-                            if (tableHeaderEnd2 !== -1) {
-                                const afterTableHeader2 = content.indexOf('\n', tableHeaderEnd2);
-                                if (afterTableHeader2 !== -1) {
-                                    insertPos = afterTableHeader2 + 1;
-                                }
-                            }
-                        }
-                    }
-                }
+                if (insertPos === -1) insertPos = afterHeader + 1;
 
                 // Insert the new line
                 content = content.slice(0, insertPos) + line + '\n' + content.slice(insertPos);
+            }
+        }
+
+        // ROTATION LOGIC
+        if (section === 'LESSONS') {
+            const MAX_LESSONS = 50;
+            const lessonsStart = content.indexOf('## LESSONS');
+            const lessonsEnd = content.indexOf('\n## ', lessonsStart + 5);
+            const endPos = lessonsEnd !== -1 ? lessonsEnd : content.length;
+
+            const sectionContent = content.slice(lessonsStart, endPos);
+            const lines = sectionContent.split('\n');
+            const tableRows = lines.filter(l => l.trim().startsWith('|') && !l.includes('---') && !l.includes('Date'));
+
+            if (tableRows.length > MAX_LESSONS) {
+                // Keep header + separator + top N rows
+                const linesToKeep = [];
+                let rowCount = 0;
+                for (const l of lines) {
+                    if (l.trim().startsWith('|') && !l.includes('---') && !l.includes('Date')) {
+                        rowCount++;
+                        if (rowCount <= MAX_LESSONS) linesToKeep.push(l);
+                    } else {
+                        linesToKeep.push(l);
+                    }
+                }
+                content = content.slice(0, lessonsStart) + linesToKeep.join('\n') + content.slice(endPos);
+            }
+        } else if (section === 'GOTCHAS') {
+            const MAX_GOTCHAS = 15; // Keep top 15
+            const start = content.indexOf('## GOTCHAS');
+            const end = content.indexOf('\n## ', start + 5);
+            const endPos = end !== -1 ? end : content.length;
+
+            const sectionLines = content.slice(start, endPos).split('\n');
+            const items = sectionLines.filter(l => l.trim().startsWith('- **'));
+
+            if (items.length > MAX_GOTCHAS) {
+                 const linesToKeep = [];
+                 let count = 0;
+                 for (const l of sectionLines) {
+                     if (l.trim().startsWith('- **')) {
+                         count++;
+                         if (count <= MAX_GOTCHAS) linesToKeep.push(l);
+                     } else {
+                         linesToKeep.push(l);
+                     }
+                 }
+                 content = content.slice(0, start) + linesToKeep.join('\n') + content.slice(endPos);
             }
         }
 
@@ -279,3 +301,45 @@ function getTopLessons(n = 10) {
 }
 
 module.exports = { reflectOnMission, getTopLessons };
+
+// ═══ Task 13: Cross-module integration ═══
+// Post-mortem now triggers knowledge synthesis and skill generation
+// for high-value missions. This makes CTO learn reusable patterns.
+const _originalReflect = reflectOnMission;
+async function enhancedReflect(data) {
+    await _originalReflect(data);
+
+    // Only trigger for successful, complex missions
+    if (!data.success) return;
+    if ((data.duration || 0) < 120000) return; // Skip missions < 2min
+
+    try {
+        const { isLearnableMission, synthesizeKnowledge } = require('./knowledge-synthesizer');
+        if (isLearnableMission(data)) {
+            await synthesizeKnowledge({
+                missionId: data.missionId,
+                prompt: data.content || '',
+                logContent: data.buildResult?.output || '',
+                project: data.project,
+            });
+        }
+    } catch (e) { /* knowledge-synthesizer not available */ }
+
+    try {
+        const { generateSkill } = require('./skill-factory');
+        // Only generate skill for very successful complex missions
+        if ((data.tokensUsed || 0) > 5000 && data.buildResult?.build !== false) {
+            await generateSkill({
+                missionId: data.missionId,
+                prompt: data.content || '',
+                logContent: data.buildResult?.output || '',
+                project: data.project,
+                category: 'auto-detected',
+            });
+        }
+    } catch (e) { /* skill-factory not available */ }
+}
+
+// Override export
+module.exports = { reflectOnMission: enhancedReflect, getTopLessons };
+
