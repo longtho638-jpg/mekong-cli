@@ -93,15 +93,25 @@ export class AgentRegistry {
     register(agent: BaseAgent): void {
         const status = agent.getStatus();
         this.agents.set(status.id, agent);
-        console.log(`🦞 Agent registered: ${status.name} (${status.id})`);
     }
 
     async executeAll(): Promise<AgentResult[]> {
         const results: AgentResult[] = [];
         for (const [, agent] of this.agents) {
             if (agent.getStatus().enabled) {
-                const result = await agent.execute();
-                results.push(result);
+                try {
+                    const result = await agent.execute();
+                    results.push(result);
+                } catch (err) {
+                    const msg = err instanceof Error ? err.message : String(err);
+                    results.push({
+                        agentId: agent.getStatus().id,
+                        success: false,
+                        data: { error: msg },
+                        executionTimeMs: 0,
+                        timestamp: new Date().toISOString(),
+                    });
+                }
             }
         }
         return results;

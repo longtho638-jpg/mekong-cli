@@ -45,7 +45,8 @@ export function CreateMissionButton() {
         alert(`Error: ${data.error.message}`);
       }
     } catch (e) {
-      alert('Failed to create mission');
+      const msg = e instanceof Error ? e.message : 'Network error';
+      alert(`Failed to create mission: ${msg}`);
     } finally {
       setIsSubmitting(false);
     }

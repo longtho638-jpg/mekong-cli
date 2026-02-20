@@ -59,7 +59,6 @@ api.get("/agents/status", (c) => {
 // POST /api/agents/run — Execute agent swarm
 api.post("/agents/run", async (c) => {
     try {
-        console.log("🦞 Running Agent Swarm...");
         const results = await agentRegistry.executeAll();
         return c.json({
             success: true,
@@ -68,7 +67,6 @@ api.post("/agents/run", async (c) => {
         });
     } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : "Unknown error";
-        console.error("Agent execution failed:", msg);
         return c.json({
             success: false,
             error: msg,
@@ -274,15 +272,6 @@ app.route("/api", api);
 // ============================================
 
 const port = Number(process.env.PORT) || 8000;
-
-console.log(`
-╔══════════════════════════════════════════╗
-║  🦞 LOBSTER EMPIRE — API GATEWAY        ║
-║  Status: OPERATIONAL                     ║
-║  Port: ${String(port).padEnd(5)}                            ║
-║  Vibe: HIGH                              ║
-╚══════════════════════════════════════════╝
-`);
 
 serve({
     fetch: app.fetch,
