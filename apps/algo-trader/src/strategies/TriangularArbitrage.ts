@@ -18,10 +18,10 @@ export class TriangularArbitrage implements IStrategy {
     // Loop: BTC/USDT -> ETH/BTC -> ETH/USDT
 
     const priceBTC_USDT = candle.close;
-    const priceETH_BTC = candle.metadata?.priceETH_BTC;
-    const priceETH_USDT = candle.metadata?.priceETH_USDT;
+    const priceETH_BTC = candle.metadata?.priceETH_BTC as number | undefined;
+    const priceETH_USDT = candle.metadata?.priceETH_USDT as number | undefined;
 
-    if (!priceETH_BTC || !priceETH_USDT) {
+    if (typeof priceETH_BTC !== 'number' || typeof priceETH_USDT !== 'number') {
       return null;
     }
 

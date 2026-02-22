@@ -22,9 +22,9 @@ export class StatisticalArbitrage implements IStrategy {
   // Trong thực tế, IDataProvider cần cung cấp dữ liệu đồng bộ cho cả 2 tài sản.
   async onCandle(candle: ICandle): Promise<ISignal | null> {
     const priceA = candle.close;
-    const priceB = candle.metadata?.priceB;
+    const priceB = candle.metadata?.priceB as number | undefined;
 
-    if (priceB === undefined) {
+    if (typeof priceB !== 'number') {
       return null;
     }
 
