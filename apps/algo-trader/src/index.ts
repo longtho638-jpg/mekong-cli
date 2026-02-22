@@ -6,6 +6,10 @@ import { MockDataProvider } from './data/MockDataProvider';
 import { ExchangeClient } from './execution/ExchangeClient';
 import { BacktestRunner } from './backtest/BacktestRunner';
 import { logger } from './utils/logger';
+import * as dotenv from 'dotenv';
+
+// Load environment variables securely
+dotenv.config();
 
 const program = new Command();
 
@@ -50,7 +54,9 @@ program
 
     // Exchange Client
     // NOTE: In a real scenario, you'd load API keys from .env
-    const exchange = new ExchangeClient(options.exchange, process.env.API_KEY, process.env.API_SECRET);
+    const apiKey = process.env.EXCHANGE_API_KEY || process.env.API_KEY;
+    const apiSecret = process.env.EXCHANGE_SECRET || process.env.API_SECRET;
+    const exchange = new ExchangeClient(options.exchange, apiKey, apiSecret);
 
     const strategy = new RsiSmaStrategy();
 

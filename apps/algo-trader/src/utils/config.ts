@@ -2,8 +2,12 @@ import * as yaml from 'yaml';
 import * as fs from 'fs';
 import * as path from 'path';
 import { IConfig } from '../interfaces/IConfig';
+import * as dotenv from 'dotenv';
 
 import { logger } from './logger';
+
+// Load environment variables securely
+dotenv.config();
 
 export class ConfigLoader {
   private static config: IConfig;
@@ -16,8 +20,10 @@ export class ConfigLoader {
       this.config = yaml.parse(file) as IConfig;
 
       // Override with env vars if needed
-      if (process.env.API_KEY) this.config.exchange.apiKey = process.env.API_KEY;
-      if (process.env.API_SECRET) this.config.exchange.secret = process.env.API_SECRET;
+      const apiKey = process.env.EXCHANGE_API_KEY || process.env.API_KEY;
+      const apiSecret = process.env.EXCHANGE_SECRET || process.env.API_SECRET;
+      if (apiKey) this.config.exchange.apiKey = apiKey;
+      if (apiSecret) this.config.exchange.secret = apiSecret;
 
       return this.config;
     } catch (e) {
