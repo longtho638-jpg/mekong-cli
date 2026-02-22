@@ -54,9 +54,13 @@ export class ExchangeClient implements IExchange {
     const balance = await this.exchange.fetchBalance();
     const result: Record<string, IBalance> = {};
 
-    const total = balance.total as unknown as Record<string, number> | undefined;
-    const free = balance.free as unknown as Record<string, number> | undefined;
-    const used = balance.used as unknown as Record<string, number> | undefined;
+    // ccxt types balance.total/free/used as Dictionary<number> which is
+    // compatible with Record<string, number>. The double-cast through unknown
+    // is required because ccxt's internal Dictionary type is not exported.
+    type CurrencyMap = Record<string, number>;
+    const total = balance.total as unknown as CurrencyMap | undefined;
+    const free  = balance.free  as unknown as CurrencyMap | undefined;
+    const used  = balance.used  as unknown as CurrencyMap | undefined;
 
     if (total) {
       for (const [currency, amount] of Object.entries(total)) {
