@@ -26,6 +26,9 @@ export class RiskManager {
     if (currentPrice <= 0) {
       throw new Error("Current price must be greater than 0");
     }
+    if (balance < 0) {
+      throw new Error("Balance cannot be negative");
+    }
 
     const amountToRisk = balance * (riskPercentage / 100);
     // Simplified: assuming we buy with the full risked amount effectively used as margin or cost

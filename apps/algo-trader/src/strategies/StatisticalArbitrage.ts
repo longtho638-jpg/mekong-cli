@@ -88,5 +88,10 @@ export class StatisticalArbitrage implements IStrategy {
         this.pricesB.push(candle.metadata.priceB);
       }
     }
+    // Trim to lookbackPeriod to be consistent with onCandle behavior
+    if (this.pricesA.length > this.lookbackPeriod) {
+      this.pricesA = this.pricesA.slice(-this.lookbackPeriod);
+      this.pricesB = this.pricesB.slice(-this.lookbackPeriod);
+    }
   }
 }
