@@ -1,5 +1,5 @@
 import { IDataProvider } from '../interfaces/IDataProvider';
-import { ICandle } from '../interfaces/ICandle';
+import { ICandle, ICandleMetadata } from '../interfaces/ICandle';
 
 import { logger } from '../utils/logger';
 
@@ -76,7 +76,7 @@ export class MockDataProvider implements IDataProvider {
     // exchangeBPrice: Price for Cross-Exchange (slightly different from current)
     // priceETH_BTC, priceETH_USDT: Prices for Triangular (BTC/USDT -> ETH/BTC -> ETH/USDT)
     // priceB: Price for Statistical (correlated assets)
-    const metadata: Record<string, unknown> = {
+    const metadata: ICandleMetadata = {
       exchangeBPrice: close * (1 + (Math.random() - 0.5) * 0.005), // Spread up to 0.5%
       priceETH_BTC: 0.05 * (1 + (Math.random() - 0.5) * 0.002),
       priceETH_USDT: (close * 0.05) * (1 + (Math.random() - 0.5) * 0.002),

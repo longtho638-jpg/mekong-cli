@@ -14,7 +14,8 @@ export class CrossExchangeArbitrage implements IStrategy {
   async onCandle(candle: ICandle): Promise<ISignal | null> {
     // Giả định metadata chứa giá từ sàn giao dịch thứ 2 (Exchange B)
     const priceA = candle.close;
-    const priceB = candle.metadata?.exchangeBPrice as number | undefined;
+    // ICandleMetadata.exchangeBPrice is already typed as number | undefined — no cast needed
+    const priceB = candle.metadata?.exchangeBPrice;
 
     if (typeof priceB !== 'number') {
       return null;
