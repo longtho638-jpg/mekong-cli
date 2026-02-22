@@ -57,38 +57,28 @@ export class MacdCrossoverStrategy implements IStrategy {
 
     this.prevMacd = current;
 
-    // BUY: MACD line crosses above signal line (bullish crossover)
-    if (prev.MACD !== undefined && prev.signal !== undefined &&
-        current.MACD !== undefined && current.signal !== undefined &&
-        prev.MACD <= prev.signal && current.MACD > current.signal) {
-      return {
-        type: SignalType.BUY,
-        price: candle.close,
-        timestamp: candle.timestamp,
-        tag: 'macd_bullish_crossover',
-        metadata: {
-          macd: current.MACD,
-          signal: current.signal,
-          histogram: current.histogram
-        }
-      };
-    }
+    if (prev.MACD !== undefined && prev.signal !== undefined && current.MACD !== undefined && current.signal !== undefined) {
+      // BUY: MACD line crosses above signal line (bullish crossover)
+      if (prev.MACD <= prev.signal && current.MACD > current.signal) {
+        return {
+          type: SignalType.BUY,
+          price: candle.close,
+          timestamp: candle.timestamp,
+          tag: 'macd_bullish_crossover',
+          metadata: { macd: current.MACD, signal: current.signal, histogram: current.histogram }
+        };
+      }
 
-    // SELL: MACD line crosses below signal line (bearish crossover)
-    if (prev.MACD !== undefined && prev.signal !== undefined &&
-        current.MACD !== undefined && current.signal !== undefined &&
-        prev.MACD >= prev.signal && current.MACD < current.signal) {
-      return {
-        type: SignalType.SELL,
-        price: candle.close,
-        timestamp: candle.timestamp,
-        tag: 'macd_bearish_crossover',
-        metadata: {
-          macd: current.MACD,
-          signal: current.signal,
-          histogram: current.histogram
-        }
-      };
+      // SELL: MACD line crosses below signal line (bearish crossover)
+      if (prev.MACD >= prev.signal && current.MACD < current.signal) {
+        return {
+          type: SignalType.SELL,
+          price: candle.close,
+          timestamp: candle.timestamp,
+          tag: 'macd_bearish_crossover',
+          metadata: { macd: current.MACD, signal: current.signal, histogram: current.histogram }
+        };
+      }
     }
 
     return null;

@@ -54,14 +54,18 @@ export class ExchangeClient implements IExchange {
     const balance = await this.exchange.fetchBalance();
     const result: Record<string, IBalance> = {};
 
-    if (balance.total) {
-      for (const currency in balance.total) {
-        if ((balance.total as unknown as Record<string, number>)[currency] > 0) {
+    const total = balance.total as unknown as Record<string, number> | undefined;
+    const free = balance.free as unknown as Record<string, number> | undefined;
+    const used = balance.used as unknown as Record<string, number> | undefined;
+
+    if (total) {
+      for (const [currency, amount] of Object.entries(total)) {
+        if (amount > 0) {
           result[currency] = {
             currency,
-            free: (balance.free as unknown as Record<string, number>)[currency] || 0,
-            used: (balance.used as unknown as Record<string, number>)[currency] || 0,
-            total: (balance.total as unknown as Record<string, number>)[currency] || 0
+            free: free?.[currency] || 0,
+            used: used?.[currency] || 0,
+            total: amount
           };
         }
       }

@@ -64,9 +64,9 @@ export class BotEngine {
         logger.info(`[SIGNAL] ${signal.type} @ ${signal.price} (${JSON.stringify(signal.metadata)})`);
 
         if (signal.type === SignalType.BUY && !this.openPosition) {
-          await this.executeBuy(signal.price);
+          await this.executeTrade('buy', signal.price);
         } else if (signal.type === SignalType.SELL && this.openPosition) {
-          await this.executeSell(signal.price);
+          await this.executeTrade('sell', signal.price);
         }
       }
     } catch (error) {
@@ -74,55 +74,31 @@ export class BotEngine {
     }
   }
 
-  private async executeBuy(currentPrice: number) {
-    // 1. Check Balance
-    // Assuming pair like BTC/USDT, we need USDT balance
-    const quoteCurrency = this.config.symbol.split('/')[1];
+  private async executeTrade(side: 'buy' | 'sell', currentPrice: number) {
+    const isBuy = side === 'buy';
+    const [baseCurrency, quoteCurrency] = this.config.symbol.split('/');
+    const currency = isBuy ? quoteCurrency : baseCurrency;
+
     const balances = await this.exchange.fetchBalance();
-    const balance = balances[quoteCurrency]?.free || 0;
+    const balance = balances[currency]?.free || 0;
 
     if (balance === 0) {
-      logger.warn(`Insufficient ${quoteCurrency} balance.`);
+      logger.warn(`Insufficient ${currency} balance for ${side}.`);
       return;
     }
 
-    // 2. Risk Management
-    const amount = RiskManager.calculatePositionSize(balance, this.config.riskPercentage, currentPrice);
+    const amount = isBuy
+      ? RiskManager.calculatePositionSize(balance, this.config.riskPercentage, currentPrice)
+      : balance;
 
-    logger.info(`Executing BUY for ${amount} ${this.config.symbol}...`);
-
-    // 3. Execute Order
-    // In real bot, we would handle errors, partial fills, etc.
-    // For demo/bootstrap, we assume success or mock
-    try {
-      const order = await this.exchange.createMarketOrder(this.config.symbol, 'buy', amount);
-      this.orderManager.addOrder(order);
-      this.openPosition = true;
-    } catch (e) {
-      logger.error(`Buy order failed: ${e instanceof Error ? e.message : String(e)}`);
-    }
-  }
-
-  private async executeSell(currentPrice: number) {
-    // 1. Get position size
-    // For simplicity, we sell everything of the base currency
-    const baseCurrency = this.config.symbol.split('/')[0];
-    const balances = await this.exchange.fetchBalance();
-    const amount = balances[baseCurrency]?.free || 0;
-
-    if (amount === 0) {
-      logger.warn(`No ${baseCurrency} to sell.`);
-      return;
-    }
-
-    logger.info(`Executing SELL for ${amount} ${this.config.symbol}...`);
+    logger.info(`Executing ${side.toUpperCase()} for ${amount} ${this.config.symbol}...`);
 
     try {
-      const order = await this.exchange.createMarketOrder(this.config.symbol, 'sell', amount);
+      const order = await this.exchange.createMarketOrder(this.config.symbol, side, amount);
       this.orderManager.addOrder(order);
-      this.openPosition = false;
-    } catch (e) {
-      logger.error(`Sell order failed: ${e instanceof Error ? e.message : String(e)}`);
+      this.openPosition = isBuy;
+    } catch (error) {
+      logger.error(`${side} order failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 }
