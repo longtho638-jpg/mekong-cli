@@ -1,6 +1,8 @@
 import * as ccxt from 'ccxt';
 import { IExchange, IOrder, IBalance } from '../interfaces/IExchange';
 
+import { logger } from '../utils/logger';
+
 export class ExchangeClient implements IExchange {
   name: string;
   private exchange: ccxt.Exchange;
@@ -9,7 +11,7 @@ export class ExchangeClient implements IExchange {
     this.name = exchangeId;
 
     // Check if exchange exists in ccxt
-    const exchangeClass = (ccxt as any)[exchangeId];
+    const exchangeClass = (ccxt as Record<string, any>)[exchangeId];
     if (!exchangeClass) {
       throw new Error(`Exchange ${exchangeId} not found in CCXT`);
     }
@@ -24,9 +26,9 @@ export class ExchangeClient implements IExchange {
 
   async connect(): Promise<void> {
     // CCXT doesn't strictly need connection for REST, but we can load markets
-    console.log(`Connecting to ${this.name}...`);
+    logger.info(`Connecting to ${this.name}...`);
     await this.exchange.loadMarkets();
-    console.log(`Connected to ${this.name}. Loaded ${Object.keys(this.exchange.markets).length} markets.`);
+    logger.info(`Connected to ${this.name}. Loaded ${Object.keys(this.exchange.markets).length} markets.`);
   }
 
   async fetchTicker(symbol: string): Promise<number> {
@@ -49,17 +51,17 @@ export class ExchangeClient implements IExchange {
   }
 
   async fetchBalance(): Promise<Record<string, IBalance>> {
-    const balance: any = await this.exchange.fetchBalance();
+    const balance = await this.exchange.fetchBalance();
     const result: Record<string, IBalance> = {};
 
     if (balance.total) {
       for (const currency in balance.total) {
-        if (balance.total[currency] > 0) {
+        if ((balance.total as unknown as Record<string, number>)[currency] > 0) {
           result[currency] = {
             currency,
-            free: balance.free[currency] || 0,
-            used: balance.used[currency] || 0,
-            total: balance.total[currency] || 0
+            free: (balance.free as unknown as Record<string, number>)[currency] || 0,
+            used: (balance.used as unknown as Record<string, number>)[currency] || 0,
+            total: (balance.total as unknown as Record<string, number>)[currency] || 0
           };
         }
       }

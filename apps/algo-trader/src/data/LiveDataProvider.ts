@@ -33,7 +33,7 @@ export class LiveDataProvider implements IDataProvider {
         apiKey?: string,
         secret?: string
     ) {
-        const ExchangeClass = (ccxt as any)[exchangeId];
+        const ExchangeClass = (ccxt as Record<string, any>)[exchangeId];
         if (!ExchangeClass) {
             throw new Error(`Exchange '${exchangeId}' not found in CCXT`);
         }
@@ -65,13 +65,13 @@ export class LiveDataProvider implements IDataProvider {
         logger.info(`LiveDataProvider: Fetching ${limit} ${this.timeframe} candles for ${this.symbol}...`);
         const ohlcv = await this.exchange.fetchOHLCV(this.symbol, this.timeframe, undefined, limit);
 
-        return ohlcv.map((candle: any[]) => ({
-            timestamp: candle[0],
-            open: candle[1],
-            high: candle[2],
-            low: candle[3],
-            close: candle[4],
-            volume: candle[5],
+        return ohlcv.map((candle) => ({
+            timestamp: candle[0] as number,
+            open: candle[1] as number,
+            high: candle[2] as number,
+            low: candle[3] as number,
+            close: candle[4] as number,
+            volume: candle[5] as number,
         }));
     }
 
@@ -128,8 +128,12 @@ export class LiveDataProvider implements IDataProvider {
     private notifySubscribers(candle: ICandle): void {
         for (const sub of this.subscribers) {
             // Wrap in Promise.resolve to handle both sync and async subscribers
-            Promise.resolve(sub(candle)).catch((error: any) => {
-                logger.error(`LiveDataProvider: Subscriber error — ${error?.message ?? error}`);
+            Promise.resolve(sub(candle)).catch((error: unknown) => {
+                if (error instanceof Error) {
+                    logger.error(`LiveDataProvider: Subscriber error — ${error.message}`);
+                } else {
+                    logger.error(`LiveDataProvider: Subscriber error — ${String(error)}`);
+                }
             });
         }
     }

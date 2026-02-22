@@ -1,6 +1,8 @@
 import { IDataProvider } from '../interfaces/IDataProvider';
 import { ICandle } from '../interfaces/ICandle';
 
+import { logger } from '../utils/logger';
+
 export class MockDataProvider implements IDataProvider {
   private subscribers: ((candle: ICandle) => void)[] = [];
   private interval: NodeJS.Timeout | null = null;
@@ -12,7 +14,7 @@ export class MockDataProvider implements IDataProvider {
   private volatility = 0.5;
 
   async init(): Promise<void> {
-    console.log('Mock Data Provider Initialized');
+    logger.info('Mock Data Provider Initialized');
   }
 
   subscribe(callback: (candle: ICandle) => void): void {
@@ -38,7 +40,7 @@ export class MockDataProvider implements IDataProvider {
   async start(): Promise<void> {
     if (this.isRunning) return;
     this.isRunning = true;
-    console.log('Mock Data Feed Started');
+    logger.info('Mock Data Feed Started');
 
     this.interval = setInterval(() => {
       const candle = this.generateCandle(Date.now(), this.currentPrice);
@@ -53,7 +55,7 @@ export class MockDataProvider implements IDataProvider {
       this.interval = null;
     }
     this.isRunning = false;
-    console.log('Mock Data Feed Stopped');
+    logger.info('Mock Data Feed Stopped');
   }
 
   private notifySubscribers(candle: ICandle): void {

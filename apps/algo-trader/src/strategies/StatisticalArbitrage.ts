@@ -79,7 +79,13 @@ export class StatisticalArbitrage implements IStrategy {
   }
 
   async init(history: ICandle[]): Promise<void> {
-    this.pricesA = history.map(c => c.close);
-    this.pricesB = history.map(c => c.metadata?.priceB).filter(p => p !== undefined);
+    this.pricesA = [];
+    this.pricesB = [];
+    for (const candle of history) {
+      if (candle.metadata?.priceB !== undefined) {
+        this.pricesA.push(candle.close);
+        this.pricesB.push(candle.metadata.priceB as number);
+      }
+    }
   }
 }

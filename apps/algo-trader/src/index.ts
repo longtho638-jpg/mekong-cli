@@ -27,8 +27,12 @@ program
 
       const runner = new BacktestRunner(strategy, dataProvider, parseFloat(options.balance));
       await runner.run(parseInt(options.days));
-    } catch (error: any) {
-      logger.error(`Backtest failed: ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        logger.error(`Backtest failed: ${error.message}`);
+      } else {
+        logger.error(`Backtest failed: ${String(error)}`);
+      }
     }
   });
 
