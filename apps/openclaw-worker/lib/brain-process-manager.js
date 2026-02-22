@@ -93,6 +93,9 @@ const APPROVE_PATTERNS = [
   /tiếp theo/i,                        // "làm gì tiếp theo?"
   /Continue with/i,                    // "Continue with this?"
   /Proceed with/i,                     // "Proceed with implementation?"
+  // 🧬 FIX: Treat proxy compacting as an approval point to unblock CC CLI
+  /Compacting conversation/i,
+  /Context left until auto-compact:\s*0%/i,
 ];
 
 // CC CLI context exhaustion
@@ -289,7 +292,7 @@ function buildClaudeCmd() {
   // FORCE correct proxy port — ignore shell env (might be stale 8045)
   const baseUrl = `http://127.0.0.1:${port}`;
   // FIX: Unset AUTH_TOKEN to prevent auth conflict, only set API_KEY
-  const envVars = `unset ANTHROPIC_AUTH_TOKEN && export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${baseUrl}"`;
+  const envVars = `unset ANTHROPIC_AUTH_TOKEN && export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${baseUrl}" && export ANTHROPIC_DEFAULT_HAIKU_MODEL="claude-sonnet-4-6" && export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-4-6"`;
   return `${envVars} && claude --model ${model} --mcp-config "${claudeConfigDir}/mcp.json" --dangerously-skip-permissions`;
 }
 
@@ -317,7 +320,7 @@ function spawnBrain() {
       const claudeConfigDir = `/Users/macbookprom1/.claude_antigravity_${config.PROXY_PORT}`;
       // FIX: Standardize all env vars to 'ollama' bridge protocol
       // REMOVED ANTHROPIC_AUTH_TOKEN to avoid conflict (502/Auth Warning)
-      const envVars = `export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${proxyUrl}" && export CLAUDE_BASE_URL="${proxyUrl}" && export CLAUDE_CONFIG_DIR="${claudeConfigDir}"`;
+      const envVars = `export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${proxyUrl}" && export CLAUDE_BASE_URL="${proxyUrl}" && export CLAUDE_CONFIG_DIR="${claudeConfigDir}" && export ANTHROPIC_DEFAULT_HAIKU_MODEL="claude-sonnet-4-6" && export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-4-6"`;
       const geminiCmd = `${envVars} && claude --model ${config.MODEL_NAME} --mcp-config "${claudeConfigDir}/mcp.json" --dangerously-skip-permissions`;
 
       // Repair Loop: Add missing panes
@@ -394,7 +397,7 @@ function spawnBrain() {
   // We use config.MODEL_NAME to bypass CLI validation (Opus masquerade)
   const apiKeyExport = process.env.ANTHROPIC_API_KEY ? `export ANTHROPIC_API_KEY="${process.env.ANTHROPIC_API_KEY}" && ` : '';
   // FIX: Unset AUTH_TOKEN to prevent auth conflict
-  const envVars = `unset ANTHROPIC_AUTH_TOKEN && export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${proxyUrl}" && export CLAUDE_BASE_URL="${proxyUrl}" && export CLAUDE_CONFIG_DIR="${claudeConfigDir}"`;
+  const envVars = `unset ANTHROPIC_AUTH_TOKEN && export ANTHROPIC_API_KEY="ollama" && export ANTHROPIC_BASE_URL="${proxyUrl}" && export CLAUDE_BASE_URL="${proxyUrl}" && export CLAUDE_CONFIG_DIR="${claudeConfigDir}" && export ANTHROPIC_DEFAULT_HAIKU_MODEL="claude-sonnet-4-6" && export CLAUDE_CODE_SUBAGENT_MODEL="claude-sonnet-4-6"`;
 
   // FIX: Run 'claude' directly to avoid wrapper logic overhead
   const geminiCmd = `${envVars} && claude --model ${config.MODEL_NAME} --mcp-config "${claudeConfigDir}/mcp.json" --dangerously-skip-permissions`;
@@ -421,11 +424,21 @@ function spawnBrain() {
     tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} '${geminiCmd}' Enter`);
   }
 
-  // 🔒 REMOVED: Auto-accept bypass permissions — CC CLI uses --dangerously-skip-permissions
-  // Sending '2' during boot was going to CC CLI as user input → "LỖI: Task bị từ chối"
-  // If bypass prompt appears during missions, state machine handles it (line 675)
-  log('BRAIN: Waiting for CC CLI to initialize...');
-  execSync('sleep 8');
+  // 🔒 Auto-accept bypass permissions for ALL panes
+  // --dangerously-skip-permissions still shows confirmation prompt on boot
+  // CRITICAL: Must send Down and Enter as SEPARATE commands with delay
+  // CC CLI select prompt: Down moves cursor, Enter confirms focused item
+  log('BRAIN: Waiting for CC CLI bypass prompt...');
+  execSync('sleep 5');
+  for (let i = 0; i < teamSize; i++) {
+    // Step 1: Move cursor to "2. Yes, I accept"
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} Down`);
+    execSync('sleep 1');
+    // Step 2: Confirm selection
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}:0.${i} Enter`);
+    execSync('sleep 1');
+  }
+  execSync('sleep 3');
 
   // Set initial focus to P0 (if God Mode) or P1
   const startPane = config.FULL_CLI_MODE ? 0 : 1;
@@ -496,11 +509,11 @@ function parseContextUsage(output) {
 
 async function compactIfNeeded() {
   const shouldCompact = (missionCount > 0 && missionCount % COMPACT_EVERY_N === 0) ||
-                        (tokensSinceCompact > COMPACT_TOKEN_THRESHOLD);
+    (tokensSinceCompact > COMPACT_TOKEN_THRESHOLD);
 
   if (shouldCompact) {
     const reason = tokensSinceCompact > COMPACT_TOKEN_THRESHOLD ?
-      `Token Threshold (${Math.round(tokensSinceCompact/1000)}k > ${Math.round(COMPACT_TOKEN_THRESHOLD/1000)}k)` :
+      `Token Threshold (${Math.round(tokensSinceCompact / 1000)}k > ${Math.round(COMPACT_TOKEN_THRESHOLD / 1000)}k)` :
       `Mission Count (${missionCount})`;
 
     log(`CONTEXT: /compact triggered by ${reason}`);
@@ -709,6 +722,17 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
     pasteText(fullPrompt, workerIdx);
     await sleep(2000);
     sendEnter(workerIdx);
+
+    // 🔒 VERIFIED ENTER: Check CC CLI received Enter - retry once if still idle
+    // Root cause of "CTO thường xuyên thiếu Enter": single Enter races on loaded M1
+    await sleep(3000);
+    const postEnterOutput = capturePane(workerIdx);
+    const postEnterState = detectState(postEnterOutput);
+    if (postEnterState === 'idle' && !isBusy(postEnterOutput)) {
+      log(`ENTER RETRY: CC CLI still idle after first Enter — sending safety Enter`);
+      sendEnter(workerIdx);
+      await sleep(1000);
+    }
     log(`DISPATCHED: Mission #${num} sent to P${workerIdx}`);
 
     // ═══════════════════════════════════════════════════════════════
@@ -769,7 +793,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
           // 作戰 Token tracking
           const tk1 = countTokensBetween(missionStartDate, new Date());
           tokensSinceCompact += tk1.tokens; // Accumulate for proactive cleanup
-          log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+          log(`TOKENS: Mission #${num} used ${tk1.tokens.toLocaleString()} tokens (${tk1.requests} reqs, ${tk1.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
           recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk1.tokens, elapsedSec, tk1.model);
           const daily1 = getDailyUsage(); if (daily1.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily1.tokens.toLocaleString()} tokens today!`);
           return { success: true, result: 'done', elapsed: elapsedSec };
@@ -850,7 +874,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
               log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-after-busy x${IDLE_CONFIRM_POLLS}]${usage >= 0 ? ` [ctx=${usage}%]` : ''}`);
               const tk2 = countTokensBetween(missionStartDate, new Date());
               tokensSinceCompact += tk2.tokens;
-              log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+              log(`TOKENS: Mission #${num} used ${tk2.tokens.toLocaleString()} tokens (${tk2.requests} reqs, ${tk2.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
               recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk2.tokens, elapsedSec, tk2.model);
               const daily2 = getDailyUsage(); if (daily2.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily2.tokens.toLocaleString()} tokens today!`);
               return { success: true, result: 'done', elapsed: elapsedSec };
@@ -862,7 +886,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
               log(`COMPLETE: Mission #${num} (${elapsedSec}s) [idle-no-busy x${IDLE_CONFIRM_POLLS}]`);
               const tk3 = countTokensBetween(missionStartDate, new Date());
               tokensSinceCompact += tk3.tokens;
-              log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model}) [Session accum: ${Math.round(tokensSinceCompact/1000)}k]`);
+              log(`TOKENS: Mission #${num} used ${tk3.tokens.toLocaleString()} tokens (${tk3.requests} reqs, ${tk3.model}) [Session accum: ${Math.round(tokensSinceCompact / 1000)}k]`);
               recordMission(prompt.slice(0, 60), path.basename(projectDir || ''), tk3.tokens, elapsedSec, tk3.model);
               const daily3 = getDailyUsage(); if (daily3.overBudget) log(`⚠️ 作戰: DAILY BUDGET EXCEEDED — ${daily3.tokens.toLocaleString()} tokens today!`);
               return { success: true, result: 'done', elapsed: elapsedSec };
@@ -921,7 +945,7 @@ function isOverheating() {
   if (metrics.load > 4.0) {
     // ACTIVE INTERVENTION: Monitor & Support
     const coolingTime = 10000; // 10s Cooling Nap
-    try { fs.appendFileSync(config.THERMAL_LOG, `[${new Date().toISOString()}] 🔥 HIGH LOAD (${metrics.load}). Intervening... Sleeping ${coolingTime / 1000}s\n`); } catch(e) {}
+    try { fs.appendFileSync(config.THERMAL_LOG, `[${new Date().toISOString()}] 🔥 HIGH LOAD (${metrics.load}). Intervening... Sleeping ${coolingTime / 1000}s\n`); } catch (e) { }
 
     // We intentionally block here to force the system to slow down.
     // This supports the machine as requested ("can thiệp hỗ trợ").

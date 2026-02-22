@@ -292,14 +292,14 @@ function startAutoCTO() {
     intervalRef = setTimeout(() => {
       try {
         // Guards
-        if (!isBrainAlive()) { scheduleNext(); return; }
-        if (isOverheating()) { scheduleNext(); return; }
+        if (!isBrainAlive()) { log('AUTO-CTO DEBUG: isBrainAlive() failed'); scheduleNext(); return; }
+        if (isOverheating()) { log('AUTO-CTO DEBUG: isOverheating() failed'); scheduleNext(); return; }
 
         // Check if queue has pending tasks — don't flood
         const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
-        if (tasks.length > 0) { scheduleNext(); return; }
+        if (tasks.length > 0) { log('AUTO-CTO DEBUG: filesystem tasks pending'); scheduleNext(); return; }
 
-        if (!isQueueEmpty()) { scheduleNext(); return; }
+        if (!isQueueEmpty()) { log('AUTO-CTO DEBUG: memory queue pending'); scheduleNext(); return; }
 
         // 🔒 Ch.3 謀攻: 知己知彼 — STRICT idle guard
         try {
@@ -314,7 +314,9 @@ function startAutoCTO() {
             /Sketching/i, /Initializing/i, /Running/i, /Waiting/i, /Perambulating/i,
             /Pontificating/i, /Tinkering/i, /Flowing/i, /Roosting/i, /Herding/i,
             /thought for \d+/i];
-          if (busyPatterns.some(p => p.test(paneOutput))) {
+          const matchedBusy = busyPatterns.find(p => p.test(paneOutput));
+          if (matchedBusy) {
+            log(`AUTO-CTO DEBUG: busyPattern matched: ${matchedBusy}`);
             scheduleNext(); return;
           }
           // 🔒 FIX: CC CLI prompt is '❯' OR '>' (brain-process-manager.js line 212)
@@ -322,9 +324,10 @@ function startAutoCTO() {
           const lines = paneOutput.trim().split('\n').slice(-10);
           const hasIdlePrompt = paneOutput.includes('❯') || lines.some(l => /^>\s*$/.test(l.trim()));
           if (!hasIdlePrompt) {
+            log(`AUTO-CTO DEBUG: hasIdlePrompt failed. Output: ${paneOutput.replace(/\\n/g, ' ')}`);
             scheduleNext(); return;
           }
-        } catch (e) { scheduleNext(); return; }
+        } catch (e) { log(`AUTO-CTO DEBUG: pane capture failed: ${e.message}`); scheduleNext(); return; }
 
         const state = loadState();
         currentPhase = state.phase;

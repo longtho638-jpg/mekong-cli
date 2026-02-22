@@ -1,35 +1,13 @@
 {
-  "timestamp": "2026-02-18T14:57:11.464Z",
+  "timestamp": "2026-02-22T18:06:58.464Z",
   "agiLevel": 7,
-  "evolutionScore": 29,
-  "totalProjects": 4,
-  "healthyProjects": 4,
+  "evolutionScore": 32,
+  "totalProjects": 1,
+  "healthyProjects": 1,
   "needsAttention": 0,
   "projects": [
     {
-      "project": "doanh-trai-tom-hum",
-      "score": 40,
-      "errorCount": 0,
-      "basePriority": 4,
-      "stalenessFactor": 5,
-      "successRate": 50,
-      "lastMission": "never",
-      "missionCount": 0,
-      "health": {}
-    },
-    {
-      "project": "84tea",
-      "score": 30,
-      "errorCount": 0,
-      "basePriority": 3,
-      "stalenessFactor": 5,
-      "successRate": 50,
-      "lastMission": "never",
-      "missionCount": 0,
-      "health": {}
-    },
-    {
-      "project": "wellnexus",
+      "project": "algo-trader",
       "score": 10,
       "errorCount": 0,
       "basePriority": 1,
@@ -37,17 +15,6 @@
       "successRate": 50,
       "lastMission": "never",
       "missionCount": 0,
-      "health": {}
-    },
-    {
-      "project": "anima119",
-      "score": 0,
-      "errorCount": 0,
-      "basePriority": 2,
-      "stalenessFactor": 0,
-      "successRate": 42,
-      "lastMission": "2026-02-18T14:51:30.629Z",
-      "missionCount": 12,
       "health": {}
     }
   ],

@@ -1,23 +1,17 @@
 {
-  "doanh-trai-tom-hum": {
-    "lastStrategicAt": "2026-02-17T23:09:56.730Z",
+  "algo-trader": {
+    "lastStrategicAt": "2026-02-22T17:36:20.350Z",
     "taskHistory": {
-      "10x_architecture": 1
+      "perf_audit": 1,
+      "test_suite": 3,
+      "knowledge_synthesis": 3,
+      "10x_architecture": 3,
+      "a11y_audit": 1,
+      "agi_evolution": 1,
+      "security_scan": 1,
+      "debug_errors": 1,
+      "self_correction": 1
     },
-    "totalStrategic": 1
-  },
-  "84tea": {
-    "lastStrategicAt": "2026-02-17T23:11:39.821Z",
-    "taskHistory": {
-      "10x_architecture": 1
-    },
-    "totalStrategic": 1
-  },
-  "anima119": {
-    "lastStrategicAt": "2026-02-17T23:13:29.762Z",
-    "taskHistory": {
-      "i18n_sync": 1
-    },
-    "totalStrategic": 1
+    "totalStrategic": 15
   }
 }

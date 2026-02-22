@@ -67,12 +67,14 @@ const MEMORY_CACHE_TTL = 60000; // 60 seconds
 function detectProjectDir(taskContent) {
   const lower = taskContent.toLowerCase();
   const routes = {
-    'doanh-trai': 'doanh-trai-tom-hum',   // 🦞 $1M RaaS (root level)
-    'lobster': 'doanh-trai-tom-hum',        // Alias
-    'tom-hum': 'doanh-trai-tom-hum',        // Alias
-    'raas': 'doanh-trai-tom-hum',           // Alias
+    'doanh-trai': 'doanh-trai-tom-hum',
+    'lobster': 'doanh-trai-tom-hum',
+    'tom-hum': 'doanh-trai-tom-hum',
+    'raas': 'doanh-trai-tom-hum',
     'com-anh-duong': 'apps/com-anh-duong-10x',
     '84tea': 'apps/84tea',
+    'algo-trader': 'apps/algo-trader',
+    'algo': 'apps/algo-trader',
     apex: 'apps/apex-os',
     anima: 'apps/anima119',
     sophia: 'apps/sophia-ai-factory',
@@ -87,8 +89,8 @@ function detectProjectDir(taskContent) {
     if (keyword.length <= 4 && lower === keyword) return path.join(config.MEKONG_DIR, dir);
     if (keyword.length > 4 && lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
   }
-  // 🦞 DEFAULT: doanh-trai-tom-hum (locked focus Feb 2026)
-  return path.join(config.MEKONG_DIR, 'doanh-trai-tom-hum');
+  // 🦞 DEFAULT: algo-trader (locked focus Feb 2026)
+  return path.join(config.MEKONG_DIR, 'apps/algo-trader');
 }
 
 /**

@@ -54,9 +54,9 @@ const config = {
   // Engine selection: 'antigravity' (default, port 11436) or 'qwen' (port 8081)
   // 🔒 LOCKED — 'antigravity' uses port 11436 → upstream AG 9191 + Google fallback
   ENGINE: process.env.TOM_HUM_ENGINE || 'antigravity',
-  // 🎯 FOCUSED DELIVERY MODE — Only client projects (Feb 14 2026)
-  // Original: ['mekong-cli', 'agencyos-web', 'sophia-ai-factory', 'wellnexus', 'apex-os', '84tea', 'anima119', 'sa-dec-flower-hunt'],
-  PROJECTS: ['doanh-trai-tom-hum', '84tea', 'anima119', 'wellnexus'],
+  // 🎯 FOCUSED DELIVERY MODE — algo-trader focus (Feb 22 2026)
+  // Previous: ['doanh-trai-tom-hum', '84tea', 'anima119', 'wellnexus', 'apex-os', 'sophia-ai-factory', 'agencyos-web'],
+  PROJECTS: ['algo-trader'],
 
   // Self-Healer (v2026.2.13)
   HEALTH_CHECK_INTERVAL_MS: 30_000,

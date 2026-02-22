@@ -20,7 +20,7 @@ const { log } = require('./brain-process-manager');
 
 const STRATEGIC_STATE_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/strategic-state.json');
 const INSIGHTS_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/learning-insights.json');
-const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes between strategic missions per project
+const COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes — fast iteration for single-project focus
 
 // Ensure data dir exists
 const DATA_DIR = path.dirname(STRATEGIC_STATE_FILE);
@@ -63,10 +63,12 @@ function getFailedTaskIds() {
 
 // --- Task Selection (Weighted Random) ---
 
-function selectStrategicTask(project, projectState) {
-  const tasks = config.BINH_PHAP_TASKS;
+function selectStrategicTask(project, projectState, capabilityFilter = () => true) {
+  const tasks = config.BINH_PHAP_TASKS.filter(capabilityFilter);
   const taskHistory = projectState.taskHistory || {};
   const failedIds = getFailedTaskIds();
+
+  if (tasks.length === 0) return null;
 
   // Weight each task: lower count = higher weight, failed tasks get lower weight
   const weighted = tasks.map(task => {
@@ -155,8 +157,26 @@ function tryStrategicMission(state, project, projectDir) {
     return false;
   }
 
-  // Select best task for this project
-  const selectedTask = selectStrategicTask(project, projectState);
+  // Check project capabilities (e.g. skip test_suite if no test script)
+  const pkgPath = path.join(projectDir, 'package.json');
+  let projectScripts = {};
+  try {
+    if (fs.existsSync(pkgPath)) {
+      projectScripts = JSON.parse(fs.readFileSync(pkgPath, 'utf-8')).scripts || {};
+    }
+  } catch (e) { }
+
+  // Select best task for this project (filter by capability)
+  const capabilityFilter = (task) => {
+    if (task.id === 'test_suite' && !projectScripts.test) return false;
+    if (task.id === 'i18n_sync' && !fs.existsSync(path.join(projectDir, 'src/i18n')) && !fs.existsSync(path.join(projectDir, 'i18n'))) return false;
+    return true;
+  };
+  const selectedTask = selectStrategicTask(project, projectState, capabilityFilter);
+  if (!selectedTask) {
+    log(`[STRATEGIC] ${project} — no applicable tasks for this project's capabilities. Skipping.`);
+    return false;
+  }
   const { filename, prompt } = generateStrategicMission(selectedTask, project);
 
   // Write mission file

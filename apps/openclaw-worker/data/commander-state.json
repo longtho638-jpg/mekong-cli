@@ -1,10 +1,7 @@
 {
   "lastRebalance": null,
   "projectScores": {
-    "doanh-trai-tom-hum": 40,
-    "84tea": 30,
-    "wellnexus": 10,
-    "anima119": 0
+    "algo-trader": 10
   },
   "crossProjectFixes": [],
   "portfolioSnapshot": null,

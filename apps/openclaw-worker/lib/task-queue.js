@@ -94,7 +94,9 @@ async function processQueue() {
     } else {
       retryCounts.delete(taskFile); // Reset retries on success/execution
 
-      let buildResult = { build: false, output: 'not_run' };
+      // 🧬 FIX: init buildResult with actual result reason, not 'not_run' for real failures
+      const failReason = (result && !result.success) ? (result.result || 'failed') : 'not_run';
+      let buildResult = { build: false, output: result && result.success ? 'not_run' : failReason };
       const projectMatch = taskFile.match(/^(?:HIGH_|MEDIUM_|LOW_|CRITICAL_)?mission_([a-z0-9_-]+?)_(?:auto_)?/i);
       const projectShortName = projectMatch ? projectMatch[1].replace(/_/g, '-') : null;
       const projectDir = detectProjectDir(content);
@@ -126,7 +128,8 @@ async function processQueue() {
         duration: durationMs,
         tokensUsed: tokens,
         buildResult,
-        content
+        content,
+        resultCode: result ? (result.result || '') : ''  // 🧬 FIX: pass result code for accurate failure classification
       });
 
       if (fs.existsSync(filePath)) {

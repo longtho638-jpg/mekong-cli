@@ -1,15 +1,7 @@
 {
-  "currentProjectIdx": 2,
-  "phase": "fix",
-  "cycle": 1,
-  "errors": [
-    {
-      "type": "build",
-      "severity": "critical",
-      "file": "package.json",
-      "message": "Build command failed with exit code 1. Output snippet:  > anima119@0.1.0 build > next build  ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.  We detected multiple lockfiles and selected the directory of /Users/macbookprom1/meko...",
-      "project": "anima119"
-    }
-  ],
-  "fixIndex": 1
+  "currentProjectIdx": 0,
+  "phase": "scan",
+  "cycle": 0,
+  "errors": [],
+  "fixIndex": 0
 }

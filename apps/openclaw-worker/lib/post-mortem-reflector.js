@@ -100,9 +100,18 @@ async function reflectOnMission(data) {
  * Extract failure reason from mission data
  */
 function extractFailureReason(data) {
+    // 🧬 FIX: Check mission result code first for accurate failure classification
+    const resultCode = data.resultCode || '';
+    if (resultCode === 'timeout') return 'Mission timed out';
+    if (resultCode === 'max_retries_exhausted') return 'Max retries exhausted — task too complex or flaky';
+    if (resultCode === 'unsafe_blocked') return 'Blocked by safety gate';
+    if (resultCode === 'brain_died') return 'Brain process died — respawn needed';
+    if (resultCode === 'no_brain_module') return 'Brain module not available';
+
     if (data.buildResult && data.buildResult.output) {
         const output = String(data.buildResult.output);
         if (output === 'not_run') return 'workers_busy — mission queued but not dispatched';
+        if (output === 'failed' || output === 'done') return `Mission returned: ${output}`;
         if (output.includes('TypeError')) return 'TypeError in code';
         if (output.includes('SyntaxError')) return 'SyntaxError in code';
         if (output.includes('timeout')) return 'Mission timed out';

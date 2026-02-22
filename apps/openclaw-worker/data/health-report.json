@@ -1,33 +1,11 @@
 [
   {
-    "project": "84tea",
-    "timestamp": "2026-02-18T14:57:02.536Z",
+    "project": "algo-trader",
+    "timestamp": "2026-02-22T18:06:56.481Z",
     "build": "GREEN",
     "techDebt": {
-      "todos": 39,
-      "consoleLogs": 87
-    },
-    "gitStatus": "DIRTY",
-    "recommendations": []
-  },
-  {
-    "project": "anima119",
-    "timestamp": "2026-02-18T14:57:11.526Z",
-    "build": "RED",
-    "techDebt": {
-      "todos": 22,
-      "consoleLogs": 65
-    },
-    "gitStatus": "DIRTY",
-    "recommendations": []
-  },
-  {
-    "project": "wellnexus",
-    "timestamp": "2026-02-18T14:57:24.404Z",
-    "build": "RED",
-    "techDebt": {
-      "todos": 14,
-      "consoleLogs": 0
+      "todos": 0,
+      "consoleLogs": 46
     },
     "gitStatus": "DIRTY",
     "recommendations": []
