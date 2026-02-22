@@ -80,3 +80,46 @@ Returning bare `BUY` or `SELL` signals makes it incredibly difficult to debug *w
 - Include descriptive tags (e.g., `tag: 'macd_bullish_crossover'`, `tag: 'bb_lower_rsi_oversold'`) inside the generated signal.
 - Attach indicator snapshots via a `metadata` payload to maintain an audit trail of the mathematical state at the exact moment the signal was emitted.
 - **Action Item:** Ensure `ISignal` interface in `src/interfaces/IStrategy.ts` is updated to include `tag?: string;` to satisfy TypeScript checks during CI pipelines.
+
+## 5. Risk Management & Trailing Stops
+
+**GOTCHA:**
+Khi triển khai trailing stop trong thị trường crypto biến động mạnh, việc update trailing stop liên tục theo từng nhịp tick nhỏ có thể khiến lệnh bị quét (stop hunted) quá sớm trước khi xu hướng thực sự hình thành.
+
+**LEARNING:**
+1. **Positive Offset Activation:** Trailing stop chỉ nên bắt đầu bám sát (tighten) khi giá đã vượt qua một ngưỡng lợi nhuận nhất định (`trailingStopPositiveOffset`). Trước đó, nó nên giữ một khoảng cách an toàn (default offset) để tránh bị nhiễu.
+2. **State Immutability:** Hàm `updateTrailingStop` cần trả về một bản copy mới của state (`nextState = { ...state }`) thay vì mutate trực tiếp object truyền vào. Điều này giúp ngăn chặn các side-effects không mong muốn khi test hoặc khi áp dụng cho nhiều position cùng lúc.
+3. **Validation Guard:** Tính toán position size (`calculatePositionSize`) bắt buộc phải có guard kiểm tra `currentPrice > 0` và `riskPercentage > 0` để tránh các lỗi chia cho 0 hoặc tính toán sai quy mô vốn (position sizing).
+
+**Actionable Pattern:**
+```typescript
+// Chỉ kích hoạt trailing stop bám sát khi giá đã lãi trên mức offset
+if (!isPositiveActive && price >= state.entryPrice * (1 + config.trailingStopPositiveOffset)) {
+  isPositiveActive = true;
+  nextState.isPositiveActive = true;
+}
+```
+
+## 6. Lỗi Logic Triangular Arbitrage (Chênh Lệch Tam Giác)
+
+**GOTCHA:**
+Khi tính toán chuỗi giao dịch tam giác (ví dụ: USDT -> BTC -> ETH -> USDT), việc nhầm lẫn giữa tỷ giá nhân (multiply) và tỷ giá chia (divide) giữa các cặp (base/quote) sẽ dẫn đến tính toán profit sai lệch hoàn toàn, khiến bot vào lệnh lỗ.
+
+**LEARNING:**
+1. **Xác Định Rõ Base/Quote:** Đối với cặp `ETH/BTC`, giá là số lượng BTC để mua 1 ETH.
+   - Nếu có BTC, muốn đổi ra ETH: `amountETH = amountBTC / priceETH_BTC`
+   - Nếu có ETH, muốn đổi ra BTC: `amountBTC = amountETH * priceETH_BTC`
+2. **Tính Toán Forward & Backward Loops:**
+   - **Forward (USDT -> BTC -> ETH -> USDT):** Mua BTC bằng USDT -> Mua ETH bằng BTC -> Bán ETH lấy USDT. Rate = `(1 / priceBTC_USDT / priceETH_BTC) * priceETH_USDT`.
+   - **Backward (USDT -> ETH -> BTC -> USDT):** Mua ETH bằng USDT -> Bán ETH lấy BTC -> Bán BTC lấy USDT. Rate = `(1 / priceETH_USDT) * priceETH_BTC * priceBTC_USDT`.
+3. **Kiểm Tra Null/Undefined:** Luôn kiểm tra metadata chứa giá của các cặp phụ (`priceETH_BTC`, `priceETH_USDT`) trước khi tính toán.
+
+**Actionable Pattern:**
+```typescript
+const forwardRate = (1 / priceBTC_USDT / priceETH_BTC) * priceETH_USDT;
+const forwardProfit = forwardRate - 1;
+
+if (forwardProfit > this.minProfit) {
+  // Thực thi Forward Loop Arbitrage
+}
+```
