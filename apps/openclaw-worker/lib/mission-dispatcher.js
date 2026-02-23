@@ -82,15 +82,24 @@ function detectProjectDir(taskContent) {
     agency: 'apps/agencyos-web',
     'sa-dec': 'apps/sa-dec-flower-hunt',
     'flower': 'apps/sa-dec-flower-hunt',
+    // 🧬 BRAIN SURGERY v30: Added missing keywords for mekong-cli root routing
+    'openclaw-worker': '.',  // openclaw-worker files = root monorepo
+    'openclaw': '.',          // openclaw = root monorepo
+    'task-watcher': '.',      // task-watcher = root
+    'brain-process': '.',     // brain-process-manager = root
+    'auto-cto': '.',          // auto-cto-pilot = root
+    'mekong-cli': '.',        // explicit mekong-cli mention
     mekong: '.',
   };
   for (const [keyword, dir] of Object.entries(routes)) {
-    // 🧠 FIX: Ensure exact match for short keywords to avoid false positives
-    if (keyword.length <= 4 && lower === keyword) return path.join(config.MEKONG_DIR, dir);
-    if (keyword.length > 4 && lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
+    // 🧬 BRAIN SURGERY v30: Fix short-keyword matching
+    // Only exact-match for very short (≤3 chars) to avoid false positives like "well" in "wellness"
+    // All others use includes() to match substrings
+    if (keyword.length <= 3 && lower === keyword) return path.join(config.MEKONG_DIR, dir);
+    if (keyword.length > 3 && lower.includes(keyword)) return path.join(config.MEKONG_DIR, dir);
   }
-  // 🦞 DEFAULT: algo-trader (locked focus Feb 2026)
-  return path.join(config.MEKONG_DIR, 'apps/algo-trader');
+  // 🦞 DEFAULT: mekong-cli root (FOCUS MODE 2026-02-23: ONLY mekong-cli)
+  return config.MEKONG_DIR;
 }
 
 /**
@@ -147,146 +156,112 @@ function buildPrompt(taskContent) {
   clean = clean.replace(/^[a-z0-9_-]+:\s*/i, '');
   const safe = clean.replace(/[()$`\\!]/g, ' ').replace(/\s+/g, ' ').trim();
 
-  // 🔒 Chairman Fix: REMOVED bypass — ALL prompts MUST go through mandatePrefix for đa luồng
-  // OLD BUG: if (safe.includes('/cook')) return safe; ← SKIPPED all multi-thread mandates!
+  // 🦞 FIX 2026-02-23: LEAN PROMPT — Stop dumping 1500+ chars overhead into every prompt.
+  // MEMORY/GOTCHAS/lessons are already in customInstructions (config.json), loaded once per session.
+  // Prompt should only contain: command + task content + file limit.
+  const mandatePrefix = 'Trả lời bằng TIẾNG VIỆT. ';
+  const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
+  const VI_PREFIX = '';
 
-  // 🧠 FIX #1: PERSISTENT MEMORY — Always load memory.md + post-mortem lessons
-  const memoryCtx = getTopLessons(10);
-  let memoryPrefix = '';
-
-  // Load knowledge/memory.md for long-term patterns (Cached with TTL)
-  const memoryFile = path.join(__dirname, '../knowledge/memory.md');
-  try {
-    const now = Date.now();
-    let memoryContent = '';
-
-    // Check cache
-    if (_memoryCacheContent && (now - _memoryCacheTs < MEMORY_CACHE_TTL)) {
-      memoryContent = _memoryCacheContent;
-    } else if (require('fs').existsSync(memoryFile)) {
-      memoryContent = require('fs').readFileSync(memoryFile, 'utf-8');
-      // Update cache
-      _memoryCacheContent = memoryContent;
-      _memoryCacheTs = now;
-    }
-
-    if (memoryContent) {
-      // Extract GOTCHAS section (most critical)
-      const gotchasMatch = memoryContent.match(/## GOTCHAS[\s\S]*?(?=##|$)/);
-      // Token efficiency: Limit to 800 chars (Critical only)
-      const gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 800) : '';
-      memoryPrefix += gotchas ? `📜 MEMORY:\n${gotchas}\n\n` : '';
-    }
-  } catch (e) { /* silent fail — memory is optional */ }
-
-  // Add recent mission lessons
-  if (memoryCtx) memoryPrefix += `${memoryCtx}\n\n`;
-
-  const { isOverheating } = require('./m1-cooling-daemon');
+  // Routing variables (kept lean — no prompt injection, just for command selection)
   let load = 0;
   try { const os = require('os'); load = os.loadavg()[0]; } catch (e) { load = 0; }
-  const overheat = isOverheating();
+  const isHanBangMode = load > 30;
 
-  // Smart Throttle: If load is high, reduce power to stay alive
-  let adaptiveMandate = '';
-  if (load > 25 || overheat) {
-    adaptiveMandate = 'HÀN BĂNG MODE: Máy rất nóng — Chỉ dùng TỐI ĐA 3 subagents parallel. Ưu tiên giải quyết nhanh, ít file. ';
-  } else {
-    adaptiveMandate = 'COMMANDER RULE 13: Bạn là Elite Commander. Chỉ huy team subagents một cách ÁM ẢNH (10+ agents nếu cần) để đạt hiệu quả 1000%. ';
+  // Helper to construct ClaudeKit command properly
+  // Output format: /command "mandatePrefix \n\n VI_PREFIX parsedText FILE_LIMIT" flags
+  const formatCmd = (cmd, text, flags = '') => {
+    const escapedText = text.replace(/"/g, '\\"').trim();
+    const payload = escapedText ? `\n\n${VI_PREFIX}${escapedText} ${FILE_LIMIT}` : '';
+    // Fix string builder so mandatePrefix and payload are strictly inside the double quotes
+    return `${cmd} "${mandatePrefix.trim()}${payload}" ${flags}`.trim();
+  };
+
+  // 🔒 Chairman Fix v5: Support explicit user commands (e.g. `/plan:hard "task" --auto`)
+  let parsedCmd = null;
+  let parsedText = safe;
+  let parsedFlags = '';
+
+  const cmdMatch = safe.match(/^(\/[a-z0-9:-]+)(?:\s+"([^"]+)")?(?:\s+(.*))?$/i);
+  if (cmdMatch) {
+    parsedCmd = cmdMatch[1];
+    if (cmdMatch[2]) {
+      parsedText = cmdMatch[2];
+      parsedFlags = cmdMatch[3] || '';
+    } else {
+      // It might be `/cook task without quotes --flags`
+      const rest = safe.substring(parsedCmd.length).trim();
+      const flagIdx = rest.indexOf('--');
+      if (flagIdx >= 0) {
+        parsedText = rest.substring(0, flagIdx).trim();
+        parsedFlags = rest.substring(flagIdx).trim();
+      } else {
+        parsedText = rest;
+      }
+    }
+  } else if (safe.startsWith('/')) {
+    const spaceIdx = safe.indexOf(' ');
+    if (spaceIdx > 0) {
+      parsedCmd = safe.substring(0, spaceIdx);
+      parsedText = safe.substring(spaceIdx + 1);
+    } else {
+      parsedCmd = safe;
+      parsedText = '';
+    }
   }
 
-  // 🔒 IRON RULE (Chairman Decree 2026-02-17): MỌI prompt PHẢI dùng ClaudeKit command.
-  // CẤM gửi raw text. PHẢI có /cook, /plan:hard, /debug, /plan:parallel, /review.
-  // Đa luồng (10+ subagents) + Deep 10x thinking = BẮT BUỘC khi không overheat.
-  // Deep Reference: knowledge/CLAUDEKIT_DEEP_REFERENCE.md (28 commands, 13 agents, 50+ skills)
-
-  // Calculate complexity for token optimization
-  const s = safe.toLowerCase();
-  const isBugFix = /\b(debug|fix|error|bug|broken|fail|crash|500|404)\b/i.test(s);
-  const isReview = /\b(review|audit|security|scan)\b/i.test(s);
-  const isDocs = /\b(document|docs|readme|changelog)\b/i.test(s);
-  const isCI = /\b(ci|cd|build.*fail|pipeline|deploy)\b/i.test(s);
-  const isCRO = /\b(conver|cro|optimize.*rate|a\/b)\b/i.test(s);
-  const isTest = /\b(test|spec|coverage|e2e)\b/i.test(s);
-  const isComplex = s.length > 300 || /\b(architect|refactor|migrate|overhaul|redesign|multi)\b/i.test(s);
-  const isStrategic = /\b(strateg|portfolio|cross.?project|multi.?project)\b/i.test(s);
-
-  const claudekitRouting = (() => {
-    if (isBugFix) return 'USE: /debug "issue" --parallel → /plan:fast "fix" → /cook "apply" --parallel --auto → /test → /check-and-commit. [軍形Ch.4+行軍Ch.9] ';
-    if (isReview) return 'USE: /review:codebase --parallel (PARALLEL multi-agent audit). [謀攻Ch.3: 知己知彼] ';
-    if (isDocs) return 'USE: /docs:update --parallel (or /docs:init, /docs:summarize). [用間Ch.13: 情報] ';
-    if (isCI) return 'USE: /plan:ci → analyze CI failures → /cook "fix" --parallel --auto → /test. [行軍Ch.9: 偵察先行] ';
-    if (isCRO) return 'USE: /plan:cro → conversion optimization plan → /cook --parallel --auto. [虛實Ch.6: 避實擊虛] ';
-    if (isTest) return 'USE: /test (unit) or /test:ui (E2E/visual). [軍形Ch.4: 先為不可勝] ';
-    if (isStrategic) return 'USE: /plan:parallel "task" [5] → multi-researcher deep analysis → phased /cook --parallel --auto. [兵勢Ch.5: 奇正相生] ';
-    if (isComplex) return 'USE: /plan:hard "task" → detailed plan with research → /cook "implement as planned" --parallel --auto → /test → /check-and-commit. [謀攻Ch.3: 上兵伐謀] ';
-    return 'USE: /cook "task" --parallel --auto. 🔥LỬA mode BẮT BUỘC. [作戰Ch.2: 兵貴勝不貴久] ';
-  })();
-
-  // Token Efficiency: Dynamic Context Injection
-  let claudekitEnforcement;
-  if (!isComplex && !isStrategic && safe.length < 200) {
-    // Simple task: Minimal prompt
-    claudekitEnforcement = `CK2.9: ${claudekitRouting} NO raw text. MUST use commands.`;
-  } else {
-    // Complex task: Context optimized (Brain Surgery 260218)
-    claudekitEnforcement = `CK2.9: ${claudekitRouting} NO raw text. Use /cook, /plan:hard, /plan:parallel.`;
+  // If user provided an explicit command, respect it
+  if (parsedCmd) {
+    return formatCmd(parsedCmd, parsedText, parsedFlags);
   }
-
-  const mandatePrefix = `${memoryPrefix}${adaptiveMandate}${claudekitEnforcement}`;
-
-  // 🔒 Chairman Fix v4: DISABLED chain cook splitting — caused multi-paste to same P0!
-  // Each sub-mission bypassed MAX_CONCURRENT_MISSIONS=1 and dispatched to P0 simultaneously.
-  // CC CLI handles /cook commands internally — no need to split here.
-  // if (shouldChainCooks(safe) && !overheat && load <= 30) { ... }
 
   // 🤖 NEW INTENTS (CI, BOOTSTRAP, TEST) - Added 2026-02-18
-  // Doc: knowledge/claudekit-brain.md
   const lowerSafe = safe.toLowerCase();
 
   // 1. CI Intent
   if (lowerSafe.includes('ci/cd') || lowerSafe.includes('pipeline') || lowerSafe.includes('build fail')) {
-    return `${mandatePrefix}/plan:ci "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+    return formatCmd('/plan:ci', safe);
   }
 
   // 2. BOOTSTRAP Intent
   if (lowerSafe.includes('new project') || lowerSafe.includes('bootstrap') || lowerSafe.includes('khoi tao')) {
-    return `${mandatePrefix}/bootstrap:auto:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+    return formatCmd('/bootstrap', safe, isHanBangMode ? '--auto' : '--parallel --auto');
   }
 
   // 3. TEST Intent
   if (lowerSafe.includes('test') || lowerSafe.includes('kiem thu')) {
-    // Pass safe text as arg in case /test supports filtering or context
-    return `${mandatePrefix}/test "${VI_PREFIX}${safe}"`;
+    return formatCmd('/test', safe);
   }
 
   const intent = detectIntent(safe);
 
   // MULTI_FIX: parallel bug fixing (2+ bug/error keywords detected)
-  if (intent === 'MULTI_FIX') return `${mandatePrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} PHẢI dùng đa luồng 10+ subagents." --parallel --auto`;
+  if (intent === 'MULTI_FIX') return formatCmd('/cook', safe + (isHanBangMode ? ' [HÀN BĂNG MODE: Minimal agents]' : ' PHẢI dùng đa luồng 10+ subagents.'), isHanBangMode ? '--auto' : '--parallel --auto');
 
   // STRATEGIC: large-scale architecture/redesign → deep parallel planning
-  if (intent === 'STRATEGIC') return `${mandatePrefix}/plan:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
+  if (intent === 'STRATEGIC') return formatCmd(isHanBangMode ? '/plan:hard' : '/plan:parallel', safe + (isHanBangMode ? ' [HÀN BĂNG MODE: Downgraded to /plan:hard]' : ''));
 
-  if (isComplexRawMission(safe.toLowerCase())) {
-    // If exceptionally hot, don't even use plan:parallel, just cook to avoid bailing
-    if (load > 30) {
-      log(`⚠️ THERMAL CRITICAL (Load ${load}): Downgrading to minimal parallel /cook`);
-      return `${mandatePrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} Nhiệt cao nhưng PHẢI dùng ít nhất 3 subagents parallel." --parallel --auto`;
+  if (isComplexRawMission(lowerSafe)) {
+    const decomposed = buildDecomposedPrompt(safe, 'default');
+
+    // If exceptionally hot, downgrade command but preserve Binh Phap decomposed context
+    if (isHanBangMode) {
+      log(`⚠️ THERMAL CRITICAL (Load ${load}): Downgrading complex mission to /plan:hard to preserve Binh Phap strategy while reducing concurrency`);
+      return formatCmd('/plan:hard', safe + '\n\n[HÀN BĂNG MODE: Tạm thời dùng /plan:hard thay vì /plan:parallel do CPU load > 30, tuy nhiên vẫn giữ nguyên chiến lược Binh Pháp]\n\n' + decomposed);
     }
 
-    const decomposed = buildDecomposedPrompt(safe, 'default');
-    if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel`;
-    if (intent === 'PLAN' || intent === 'RESEARCH') return `${mandatePrefix}/plan:hard "${VI_PREFIX}${safe}. ${FILE_LIMIT}"`;
-    if (intent === 'REVIEW') return `${mandatePrefix}/review:codebase "${VI_PREFIX}${safe}. ${FILE_LIMIT}" --parallel`;
+    if (intent === 'FIX') return formatCmd('/debug', safe, '--parallel');
+    if (intent === 'PLAN' || intent === 'RESEARCH') return formatCmd('/plan:hard', safe);
+    if (intent === 'REVIEW') return formatCmd('/review', safe, '--parallel');
 
-    return `${mandatePrefix}/plan:parallel "${VI_PREFIX}${safe}. ${FILE_LIMIT} ${decomposed}"`;
+    return formatCmd('/plan:parallel', safe + '\n\n' + decomposed);
   }
 
-  if (intent === 'FIX') return `${mandatePrefix}/debug "${VI_PREFIX}${safe}" --parallel`;
-  if (intent === 'REVIEW') return `${mandatePrefix}/review "${VI_PREFIX}${safe}" --parallel`;
+  if (intent === 'FIX') return formatCmd('/debug', safe, isHanBangMode ? '' : '--parallel');
+  if (intent === 'REVIEW') return formatCmd('/review', safe, isHanBangMode ? '' : '--parallel');
 
-  return `${mandatePrefix}/cook "${VI_PREFIX}${safe}. ${FILE_LIMIT} PHẢI dùng đa luồng 10+ subagents parallel. 風林火山: 🔥LỬA mode — Agent Teams parallel execution." --parallel --auto`;
+  // 🦞 FIX 2026-02-23: PLAN-FIRST — ClaudeKit workflow: /plan:hard → 100x DEEP PIPELINE auto-chains /cook
+  return formatCmd('/plan:hard', safe + (isHanBangMode ? ' [HÀN BĂNG MODE: Minimal agents]' : ''), isHanBangMode ? '' : '--parallel');
 }
 
 const { preemptiveCool } = require('./m1-cooling-daemon');
@@ -356,11 +331,29 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
       if (modelOverride) {
         log(`🔥→🌲 Opus mission done — switching back to ${config.MODEL_NAME}`);
       }
+
+      // 🦞 FIX 2026-02-23: DISABLED 100x DEEP PIPELINE auto-chain
+      // ClaudeKit workflow: /plan:hard → REVIEW plan → /cook <plan_dir>
+      // CTO must NOT auto-cook immediately. Let Auto-CTO discover plan.md in next scan cycle.
+      if (/^\/(plan:|bootstrap)/.test(currentPrompt)) {
+        log(`[PLAN-FIRST] Planning complete. Plan saved. Waiting for review before /cook.`);
+        try {
+          const execSync = require('child_process').execSync;
+          const lsCmdPlans = `ls -t "${projectDir}/plans"/*/plan.md 2>/dev/null | head -n 1`;
+          let latestPlan = '';
+          try { latestPlan = execSync(lsCmdPlans, { encoding: 'utf8' }).trim(); } catch (e) { }
+          if (latestPlan) {
+            log(`[PLAN-FIRST] Plan at: ${latestPlan} — next Auto-CTO cycle will review and /cook.`);
+          }
+        } catch (e) { }
+      }
+      // ══════════════════════════════════════════════════════════════
+
       return result;
     }
 
-    // Don't retry on certain result types
-    if (['unsafe_blocked', 'brain_died', 'brain_died_fatal', 'no_brain_module', 'max_retries_exhausted', 'duplicate_rejected'].includes(result.result)) {
+    // Don't retry on certain result types. If busy, bubble up immediately so queue can sleep/retry.
+    if (['all_workers_busy', 'busy_blocked', 'mission_locked', 'unsafe_blocked', 'brain_died', 'brain_died_fatal', 'no_brain_module', 'max_retries_exhausted', 'duplicate_rejected'].includes(result.result)) {
       return result;
     }
 

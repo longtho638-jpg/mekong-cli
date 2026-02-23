@@ -1,636 +1,72 @@
-# Brain Surgery Changelog — 自知之明 (Tự Tri Chi Minh)
+# 🧬 Brain Surgery Changelog — Tôm Hùm Evolution Log
 
-**Date:** 2026-02-19 16:15
-**Mission:** BRAIN_SURGERY_V2
-**Operator:** CC CLI (Parallel Mode)
+> 用間 Ch.13: 知己知彼，百戰不殆 — Biết mình biết người, trăm trận không nguy.
 
 ---
 
-## 🩺 DIAGNOSIS — 5 Weaknesses Found
+## 2026-02-23 — Surgery v30: 自知之明 (Self-Knowledge)
 
-1.  **Unbounded memory.md Growth (Score: 64/100)**
-    - `post-mortem-reflector.js` appends endlessly to `memory.md`.
-    - Risk: File becomes huge, slowing down every mission dispatch.
-    - Fixability: High.
-
-2.  **Uncached Constitution Read (Score: 63/100)**
-    - `safety-guard.js` reads `safety-constitution.txt` on *every* safety check.
-    - Risk: I/O bottleneck on high-frequency dispatch.
-    - Fixability: High.
-
-3.  **Uncached Memory Read in Dispatch (Score: 54/100)**
-    - `mission-dispatcher.js` reads `memory.md` on *every* prompt build.
-    - Risk: Combined with #1, this is a major perf killer.
-    - Fixability: High.
-
-4.  **Expensive Knowledge Search (Score: 42/100)**
-    - `knowledge-synthesizer.js` iterates all files synchronously.
-    - Risk: Scalability issue.
-
-5.  **Frequent Sync Writes in Quota Tracker (Score: 40/100)**
-    - `quota-tracker.js` writes JSON on every token update.
-    - Risk: I/O thrashing.
-
-## 🧬 EVOLUTION — Top 3 Fixes Applied
-
-### FIX #1: Memory Rotation (Self-Cleaning Brain)
-- **File:** `lib/post-mortem-reflector.js`
-- **Change:** Implemented smart `appendToMemorySection` that keeps only top 50 LESSONS and 15 GOTCHAS.
-- **Impact:** Prevents `memory.md` from exploding. Constant time access.
-
-### FIX #2: Constitution Caching (Fast Safety)
-- **File:** `lib/safety-guard.js`
-- **Change:** Added module-level `_constitutionCache` with `mtimeMs` check.
-- **Impact:** 99% reduction in I/O for safety checks.
-- **Bonus:** Improved `DANGER_PATTERNS` with more robust regexes.
-
-### FIX #3: Dispatch Context Caching (Fast Dispatch)
-- **File:** `lib/mission-dispatcher.js`
-- **Change:** Added 60s TTL cache for `memory.md` content in `buildPrompt`.
-- **Impact:** Reduces I/O latency for mission dispatch logic.
-
----
-
-# Brain Surgery Changelog — 自知之明 (Tự Tri Chi Minh)
-
-**Date:** 2026-02-17 19:28
-**Mission:** BRAIN_SURGERY
-**Operator:** CC CLI (Auto Mode)
-
----
-
-## 🧠 PHILOSOPHY
-
-> **自知之明** (Tự Tri Chi Minh) — "Know thyself"
-> Binh Pháp Chapter 3: 知彼知己，百戰不殆 (Know the enemy and yourself, and you will never be defeated)
-
----
-
-## 🩺 DIAGNOSIS — 3 Concrete Weaknesses Fixed
-
-### YẾU #1: Hardcoded Timeouts → Config-Based Adaptive
+### Phẫu Thuật #1: Dedup TTL Fix
 
 **File:** `lib/brain-process-manager.js`
 
-#### BEFORE:
-```javascript
-// Line 68: Hardcoded 30s consume deadline
-const consumeDeadline = Date.now() + 30000;
-
-// Line 84: Hardcoded 60s heartbeat
-const heartbeat = setInterval(() => {
-  const elapsed = Math.round((Date.now() - startTime) / 1000);
-  log(`Mission #${num} working — ${elapsed}s`);
-}, 60000);
-```
-
-**Problems:**
-- Không linh hoạt, không dựa vào `config.POLL_INTERVAL_MS`
-- Không phản ánh Binh Phap timeout hierarchy (GIÓ/RỪNG/LỬA/NÚI)
-- Consume check mỗi 500ms không align với config (200ms)
-
-#### AFTER:
-```javascript
-// Config-based consume deadline: 60 poll intervals (default 200ms × 60 = 12s)
-const consumeDeadline = Date.now() + (config.POLL_INTERVAL_MS * 60);
-
-// Adaptive heartbeat: 10% of mission timeout
-const heartbeatInterval = Math.max(60000, Math.floor(timeoutMs * 0.1));
-const heartbeat = setInterval(() => {
-  const elapsed = Math.round((Date.now() - startTime) / 1000);
-  log(`Mission #${num} working — ${elapsed}s / ${Math.round(timeoutMs / 1000)}s`);
-}, heartbeatInterval);
-```
-
-**Benefits:**
-- ✅ Consume check aligned với `config.POLL_INTERVAL_MS` (PROJECT FLASH: 200ms)
-- ✅ Heartbeat adapts to mission timeout (NÚI tasks log less frequently)
-- ✅ Log shows progress ratio: `{elapsed}s / {total}s`
-
----
-
-### YẾU #2: Import Mismatch → Architecture Alignment
-
-**File:** `lib/mission-dispatcher.js`
-
-#### BEFORE:
-```javascript
-// Line 14: Import from legacy brain-tmux
-const { log, runMission } = require('./brain-tmux');
-```
-
-**Problems:**
-- CLAUDE.md v2026.2.16 says brain mode = 'external' → use `brain-process-manager.js`
-- But dispatcher imports from `brain-tmux.js` (legacy)
-- Inconsistent architecture, stale dependency
-
-#### AFTER:
-```javascript
-// Import from canonical brain module
-const { log, runMission } = require('./brain-process-manager');
-```
-
-**Benefits:**
-- ✅ Aligned với CLAUDE.md architecture docs
-- ✅ Single source of truth for brain operations
-- ✅ Easier to refactor/extend brain logic
-
----
-
-### YẾU #3: Memory Leak → Defensive Cleanup
-
-**File:** `lib/task-queue.js`
-
-#### BEFORE:
-```javascript
-// Line 54-61: Retry success path
-const retryResult = await executeTask(content, taskFile, timeout, complexity);
-if (retryResult && retryResult.success) {
-  // ... AGI Level 3 gate
-}
-fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
-log(`Archived after retry: ${taskFile}`);
-// ❌ processingSet.delete(taskFile) ONLY happens in finally (line 93)
-```
-
-**Problems:**
-- `processingSet` accumulates taskFiles when retry success → memory leak
-- If same file re-queued later → blocked vì vẫn trong set
-- Normal path line 93 deletes, retry path line 60 không delete
-
-#### AFTER:
-```javascript
-// Line 54-62: Delete BEFORE rename
-const retryResult = await executeTask(content, taskFile, timeout, complexity);
-if (retryResult && retryResult.success) {
-  // ... AGI Level 3 gate
-}
-processingSet.delete(taskFile); // 🔒 Remove BEFORE rename to prevent leak
-fs.renameSync(filePath, path.join(config.PROCESSED_DIR, taskFile));
-log(`Archived after retry: ${taskFile}`);
-```
-
-**Benefits:**
-- ✅ Prevents memory leak in retry success path
-- ✅ Symmetric cleanup với normal path (line 93)
-- ✅ `enqueue()` guard (line 103) will work correctly if file re-added
-
----
-
-## 📊 IMPACT ANALYSIS
-
-| Metric | Before | After |
-|--------|--------|-------|
-| Hardcoded values | 2 | 0 |
-| Architecture misalignment | 1 | 0 |
-| Memory leak paths | 1 | 0 |
-| Config-based timeouts | ❌ | ✅ |
-| Adaptive heartbeat | ❌ | ✅ |
-| processingSet cleanup | ⚠️ Partial | ✅ Full |
-
----
-
-## 🔬 REMAINING WEAKNESSES (Out of Scope)
-
-### YẾU #4: brain-tmux.js Legacy Sprawl
-**File:** `lib/brain-tmux.js` (34KB, 1042 lines)
-**Problem:** Monolithic, hard to maintain, duplicate logic with `brain-process-manager.js`
-**Solution:** Deprecate or refactor into smaller modules (future surgery)
-
-### YẾU #5: Error Handling Gaps
-**Files:** `task-queue.js`, `mission-dispatcher.js`
-**Problem:** Generic `catch (error)` blocks without specific error types
-**Solution:** Typed error classes, specific recovery strategies (future surgery)
-
----
-
-## 🧬 LESSONS LEARNED
-
-1. **自知之明 Principle:** Đọc insights → audit code → fix concrete issues (not just plan)
-2. **Binh Phap Alignment:** Config-based timeouts > hardcoded magic numbers
-3. **Architecture Hygiene:** Import from canonical module, not legacy aliases
-4. **Defensive Cleanup:** Always delete from processingSet BEFORE rename/archive
-
----
-
-## 🎯 NEXT SURGERY CANDIDATES
-
-1. **brain-tmux.js Refactor** — Split into brain-vscode-terminal, brain-terminal-app, brain-headless-per-mission
-2. **Error Handling Layer** — Typed errors, recovery strategies, fallback chains
-3. **Timeout Strategy** — Dynamic timeout adjustment based on mission complexity history
-
----
-
-_Last Updated: 2026-02-17 19:36 (Round 2)_
-_Files Changed Round 1: 3 (brain-process-manager.js, mission-dispatcher.js, task-queue.js)_
-_Files Changed Round 2: 2 (task-queue.js, post-mortem-reflector.js)_
-_Total Lines Changed: +5 -4_
-
----
-
-## 🔄 ROUND 2 SURGERY (2026-02-17 19:36)
-
-### Additional Cleanup: Remaining brain-tmux Imports
-
-**Discovery:** Round 1 missed 2 files still importing from legacy `brain-tmux.js`
-
-#### YẾU #2b: task-queue.js Stale Import
-
 **BEFORE:**
-```javascript
-// Line 4
-const { log } = require('./brain-tmux');
-```
+- `recentMissionHashes` = `Set()` không có TTL
+- Window size = 20 missions — sau session restart, Set bị xóa nhưng nếu cùng tasks được dispatch lại, 20 missions cũ trong window bị reject
+- Vấn đề: `duplicate_rejected` chiếm ~50% missions trong memory.md (20/50+ entries)
 
 **AFTER:**
-```javascript
-const { log } = require('./brain-process-manager');
-```
+- `recentMissionHashes` = `Map<hash, timestamp>` với TTL 10 phút
+- Hashes tự động expire sau 10 phút — cùng task OK để retry sau 10min
+- `isDuplicateMission()` tự purge expired entries trước khi check
+- `trackMissionHash()` thay thế manual Set operations
 
-#### YẾU #2c: post-mortem-reflector.js Stale Import
-
-**BEFORE:**
-```javascript
-// Line 17
-const { log } = require('./brain-tmux');
-```
-
-**AFTER:**
-```javascript
-const { log } = require('./brain-process-manager');
-```
-
-**Impact:**
-- ✅ **100% brain-tmux purge** — All lib/ modules now use canonical brain-process-manager
-- ✅ Architecture consistency across entire codebase
-- ✅ Enables safe deprecation of brain-tmux.js in future
-
-**Score:**
-- SEVERITY: 8/10 (would crash when brain-tmux not available)
-- FIXABILITY: 10/10 (2-line change)
-- **Total Impact:** 80 points
-
-
+**Expected Impact:** Giảm `duplicate_rejected` từ ~50% → <5% của missions
 
 ---
 
-## 🔄 ROUND 3 SURGERY (2026-02-17 23:00)
-
-### 🧬 BRAIN SURGERY — 自知之明 (Self-Knowledge Evolution)
-
-**Mission:** Complete self-introspection and evolution based on accumulated weaknesses.
-
-**Methodology:**
-1. INTROSPECTION: Read ALL lib/ files, config, CLAUDE.md, knowledge/memory.md
-2. CRITIQUE: Find 3-5 CONCRETE weaknesses (not generic)
-3. EVOLUTION: Implement TOP 3 fixes with code changes
-4. COMMIT: Update changelog, git commit
-
----
-
-### 🩺 DIAGNOSIS — 4 Weaknesses Fixed (Top 3 + Bonus)
-
-#### YẾU #1: CONTEXT AMNESIA — No Persistent Memory (Score: 72/100)
+### Phẫu Thuật #2: Project Routing Missing Keywords
 
 **File:** `lib/mission-dispatcher.js`
 
 **BEFORE:**
-```javascript
-// Line 64-66
-const memoryCtx = getTopLessons(10);
-const memoryPrefix = memoryCtx ? `${memoryCtx}\n\n` : '';
-// ❌ Only loads recent lessons from post-mortem-reflector
-// ❌ Does NOT load knowledge/memory.md (long-term patterns)
-// ❌ Brain starts each mission from scratch
-```
-
-**Problems:**
-- SEVERITY: 9/10 — Repeats same mistakes (i18n sync bug happened 3×)
-- FIXABILITY: 8/10 — knowledge/memory.md exists but not injected
-- IMPACT: Wastes tokens re-learning known pitfalls
+- Default route = `apps/algo-trader` (sai với focus mode 2026-02-23 = mekong-cli)
+- Thiếu keywords: `openclaw-worker`, `openclaw`, `task-watcher`, `brain-process`, `auto-cto`, `mekong-cli`
+- → Tasks về openclaw-worker bị route đến algo-trader (sai project!)
 
 **AFTER:**
-```javascript
-// 🧠 FIX #1: PERSISTENT MEMORY — Always load memory.md + post-mortem lessons
-const memoryCtx = getTopLessons(10);
-let memoryPrefix = '';
+- Thêm 6 keywords mới cho mekong-cli root
+- Default route = `config.MEKONG_DIR` (root) thay vì `apps/algo-trader`
+- Phù hợp với FOCUS MODE decree 2026-02-23: "ONLY mekong-cli until AGI"
 
-// Load knowledge/memory.md for long-term patterns
-const memoryFile = path.join(__dirname, '../knowledge/memory.md');
-try {
-  if (require('fs').existsSync(memoryFile)) {
-    const memoryContent = require('fs').readFileSync(memoryFile, 'utf-8');
-    // Extract GOTCHAS section (most critical)
-    const gotchasMatch = memoryContent.match(/## GOTCHAS[\s\S]*?(?=##|$)/);
-    const gotchas = gotchasMatch ? gotchasMatch[0].slice(0, 800) : '';
-    memoryPrefix += gotchas ? `📜 MEMORY (GOTCHAS):\n${gotchas}\n\n` : '';
-  }
-} catch (e) { /* silent fail — memory is optional */ }
-
-// Add recent mission lessons
-if (memoryCtx) memoryPrefix += `${memoryCtx}\n\n`;
-```
-
-**Benefits:**
-- ✅ Brain now reads GOTCHAS section from memory.md every mission
-- ✅ Combines long-term patterns (memory.md) + recent lessons (post-mortem)
-- ✅ Max 800 chars to avoid token bloat
-- ✅ Silent fail if file missing (graceful degradation)
+**Expected Impact:** 100% task về openclaw/mekong-cli route đúng thư mục
 
 ---
 
-#### YẾU #2: DUPLICATE CONTEXT MANAGEMENT — /clear + /compact Overlap (Score: 70/100)
+### Phẫu Thuật #3: Token Tracking Estimation
 
-**File:** `lib/brain-tmux.js`
+**File:** `lib/post-mortem-reflector.js`
 
 **BEFORE:**
-```javascript
-// Line 32-33
-const COMPACT_EVERY_N = 50; // Compact every 50 missions
-const CLEAR_EVERY_N = 25;    // Clear every 25 missions
-
-// Line 468-478: manageContext()
-async function manageContext() {
-  if (missionCount > 0 && missionCount % CLEAR_EVERY_N === 0) {
-    log(`CONTEXT: /clear (mission #${missionCount})`);
-    pasteText('/clear');
-    await sleep(1000);
-    sendEnter();
-    await sleep(5000);
-    await waitForPrompt(30000);
-    return true;
-  }
-  return false;
-}
-
-// Line 574: runMission() calls BOTH
-await manageContext();
-await compactIfNeeded();
-```
-
-**Problems:**
-- SEVERITY: 7/10 — Wasted 5s every 25 missions for redundant `/clear`
-- FIXABILITY: 10/10 — Simply remove `/clear`, only use `/compact`
-- IMPACT: CC CLI's `/compact` already handles cleanup better than `/clear`
+- `tokensUsed = 0` cho tất cả missions (AG Proxy không expose token counts)
+- `tokensPerMin = 0/min` → không thể phân tích efficiency
+- Memory.md toàn `0 | 0/min` → vô nghĩa
 
 **AFTER:**
-```javascript
-// Line 31-33
-const COMPACT_EVERY_N = 50; // Compact every 50 missions
-// 🧬 FIX #3: REMOVE /clear — CC CLI's /compact handles cleanup better
-// CLEAR_EVERY_N removed — /clear is redundant with /compact
+- Khi `tokensUsed = 0`, dùng heuristic: `~200 tokens/min` cho successful missions
+- Display: `~400(est)` thay vì `0` để phân biệt estimated vs actual
+- Các phân tích `token_waste` và `Efficient mission` vẫn hoạt động với estimated values
 
-// manageContext() function DELETED entirely
-
-// Line 571: runMission() only calls compact
-// 🧬 FIX #3: Only /compact, no /clear
-await compactIfNeeded();
-```
-
-**Benefits:**
-- ✅ Eliminated redundant `/clear` every 25 missions
-- ✅ Saved ~5s per `/clear` operation
-- ✅ Simplified context management logic
-- ✅ `/compact` is more efficient (smart cleanup vs full reset)
+**Expected Impact:** Memory.md có dữ liệu hữu ích để phân tích efficiency patterns
 
 ---
 
-#### YẾU #3: THERMAL OVER-INTERVENTION — Too Many Purges (Score: 42/100)
+## Điểm Yếu Còn Lại (Next Surgery)
 
-**File:** `lib/m1-cooling-daemon.js`
+1. **memory.md chưa có phân tích trend** — Cần logic detect "SAME failure 3+ times → escalate" thay vì chỉ ghi
+2. **Auto-CTO không đọc knowledge/ pipeline** — Rule `knowledge-pipeline.md` yêu cầu scan trước khi execute complex task
+3. **Token estimation chưa calibrated** — 200 tokens/min chỉ là heuristic, cần benchmark thực tế
 
-**BEFORE:**
-```javascript
-// Line 198
-// 3. Constant Maintenance
-if (load1 > 5 || subagents > config.AGENT_TEAM_SIZE_DEFAULT) killResourceHogs();
-```
-
-**Problems:**
-- SEVERITY: 6/10 — Kills legitimate processes (ts-server, pyright) too often
-- FIXABILITY: 7/10 — Just adjust threshold
-- IMPACT: Load > 5 on M1 8-core is normal, not critical
-
-**AFTER:**
-```javascript
-// Line 29-38
-const OVERHEAT_LOAD = 18;
-const SAFE_LOAD = 10;
-// 🧬 FIX #4: THERMAL THRESHOLD — Raise from 5 to 8 (M1 8-core can handle load 8)
-const MAINTENANCE_LOAD_THRESHOLD = 8; // Constant maintenance only when load > 8
-
-// Line 198
-// 3. Constant Maintenance — 🧬 FIX #4: Raised threshold from 5 to 8
-if (load1 > MAINTENANCE_LOAD_THRESHOLD || subagents > config.AGENT_TEAM_SIZE_DEFAULT) killResourceHogs();
-```
-
-**Benefits:**
-- ✅ Reduced false positives (load 5-8 is normal, not overheat)
-- ✅ Preserved IntelliSense processes longer
-- ✅ Config-based threshold (easier to adjust later)
-
----
-
-#### YẾU #4 (BONUS): Mission Lock Leak Risk Still Exists
-
-**File:** `lib/brain-tmux.js`
-
-**Discovery:** While reviewing Round 2 fix (task-queue retry path), noticed `runMission()` in brain-tmux.js has same leak pattern.
-
-**BEFORE:**
-```javascript
-// Line 544-811: runMission()
-async function runMission(prompt, projectDir, timeoutMs, modelOverride) {
-  const workerIdx = findIdleWorker();
-  if (workerIdx === -1) {
-    return { success: false, result: 'all_workers_busy', elapsed: 0 };
-  }
-
-  setWorkerLock(workerIdx, num); // Lock acquired here
-
-  // ... 260 lines of mission logic ...
-
-  return { success: false, result: 'timeout', elapsed };
-  // ❌ clearWorkerLock() only called in return statements
-  // ❌ If mission crashes or throws exception → lock persists
-}
-```
-
-**AFTER:**
-```javascript
-// Line 562-810: Wrapped in try-finally
-try {
-  // ... all mission logic here ...
-} finally {
-  // 🔒 GUARANTEED CLEANUP: Always clear per-worker lock on exit
-  clearWorkerLock(workerIdx);
-}
-```
-
-**Benefits:**
-- ✅ Lock cleanup GUARANTEED even if mission crashes
-- ✅ Prevents "all_workers_busy" deadlock after exceptions
-- ✅ Symmetric with task-queue.js fix (Round 2)
-
----
-
-## 📊 IMPACT ANALYSIS
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Memory injection | ❌ None | ✅ GOTCHAS | +800 chars/mission |
-| Context management calls | 2× (/clear + /compact) | 1× (/compact) | -50% overhead |
-| Thermal false positives | High (load > 5) | Low (load > 8) | -60% kills |
-| Lock leak paths | 1 (runMission crash) | 0 | 100% fixed |
-| Mission amnesia rate | High (no memory) | Low (persistent) | -90% repeat errors |
-
-**Expected Token Savings:**
-- Memory reduces re-learning: ~500 tokens/mission × 10 missions/day = **5k tokens/day**
-- Context cleanup optimization: 1 fewer call per 25 missions × 100 chars = **100 tokens/day**
-- **Total savings: ~5.1k tokens/day**
-
-**Expected Reliability Improvement:**
-- Lock leak fix: 0 deadlocks (was 1-2/week)
-- Memory injection: -90% repeat errors
-- Thermal: Fewer IntelliSense disruptions
-
----
-
-## 🎯 REMAINING WEAKNESSES (Out of Scope)
-
-### YẾU #5: BLIND COMPLEXITY — Keyword-Only Classification (Score: 72/100)
-**File:** `mission-complexity-classifier.js`
-**Problem:** Chỉ check keywords, không phân tích AST/git diff/file count
-**Solution:** Add LLM pre-flight classification (future surgery)
-
-### YẾU #6: NO PROMPT VERSIONING — Can't A/B Test Prompts (Score: 30/100)
-**File:** `mission-dispatcher.js`
-**Problem:** Hard-coded prompts, không track version
-**Solution:** Prompt registry with metrics (future surgery)
-
----
-
-## 🧬 LESSONS LEARNED
-
-1. **Self-Knowledge Loop:** Read memory.md → Audit code → Find concrete issues → Fix → Update memory.md
-2. **Token Efficiency:** Persistent memory (800 chars) prevents re-learning (500 tokens/mission)
-3. **Context Hygiene:** `/compact` > `/clear` (smarter cleanup)
-4. **Thermal Realism:** M1 8-core can handle load 8 (not 5)
-5. **Defensive Programming:** try-finally for lock cleanup (not just return statements)
-
----
-
-_Last Updated: 2026-02-17 23:15_
-_Files Changed Round 3: 2 (mission-dispatcher.js, brain-tmux.js, m1-cooling-daemon.js)_
-_Total Lines Changed: +25 -10_
-_Expected Token Savings: ~5.1k/day_
-_Expected Reliability: +90% (lock leak + memory injection)_
-
----
-
-## 🔄 ROUND 4 SURGERY (2026-02-18)
-
-### 🧬 BRAIN SURGERY — 自知之明 (Self-Knowledge Evolution)
-
-**Mission:** Optimize Core Logic for Efficiency and Responsiveness.
-
-**Methodology:**
-1. CRITIQUE: Identified Token Inefficiency, Reactive Context Cleanup, Stale Lock Race, and Artificial Latency.
-2. EVOLUTION: Applied fixes to `mission-dispatcher.js` and `brain-process-manager.js`.
-
-### 🩺 DIAGNOSIS & FIXES — 4 Weaknesses Addressed
-
-#### YẾU #1: STALE LOCK RACE CONDITION (Score: 100/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** `STALE_LOCK_THRESHOLD_MS` (30m) < `MISSION_TIMEOUT_MS` (45m). Cleaner deletes lock while mission still running.
-**Fix:** Verified `STALE_LOCK_THRESHOLD_MS` set to **60 minutes**. (Previously applied/verified).
-
-#### YẾU #2: TOKEN INEFFICIENCY (Score: 63/100)
-**File:** `lib/mission-dispatcher.js`
-**Problem:** Excessive context injection (~2k tokens/mission).
-**Fix:**
-- Reduced `GOTCHAS` injection limit from 2000 to **800 chars**.
-- Simplified `claudekitEnforcement` prompt string.
-**Impact:** Saves ~1k tokens per mission.
-
-#### YẾU #3: ARTIFICIAL LATENCY (Score: 60/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** `MIN_MISSION_SECONDS` (60s) forced delay on fast tasks.
-**Fix:** Verified `MIN_MISSION_SECONDS` reduced to **10 seconds**. (Previously applied/verified).
-
-#### YẾU #4: REACTIVE CONTEXT CLEANUP (Score: 48/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** Cleanup only happened after regex warning, risking hard limits.
-**Fix:**
-- `COMPACT_EVERY_N` reduced from 50 to **10 missions**.
-- `COMPACT_TOKEN_THRESHOLD` reduced from 120k to **50k tokens**.
-**Impact:** Proactive compaction keeps context light and fast.
-
-### 📊 IMPACT ANALYSIS
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Token Usage | High (~2k/mission overhead) | Medium (~1k overhead) | ~1k tokens saved/mission |
-| Latency | High (min 60s) | Low (min 10s) | 6x faster for small tasks |
-| Context Risk | Reactive | Proactive (every 10 missions) | Significantly reduced overflow risk |
-| Lock Safety | Risky (30m) | Safe (60m) | Eliminated race condition |
-
----
-
-
-
-## 🔄 ROUND 4 SURGERY (2026-02-18 10:00) — CRITIQUE PHASE
-
-### 🧬 BRAIN SURGERY — 批判 (Critique & Evolution)
-
-**Mission:** Optimize core logic based on 2026-02-18 Critique Report.
-**Focus:** Token Efficiency, Context Hygiene, Race Conditions.
-
-### 🩺 DIAGNOSIS & CURES — 4 Weaknesses Fixed
-
-#### YẾU #1: STALE LOCK RACE CONDITION (Score: 100/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** `STALE_LOCK_THRESHOLD_MS` (30m) < `MISSION_TIMEOUT_MS` (45m).
-**Impact:** Valid long missions get killed/overwritten by cleaner → context corruption.
-**Fix:** Raised `STALE_LOCK_THRESHOLD_MS` to **60 minutes**.
-**Status:** ✅ Applied (Verified 2026-02-18 10:10 via `scripts/verify-brain-surgery.js`)
-
-#### YẾU #2: TOKEN INEFFICIENCY (Score: 63/100)
-**File:** `lib/mission-dispatcher.js`
-**Problem:** Massive "CLAUDEKIT v2.9.1 MANDATORY" block injected into *every* mission.
-**Impact:** Wastes ~1k-2k tokens/mission.
-**Fix:**
-- Reduced `GOTCHAS` memory injection limit from 2000 → **800 chars**.
-- Simplified `claudekitEnforcement` string (removed redundant text).
-- **Result:** ~500-1000 tokens saved per mission.
-**Status:** ✅ Applied (Verified 2026-02-18 10:10).
-
-#### YẾU #3: ARTIFICIAL LATENCY (Score: 60/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** `MIN_MISSION_SECONDS` was 60s. Fast tasks waited unnecessarily.
-**Fix:** Reduced `MIN_MISSION_SECONDS` to **10s**.
-**Status:** ✅ Applied (Verified 2026-02-18 10:10).
-
-#### YẾU #4: REACTIVE CONTEXT CLEANUP (Score: 48/100)
-**File:** `lib/brain-process-manager.js`
-**Problem:** Cleanup only happened after regex warning or huge token count (120k).
-**Fix:**
-- `COMPACT_EVERY_N`: 50 → **10 missions**.
-- `COMPACT_TOKEN_THRESHOLD`: 120k → **50k tokens**.
-- **Result:** Proactive compaction keeps context fresh and prevents "overloaded" errors.
-**Status:** ✅ Applied (Verified 2026-02-18 10:10).
-
----
-
-## 📊 IMPACT ANALYSIS
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Lock Safety Margin | -15 min (unsafe) | +15 min (safe) | **100% Race Condition Fix** |
-| Token Overhead | High (~2k/mission) | Low (~1k/mission) | **~1k tokens/mission saved** |
-| Min Latency | 60s | 10s | **6x Faster** for small tasks |
-| Context Freshness | Reactive (120k) | Proactive (50k) | **2.4x More Frequent** cleanup |
-
-_Last Updated: 2026-02-18 10:12_
-_Files Changed: 2 (brain-process-manager.js, mission-dispatcher.js)_
-_Verification: Passed via `scripts/verify-brain-surgery.js`_
+**Files cần sửa trong Surgery v31:**
+- `lib/post-mortem-reflector.js` — trend detection
+- `lib/auto-cto-pilot.js` — knowledge pipeline integration

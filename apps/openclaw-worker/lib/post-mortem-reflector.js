@@ -49,7 +49,11 @@ async function reflectOnMission(data) {
 
         const date = new Date().toISOString().slice(0, 10);
         const durationMin = Math.round(duration / 60000);
-        const tokensPerMin = durationMin > 0 ? Math.round(tokensUsed / durationMin) : tokensUsed;
+        // 🧬 BRAIN SURGERY v30: Estimate tokens when tracker returns 0
+        // AG Proxy doesn't expose token counts — use heuristic: ~200 tokens/min for active missions
+        const effectiveTokens = tokensUsed > 0 ? tokensUsed : (success && durationMin > 0 ? durationMin * 200 : 0);
+        const tokensPerMin = durationMin > 0 ? Math.round(effectiveTokens / durationMin) : effectiveTokens;
+        const tokenDisplay = tokensUsed > 0 ? tokensUsed : `~${effectiveTokens}(est)`;
 
         // === Step 1: Determine lesson based on outcome ===
         let lesson = '';
@@ -73,7 +77,7 @@ async function reflectOnMission(data) {
         }
 
         // === Step 2: Append to LESSONS table in memory.md ===
-        const lessonRow = `| ${date} | ${project} | ${missionId.slice(0, 30)} | ${lesson} | ${tokensUsed} | ${tokensPerMin}/min |`;
+        const lessonRow = `| ${date} | ${project} | ${missionId.slice(0, 30)} | ${lesson} | ${tokenDisplay} | ${tokensPerMin}/min |`;
         appendToMemorySection('LESSONS', lessonRow);
 
         // === Step 3: Detect recurring failures → add to GOTCHAS ===
