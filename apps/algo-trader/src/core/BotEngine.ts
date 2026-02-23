@@ -10,6 +10,7 @@ export interface BotConfig {
   symbol: string;
   riskPercentage: number;
   pollInterval: number; // ms
+  maxDrawdownPercent?: number; // Optional: stop bot when drawdown exceeds this % (e.g. 10 = 10%)
 }
 
 export class BotEngine {
@@ -23,6 +24,7 @@ export class BotEngine {
   private baseCurrency: string;
   private quoteCurrency: string;
   private isProcessingSignal = false; // Prevent race conditions during async trade execution
+  private peakBalance = 0; // Drawdown protection: track highest balance seen
 
   constructor(
     strategy: IStrategy,
@@ -46,8 +48,13 @@ export class BotEngine {
     await this.exchange.connect();
     await this.dataProvider.init();
 
-    // Warm up strategy with history if possible, or just start listening
-    // For now, let's assume we subscribe to live data
+    // Seed initial peak balance for drawdown tracking
+    if (this.config.maxDrawdownPercent !== undefined) {
+      const balances = await this.exchange.fetchBalance();
+      this.peakBalance = balances[this.quoteCurrency]?.free || 0;
+      logger.info(`Drawdown protection active: max ${this.config.maxDrawdownPercent}%, initial balance ${this.peakBalance}`);
+    }
+
     this.dataProvider.subscribe(this.onCandle.bind(this));
     await this.dataProvider.start();
 
@@ -57,8 +64,37 @@ export class BotEngine {
 
   async stop() {
     logger.info('Stopping Bot Engine...');
-    await this.dataProvider.stop();
+    try {
+      await this.dataProvider.stop();
+    } catch (error) {
+      logger.error(`Error stopping data provider: ${error instanceof Error ? error.message : String(error)}`);
+    }
     this.isRunning = false;
+  }
+
+  /**
+   * Check if current balance has breached the max drawdown threshold.
+   * Returns true if drawdown protection triggered (bot should stop).
+   */
+  private async checkDrawdown(): Promise<boolean> {
+    if (this.config.maxDrawdownPercent === undefined) return false;
+
+    const balances = await this.exchange.fetchBalance();
+    const currentBalance = balances[this.quoteCurrency]?.free || 0;
+
+    if (currentBalance > this.peakBalance) {
+      this.peakBalance = currentBalance;
+    }
+
+    if (this.peakBalance === 0) return false;
+
+    const drawdown = ((this.peakBalance - currentBalance) / this.peakBalance) * 100;
+    if (drawdown >= this.config.maxDrawdownPercent) {
+      logger.warn(`[DRAWDOWN] ${drawdown.toFixed(2)}% drawdown hit (limit: ${this.config.maxDrawdownPercent}%). Stopping bot.`);
+      return true;
+    }
+
+    return false;
   }
 
   private async onCandle(candle: ICandle) {
@@ -66,6 +102,14 @@ export class BotEngine {
 
     try {
       this.isProcessingSignal = true;
+
+      // Drawdown check before processing any signal
+      const drawdownTriggered = await this.checkDrawdown();
+      if (drawdownTriggered) {
+        await this.stop();
+        return;
+      }
+
       const signal = await this.strategy.onCandle(candle);
 
       if (signal) {
