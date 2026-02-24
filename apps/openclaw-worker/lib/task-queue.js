@@ -95,10 +95,13 @@ async function processQueue() {
       retryCounts.delete(taskFile); // Reset retries on success/execution
 
       // 🧬 FIX: init buildResult with actual result reason, not 'not_run' for real failures
-      const failReason = (result && !result.success) ? (result.result || 'failed') : 'not_run';
+      const failReason = (result && !result.success) ? (result.result || 'unknown_failure') : 'not_run';
       let buildResult = { build: false, output: result && result.success ? 'not_run' : failReason };
-      const projectMatch = taskFile.match(/^(?:HIGH_|MEDIUM_|LOW_|CRITICAL_)?mission_([a-z0-9_-]+?)_(?:auto_)?/i);
-      const projectShortName = projectMatch ? projectMatch[1].replace(/_/g, '-') : null;
+      // 🧬 FIX: Extract project name — strip priority prefix + 'mission' keyword + trailing identifiers
+      const stripped = taskFile.replace(/^(?:HIGH_|MEDIUM_|LOW_|CRITICAL_)/, '').replace(/^mission_/, '');
+      // Take first meaningful segment (before numeric IDs or known suffixes)
+      const segments = stripped.split('_');
+      const projectShortName = segments[0] && segments[0].length > 1 ? segments[0].replace(/-/g, '-') : (segments[1] || 'openclaw');
       const projectDir = detectProjectDir(content);
       const missionId = taskFile.replace(/^.*?_auto_/, '').replace('.txt', '');
 

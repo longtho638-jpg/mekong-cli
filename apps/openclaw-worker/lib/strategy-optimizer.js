@@ -140,6 +140,12 @@ const RESULT_CODE_MAP = {
     'killed_stuck':         { errorType: 'timeout', recoverable: true },
     'busy_blocked':         { errorType: 'busy', recoverable: true },
     'all_workers_busy':     { errorType: 'busy', recoverable: true },
+    'failed_to_start':      { errorType: 'startup_failure', recoverable: true },
+    'queued_abort':         { errorType: 'busy', recoverable: true },
+    // 🧬 FIX: 'unknown' → NOT recoverable by default (no hint available → retry wastes quota)
+    // Only retry 'unknown' if there is actual error output to analyze
+    'unknown':              { errorType: 'unknown', recoverable: false },
+    'unknown_failure':      { errorType: 'unknown', recoverable: false },
 };
 
 /**

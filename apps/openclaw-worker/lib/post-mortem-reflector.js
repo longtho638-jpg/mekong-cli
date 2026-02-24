@@ -115,14 +115,17 @@ function extractFailureReason(data) {
     if (data.buildResult && data.buildResult.output) {
         const output = String(data.buildResult.output);
         if (output === 'not_run') return 'workers_busy — mission queued but not dispatched';
-        if (output === 'failed' || output === 'done') return `Mission returned: ${output}`;
+        // 🧬 FIX: 'failed' was a fallback placeholder — show actual resultCode instead
+        if (output === 'failed') return resultCode ? `result=${resultCode}` : 'failed (no result code)';
+        if (output === 'done') return `Mission returned: ${output}`;
+        if (output === 'unknown_failure') return 'result code missing — check brain-process-manager';
         if (output.includes('TypeError')) return 'TypeError in code';
         if (output.includes('SyntaxError')) return 'SyntaxError in code';
         if (output.includes('timeout')) return 'Mission timed out';
         if (output.includes('RESOURCE_EXHAUSTED')) return 'API quota exhausted';
         return output.slice(0, 80);
     }
-    return 'Unknown failure (no build output)';
+    return resultCode ? `Failed — ${resultCode}` : 'Unknown failure (no build output)';
 }
 
 /**
