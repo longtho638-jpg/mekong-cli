@@ -103,25 +103,38 @@ function checkEvolutionTriggers() {
 
   const triggers = [];
 
-  // 1. Check overall success rate
-  const recent = history.slice(-20);
-  const successes = recent.filter(m => m.success).length;
-  const successRate = successes / recent.length;
+  // 🧬 BRAIN SURGERY v32: Exclude benign failures from all metrics
+  // duplicate_rejected = dedup working correctly (not a bug worth tracking)
+  const BENIGN_FAILURES = new Set(['duplicate_rejected', 'all_workers_busy', 'mission_locked', 'busy_blocked']);
 
-  if (successRate < 0.7) {
+  // 1. Check overall success rate (exclude benign failures from denominator)
+  const recent = history.slice(-20);
+  const recentActual = recent.filter(m => {
+    if (m.success) return true;
+    const key = m.failureType || m.resultCode || m.buildResult?.output || '';
+    return !BENIGN_FAILURES.has(key);
+  });
+  const successes = recentActual.filter(m => m.success).length;
+  const successRate = recentActual.length > 0 ? successes / recentActual.length : 1;
+
+  if (successRate < 0.7 && recentActual.length >= 5) {
     triggers.push({
       type: 'low_success_rate',
       severity: Math.round((1 - successRate) * 100),
-      detail: `Success rate ${Math.round(successRate * 100)}% (last ${recent.length} missions)`,
+      detail: `Success rate ${Math.round(successRate * 100)}% (${successes}/${recentActual.length} actual missions, excl. benign)`,
     });
   }
 
   // 2. Check for repeated failure patterns
+  // Reuse BENIGN_FAILURES from above — only track actionable failures
   const failureCounts = {};
   recent.filter(m => !m.success).forEach(m => {
-    // 🧬 BRAIN SURGERY v31: Priority to failureType/resultCode
-    const key = m.failureType || m.resultCode || m.task?.split('_')[0] || 'unknown';
-    failureCounts[key] = (failureCounts[key] || 0) + 1;
+    // 🧬 BRAIN SURGERY v32: Priority failureType → resultCode → buildResult.output → 'unknown'
+    // Most history entries only have buildResult.output (not failureType) — must read it too
+    const key = m.failureType || m.resultCode || m.buildResult?.output || m.task?.split('_')[0] || 'unknown';
+    if (!BENIGN_FAILURES.has(key)) {
+      failureCounts[key] = (failureCounts[key] || 0) + 1;
+    }
   });
 
   for (const [pattern, count] of Object.entries(failureCounts)) {
