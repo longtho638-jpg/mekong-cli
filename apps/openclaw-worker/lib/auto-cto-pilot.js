@@ -403,7 +403,7 @@ function startAutoCTO() {
             await handleScan(state, project, projectDir);
             break;
           case 'fix':
-            handleFix(state, project);
+            await handleFix(state, project);
             break;
           case 'verify':
             handleVerify(state, project, projectDir);
@@ -458,7 +458,7 @@ async function handleScan(state, project, projectDir) {
   saveState(state);
 }
 
-function handleFix(state, project) {
+async function handleFix(state, project) {
   // 🦞 FIX 2026-02-24: Don't generate fix missions when queue is busy — prevents flooding
   if (!isQueueEmpty()) {
     log(`AUTO-CTO [謀攻]: ${project} — queue busy, skipping fix generation this cycle.`);
@@ -473,11 +473,40 @@ function handleFix(state, project) {
   }
 
   const error = state.errors[state.fixIndex];
-  const { prompt, filename } = generateFixMission(error, project);
+
+  // 🔍 WEB RESEARCH: Search internet for best solution before dispatching fix
+  let webIntel = '';
+  if (error.severity === 'critical' || error.type === 'build') {
+    // Primary: Gemini Search Grounding (real-time Google Search via Gemini)
+    try {
+      const { researchErrorWithGemini } = require('./gemini-agentic');
+      const intel = await researchErrorWithGemini(error.message, project);
+      if (intel) {
+        webIntel = intel;
+        log(`AUTO-CTO [用間 GEMINI SEARCH]: Found grounded intel for ${error.type} error`);
+      }
+    } catch (e) {
+      log(`AUTO-CTO [用間]: Gemini grounding failed: ${e.message}`);
+    }
+    // Fallback: DuckDuckGo web-researcher
+    if (!webIntel) {
+      try {
+        const { researchError } = require('./web-researcher');
+        const intel = await researchError(error.message, project);
+        if (intel) {
+          webIntel = intel;
+          log(`AUTO-CTO [用間 DDG FALLBACK]: Found web intel for ${error.type} error`);
+        }
+      } catch (e) { }
+    }
+  }
+
+  const { prompt: basePrompt, filename } = generateFixMission(error, project);
+  const prompt = webIntel ? basePrompt + '\n' + webIntel : basePrompt;
 
   // 🦞 RE-ENABLED 2026-02-24: Auto-fix for WellNexus zero-bug target
   fs.writeFileSync(path.join(config.WATCH_DIR, filename), prompt);
-  log(`AUTO-CTO [謀攻 FIX]: Dispatched fix for ${error.type} — ${error.file || error.message} → ${filename}`);
+  log(`AUTO-CTO [謀攻 FIX]: Dispatched fix for ${error.type} — ${error.file || error.message} → ${filename}${webIntel ? ' [+WEB INTEL]' : ''}`);
   state.fixIndex++;
   saveState(state);
 }

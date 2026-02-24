@@ -261,6 +261,34 @@ Respond in TIẾNG VIỆT." --auto
     ({ filename, prompt } = generateStrategicMission(selectedTask, project));
   }
 
+  // 🌐 GOOGLE ULTRA: Gather ecosystem intel before dispatching
+  let googleIntel = '';
+  try {
+    const { gatherProjectIntel } = require('./google-ultra');
+    const intel = await gatherProjectIntel(project);
+    if (intel && !intel.error) {
+      const driveFiles = (intel.drive || []).map(f => `📄 ${f.name} (${f.mimeType})`).join(', ');
+      const emails = (intel.emails || []).length;
+      const events = (intel.calendar || []).length;
+      if (driveFiles || emails || events) {
+        googleIntel = `
+GOOGLE ULTRA INTEL (searched Drive/Gmail/Calendar):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${driveFiles ? `DRIVE: ${driveFiles}` : ''}
+${emails ? `GMAIL: ${emails} relevant discussions found` : ''}
+${events ? `CALENDAR: ${events} upcoming events` : ''}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+        log(`[STRATEGIC] [GOOGLE-ULTRA] Intel gathered: ${(intel.drive || []).length} drive files, ${emails} emails, ${events} events`);
+      }
+    }
+  } catch (e) {
+    log(`[STRATEGIC] Google Ultra intel failed: ${e.message}`);
+  }
+
+  // Inject Google intel into mission prompt
+  if (googleIntel) prompt = prompt + '\n' + googleIntel;
+
   // 🦞 RE-ENABLED 2026-02-24: Deep 10x scanning for WellNexus zero-bug target
   const missionPath = path.join(config.WATCH_DIR, filename);
   fs.writeFileSync(missionPath, prompt);

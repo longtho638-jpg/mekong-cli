@@ -231,6 +231,30 @@ safeBoot('startSelfAnalyzer', () => {
   const agi = getAGIScore();
   log(`🧠 AGI SCORE: ${agi.total}/100 (Level ${agi.level}) — Vision:${agi.components.vision} Learn:${agi.components.learning} Auto:${agi.components.autonomy} Mem:${agi.components.memory} Win:${agi.components.success}`);
 });
+// Google Ultra Integration (用間 Espionage)
+safeBoot('startGoogleUltra', () => {
+  const { checkAuthStatus, getAccount } = require('./lib/google-ultra');
+  const acc = getAccount();
+  if (acc) {
+    log(`🔑 GOOGLE ULTRA: Authenticated as ${acc} — Drive/Docs/Sheets/Gmail/Calendar ONLINE`);
+    // Start periodic intelligence gathering loop
+    const { startIntelLoop } = require('./lib/google-ultra');
+    startIntelLoop(['well']);
+    log(`🔄 GOOGLE ULTRA: Intel loop activated — scanning Drive/Gmail/Calendar every 10min for project insights`);
+  } else {
+    log(`⚠️ GOOGLE ULTRA: No accounts — run 'gog login <email>' to enable`);
+  }
+});
+// Gemini AI Agentic Ecosystem (用間 Deep 100x)
+safeBoot('startGeminiAgentic', async () => {
+  const { checkGeminiStatus } = require('./lib/gemini-agentic');
+  const status = await checkGeminiStatus();
+  if (status === 'ONLINE') {
+    log(`🤖 GEMINI AGENTIC: ${status} — Search Grounding + Code Execution + Deep Research + Architecture Advisor ACTIVE`);
+  } else {
+    log(`⚠️ GEMINI AGENTIC: ${status} — check GEMINI_API_KEY in .env`);
+  }
+});
 safeBoot('startCooling', startCooling);
 safeBoot('startHealer', startHealer);
 // 🦞 Lobster Proxy Pilot (Guardian of Quota)

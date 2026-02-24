@@ -16,16 +16,17 @@
     "totalStrategic": 17
   },
   "well": {
-    "lastStrategicAt": "2026-02-24T18:07:39.399Z",
+    "lastStrategicAt": "2026-02-24T19:11:46.692Z",
     "taskHistory": {
       "security_scan": 2,
-      "self_correction": 1,
+      "self_correction": 2,
       "tech_debt": 1,
       "test_suite": 1,
       "console_cleanup": 1,
       "perf_audit": 1,
-      "10x_architecture": 1
+      "10x_architecture": 1,
+      "bmad_retrospective": 1
     },
-    "totalStrategic": 8
+    "totalStrategic": 10
   }
 }
