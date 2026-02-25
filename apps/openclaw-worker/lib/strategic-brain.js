@@ -21,7 +21,7 @@ const { log } = require('./brain-process-manager');
 
 const STRATEGIC_STATE_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/strategic-state.json');
 const INSIGHTS_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/learning-insights.json');
-const COOLDOWN_MS = 2 * 60 * 1000; // 2 minutes — fast iteration for single-project focus
+const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes — prevent rapid-fire loop (Ch.2 作戰: 日費千金)
 
 // Ensure data dir exists
 const DATA_DIR = path.dirname(STRATEGIC_STATE_FILE);
