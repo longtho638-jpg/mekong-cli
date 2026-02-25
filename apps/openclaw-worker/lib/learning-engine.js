@@ -166,4 +166,7 @@ function getReport() {
   };
 }
 
-module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns };
+function startLearningEngine() {}
+function stopLearningEngine() {}
+
+module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns, startLearningEngine, stopLearningEngine };
