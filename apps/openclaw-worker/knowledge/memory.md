@@ -11,6 +11,29 @@
 
 | Date | Project | Mission | Lesson | Tokens | Efficiency |
 |------|---------|---------|--------|--------|------------|
+| 2026-02-25 | strategic | HIGH_mission_strategic_a11y_au | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_agi_evo | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_bmad_qu | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | fix | HIGH_mission_fix_well_fix_test | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | well | MEDIUM_mission_well_fix_test_1 | Code worked but BUILD FAILED — check types/lint | ~200(est) | 200/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_bmad_co | Clean success in 1min — good pattern | ~200(est) | 200/min |
+| 2026-02-25 | well | MEDIUM_mission_well_fix_test_1 | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_knowled | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_tech_de | Clean success in 1min — good pattern | ~200(est) | 200/min |
+| 2026-02-25 | strategic | HIGH_mission_strategic_perf_au | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_knowled | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_perf_au | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_debug_e | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_bmad_co | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_knowled | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_agi_evo | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_type_sa | Clean success in 1min — good pattern | ~200(est) | 200/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_test_su | Clean success in 1min — good pattern | ~200(est) | 200/min |
+| 2026-02-24 | fix | HIGH_mission_fix_strategic_bin | Clean success in 1min — good pattern | ~200(est) | 200/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_binh_ph | Code worked but BUILD FAILED — check types/lint | ~800(est) | 200/min |
+| 2026-02-24 | well | HIGH_mission_well_fix_build_17 | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_console | FAILED — Duplicate rejected | ~0(est) | 0/min |
+| 2026-02-24 | strategic | HIGH_mission_strategic_agi_evo | FAILED — Duplicate rejected | ~0(est) | 0/min |
 | 2026-02-24 | strategic | HIGH_mission_strategic_self_co | FAILED — Duplicate rejected | ~0(est) | 0/min |
 | 2026-02-24 | well | HIGH_mission_well_fix_build_17 | FAILED — Blocked by safety gate | ~0(est) | 0/min |
 | 2026-02-24 | strategic | HIGH_mission_strategic_bmad_re | Clean success in 1min — good pattern | ~200(est) | 200/min |
@@ -38,29 +61,6 @@
 | 2026-02-23 | unknown | MEDIUM_swarm_phase04go | FAILED — Max retries exhausted — task too complex or flaky | ~0(est) | 0/min |
 | 2026-02-23 | unknown | MEDIUM_swarm_phase04_clean | FAILED — Brain process died — respawn needed | ~0(est) | 0/min |
 | 2026-02-23 | add | MEDIUM_mission_add_tests_token | FAILED — Max retries exhausted — task too complex or flaky | ~0(est) | 0/min |
-| 2026-02-23 | add | MEDIUM_mission_add_tests_task_ | Code worked but BUILD FAILED — check types/lint | ~200(est) | 200/min |
-| 2026-02-23 | add | MEDIUM_mission_add_tests_dispa | Clean success in 1min — good pattern | ~200(est) | 200/min |
-| 2026-02-22 | evolution | CRITICAL_mission_evolution_sur | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_knowled | Clean success in 1min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_self_co | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_debug_e | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_securit | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_agi_evo | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_10x_arc | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | algo | HIGH_mission_algo_trader_fix_b | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | algo | HIGH_mission_algo_trader_fix_b | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | fix | HIGH_mission_fix_fix_algo_trad | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | fix | HIGH_mission_fix_algo_trader_f | Code worked but BUILD FAILED — check types/lint | 0 | 0/min |
-| 2026-02-22 | algo | HIGH_mission_algo_trader_fix_b | Code worked but BUILD FAILED — check types/lint | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_knowled | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_test_su | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_a11y_au | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_10x_arc | FAILED — Max retries exhausted — task too complex or flaky | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_knowled | Clean success in 4min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_test_su | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_test_su | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_perf_au | Clean success in 0min — good pattern | 0 | 0/min |
-| 2026-02-22 | strategic | HIGH_mission_strategic_debug_e | Clean success in 0min — good pattern | 0 | 0/min |
 
 ---
 

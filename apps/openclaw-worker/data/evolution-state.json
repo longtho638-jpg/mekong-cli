@@ -1,12 +1,10 @@
 {
-  "lastEvolutionCheck": "2026-02-24T19:13:55.015Z",
+  "lastEvolutionCheck": "2026-02-25T01:22:58.205Z",
   "skillsCreated": 2,
   "brainSurgeriesTriggered": 36,
   "tokenOptimizations": 0,
-  "evolutionScore": 31,
-  "failurePatterns": {
-    "unsafe_blocked": 1
-  },
+  "evolutionScore": 27,
+  "failurePatterns": {},
   "createdSkills": [
     "auto-fix-unknown",
     "auto-fix-duplicate-rejected"

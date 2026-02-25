@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-02-24T19:55:01.171Z",
+  "timestamp": "2026-02-25T02:36:40.985Z",
   "agiLevel": 7,
-  "evolutionScore": 31,
+  "evolutionScore": 28,
   "totalProjects": 1,
   "healthyProjects": 1,
   "needsAttention": 0,
@@ -11,10 +11,10 @@
       "score": 1,
       "errorCount": 0,
       "basePriority": 1,
-      "stalenessFactor": 0.2,
-      "successRate": 0,
-      "lastMission": "2026-02-24T19:04:44.517Z",
-      "missionCount": 2,
+      "stalenessFactor": 0.3,
+      "successRate": 13,
+      "lastMission": "2026-02-25T01:29:23.558Z",
+      "missionCount": 8,
       "health": {}
     }
   ],

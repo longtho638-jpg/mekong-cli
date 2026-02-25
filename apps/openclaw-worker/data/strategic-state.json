@@ -1,32 +1,23 @@
 {
-  "algo-trader": {
-    "lastStrategicAt": "2026-02-23T23:35:41.202Z",
-    "taskHistory": {
-      "perf_audit": 1,
-      "test_suite": 3,
-      "knowledge_synthesis": 3,
-      "10x_architecture": 3,
-      "a11y_audit": 1,
-      "agi_evolution": 1,
-      "security_scan": 1,
-      "debug_errors": 1,
-      "self_correction": 2,
-      "type_safety": 1
-    },
-    "totalStrategic": 17
-  },
   "well": {
-    "lastStrategicAt": "2026-02-24T19:11:46.692Z",
+    "lastStrategicAt": "2026-02-25T02:30:19.942Z",
     "taskHistory": {
-      "security_scan": 2,
-      "self_correction": 2,
-      "tech_debt": 1,
-      "test_suite": 1,
-      "console_cleanup": 1,
-      "perf_audit": 1,
-      "10x_architecture": 1,
-      "bmad_retrospective": 1
+      "10x_architecture": 9,
+      "test_suite": 9,
+      "type_safety": 9,
+      "agi_evolution": 10,
+      "self_correction": 9,
+      "security_scan": 9,
+      "console_cleanup": 9,
+      "binh_phap_deep_scan": 9,
+      "debug_errors": 10,
+      "knowledge_synthesis": 4,
+      "bmad_code_review": 2,
+      "a11y_audit": 5,
+      "perf_audit": 3,
+      "bmad_quick_spec": 2,
+      "tech_debt": 1
     },
-    "totalStrategic": 10
+    "totalStrategic": 29
   }
 }
