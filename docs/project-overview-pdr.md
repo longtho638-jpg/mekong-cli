@@ -26,7 +26,7 @@
 #### B. Thực Thi Công Việc (Engine & Tôm Hùm)
 - **FR-JOB-01**: Hệ thống tiếp nhận yêu cầu qua REST API hoặc File IPC (`tasks/`).
 - **FR-JOB-02**: Tôm Hùm (OpenClaw) tự động phát hiện và điều phối nhiệm vụ tới CC CLI.
-- **FR-JOB-03**: Mọi cuộc gọi LLM phải đi qua **Antigravity Proxy** (Port 11436) để quản lý quota.
+- **FR-JOB-03**: Mọi cuộc gọi LLM phải đi qua **Antigravity Proxy** (Port 9191) để quản lý quota.
 - **FR-JOB-04**: Hệ thống hỗ trợ cơ chế "Auto-CTO" để tự động sinh ra các task bảo trì chất lượng code.
 
 #### C. CLI & Công Thức (Recipes)
@@ -42,7 +42,7 @@
 
 #### B. Độ Tin Cậy & Khả Năng Phục Hồi
 - **NFR-REL-01**: Hệ thống tự động retry khi gặp lỗi mạng hoặc lỗi LLM tạm thời.
-- **NFR-REL-02**: Tôm Hùm Daemon có khả năng tự phục hồi (respawn) khi process con bị crash.
+- **NFR-REL-02**: Tôm Hùm Daemon giám sát brain process với healthcheck & model failover, không respawn tự động.
 - **NFR-REL-03**: Dữ liệu quan trọng (credits, trạng thái job) được lưu trữ bền vững trong PostgreSQL.
 
 #### C. Khả Năng Mở Rộng

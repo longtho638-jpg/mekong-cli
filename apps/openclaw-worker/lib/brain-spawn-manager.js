@@ -55,16 +55,16 @@ function canRespawn() {
 // --- Claude command generator ---
 
 /**
- * 虛實 — Intent-Aware Command Generator.
- * PRO intent → Antigravity Pro profile (claude-3-7-sonnet).
- * API intent → Antigravity API profile (Gemini proxy port 9191).
+ * 虛實 — Intent-Aware Command Generator (SINGLE SOURCE OF TRUTH).
+ * PRO intent → Opus thật (direct Anthropic API, NO proxy).
+ * API intent → Proxy (port 9191, model default by proxy).
  */
 function generateClaudeCommand(intent = 'API') {
   if (intent === 'PRO') {
     const dir = `/Users/macbookprom1/.claude_antigravity_pro`;
     return `export CLAUDE_CONFIG_DIR="${dir}" && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL` +
       ` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
-      ` && claude --model claude-3-7-sonnet-20250219 --dangerously-skip-permissions`;
+      ` && claude --model claude-opus-4-6 --dangerously-skip-permissions`;
   }
   const dir = `/Users/macbookprom1/.claude_antigravity_api`;
   return `export CLAUDE_CONFIG_DIR="${dir}" && unset ANTHROPIC_API_KEY` +
@@ -92,11 +92,15 @@ function killBrain(sessionName = config.TMUX_SESSION) {
   }
 }
 
-function isBrainAlive(sessionName = TMUX_SESSION_PRO) {
-  if (!isSessionAlive(sessionName)) return false;
+/**
+ * isBrainAlive — checks if CC CLI is running in the given tmux pane.
+ * paneTarget = full tmux pane address (e.g. tom_hum:brain.0).
+ */
+function isBrainAlive(paneTarget = TMUX_SESSION_PRO) {
+  if (!isSessionAlive(config.TMUX_SESSION)) return false;
   try {
     const output = execSync(
-      `tmux capture-pane -t ${sessionName}.0 -p 2>/dev/null`,
+      `tmux capture-pane -t ${paneTarget} -p 2>/dev/null`,
       { encoding: 'utf-8', timeout: 3000 }
     );
     return [/❯/, /Claude Code/i, /bypass permissions/i, /claude-/i, /✻/].some(p => p.test(output));
@@ -118,12 +122,18 @@ function isShellPrompt(output) {
 
 // --- Worker routing ---
 
+/**
+ * findIdleWorker — intent-based routing (CLEAR RULES):
+ *   P0 (PRO/Opus) ← PLAN, RESEARCH only
+ *   P1 (API/Proxy) ← everything else (EXECUTION, COOK, etc.)
+ * sessionName is the TMUX_SESSION_PRO or TMUX_SESSION_API (already includes pane).
+ * Returns pane index (0 or 1) or -1 if busy.
+ */
 function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION') {
-  const isProIntent = /plan|think|research|insight|binh-phap/.test(intent.toLowerCase()) || intent === 'PRO';
+  const isProIntent = intent === 'PLAN' || intent === 'RESEARCH' || intent === 'PRO';
   const targetPane = isProIntent ? 0 : 1;
-  if (!isWorkerBusy(targetPane, sessionName)) {
-    log(`DISPATCH: → Worker P${targetPane} (idle) — session=${sessionName} intent=${intent}`);
-    tmuxExec(`tmux select-pane -t ${sessionName}.${targetPane}`, sessionName);
+  if (!isWorkerBusy(targetPane)) {
+    log(`DISPATCH: → Worker P${targetPane} (idle) — intent=${intent}`);
     return targetPane;
   }
   return -1;

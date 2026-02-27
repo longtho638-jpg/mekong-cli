@@ -6,7 +6,7 @@ The **Revenue-as-a-Service (RaaS)** model moves away from selling "hours" or "ma
 In a RaaS agency, success is measured by **Mission Completion** within the **Binh Phap Quality Gates**.
 
 ## 2. Antigravity Proxy: The Intelligence Hub
-The Antigravity Proxy is a mission-critical component located at `port 11436`. It acts as a unified abstraction layer for Large Language Models.
+The Antigravity Proxy is a mission-critical component located at `port 9191`. It acts as a unified abstraction layer for Large Language Models.
 
 ### Key Capabilities:
 - **Provider Agility**: Swap between Anthropic, Google AI, OpenRouter, and local Ollama without changing a single line of application code.

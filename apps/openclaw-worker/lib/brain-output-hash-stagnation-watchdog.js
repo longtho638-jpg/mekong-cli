@@ -4,7 +4,7 @@
  *
  * Detects CC CLI output stagnation by comparing SHA-256 hashes of tmux pane
  * output every 60s. If the same hash repeats 3x in a row (3 min frozen),
- * sends a kickstart newline; if ineffective, triggers respawn.
+ * sends a kickstart newline. NO respawn — respawn đã bị CẤM.
  *
  * Exports: startOutputHashWatchdog, stopOutputHashWatchdog
  */
@@ -14,70 +14,67 @@ const { log } = require('./brain-logger');
 
 const HASH_INTERVAL_MS = 60_000;
 const STAGNATION_THRESHOLD = 3;
-const KICKSTART_WAIT_MS = 30_000;
-const WATCHDOG_PANE = 1; // P1 = Executor (API) pane — must match target pane
 
 let hashHistory = [];
 let watchdogInterval = null;
-let isKickstarting = false;
 
 function hashOutput(text) {
   return crypto.createHash('sha256').update(text || '').digest('hex').slice(0, 16);
 }
 
 async function checkOutputHash() {
-  if (isKickstarting) return;
   try {
-    const { capturePane } = require('./brain-tmux-controller');
-    const output = capturePane(WATCHDOG_PANE);
-    const hash = hashOutput(output);
-    hashHistory.push(hash);
-    if (hashHistory.length > STAGNATION_THRESHOLD) hashHistory.shift();
-    if (
-      hashHistory.length === STAGNATION_THRESHOLD &&
-      hashHistory.every(h => h === hashHistory[0])
-    ) {
-      log(`[HASH_WATCHDOG] Output stagnation detected (${STAGNATION_THRESHOLD}x same hash: ${hash})`);
-      await handleStagnation();
+    const { capturePane, TMUX_SESSION_PRO, TMUX_SESSION_API } = require('./brain-tmux-controller');
+    // Monitor cả 2 pane với đúng session target
+    for (const paneIdx of [0, 1]) {
+      const session = paneIdx === 0 ? TMUX_SESSION_PRO : TMUX_SESSION_API;
+      const output = capturePane(paneIdx, session);
+      const hash = hashOutput(output);
+      if (!hashHistory[paneIdx]) hashHistory[paneIdx] = [];
+      hashHistory[paneIdx].push(hash);
+      if (hashHistory[paneIdx].length > STAGNATION_THRESHOLD) hashHistory[paneIdx].shift();
+      if (
+        hashHistory[paneIdx].length === STAGNATION_THRESHOLD &&
+        hashHistory[paneIdx].every(h => h === hashHistory[paneIdx][0])
+      ) {
+        log(`[HASH_WATCHDOG] P${paneIdx} stagnation detected (${STAGNATION_THRESHOLD}x same hash: ${hash})`);
+        await handleStagnation(paneIdx);
+      }
     }
   } catch (e) {
     log(`[HASH_WATCHDOG] Error: ${e.message}`);
   }
 }
 
-async function handleStagnation() {
-  isKickstarting = true;
-  hashHistory = [];
-  log('[HASH_WATCHDOG] Step 1: Sending kickstart newline');
-  try {
-    const { sendEnter } = require('./brain-tmux-controller');
-    sendEnter(WATCHDOG_PANE);
-  } catch (e) {
-    log(`[HASH_WATCHDOG] Kickstart failed: ${e.message}`);
+/**
+ * handleStagnation — CHỈ kickstart (send Enter). KHÔNG respawn.
+ * Respawn đã bị cấm vì giết session đang chạy.
+ */
+async function handleStagnation(paneIdx) {
+  // Skip kickstart if pane has active mission (avoid disrupting LLM mid-generation)
+  const { isWorkerBusy } = require('./brain-spawn-manager');
+  if (isWorkerBusy(paneIdx)) {
+    log(`[HASH_WATCHDOG] P${paneIdx}: Mission active — skipping kickstart`);
+    hashHistory[paneIdx] = [];
+    return;
   }
-  await new Promise(r => setTimeout(r, KICKSTART_WAIT_MS));
+  log(`[HASH_WATCHDOG] P${paneIdx}: Sending kickstart Enter`);
   try {
-    const { capturePane } = require('./brain-tmux-controller');
-    const output = capturePane(WATCHDOG_PANE);
-    const newHash = hashOutput(output);
-    if (hashHistory.length > 0 && newHash === hashHistory[0]) {
-      log('[HASH_WATCHDOG] Step 2: Kickstart ineffective, triggering respawn');
-      const { respawnBrain } = require('./brain-respawn-controller');
-      await respawnBrain('output_stagnation');
-    } else {
-      log('[HASH_WATCHDOG] Step 2: Kickstart worked, brain recovered');
-    }
+    const { sendEnter, TMUX_SESSION_PRO, TMUX_SESSION_API } = require('./brain-tmux-controller');
+    const session = paneIdx === 0 ? TMUX_SESSION_PRO : TMUX_SESSION_API;
+    sendEnter(paneIdx, session);
   } catch (e) {
-    log(`[HASH_WATCHDOG] Post-kickstart check failed: ${e.message}`);
+    log(`[HASH_WATCHDOG] P${paneIdx}: Kickstart failed: ${e.message}`);
   }
-  isKickstarting = false;
+  // Reset history cho pane này để tránh kickstart liên tục
+  hashHistory[paneIdx] = [];
 }
 
 function startOutputHashWatchdog() {
   stopOutputHashWatchdog();
-  hashHistory = [];
+  hashHistory = [[], []]; // [P0 history, P1 history]
   watchdogInterval = setInterval(checkOutputHash, HASH_INTERVAL_MS);
-  log('[HASH_WATCHDOG] Started');
+  log('[HASH_WATCHDOG] Started (kickstart only, NO respawn)');
 }
 
 function stopOutputHashWatchdog() {

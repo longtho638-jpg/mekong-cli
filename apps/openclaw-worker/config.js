@@ -42,7 +42,7 @@ const config = {
   MODEL_NAME: process.env.MODEL_NAME || 'claude-sonnet-4-6-20250514', // v2026.2.27: Model 4.6
   // 虛實 Binh Phap Model Hierarchy
   // 🔥LỬA (Complex) → claude-opus-4-5-20250514
-  OPUS_MODEL: 'claude-opus-4-5-20250514', // v2026.2.27: Model 4.5
+  OPUS_MODEL: 'claude-opus-4-6', // v2026.2.28: Upgraded to Opus 4.6 (match PRO pane)
   USE_GH_MODELS: false,
   GH_MODEL_NAME: 'claude-sonnet-4-6-20250514',
   WORKER_MODEL_NAME: 'claude-sonnet-4-6-20250514', // "Strongest" Local Model
@@ -65,11 +65,9 @@ const config = {
   // ANTIGRAVITY GOD MODE
   ANTIGRAVITY_KEY: 'GOD_MODE_ACTIVE',
   FULL_CLI_MODE: true, // P0 IS CC CLI — no monitor pane
-  // 🦞 1-Tmux Multiplexer Mode (Feb 2026)
-  // 1 Session (`tom_hum`), 2 Windows (`pro` and `api`)
+  // 🦞 1-Tmux Session, 1 Window (`brain`), 2 Panes (P0=Opus, P1=Proxy)
+  // Pane targets: tom_hum:brain.0 (PRO) and tom_hum:brain.1 (API)
   TMUX_SESSION: 'tom_hum',
-  WINDOW_PRO: 'pro',
-  WINDOW_API: 'api',
 
   // Agent Team orchestration
   AGENT_TEAM_SIZE_DEFAULT: 1, // 1 worker per window

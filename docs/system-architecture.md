@@ -19,7 +19,7 @@ graph TD
     subgraph "Spoke Layer (Execution)"
         Brain -->|4. Execute Plan| FS[File System]
         Brain -->|5. Git Ops| Git[Git Repository]
-        Brain -->|6. LLM Calls| Proxy[Antigravity Proxy :11436]
+        Brain -->|6. LLM Calls| Proxy[Antigravity Proxy :9191]
     end
 
     subgraph "Infrastructure Layer"
@@ -49,7 +49,7 @@ graph TD
   - Báo cáo kết quả về Tôm Hùm thông qua file IPC.
 
 ### 2.3. Antigravity Proxy
-- **Cấu hình**: Port `11436`.
+- **Cấu hình**: Port `9191`.
 - **Vai trò**: Cổng kết nối LLM tập trung.
 - **Trách nhiệm**:
   - Cân bằng tải giữa các tài khoản và nhà cung cấp LLM.

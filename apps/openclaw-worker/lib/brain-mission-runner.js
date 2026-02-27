@@ -28,7 +28,7 @@ const {
   setCurrentWorkerIdx, parseContextUsage,
   isBrainAlive, isShellPrompt,
 } = require('./brain-spawn-manager');
-const { respawnBrain, compactIfNeeded } = require('./brain-respawn-controller');
+const { compactIfNeeded } = require('./brain-respawn-controller');
 const { preDispatchGuard, autoApproveQuestion } = require('./brain-dispatch-helpers');
 
 const MIN_MISSION_SECONDS = 60;
@@ -65,10 +65,9 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
   }
 
   const workerIdx = findIdleWorker(TMUX_SESSION, intent);
-  if (workerIdx === 0 && (prompt.includes('/cook') || prompt.includes('/debug') || prompt.includes('/test'))) {
-    log(`🔴 CHAIRMAN OVERRIDE: Pane 0 (PRO) forbidden from /cook /debug /test. Aborted.`);
-    return { success: false, result: 'p0_violation', elapsed: 0 };
-  }
+  // CHAIRMAN OVERRIDE removed — routing by intent is sufficient.
+  // P0 only receives PLAN/RESEARCH intents (via findIdleWorker).
+  // P1 receives all EXECUTION/COOK intents. No prompt-content check needed.
   if (workerIdx === -1) {
     log(`MISSION BLOCKED: Worker busy — refusing dispatch`);
     return { success: false, result: 'all_workers_busy', elapsed: 0 };
@@ -160,8 +159,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
     while (Date.now() < deadline) {
       if (!isSessionAlive(TMUX_SESSION)) {
         const elapsed = Math.round((Date.now() - startTime) / 1000);
-        log(`BRAIN DIED: Session died during mission #${num} (${elapsed}s)`);
-        await respawnBrain(isPlanning ? 'PLAN' : 'EXECUTION', true);
+        log(`BRAIN DIED: Session died during mission #${num} (${elapsed}s) — respawn disabled, manual restart required`);
         return { success: false, result: 'brain_died', elapsed };
       }
 

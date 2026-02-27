@@ -14,19 +14,10 @@ const config = require('../config');
 const { getHandForIntent } = require('./hands-registry');
 const { log } = require('./brain-logger');
 const { tmuxExec, isSessionAlive, capturePane } = require('./brain-tmux-controller');
-// Inlined here to avoid circular dependency with brain-spawn-manager.js
-function generateClaudeCommand(intent = 'API') {
-  if (intent === 'PRO') {
-    const dir = `/Users/macbookprom1/.claude_antigravity_pro`;
-    return `export CLAUDE_CONFIG_DIR="${dir}" && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL` +
-      ` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
-      ` && claude --model claude-3-7-sonnet-20250219 --dangerously-skip-permissions`;
-  }
-  const dir = `/Users/macbookprom1/.claude_antigravity_api`;
-  return `export CLAUDE_CONFIG_DIR="${dir}" && unset ANTHROPIC_API_KEY` +
-    ` && export ANTHROPIC_BASE_URL="http://127.0.0.1:9191" && export ANTHROPIC_AUTH_TOKEN="test"` +
-    ` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
-    ` && claude --dangerously-skip-permissions`;
+// Lazy-require to break circular: boot-sequence ↔ spawn-manager
+// SINGLE SOURCE OF TRUTH: generateClaudeCommand lives in brain-spawn-manager.js
+function generateClaudeCommand(intent) {
+  return require('./brain-spawn-manager').generateClaudeCommand(intent);
 }
 
 async function spawnBrain() {
