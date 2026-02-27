@@ -11,6 +11,7 @@
 
 | Date | Project | Mission | Lesson | Tokens | Efficiency |
 |------|---------|---------|--------|--------|------------|
+| 2026-02-27 | well | HIGH_mission_well_planned_1772 | Clean success in 1min — good pattern | ~200(est) | 200/min |
 | 2026-02-27 | well | HIGH_mission_well_planned_1772 | FAILED — Max retries exhausted | ~0(est) | 0/min |
 | 2026-02-27 | well | HIGH_mission_well_planned_1772 | Clean success in 1min — good pattern | ~200(est) | 200/min |
 | 2026-02-27 | wellnexus | HIGH_mission_wellnexus_planned | FAILED — Max retries exhausted | ~0(est) | 0/min |
@@ -60,7 +61,6 @@
 | 2026-02-27 | well | HIGH_mission_well_fix_build_17 | FAILED — Duplicate rejected | ~0(est) | 0/min |
 | 2026-02-27 | well | HIGH_mission_well_fix_build_17 | FAILED — Duplicate rejected | ~0(est) | 0/min |
 | 2026-02-27 | well | MEDIUM_mission_well_fix_test_1 | FAILED — Duplicate rejected | ~0(est) | 0/min |
-| 2026-02-27 | well | HIGH_mission_well_fix_build_17 | FAILED — Duplicate rejected | ~0(est) | 0/min |
 
 ---
 
