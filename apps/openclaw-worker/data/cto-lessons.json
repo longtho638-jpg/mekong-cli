@@ -9,15 +9,16 @@
     "DEPRIORITIZE: /test \"Trả lời bằng TIẾNG VIỆT. WORKFLOW — 0 changes 3x in a row",
     "AVOID: /plan:hard \"Trả lời bằng TIẾNG VIỆT. WOR — 0% success (0/3)",
     "AVOID: /cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook — 0% success (0/3)",
-    "AVOID: /debug \"Trả lời TIẾNG VIỆT. Ưu tiên /coo — 0% success (0/3)"
+    "AVOID: /debug \"Trả lời TIẾNG VIỆT. Ưu tiên /coo — 0% success (0/3)",
+    "DEPRIORITIZE: /cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook — 0 changes 3x in a row"
   ],
   "patterns": {
     "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW": {
-      "runs": 78,
+      "runs": 77,
       "successes": 8,
       "rate": 10,
       "avgTime": 93,
-      "totalTime": 7229,
+      "totalTime": 7132,
       "filesChanged": 0,
       "lastRun": "2026-02-26T18:46:05.712Z"
     },
@@ -85,13 +86,13 @@
       "lastRun": "2026-02-27T12:19:30.339Z"
     },
     "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
-      "runs": 39,
-      "successes": 4,
-      "rate": 10,
+      "runs": 40,
+      "successes": 5,
+      "rate": 13,
       "avgTime": 86,
-      "totalTime": 3363,
+      "totalTime": 3428,
       "filesChanged": 0,
-      "lastRun": "2026-02-27T13:41:02.963Z"
+      "lastRun": "2026-02-27T13:45:36.645Z"
     },
     "/test \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
       "runs": 2,
@@ -130,5 +131,5 @@
       "lastRun": "2026-02-27T01:30:51.813Z"
     }
   },
-  "updatedAt": "2026-02-27T13:44:05.244Z"
+  "updatedAt": "2026-02-27T13:45:36.647Z"
 }
