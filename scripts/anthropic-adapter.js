@@ -41,7 +41,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 // 🔒 LOCKED — DO NOT CHANGE (2026-02-15)
 const PORT = parseInt(process.argv[2]) || 11436;
 // 🔒 LOCKED — upstream AG proxy cluster (balanced across 2 Ultra accounts)
-const ANTIGRAVITY_PORTS = [9191, 9192];
+const ANTIGRAVITY_PORTS = [9191, 9192, 9193];
 let agPortIndex = 0;
 
 // ⚡ WARP SPEED: Global HTTP Agent
