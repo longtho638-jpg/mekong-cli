@@ -174,7 +174,7 @@ curl http://localhost:9191/v1/models
 ```
 � Task File (.txt)
   → 🦞 OpenClaw Worker (detect 5s)
-    → 🔄 Antigravity Adapter (:11436)
+    → 🔄 Antigravity Adapter (:20128)
       → 🚀 Antigravity Claude Proxy (:9191)
         → ☁️ Google Cloud Code (12 models)
         → 🛡️ Cloudflare WARP 1.1.1.1

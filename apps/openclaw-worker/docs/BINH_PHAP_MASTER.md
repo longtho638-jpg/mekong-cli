@@ -761,34 +761,45 @@ AGENT COMMUNICATION:
 
 ---
 
+---
+
+### 🔷 DNA #6: OPENFANG AGENT OS ARCHITECTURE (v5.0)
+
+> **Ánh xạ:** TOÀN BỘ 13 Chương × Modular Kernel Design (Rust-style in Node)
+> Tiêm chuẩn Open-source Agent Operating System (February 2026) -> Doanh Trại Tôm Hùm.
+
+#### 🏗️ THE KERNEL (Pháp — 法)
+Hệ thống được module hóa thành các "Crates" logic (trong `lib/`):
+
+- **openclaw-kernel**: `task-watcher.js` (Orchestration, metering, RBAC)
+- **openclaw-runtime**: `brain-process-manager.js` (Agent loop, MCP, A2A)
+- **openclaw-memory**: `knowledge/` + `history.db` (Persistence, vector index)
+- **openclaw-adapter**: `9router-cc-bridge.js` (LLM Provider routing, fallback)
+
+#### 🧤 THE HANDS (Tướng — 將)
+Missions được ủy thác cho các specialized "Hands" (từ `hands-registry.js`):
+
+| Hand | Binh Pháp Vai Trò | Capability | Instruction Set |
+|:-----|:------------------|:-----------|:----------------|
+| **Planner Hand** | Quân Sư (Plan) | Architecture, BMM | `HANDS.PLANNER` |
+| **Coder Hand** | Tiên Phong (Act) | Implementation, Fix | `HANDS.CODER` |
+| **Reviewer Hand**| Ngự Sử (Verify) | Security, QA Gate | `HANDS.REVIEWER` |
+
+#### 🔄 MIGRATION & ADAPTATION (Cửu Biến — 九變)
+- **Migration Engine**: Có khả năng "Lột xác" (metamorphosis) từ OpenClaw sang OpenFang patterns.
+- **Unified API**: OpenAI-Compatible endpoint (mapping `claude-3-5-sonnet-latest` -> Gemini Ultra).
+
+---
+
 ## 📊 Tổng Kết Bộ Kinh Thư
 | Hệ Thống            | Số Lượng         | Nguồn                           | File                  |
 | :------------------ | :--------------- | :------------------------------ | :-------------------- |
 | 13 Chương           | 13               | Tôn Tử Binh Pháp gốc            | `BINH_PHAP_MASTER.md` |
 | 36 Kế               | 36 (6×6)         | Tam Thập Lục Kế (Nam Bắc Triều) | `36_KE.md`            |
-| Ngũ Sự              | 5                | Chương 1 始計                   | `BINH_PHAP_MASTER.md` |
-| Thất Kế             | 7                | Chương 1 始計                   | `BINH_PHAP_MASTER.md` |
-| Ngũ Đức Tướng       | 5                | Chương 1 始計                   | `BINH_PHAP_MASTER.md` |
-| Ngũ Nguy            | 5                | Chương 8 九變                   | `BINH_PHAP_MASTER.md` |
-| Cửu Địa             | 9                | Chương 11 九地                  | `BINH_PHAP_MASTER.md` |
-| Lục Địa Hình        | 6                | Chương 10 地形                  | `BINH_PHAP_MASTER.md` |
-| Ngũ Hỏa             | 5                | Chương 12 火攻                  | `BINH_PHAP_MASTER.md` |
-| Ngũ Gián            | 5                | Chương 13 用間                  | `BINH_PHAP_MASTER.md` |
-| Phong Lâm Hỏa Sơn   | 4                | Chương 7 軍爭                   | `BINH_PHAP_MASTER.md` |
-| Bát Quái Nguyên Tắc | 8                | Tổng hợp 13 Chương              | `BINH_PHAP_MASTER.md` |
-| Quân Luật           | 9                | Doanh Trại Tôm Hùm              | `QUAN_LUAT.md`        |
-| Doanh Trại          | 11 daemons       | OpenClaw org chart              | `DOANH_TRAI.md`       |
-| AGI Doctrine        | 4 Principles     | a16z/Sequoia 2025               | `AGI_EVOLUTION.md`    |
-| 🧬 DNA Fusion #1    | 6 Principles     | Workflow Orchestration           | `BINH_PHAP_MASTER.md` |
-| 🧬 DNA Fusion #2    | 6 Components     | everything-claude-code           | `BINH_PHAP_MASTER.md` |
-| 🧬 DNA Fusion #3    | 6 Rules          | Micro-Niche DNA (Indie)          | `BINH_PHAP_MASTER.md` |
-| 🧬 DNA Fusion #4    | 5 Phases         | Technical Co-Founder             | `BINH_PHAP_MASTER.md` |
-| 🧬 DNA Fusion #5    | 36 Mappings      | ClaudeKit DEEP FUSION v5.0       | `BINH_PHAP_MASTER.md` |
-| **TỔNG**            | **195 concepts** |                                 |                       |
+| DNA Fusion #6       | 12 Patterns      | OpenFang Agent OS (v0.1.0)       | `BINH_PHAP_MASTER.md` |
+| **TỔNG KIẾN THỨC**  | **212 concepts** |                                 |                       |
 
 ---
 
-_Binh Pháp Tôn Tử Kinh Thư Đại Toàn v5.0.0-DNA-FUSION | Doanh Trại Tôm Hùm | 2026-02-18_
-_DNA FUSION: Binh Pháp × ClaudeKit v2.9.1 × BMAD-METHOD × Micro-Niche × Technical Co-Founder_
-_Sources: Wikisource, MIT translations, a16z, Sequoia, docs.claudekit.cc_
-_Updated: DNA Fusion #5 — 13 agents × Ngũ Đức, 28 commands × Thất Kế, 43 skills × Cửu Địa | 195 concepts | 🦞_
+_Binh Pháp Tôn Tử Kinh Thư Đại Toàn v5.1.0-OPENFANG-DNA | Doanh Trại Tôm Hùm | 2026-02-27_
+_DNA FUSION: Binh Pháp × ClaudeKit × OpenFang Agent OS × BMAD-METHOD_

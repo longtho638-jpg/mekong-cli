@@ -21,7 +21,7 @@ git clone <repo-url> mekong-cli && cd mekong-cli
 npm install
 
 # 3. Khởi động Proxy (terminal riêng)
-node scripts/anthropic-adapter.js 11436
+node scripts/anthropic-adapter.js 20128
 
 # 4. Khởi động 4-pane Swarm
 bash restore_swarm.sh
@@ -73,4 +73,4 @@ tmux kill-session -t tom_hum_brain
 Sửa trong `apps/openclaw-worker/config.js`:
 - `MODEL_NAME` — Model CC CLI sử dụng
 - `MAX_CONCURRENT_MISSIONS` — Số task chạy song song (mặc định: 3)
-- `CLOUD_BRAIN_URL` — URL proxy (mặc định: `http://localhost:11436`)
+- `CLOUD_BRAIN_URL` — URL proxy (mặc định: `http://localhost:20128`)

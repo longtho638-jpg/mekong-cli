@@ -57,7 +57,7 @@ Recovery strategies follow a **Graduated Escalation Protocol** to minimize downt
 *   **Action:** Restart specific failing components without killing the supervisor.
 *   **Triggers:** Persistent connection errors, model refusal.
 *   **Mechanisms:**
-    *   **Proxy Recycle:** `restartProxy()` kills `anthropic-adapter.js` and spawns a new instance on port 11436.
+    *   **Proxy Recycle:** `restartProxy()` kills `anthropic-adapter.js` and spawns a new instance on port 20128.
     *   **Model Failover:** If `gemini-flash` fails, `lib/mission-recovery.js` rotates configuration to next provider in `MODEL_FALLBACK_CHAIN`.
 
 ### 3.3 Level 3: Self-Testing Gate (CI/CD Safety)
