@@ -14,11 +14,11 @@
   ],
   "patterns": {
     "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW": {
-      "runs": 77,
+      "runs": 76,
       "successes": 8,
-      "rate": 10,
-      "avgTime": 93,
-      "totalTime": 7132,
+      "rate": 11,
+      "avgTime": 91,
+      "totalTime": 6884,
       "filesChanged": 0,
       "lastRun": "2026-02-26T18:46:05.712Z"
     },
@@ -86,13 +86,13 @@
       "lastRun": "2026-02-27T12:19:30.339Z"
     },
     "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
-      "runs": 40,
-      "successes": 5,
-      "rate": 13,
-      "avgTime": 86,
-      "totalTime": 3428,
+      "runs": 41,
+      "successes": 6,
+      "rate": 15,
+      "avgTime": 85,
+      "totalTime": 3493,
       "filesChanged": 0,
-      "lastRun": "2026-02-27T13:45:36.645Z"
+      "lastRun": "2026-02-27T13:46:45.046Z"
     },
     "/test \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
       "runs": 2,
@@ -131,5 +131,5 @@
       "lastRun": "2026-02-27T01:30:51.813Z"
     }
   },
-  "updatedAt": "2026-02-27T13:45:36.647Z"
+  "updatedAt": "2026-02-27T13:46:45.047Z"
 }
