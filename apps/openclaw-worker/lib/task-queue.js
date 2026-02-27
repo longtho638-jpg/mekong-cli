@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+
+const DLQ_DIR = path.join(config.WATCH_DIR, 'dead-letter');
 const { log } = require('./brain-process-manager');
 const { executeTask, detectProjectDir } = require('./mission-dispatcher');
 const { classifyContentTimeout } = require('./mission-complexity-classifier');
@@ -30,6 +32,38 @@ const processingSet = new Set(); // 🔒 Track files being processed to prevent 
 let pollIntervalRef = null;
 let watcher = null;
 let pollFailCount = 0; // 🦞 FIX BUG #7 2026-02-27: Track poll failures for recovery
+
+function initDLQ() {
+  if (!fs.existsSync(DLQ_DIR)) {
+    fs.mkdirSync(DLQ_DIR, { recursive: true });
+    log(`[QUEUE] Dead letter directory created: ${DLQ_DIR}`);
+  }
+}
+
+function moveToDeadLetter(taskFile, reason, lastError) {
+  const src = path.join(config.WATCH_DIR, taskFile);
+  const timestamp = Date.now();
+  const dlqName = `dead_${timestamp}_${taskFile}`;
+  const dst = path.join(DLQ_DIR, dlqName);
+  try {
+    const originalContent = fs.readFileSync(src, 'utf8');
+    const metadata = JSON.stringify({ originalFile: taskFile, movedAt: new Date().toISOString(), reason, lastError: lastError || 'unknown', retryCount: retryCounts.get(taskFile) || 0 }, null, 2);
+    fs.writeFileSync(dst, `--- DEAD LETTER METADATA ---\n${metadata}\n--- ORIGINAL CONTENT ---\n${originalContent}`);
+    fs.unlinkSync(src);
+    retryCounts.delete(taskFile);
+    queuedSet.delete(taskFile);
+    processingSet.delete(taskFile);
+    log(`[QUEUE] Task moved to dead letter: ${taskFile} → ${dlqName} (reason: ${reason})`);
+  } catch (e) {
+    log(`[QUEUE] Failed to move to DLQ: ${e.message}`);
+  }
+}
+
+function getQueueStats() {
+  let dlqCount = 0;
+  try { dlqCount = fs.readdirSync(DLQ_DIR).filter(f => f.startsWith('dead_')).length; } catch (e) { /* dir may not exist yet */ }
+  return { pending: queue.length, active: activeCount, dlqCount };
+}
 
 async function processQueue() {
   // 🧬 FIX Bug #3: Sort queue by priority before processing
@@ -255,4 +289,4 @@ function stopWatching() {
 
 function isQueueEmpty() { return queue.length === 0 && activeCount === 0; }
 
-module.exports = { startWatching, stopWatching, isQueueEmpty, enqueue };
+module.exports = { startWatching, stopWatching, isQueueEmpty, enqueue, initDLQ, moveToDeadLetter, getQueueStats };

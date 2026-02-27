@@ -24,25 +24,58 @@
 | Proxy | Antigravity Proxy v4 (port 20128, Anthropic-compatible) |
 | Model | gemini-3-flash-preview (via proxy) |
 
-## Architecture (v2026.2.16 AGI Level 5 Edition)
+## Architecture (v2026.2.27 AGI Deep Upgrade Edition)
+
+**Monolith Decomposition:** 56KB `brain-process-manager.js` refactored into 14 focused sub-modules with backward-compatible facade re-export pattern.
 
 ```
 apps/openclaw-worker/
 ├── task-watcher.js              # Thin orchestrator: boot + shutdown (entry point)
 ├── config.js                    # All constants, paths, env vars, project registry
 └── lib/
-    ├── brain-process-manager.js # Dual-mode, dual-engine brain v2026.2.9
-    ├── mission-recovery.js      # Model failover & context overflow recovery
-    ├── mission-dispatcher.js    # Prompt building, project routing, runMission()
-    ├── task-queue.js            # FIFO queue, AGI L3 Gate & Journal integration
-    ├── auto-cto-pilot.js        # Self-CTO: generates Binh Phap quality tasks
-    ├── m1-cooling-daemon.js     # M1 thermal/RAM protection
-    ├── post-mission-gate.js     # AGI Level 3: Self-Testing CI/CD Gate
-    ├── mission-journal.js       # AGI Level 3: Mission history journal
-    ├── project-scanner.js       # AGI Level 4: Self-Planning Scanner (Shi Ji)
-    ├── learning-engine.js       # AGI Level 5: Self-Learning Engine (Yong Jian)
-    └── live-mission-viewer.js   # Real-time colored log viewer for VS Code terminal
+    ├── brain-process-manager.js # Re-export facade (37 lines) — backward compatible API
+    ├── CORE MODULES (Brain Lifecycle):
+    │   ├── brain-logger.js      # Leaf module: centralized logging
+    │   ├── brain-state-machine.js        # State tracking (IDLE/SPAWNING/RUNNING/CRASHED)
+    │   ├── brain-boot-sequence.js        # Dual-mode boot logic (direct/tmux)
+    │   ├── brain-spawn-manager.js        # Process spawning, stream setup
+    │   ├── brain-mission-runner.js       # Mission execution coordinator
+    │   ├── brain-respawn-controller.js   # Rate-limited respawn logic
+    │   └── brain-terminal-app.js         # VS Code terminal integration
+    ├── RELIABILITY MODULES (Fault Tolerance):
+    │   ├── circuit-breaker.js   # State machine (CLOSED/OPEN/HALF_OPEN)
+    │   ├── brain-heartbeat.js   # File-based liveness check
+    │   ├── brain-output-hash-stagnation-watchdog.js  # Detect hung processes
+    │   ├── mission-recovery.js  # Model failover & context overflow recovery
+    │   └── brain-system-monitor.js      # Thermal/resource monitoring
+    ├── OBSERVABILITY MODULES (Health & Metrics):
+    │   ├── brain-health-server.js       # HTTP health endpoint (port 9090)
+    │   ├── agi-score-calculator.js      # 5-dimension AGI score (100/100 max)
+    │   └── api-rate-gate.js     # Rate limiting for mission dispatch
+    ├── MISSION MANAGEMENT:
+    │   ├── mission-dispatcher.js    # Prompt building, project routing
+    │   ├── task-queue.js            # FIFO queue, Dead Letter Queue (DLQ)
+    │   ├── mission-journal.js       # Telemetry logging & history
+    │   └── mission-complexity-classifier.js  # Classify mission complexity
+    ├── AUTONOMOUS PLANNING (AGI L4+):
+    │   ├── auto-cto-pilot.js        # Generate Binh Phap quality tasks
+    │   ├── project-scanner.js       # Tech debt & build issue scanning
+    │   ├── learning-engine.js       # AGI L5: Meta-learning & pattern analysis
+    │   ├── evolution-engine.js      # Self-correction & strategy optimization
+    │   └── post-mission-gate.js     # AGI L3: CI/CD gate & auto-commit
+    ├── SUPPORT MODULES:
+    │   ├── m1-cooling-daemon.js     # M1 thermal/RAM protection
+    │   ├── live-mission-viewer.js   # Real-time colored log viewer
+    │   └── (80+ additional modules: knowledge-synthesizer, skill-factory, etc.)
 ```
+
+**Key Structural Changes:**
+- **Facade Pattern:** `brain-process-manager.js` now re-exports 37 lines; all logic in sub-modules
+- **Dependency Graph:** Leaf module `brain-logger.js` has zero dependencies; all others form DAG (no cycles)
+- **Health Endpoint:** New `brain-health-server.js` on port 9090 (GET /health, GET /metrics)
+- **AGI Score:** New `agi-score-calculator.js` scoring 5 dimensions: reliability, autonomy, learning, safety, throughput
+- **Dead Letter Queue:** Failed missions after 3 retries moved to DLQ for manual review
+- **Write-Ahead Log:** Task-watcher.js crash recovery via WAL in `~/.openclaw/` directory
 
 ## Key Files & Contracts
 

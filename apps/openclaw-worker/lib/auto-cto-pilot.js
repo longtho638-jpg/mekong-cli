@@ -49,6 +49,25 @@ const SCAN_INTERVAL_MS = 120000;   // 120s — increased from 45s to prevent CC 
 const FIX_INTERVAL_MS = 15000;    // 15s — fix/verify: phản xạ nhanh, dispatch liên tục
 const DEFAULT_INTERVAL_MS = 45000; // 45s — fallback
 
+// --- BUG #11: Per-project consecutive failure tracking ---
+const projectFailureCount = new Map();
+const MAX_CONSECUTIVE_FAILURES = 3;
+
+function onProjectMissionFailed(projectName) {
+  const count = (projectFailureCount.get(projectName) || 0) + 1;
+  projectFailureCount.set(projectName, count);
+  if (count >= MAX_CONSECUTIVE_FAILURES) {
+    log(`[AUTO-CTO] ${projectName}: ${count} consecutive failures, skipping for this cycle`);
+    projectFailureCount.set(projectName, 0);
+    return true; // Signal to skip this project
+  }
+  return false;
+}
+
+function onProjectMissionSuccess(projectName) {
+  projectFailureCount.set(projectName, 0);
+}
+
 // --- State Management ---
 
 function loadState() {
@@ -422,7 +441,7 @@ function startAutoCTO() {
             await handleFix(state, project);
             break;
           case 'verify':
-            handleVerify(state, project, projectDir);
+            await handleVerify(state, project, projectDir);
             break;
           default:
             state.phase = 'scan';
@@ -537,13 +556,14 @@ async function handleFix(state, project) {
   saveState(state);
 }
 
-function handleVerify(state, project, projectDir) {
+async function handleVerify(state, project, projectDir) {
   log(`AUTO-CTO [軍形 VERIFY]: Re-scanning ${project}...`);
 
   const errors = scanProject(projectDir);
 
   if (errors === null || errors.length === 0) {
     log(`AUTO-CTO [軍形 GREEN]: ${project} — CLEAN after ${state.cycle} cycle(s) ✅`);
+    onProjectMissionSuccess(project); // BUG #11: reset failure count on success
     advanceProject(state);
     return;
   }
@@ -553,6 +573,11 @@ function handleVerify(state, project, projectDir) {
     // Log blockers for human review
     for (const e of errors.slice(0, 3)) {
       log(`  BLOCKER: [${e.type}] ${e.file || ''} — ${e.message}`);
+    }
+    // BUG #11: track consecutive failure — skip project if too many
+    const shouldSkip = onProjectMissionFailed(project);
+    if (shouldSkip) {
+      log(`AUTO-CTO [BUG#11]: ${project} — max consecutive failures reached, force-advancing.`);
     }
     advanceProject(state);
     return;
@@ -582,4 +607,4 @@ function stopAutoCTO() {
   }
 }
 
-module.exports = { startAutoCTO, stopAutoCTO };
+module.exports = { startAutoCTO, stopAutoCTO, onProjectMissionFailed, onProjectMissionSuccess };

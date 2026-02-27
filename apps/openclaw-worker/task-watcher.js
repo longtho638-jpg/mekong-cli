@@ -101,6 +101,8 @@ const { startSupervisor, stopSupervisor } = require('./lib/brain-supervisor');
 const { checkEvolutionTriggers } = require('./lib/evolution-engine');
 // AGI Level 7: Multi-Project Commander
 const { startCommander, stopCommander } = require('./lib/project-commander');
+// 🏥 Health HTTP Server (Phase 06) + DLQ init
+const { startHealthServer, stopHealthServer } = require('./lib/brain-health-server');
 let evolutionInterval = null;
 function startEvolutionEngine() {
   checkEvolutionTriggers(); // Run immediately on boot
@@ -178,7 +180,13 @@ clearStaleState();
 
 // --- 🔒 v2026.2.27: ASYNC MASTER BOOT SEQUENCE 🔒 ---
 (async () => {
-  log('--- MISSION CONTROL v2026.2.27 ONLINE (FIX: Dual-Stream Flywheel) ---');
+  log('--- MISSION CONTROL v2026.2.27 ONLINE (FIX: Dual-Stream Flywheel + AGI Deep Upgrade) ---');
+
+  // 🏥 Phase 06: Health endpoint (before anything else — for observability)
+  safeBoot('startHealthServer', startHealthServer);
+
+  // Phase 04: Initialize Dead Letter Queue directory
+  try { const { initDLQ } = require('./lib/task-queue'); if (initDLQ) initDLQ(); } catch (e) { }
 
   // FIX #2: Task queue PHẢI ưu tiên số 1 — scan TRƯỚC spawn brain
   // Archive processed missions AFTER dispatch
@@ -310,6 +318,7 @@ function shutdown(sig) {
   try { stopHealer(); } catch (e) { log(`Shutdown error (stopHealer): ${e.message}`); }
   try { stopLobsterPilot(); } catch (e) { log(`Shutdown error (stopLobsterPilot): ${e.message}`); }
   try { stopSupervisor(); } catch (e) { log(`Shutdown error (stopSupervisor): ${e.message}`); }
+  try { stopHealthServer(); } catch (e) { log(`Shutdown error (stopHealthServer): ${e.message}`); }
   // 🔒 DO NOT killBrain() — tmux must survive task-watcher restarts
   // CC CLI context is precious — killing it loses mission progress
   log('All modules stopped (brain preserved). Goodbye.');
@@ -329,6 +338,7 @@ process.on('SIGUSR1', () => {
   try { stopHealer(); } catch (e) { }
   try { stopLobsterPilot(); } catch (e) { }
   try { stopSupervisor(); } catch (e) { }
+  try { stopHealthServer(); } catch (e) { }
 
   // 🧬 Hot-reload: Invalidate require.cache for all lib/ modules
   // Without this, SIGUSR1 restart keeps OLD code in memory
@@ -352,7 +362,8 @@ process.on('SIGUSR1', () => {
   safeBoot('startHealer', startHealer);
   safeBoot('startLobsterPilot', startLobsterPilot);
   safeBoot('startSupervisor', startSupervisor);
-  log('SIGUSR1 restart complete — all modules re-initialized (including Auto-CTO)');
+  safeBoot('startHealthServer', startHealthServer);
+  log('SIGUSR1 restart complete — all modules re-initialized (including Auto-CTO + Health Server)');
 });
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));

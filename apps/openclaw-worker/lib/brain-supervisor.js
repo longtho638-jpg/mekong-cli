@@ -255,6 +255,14 @@ function supervisionCycle() {
                 stuckSince = Date.now();
             } else if (Date.now() - stuckSince > STUCK_THRESHOLD_MS) {
                 log(`🚨 CC CLI stuck for ${Math.round((Date.now() - stuckSince) / 60000)}min`);
+
+                // Supplement: heartbeat stale also indicates stuck (BUG #4: blind in direct mode)
+                let heartbeatStale = false;
+                try { heartbeatStale = require('./brain-heartbeat').isBrainHeartbeatStale(); } catch (e) { }
+                if (heartbeatStale) {
+                    log(`[SUPERVISOR] Heartbeat stale detected — brain may be frozen`);
+                }
+
                 triggerRespawn();
             }
         } else {

@@ -195,4 +195,13 @@ function stopLearningEngine() {
   if (learningInterval) { clearInterval(learningInterval); learningInterval = null; log('Learning Engine stopped'); }
 }
 
-module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns, startLearningEngine, stopLearningEngine };
+/**
+ * Get avoid patterns list for AGI scoring.
+ * Returns array of task IDs that should be avoided (< 30% success, 3+ runs).
+ */
+function getAvoidPatterns() {
+  const lessons = loadLessons();
+  return (lessons.rules || []).filter(r => r.startsWith('AVOID:')).map(r => r.split('—')[0].replace('AVOID:', '').trim());
+}
+
+module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns, startLearningEngine, stopLearningEngine, getAvoidPatterns };

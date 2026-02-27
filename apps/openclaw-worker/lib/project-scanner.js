@@ -16,6 +16,32 @@ const { log } = require('./brain-process-manager');
 
 let scannerInterval = null;
 
+// --- BUG #9: Replace Ollama (localhost:11436) with Antigravity Proxy ---
+const PROXY_URL = process.env.ANTHROPIC_BASE_URL || 'http://localhost:9191';
+
+async function callLLM(prompt) {
+  try {
+    const response = await fetch(`${PROXY_URL}/v1/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY || 'dummy',
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: process.env.CLAUDE_MODEL || config.FALLBACK_MODEL_NAME || 'gemini-3-flash-preview',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+    });
+    const data = await response.json();
+    return data.content?.[0]?.text || '';
+  } catch (e) {
+    log(`[SCANNER] LLM call failed: ${e.message}`);
+    return '';
+  }
+}
+
 async function analyzeProjectHealth(project, projectDir) {
   const stats = {
     project,
@@ -65,24 +91,12 @@ TODOs: ${stats.techDebt.todos}
 Console Logs: ${stats.techDebt.consoleLogs}
 Git Status: ${stats.gitStatus}`;
 
-    const response = await fetch(`http://127.0.0.1:11436/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: config.FALLBACK_MODEL_NAME,
-        messages: [
-          { role: "system", content: "You are an AI CTO. Analyze project stats and provide 3 prioritized missions. Respond in TIẾNG VIỆT. Format as JSON: { missions: [{ title: string, priority: 'HIGH'|'MEDIUM', reason: string }] }" },
-          { role: "user", content: summary }
-        ],
-        temperature: 0.2
-      })
-    });
+    const prompt = `You are an AI CTO. Analyze project stats and provide 3 prioritized missions. Respond in TIẾNG VIỆT. Format as JSON: { missions: [{ title: string, priority: 'HIGH'|'MEDIUM', reason: string }] }\n\n${summary}`;
+    const content = await callLLM(prompt);
 
-    if (response.ok) {
-      const data = await response.json();
-      let content = data.choices[0].message.content || '';
-      content = content.replace(/<thought>[\s\S]*?<\/thought>/g, '').replace(/```json\n?/g, '').replace(/```/g, '').trim();
-      const analysis = JSON.parse(content);
+    if (content) {
+      let cleaned = content.replace(/<thought>[\s\S]*?<\/thought>/g, '').replace(/```json\n?/g, '').replace(/```/g, '').trim();
+      const analysis = JSON.parse(cleaned);
       stats.recommendations = analysis.missions;
     }
   } catch (e) {

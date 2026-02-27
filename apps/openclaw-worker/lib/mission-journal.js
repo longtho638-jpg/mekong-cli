@@ -137,4 +137,25 @@ function getHistory() {
   }
 }
 
-module.exports = { recordMission, getStats, getHistory, countTokensBetween };
+/**
+ * Get mission stats for AGI score calculation.
+ * Returns successRate (0-1), totalProcessed, recentTaskTypes.
+ */
+function getMissionStats() {
+  try {
+    const history = getHistory();
+    if (history.length === 0) return { successRate: 0, totalProcessed: 0, recentTaskTypes: [] };
+    const recent = history.slice(-50);
+    const successes = recent.filter(m => m.success).length;
+    const taskTypes = recent.map(m => m.project || 'unknown');
+    return {
+      successRate: successes / recent.length,
+      totalProcessed: history.length,
+      recentTaskTypes: taskTypes,
+    };
+  } catch (e) {
+    return { successRate: 0, totalProcessed: 0, recentTaskTypes: [] };
+  }
+}
+
+module.exports = { recordMission, getStats, getHistory, countTokensBetween, getMissionStats };

@@ -76,7 +76,7 @@ async function selectStrategicTask(project, projectState, capabilityFilter = () 
   try {
     const { selectNextTask } = require('./llm-interpreter');
     const llmPick = await selectNextTask(
-      state?.currentProject || 'well',
+      projectState?.currentProject || project || 'well',
       taskHistory,
       tasks.map(t => ({ id: t.id, cmd: t.cmd, complexity: t.complexity }))
     );

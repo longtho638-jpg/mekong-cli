@@ -191,8 +191,8 @@ function checkEvolutionTriggers() {
     });
   }
 
-  // Update evolution score
-  state.evolutionScore = getEvolutionScore(history, state);
+  // Update evolution score (v2: real metrics)
+  state.evolutionScore = getEvolutionScore();
   saveState(state);
 
   return { triggered: triggers.length > 0, triggers, score: state.evolutionScore };
@@ -362,44 +362,50 @@ function triggerBrainSurgery(triggers, state) {
   }
 }
 
-// --- AGI Maturity Score ---
+// --- AGI Maturity Score (v2 — real metrics via agi-score-calculator) ---
 
 /**
- * Calculate 0-100 AGI evolution score
- * Based on: success rate, learning, token efficiency, skill count
+ * Calculate 0-100 AGI score using real system metrics.
+ * 5 dimensions × 20 pts: heartbeat, DLQ, circuit, mission success, task diversity.
  */
-function getEvolutionScore(history, state) {
-  if (!history || history.length === 0) return 0;
+function getEvolutionScore() {
+  try {
+    const { calculateAGIScore } = require('./agi-score-calculator');
 
-  let score = 0;
+    // Gather real metrics from subsystems
+    let heartbeatAgeMs = Infinity;
+    try { heartbeatAgeMs = require('./brain-heartbeat').readHeartbeatAge(); } catch (e) { }
 
-  // Success rate (0-30 points)
-  const recent = history.slice(-50);
-  const successRate = recent.filter(m => m.success).length / recent.length;
-  score += Math.round(successRate * 30);
+    let dlqCount = 0, totalProcessed = 0, recentTaskTypes = [];
+    try {
+      const { getMissionStats } = require('./mission-journal');
+      const stats = getMissionStats();
+      totalProcessed = stats.totalProcessed;
+      recentTaskTypes = stats.recentTaskTypes;
+    } catch (e) { }
 
-  // Learning depth (0-20 points)
-  const insights = loadInsights();
-  const insightCount = Object.keys(insights).length;
-  score += Math.min(20, insightCount * 2);
+    try { dlqCount = require('./task-queue').getQueueStats().dlqCount; } catch (e) { }
 
-  // Token efficiency (0-20 points) — lower avg = better
-  const tokensUsed = recent.filter(m => m.tokens > 0).map(m => m.tokens);
-  if (tokensUsed.length > 0) {
-    const avg = tokensUsed.reduce((a, b) => a + b, 0) / tokensUsed.length;
-    if (avg < 10000) score += 20;
-    else if (avg < 30000) score += 15;
-    else if (avg < 50000) score += 10;
-    else score += 5;
+    let circuitState = 'CLOSED';
+    try { circuitState = require('./circuit-breaker').getState('proxy'); } catch (e) { }
+
+    let successRate = 0;
+    try {
+      const { getMissionStats } = require('./mission-journal');
+      successRate = getMissionStats().successRate;
+    } catch (e) { }
+
+    const result = calculateAGIScore({
+      heartbeatAgeMs, dlqCount, totalProcessed,
+      circuitState, successRate, recentTaskTypes,
+    });
+
+    log(`🧬 AGI Score: ${result.total}/100 — HB:${result.breakdown.heartbeat_stability} DLQ:${result.breakdown.dlq_ratio} CB:${result.breakdown.circuit_health} MS:${result.breakdown.mission_success_rate} TD:${result.breakdown.task_diversity}`);
+    return result.total;
+  } catch (e) {
+    log(`AGI Score calc error: ${e.message}`);
+    return 0;
   }
-
-  // Skills created (0-15 points)
-  score += Math.min(15, (state.skillsCreated || 0) * 3);
-
-  // Self-improvement count (0-15 points)
-  score += Math.min(15, (state.brainSurgeriesTriggered || 0) * 5);
-
-  return Math.min(100, score);
 }
 
 // --- Public API ---
@@ -409,10 +415,7 @@ module.exports = {
   generateSkill,
   optimizeTokenRouting,
   triggerBrainSurgery,
-  getEvolutionScore: () => {
-    const state = loadState();
-    const history = loadHistory();
-    return getEvolutionScore(history, state);
-  },
+  getEvolutionScore,
   loadState,
+  loadHistory,
 };

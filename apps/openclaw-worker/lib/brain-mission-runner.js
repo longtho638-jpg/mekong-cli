@@ -117,7 +117,10 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
     tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} C-c`, TMUX_SESSION);
     await new Promise(r => setTimeout(r, 200));
 
-    const safePrompt = fullPrompt.replace(/\n/g, ' ');
+    // 🦞 FIX 2026-02-27: Aggressive newline purge. The LLM or Planner may inject
+    // hard `\n` characters inside quotes. Any `\n` pasted via tmux immediately drops
+    // CC CLI into "Queued Messages" edit mode, blocking execution indefinitely.
+    const safePrompt = fullPrompt.replace(/\r?\n|\r/g, ' ').replace(/\s{2,}/g, ' ');
     const tempFile = path.join(os.tmpdir(), `mission_prompt_${workerIdx}_${Date.now()}.txt`);
     try {
       fs.writeFileSync(tempFile, safePrompt);
@@ -137,7 +140,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
 
     await new Promise(r => setTimeout(r, 8000));
     if (detectState(capturePane(workerIdx, TMUX_SESSION)) === 'idle' &&
-        Math.round((Date.now() - startTime) / 1000) >= 15) {
+      Math.round((Date.now() - startTime) / 1000) >= 15) {
       log(`ENTER RETRY: Still idle after 15s — safety Enter`);
       sendEnter(workerIdx, TMUX_SESSION); await new Promise(r => setTimeout(r, 1000));
       sendEnter(workerIdx, TMUX_SESSION);

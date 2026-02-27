@@ -16,6 +16,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const http = require('http');
 const { execSync, spawn } = require('child_process');
 const config = require('../config');
 const { sendTelegram } = require('./telegram-client');
@@ -55,9 +56,24 @@ function isProxyAlive() {
     }
 }
 
-function restartProxy() {
-    log('🩺 Proxy 20128 (9router) is external — skip auto-restart');
-    return false;
+async function checkProxyHealth() {
+    return new Promise((resolve) => {
+        const req = http.get('http://localhost:9191/health', (res) => {
+            resolve(res.statusCode === 200);
+        });
+        req.on('error', () => resolve(false));
+        req.setTimeout(3000, () => { req.destroy(); resolve(false); });
+    });
+}
+
+async function restartProxy() {
+    const healthy = await checkProxyHealth();
+    if (!healthy) {
+        log('[SELF-HEALER] Proxy UNHEALTHY — manual intervention required');
+        return false;
+    }
+    log('[SELF-HEALER] Proxy health check OK');
+    return true;
 }
 
 function isProcessStuck() {

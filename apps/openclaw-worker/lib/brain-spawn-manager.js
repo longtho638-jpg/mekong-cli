@@ -23,6 +23,8 @@ const {
   TMUX_SESSION_PRO, TMUX_SESSION_API,
   tmuxExec, isSessionAlive, capturePane,
 } = require('./brain-tmux-controller');
+const { startHeartbeat, stopHeartbeat } = require('./brain-heartbeat');
+const { startOutputHashWatchdog, stopOutputHashWatchdog } = require('./brain-output-hash-stagnation-watchdog');
 
 const MAX_RESPAWNS_PER_HOUR = 5;
 const RESPAWN_COOLDOWN_MS = 5 * 60 * 1000;
@@ -75,11 +77,15 @@ function generateClaudeCommand(intent = 'API') {
 
 // Boot logic lives in brain-boot-sequence.js (avoids circular dep on generateClaudeCommand)
 // Lazy-require to break the circular: boot-sequence → spawn-manager → boot-sequence
-function spawnBrain(...args) {
-  return require('./brain-boot-sequence').spawnBrain(...args);
+async function spawnBrain(...args) {
+  await require('./brain-boot-sequence').spawnBrain(...args);
+  startHeartbeat(process.pid);
+  startOutputHashWatchdog();
 }
 
 function killBrain(sessionName = config.TMUX_SESSION) {
+  stopHeartbeat();
+  stopOutputHashWatchdog();
   if (isSessionAlive(sessionName)) {
     tmuxExec(`tmux kill-session -t ${sessionName}`, sessionName);
     log(`BRAIN: tmux session ${sessionName} killed`);

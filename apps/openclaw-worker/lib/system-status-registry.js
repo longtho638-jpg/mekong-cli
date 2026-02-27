@@ -18,6 +18,8 @@ let state = {
     last_updated: null
 };
 
+let proResetTimer = null;
+
 function loadStatus() {
     try {
         if (fs.existsSync(STATUS_FILE)) {
@@ -41,6 +43,18 @@ function saveStatus() {
 function setProLimitHit(isHit, resetAt = null) {
     state.pro_limit_hit = isHit;
     state.pro_limit_reset_at = resetAt || (isHit ? 'Unknown' : null);
+    if (isHit) {
+        if (proResetTimer) clearTimeout(proResetTimer);
+        proResetTimer = setTimeout(() => {
+            state.pro_limit_hit = false;
+            state.pro_limit_reset_at = null;
+            proResetTimer = null;
+            saveStatus();
+            console.log('[STATUS] Pro rate limit auto-reset after 60min');
+        }, 60 * 60_000);
+    } else {
+        if (proResetTimer) { clearTimeout(proResetTimer); proResetTimer = null; }
+    }
     saveStatus();
 }
 
