@@ -1,8 +1,18 @@
 [tool.poetry]
-name = "mekong-cli-lean"
-version = "2.1.33"
-description = "Lean revenue-first AgencyOS architecture"
+name = "mekong-cli"
+version = "2.2.0"
+description = "AGI CLI Platform — Plan-Execute-Verify autonomous engine"
 authors = ["Binh Phap Venture Studio <admin@binhphap.io>"]
+license = "MIT"
+homepage = "https://github.com/mekong-cli/mekong-cli"
+repository = "https://github.com/mekong-cli/mekong-cli"
+keywords = ["cli", "agi", "ai", "agents", "automation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries",
+    "License :: OSI Approved :: MIT License",
+]
 readme = "README.md"
 packages = [{include = "api"}, {include = "automation"}, {include = "src"}]
 
@@ -34,7 +44,7 @@ pytest-cov = "^4.1.0"
 black = "^23.12.0"
 ruff = "^0.1.11"
 mypy = "^1.8.0"
-httpx = "^0.26.0"
+httpx = ">=0.26.0,<0.28.0"
 
 [build-system]
 requires = ["poetry-core"]

@@ -22,15 +22,25 @@ jobs:
           source: .
           region: us-central1
           env_vars: |
-            PAYPAL_MODE=${{ secrets.PAYPAL_MODE }}
             API_BASE_URL=${{ secrets.API_BASE_URL }}
             FRONTEND_URL=${{ secrets.FRONTEND_URL }}
           secrets: |
-            PAYPAL_CLIENT_ID=PAYPAL_CLIENT_ID:latest
-            PAYPAL_CLIENT_SECRET=PAYPAL_CLIENT_SECRET:latest
-            PAYPAL_WEBHOOK_ID=PAYPAL_WEBHOOK_ID:latest
-            STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest
-            STRIPE_PUBLISHABLE_KEY=STRIPE_PUBLISHABLE_KEY:latest
-            STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest
-            GUMROAD_ACCESS_TOKEN=GUMROAD_ACCESS_TOKEN:latest
             LICENSE_SECRET_KEY=LICENSE_SECRET_KEY:latest
+      - name: Post-deploy smoke test
+        run: |
+          DEPLOY_URL="${{ secrets.DEPLOY_URL }}"
+          if [ -z "$DEPLOY_URL" ]; then
+            echo "DEPLOY_URL not set, skipping smoke test"
+            exit 0
+          fi
+          MAX_ATTEMPTS=10
+          ATTEMPT=0
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            ATTEMPT=$((ATTEMPT + 1))
+            HTTP_STATUS=$(curl -sI "$DEPLOY_URL/health" -o /dev/null -w '%{http_code}' || echo "000")
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS: HTTP $HTTP_STATUS"
+            [ "$HTTP_STATUS" = "200" ] && echo "SMOKE TEST PASSED" && exit 0
+            sleep 15
+          done
+          echo "SMOKE TEST FAILED after $MAX_ATTEMPTS attempts"
+          exit 1

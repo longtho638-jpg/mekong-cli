@@ -83,6 +83,7 @@ Thumbs.db
 .claudekit/
 .anthropic/
 .opencode/
+.ag_proxies/
 
 # Open Core - Private Business Strategy (Binh Pháp)
 plans/internal/

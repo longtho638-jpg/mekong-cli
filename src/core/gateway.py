@@ -14,6 +14,8 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import httpx
+
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
@@ -706,6 +708,28 @@ def create_app() -> FastAPI:
         gov = Governance()
         gov.halt()
         return {"status": "halted", "message": "All autonomous operations stopped."}
+
+    # -- AGI daemon proxy endpoints --
+
+    @gateway.get("/api/agi/health")
+    async def agi_health():
+        """Proxy to Tom Hum health endpoint (port 9090)."""
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get("http://127.0.0.1:9090/health", timeout=5.0)
+                return resp.json()
+        except (httpx.ConnectError, httpx.TimeoutException):
+            return {"error": "AGI daemon not reachable", "status": "offline"}
+
+    @gateway.get("/api/agi/metrics")
+    async def agi_metrics():
+        """Proxy to Tom Hum metrics endpoint (port 9090)."""
+        try:
+            async with httpx.AsyncClient() as client:
+                resp = await client.get("http://127.0.0.1:9090/metrics", timeout=5.0)
+                return resp.json()
+        except (httpx.ConnectError, httpx.TimeoutException):
+            return {"error": "AGI daemon not reachable", "status": "offline"}
 
     return gateway
 

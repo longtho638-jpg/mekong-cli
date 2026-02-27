@@ -38,7 +38,7 @@ The autonomous orchestrator that keeps your agency running 24/7:
 - **Hardware Awareness**: M1 thermal protection and RAM optimization for high-density edge deployments.
 
 ### ⚡ Antigravity Proxy
-A unified LLM gateway (`port 11436`) for cost-effective intelligence:
+A unified LLM gateway (`port 9191`) for cost-effective intelligence:
 - **Load Balancing**: Distributes load across Ollama, OpenRouter, and direct providers.
 - **Failover**: Automatic model switching (e.g., Sonnet to Gemini) during quota limits.
 - **Optimization**: Smart routing based on task complexity and budget.
@@ -64,7 +64,7 @@ graph TD
     end
 
     subgraph "Intelligence"
-        Engine -->|Proxy :11436| Antigravity[Antigravity Proxy]
+        Engine -->|Proxy :9191| Antigravity[Antigravity Proxy]
         Antigravity --> Models[Claude / Gemini / DeepSeek]
     end
 
@@ -94,35 +94,63 @@ Detailed tier breakdown can be found in [RaaS Foundation Docs](./docs/raas-found
 
 ## 🚀 Quick Start
 
-### 1. Prerequisites
-- **Python**: 3.11+
-- **Node.js**: 20+
-- **pnpm**: 8+
-
-### 2. Installation
+### Option A: Install from PyPI (Recommended)
 ```bash
-git clone https://github.com/longtho638-jpg/mekong-cli.git
+pip install mekong-cli
+mekong --help
+```
+
+### Option B: Install from Source
+```bash
+git clone https://github.com/mekong-cli/mekong-cli.git
 cd mekong-cli
-pnpm install
-pip install -r requirements.txt
-cp .env.example .env
+pip install poetry
+poetry install
+cp .env.example .env  # Edit with your API keys
 ```
 
-### 3. Launch the General (Tôm Hùm)
+### Basic Usage
 ```bash
-cd apps/openclaw-worker
-npm run start
+# Plan a task (preview steps, no execution)
+mekong plan "Setup a FastAPI service with auth"
+
+# Execute with full Plan-Execute-Verify pipeline
+mekong cook "Create CRUD API for users"
+
+# Run an existing recipe
+mekong run recipes/setup-project.md
+
+# List available recipes
+mekong list
+
+# Start AGI daemon (Tôm Hùm)
+mekong agi start
+
+# Check AGI status
+mekong agi status
 ```
 
-### 4. Deploy your first Mission
-Create a file `tasks/mission_hello.txt`:
-```text
-- Project: mekong-cli
-- Description: Say hello and check system health
-- Instructions:
-  1. Print "Mekong CLI Ready"
-  2. Run unit tests to verify installation
+### Configuration
+
+Copy `.env.example` and configure:
+- `LLM_BASE_URL` — LLM API endpoint (OpenAI-compatible, default: `http://localhost:9191`)
+- `ANTHROPIC_BASE_URL` — Anthropic API base URL
+- `DATABASE_URL` — PostgreSQL connection (optional)
+- See `.env.example` for the full list
+
+### API Gateway
+```bash
+uvicorn src.core.gateway:app --host 0.0.0.0 --port 8000
 ```
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/cmd` | POST | Execute PEV pipeline |
+| `/api/agi/health` | GET | AGI daemon health |
+| `/api/agi/metrics` | GET | AGI daemon metrics |
+| `/projects` | GET | List projects |
+| `/presets` | GET | List preset actions |
 
 ---
 

@@ -74,6 +74,11 @@ app.add_typer(
     help="Binh Pháp Strategy: Infinite loops & Standards",
 )
 
+# AGI daemon sub-commands
+from src.commands.agi import app as agi_app
+
+app.add_typer(agi_app, name="agi", help="Tom Hum AGI daemon management")
+
 console = Console()
 
 

@@ -16,27 +16,28 @@ Before you start, you **MUST** read:
 
 ## 🛠 Setting Up Your Environment
 
-Mekong CLI is a monorepo managed with `pnpm` and `turbo`.
+Mekong CLI is a Python + Node.js monorepo.
 
 ### Requirements
-- **Node.js**: >= 20
 - **Python**: >= 3.11
-- **pnpm**: >= 8
+- **Node.js**: >= 20 (for Tôm Hùm daemon)
+- **Poetry**: For Python dependency management
 
 ### Installation
 ```bash
 # 1. Clone the repository
-git clone https://github.com/longtho638-jpg/mekong-cli.git
+git clone https://github.com/mekong-cli/mekong-cli.git
 cd mekong-cli
 
-# 2. Install Node.js dependencies
-pnpm install
+# 2. Install Python dependencies
+pip install poetry
+poetry install
 
-# 3. Install Python dependencies
-pip install -r requirements.txt
-
-# 4. Configure environment
+# 3. Configure environment
 cp .env.example .env
+
+# 4. Verify setup
+python3 -m pytest tests/ -v
 ```
 
 ---
@@ -62,9 +63,7 @@ We follow **GitHub Flow** combined with **Binh Phap Quality Gates**.
 3. **Verification**:
    - Before pushing, you **MUST** pass the local test suite:
      ```bash
-     mekong cook "verify system status"
-     # OR
-     npm run test && python3 -m pytest
+     python3 -m pytest tests/ -v
      ```
    - Ensure your code passes all 6 Binh Phap Quality Gates.
 

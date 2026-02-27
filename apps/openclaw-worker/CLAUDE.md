@@ -21,8 +21,14 @@
 | Language | JavaScript (CommonJS) |
 | Brain Control | Dual-mode: `direct` (claude -p) or `tmux` (v2026.2.9) |
 | Engine | Triple-provider: Ollama Cloud + OpenRouter + Google AI (port 20128) |
-| Proxy | Antigravity Proxy v4 (port 20128, Anthropic-compatible) |
+| Proxy | Antigravity Proxy v4 (port 20128 = engine internal, port 9191 = CC CLI proxy) |
+| Health | brain-health-server.js (port 9090, localhost only) |
 | Model | gemini-3-flash-preview (via proxy) |
+
+> **Port Clarification (ĐIỀU 56):**
+> - **9191** = CC CLI Antigravity Proxy (root level, `ANTHROPIC_BASE_URL`) — CẤM THAY ĐỔI
+> - **20128** = Tôm Hùm Engine Adapter (Antigravity internal, `TOM_HUM_ENGINE`)
+> - **9090** = Health endpoint (localhost only, brain-health-server.js)
 
 ## Architecture (v2026.2.27 AGI Deep Upgrade Edition)
 
