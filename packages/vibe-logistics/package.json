@@ -1,0 +1,12 @@
+{
+  "name": "@agencyos/vibe-logistics",
+  "version": "0.1.0",
+  "description": "Supply chain & logistics facade SDK — shipment tracking, inventory management, route optimization, warehouse ops, carrier integration",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-analytics": "workspace:*"
+  }
+}

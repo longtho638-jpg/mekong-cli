@@ -1,0 +1,13 @@
+{
+  "name": "@agencyos/vibe-ecommerce",
+  "version": "0.1.0",
+  "description": "E-commerce facade SDK — product catalog, cart management, order lifecycle, pricing engine, promotion rules",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-payment": "workspace:*",
+    "@agencyos/vibe-billing": "workspace:*"
+  }
+}
