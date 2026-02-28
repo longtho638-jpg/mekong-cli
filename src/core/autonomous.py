@@ -5,9 +5,8 @@ Fully autonomous execution loop with Consciousness Score.
 Coordinates NLU, Memory, Router, Orchestrator, Learner, RecipeGen, Governance.
 """
 
-import time
-from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 
 from .event_bus import EventType, get_event_bus
 from .governance import ActionClass, AuditEntry, Governance, GovernanceDecision

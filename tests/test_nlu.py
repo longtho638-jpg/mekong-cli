@@ -5,7 +5,6 @@ from unittest.mock import MagicMock
 
 from src.core.nlu import (
     Intent,
-    IntentResult,
     IntentClassifier,
     KEYWORD_MAP,
 )

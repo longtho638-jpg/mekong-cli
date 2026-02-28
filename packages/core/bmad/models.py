@@ -1,7 +1,7 @@
 """BMAD Workflow Pydantic Models."""
 
 from pydantic import BaseModel, ConfigDict, Field
-from typing import List, Dict, Optional, Any
+from typing import List, Dict, Any
 from pathlib import Path
 
 

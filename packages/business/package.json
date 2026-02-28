@@ -1,0 +1,8 @@
+{
+    "name": "@agencyos/business",
+    "version": "0.1.0",
+    "description": "AgencyOS business logic — pricing, credits, subscriptions, marketplace",
+    "author": "Binh Phap Venture Studio",
+    "license": "MIT",
+    "private": true
+}

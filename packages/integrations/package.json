@@ -1,0 +1,8 @@
+{
+    "name": "@agencyos/integrations",
+    "version": "0.1.0",
+    "description": "AgencyOS integration adapters — Stripe, Supabase, Cloudflare, Telegram",
+    "author": "Binh Phap Venture Studio",
+    "license": "MIT",
+    "private": true
+}

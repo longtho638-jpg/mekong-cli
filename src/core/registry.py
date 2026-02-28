@@ -10,7 +10,6 @@ import inspect
 from pathlib import Path
 from typing import List, Dict, Optional, Type
 from dataclasses import dataclass
-from rich.table import Table
 from rich.console import Console
 
 from .parser import RecipeParser, Recipe

@@ -8,7 +8,6 @@ FIFO eviction, evolution stats, full analyze_and_improve cycle.
 import os
 import sys
 import tempfile
-import time
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -16,7 +15,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.core.self_improve import SelfImprover, JournalEntry
 from src.core.memory import MemoryEntry, MemoryStore
-from src.core.recipe_gen import RecipeGenerator, GeneratedRecipe
+from src.core.recipe_gen import RecipeGenerator
 from src.core.event_bus import EventBus, EventType
 
 

@@ -146,7 +146,6 @@ class TestSwarmDispatcher(unittest.TestCase):
 
     def test_get_healthy_nodes_filters_unhealthy(self):
         """Only healthy nodes returned."""
-        from src.core.swarm import SwarmNode
         n1 = self.registry.register_node("n1", "localhost", 9001, "tok1")
         n1.status = "healthy"
         n2 = self.registry.register_node("n2", "localhost", 9002, "tok2")

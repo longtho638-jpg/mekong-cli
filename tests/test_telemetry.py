@@ -4,7 +4,7 @@ import json
 import unittest
 from pathlib import Path
 
-from src.core.telemetry import TelemetryCollector, ExecutionTrace, StepTrace
+from src.core.telemetry import TelemetryCollector, ExecutionTrace
 
 
 class TestTelemetry(unittest.TestCase):

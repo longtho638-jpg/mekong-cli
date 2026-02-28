@@ -13,7 +13,7 @@ from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from src.core.recipe_gen import RecipeGenerator, GeneratedRecipe, RECIPE_TEMPLATE
+from src.core.recipe_gen import RecipeGenerator, GeneratedRecipe
 from src.core.memory import MemoryEntry
 from src.core.event_bus import EventBus, EventType
 

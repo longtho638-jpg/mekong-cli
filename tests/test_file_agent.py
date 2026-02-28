@@ -8,7 +8,6 @@ import shutil
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.agents.file_agent import FileAgent
-from src.core.agent_base import TaskStatus
 
 
 class TestFileAgent(unittest.TestCase):

@@ -6,7 +6,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.agents.lead_hunter import LeadHunter
-from src.core.agent_base import TaskStatus
 
 class TestLeadHunter(unittest.TestCase):
     def setUp(self):

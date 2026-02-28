@@ -20,7 +20,7 @@ from src.core.orchestrator import (
     StepResult,
 )
 from src.core.parser import Recipe, RecipeStep
-from src.core.verifier import ExecutionResult, VerificationStatus
+from src.core.verifier import ExecutionResult
 
 
 @pytest.fixture

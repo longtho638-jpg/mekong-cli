@@ -22,12 +22,12 @@ from pydantic import BaseModel, Field
 
 from src.core.llm_client import get_client
 from src.core.orchestrator import RecipeOrchestrator, OrchestrationResult
-from src.core.gateway_config import DEFAULT_PRESETS, GatewayConfig, load_config
+from src.core.gateway_config import GatewayConfig, load_config
 from src.core.gateway_dashboard import DASHBOARD_HTML
-from src.core.swarm import SwarmNode, SwarmRegistry
+from src.core.swarm import SwarmRegistry
 from src.core.event_bus import EventType, get_event_bus
-from src.core.scheduler import Scheduler, ScheduledJob
-from src.core.memory import MemoryStore, MemoryEntry
+from src.core.scheduler import Scheduler
+from src.core.memory import MemoryStore
 
 
 # -- Load config; export presets for backward compatibility --

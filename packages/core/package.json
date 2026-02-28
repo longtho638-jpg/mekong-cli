@@ -1,0 +1,41 @@
+{
+    "name": "@agencyos/raas-core",
+    "version": "0.1.0",
+    "description": "RaaS Core Engine — Recipe parser, supervisor loop, and agent orchestration for autonomous task execution",
+    "author": "Binh Phap Venture Studio",
+    "license": "MIT",
+    "homepage": "https://agencyos.dev",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/longtho638-jpg/mekong-cli.git",
+        "directory": "packages/core"
+    },
+    "keywords": [
+        "raas",
+        "agent",
+        "autonomous",
+        "ai",
+        "claudekit",
+        "mekong-cli",
+        "agencyos"
+    ],
+    "main": "shared/index.js",
+    "exports": {
+        ".": "./shared/index.js",
+        "./perception": "./perception/index.js",
+        "./vibe": "./vibe/index.js",
+        "./bmad": "./bmad/index.js",
+        "./agents": "./vibe-agents/index.js"
+    },
+    "files": [
+        "shared/",
+        "perception/",
+        "vibe/",
+        "vibe-agents/",
+        "bmad/",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}

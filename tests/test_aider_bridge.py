@@ -2,7 +2,6 @@
 
 import subprocess
 import json
-import pytest
 import os
 
 AIDER_BRIDGE_PATH = os.path.abspath(

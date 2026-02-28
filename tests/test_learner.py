@@ -5,7 +5,7 @@ import time
 import unittest
 from pathlib import Path
 
-from src.core.event_bus import EventBus, EventType, Event
+from src.core.event_bus import EventBus, EventType
 from src.core.memory import MemoryEntry, MemoryStore
 from src.core.learner import Pattern, PatternAnalyzer
 

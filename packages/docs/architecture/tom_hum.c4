@@ -1,0 +1,40 @@
+specification {
+    element system
+    element container
+    element component
+
+    relationship requests
+    relationship runs
+}
+
+model {
+    system OpenClaw {
+        title "OpenClaw Gateway (Tôm Hùm)"
+        
+        container Worker {
+            title "OpenClaw Worker Node"
+            
+            component TaskWatcher {
+                title "Task Dispatcher"
+            }
+        }
+    }
+    
+    system CCCLI {
+        title "Claude Code CLI"
+    }
+    
+    system AntigravityProxy {
+        title "Antigravity Proxy"
+    }
+
+    OpenClaw.Worker.TaskWatcher -> CCCLI "runs (/cook, /plan:hard)"
+    CCCLI -> AntigravityProxy "requests local execution"
+}
+
+views {
+    systemContext TômHùmContext {
+        include *
+        autoLayout TopBottom
+    }
+}

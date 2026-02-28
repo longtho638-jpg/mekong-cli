@@ -22,7 +22,6 @@ from .planner import RecipePlanner, PlanningContext
 from .executor import RecipeExecutor
 from .verifier import RecipeVerifier, VerificationReport, ExecutionResult
 from .parser import Recipe, RecipeStep
-from .exceptions import RollbackError
 from .telemetry import TelemetryCollector
 from .memory import MemoryStore, MemoryEntry
 from .nlu import IntentClassifier

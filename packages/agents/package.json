@@ -1,0 +1,38 @@
+{
+    "name": "@agencyos/agents",
+    "version": "0.1.0",
+    "description": "Agent templates for autonomous task orchestration — planner, builder, reviewer patterns",
+    "author": "Binh Phap Venture Studio",
+    "license": "MIT",
+    "homepage": "https://agencyos.dev",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/longtho638-jpg/mekong-cli.git",
+        "directory": "packages/agents"
+    },
+    "keywords": [
+        "agents",
+        "ai-agents",
+        "autonomous",
+        "orchestration",
+        "agencyos",
+        "mekong-cli"
+    ],
+    "main": "core/index.js",
+    "exports": {
+        ".": "./core/index.js",
+        "./hubs": "./hubs/index.js",
+        "./mekong": "./mekongAgent/index.js",
+        "./ops": "./ops/index.js"
+    },
+    "files": [
+        "core/",
+        "hubs/",
+        "mekongAgent/",
+        "ops/",
+        "README.md"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}

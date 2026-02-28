@@ -14,12 +14,9 @@ Tests cover:
 - Swarm registry, endpoints, and event bus
 """
 
-import json
 import os
 import unittest
 from unittest.mock import patch, MagicMock
-from dataclasses import dataclass
-from pathlib import Path
 import tempfile
 
 from fastapi.testclient import TestClient
@@ -27,15 +24,13 @@ from fastapi.testclient import TestClient
 from src.core.gateway import (
     create_app, verify_token, CommandRequest,
     build_human_summary, HumanSummary, PRESET_ACTIONS,
-    VERSION, ProjectInfo, _scan_projects,
-    SwarmNodeInfo, SwarmRegisterRequest, SwarmDispatchRequest,
-    ScheduleJobInfo, ScheduleAddRequest,
+    VERSION, _scan_projects,
 )
 from src.core.gateway_config import GatewayConfig, load_config, DEFAULT_PRESETS
 from src.core.gateway_dashboard import DASHBOARD_HTML
-from src.core.swarm import SwarmNode, SwarmRegistry
+from src.core.swarm import SwarmRegistry
 from src.core.event_bus import EventType, Event, EventBus, get_event_bus
-from src.core.scheduler import ScheduledJob, Scheduler
+from src.core.scheduler import Scheduler
 
 
 class TestGatewayHealth(unittest.TestCase):

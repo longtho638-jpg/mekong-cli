@@ -6,7 +6,6 @@ recipe effectiveness, and time-of-day correlations.
 """
 
 import time
-from collections import Counter
 from dataclasses import dataclass, field
 from typing import Any, Dict, List
 
