@@ -15,6 +15,18 @@ export interface IBalance {
   total: number;
 }
 
+export interface IOrderBookEntry {
+  price: number;
+  amount: number;
+}
+
+export interface IOrderBook {
+  symbol: string;
+  bids: IOrderBookEntry[];
+  asks: IOrderBookEntry[];
+  timestamp: number;
+}
+
 export interface IExchange {
   name: string;
 
@@ -37,4 +49,9 @@ export interface IExchange {
    * Fetch account balance
    */
   fetchBalance(): Promise<Record<string, IBalance>>;
+
+  /**
+   * Fetch order book for a symbol
+   */
+  fetchOrderBook(symbol: string, limit?: number): Promise<IOrderBook>;
 }

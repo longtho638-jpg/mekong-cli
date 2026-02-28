@@ -20,6 +20,7 @@ const makeExchange = (balanceFree = 10000): jest.Mocked<IExchange> => ({
   fetchTicker: jest.fn().mockResolvedValue(100),
   createMarketOrder: jest.fn().mockResolvedValue({ id: '1', symbol: 'BTC/USDT', side: 'buy', amount: 0.01, price: 100, status: 'closed', timestamp: Date.now() }),
   fetchBalance: jest.fn().mockResolvedValue(makeBalance(balanceFree)),
+  fetchOrderBook: jest.fn().mockResolvedValue({ symbol: 'BTC/USDT', bids: [], asks: [], timestamp: Date.now() }),
 });
 
 const makeDataProvider = (): jest.Mocked<IDataProvider> => ({

@@ -8,6 +8,7 @@ import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
 import { ArbitrageScanner } from './arbitrage/ArbitrageScanner';
 import { ArbitrageExecutor } from './arbitrage/ArbitrageExecutor';
+import { SpreadDetectorEngine } from './arbitrage/SpreadDetectorEngine';
 import { logger } from './utils/logger';
 import * as dotenv from 'dotenv';
 
@@ -362,6 +363,73 @@ program
       process.on('SIGTERM', shutdown);
     } catch (error: unknown) {
       logger.error(`Arb bot failed: ${error instanceof Error ? error.message : String(error)}`);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('arb:engine')
+  .description('Run full SpreadDetectorEngine with scoring, orderbook validation, circuit breaker')
+  .option('-p, --pairs <string>', 'Comma-separated trading pairs', 'BTC/USDT,ETH/USDT')
+  .option('-e, --exchanges <string>', 'Comma-separated exchange IDs', 'binance,okx,bybit')
+  .option('-s, --size <number>', 'Max position size USD', '1000')
+  .option('-t, --threshold <number>', 'Min spread %', '0.05')
+  .option('--equity <number>', 'Initial equity USD', '10000')
+  .option('--max-loss <number>', 'Max daily loss USD', '100')
+  .action(async (options) => {
+    const symbols = options.pairs.split(',');
+    const exchangeIds: string[] = options.exchanges.split(',');
+
+    if (exchangeIds.length < 2) {
+      logger.error('Need at least 2 exchanges for spread detection');
+      process.exit(1);
+    }
+
+    const exchanges = exchangeIds.map((id: string) => {
+      const apiKey = process.env[`${id.toUpperCase()}_API_KEY`] || '';
+      const secret = process.env[`${id.toUpperCase()}_SECRET`] || '';
+
+      if (!apiKey || apiKey.length < 10) {
+        logger.error(`Missing API key for ${id}. Set ${id.toUpperCase()}_API_KEY in .env`);
+        process.exit(1);
+      }
+
+      return { id, apiKey, secret, enabled: true };
+    });
+
+    logger.info(`[SpreadDetector] Starting: ${exchangeIds.join('/')} | Pairs: ${symbols.join(', ')} | Max: $${options.size}`);
+
+    const engine = new SpreadDetectorEngine({
+      exchanges,
+      symbols,
+      scanner: { minSpreadPercent: parseFloat(options.threshold), pollIntervalMs: 2000 },
+      executor: { maxPositionSizeUsd: parseFloat(options.size), maxConcurrentTrades: 3 },
+      scorer: { executeThreshold: 65 },
+      circuitBreaker: { maxDailyLossUsd: parseFloat(options.maxLoss), maxConsecutiveLosses: 5 },
+      initialEquity: parseFloat(options.equity),
+      maxOpportunitiesPerCycle: 5,
+      enableOrderBookValidation: true,
+      enableSignalScoring: true,
+      enableSpreadHistory: true,
+    });
+
+    try {
+      await engine.init();
+      await engine.start();
+      logger.info('[SpreadDetector] Running. Press Ctrl+C to stop.');
+
+      const shutdown = () => {
+        engine.stop();
+        const stats = engine.getStats();
+        const profit = engine.getProfitSummary();
+        logger.info(`\n[SpreadDetector] Final: ${stats.totalDetections} detections, ${stats.totalExecuted} executed, ${stats.successfulExecutions} successful`);
+        logger.info(`[SpreadDetector] P&L: $${profit.cumulativePnl.toFixed(2)} | Drawdown: ${profit.maxDrawdownPercent.toFixed(1)}%`);
+        process.exit(0);
+      };
+      process.on('SIGINT', shutdown);
+      process.on('SIGTERM', shutdown);
+    } catch (error: unknown) {
+      logger.error(`SpreadDetector failed: ${error instanceof Error ? error.message : String(error)}`);
       process.exit(1);
     }
   });

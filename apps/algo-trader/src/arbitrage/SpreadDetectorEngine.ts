@@ -386,15 +386,18 @@ export class SpreadDetectorEngine {
 
   /**
    * Fetch orderbook from exchange client.
-   * Returns null if not available (e.g., sandbox mode).
+   * Returns null on error — orderbook validation gracefully degrades.
    */
   private async fetchOrderbook(
-    _client: ExchangeClient,
-    _symbol: string
+    client: ExchangeClient,
+    symbol: string
   ): Promise<{ bids: { price: number; amount: number }[]; asks: { price: number; amount: number }[] } | null> {
-    // ExchangeClient doesn't expose fetchOrderBook yet.
-    // Return null — orderbook validation gracefully degrades.
-    return null;
+    try {
+      const book = await client.fetchOrderBook(symbol, 20);
+      return { bids: book.bids, asks: book.asks };
+    } catch {
+      return null;
+    }
   }
 
   private recordEvent(

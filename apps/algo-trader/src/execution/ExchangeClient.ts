@@ -1,5 +1,5 @@
 import * as ccxt from 'ccxt';
-import { IExchange, IOrder, IBalance } from '../interfaces/IExchange';
+import { IExchange, IOrder, IBalance, IOrderBook } from '../interfaces/IExchange';
 
 import { logger } from '../utils/logger';
 
@@ -88,6 +88,16 @@ export class ExchangeClient implements IExchange {
       price: filledPrice,
       status: order.status === 'open' ? 'open' : 'closed',
       timestamp: order.timestamp
+    };
+  }
+
+  async fetchOrderBook(symbol: string, limit = 20): Promise<IOrderBook> {
+    const book = await this.retry(() => this.exchange.fetchOrderBook(symbol, limit));
+    return {
+      symbol,
+      bids: (book.bids || []).map((entry) => ({ price: Number(entry[0]) || 0, amount: Number(entry[1]) || 0 })),
+      asks: (book.asks || []).map((entry) => ({ price: Number(entry[0]) || 0, amount: Number(entry[1]) || 0 })),
+      timestamp: book.timestamp || Date.now(),
     };
   }
 
