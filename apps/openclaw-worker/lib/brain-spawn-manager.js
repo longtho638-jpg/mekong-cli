@@ -186,6 +186,65 @@ function parseContextUsage(output) {
   return match ? parseInt(match[1]) : -1;
 }
 
+/**
+ * Detect idle workers — scan all tmux panes for workers sitting at ❯ prompt
+ * without active missions for > idleThresholdMs.
+ * @param {number} idleThresholdMs - Consider worker idle after this duration (default 5min)
+ * @returns {{ paneIdx: number, idleMs: number }[]} - List of idle workers
+ */
+function detectIdleWorkers(idleThresholdMs = 5 * 60 * 1000) {
+  const idleWorkers = [];
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 2;
+
+  for (let idx = 0; idx < teamSize; idx++) {
+    if (isWorkerBusy(idx)) continue; // Worker is busy, not idle
+
+    // Check if worker has been idle (no lock file means no active mission)
+    const lockPath = workerLockFile(idx);
+    try {
+      if (fs.existsSync(lockPath)) continue; // Has lock = active
+
+      // Check brain alive at this pane
+      const paneTarget = `${config.TMUX_SESSION}:brain.${idx}`;
+      if (!isBrainAlive(paneTarget)) continue; // Not alive = not idle, just dead
+
+      // Calculate idle time from last lock removal (or process start)
+      const heartbeatFile = path.join(__dirname, '..', `.worker-P${idx}-heartbeat`);
+      let idleMs = idleThresholdMs + 1; // Default to "idle"
+      if (fs.existsSync(heartbeatFile)) {
+        idleMs = Date.now() - fs.statSync(heartbeatFile).mtimeMs;
+      }
+
+      if (idleMs >= idleThresholdMs) {
+        idleWorkers.push({ paneIdx: idx, idleMs });
+        log(`IDLE: Worker P${idx} idle for ${Math.round(idleMs / 60000)}min`);
+      }
+    } catch (e) { /* non-critical */ }
+  }
+
+  return idleWorkers;
+}
+
+/**
+ * Get worker health summary (uptime, status per worker).
+ * @returns {{ workers: Array<{ idx: number, alive: boolean, busy: boolean, status: string }> }}
+ */
+function getWorkerHealthSummary() {
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 2;
+  const workers = [];
+  for (let idx = 0; idx < teamSize; idx++) {
+    const paneTarget = `${config.TMUX_SESSION}:brain.${idx}`;
+    const alive = isBrainAlive(paneTarget);
+    const busy = isWorkerBusy(idx);
+    let status = 'unknown';
+    if (!alive) status = 'dead';
+    else if (busy) status = 'busy';
+    else status = 'idle';
+    workers.push({ idx, alive, busy, status });
+  }
+  return { workers };
+}
+
 module.exports = {
   MAX_RESPAWNS_PER_HOUR,
   RESPAWN_COOLDOWN_MS,
@@ -204,4 +263,6 @@ module.exports = {
   setWorkerLock,
   clearWorkerLock,
   parseContextUsage,
+  detectIdleWorkers,
+  getWorkerHealthSummary,
 };

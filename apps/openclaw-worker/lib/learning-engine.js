@@ -73,20 +73,30 @@ function recordOutcome(taskId, project, result, elapsedSec, missionSummary = nul
 }
 
 /**
- * Get success rate per task type.
+ * Get success rate per task type with time-decay weighting.
+ * Missions older than 7 days get 50% weight, older than 14 days get 25%.
  */
 function getSuccessRates() {
   const outcomes = loadOutcomes();
   const rates = {};
+  const now = Date.now();
+  const DAY_MS = 86400000;
+
   for (const o of outcomes) {
-    if (!rates[o.taskId]) rates[o.taskId] = { runs: 0, successes: 0, rate: 0, avgTime: 0, totalTime: 0, filesChanged: 0, lastRun: null };
+    if (!rates[o.taskId]) rates[o.taskId] = { runs: 0, successes: 0, rate: 0, avgTime: 0, totalTime: 0, filesChanged: 0, avgFilesPerRun: 0, lastRun: null };
     const r = rates[o.taskId];
-    r.runs++;
-    if (o.success) r.successes++;
-    r.totalTime += o.elapsedSec || 0;
-    r.avgTime = Math.round(r.totalTime / r.runs);
+
+    // Time-decay: recent missions matter more
+    const ageMs = now - new Date(o.timestamp).getTime();
+    const weight = ageMs > 14 * DAY_MS ? 0.25 : ageMs > 7 * DAY_MS ? 0.5 : 1.0;
+
+    r.runs += weight;
+    if (o.success) r.successes += weight;
+    r.totalTime += (o.elapsedSec || 0) * weight;
+    r.avgTime = r.runs > 0 ? Math.round(r.totalTime / r.runs) : 0;
     r.filesChanged += o.filesChanged || 0;
-    r.rate = Math.round((r.successes / r.runs) * 100);
+    r.avgFilesPerRun = r.runs > 0 ? Math.round(r.filesChanged / r.runs) : 0;
+    r.rate = r.runs > 0 ? Math.round((r.successes / r.runs) * 100) : 0;
     r.lastRun = o.timestamp;
   }
   return rates;
@@ -135,6 +145,7 @@ function analyzePatterns(outcomes) {
 /**
  * Get priority adjustments from learned patterns.
  * Returns: { taskId: multiplier (0.1 - 2.0) }
+ * 🧬 FIX: Use avgFilesPerRun instead of total filesChanged for diminishing returns check
  */
 function getTaskAdjustments() {
   const rates = getSuccessRates();
@@ -143,9 +154,11 @@ function getTaskAdjustments() {
     let mult = 1.0;
     if (stats.runs >= 3 && stats.rate < 30) mult = 0.1;
     else if (stats.runs >= 3 && stats.rate < 50) mult = 0.3;
-    if (stats.runs >= 3 && stats.rate > 80 && stats.filesChanged === 0) mult = 0.2;
+    // Diminishing returns: high success but no file changes per run
+    if (stats.runs >= 3 && stats.rate > 80 && stats.avgFilesPerRun === 0) mult = 0.2;
     if (stats.runs < 2) mult = 1.5;
-    if (stats.filesChanged > 3) mult = Math.min(mult * 1.3, 2.0);
+    // Reward productive tasks (avg files changed per run > 3)
+    if (stats.avgFilesPerRun > 3) mult = Math.min(mult * 1.3, 2.0);
     adjustments[taskId] = mult;
   }
   return adjustments;
@@ -250,4 +263,46 @@ function getDispatchHints(taskContent) {
   return { timeoutMultiplier: 1.0, shouldSkip: false, preferredIntent: null, reason: 'No learned pattern' };
 }
 
-module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns, startLearningEngine, stopLearningEngine, getAvoidPatterns, getDispatchHints };
+/**
+ * Get project health score (0-100) based on mission outcomes per project.
+ * @param {string} project - Project name
+ * @returns {{ score: number, totalMissions: number, successRate: number, avgTime: number }}
+ */
+function getProjectHealthScore(project) {
+  const outcomes = loadOutcomes().filter(o => o.project === project);
+  if (outcomes.length === 0) return { score: 50, totalMissions: 0, successRate: 0, avgTime: 0 };
+
+  const recent = outcomes.slice(-20); // Last 20 missions
+  const successes = recent.filter(o => o.success).length;
+  const successRate = Math.round((successes / recent.length) * 100);
+  const avgTime = Math.round(recent.reduce((sum, o) => sum + (o.elapsedSec || 0), 0) / recent.length);
+  const avgFiles = Math.round(recent.reduce((sum, o) => sum + (o.filesChanged || 0), 0) / recent.length);
+
+  // Score = weighted: 50% success rate + 30% productivity (files) + 20% efficiency (time < 30min)
+  const timeScore = avgTime < 1800 ? 100 : avgTime < 3600 ? 60 : 30;
+  const fileScore = Math.min(avgFiles * 20, 100);
+  const score = Math.round(successRate * 0.5 + fileScore * 0.3 + timeScore * 0.2);
+
+  return { score, totalMissions: recent.length, successRate, avgTime };
+}
+
+/**
+ * Record post-mission feedback for strategy refinement.
+ * Called after task completion with build status + git diff summary.
+ * @param {string} taskId
+ * @param {{ buildPassed: boolean, filesChanged: number, linesChanged: number }} feedback
+ */
+function recordMissionFeedback(taskId, feedback) {
+  const lessons = loadLessons();
+  if (!lessons.feedback) lessons.feedback = [];
+  lessons.feedback.push({
+    taskId, ...feedback,
+    timestamp: new Date().toISOString()
+  });
+  // Keep last 100 feedbacks
+  if (lessons.feedback.length > 100) lessons.feedback = lessons.feedback.slice(-100);
+  saveLessons(lessons);
+  log(`FEEDBACK: ${taskId} — build:${feedback.buildPassed ? '✅' : '❌'} files:${feedback.filesChanged} lines:${feedback.linesChanged}`);
+}
+
+module.exports = { recordOutcome, getSuccessRates, getTaskAdjustments, getReport, analyzePatterns, startLearningEngine, stopLearningEngine, getAvoidPatterns, getDispatchHints, getProjectHealthScore, recordMissionFeedback };

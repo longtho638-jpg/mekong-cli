@@ -14,6 +14,8 @@ const config = require('../config');
 
 let perceptionInterval = null;
 const PERCEPTION_STATE_FILE = path.join(config.MEKONG_DIR || '.', '.tom_hum_state.json');
+const MAX_ALERT_HISTORY = 50;
+const alertHistory = [];
 
 function log(msg) {
     const ts = new Date().toISOString().slice(11, 19);
@@ -83,7 +85,28 @@ function perceive() {
         alerts.push({ type: 'node_flood', severity: 'medium', message: `${metrics.nodeProcessCount} Node processes running` });
     }
 
+    // 7. Claude process count (CC CLI workers)
+    const claudeCount = safeExec("pgrep -f 'claude' | wc -l");
+    metrics.claudeProcessCount = parseInt(claudeCount) || 0;
+
+    // 8. GPU temperature (M1 Mac — via powermetrics fallback)
+    const gpuTemp = safeExec("sudo powermetrics --samplers smc -i1 -n1 2>/dev/null | grep -i 'gpu die' | grep -oE '[0-9.]+'");
+    metrics.gpuTemp = gpuTemp ? parseFloat(gpuTemp) : null;
+    if (metrics.gpuTemp && metrics.gpuTemp > 95) {
+        alerts.push({ type: 'gpu_hot', severity: 'high', message: `GPU ${metrics.gpuTemp}°C — overheating` });
+    }
+
+    // 9. Trend detection — flag repeating alert types (3+ in last 10 sweeps)
+    const trends = detectAlertTrends(alerts);
+    if (trends.length > 0) {
+        alerts.push({ type: 'trend_detected', severity: 'medium', message: `Repeating: ${trends.join(', ')}` });
+    }
+
     const healthy = alerts.filter(a => a.severity === 'high').length === 0;
+
+    // Record to alert history for trend analysis
+    alertHistory.push({ alerts: alerts.map(a => a.type), ts: Date.now() });
+    if (alertHistory.length > MAX_ALERT_HISTORY) alertHistory.shift();
 
     return { alerts, metrics, healthy, timestamp: new Date().toISOString() };
 }
@@ -136,4 +159,33 @@ function stopPerceptionEngine() {
     }
 }
 
-module.exports = { perceive, startPerceptionEngine, stopPerceptionEngine };
+/**
+ * Detect repeating alert patterns across recent sweeps.
+ * Returns array of alert types that appeared 3+ times in last 10 sweeps.
+ */
+function detectAlertTrends(currentAlerts) {
+    const recentWindow = alertHistory.slice(-10);
+    const allTypes = recentWindow.flatMap(h => h.alerts);
+    currentAlerts.forEach(a => allTypes.push(a.type));
+
+    const counts = {};
+    for (const t of allTypes) {
+        counts[t] = (counts[t] || 0) + 1;
+    }
+    return Object.entries(counts).filter(([, c]) => c >= 3).map(([t]) => t);
+}
+
+/**
+ * Get latest perception snapshot for external modules (learning-engine, dashboard).
+ */
+function getLatestSnapshot() {
+    try {
+        if (fs.existsSync(PERCEPTION_STATE_FILE)) {
+            const state = JSON.parse(fs.readFileSync(PERCEPTION_STATE_FILE, 'utf-8'));
+            return state.perception || null;
+        }
+    } catch (_) { }
+    return null;
+}
+
+module.exports = { perceive, startPerceptionEngine, stopPerceptionEngine, getLatestSnapshot, detectAlertTrends };

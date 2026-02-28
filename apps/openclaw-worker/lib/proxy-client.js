@@ -12,9 +12,35 @@
 const fs = require('fs');
 const config = require('../config');
 
-const PROXY_URL = `${config.CLOUD_BRAIN_URL || 'http://127.0.0.1:20128'}/v1/messages`;
+const PRIMARY_PROXY = `${config.CLOUD_BRAIN_URL || 'http://127.0.0.1:20128'}/v1/messages`;
+const FALLBACK_PROXY = 'http://127.0.0.1:9191/v1/messages';
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 2000;
+
+// Circuit breaker state
+const circuitState = { failures: 0, openUntil: 0, threshold: 3, cooldownMs: 30000 };
+
+function isCircuitOpen() {
+    if (circuitState.failures >= circuitState.threshold) {
+        if (Date.now() < circuitState.openUntil) return true;
+        // Half-open: allow one attempt
+        circuitState.failures = circuitState.threshold - 1;
+    }
+    return false;
+}
+
+function recordFailure() {
+    circuitState.failures++;
+    if (circuitState.failures >= circuitState.threshold) {
+        circuitState.openUntil = Date.now() + circuitState.cooldownMs;
+        log(`CIRCUIT OPEN: ${circuitState.threshold} consecutive failures — pausing ${circuitState.cooldownMs / 1000}s`);
+    }
+}
+
+function recordSuccess() {
+    circuitState.failures = 0;
+    circuitState.openUntil = 0;
+}
 
 function log(msg) {
     const ts = new Date().toISOString().slice(11, 19);
@@ -34,6 +60,12 @@ function sleep(ms) {
  * @returns {Promise<string|null>} - Response text or null on error
  */
 async function callLLM({ system, user, model, maxTokens = 200, temperature = 0, timeoutMs = 15000 }) {
+    // Circuit breaker check
+    if (isCircuitOpen()) {
+        log('CIRCUIT OPEN: Skipping LLM call — cooling down');
+        return null;
+    }
+
     const messages = [{ role: 'user', content: user }];
 
     const payload = {
@@ -48,10 +80,14 @@ async function callLLM({ system, user, model, maxTokens = 200, temperature = 0, 
     }
 
     let lastError = null;
+    // Try primary proxy, then fallback
+    const proxyUrls = [PRIMARY_PROXY, FALLBACK_PROXY];
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        // Use fallback proxy on last attempt if primary keeps failing
+        const proxyUrl = attempt >= MAX_RETRIES ? proxyUrls[1] : proxyUrls[0];
         try {
-            const response = await fetch(PROXY_URL, {
+            const response = await fetch(proxyUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,6 +112,7 @@ async function callLLM({ system, user, model, maxTokens = 200, temperature = 0, 
             const data = await response.json();
             const text = data?.content?.[0]?.text?.trim() || '';
             if (text) {
+                recordSuccess();
                 if (attempt > 1) log(`OK: LLM call succeeded on attempt ${attempt}`);
                 return text;
             }
@@ -100,8 +137,23 @@ async function callLLM({ system, user, model, maxTokens = 200, temperature = 0, 
         }
     }
 
+    recordFailure();
     log(`ERROR: All ${MAX_RETRIES} LLM call attempts failed. Last error: ${lastError}`);
     return null;
 }
 
-module.exports = { callLLM, PROXY_URL };
+/**
+ * Check proxy health before critical operations.
+ * @param {number} port - Proxy port to check (default 20128)
+ * @returns {Promise<boolean>}
+ */
+async function checkProxyAlive(port = 20128) {
+    try {
+        const resp = await fetch(`http://127.0.0.1:${port}/health`, {
+            signal: AbortSignal.timeout(3000)
+        });
+        return resp.ok;
+    } catch (_) { return false; }
+}
+
+module.exports = { callLLM, checkProxyAlive, PRIMARY_PROXY, FALLBACK_PROXY };

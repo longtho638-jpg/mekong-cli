@@ -67,7 +67,41 @@ try {
   log(`WARN: learning-engine not found: ${e.message}`);
 }
 
-// 🧬 Dead code cleaned: VI_PREFIX, FILE_LIMIT, memory cache vars (unused at module level)
+// 🧬 LEARNING LOOP: Project health scores
+let getProjectHealthScore = () => ({ score: 50 });
+try {
+  const le = require('./learning-engine');
+  getProjectHealthScore = le.getProjectHealthScore || getProjectHealthScore;
+} catch (e) { }
+
+/**
+ * Classify mission priority: P0 (critical), P1 (important), P2 (routine).
+ * Based on: task complexity, project importance, keywords.
+ * @param {string} taskContent - Raw task content
+ * @param {string} complexity - 'simple'|'complex' from classifier
+ * @returns {{ priority: string, reason: string }}
+ */
+function classifyPriority(taskContent, complexity = 'simple') {
+  const lower = taskContent.toLowerCase();
+
+  // P0: AGI/openclaw, security fixes, production down
+  if (/\bagi\b|openclaw-worker|production down|security|critical/i.test(taskContent)) {
+    return { priority: 'P0', reason: 'AGI/security/critical keyword' };
+  }
+
+  // P0: Explicit deep 10x or urgent
+  if (lower.includes('deep 10x') || lower.includes('urgent') || lower.includes('hotfix')) {
+    return { priority: 'P0', reason: 'Urgent/deep task' };
+  }
+
+  // P1: Complex tasks, multi-file, architecture
+  if (complexity === 'complex' || lower.includes('refactor') || lower.includes('architecture')) {
+    return { priority: 'P1', reason: 'Complex task' };
+  }
+
+  // P2: Routine maintenance
+  return { priority: 'P2', reason: 'Routine' };
+}
 
 // Project routing: detect project from task content keywords
 function detectProjectDir(taskContent, taskFile = '') {
@@ -398,6 +432,10 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
     log(`⚠️ SAFETY CAUTION: ${taskFile} — ${safety.reason} (proceeding in CTO auto mode)`);
   }
 
+  // 🧬 PRIORITY CLASSIFICATION: P0/P1/P2
+  const { priority, reason: priorityReason } = classifyPriority(taskContent, complexity);
+  log(`📊 PRIORITY: ${priority} — ${priorityReason} [${taskFile}]`);
+
   // 🧬 LEARNING LOOP: Check dispatch hints before executing
   const hints = getDispatchHints(taskContent);
   if (hints.shouldSkip) {
@@ -408,7 +446,13 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
     log(`🧠 LEARNING HINT: ${hints.reason} [timeout×${hints.timeoutMultiplier}]`);
   }
 
+  // 🧬 PROJECT HEALTH: Log project health score
   const projectDir = detectProjectDir(taskContent, taskFile);
+  const projectName = path.basename(projectDir);
+  const health = getProjectHealthScore(projectName);
+  if (health.totalMissions > 0) {
+    log(`🏥 PROJECT HEALTH: ${projectName} — score:${health.score}/100 success:${health.successRate}% (${health.totalMissions} missions)`);
+  }
   const lowerContent = taskContent.toLowerCase();
 
   // 🦞 HYBRID BRAIN: Force PLAN intent for Deep 10x tasks to hit Claude Pro
@@ -503,5 +547,5 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
   return { success: false, result: 'max_retries_exhausted', elapsed: 0 };
 }
 
-module.exports = { executeTask, buildPrompt, detectProjectDir };
+module.exports = { executeTask, buildPrompt, detectProjectDir, classifyPriority };
 

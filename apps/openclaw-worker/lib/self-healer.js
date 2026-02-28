@@ -31,7 +31,9 @@ function log(msg) {
 
 let monitorInterval = null;
 let consecutiveFailures = 0;
+let consecutiveRecoveryFailures = 0;
 const MAX_CONSECUTIVE_FAILURES = 5;
+const MAX_RECOVERY_FAILURES = 3;
 
 // ═══════════════════════════════════════════════════════════════
 // Health Checks
@@ -56,9 +58,13 @@ function isProxyAlive() {
     }
 }
 
-async function checkProxyHealth() {
+/**
+ * Check proxy health for a specific port.
+ * @param {number} port - Port to check (9191 for CC CLI, 20128 for engine)
+ */
+async function checkProxyHealth(port = 9191) {
     return new Promise((resolve) => {
-        const req = http.get('http://localhost:9191/health', (res) => {
+        const req = http.get(`http://localhost:${port}/health`, (res) => {
             resolve(res.statusCode === 200);
         });
         req.on('error', () => resolve(false));
@@ -66,14 +72,42 @@ async function checkProxyHealth() {
     });
 }
 
+/**
+ * Attempt proxy recovery — try recovery script, then validate.
+ * 🧬 FIX: Actually attempt recovery instead of just checking health.
+ */
 async function restartProxy() {
-    const healthy = await checkProxyHealth();
-    if (!healthy) {
-        log('[SELF-HEALER] Proxy UNHEALTHY — manual intervention required');
-        return false;
+    // Try recovery script first
+    const recoveryScript = path.join(config.MEKONG_DIR, 'scripts', 'proxy-recovery.sh');
+    if (fs.existsSync(recoveryScript)) {
+        try {
+            execSync(`bash "${recoveryScript}" 2>/dev/null`, { timeout: 10000, stdio: 'pipe' });
+            log('[SELF-HEALER] Proxy recovery script executed');
+        } catch (e) {
+            log(`[SELF-HEALER] Recovery script failed: ${e.message}`);
+        }
     }
-    log('[SELF-HEALER] Proxy health check OK');
-    return true;
+
+    // Verify both proxy ports
+    const port9191 = await checkProxyHealth(9191);
+    const port20128 = await checkProxyHealth(20128);
+
+    if (!port9191) log('[SELF-HEALER] ⚠️ Proxy 9191 (CC CLI) UNHEALTHY');
+    if (!port20128) log('[SELF-HEALER] ⚠️ Proxy 20128 (Engine) UNHEALTHY');
+
+    const anyHealthy = port9191 || port20128;
+    if (anyHealthy) {
+        consecutiveRecoveryFailures = 0;
+        log(`[SELF-HEALER] Proxy status: 9191=${port9191 ? '✅' : '❌'} 20128=${port20128 ? '✅' : '❌'}`);
+    } else {
+        consecutiveRecoveryFailures++;
+        log(`[SELF-HEALER] ALL proxies DOWN — recovery fail ${consecutiveRecoveryFailures}/${MAX_RECOVERY_FAILURES}`);
+        if (consecutiveRecoveryFailures >= MAX_RECOVERY_FAILURES) {
+            sendTelegram('🚨 ALL PROXIES DOWN after 3 recovery attempts — manual intervention required');
+        }
+    }
+
+    return anyHealthy;
 }
 
 function isProcessStuck() {
@@ -128,7 +162,7 @@ async function attemptRecovery() {
 // Pre-flight Check (called before each mission)
 // ═══════════════════════════════════════════════════════════════
 
-function preFlightCheck() {
+async function preFlightCheck() {
     const issues = [];
 
     // Check tmux
@@ -136,10 +170,14 @@ function preFlightCheck() {
         issues.push('Tmux session not found');
     }
 
-    // Check proxy
+    // Check proxy (both ports)
     if (!isProxyAlive()) {
         issues.push('Proxy 20128 is down');
-        restartProxy();
+        await restartProxy();
+    }
+    const proxy9191 = await checkProxyHealth(9191);
+    if (!proxy9191) {
+        issues.push('Proxy 9191 (CC CLI) is down');
     }
 
     // Check for stale locks
@@ -184,18 +222,40 @@ function reportFailure(missionName, error) {
 // Monitor Loop
 // ═══════════════════════════════════════════════════════════════
 
-function healthCheck() {
+async function healthCheck() {
     // Check 1: Stuck process
     if (isProcessStuck()) {
         log('🩺 Detected stuck process — clearing locks');
         clearStaleLocks();
     }
 
-    // Check 2: Proxy health
+    // Check 2: Proxy health (both ports)
     if (!isProxyAlive()) {
-        log('🩺 Proxy 20128 DOWN — manual check required');
-        // const ok = restartProxy();
+        log('🩺 Proxy 20128 DOWN — attempting recovery');
+        await restartProxy();
     }
+    const proxy9191ok = await checkProxyHealth(9191);
+    if (!proxy9191ok) {
+        log('🩺 Proxy 9191 DOWN — attempting recovery');
+        await restartProxy();
+    }
+
+    // Check 3: Auto-respawn crashed CC CLI workers
+    try {
+        const bsm = require('./brain-spawn-manager');
+        for (let idx = 0; idx < 2; idx++) {
+            if (bsm.isWorkerBusy(idx)) continue; // Worker is busy, skip
+            const paneTarget = `tom_hum:brain.${idx}`;
+            if (bsm.isShellPrompt && isTmuxAlive()) {
+                const output = execSync(`tmux capture-pane -t ${paneTarget} -p 2>/dev/null`, { encoding: 'utf-8', timeout: 3000 }).trim();
+                if (bsm.isShellPrompt(output) && bsm.canRespawn()) {
+                    log(`🩺 Worker P${idx} at shell prompt (crashed CLI) — auto-respawn triggered`);
+                    const cmd = bsm.generateClaudeCommand(idx === 0 ? 'PRO' : 'API');
+                    execSync(`tmux send-keys -t ${paneTarget} "${cmd}" Enter 2>/dev/null`, { timeout: 5000 });
+                }
+            }
+        }
+    } catch (e) { /* non-critical: brain-spawn-manager may not be available */ }
 }
 
 function startMonitor() {

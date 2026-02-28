@@ -1,10 +1,17 @@
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const config = require('../config');
 
-// Hunter Scanner Module
-// Scans for: TODO, FIXME, console.log, @ts-ignore, secrets
-// Generates: Mission content object
+// Hunter Scanner Module v2
+// Scans for: TODO, FIXME, console.log, @ts-ignore, secrets, outdated deps, build health
+// Generates: Priority-scored mission content object
+
+function log(msg) {
+    const ts = new Date().toISOString().slice(11, 19);
+    const line = `[${ts}] [hunter] ${msg}\n`;
+    try { fs.appendFileSync(config.LOG_FILE, line); } catch (_) { }
+}
 
 // 🧬 FIX: Removed /g flag — .test() with /g mutates lastIndex causing false negatives on alternating calls
 const PATTERNS = [
@@ -111,17 +118,15 @@ async function generateHunterMission(project, projectDir) {
     const verification = await verifyIssueWithGemini(content, selectedPattern, topIssue.file);
 
     if (!verification.isReal) {
-      console.log(`[HUNTER] 🙈 False positive detected in ${topIssue.file} (Gemini Check)`);
+      log(`🙈 False positive detected in ${topIssue.file} (Gemini Check)`);
       return null;
     }
-    console.log(`[HUNTER] 🎯 Target Verified: ${topIssue.file} (${verification.severity})`);
+    log(`🎯 Target Verified: ${topIssue.file} (${verification.severity})`);
   } catch (e) {
-    // If read fails, skip
-    console.log(`[HUNTER] Read error: ${e.message}`);
+    log(`Read error: ${e.message}`);
   }
 
   const targetFile = topIssue.file;
-  const targetPane = topIssue.pane;
   const complexity = topIssue.type;
 
   const missionContent = `COMPLEXITY: ${complexity}
@@ -141,4 +146,66 @@ Task:
   return { content: missionContent, pattern: selectedPattern };
 }
 
-module.exports = { scanProject, generateHunterMission };
+/**
+ * Check build health for a project directory.
+ * @param {string} dir - Project directory
+ * @returns {{ healthy: boolean, error: string|null }}
+ */
+function checkBuildHealth(dir) {
+    const pkgPath = path.join(dir, 'package.json');
+    if (!fs.existsSync(pkgPath)) return { healthy: true, error: null };
+
+    try {
+        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+        if (!pkg.scripts || !pkg.scripts.build) return { healthy: true, error: null };
+
+        execSync('npm run build --silent 2>&1', { cwd: dir, timeout: 60000, stdio: 'pipe' });
+        return { healthy: true, error: null };
+    } catch (e) {
+        const errMsg = (e.stderr || e.stdout || e.message || '').toString().slice(0, 200);
+        return { healthy: false, error: errMsg };
+    }
+}
+
+/**
+ * Calculate priority score for a set of issues.
+ * Higher score = more urgent.
+ * @param {{ pattern: string }[]} issues
+ * @returns {number} - Score 0-100
+ */
+function calculatePriorityScore(issues) {
+    const weights = {
+        SECURITY_RISK: 30,
+        TYPE_SAFETY: 20,
+        TECH_DEBT: 15,
+        CONSOLE_LOG: 10,
+    };
+
+    let score = 0;
+    const counts = issues.reduce((acc, i) => { acc[i.pattern] = (acc[i.pattern] || 0) + 1; return acc; }, {});
+
+    for (const [pattern, count] of Object.entries(counts)) {
+        const weight = weights[pattern] || 5;
+        score += Math.min(count * weight, 40); // Cap contribution per type
+    }
+
+    return Math.min(score, 100);
+}
+
+/**
+ * Full project health analysis — combines scan + build + priority.
+ * @param {string} project - Project name
+ * @param {string} projectDir - Project directory
+ * @returns {{ issues: Array, buildHealth: object, priorityScore: number }}
+ */
+function analyzeProjectHealth(project, projectDir) {
+    const issues = scanProject(projectDir);
+    const buildHealth = checkBuildHealth(projectDir);
+    const priorityScore = calculatePriorityScore(issues);
+
+    log(`${project}: ${issues.length} issues, build:${buildHealth.healthy ? '✅' : '❌'}, priority:${priorityScore}/100`);
+
+    return { issues, buildHealth, priorityScore };
+}
+
+module.exports = { scanProject, generateHunterMission, checkBuildHealth, calculatePriorityScore, analyzeProjectHealth };
