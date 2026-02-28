@@ -7,7 +7,7 @@ import { MultiExchangeConnector } from './MultiExchangeConnector';
 import { RealTimePriceAggregator } from './RealTimePriceAggregator';
 import { LatencyOptimizer } from './LatencyOptimizer';
 import { ArbitrageOrchestrator } from './ArbitrageOrchestrator';
-import { ExchangeClient } from '../execution/ExchangeClient';
+import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { IOrder, IBalance } from '../interfaces/IExchange';
 
 // ---- Mock Exchange Client ----

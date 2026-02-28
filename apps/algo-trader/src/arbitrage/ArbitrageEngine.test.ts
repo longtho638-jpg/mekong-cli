@@ -4,7 +4,7 @@
 
 import { ArbitrageScanner, ArbitrageOpportunity } from './ArbitrageScanner';
 import { ArbitrageExecutor } from './ArbitrageExecutor';
-import { ExchangeClient } from '../execution/ExchangeClient';
+import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { IOrder, IBalance } from '../interfaces/IExchange';
 
 // ---- Mock Exchange Client ----

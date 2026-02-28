@@ -3,7 +3,7 @@ import { BotEngine } from './core/BotEngine';
 import { RsiSmaStrategy } from './strategies/RsiSmaStrategy';
 import { StrategyLoader } from './core/StrategyLoader';
 import { MockDataProvider } from './data/MockDataProvider';
-import { ExchangeClient } from './execution/ExchangeClient';
+import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
 import { registerArbCommands } from './cli/arb-cli-commands';
