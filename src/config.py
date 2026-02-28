@@ -1,15 +1,19 @@
 """Configuration loader for Mekong CLI environment variables."""
 
+import logging
 import os
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+
 TELEGRAM_API_TOKEN: str = os.getenv("TELEGRAM_API_TOKEN", "")
 
 if not TELEGRAM_API_TOKEN:
-    raise ValueError(
+    logger.warning(
         "TELEGRAM_API_TOKEN is not set. "
-        "Please add it to your .env file. See .env.example for reference."
+        "Telegram bot features will be unavailable. "
+        "Add it to your .env file. See .env.example for reference."
     )

@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - "main"
-      - "add-jules-*" # Jules automated integration test branches
+      - "master"
   pull_request:
     types: [opened, synchronize]
 

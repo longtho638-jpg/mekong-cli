@@ -144,3 +144,11 @@ RULES_*.md
 **/*.cert
 **/deployment-keys/
 .metadata_never_index
+
+# Debug scripts & temporary output
+debug_*.py
+build_log*.txt
+test_output.txt
+team_test_output.txt
+coverage_full.txt
+coverage_report.txt

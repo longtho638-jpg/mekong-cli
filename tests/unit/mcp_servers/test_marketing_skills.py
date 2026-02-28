@@ -1,8 +1,10 @@
 import asyncio
-from antigravity.mcp_servers.marketing_server.handlers import MarketingHandler
 from unittest.mock import MagicMock, patch
 
 import pytest
+
+pytest.importorskip("pytest_asyncio", reason="pytest-asyncio required")
+from antigravity.mcp_servers.marketing_server.handlers import MarketingHandler
 
 
 @pytest.mark.asyncio
