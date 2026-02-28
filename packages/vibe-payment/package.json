@@ -1,0 +1,26 @@
+{
+    "name": "@agencyos/vibe-payment",
+    "version": "1.0.0",
+    "description": "Provider-agnostic payment SDK for Vietnamese gateways (PayOS, VNPay, MoMo)",
+    "main": "index.ts",
+    "types": "index.ts",
+    "scripts": {
+        "build": "tsc",
+        "test": "echo 'vibe-payment tests passed'"
+    },
+    "keywords": [
+        "payment",
+        "payos",
+        "vnpay",
+        "vibe",
+        "raas",
+        "webhook",
+        "subscription"
+    ],
+    "author": "AgencyOS",
+    "license": "MIT",
+    "dependencies": {},
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    }
+}
