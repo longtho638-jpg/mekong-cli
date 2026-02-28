@@ -57,3 +57,6 @@ export class VibeFlow {
     return { success: true, output: currentData, trace };
   }
 }
+
+export const vibeFlow = new VibeFlow();
+export default { vibeFlow };

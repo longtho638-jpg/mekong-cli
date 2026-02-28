@@ -27,3 +27,5 @@ export function runGoLiveChecklist(): GoLiveStatus[] {
         details: 'Verified',
     }));
 }
+
+export default { shortcuts: {}, GO_LIVE_CHECKLIST, runGoLiveChecklist };

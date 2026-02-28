@@ -8,7 +8,13 @@
 // ============================================
 // 🪐 PLANETS (8 Unified)
 // ============================================
-export * from './planets';
+// Export planets (except Planet type which is also in core - avoid duplicate)
+export {
+    colors, gradients, vibeClasses, PLANETS,
+    formatVND, calculateGrowthMetrics, AGENT_REGISTRY, TIER_CONFIG,
+    validateWinWinWin, DEPLOY_COMMANDS, EVOLUTION_TARGETS, ReferralEngine,
+    ARR_TARGET_2026, EXCHANGE_RATES, toUSD
+} from './planets';
 
 // ============================================
 // ☀️ CORE (Treasury + Workflow)
@@ -18,7 +24,7 @@ export * from './core';
 // ============================================
 // 🎨 FLOW (SimStudio)
 // ============================================
-export { VibeFlow, FlowCopilot, vibeFlow, flowCopilot, PLANET_NODES } from './flow';
+export { VibeFlow, FlowCopilot, vibeFlow, PLANET_NODES } from './flow';
 
 // ============================================
 // 📋 PROJECT (OpenProject)
@@ -34,8 +40,7 @@ export {
     GO_LIVE_CHECKLIST,
     runBlackScreenDiagnostics,
     runGoLiveChecklist,
-    validateEnv,
-    isProductionReady
+    validateEnv
 } from './hardened';
 
 // ============================================
