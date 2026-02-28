@@ -11,6 +11,14 @@ interface Trade {
   exitTime: number;
   profit: number;
   profitPercent: number;
+  positionSize: number; // Units traded
+  fees: number; // Total fees (entry + exit)
+}
+
+export interface BacktestConfig {
+  feeRate?: number; // Fee per trade side (default: 0.001 = 0.1%)
+  riskPercentage?: number; // % of balance per trade (default: 2)
+  slippageBps?: number; // Simulated slippage in basis points (default: 5 = 0.05%)
 }
 
 export class BacktestRunner {
@@ -19,13 +27,22 @@ export class BacktestRunner {
   private initialBalance: number;
   private balance: number;
   private trades: Trade[] = [];
-  private openPosition: { price: number; time: number } | null = null;
+  private openPosition: { price: number; time: number; size: number } | null = null;
+  private feeRate: number;
+  private riskPercentage: number;
+  private slippageBps: number;
+  private peakBalance: number;
+  private maxDrawdown = 0;
 
-  constructor(strategy: IStrategy, dataProvider: IDataProvider, initialBalance: number = 10000) {
+  constructor(strategy: IStrategy, dataProvider: IDataProvider, initialBalance: number = 10000, config?: BacktestConfig) {
     this.strategy = strategy;
     this.dataProvider = dataProvider;
     this.initialBalance = initialBalance;
     this.balance = initialBalance;
+    this.peakBalance = initialBalance;
+    this.feeRate = config?.feeRate ?? 0.001;
+    this.riskPercentage = config?.riskPercentage ?? 2;
+    this.slippageBps = config?.slippageBps ?? 5;
   }
 
   async run(days: number = 30): Promise<void> {
@@ -67,10 +84,24 @@ export class BacktestRunner {
     }
   }
 
+  private applySlippage(price: number, side: 'buy' | 'sell'): number {
+    const slippageMul = this.slippageBps / 10000;
+    return side === 'buy' ? price * (1 + slippageMul) : price * (1 - slippageMul);
+  }
+
   private executeBuy(candle: ICandle) {
+    const fillPrice = this.applySlippage(candle.close, 'buy');
+    const riskAmount = this.balance * (this.riskPercentage / 100);
+    const positionSize = riskAmount / fillPrice;
+    const fee = positionSize * fillPrice * this.feeRate;
+
+    if (riskAmount <= 0 || positionSize <= 0) return;
+
+    this.balance -= fee; // Deduct entry fee
     this.openPosition = {
-      price: candle.close,
-      time: candle.timestamp
+      price: fillPrice,
+      time: candle.timestamp,
+      size: positionSize
     };
   }
 
@@ -78,20 +109,33 @@ export class BacktestRunner {
     if (!this.openPosition) return;
 
     const entryPrice = this.openPosition.price;
-    const exitPrice = candle.close;
-    const profit = exitPrice - entryPrice; // Simplified: 1 unit per trade for backtest
-    const profitPercent = (profit / entryPrice) * 100;
+    const exitPrice = this.applySlippage(candle.close, 'sell');
+    const size = this.openPosition.size;
+    const exitFee = size * exitPrice * this.feeRate;
+    const entryFee = size * entryPrice * this.feeRate;
+    const totalFees = entryFee + exitFee;
+    const grossProfit = (exitPrice - entryPrice) * size;
+    const netProfit = grossProfit - exitFee; // Entry fee already deducted
+    const profitPercent = (netProfit / (entryPrice * size)) * 100;
 
     this.trades.push({
       entryPrice,
       exitPrice,
       entryTime: this.openPosition.time,
       exitTime: candle.timestamp,
-      profit,
-      profitPercent
+      profit: netProfit,
+      profitPercent,
+      positionSize: size,
+      fees: totalFees
     });
 
-    this.balance += profit;
+    this.balance += netProfit;
+
+    // Track max drawdown
+    if (this.balance > this.peakBalance) this.peakBalance = this.balance;
+    const dd = ((this.peakBalance - this.balance) / this.peakBalance) * 100;
+    if (dd > this.maxDrawdown) this.maxDrawdown = dd;
+
     this.openPosition = null;
   }
 
@@ -100,15 +144,23 @@ export class BacktestRunner {
     const losses = this.trades.length - wins;
     const winRate = this.trades.length > 0 ? (wins / this.trades.length) * 100 : 0;
     const totalReturn = ((this.balance - this.initialBalance) / this.initialBalance) * 100;
+    const totalFees = this.trades.reduce((sum, t) => sum + t.fees, 0);
+    const avgProfit = this.trades.length > 0
+      ? this.trades.reduce((sum, t) => sum + t.profit, 0) / this.trades.length
+      : 0;
 
     logger.info('\n--- Backtest Results ---');
-    logger.info(`Initial Balance: ${this.initialBalance}`);
-    logger.info(`Final Balance:   ${this.balance.toFixed(2)}`);
-    logger.info(`Return:          ${totalReturn.toFixed(2)}%`);
+    logger.info(`Strategy:        ${this.strategy.name}`);
+    logger.info(`Initial Balance: $${this.initialBalance.toFixed(2)}`);
+    logger.info(`Final Balance:   $${this.balance.toFixed(2)}`);
+    logger.info(`Net Return:      ${totalReturn.toFixed(2)}%`);
+    logger.info(`Max Drawdown:    ${this.maxDrawdown.toFixed(2)}%`);
+    logger.info(`Total Fees Paid: $${totalFees.toFixed(2)}`);
     logger.info(`Total Trades:    ${this.trades.length}`);
-    logger.info(`Wins:            ${wins}`);
-    logger.info(`Losses:          ${losses}`);
+    logger.info(`Wins / Losses:   ${wins} / ${losses}`);
     logger.info(`Win Rate:        ${winRate.toFixed(2)}%`);
+    logger.info(`Avg P&L/Trade:   $${avgProfit.toFixed(2)}`);
+    logger.info(`Fee Rate:        ${(this.feeRate * 100).toFixed(2)}% | Slippage: ${this.slippageBps}bps | Risk: ${this.riskPercentage}%`);
     logger.info('------------------------\n');
   }
 }

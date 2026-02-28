@@ -55,8 +55,20 @@ program
 
       // Exchange Client
       // NOTE: In a real scenario, you'd load API keys from .env
-      const apiKey = process.env.EXCHANGE_API_KEY || process.env.API_KEY;
-      const apiSecret = process.env.EXCHANGE_SECRET || process.env.API_SECRET;
+      const apiKey = process.env.EXCHANGE_API_KEY || '';
+      const apiSecret = process.env.EXCHANGE_SECRET || '';
+
+      const hasValidKeys = apiKey && apiSecret
+        && apiKey !== 'YOUR_API_KEY' && apiKey !== 'your_api_key_here'
+        && apiSecret !== 'YOUR_API_SECRET' && apiSecret !== 'your_secret_here'
+        && apiKey.length >= 10 && apiSecret.length >= 10;
+
+      if (!hasValidKeys) {
+        logger.error('LỖI: Live trading yêu cầu API Key/Secret hợp lệ trong .env file.');
+        logger.error('Xem .env.example để cấu hình. KHÔNG ĐƯỢC trade live với key mặc định.');
+        process.exit(1);
+      }
+
       const exchange = new ExchangeClient(options.exchange, apiKey, apiSecret);
 
       const strategy = new RsiSmaStrategy();

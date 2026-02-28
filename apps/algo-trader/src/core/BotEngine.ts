@@ -11,6 +11,8 @@ export interface BotConfig {
   riskPercentage: number;
   pollInterval: number; // ms
   maxDrawdownPercent?: number; // Optional: stop bot when drawdown exceeds this % (e.g. 10 = 10%)
+  minPositionValueUsd?: number; // Minimum USD value to consider position open (default: 10)
+  feeRate?: number; // Trading fee rate per side (default: 0.001 = 0.1%)
 }
 
 export class BotEngine {
@@ -25,6 +27,7 @@ export class BotEngine {
   private quoteCurrency: string;
   private isProcessingSignal = false; // Prevent race conditions during async trade execution
   private peakBalance = 0; // Drawdown protection: track highest balance seen
+  private entryPrice = 0; // Track entry price for P&L calculation
 
   constructor(
     strategy: IStrategy,
@@ -48,6 +51,9 @@ export class BotEngine {
     await this.exchange.connect();
     await this.dataProvider.init();
 
+    // Sync position state before starting
+    await this.syncPositionState();
+
     // Seed initial peak balance for drawdown tracking
     if (this.config.maxDrawdownPercent !== undefined) {
       const balances = await this.exchange.fetchBalance();
@@ -70,6 +76,29 @@ export class BotEngine {
       logger.error(`Error stopping data provider: ${error instanceof Error ? error.message : String(error)}`);
     }
     this.isRunning = false;
+  }
+
+  /**
+   * Syncs the local openPosition state with the actual exchange balance.
+   */
+  private async syncPositionState() {
+    try {
+      const balances = await this.exchange.fetchBalance();
+      const ticker = await this.exchange.fetchTicker(this.config.symbol);
+      const baseBalance = balances[this.baseCurrency]?.total || 0;
+
+      const minValue = this.config.minPositionValueUsd ?? 10;
+      const valueInQuote = baseBalance * ticker;
+      this.openPosition = valueInQuote > minValue;
+
+      if (this.openPosition) {
+        this.entryPrice = ticker; // Approximate entry as current price on startup
+      }
+
+      logger.info(`[SYNC] Position: ${this.openPosition ? 'OPEN' : 'CLOSED'} (${baseBalance} ${this.baseCurrency} = $${valueInQuote.toFixed(2)}, threshold: $${minValue})`);
+    } catch (error) {
+      logger.error(`Failed to sync position state: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }
 
   /**
@@ -113,7 +142,7 @@ export class BotEngine {
       const signal = await this.strategy.onCandle(candle);
 
       if (signal) {
-        logger.info(`[SIGNAL] ${signal.type} @ ${signal.price} (${JSON.stringify(signal.metadata)})`);
+        logger.info(`[SIGNAL] ${signal.type} @ ${signal.price} (${JSON.stringify(signal.metadata || {})})`);
 
         if (signal.type === SignalType.BUY && !this.openPosition) {
           await this.executeTrade('buy', signal.price);
@@ -121,7 +150,7 @@ export class BotEngine {
           await this.executeTrade('sell', signal.price);
         }
       }
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error(`Error in onCandle processing: ${error instanceof Error ? error.message : String(error)}`);
     } finally {
       this.isProcessingSignal = false;
@@ -144,14 +173,36 @@ export class BotEngine {
       ? RiskManager.calculatePositionSize(balance, this.config.riskPercentage, currentPrice)
       : balance;
 
-    logger.info(`Executing ${side.toUpperCase()} for ${amount} ${this.config.symbol}...`);
+    if (amount <= 0 || !isFinite(amount)) {
+      logger.warn(`Invalid position size: ${amount}. Skipping ${side}.`);
+      return;
+    }
+
+    const feeRate = this.config.feeRate ?? 0.001;
+    const estimatedFee = amount * currentPrice * feeRate;
+    logger.info(`Executing ${side.toUpperCase()} ${amount} ${this.config.symbol} @ ~$${currentPrice} (est. fee: $${estimatedFee.toFixed(4)})`);
 
     try {
       const order = await this.exchange.createMarketOrder(this.config.symbol, side, amount);
-      this.orderManager.addOrder(order);
-      this.openPosition = isBuy;
+
+      // Only update position state AFTER order confirmed filled
+      if (order.status === 'closed' || order.amount > 0) {
+        this.orderManager.addOrder(order);
+        this.openPosition = isBuy;
+        if (isBuy) {
+          this.entryPrice = order.price || currentPrice;
+        } else {
+          const pnl = (order.price - this.entryPrice) * order.amount;
+          logger.info(`[P&L] Trade closed: ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)} (entry: $${this.entryPrice}, exit: $${order.price})`);
+          this.entryPrice = 0;
+        }
+      } else {
+        logger.warn(`Order ${order.id} status: ${order.status} — position state NOT updated. Manual check required.`);
+      }
     } catch (error) {
-      logger.error(`${side} order failed: ${error instanceof Error ? error.message : String(error)}`);
+      logger.error(`${side} order FAILED: ${error instanceof Error ? error.message : String(error)}`);
+      // Re-sync position state after failed order to prevent desync
+      await this.syncPositionState();
     }
   }
 }
