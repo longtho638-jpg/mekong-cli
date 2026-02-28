@@ -34,6 +34,7 @@
     "format": "turbo run format"
   },
   "devDependencies": {
+    "@types/node": "25.3.2",
     "concurrently": "^8.2.2",
     "turbo": "^2.1.3"
   },
