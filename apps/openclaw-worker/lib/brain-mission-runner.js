@@ -28,7 +28,7 @@ const {
   setCurrentWorkerIdx, parseContextUsage,
   isBrainAlive, isShellPrompt,
 } = require('./brain-spawn-manager');
-const { compactIfNeeded } = require('./brain-respawn-controller');
+const { respawnBrain, compactIfNeeded } = require('./brain-respawn-controller');
 const { preDispatchGuard, autoApproveQuestion } = require('./brain-dispatch-helpers');
 
 const MIN_MISSION_SECONDS = 60;
@@ -112,8 +112,8 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
     if (guardResult) return guardResult;
 
     // Paste prompt via tmux load-buffer (avoids CC CLI "queued messages" bug v2.1.59)
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} C-c`, TMUX_SESSION);
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} C-c`, TMUX_SESSION);
     await new Promise(r => setTimeout(r, 200));
 
     // 🦞 FIX 2026-02-27: Aggressive newline purge. The LLM or Planner may inject
@@ -124,7 +124,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
     try {
       fs.writeFileSync(tempFile, safePrompt);
       tmuxExec(`tmux load-buffer -b mission_${workerIdx} ${tempFile}`);
-      tmuxExec(`tmux paste-buffer -b mission_${workerIdx} -p -d -t ${TMUX_SESSION}.${workerIdx}`, TMUX_SESSION);
+      tmuxExec(`tmux paste-buffer -b mission_${workerIdx} -p -d -t ${TMUX_SESSION}`, TMUX_SESSION);
     } finally {
       try { fs.unlinkSync(tempFile); } catch (e) { }
     }
@@ -272,9 +272,9 @@ async function _handleIdleState(
     if (count >= IDLE_CONFIRM_POLLS * 6) {
       log(`ERROR: Mission #${num} failed to start after ${elapsedSec}s. Aborting.`);
       const { tmuxExec: tx } = require('./brain-tmux-controller');
-      tx(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+      tx(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
       await new Promise(r => setTimeout(r, 1000));
-      tx(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+      tx(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
       try { require('./learning-engine').recordOutcome(prompt.slice(0, 40), path.basename(projectDir || ''), 'failed_to_start', elapsedSec); } catch (e) { }
       return { success: false, result: 'failed_to_start', elapsed: elapsedSec };
     }
