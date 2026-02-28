@@ -124,6 +124,39 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 | Statistical Arbitrage | Arbitrage | Mean-reversion on correlated pairs |
 | Cross-Exchange Arbitrage | Arbitrage | Same asset price gaps across exchanges |
 
+## CLI Commands
+
+| Command | Description |
+|:--------|:------------|
+| `backtest` | Backtest with selected strategy |
+| `backtest:advanced` | Advanced backtest with equity curve, Sortino, Calmar |
+| `backtest:walk-forward` | Walk-forward analysis to detect overfitting |
+| `live` | Live trading bot (single exchange) |
+| `compare` | Compare all non-arb strategies |
+| `arb:scan` | Dry-run cross-exchange spread scan |
+| `arb:run` | Live cross-exchange arbitrage (scanner + executor) |
+| `arb:engine` | Full SpreadDetectorEngine (scoring + orderbook + circuit breaker) |
+| `arb:orchestrator` | ArbitrageOrchestrator with latency optimizer + adaptive threshold |
+| `arb:auto` | **Unified auto-execution**: detect → score → validate → execute (recommended) |
+
+### arb:auto (Recommended for Production)
+
+```bash
+# Default: BTC/USDT + ETH/USDT on Binance/OKX/Bybit
+npx ts-node src/index.ts arb:auto
+
+# Custom config
+npx ts-node src/index.ts arb:auto \
+  -p BTC/USDT,ETH/USDT \
+  -e binance,okx,bybit \
+  -s 1000 \
+  --score-threshold 65 \
+  --max-loss 100
+
+# Disable optional features
+npx ts-node src/index.ts arb:auto --no-orderbook --no-scoring
+```
+
 ## Risk Management
 
 - Position sizing (configurable max)
@@ -137,7 +170,7 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 - **CCXT** — 100+ exchange support
 - **technicalindicators** — RSI, SMA, EMA
 - **winston** — structured logging
-- **jest** — 52 tests across indicators + arbitrage (95% coverage)
+- **jest** — 296 tests across indicators + arbitrage (95% coverage)
 
 ## Security
 
