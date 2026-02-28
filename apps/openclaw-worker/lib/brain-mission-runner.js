@@ -72,6 +72,22 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
     return { success: false, result: 'all_workers_busy', elapsed: 0 };
   }
 
+  // ══════════════════════════════════════════════════════════════
+  // 🔒 HARD GUARD: Chairman Decree — 1P 1 DỰ ÁN, CẤM NHẦM!
+  // Validates project-pane match AFTER findIdleWorker.
+  // Even if findIdleWorker is bypassed or broken, THIS guard
+  // will REJECT any mission that tries to run wrong project on wrong pane.
+  // ══════════════════════════════════════════════════════════════
+  const _projName = projectDir ? require('path').basename(projectDir) : '';
+  const PANE_PROJECT_MAP = { 0: ['mekong-cli'], 1: ['algo-trader'], 2: ['well', '84tea'] };
+  const allowedProjects = PANE_PROJECT_MAP[workerIdx] || [];
+  const isMekongRoot = projectDir === config.MEKONG_DIR;
+  if (!isMekongRoot && _projName && !allowedProjects.includes(_projName)) {
+    log(`🔒 HARD GUARD BLOCK: P${workerIdx} REJECTED project="${_projName}" — only [${allowedProjects.join(',')}] allowed!`);
+    return { success: false, result: `hard_guard_rejected_${_projName}_on_P${workerIdx}`, elapsed: 0 };
+  }
+  // ══════════════════════════════════════════════════════════════
+
   trackMissionHash(promptHash);
   missionCount++;
   const num = missionCount;

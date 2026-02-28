@@ -63,27 +63,30 @@ async function spawnBrain() {
 
   const cmdPro = generateClaudeCommand('PRO');
   const cmdApi = generateClaudeCommand('API');
-  const bootDir = config.MEKONG_DIR;
+  // 🔒 STRICT 1P1 ROUTING — Each pane MUST cd to its assigned project
+  const dirP0 = config.MEKONG_DIR;                                    // P0: mekong-cli
+  const dirP1 = path.join(config.MEKONG_DIR, 'apps', 'algo-trader');  // P1: algo-trader
+  const dirP2 = path.join(config.MEKONG_DIR, 'apps', 'well');         // P2: well
   const sessionName = TMUX_SESSION.split(':')[0];
 
-  log(`BRAIN: Creating NEW session [${sessionName}] in ${bootDir}...`);
-  tmuxExec(`tmux new-session -d -s ${sessionName} -n brain -x 200 -y 50 -c ${bootDir}`, TMUX_SESSION);
+  log(`BRAIN: Creating NEW session [${sessionName}] — STRICT 1P1: P0=${dirP0}, P1=${dirP1}, P2=${dirP2}`);
+  tmuxExec(`tmux new-session -d -s ${sessionName} -n brain -x 200 -y 50 -c ${dirP0}`, TMUX_SESSION);
   tmuxExec(`tmux rename-window -t ${sessionName}:0 brain`, TMUX_SESSION); // safety
   tmuxExec(`tmux set-option -t ${sessionName} remain-on-exit on`, TMUX_SESSION);
   tmuxExec(`tmux set-option -t ${sessionName} allow-rename off`, TMUX_SESSION);
-  tmuxExec(`tmux split-window -h -t ${TMUX_SESSION}.0 -c ${bootDir}`, TMUX_SESSION);
-  tmuxExec(`tmux split-window -v -t ${TMUX_SESSION}.1 -c ${bootDir}`, TMUX_SESSION);
+  tmuxExec(`tmux split-window -h -t ${TMUX_SESSION}.0 -c ${dirP1}`, TMUX_SESSION);
+  tmuxExec(`tmux split-window -v -t ${TMUX_SESSION}.1 -c ${dirP2}`, TMUX_SESSION);
 
   await new Promise(r => setTimeout(r, 1000));
 
-  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.0 '${cmdPro}' Enter`, TMUX_SESSION);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.0 -T "P0: Planner (PRO)"`, TMUX_SESSION);
+  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.0 'cd ${dirP0} && ${cmdPro}' Enter`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.0 -T "P0: mekong-cli ONLY"`, TMUX_SESSION);
 
-  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.1 '${cmdApi}' Enter`, TMUX_SESSION);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.1 -T "P1: Executor (API)"`, TMUX_SESSION);
+  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.1 'cd ${dirP1} && ${cmdApi}' Enter`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.1 -T "P1: algo-trader ONLY"`, TMUX_SESSION);
 
-  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.2 '${cmdApi}' Enter`, TMUX_SESSION);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.2 -T "P2: Executor (API)"`, TMUX_SESSION);
+  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.2 'cd ${dirP2} && ${cmdApi}' Enter`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.2 -T "P2: well ONLY"`, TMUX_SESSION);
 
   log(`BRAIN: Waiting for CC CLI bypass prompts...`);
   await new Promise(r => setTimeout(r, 10000));

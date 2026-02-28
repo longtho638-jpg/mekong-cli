@@ -19,16 +19,36 @@ if not os.path.exists('OpenClaw-RL/slime'):
 
 # Install deps
 print("\n📦 Cài đặt thư viện (2-3 phút)...")
-os.system('pip install -q torch transformers accelerate vllm sglang[all] pyngrok 2>/dev/null')
+os.system('pip install -q torch transformers accelerate vllm sglang[all] 2>/dev/null')
 os.system('cd OpenClaw-RL && pip install -q -r requirements.txt 2>/dev/null')
 
-# Ngrok tunnel
-print("\n🌐 Mở ngrok tunnel...")
-from pyngrok import ngrok
-ngrok.kill()
+# Cloudflare tunnel (sửa lỗi auth ngrok)
+print("\n🌐 Mở Cloudflare tunnel...")
 PORT = 30000
-tunnel = ngrok.connect(PORT, "http")
-PUBLIC_URL = tunnel.public_url
+import re
+if not os.path.exists('cloudflared-linux-amd64'):
+    os.system('wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64')
+    os.system('chmod +x cloudflared-linux-amd64')
+
+os.system('pkill -f cloudflared')
+os.system(f'nohup ./cloudflared-linux-amd64 tunnel --url http://127.0.0.1:{PORT} > cloudflared.log 2>&1 &')
+
+PUBLIC_URL = None
+for _ in range(30):
+    time.sleep(1)
+    if os.path.exists('cloudflared.log'):
+        with open('cloudflared.log', 'r') as f:
+            content = f.read()
+            match = re.search(r'https://[-a-zA-Z0-9]+\.trycloudflare\.com', content)
+            if match:
+                PUBLIC_URL = match.group(0)
+                break
+
+if not PUBLIC_URL:
+    print("❌ Error: Could not get Cloudflare URL, output:")
+    if os.path.exists('cloudflared.log'):
+        os.system('cat cloudflared.log')
+    PUBLIC_URL = "http://localhost:30000"
 
 # Config
 API_KEY = f"openclaw-rl-{int(time.time())}"
