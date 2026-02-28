@@ -1,0 +1,25 @@
+{
+  "name": "@agencyos/trading-core",
+  "version": "0.1.0",
+  "description": "Reusable algorithmic trading primitives — interfaces, risk management, signal processing, technical indicators",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./interfaces": "./interfaces/index.ts",
+    "./core": "./core/index.ts",
+    "./analysis": "./analysis/index.ts"
+  },
+  "files": [
+    "interfaces/",
+    "core/",
+    "analysis/",
+    "index.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "technicalindicators": "^3.1.0"
+  }
+}

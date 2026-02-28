@@ -5,4 +5,5 @@ packages:
   - 'packages/ui'
   - 'packages/ui/*'
   - 'packages/tooling/*'
+  - 'packages/trading-core'
   - 'apps/*'

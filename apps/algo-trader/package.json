@@ -10,6 +10,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
+  "dependencies": {
+    "@agencyos/trading-core": "workspace:*"
+  },
   "devDependencies": {
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
