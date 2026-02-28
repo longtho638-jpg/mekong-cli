@@ -21,6 +21,7 @@ const { log, isBrainAlive } = require('./brain-process-manager');
 const { isQueueEmpty } = require('./task-queue');
 const { isOverheating, isSafeToScan } = require('./m1-cooling-daemon');
 const { tryStrategicMission } = require('./strategic-brain');
+const { scanRevenueHealth, generateRevenueMission } = require('./revenue-health-scanner');
 
 let intervalRef = null;
 let _questionLoopCount = 0; // 🧠 QUESTION loop detector (module-level to avoid 'state' TDZ)
@@ -472,6 +473,16 @@ async function handleScan(state, project, projectDir) {
 
   if (errors.length === 0) {
     // 軍形 GREEN — project is clean!
+    // 作戰 Revenue Health: scan pipeline khi project GREEN
+    const revHealth = scanRevenueHealth();
+    if (revHealth && !revHealth.healthy && revHealth.issues.length > 0) {
+      const issue = revHealth.issues[0];
+      const { prompt, filename } = generateRevenueMission(issue);
+      fs.writeFileSync(path.join(config.WATCH_DIR, filename), prompt);
+      log(`AUTO-CTO [作戰 REVENUE]: Dispatched revenue fix — ${issue.module}: ${issue.message}`);
+      advanceProject(state);
+      return;
+    }
     // Level 6: Strategic Autonomy — proactive improvement when GREEN
     const dispatched = await tryStrategicMission(state, project, projectDir);
     if (!dispatched) {

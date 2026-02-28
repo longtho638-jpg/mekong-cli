@@ -1280,7 +1280,11 @@ class TestSchedulerTick(unittest.TestCase):
         """tick should return empty list when no jobs due."""
         import asyncio
         self.scheduler.add_job("later", "goal", interval_seconds=9999)
-        results = asyncio.get_event_loop().run_until_complete(self.scheduler.tick())
+        loop = asyncio.new_event_loop()
+        try:
+            results = loop.run_until_complete(self.scheduler.tick())
+        finally:
+            loop.close()
         self.assertEqual(len(results), 0)
 
     def test_tick_with_due_job(self):
@@ -1293,7 +1297,11 @@ class TestSchedulerTick(unittest.TestCase):
         self.scheduler.set_run_callback(
             lambda goal: {"status": "success", "goal": goal} or callback_called.append(goal)
         )
-        results = asyncio.get_event_loop().run_until_complete(self.scheduler.tick())
+        loop = asyncio.new_event_loop()
+        try:
+            results = loop.run_until_complete(self.scheduler.tick())
+        finally:
+            loop.close()
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["status"], "success")
 
@@ -1310,7 +1318,11 @@ class TestSchedulerTick(unittest.TestCase):
         job = self.scheduler.add_job("evt", "goal evt")
         job.next_run = time.time() - 10
         self.scheduler.set_run_callback(lambda g: {"status": "ok"})
-        asyncio.get_event_loop().run_until_complete(self.scheduler.tick())
+        loop = asyncio.new_event_loop()
+        try:
+            loop.run_until_complete(self.scheduler.tick())
+        finally:
+            loop.close()
 
         self.assertEqual(len(events), 2)
         self.assertEqual(events[0].type, EventType.JOB_STARTED)
@@ -1324,7 +1336,11 @@ class TestSchedulerTick(unittest.TestCase):
         job = self.scheduler.add_job("err", "goal err")
         job.next_run = time.time() - 10
         self.scheduler.set_run_callback(lambda g: (_ for _ in ()).throw(RuntimeError("boom")))
-        results = asyncio.get_event_loop().run_until_complete(self.scheduler.tick())
+        loop = asyncio.new_event_loop()
+        try:
+            results = loop.run_until_complete(self.scheduler.tick())
+        finally:
+            loop.close()
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["status"], "error")
 
@@ -1334,7 +1350,11 @@ class TestSchedulerTick(unittest.TestCase):
         import time
         job = self.scheduler.add_job("skip", "goal skip")
         job.next_run = time.time() - 10
-        results = asyncio.get_event_loop().run_until_complete(self.scheduler.tick())
+        loop = asyncio.new_event_loop()
+        try:
+            results = loop.run_until_complete(self.scheduler.tick())
+        finally:
+            loop.close()
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["status"], "skipped")
 
