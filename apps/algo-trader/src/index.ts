@@ -4,7 +4,7 @@ import { RsiSmaStrategy } from './strategies/RsiSmaStrategy';
 import { StrategyLoader } from './core/StrategyLoader';
 import { MockDataProvider } from './data/MockDataProvider';
 import { ExchangeClient } from './execution/ExchangeClient';
-import { BacktestRunner } from './backtest/BacktestRunner';
+import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { logger } from './utils/logger';
 import * as dotenv from 'dotenv';
 
@@ -96,6 +96,56 @@ program
         logger.error(`Live bot failed: ${String(error)}`);
       }
       process.exit(1);
+    }
+  });
+
+program
+  .command('compare')
+  .description('Compare all strategies via backtest')
+  .option('-d, --days <number>', 'Number of days to backtest', '30')
+  .option('-b, --balance <number>', 'Initial balance', '10000')
+  .action(async (options) => {
+    logger.info('Running multi-strategy comparison...');
+    try {
+      // Only compare non-arbitrage strategies (arb strategies need special metadata)
+      const nonArbNames = ['RsiSma', 'RsiCrossover', 'Bollinger', 'MacdCrossover', 'MacdBollingerRsi'];
+      const results: (BacktestResult & { strategyKey: string })[] = [];
+
+      for (const name of nonArbNames) {
+        try {
+          const strategy = StrategyLoader.load(name);
+          const dataProvider = new MockDataProvider();
+          const runner = new BacktestRunner(strategy, dataProvider, parseFloat(options.balance));
+          const result = await runner.run(parseInt(options.days), true);
+          results.push({ ...result, strategyKey: name });
+        } catch (err) {
+          logger.warn(`Skipping ${name}: ${err instanceof Error ? err.message : String(err)}`);
+        }
+      }
+
+      // Sort by Sharpe ratio descending
+      results.sort((a, b) => b.sharpeRatio - a.sharpeRatio);
+
+      logger.info('\n=== STRATEGY COMPARISON ===');
+      logger.info('Strategy          | Return %  | Sharpe | MaxDD % | WinRate % | Trades | Fees $');
+      logger.info('------------------|-----------|--------|---------|-----------|--------|-------');
+      for (const r of results) {
+        const name = r.strategyKey.padEnd(17);
+        const ret = r.totalReturn.toFixed(2).padStart(8);
+        const sharpe = r.sharpeRatio.toFixed(3).padStart(6);
+        const dd = r.maxDrawdown.toFixed(2).padStart(6);
+        const wr = r.winRate.toFixed(1).padStart(8);
+        const trades = String(r.totalTrades).padStart(6);
+        const fees = r.totalFees.toFixed(2).padStart(6);
+        logger.info(`${name} | ${ret}% | ${sharpe} | ${dd}% | ${wr}% | ${trades} | $${fees}`);
+      }
+      logger.info('==========================\n');
+
+      if (results.length > 0) {
+        logger.info(`Best strategy: ${results[0].strategyKey} (Sharpe: ${results[0].sharpeRatio.toFixed(3)}, Return: ${results[0].totalReturn.toFixed(2)}%)`);
+      }
+    } catch (error: unknown) {
+      logger.error(`Compare failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   });
 
