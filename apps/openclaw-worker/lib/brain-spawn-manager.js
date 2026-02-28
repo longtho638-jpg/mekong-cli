@@ -136,6 +136,19 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION')
     log(`DISPATCH: → Worker P${targetPane} (idle) — intent=${intent}`);
     return targetPane;
   }
+
+  // 🦞 OVERFLOW P2 (Algo-Trader CC CLI 4.6): If primary pane is busy and intent is cook/execute,
+  // allow fallback to P2 which is fully capable.
+  if (!isProIntent && !isWorkerBusy(2)) {
+    log(`DISPATCH: → Worker P2 (overflow) — intent=${intent} (P1 is busy)`);
+    return 2;
+  }
+  // Even if planning, fallback to API worker if Pro is blocked
+  if (isProIntent && !isWorkerBusy(1)) {
+    log(`DISPATCH: → Worker P1 (fallback) — intent=${intent} (P0 is busy)`);
+    return 1;
+  }
+
   return -1;
 }
 

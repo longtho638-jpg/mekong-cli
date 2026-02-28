@@ -109,7 +109,6 @@ function detectProjectDir(taskContent, taskFile = '') {
   const lowerFile = (taskFile || '').toLowerCase();
 
   const routes = {
-    'wellnexus': 'apps/wellnexus',
     'well': 'apps/well',
     'com-anh-duong': 'apps/com-anh-duong-10x',
     'doanh-trai': 'doanh-trai-tom-hum',
@@ -547,5 +546,5 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
   return { success: false, result: 'max_retries_exhausted', elapsed: 0 };
 }
 
-module.exports = { executeTask, buildPrompt, detectProjectDir, classifyPriority };
+module.exports = { executeTask, buildPrompt, detectProjectDir, classifyPriority, isComplexRawMission, shouldChainCooks, splitTaskIntoSubtasks, stripPollution };
 

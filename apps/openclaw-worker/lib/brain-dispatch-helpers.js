@@ -41,13 +41,13 @@ async function preDispatchGuard(workerIdx, TMUX_SESSION, startTime) {
     }
     if (/queued messages/i.test(recent) || /Press up to edit queued/i.test(recent)) {
       log(`🩺 SELF-HEAL: queued messages — Escape (attempt ${attempt + 1})`);
-      tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+      tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
       await new Promise(r => setTimeout(r, 3000)); continue;
     }
     if (!isBusy(snap) && /Interrupted/i.test(full)) {
       log(`🩺 SELF-HEAL: Interrupted — Escape x3 (attempt ${attempt + 1})`);
       for (let i = 0; i < 3; i++) {
-        tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+        tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
         await new Promise(r => setTimeout(r, 500));
       }
       await new Promise(r => setTimeout(r, 2000)); continue;
@@ -90,7 +90,7 @@ async function preDispatchGuard(workerIdx, TMUX_SESSION, startTime) {
       break;
     }
     if (state === 'question') {
-      tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} y Enter`, TMUX_SESSION);
+      tmuxExec(`tmux send-keys -t ${TMUX_SESSION} y Enter`, TMUX_SESSION);
       await new Promise(r => setTimeout(r, 2000)); continue;
     }
     break;
@@ -103,15 +103,15 @@ async function preDispatchGuard(workerIdx, TMUX_SESSION, startTime) {
     return { success: false, result: 'busy_blocked', elapsed: 0 };
   }
   if (/queued messages/i.test(snap2) || /Press up to edit queued/i.test(snap2)) {
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
     return { success: false, result: 'queued_abort', elapsed: 0 };
   }
   if (/Background tasks/i.test(snap2) || /Esc to close/i.test(snap2)) {
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} Escape`, TMUX_SESSION);
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} Escape`, TMUX_SESSION);
     await new Promise(r => setTimeout(r, 1000));
   }
   if (/0:\s*Dismiss/i.test(snap2) || /How is Claude doing/i.test(snap2)) {
-    tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.${workerIdx} 0`, TMUX_SESSION);
+    tmuxExec(`tmux send-keys -t ${TMUX_SESSION} 0`, TMUX_SESSION);
     await new Promise(r => setTimeout(r, 1000));
   }
   return null;
@@ -122,7 +122,7 @@ async function preDispatchGuard(workerIdx, TMUX_SESSION, startTime) {
  */
 async function autoApproveQuestion(output, workerIdx, TMUX_SESSION) {
   log(`QUESTION: auto-approving on P${workerIdx}`);
-  const t = `${TMUX_SESSION}.${workerIdx}`;
+  const t = TMUX_SESSION;
   if (/2\.\s+No\s+\(recommended\)/i.test(output)) {
     log(`QUESTION: API Key — selecting '1. Yes'`);
     for (let i = 0; i < 3; i++) {
