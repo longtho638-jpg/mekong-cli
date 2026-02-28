@@ -226,7 +226,7 @@ class SwarmDispatcher:
             from .verifier import ExecutionResult
             return ExecutionResult(exit_code=1, stdout="", stderr="No local agent available")
 
-        from ..core.agent_base import Task
+        from .agent_base import Task
         description = getattr(step, "description", "")
         params = getattr(step, "params", None) or {}
         # ShellAgent reads command from input["command"]

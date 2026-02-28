@@ -37,7 +37,6 @@ __all__ = [
     "VerificationCriteria",
     "TaskComplexity",
     "RecipeExecutor",
-    "StepType",
     "RecipeVerifier",
     "ExecutionResult",
     "VerificationReport",
