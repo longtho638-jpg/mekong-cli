@@ -1,6 +1,5 @@
 
 from antigravity.core.moat_engine.engine import MoatEngine, get_moat_engine
-from pathlib import Path
 
 import pytest
 

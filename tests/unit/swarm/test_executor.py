@@ -1,8 +1,8 @@
 import time
-from antigravity.core.swarm.enums import AgentRole, TaskPriority, TaskStatus
+from antigravity.core.swarm.enums import AgentRole, TaskStatus
 from antigravity.core.swarm.executor import TaskExecutor
 from antigravity.core.swarm.models import SwarmAgent, SwarmTask
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

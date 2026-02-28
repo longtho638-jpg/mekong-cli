@@ -1,6 +1,6 @@
 import os
 from antigravity.core.self_improve.engine import SelfImproveEngine
-from antigravity.core.self_improve.types import ImprovementType, LearningEntry, LearningSource
+from antigravity.core.self_improve.types import ImprovementType
 from unittest.mock import MagicMock, patch
 
 import pytest

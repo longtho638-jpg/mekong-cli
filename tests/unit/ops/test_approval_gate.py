@@ -1,6 +1,5 @@
 from antigravity.core.ops.approval_gate import ApprovalGate, ApprovalStatus
 
-import pytest
 
 
 def test_approval_flow():

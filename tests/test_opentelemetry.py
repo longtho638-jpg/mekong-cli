@@ -22,10 +22,6 @@ from antigravity.infrastructure.opentelemetry import (
     DEFAULT_SERVICE_NAME,
     AgentConfig,
     # Exporters
-    BaseExporter,
-    # Processors
-    BaseProcessor,
-    # Tracer
     DistributedTracer,
     Event,
     ExporterConfig,
@@ -36,8 +32,6 @@ from antigravity.infrastructure.opentelemetry import (
     MetricsProcessor,
     OTLPExporter,
     PerformanceAnalyzer,
-    SamplingConfig,
-    # Span
     Span,
     # Models
     SpanKind,
@@ -50,7 +44,7 @@ from antigravity.infrastructure.opentelemetry import (
     TracingAgent,
 )
 from collections import deque
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
 import pytest
 

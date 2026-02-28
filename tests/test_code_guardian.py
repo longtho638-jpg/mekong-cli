@@ -1,7 +1,7 @@
 
 import time
 from antigravity.core.code_guardian.guardian import CodeGuardian, get_guardian, guarded
-from antigravity.core.code_guardian.models import GuardianAction, ThreatLevel
+from antigravity.core.code_guardian.models import ThreatLevel
 
 import pytest
 

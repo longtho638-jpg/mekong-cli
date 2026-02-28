@@ -4,10 +4,8 @@ Unit Tests for Search API Endpoints
 """
 
 import os
-import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
-import pytest
 
 # 1. Set environment variable to disable rate limiting logic where possible
 os.environ["ENABLE_RATE_LIMITING"] = "false"
@@ -45,11 +43,11 @@ mock_limiter_instance.check_fixed_window.return_value = (True, 100)
 mock_limiter_instance.get_reset_time.return_value = 0
 
 # 4. Now import app and services
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: E402
 
-from backend.api.main import app
-from backend.services.search.indexer import SearchIndexer, get_search_indexer
-from backend.services.search.service import SearchService, get_search_service
+from backend.api.main import app  # noqa: E402
+from backend.services.search.indexer import get_search_indexer  # noqa: E402
+from backend.services.search.service import get_search_service  # noqa: E402
 
 client = TestClient(app)
 

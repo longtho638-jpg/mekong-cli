@@ -2,7 +2,6 @@ from antigravity.core.swarm import shortcuts
 from antigravity.core.swarm.enums import AgentRole, TaskPriority
 from unittest.mock import MagicMock, patch
 
-import pytest
 
 
 class TestShortcuts:

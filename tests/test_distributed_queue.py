@@ -2,18 +2,15 @@
 Tests for Distributed Queue System.
 """
 
-import time
 from antigravity.infrastructure.distributed_queue import DistributedQueue
 from antigravity.infrastructure.distributed_queue.backends.memory_backend import MemoryBackend
-from antigravity.infrastructure.distributed_queue.backends.redis_backend import RedisBackend
 from antigravity.infrastructure.distributed_queue.models import (
     Job,
     JobPriority,
     JobStatus,
-    QueueStats,
 )
 from antigravity.infrastructure.distributed_queue.queue_manager import QueueManager
-from unittest.mock import ANY, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 

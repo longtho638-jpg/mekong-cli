@@ -4,7 +4,6 @@ Tests for Client Magnet system.
 
 import os
 import sys
-import tempfile
 
 import pytest
 

@@ -3,7 +3,6 @@ from antigravity.core.swarm.engine import AgentSwarm
 from antigravity.core.swarm.enums import TaskStatus
 from antigravity.core.swarm.graph import GraphExecutor, GraphNode, GraphWorkflow
 
-import pytest
 
 
 def test_graph_execution():

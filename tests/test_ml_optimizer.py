@@ -9,7 +9,6 @@ Tests cover:
 - Graceful handling of missing dependencies
 """
 
-import pytest
 
 
 class TestMLOptimizerFacadeImports:
@@ -216,7 +215,6 @@ class TestMLOptimizerMissingDependencies:
     def test_works_without_sklearn(self):
         """Verify optimizer works even if sklearn unavailable."""
         from antigravity.core.ml_optimizer import (
-            ML_AVAILABLE,
             MLOptimizer,
         )
 

@@ -1,4 +1,3 @@
-import sys
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
@@ -7,7 +6,6 @@ from fastapi.testclient import TestClient
 
 # Mock imports if needed (similar to other integration tests)
 from backend.api.main import app
-from backend.api.schemas.kanban import TaskPriority, TaskStatus
 from backend.core.security.rbac import require_editor, require_viewer
 
 # Override authentication dependencies

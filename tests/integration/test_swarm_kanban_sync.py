@@ -2,9 +2,7 @@ import time
 from antigravity.core.kanban.board_manager import BoardManager
 from antigravity.core.kanban.board_manager import TaskStatus as KanbanStatus
 from antigravity.core.swarm.engine import AgentSwarm
-from antigravity.core.swarm.enums import TaskStatus
 
-import pytest
 
 
 def test_swarm_kanban_sync():

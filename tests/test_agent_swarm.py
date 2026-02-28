@@ -1,12 +1,11 @@
 import pytest
 falkordb = pytest.importorskip("falkordb", reason="falkordb not installed")
 
-import time
-from antigravity.core.swarm.engine import AgentSwarm
-from antigravity.core.swarm.enums import AgentRole, TaskPriority, TaskStatus
-from antigravity.core.swarm.models import SwarmAgent, SwarmTask
+import time  # noqa: E402
 
-import pytest
+import pytest  # noqa: E402
+from antigravity.core.swarm.engine import AgentSwarm  # noqa: E402
+from antigravity.core.swarm.enums import AgentRole, TaskPriority  # noqa: E402
 
 
 @pytest.fixture

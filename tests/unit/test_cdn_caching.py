@@ -1,13 +1,13 @@
 import pytest
 pydantic_settings = pytest.importorskip("pydantic_settings", reason="pydantic-settings not installed")
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch  # noqa: E402
 
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
+from fastapi import FastAPI  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
 
-from backend.middleware.cache_middleware import CacheControlMiddleware
-from backend.services.cache_service import CacheService, cached
+from backend.middleware.cache_middleware import CacheControlMiddleware  # noqa: E402
+from backend.services.cache_service import cached  # noqa: E402
 
 # --- CacheService Tests ---
 

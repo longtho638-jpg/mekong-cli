@@ -6,7 +6,6 @@ Unit Tests for Search Indexer
 import unittest
 from unittest.mock import MagicMock, patch
 
-from backend.services.search.config import INDEXES
 from backend.services.search.indexer import SearchIndexer
 
 

@@ -1,9 +1,9 @@
 import pytest
 pydantic_settings = pytest.importorskip("pydantic_settings", reason="pydantic-settings not installed")
 
-from fastapi.testclient import TestClient
+from fastapi.testclient import TestClient  # noqa: E402
 
-from backend.api.main import app
+from backend.api.main import app  # noqa: E402
 
 
 @pytest.fixture

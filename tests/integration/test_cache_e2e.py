@@ -1,11 +1,8 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-import pytest_asyncio
 
 from backend.services.cache import cache_factory
-from backend.services.cache.invalidation import CacheInvalidator
-from backend.services.cache.query_cache import QueryCache
 
 
 @pytest.mark.asyncio
