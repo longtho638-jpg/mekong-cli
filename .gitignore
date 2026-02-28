@@ -106,7 +106,7 @@ release-manifest.json
 
 # Logs & Temporary Files
 logs/
-memory/
+/memory/
 signals/
 temp_well/
 *.log

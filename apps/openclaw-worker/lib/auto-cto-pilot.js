@@ -578,7 +578,7 @@ async function handleFix(state, project) {
 async function handleVerify(state, project, projectDir) {
   log(`AUTO-CTO [軍形 VERIFY]: Re-scanning ${project}...`);
 
-  const errors = scanProject(projectDir);
+  let errors = scanProject(projectDir);
 
   if (errors === null || errors.length === 0) {
     log(`AUTO-CTO [軍形 GREEN]: ${project} — CLEAN after ${state.cycle} cycle(s) ✅`);
@@ -600,6 +600,35 @@ async function handleVerify(state, project, projectDir) {
     }
     advanceProject(state);
     return;
+  }
+
+  // 🔧 Aider self-heal: attempt auto-fix before escalating to mission dispatch
+  try {
+    const { tryAiderFix, isAiderAvailable } = require('./aider-bridge');
+    if (isAiderAvailable()) {
+      const errorSummary = errors.map((e) => `${e.file || ''}: ${e.message}`).join('\n');
+      const aiderResult = await tryAiderFix({
+        projectDir,
+        errorLog: errorSummary,
+        testCmd: 'npm run build',
+      });
+      if (aiderResult.success) {
+        log(`AUTO-CTO [軍形 AIDER]: ${project} — Aider auto-fixed in ${aiderResult.duration}ms. Re-verifying...`);
+        const recheck = scanProject(projectDir);
+        if (recheck === null || recheck.length === 0) {
+          log(`AUTO-CTO [軍形 GREEN]: ${project} — CLEAN after Aider fix ✅`);
+          onProjectMissionSuccess(project);
+          advanceProject(state);
+          return;
+        }
+        errors = recheck; // update remaining errors before mission dispatch
+        log(`AUTO-CTO [軍形 AIDER]: ${project} — ${errors.length} error(s) remain after Aider fix, dispatching missions`);
+      } else {
+        log(`AUTO-CTO [軍形 AIDER]: ${project} — self-heal skipped (${aiderResult.reason}), falling back to mission dispatch`);
+      }
+    }
+  } catch (aiderErr) {
+    log(`AUTO-CTO [軍形 AIDER]: error — ${aiderErr.message}`);
   }
 
   // More issues — back to fix phase

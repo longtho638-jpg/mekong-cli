@@ -1,0 +1,4 @@
+openai-api-base: http://localhost:9191
+model: gemini-3-flash-preview
+auto-commits: true
+no-browser: true

@@ -1,0 +1,12 @@
+# AGI Infrastructure — aggregate compose file
+# Usage: docker compose -f docker/docker-compose.agi.yml up -d
+#
+# Brings up:
+#   - Qdrant vector DB (port 6333)
+#   - Langfuse observability (port 3100) + backing Postgres (port 5433)
+#
+# Prerequisites: Docker Desktop >= 4.20 (supports `include:` directive)
+
+include:
+  - path: qdrant/docker-compose.yml
+  - path: langfuse/docker-compose.yml

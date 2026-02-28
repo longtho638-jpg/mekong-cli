@@ -3,13 +3,38 @@ Mekong CLI - Telemetry Collector
 
 Records execution traces for observability and debugging.
 Writes structured traces to .mekong/telemetry/ directory.
+
+Dual-write: also forwards events to ObservabilityFacade (Langfuse)
+when the mekong-observability package is installed. If Langfuse is
+unavailable the JSON write path continues unaffected.
 """
 
 import json
+import logging
 import time
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import List, Optional
+
+logger = logging.getLogger(__name__)
+
+# Langfuse facade is lazily loaded on first use to avoid circular imports
+_facade = None
+_facade_loaded = False
+
+
+def _get_facade():
+    """Lazily import and cache ObservabilityFacade (breaks circular import)."""
+    global _facade, _facade_loaded
+    if _facade_loaded:
+        return _facade
+    _facade_loaded = True
+    try:
+        from packages.observability.observability_facade import ObservabilityFacade
+        _facade = ObservabilityFacade.instance()
+    except ImportError:
+        logger.debug("mekong-observability not installed — Langfuse disabled")
+    return _facade
 
 
 @dataclass
@@ -58,10 +83,22 @@ class TelemetryCollector:
         self._start_time: float = 0.0
         self._output_dir = Path(output_dir) if output_dir else Path(".mekong/telemetry")
 
-    def start_trace(self, goal: str) -> None:
-        """Begin a new execution trace."""
+    def start_trace(self, goal: str, user_id: Optional[str] = None) -> None:
+        """
+        Begin a new execution trace.
+
+        Args:
+            goal: Human-readable orchestration goal.
+            user_id: Optional identifier forwarded to Langfuse.
+        """
         self._trace = ExecutionTrace(goal=goal)
         self._start_time = time.time()
+
+        if _get_facade() is not None:
+            try:
+                _get_facade().start_trace(goal, user_id=user_id)
+            except Exception as exc:
+                logger.warning("facade.start_trace error: %s", exc)
 
     def record_step(
         self,
@@ -87,15 +124,40 @@ class TelemetryCollector:
             )
         )
 
-    def record_llm_call(self) -> None:
-        """Increment LLM call counter."""
+        if _get_facade() is not None:
+            try:
+                _get_facade().record_step(step_order, title, duration, exit_code, self_healed, agent)
+            except Exception as exc:
+                logger.warning("facade.record_step error: %s", exc)
+
+    def record_llm_call(self, model: str = "", input_tokens: int = 0, output_tokens: int = 0) -> None:
+        """
+        Increment LLM call counter and forward event to Langfuse.
+
+        Args:
+            model: Model identifier (optional, for Langfuse).
+            input_tokens: Prompt token count (optional).
+            output_tokens: Completion token count (optional).
+        """
         if self._trace is not None:
             self._trace.llm_calls += 1
 
+        if _get_facade() is not None:
+            try:
+                _get_facade().record_llm_call(model=model, input_tokens=input_tokens, output_tokens=output_tokens)
+            except Exception as exc:
+                logger.warning("facade.record_llm_call error: %s", exc)
+
     def record_error(self, error_msg: str) -> None:
-        """Record an error message."""
+        """Record an error message in both backends."""
         if self._trace is not None:
             self._trace.errors.append(error_msg)
+
+        if _get_facade() is not None:
+            try:
+                _get_facade().record_error(error_msg)
+            except Exception as exc:
+                logger.warning("facade.record_error error: %s", exc)
 
     def finish_trace(self) -> Optional[ExecutionTrace]:
         """
@@ -109,7 +171,15 @@ class TelemetryCollector:
 
         self._trace.total_duration = round(time.time() - self._start_time, 3)
 
-        # Write to disk
+        # Determine overall status for Langfuse
+        status = "error" if self._trace.errors else "success"
+        if _get_facade() is not None:
+            try:
+                _get_facade().finish_trace(status=status)
+            except Exception as exc:
+                logger.warning("facade.finish_trace error: %s", exc)
+
+        # Write to disk (always — primary fallback path)
         self._output_dir.mkdir(parents=True, exist_ok=True)
         output_path = self._output_dir / "execution_trace.json"
         output_path.write_text(json.dumps(asdict(self._trace), indent=2))

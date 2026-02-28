@@ -3,6 +3,8 @@ Mekong CLI - Memory Store
 
 Long-term execution memory with YAML persistence.
 Records goal outcomes, enables history queries and fix suggestions.
+
+Vector backend (Mem0 + Qdrant) is used when available; falls back to YAML.
 """
 
 import time
@@ -12,6 +14,12 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .event_bus import EventType, get_event_bus
+
+try:
+    from packages.memory.memory_facade import get_memory_facade as _get_facade
+    _FACADE_AVAILABLE = True
+except ImportError:
+    _FACADE_AVAILABLE = False
 
 
 @dataclass
@@ -50,8 +58,50 @@ class MemoryStore:
         bus = get_event_bus()
         bus.emit(EventType.MEMORY_RECORDED, asdict(entry))
 
+        # Mirror to vector backend when available (best-effort, non-blocking)
+        if _FACADE_AVAILABLE:
+            try:
+                facade = _get_facade()
+                content = (
+                    f"goal={entry.goal} status={entry.status} "
+                    f"error={entry.error_summary} recipe={entry.recipe_used}"
+                )
+                facade.add(
+                    content,
+                    user_id=f"mekong:memory",
+                    metadata={
+                        "status": entry.status,
+                        "recipe_used": entry.recipe_used,
+                        "duration_ms": entry.duration_ms,
+                        "timestamp": entry.timestamp,
+                    },
+                )
+            except Exception:
+                pass  # Vector failure never disrupts YAML persistence
+
     def query(self, goal_pattern: str) -> List[MemoryEntry]:
-        """Find entries matching goal pattern (case-insensitive substring)."""
+        """Find entries matching goal pattern.
+
+        Prefers semantic vector search (Mem0/Qdrant) when available.
+        Falls back to case-insensitive substring match against YAML store.
+        """
+        if _FACADE_AVAILABLE:
+            try:
+                facade = _get_facade()
+                hits = facade.search(goal_pattern, user_id="mekong:memory")
+                if hits:
+                    # Extract goals from vector results and match to local entries
+                    matched_goals = {
+                        h.get("memory", "").split("goal=")[-1].split(" status=")[0]
+                        for h in hits
+                    }
+                    matched = [e for e in self._entries if e.goal in matched_goals]
+                    if matched:
+                        return matched
+            except Exception:
+                pass  # Fall through to substring search
+
+        # YAML substring fallback
         pattern = goal_pattern.lower()
         return [e for e in self._entries if pattern in e.goal.lower()]
 

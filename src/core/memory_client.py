@@ -1,12 +1,19 @@
 """
 Mekong CLI - NeuralMemory Client
 Interacts with local NeuralMemory server (nmem serve) via HTTP.
+
+Also exposes get_memory_provider() factory that selects the active memory
+backend based on the MEMORY_PROVIDER environment variable:
+  - "mem0"   → MemoryFacade (Mem0 + Qdrant vector search)
+  - "neural" → NeuralMemoryClient (HTTP spreading-activation server)
+  - "yaml"   → None (caller uses MemoryStore directly)
 """
 
 import logging
+import os
 import time
 import requests
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -121,3 +128,42 @@ def get_memory_client() -> NeuralMemoryClient:
     if _memory_client is None:
         _memory_client = NeuralMemoryClient()
     return _memory_client
+
+
+# ---------------------------------------------------------------------------
+# Provider factory
+# ---------------------------------------------------------------------------
+
+def get_memory_provider() -> Optional[Union[NeuralMemoryClient, Any]]:
+    """Return the active memory provider based on MEMORY_PROVIDER env var.
+
+    Environment variable MEMORY_PROVIDER controls selection:
+      - ``"mem0"``   → MemoryFacade (Mem0 + Qdrant). Calls connect() lazily.
+      - ``"neural"`` → NeuralMemoryClient singleton (HTTP nmem server).
+      - ``"yaml"``   → Returns None; caller should use MemoryStore directly.
+
+    Defaults to ``"yaml"`` when env var is absent or unrecognised.
+
+    Returns:
+        Active provider instance, or None for yaml-only mode.
+    """
+    provider_name = os.getenv("MEMORY_PROVIDER", "yaml").lower().strip()
+
+    if provider_name == "mem0":
+        try:
+            from packages.memory.memory_facade import get_memory_facade
+            facade = get_memory_facade()
+            facade.connect()  # idempotent — safe to call multiple times
+            return facade
+        except ImportError:
+            logger.warning(
+                "MEMORY_PROVIDER=mem0 but packages.memory not installed. "
+                "Falling back to yaml."
+            )
+            return None
+
+    if provider_name == "neural":
+        return get_memory_client()
+
+    # Default: yaml — no external provider
+    return None

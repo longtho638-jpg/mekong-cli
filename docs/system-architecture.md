@@ -104,3 +104,32 @@ Lưu trữ thông tin người dùng, tín dụng (credits) và lịch sử giao
 - **Sandbox**: CC CLI chạy trong môi trường được kiểm soát quyền (mặc dù cờ `--dangerously-skip-permissions` được bật để tự động hóa, nhưng Tôm Hùm giám sát chặt chẽ).
 - **Network Isolation**: Proxy chỉ cho phép các kết nối từ localhost hoặc các IP tin cậy.
 - **Resource Limits**: Daemon giám sát RAM và Nhiệt độ CPU để ngăn chặn quá tải trên thiết bị Edge (MacBook M1).
+
+## 6. AGI Integration Layer (v2026.2.28)
+
+Three optional components that upgrade the orchestration engine with semantic memory, distributed tracing, and self-healing capabilities. Each degrades gracefully when the backing service is unavailable.
+
+| Component | Tool | Package | Port | Status |
+|-----------|------|---------|------|--------|
+| Memory | Mem0 + Qdrant | `packages/memory/` | 6333 | Active |
+| Observability | Langfuse | `packages/observability/` | 3100 | Active |
+| Self-Healing | Aider CLI | `apps/openclaw-worker/lib/aider-bridge.js` | — | Spike |
+| Orchestration | LangGraph | — | — | Deferred |
+| Marketplace | — | — | — | Deferred v2 |
+
+### Fallback Chain
+
+```
+Memory:        Mem0+Qdrant  →  YAML MemoryStore (always available)
+Observability: Langfuse     →  TelemetryCollector JSON (always available)
+Self-Healing:  Aider CLI    →  CC CLI mission dispatch (always available)
+```
+
+### Infrastructure
+
+```bash
+# Start all AGI services (Qdrant + Langfuse)
+docker compose -f docker/docker-compose.agi.yml up -d
+```
+
+Full setup guide: `docs/agi-integration.md`
