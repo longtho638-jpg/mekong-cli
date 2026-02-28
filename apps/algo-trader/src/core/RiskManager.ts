@@ -1,3 +1,16 @@
+export interface StopLossTakeProfitConfig {
+  stopLossPercent?: number;   // Hard stop-loss distance from entry (e.g. 2 = 2%)
+  takeProfitPercent?: number; // Take-profit distance from entry (e.g. 5 = 5%)
+  dailyLossLimitUsd?: number; // Max USD loss per day before halting
+}
+
+export interface StopLossTakeProfitResult {
+  stopLossHit: boolean;
+  takeProfitHit: boolean;
+  stopLossPrice: number;
+  takeProfitPrice: number;
+}
+
 export interface TrailingStopConfig {
   trailingStop: boolean;
   trailingStopPositive?: number;
@@ -31,11 +44,56 @@ export class RiskManager {
     }
 
     const amountToRisk = balance * (riskPercentage / 100);
-    // Simplified: assuming we buy with the full risked amount effectively used as margin or cost
-    // In a real scenario with Stop Loss, this calculation is: (RiskAmount) / (Entry - StopLoss)
-    // Here we implement the prompt's "Position Sizing 1%" which likely means "Use 1% of balance to buy"
+    // Ensure we don't return NaN or Infinity if something goes wrong
+    const size = amountToRisk / currentPrice;
+    return isFinite(size) ? size : 0;
+  }
 
-    return amountToRisk / currentPrice;
+  /**
+   * Check if current price triggers hard stop-loss or take-profit.
+   * @param currentPrice Current market price
+   * @param entryPrice Original entry price
+   * @param side Trade side ('buy' = long, 'sell' = short)
+   * @param config SL/TP configuration
+   */
+  static checkStopLossTakeProfit(
+    currentPrice: number,
+    entryPrice: number,
+    side: 'buy' | 'sell',
+    config: StopLossTakeProfitConfig
+  ): StopLossTakeProfitResult {
+    const isLong = side === 'buy';
+    const slPercent = config.stopLossPercent ?? 0;
+    const tpPercent = config.takeProfitPercent ?? 0;
+
+    const stopLossPrice = isLong
+      ? entryPrice * (1 - slPercent / 100)
+      : entryPrice * (1 + slPercent / 100);
+
+    const takeProfitPrice = isLong
+      ? entryPrice * (1 + tpPercent / 100)
+      : entryPrice * (1 - tpPercent / 100);
+
+    const stopLossHit = slPercent > 0 && (
+      isLong ? currentPrice <= stopLossPrice : currentPrice >= stopLossPrice
+    );
+
+    const takeProfitHit = tpPercent > 0 && (
+      isLong ? currentPrice >= takeProfitPrice : currentPrice <= takeProfitPrice
+    );
+
+    return { stopLossHit, takeProfitHit, stopLossPrice, takeProfitPrice };
+  }
+
+  /**
+   * Check if daily loss limit has been exceeded.
+   * @param dailyPnL Total P&L for the current day
+   * @param limitUsd Maximum allowed loss in USD
+   * @returns true if limit exceeded (should halt trading)
+   */
+  static isDailyLossLimitHit(dailyPnL: number, limitUsd?: number): boolean {
+    if (!limitUsd || limitUsd <= 0) return false;
+    return dailyPnL <= -limitUsd;
   }
 
   /**

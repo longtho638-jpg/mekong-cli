@@ -1,7 +1,7 @@
 import { IStrategy, SignalType } from '../interfaces/IStrategy';
 import { IDataProvider } from '../interfaces/IDataProvider';
 import { IExchange } from '../interfaces/IExchange';
-import { RiskManager } from './RiskManager';
+import { RiskManager, StopLossTakeProfitConfig } from './RiskManager';
 import { OrderManager } from './OrderManager';
 import { ICandle } from '../interfaces/ICandle';
 import { logger } from '../utils/logger';
@@ -13,6 +13,7 @@ export interface BotConfig {
   maxDrawdownPercent?: number; // Optional: stop bot when drawdown exceeds this % (e.g. 10 = 10%)
   minPositionValueUsd?: number; // Minimum USD value to consider position open (default: 10)
   feeRate?: number; // Trading fee rate per side (default: 0.001 = 0.1%)
+  stopLoss?: StopLossTakeProfitConfig; // Hard stop-loss + take-profit config
 }
 
 export class BotEngine {
@@ -137,6 +138,23 @@ export class BotEngine {
       if (drawdownTriggered) {
         await this.stop();
         return;
+      }
+
+      // Check hard SL/TP before strategy signals
+      if (this.openPosition && this.entryPrice > 0 && this.config.stopLoss) {
+        const sltp = RiskManager.checkStopLossTakeProfit(
+          candle.close, this.entryPrice, 'buy', this.config.stopLoss
+        );
+        if (sltp.stopLossHit) {
+          logger.warn(`[SL] Stop-loss triggered @ $${candle.close} (entry: $${this.entryPrice}, SL: $${sltp.stopLossPrice.toFixed(2)})`);
+          await this.executeTrade('sell', candle.close);
+          return;
+        }
+        if (sltp.takeProfitHit) {
+          logger.info(`[TP] Take-profit triggered @ $${candle.close} (entry: $${this.entryPrice}, TP: $${sltp.takeProfitPrice.toFixed(2)})`);
+          await this.executeTrade('sell', candle.close);
+          return;
+        }
       }
 
       const signal = await this.strategy.onCandle(candle);

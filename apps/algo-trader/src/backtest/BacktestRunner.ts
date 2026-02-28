@@ -4,6 +4,21 @@ import { ICandle } from '../interfaces/ICandle';
 
 import { logger } from '../utils/logger';
 
+export interface BacktestResult {
+  strategyName: string;
+  initialBalance: number;
+  finalBalance: number;
+  totalReturn: number;
+  maxDrawdown: number;
+  totalFees: number;
+  totalTrades: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+  avgProfit: number;
+  sharpeRatio: number;
+}
+
 interface Trade {
   entryPrice: number;
   exitPrice: number;
@@ -45,25 +60,22 @@ export class BacktestRunner {
     this.slippageBps = config?.slippageBps ?? 5;
   }
 
-  async run(days: number = 30): Promise<void> {
-    logger.info(`Starting backtest for ${this.strategy.name} over ${days} days...`);
+  async run(days: number = 30, silent = false): Promise<BacktestResult> {
+    if (!silent) logger.info(`Starting backtest for ${this.strategy.name} over ${days} days...`);
 
     try {
-      // 1. Get History
-      const limit = days * 24 * 60; // Minutes
+      const limit = days * 24 * 60;
       const history = await this.dataProvider.getHistory(limit);
 
       if (history.length === 0) {
-        logger.info('No data available for backtest');
-        return;
+        if (!silent) logger.info('No data available for backtest');
+        return this.getResults();
       }
 
-      logger.info(`Loaded ${history.length} candles.`);
+      if (!silent) logger.info(`Loaded ${history.length} candles.`);
 
-      // 2. Init Strategy
-      await this.strategy.init(history.slice(0, 200)); // Warmup with first 200
+      await this.strategy.init(history.slice(0, 200));
 
-      // 3. Iterate through history
       for (let i = 200; i < history.length; i++) {
         const candle = history[i];
         const signal = await this.strategy.onCandle(candle);
@@ -77,11 +89,46 @@ export class BacktestRunner {
         }
       }
 
-      this.printResults();
+      if (!silent) this.printResults();
+      return this.getResults();
     } catch (error: unknown) {
       logger.error(`Backtest run error: ${error instanceof Error ? error.message : String(error)}`);
       throw error;
     }
+  }
+
+  /** Get structured results for programmatic use */
+  getResults(): BacktestResult {
+    const wins = this.trades.filter(t => t.profit > 0).length;
+    const totalReturn = ((this.balance - this.initialBalance) / this.initialBalance) * 100;
+    const totalFees = this.trades.reduce((s, t) => s + t.fees, 0);
+    const avgProfit = this.trades.length > 0
+      ? this.trades.reduce((s, t) => s + t.profit, 0) / this.trades.length : 0;
+
+    // Sharpe ratio from trade returns
+    const returns = this.trades.map(t => t.profitPercent / 100);
+    let sharpe = 0;
+    if (returns.length >= 2) {
+      const mean = returns.reduce((s, r) => s + r, 0) / returns.length;
+      const variance = returns.reduce((s, r) => s + (r - mean) ** 2, 0) / (returns.length - 1);
+      const std = Math.sqrt(variance);
+      if (std > 0) sharpe = (mean * 252 - 0.05) / (std * Math.sqrt(252));
+    }
+
+    return {
+      strategyName: this.strategy.name,
+      initialBalance: this.initialBalance,
+      finalBalance: this.balance,
+      totalReturn,
+      maxDrawdown: this.maxDrawdown,
+      totalFees,
+      totalTrades: this.trades.length,
+      wins,
+      losses: this.trades.length - wins,
+      winRate: this.trades.length > 0 ? (wins / this.trades.length) * 100 : 0,
+      avgProfit,
+      sharpeRatio: sharpe,
+    };
   }
 
   private applySlippage(price: number, side: 'buy' | 'sell'): number {
