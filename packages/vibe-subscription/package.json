@@ -1,0 +1,13 @@
+{
+  "name": "@agencyos/vibe-subscription",
+  "version": "0.1.0",
+  "description": "Subscription lifecycle SDK — plan management, trials, upgrades, churn prevention, usage metering",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/billing": "workspace:*",
+    "@agencyos/vibe-payment": "workspace:*"
+  }
+}
