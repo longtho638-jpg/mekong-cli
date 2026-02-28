@@ -28,18 +28,19 @@ async function spawnBrain() {
       const paneCount = parseInt(
         execSync(`tmux list-panes -t ${TMUX_SESSION} | wc -l`, { encoding: 'utf-8' }).trim()
       );
-      if (paneCount >= 2) {
-        log(`BRAIN: tmux session exists (Panes: ${paneCount}/2) — reusing`);
+      if (paneCount >= 3) {
+        log(`BRAIN: tmux session exists (Panes: ${paneCount}/3) — reusing`);
         return;
       }
-      log(`BRAIN: Session exists but has ${paneCount}/2 panes. REPAIRING...`);
-      tmuxExec(`tmux kill-session -t ${TMUX_SESSION}`, TMUX_SESSION);
+      log(`BRAIN: Session exists but has ${paneCount}/3 panes. REPAIRING...`);
+      tmuxExec(`tmux kill-session -t ${TMUX_SESSION.split(':')[0]}`, TMUX_SESSION);
     } catch (e) {
       log(`BRAIN: Error checking session: ${e.message}`);
+      tmuxExec(`tmux kill-session -t ${TMUX_SESSION.split(':')[0]}`, TMUX_SESSION);
     }
   }
 
-  log(`BRAIN: Creating DUAL-PANE SANDWICH tmux session...`);
+  log(`BRAIN: Creating TRIPLE-PANE SANDWICH tmux session...`);
   _writeSandboxConfigs();
   _persistAuthCredentials();
 
@@ -50,16 +51,22 @@ async function spawnBrain() {
 
   log(`BRAIN: Creating NEW session [${sessionName}] in ${bootDir}...`);
   tmuxExec(`tmux new-session -d -s ${sessionName} -n brain -x 200 -y 50 -c ${bootDir}`, TMUX_SESSION);
+  tmuxExec(`tmux rename-window -t ${sessionName}:0 brain`, TMUX_SESSION); // safety
   tmuxExec(`tmux set-option -t ${sessionName} remain-on-exit on`, TMUX_SESSION);
   tmuxExec(`tmux set-option -t ${sessionName} allow-rename off`, TMUX_SESSION);
   tmuxExec(`tmux split-window -h -t ${TMUX_SESSION}.0 -c ${bootDir}`, TMUX_SESSION);
+  tmuxExec(`tmux split-window -v -t ${TMUX_SESSION}.1 -c ${bootDir}`, TMUX_SESSION);
 
   await new Promise(r => setTimeout(r, 1000));
 
   tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.0 '${cmdPro}' Enter`, TMUX_SESSION);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.0 -T "PRO: Planner"`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.0 -T "P0: Planner (PRO)"`, TMUX_SESSION);
+
   tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.1 '${cmdApi}' Enter`, TMUX_SESSION);
-  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.1 -T "API: Executor"`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.1 -T "P1: Executor (API)"`, TMUX_SESSION);
+
+  tmuxExec(`tmux send-keys -t ${TMUX_SESSION}.2 '${cmdApi}' Enter`, TMUX_SESSION);
+  tmuxExec(`tmux select-pane -t ${TMUX_SESSION}.2 -T "P2: Executor (API)"`, TMUX_SESSION);
 
   log(`BRAIN: Waiting for CC CLI bypass prompts...`);
   await new Promise(r => setTimeout(r, 10000));
@@ -122,7 +129,7 @@ function _persistAuthCredentials() {
 }
 
 async function _acceptBootPrompts(TMUX_SESSION) {
-  for (let paneIdx = 0; paneIdx < 2; paneIdx++) {
+  for (let paneIdx = 0; paneIdx < 3; paneIdx++) {
     for (let retry = 0; retry < 30; retry++) {
       const out = capturePane(paneIdx, TMUX_SESSION);
       if (out.includes('accept all responsibility') || out.includes('Permissions mode.')) {
