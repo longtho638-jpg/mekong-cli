@@ -1,0 +1,12 @@
+{
+  "name": "@agencyos/vibe-customer-success",
+  "version": "0.1.0",
+  "description": "Customer success engine SDK — health scoring, churn prediction, NRR tracking, expansion signals, QBR insights based on real CS metrics",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-analytics": "workspace:*"
+  }
+}

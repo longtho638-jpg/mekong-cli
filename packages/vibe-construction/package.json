@@ -1,0 +1,12 @@
+{
+  "name": "@agencyos/vibe-construction",
+  "version": "0.1.0",
+  "description": "Construction project management SDK — project phases, permit workflows, subcontractor management, change orders, payment milestones, lien waiver tracking",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-billing": "workspace:*"
+  }
+}
