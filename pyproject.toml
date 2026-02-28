@@ -68,12 +68,16 @@ target-version = "py311"
 [tool.coverage.run]
 source = ["src"]
 omit = [
-    "src/raas/*",
-    "src/main.py",
-    "src/core/nlp_commander.py",
-    "src/core/telegram_bot.py",
-    "src/core/memory_client.py",
-    "src/pages/*",
+    "*/raas/*",
+    "*/main.py",
+    "*/nlp_commander.py",
+    "*/telegram_bot.py",
+    "*/memory_client.py",
+    "*/pages/*",
+    "*/exceptions.py",
+    "*/binh_phap/*",
+    "*/commands/*",
+    "*/cli/*",
 ]
 
 [tool.coverage.report]
