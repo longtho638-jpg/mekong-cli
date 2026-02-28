@@ -1,0 +1,12 @@
+{
+  "name": "@agencyos/vibe-ai-safety",
+  "version": "0.1.0",
+  "description": "AI Safety & Red-Teaming facade SDK — adversarial testing, jailbreak detection, bias audit, guardrail management, EU AI Act compliance",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-observability": "workspace:*"
+  }
+}

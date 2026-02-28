@@ -1,0 +1,12 @@
+{
+  "name": "@agencyos/vibe-edge",
+  "version": "0.1.0",
+  "description": "Edge AI & TinyML facade SDK — model quantization, edge deployment, OTA updates, federated learning, device fleet management",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-observability": "workspace:*"
+  }
+}
