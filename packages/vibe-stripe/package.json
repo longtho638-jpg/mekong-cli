@@ -1,0 +1,19 @@
+{
+  "name": "@agencyos/vibe-stripe",
+  "version": "0.1.0",
+  "description": "Stripe subscription & billing adapter — checkout sessions, webhooks, billing portal, customer management",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./adapter": "./stripe-adapter.ts",
+    "./webhooks": "./stripe-webhook-handler.ts",
+    "./hooks": "./stripe-subscription-hooks.ts",
+    "./types": "./types.ts"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@agencyos/vibe-payment": "workspace:*",
+    "@agencyos/vibe-subscription": "workspace:*"
+  }
+}

@@ -1,13 +1,12 @@
 /**
  * @agencyos/vibe-payment — Provider-Agnostic Payment SDK
  *
- * Reusable across all RaaS projects. Currently supports PayOS;
- * extensible to VNPay, MoMo, Stripe.
+ * Reusable across all RaaS projects. Supports PayOS + Stripe.
  *
  * Usage:
  *   import { createPaymentProvider } from '@agencyos/vibe-payment';
- *   const provider = createPaymentProvider('payos', supabase);
- *   const result = await provider.createPayment({ ... });
+ *   const payos = createPaymentProvider('payos', { supabase });
+ *   const stripe = createPaymentProvider('stripe', { stripeSecretKey: 'sk_...' });
  */
 
 import type { PaymentProviderName, VibePaymentProvider } from './types';
@@ -23,17 +22,45 @@ interface SupabaseLike {
   functions: SupabaseFunctionsClient;
 }
 
+// ─── Provider Config ────────────────────────────────────────────
+
+export interface PaymentProviderConfig {
+  /** Supabase client (required for PayOS) */
+  supabase?: SupabaseLike;
+  /** Stripe secret key (required for Stripe) */
+  stripeSecretKey?: string;
+  /** Stripe webhook secret */
+  stripeWebhookSecret?: string;
+  /** Stripe API version */
+  stripeApiVersion?: string;
+}
+
 // ─── Factory ────────────────────────────────────────────────────
 
 export function createPaymentProvider(
   name: PaymentProviderName,
-  supabase: SupabaseLike,
+  config: SupabaseLike | PaymentProviderConfig,
 ): VibePaymentProvider {
   switch (name) {
-    case 'payos':
-      return new PayOSAdapter(supabase);
+    case 'payos': {
+      const supabase = 'functions' in config ? config : (config as PaymentProviderConfig).supabase;
+      if (!supabase) throw new Error('PayOS requires supabase client');
+      return new PayOSAdapter(supabase as SupabaseLike);
+    }
+    case 'stripe': {
+      const cfg = config as PaymentProviderConfig;
+      if (!cfg.stripeSecretKey) throw new Error('Stripe requires stripeSecretKey');
+      // Lazy import — @agencyos/vibe-stripe is optional peerDependency
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { StripeAdapter } = require('@agencyos/vibe-stripe');
+        return new StripeAdapter({ secretKey: cfg.stripeSecretKey, webhookSecret: cfg.stripeWebhookSecret, apiVersion: cfg.stripeApiVersion });
+      } catch {
+        throw new Error('Stripe provider requires @agencyos/vibe-stripe package. Install: pnpm add @agencyos/vibe-stripe');
+      }
+    }
     default:
-      throw new Error(`Payment provider "${name}" is not yet supported. Available: payos`);
+      throw new Error(`Payment provider "${name}" is not yet supported. Available: payos, stripe`);
   }
 }
 

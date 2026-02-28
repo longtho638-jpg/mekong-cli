@@ -132,6 +132,10 @@ export interface CheckoutHookConfig {
   provider: CheckoutProvider;
   successUrl?: string;
   cancelUrl?: string;
+  /** Stripe secret key — required when provider='stripe' for native Checkout Session */
+  stripeSecretKey?: string;
+  /** Map plan tiers to Stripe price IDs for automatic resolution */
+  stripePriceMapping?: Record<string, { monthly: string; yearly: string }>;
 }
 
 export function createCheckoutHook(config: CheckoutHookConfig) {
@@ -192,7 +196,9 @@ export function createCheckoutHook(config: CheckoutHookConfig) {
     },
 
     /**
-     * Build checkout URL cho provider
+     * Build checkout URL cho provider.
+     * For Stripe with stripeSecretKey: creates native Checkout Session via API.
+     * For others: builds redirect URL with query params.
      */
     buildCheckoutUrl(params: {
       planId: string;
@@ -214,6 +220,47 @@ export function createCheckoutHook(config: CheckoutHookConfig) {
       if (state.couponCode) url.searchParams.set('coupon', state.couponCode);
 
       return url.toString();
+    },
+
+    /**
+     * Create native Stripe Checkout Session (async, server-side).
+     * Requires stripeSecretKey in config. Returns session URL for redirect.
+     * Use this instead of buildCheckoutUrl for production Stripe integration.
+     */
+    async createStripeCheckoutSession(params: {
+      priceId: string;
+      email?: string;
+      customerId?: string;
+      trialDays?: number;
+      metadata?: Record<string, string>;
+    }): Promise<{ sessionId: string; url: string } | null> {
+      if (provider !== 'stripe' || !config.stripeSecretKey) return null;
+
+      try {
+        const { createStripeAdapter } = await import('@agencyos/vibe-stripe');
+        const adapter = createStripeAdapter({ secretKey: config.stripeSecretKey });
+        const session = await adapter.createCheckoutSession({
+          priceId: params.priceId,
+          mode: 'subscription',
+          customerEmail: params.email,
+          customerId: params.customerId,
+          trialDays: params.trialDays,
+          successUrl: successUrl ?? '/checkout/success',
+          cancelUrl: cancelUrl ?? '/checkout/cancel',
+          metadata: params.metadata,
+        });
+        return session;
+      } catch {
+        return null;
+      }
+    },
+
+    /**
+     * Resolve plan tier + billing cycle to Stripe price ID.
+     * Uses stripePriceMapping from config.
+     */
+    resolveStripePriceId(tier: string, cycle: 'monthly' | 'yearly' = 'monthly'): string | null {
+      return config.stripePriceMapping?.[tier]?.[cycle] ?? null;
     },
 
     /**
