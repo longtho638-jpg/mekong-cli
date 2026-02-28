@@ -1,0 +1,23 @@
+{
+  "name": "@agencyos/webhook-billing-sdk",
+  "version": "0.1.0",
+  "description": "Unified webhook & billing SDK — provider-agnostic webhook verification, event routing, idempotency, billing lifecycle hooks, subscription management",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./webhook": "./webhook-handler.ts",
+    "./billing": "./billing-hooks.ts",
+    "./types": "./webhook-billing-types.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-stripe": "workspace:*",
+    "@agencyos/vibe-payment-router": "workspace:*",
+    "@agencyos/vibe-billing-hooks": "workspace:*",
+    "@agencyos/vibe-subscription": "workspace:*"
+  }
+}

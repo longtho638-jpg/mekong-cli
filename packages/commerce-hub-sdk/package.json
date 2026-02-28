@@ -1,0 +1,22 @@
+{
+  "name": "@agencyos/commerce-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified commerce SDK — e-commerce, POS, F&B, cart, orders, promotions, menu management, inventory",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./ecommerce": "./ecommerce-facade.ts",
+    "./pos": "./pos-facade.ts",
+    "./fnb": "./fnb-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-ecommerce": "workspace:*",
+    "@agencyos/vibe-pos": "workspace:*",
+    "@agencyos/vibe-fnb": "workspace:*"
+  }
+}

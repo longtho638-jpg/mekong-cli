@@ -1,10 +1,8 @@
 packages:
+  - 'packages/*'
   - 'packages/core/*'
   - 'packages/integrations/*'
   - 'packages/business/*'
-  - 'packages/ui'
   - 'packages/ui/*'
   - 'packages/tooling/*'
-  - 'packages/trading-core'
-  - 'packages/billing'
   - 'apps/*'
