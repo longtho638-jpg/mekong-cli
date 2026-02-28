@@ -38,6 +38,11 @@ graph TD
   - Quản lý vòng đời của tiến trình Brain (CC CLI).
   - Tự động sinh ra các nhiệm vụ bảo trì (Auto-CTO) khi rảnh rỗi.
   - Bảo vệ tài nguyên hệ thống (M1 Cooling Daemon).
+- **Mô-đun mới (L11-L12)**:
+  - `clawwork-integration.js`: Tích hợp ClawWork cho phân tích kết quả & insight.
+  - `moltbook-integration.js`: Tích hợp Moltbook để quản lý agent identity & metadata.
+  - Cải tiến `self-analyzer.js`: Hỗ trợ cross-session memory persistence.
+  - `vector-service.js`: Dự phòng local embedding khi vector DB không khả dụng.
 
 ### 2.2. CC CLI (Claude Code)
 - **Vị trí**: Chạy dưới dạng tiến trình con của Tôm Hùm.

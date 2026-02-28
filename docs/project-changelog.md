@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **AGI Deep 10x Master (L11-L12)**: Nâng cấp hệ thống kiến thức & memory.
+  - **Level 11 (ClawWork)**: Tích hợp `clawwork-integration.js` cho phân tích kết quả & sinh insight.
+  - **Level 12 (Moltbook)**: Tích hợp `moltbook-integration.js` quản lý agent identity & metadata bền vững.
+  - **Cross-Session Memory**: `self-analyzer.js` cải tiến hỗ trợ memory persistence giữa các session.
+  - **Vector Service Fallback**: `vector-service.js` sử dụng local embedding khi vector DB không sẵn.
+  - **Evolution Engine**: Cải tiến phân loại lỗi tự động trong engine xử lý nhiệm vụ.
 - **OpenClaw Worker (Tôm Hùm)**: Upgraded to **AGI Level 5 (Self-Learning Edition)**.
   - **Level 3 (Post-Mission Gate)**: Automated build verification and Git commit on success.
   - **Level 3 (Mission Journal)**: Telemetry collection (duration, success rate, token usage).

@@ -250,6 +250,19 @@ clearStaleState();
     const agi = getAGIScore();
     log(`🧠 AGI SCORE: ${agi.total}/100 (Level ${agi.level}) — Vision:${agi.components.vision} Learn:${agi.components.learning} Auto:${agi.components.autonomy} Mem:${agi.components.memory} Win:${agi.components.success}`);
   });
+  // AGI Level 11: ClawWork Economic Benchmark
+  safeBoot('startClawWork', () => {
+    const { getEconomicStats } = require('./lib/clawwork-integration');
+    const stats = getEconomicStats();
+    log(`💰 CLAWWORK: ${stats.completedTasks}/${stats.totalTasks} GDPVal tasks (${stats.completionRate}%) — Balance: $${stats.balance}`);
+  });
+  // AGI Level 12: Moltbook Agent Identity
+  safeBoot('startMoltbook', async () => {
+    const { onDaemonBoot } = require('./lib/moltbook-integration');
+    const { getAGIScore } = require('./lib/self-analyzer');
+    const agi = getAGIScore();
+    await onDaemonBoot(agi.total);
+  });
   // Google Ultra Integration (用間 Espionage)
   safeBoot('startGoogleUltra', () => {
     const { checkAuthStatus, getAccount } = require('./lib/google-ultra');

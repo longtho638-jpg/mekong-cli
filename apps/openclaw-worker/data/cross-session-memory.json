@@ -1,46 +1,6 @@
 {
   "sessions": [
     {
-      "id": 1772188156806,
-      "startedAt": "2026-02-27T10:29:16.806Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772188296575,
-      "startedAt": "2026-02-27T10:31:36.575Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772188528763,
-      "startedAt": "2026-02-27T10:35:28.763Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772188578310,
-      "startedAt": "2026-02-27T10:36:18.310Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772188856238,
-      "startedAt": "2026-02-27T10:40:56.238Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
       "id": 1772189126614,
       "startedAt": "2026-02-27T10:45:26.614Z",
       "missionsDispatched": 0,
@@ -399,6 +359,50 @@
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": []
+    },
+    {
+      "id": 1772240340918,
+      "startedAt": "2026-02-28T00:59:00.918Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772240610807,
+      "startedAt": "2026-02-28T01:03:30.807Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772240721779,
+      "startedAt": "2026-02-28T01:05:21.779Z",
+      "missionsDispatched": 2,
+      "missionsSucceeded": 1,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "test_failure"
+      ]
+    },
+    {
+      "id": 1772240759032,
+      "startedAt": "2026-02-28T01:05:59.032Z",
+      "missionsDispatched": 2,
+      "missionsSucceeded": 1,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "x"
+      ]
+    },
+    {
+      "id": 1772240882954,
+      "startedAt": "2026-02-28T01:08:02.954Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
     }
   ],
   "knowledgeGraph": {
@@ -502,5 +506,5 @@
     }
   ],
   "createdAt": "2026-02-24T18:28:23.656Z",
-  "updatedAt": "2026-02-27T13:44:05.282Z"
+  "updatedAt": "2026-02-28T01:08:02.954Z"
 }

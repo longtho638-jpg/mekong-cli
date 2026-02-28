@@ -1,56 +1,24 @@
 [
   {
     "project": "well",
-    "timestamp": "2026-02-27T13:43:40.365Z",
+    "timestamp": "2026-02-28T01:07:40.488Z",
     "build": "GREEN",
     "techDebt": {
       "todos": 76,
       "consoleLogs": 781
     },
     "gitStatus": "DIRTY",
-    "recommendations": [
-      {
-        "title": "Dọn dẹp và Commit mã nguồn (Git Status: DIRTY)",
-        "priority": "HIGH",
-        "reason": "Trạng thái DIRTY cho thấy có nhiều thay đổi chưa được kiểm soát. Cần phải rà soát, staging và commit ngay lập tức để đảm bảo tính nhất quán của mã nguồn và tránh rủi ro mất mát dữ liệu khi làm việc nhóm."
-      },
-      {
-        "title": "Tối ưu hóa hệ thống Logging và loại bỏ Console Logs",
-        "priority": "HIGH",
-        "reason": "Với 781 console logs, hiệu năng của ứng dụng đang bị ảnh hưởng nghiêm trọng và gây nhiễu quá trình debug thực tế. Cần thay thế bằng một thư viện logging chuyên nghiệp hoặc gỡ bỏ các log không cần thiết trước khi deploy."
-      },
-      {
-        "title": "Lập kế hoạch giải quyết nợ kỹ thuật (Technical Debt)",
-        "priority": "MEDIUM",
-        "reason": "76 TODOs là một con số đáng báo động về nợ kỹ thuật. Mặc dù Build đang GREEN, nhưng việc tích tụ quá nhiều tác vụ chưa hoàn thành sẽ gây khó khăn cho việc bảo trì và mở rộng tính năng trong tương lai."
-      }
-    ]
+    "recommendations": []
   },
   {
     "project": "wellnexus",
-    "timestamp": "2026-02-27T13:44:12.745Z",
+    "timestamp": "2026-02-28T01:08:10.546Z",
     "build": "GREEN",
     "techDebt": {
       "todos": 14,
       "consoleLogs": 0
     },
     "gitStatus": "DIRTY",
-    "recommendations": [
-      {
-        "title": "Ổn định hóa trạng thái Git",
-        "priority": "HIGH",
-        "reason": "Trạng thái Git hiện tại là 'DIRTY', nghĩa là có nhiều thay đổi chưa được commit. Điều này gây rủi ro mất mát dữ liệu và xung đột mã nguồn. Cần kiểm tra và commit các thay đổi ngay lập tức để đảm bảo tính toàn vẹn của dự án."
-      },
-      {
-        "title": "Giải quyết nợ kỹ thuật (Technical Debt)",
-        "priority": "MEDIUM",
-        "reason": "Dự án đang tồn đọng 14 TODOs. Việc để các ghi chú này kéo dài sẽ làm tăng độ phức tạp khi bảo trì. Cần phân loại và xử lý các đầu việc này để tối ưu hóa codebase."
-      },
-      {
-        "title": "Duy trì và chuẩn hóa quy trình kiểm soát chất lượng",
-        "priority": "MEDIUM",
-        "reason": "Mặc dù Build đang GREEN và không có Console Logs (rất tốt), nhưng cần thiết lập cơ chế kiểm tra tự động để đảm bảo các thay đổi từ trạng thái DIRTY sau khi commit không phá vỡ tính ổn định hiện tại."
-      }
-    ]
+    "recommendations": []
   }
 ]

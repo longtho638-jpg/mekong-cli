@@ -112,11 +112,29 @@ function checkEvolutionTriggers() {
     'queued_abort', 'killed_stuck', 'timeout',
   ]);
 
-  // Helper: get failure key from mission record
-  // Priority: failureType → resultCode → buildResult.output → 'unknown'
+  // Helper: get failure key from mission record.
+  // 🦞 FIX 2026-02-28: Extract actionable error categories from build output
+  // instead of falling through to 'unknown'.
   const getFailureKey = (m) => {
     if (m.success) return null;
-    return m.failureType || m.resultCode || (typeof m.buildResult === 'object' && m.buildResult !== null ? m.buildResult.output : null) || 'unknown';
+    // Direct failure type from dispatcher
+    if (m.failureType && m.failureType !== 'unknown_failure' && m.failureType !== 'no_result') {
+      return m.failureType;
+    }
+    if (m.resultCode && m.resultCode !== 'unknown') return m.resultCode;
+    // Extract actionable category from build output
+    const output = typeof m.buildResult === 'object' && m.buildResult !== null ? (m.buildResult.output || '') : '';
+    if (typeof output === 'string' && output.length > 3) {
+      if (/TS\d{4}|typescript|type.?error/i.test(output)) return 'typescript_error';
+      if (/build.?fail|exit code [1-9]|ENOENT/i.test(output)) return 'build_failure';
+      if (/test.?fail|FAIL|assert/i.test(output)) return 'test_failure';
+      if (/lint|eslint|prettier/i.test(output)) return 'lint_error';
+      if (/import|module not found|cannot find/i.test(output)) return 'import_error';
+      if (/permission|EACCES|EPERM/i.test(output)) return 'permission_error';
+      if (/memory|heap|ENOMEM/i.test(output)) return 'memory_error';
+      if (output !== 'not_run') return output.slice(0, 40).replace(/[^a-z0-9_]/gi, '_').toLowerCase();
+    }
+    return 'unknown';
   };
 
   // 1. Check overall success rate (exclude benign failures from denominator)

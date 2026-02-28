@@ -22,6 +22,7 @@ const { isQueueEmpty } = require('./task-queue');
 const { isOverheating, isSafeToScan } = require('./m1-cooling-daemon');
 const { tryStrategicMission } = require('./strategic-brain');
 const { scanRevenueHealth, generateRevenueMission } = require('./revenue-health-scanner');
+const { generateEconomicMission } = require('./clawwork-integration');
 
 let intervalRef = null;
 let _questionLoopCount = 0; // 🧠 QUESTION loop detector (module-level to avoid 'state' TDZ)
@@ -486,7 +487,14 @@ async function handleScan(state, project, projectDir) {
     // Level 6: Strategic Autonomy — proactive improvement when GREEN
     const dispatched = await tryStrategicMission(state, project, projectDir);
     if (!dispatched) {
-      log(`AUTO-CTO [軍形 GREEN]: ${project} — ALL CLEAR ✅ Advancing to next project`);
+      // AGI L11: ClawWork Economic Benchmark — dispatch khi idle
+      const ecoMission = generateEconomicMission();
+      if (ecoMission) {
+        fs.writeFileSync(path.join(config.WATCH_DIR, ecoMission.filename), ecoMission.prompt);
+        log(`AUTO-CTO [作戰 CLAWWORK]: ${project} GREEN → Economic benchmark dispatched`);
+      } else {
+        log(`AUTO-CTO [軍形 GREEN]: ${project} — ALL CLEAR ✅ Advancing to next project`);
+      }
       advanceProject(state);
     } else {
       log(`AUTO-CTO [軍形 GREEN → 始計]: ${project} — Strategic mission dispatched. Advancing.`);

@@ -32,13 +32,52 @@ function log(msg) {
 
 /**
  * Get embedding vector for a given text.
- * Uses Antigravity Proxy (OpenAI-compatible embeddings endpoint).
+ * Strategy: Proxy API → local TF-IDF hash fallback.
+ * 🦞 FIX 2026-02-28: Proxy 0/4 success → add deterministic local fallback.
  */
 async function getEmbedding(text) {
+  try {
+    return await _getProxyEmbedding(text);
+  } catch (e) {
+    log(`Proxy embedding failed: ${e.message} — using local hash fallback`);
+    return _localHashEmbedding(text);
+  }
+}
+
+// Deterministic local embedding: character n-gram hashing.
+// Dims match proxy model (text-embedding-3-small = 1536) for LanceDB compatibility.
+function _localHashEmbedding(text, dims = 1536) {
+  const crypto = require('crypto');
+  const normalized = text.toLowerCase().replace(/[^\w\s]/g, '');
+  const vector = new Float32Array(dims);
+  const words = normalized.split(/\s+/).filter(w => w.length > 1);
+
+  // Hash each word + bigram into vector dimensions
+  for (let i = 0; i < words.length; i++) {
+    const unigram = crypto.createHash('md5').update(words[i]).digest();
+    for (let j = 0; j < unigram.length && j < dims; j++) {
+      vector[j % dims] += (unigram[j] - 128) / 128.0;
+    }
+    if (i + 1 < words.length) {
+      const bigram = crypto.createHash('md5').update(words[i] + ' ' + words[i + 1]).digest();
+      for (let j = 0; j < bigram.length; j++) {
+        vector[(j + 128) % dims] += (bigram[j] - 128) / 128.0;
+      }
+    }
+  }
+
+  // L2 normalize
+  let norm = 0;
+  for (let i = 0; i < dims; i++) norm += vector[i] * vector[i];
+  norm = Math.sqrt(norm) || 1;
+  return Array.from(vector.map(v => v / norm));
+}
+
+function _getProxyEmbedding(text) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       input: text,
-      model: "text-embedding-3-small" // Proxy maps this to best available
+      model: "text-embedding-3-small"
     });
 
     const req = http.request({
@@ -48,8 +87,9 @@ async function getEmbedding(text) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': 'ollama' // Required by Antigravity Proxy
-      }
+        'x-api-key': 'ollama'
+      },
+      timeout: 5000
     }, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
@@ -61,11 +101,12 @@ async function getEmbedding(text) {
           if (!vector) throw new Error('No embedding returned from proxy');
           resolve(vector);
         } catch (e) {
-          reject(new Error(`Embedding parse error: ${e.message} | Response: ${data.slice(0, 100)}`));
+          reject(new Error(`Embedding parse error: ${e.message}`));
         }
       });
     });
 
+    req.on('timeout', () => { req.destroy(); reject(new Error('Embedding request timeout')); });
     req.on('error', (e) => reject(new Error(`Embedding request failed: ${e.message}`)));
     req.write(body);
     req.end();

@@ -44,7 +44,11 @@ function loadMemory() {
 
 function saveMemory(mem) {
     mem.updatedAt = new Date().toISOString();
-    try { fs.writeFileSync(MEMORY_FILE, JSON.stringify(mem, null, 2)); } catch (e) { }
+    try {
+        const tmp = MEMORY_FILE + '.tmp';
+        fs.writeFileSync(tmp, JSON.stringify(mem, null, 2));
+        fs.renameSync(tmp, MEMORY_FILE); // atomic write
+    } catch (e) { }
 }
 
 /**
@@ -65,6 +69,25 @@ function recordSessionStart() {
     saveMemory(mem);
     log(`SESSION START: #${mem.sessions.length} — cross-session memory loaded (${Object.keys(mem.knowledgeGraph).length} knowledge nodes)`);
     return session.id;
+}
+
+/**
+ * Update session stats after each mission completes.
+ * 🦞 FIX 2026-02-28: Cross-session memory was NEVER updated post-mission.
+ * All 50 sessions showed missionsDispatched: 0 — this function closes the gap.
+ */
+function updateSessionStats({ dispatched = false, succeeded = false, bugFixed = false, lesson = null } = {}) {
+    const mem = loadMemory();
+    if (mem.sessions.length === 0) return;
+    const current = mem.sessions[mem.sessions.length - 1];
+    if (dispatched) current.missionsDispatched = (current.missionsDispatched || 0) + 1;
+    if (succeeded) current.missionsSucceeded = (current.missionsSucceeded || 0) + 1;
+    if (bugFixed) current.bugsFixed = (current.bugsFixed || 0) + 1;
+    if (lesson && !current.lessonsLearned.includes(lesson)) {
+        current.lessonsLearned.push(lesson);
+        if (current.lessonsLearned.length > 20) current.lessonsLearned = current.lessonsLearned.slice(-20);
+    }
+    saveMemory(mem);
 }
 
 /**
@@ -222,6 +245,6 @@ function getAGIScore() {
 }
 
 module.exports = {
-    recordSessionStart, recordBugPattern, recordInsight,
+    recordSessionStart, updateSessionStats, recordBugPattern, recordInsight,
     selfAnalyze, getAGIScore, loadMemory
 };

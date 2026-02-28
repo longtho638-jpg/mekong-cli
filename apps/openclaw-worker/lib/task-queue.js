@@ -10,6 +10,9 @@ const { pauseIfOverheating, waitForSafeTemperature } = require('./m1-cooling-dae
 const { runPostMissionGate } = require('./post-mission-gate');
 const { recordMission, countTokensBetween } = require('./mission-journal');
 const { reflectOnMission } = require('./post-mortem-reflector');
+const { updateSessionStats } = require('./self-analyzer');
+const { recordEconomicCompletion } = require('./clawwork-integration');
+const { postMissionSummary } = require('./moltbook-integration');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 // 🧬 FIX Bug #3: Priority sorting CRITICAL > HIGH > MEDIUM > LOW > (no prefix)
@@ -139,6 +142,7 @@ async function processQueue() {
         retryCounts.delete(taskFile);
         // 🧬 v32: Record blocked missions so they appear in journal (benign, not 'unknown')
         await recordMission({ project: projectShortNameEarly, missionId: missionIdEarly, taskFile, success: false, failureType: result.result, duration: durationMs, buildResult: { build: false, output: result.result }, tokensUsed: 0 });
+        updateSessionStats({ dispatched: true, lesson: result.result });
 
         // Treat as processed (archived) to unblock queue
         if (fs.existsSync(filePath)) {
@@ -184,11 +188,32 @@ async function processQueue() {
         tokensUsed: tokens
       });
 
+      // === 🧠 CROSS-SESSION MEMORY (AGI L10 — FIX 2026-02-28) ===
+      const missionSuccess = !!(result && result.success);
+      const isBugFix = /fix|bug|error|broken/i.test(content || '');
+      updateSessionStats({
+        dispatched: true,
+        succeeded: missionSuccess,
+        bugFixed: missionSuccess && isBugFix,
+        lesson: missionSuccess ? null : (result ? result.result : 'no_result')
+      });
+
+      // === 作戰 CLAWWORK: Record economic completion if applicable ===
+      const clawworkMatch = (content || '').match(/\[ClawWork:(gdp-\d+)\]/);
+      if (clawworkMatch) {
+        recordEconomicCompletion(clawworkMatch[1], missionSuccess, Math.round(durationMs / 1000));
+      }
+
+      // === 用間 MOLTBOOK: Post mission summary (rate-limited) ===
+      postMissionSummary(missionId, projectShortName, missionSuccess, Math.round(durationMs / 1000)).catch(e => {
+        log(`[MOLTBOOK] Post failed: ${e.message}`);
+      });
+
       // === 回光返照 POST-MORTEM (AGI Evolution — Persistent Learning) ===
       await reflectOnMission({
         project: projectShortName || 'unknown',
         missionId,
-        success: !!(result && result.success),
+        success: missionSuccess,
         duration: durationMs,
         tokensUsed: tokens,
         buildResult,
