@@ -10,22 +10,22 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
-  "dependencies": {
-    "ccxt": "^4.2.0",
-    "technicalindicators": "^3.1.0",
-    "winston": "^3.11.0",
-    "yaml": "^2.3.0",
-    "commander": "^11.1.0",
-    "chalk": "^4.1.2",
-    "dotenv": "^16.3.0"
-  },
   "devDependencies": {
-    "typescript": "^5.3.0",
-    "ts-node": "^10.9.0",
-    "@types/node": "^20.10.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^20.19.32",
     "@types/ws": "^8.5.0",
+    "ccxt": "^4.5.36",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "dotenv": "^16.6.1",
     "jest": "^29.7.0",
-    "@types/jest": "^29.5.0",
-    "ts-jest": "^29.1.0"
+    "pkg-dir": "9.0.0",
+    "technicalindicators": "^3.1.0",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.9.3",
+    "winston": "^3.19.0",
+    "yaml": "^2.8.2"
   }
 }

@@ -25,6 +25,14 @@ export class ConfigLoader {
       if (apiKey) this.config.exchange.apiKey = apiKey;
       if (apiSecret) this.config.exchange.secret = apiSecret;
 
+      // Strict validation
+      if (!this.config.exchange.apiKey || this.config.exchange.apiKey === 'YOUR_API_KEY' || this.config.exchange.apiKey === '') {
+        throw new Error('STRICT VALIDATION FAILED: Exchange API Key is missing or default');
+      }
+      if (!this.config.exchange.secret || this.config.exchange.secret === 'YOUR_API_SECRET' || this.config.exchange.secret === '') {
+        throw new Error('STRICT VALIDATION FAILED: Exchange API Secret is missing or default');
+      }
+
       return this.config;
     } catch (e) {
       logger.error(`Failed to load config from ${configPath}: ${e instanceof Error ? e.message : String(e)}`);

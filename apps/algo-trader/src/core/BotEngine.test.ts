@@ -91,8 +91,8 @@ describe('BotEngine', () => {
 
       await bot.start();
 
-      // fetchBalance should be called once during start to seed peakBalance
-      expect(exchange.fetchBalance).toHaveBeenCalled();
+      // fetchBalance should be called during start to syncPositionState and seed peakBalance
+      expect(exchange.fetchBalance).toHaveBeenCalledTimes(2);
     });
 
     it('should NOT stop if drawdown is below threshold', async () => {
@@ -101,13 +101,16 @@ describe('BotEngine', () => {
       const strategy = makeStrategy(SignalType.BUY);
       const bot = new BotEngine(strategy, dataProvider, exchange, makeConfig({ maxDrawdownPercent: 10 }));
 
+      exchange.fetchBalance
+        .mockResolvedValueOnce(makeBalance(10000)) // syncPositionState
+        .mockResolvedValueOnce(makeBalance(10000)) // start seed
+        .mockResolvedValueOnce(makeBalance(9500))  // drawdown check: 5% < 10%
+        .mockResolvedValueOnce(makeBalance(9500)); // executeTrade balance check
+
       await bot.start();
 
       // Simulate candle arriving
       const onCandle = (dataProvider.subscribe as jest.Mock).mock.calls[0][0];
-      exchange.fetchBalance
-        .mockResolvedValueOnce(makeBalance(10000)) // start seed
-        .mockResolvedValueOnce(makeBalance(9500));  // drawdown check: 5% < 10%
 
       await onCandle(makeCandle());
 
@@ -123,6 +126,7 @@ describe('BotEngine', () => {
 
       // Seed peak at 10000 on start, then current drops to 8000 (20% drawdown)
       exchange.fetchBalance
+        .mockResolvedValueOnce(makeBalance(10000)) // syncPositionState
         .mockResolvedValueOnce(makeBalance(10000)) // start seed
         .mockResolvedValueOnce(makeBalance(8000));  // drawdown check: 20% > 10%
 
@@ -144,6 +148,7 @@ describe('BotEngine', () => {
 
       // First start seeds 10000
       exchange.fetchBalance
+        .mockResolvedValueOnce(makeBalance(10000)) // syncPositionState
         .mockResolvedValueOnce(makeBalance(10000)) // start seed
         .mockResolvedValueOnce(makeBalance(12000)) // 1st candle: balance rose, update peak
         .mockResolvedValueOnce(makeBalance(11000)); // 2nd candle: 8.3% drawdown from 12000 — within 10%
@@ -169,10 +174,10 @@ describe('BotEngine', () => {
       const onCandle = (dataProvider.subscribe as jest.Mock).mock.calls[0][0];
       await onCandle(makeCandle());
 
-      // fetchBalance called only once (for trade flow — but no signal so 0 extra calls)
-      // Key: NOT called during start seeding
+      // fetchBalance called only once (during syncPositionState)
+      // Key: NOT called during start seeding or checkDrawdown
       const callsAfterConnect = exchange.fetchBalance.mock.calls.length;
-      expect(callsAfterConnect).toBe(0); // no balance fetch without drawdown config
+      expect(callsAfterConnect).toBe(1); // 1 balance fetch during syncPositionState, no drawdown check
     });
   });
 });

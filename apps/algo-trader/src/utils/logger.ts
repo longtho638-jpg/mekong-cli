@@ -1,7 +1,7 @@
 import * as winston from 'winston';
 import * as path from 'path';
 
-const logFormat = winston.format.printf((info) => {
+const logFormat = winston.format.printf((info: winston.Logform.TransformableInfo) => {
   const { level, message, timestamp } = info;
   return `${timestamp} [${level.toUpperCase()}]: ${message}`;
 });

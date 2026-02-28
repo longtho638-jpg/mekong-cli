@@ -11,6 +11,7 @@ export class TriangularArbitrage implements IStrategy {
   name = 'Triangular Arbitrage';
 
   private readonly minProfit = 0.0005; // 0.05%
+  private readonly feeRate = 0.001; // 0.1%
 
   async onCandle(candle: ICandle): Promise<ISignal | null> {
     // Giả định candle này là giá BTC/USDT (cặp cơ sở)
@@ -26,21 +27,26 @@ export class TriangularArbitrage implements IStrategy {
       return null;
     }
 
-    // Giả sử ta bắt đầu với 1 USDT
-    // 1. USDT -> BTC: amountBTC = 1 / priceBTC_USDT
-    // 2. BTC -> ETH: amountETH = amountBTC / priceETH_BTC
-    // 3. ETH -> USDT: finalUSDT = amountETH * priceETH_USDT
+    // Triangular Arbitrage Profit Calculation (Net of Fees)
+    // We must account for fees at each of the 3 trade steps.
 
-    const forwardRate = (1 / priceBTC_USDT / priceETH_BTC) * priceETH_USDT;
-    const forwardProfit = forwardRate - 1;
+    // 1. Forward Loop: USDT -> BTC -> ETH -> USDT
+    // Step 1: Buy BTC with USDT (USDT -> BTC)
+    const step1Forward = (1 / priceBTC_USDT) * (1 - this.feeRate);
+    // Step 2: Buy ETH with BTC (BTC -> ETH)
+    const step2Forward = (step1Forward / priceETH_BTC) * (1 - this.feeRate);
+    // Step 3: Sell ETH for USDT (ETH -> USDT)
+    const step3Forward = (step2Forward * priceETH_USDT) * (1 - this.feeRate);
+    const forwardProfit = step3Forward - 1;
 
-    // Ngược lại
-    // 1. USDT -> ETH: amountETH = 1 / priceETH_USDT
-    // 2. ETH -> BTC: amountBTC = amountETH * priceETH_BTC
-    // 3. BTC -> USDT: finalUSDT = amountBTC * priceBTC_USDT
-
-    const backwardRate = (1 / priceETH_USDT) * priceETH_BTC * priceBTC_USDT;
-    const backwardProfit = backwardRate - 1;
+    // 2. Backward Loop: USDT -> ETH -> BTC -> USDT
+    // Step 1: Buy ETH with USDT (USDT -> ETH)
+    const step1Backward = (1 / priceETH_USDT) * (1 - this.feeRate);
+    // Step 2: Sell ETH for BTC (ETH -> BTC)
+    const step2Backward = (step1Backward * priceETH_BTC) * (1 - this.feeRate);
+    // Step 3: Sell BTC for USDT (BTC -> USDT)
+    const step3Backward = (step2Backward * priceBTC_USDT) * (1 - this.feeRate);
+    const backwardProfit = step3Backward - 1;
 
     if (forwardProfit > this.minProfit) {
       return {

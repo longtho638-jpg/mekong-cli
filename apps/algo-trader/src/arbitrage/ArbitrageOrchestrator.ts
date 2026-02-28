@@ -11,6 +11,9 @@ import { RealTimePriceAggregator } from './RealTimePriceAggregator';
 import { ArbitrageScanner, ArbitrageOpportunity, ScannerConfig } from './ArbitrageScanner';
 import { ArbitrageExecutor, ExecutorConfig, ExecutionResult } from './ArbitrageExecutor';
 import { LatencyOptimizer } from './LatencyOptimizer';
+import { ProfitTracker } from './ProfitTracker';
+import { AdaptiveSpreadThreshold } from './AdaptiveSpreadThreshold';
+import { WebSocketPriceFeed } from './WebSocketPriceFeed';
 import { logger } from '../utils/logger';
 
 export interface OrchestratorConfig {
@@ -19,9 +22,14 @@ export interface OrchestratorConfig {
   scanner: Partial<ScannerConfig>;
   executor: Partial<ExecutorConfig>;
   enableLatencyOptimizer: boolean;
-  dailyResetHourUtc: number;        // Hour (0-23) to reset daily P&L (default: 0 = midnight UTC)
-  maxOpportunitiesPerCycle: number;  // Max opportunities to execute per scan cycle (default: 3)
-  logIntervalMs: number;            // Dashboard log interval (default: 60000)
+  enableProfitTracker: boolean;          // Track equity curve + drawdown (default: true)
+  enableAdaptiveThreshold: boolean;      // Auto-adjust spread threshold (default: true)
+  enableWebSocket: boolean;              // Use WebSocket feeds instead of REST polling (default: false)
+  initialEquity: number;                 // Starting equity for profit tracker (default: 10000)
+  maxDrawdownPercent: number;            // Halt trading if drawdown exceeds this (default: 20)
+  dailyResetHourUtc: number;             // Hour (0-23) to reset daily P&L (default: 0 = midnight UTC)
+  maxOpportunitiesPerCycle: number;      // Max opportunities to execute per scan cycle (default: 3)
+  logIntervalMs: number;                 // Dashboard log interval (default: 60000)
 }
 
 export interface OrchestratorStats {
@@ -41,6 +49,11 @@ const DEFAULT_CONFIG: OrchestratorConfig = {
   scanner: {},
   executor: {},
   enableLatencyOptimizer: true,
+  enableProfitTracker: true,
+  enableAdaptiveThreshold: true,
+  enableWebSocket: false,
+  initialEquity: 10000,
+  maxDrawdownPercent: 20,
   dailyResetHourUtc: 0,
   maxOpportunitiesPerCycle: 3,
   logIntervalMs: 60000,
