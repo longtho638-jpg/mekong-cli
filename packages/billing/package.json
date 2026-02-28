@@ -1,0 +1,22 @@
+{
+  "name": "@agencyos/billing",
+  "version": "0.1.0",
+  "description": "Reusable e-commerce billing primitives — payment verification, order state machine, validation schemas",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./payment": "./payment-utils.ts",
+    "./orders": "./order-state-machine.ts",
+    "./validation": "./validation-schemas.ts"
+  },
+  "files": [
+    "*.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "zod": "^3.0.0"
+  }
+}

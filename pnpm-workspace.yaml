@@ -6,4 +6,5 @@ packages:
   - 'packages/ui/*'
   - 'packages/tooling/*'
   - 'packages/trading-core'
+  - 'packages/billing'
   - 'apps/*'
