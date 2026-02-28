@@ -26,7 +26,7 @@ const VALID_TRANSITIONS: Record<string, VibePaymentStatusCode[]> = {
 };
 
 function isValidTransition(current: string, next: VibePaymentStatusCode): boolean {
-  const allowed = VALID_TRANSITIONS[current];
+  const allowed = VALID_TRANSITIONS[current.toLowerCase()];
   if (!allowed) return false;
   return allowed.includes(next);
 }

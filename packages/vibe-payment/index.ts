@@ -91,3 +91,25 @@ export {
 
 export { processWebhookEvent, isValidTransition } from './autonomous-webhook-handler';
 export type { WebhookHandlerDeps, OrderRecord, SubscriptionIntentRecord } from './autonomous-webhook-handler';
+
+// Billing webhook orchestrator (payment→subscription→tenant pipeline)
+export {
+  orchestrateBillingWebhook,
+  createBillingWebhookConfig,
+} from './billing-webhook-orchestrator';
+export type {
+  BillingOrchestrationDeps,
+  BillingOrchestrationResult,
+} from './billing-webhook-orchestrator';
+
+// Retry with exponential backoff
+export { withRetry } from './retry-with-backoff';
+export type { RetryConfig } from './retry-with-backoff';
+
+// Payment analytics types
+export type {
+  PaymentMetricsSummary,
+  PaymentEvent,
+  PaymentAnalyticsQuery,
+  RevenueByPeriod,
+} from './payment-analytics-types';
