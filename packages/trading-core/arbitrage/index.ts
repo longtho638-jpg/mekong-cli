@@ -20,3 +20,7 @@ export * from './websocket-price-feed';
 export * from './arbitrage-backtester';
 export * from './spread-detector-engine';
 export * from './arbitrage-orchestrator';
+// Strategy implementations (IStrategy-based, candle-driven)
+export * from './cross-exchange-arbitrage-strategy';
+export * from './triangular-arbitrage-strategy';
+export * from './statistical-arbitrage-strategy';
