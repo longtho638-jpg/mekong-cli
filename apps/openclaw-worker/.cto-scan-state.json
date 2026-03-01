@@ -1,6 +1,6 @@
 {
   "currentProjectIdx": 0,
-  "phase": "verify",
+  "phase": "fix",
   "cycle": 1,
   "errors": [
     {
@@ -11,5 +11,5 @@
       "project": "mekong-cli"
     }
   ],
-  "fixIndex": 1
+  "fixIndex": 0
 }
