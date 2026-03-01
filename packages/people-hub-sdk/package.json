@@ -1,0 +1,23 @@
+{
+  "name": "@agencyos/people-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified people SDK — HR, CRM, customer success, wellbeing, longevity",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./hr": "./hr-facade.ts",
+    "./crm": "./crm-facade.ts",
+    "./wellbeing": "./wellbeing-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-hr": "workspace:*",
+    "@agencyos/vibe-crm": "workspace:*",
+    "@agencyos/vibe-customer-success": "workspace:*",
+    "@agencyos/vibe-wellbeing": "workspace:*",
+    "@agencyos/vibe-wellness": "workspace:*",
+    "@agencyos/vibe-longevity": "workspace:*"
+  }
+}

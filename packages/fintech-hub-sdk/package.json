@@ -1,0 +1,26 @@
+{
+  "name": "@agencyos/fintech-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified fintech SDK — billing, payments, subscriptions, revenue, embedded finance, Stripe integration",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./billing": "./billing-facade.ts",
+    "./payments": "./payments-facade.ts",
+    "./subscriptions": "./subscriptions-facade.ts",
+    "./revenue": "./revenue-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-billing": "workspace:*",
+    "@agencyos/vibe-payment": "workspace:*",
+    "@agencyos/vibe-payment-router": "workspace:*",
+    "@agencyos/vibe-stripe": "workspace:*",
+    "@agencyos/vibe-money": "workspace:*",
+    "@agencyos/vibe-embedded-finance": "workspace:*",
+    "@agencyos/vibe-subscription": "workspace:*",
+    "@agencyos/vibe-revenue": "workspace:*"
+  }
+}

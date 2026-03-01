@@ -1,0 +1,22 @@
+{
+  "name": "@agencyos/ai-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified AI SDK — safety, agents, video intelligence, media trust, digital twins",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./safety": "./safety-facade.ts",
+    "./agents": "./agents-facade.ts",
+    "./media": "./media-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-ai-safety": "workspace:*",
+    "@agencyos/vibe-agents": "workspace:*",
+    "@agencyos/vibe-video-intel": "workspace:*",
+    "@agencyos/vibe-media-trust": "workspace:*",
+    "@agencyos/vibe-digital-twin": "workspace:*"
+  }
+}
