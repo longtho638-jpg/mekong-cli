@@ -1,38 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "369a581767b8",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
-      "dispatchedAt": 1772338676090
-    },
-    {
-      "hash": "2b2bf8ded4ca",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
-      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
-      "dispatchedAt": 1772338679429
-    },
-    {
-      "hash": "9e245f5f443e",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
-      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from BerriAI/l",
-      "dispatchedAt": 1772338681341
-    },
-    {
-      "hash": "703c4e77e8f4",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from railway/n",
-      "dispatchedAt": 1772338768487
-    },
-    {
       "hash": "8c2080c3e70e",
       "project": "mekong-cli",
       "pane": 0,
@@ -1599,6 +1567,38 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
       "dispatchedAt": 1772364267455
+    },
+    {
+      "hash": "dc4ad7472ad3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: resources",
+      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
+      "dispatchedAt": 1772364299603
+    },
+    {
+      "hash": "e800cb7686dd",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Targeting: tests",
+      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
+      "dispatchedAt": 1772364325796
+    },
+    {
+      "hash": "90bda4f85cbc",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Targeting: build",
+      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
+      "dispatchedAt": 1772364357877
+    },
+    {
+      "hash": "4b6d445c1e4d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
+      "dispatchedAt": 1772364517410
     }
   ],
   "chapterIndex": 5

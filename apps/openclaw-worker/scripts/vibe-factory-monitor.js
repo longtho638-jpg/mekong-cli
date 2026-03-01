@@ -127,13 +127,24 @@ const dedup = require('../lib/task-dedup-registry.js');
 // LLM TASK GENERATOR (Binh Pháp Strategic Scanner)
 // NEVER returns null — always produces a /plan:hard task
 // ══════════════════════════════════════════════════
+const lastDimension = {}; // paneIdx → last dimension used (to avoid repeat)
+
 async function generateScoreTargetedTask(pane, scoreResult) {
     // 1. Sort dimensions by score (lowest first)
     const sorted = Object.entries(scoreResult.breakdown)
         .sort(([, a], [, b]) => a - b);
 
     // 2. Each pane targets a DIFFERENT weak dimension (P0=weakest, P1=2nd, etc.)
-    const dimIndex = Math.min(pane.idx, sorted.length - 1);
+    // BUT skip the LAST dimension this pane used to avoid repeating same task
+    const baseIndex = Math.min(pane.idx, sorted.length - 1);
+    let dimIndex = baseIndex;
+    const last = lastDimension[pane.idx];
+    if (last && sorted[dimIndex][0] === last) {
+        // Try next dimension down the list (wrapping)
+        dimIndex = (dimIndex + 1) % sorted.length;
+    }
+    lastDimension[pane.idx] = sorted[dimIndex][0]; // record for next cycle
+
     const [weakestDim, weakestScore] = sorted[dimIndex];
     let taskCmd = '';
     const proj = pane.project;

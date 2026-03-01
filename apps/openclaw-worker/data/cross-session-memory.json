@@ -1,16 +1,6 @@
 {
   "sessions": [
     {
-      "id": 1772353126670,
-      "startedAt": "2026-03-01T08:18:46.670Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
       "id": 1772353400154,
       "startedAt": "2026-03-01T08:23:20.154Z",
       "missionsDispatched": 1,
@@ -443,6 +433,14 @@
     {
       "id": 1772364154434,
       "startedAt": "2026-03-01T11:22:34.434Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 1,
+      "bugsFixed": 1,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772364436099,
+      "startedAt": "2026-03-01T11:27:16.099Z",
       "missionsDispatched": 0,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
@@ -634,5 +632,5 @@
     }
   ],
   "createdAt": "2026-02-24T18:28:23.656Z",
-  "updatedAt": "2026-03-01T11:22:34.434Z"
+  "updatedAt": "2026-03-01T11:27:16.099Z"
 }
