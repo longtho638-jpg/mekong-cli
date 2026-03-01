@@ -15,16 +15,6 @@
     "DEPRIORITIZE: /debug \"Trả lời TIẾNG VIỆT. Ưu tiên /coo — 0 changes 3x in a row"
   ],
   "patterns": {
-    "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI": {
-      "runs": 2,
-      "successes": 0,
-      "rate": 0,
-      "avgTime": 87,
-      "totalTime": 173,
-      "filesChanged": 0,
-      "avgFilesPerRun": 0,
-      "lastRun": "2026-02-26T09:05:06.613Z"
-    },
     "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW": {
       "runs": 51,
       "successes": 6,
@@ -76,14 +66,14 @@
       "lastRun": "2026-02-27T12:19:30.339Z"
     },
     "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
-      "runs": 74,
-      "successes": 39,
-      "rate": 53,
+      "runs": 76,
+      "successes": 41,
+      "rate": 54,
       "avgTime": 80,
-      "totalTime": 5933,
+      "totalTime": 6093,
       "filesChanged": 0,
       "avgFilesPerRun": 0,
-      "lastRun": "2026-03-01T09:53:57.807Z"
+      "lastRun": "2026-03-01T10:06:07.400Z"
     },
     "/test \"Trả lời TIẾNG VIỆT. Ưu tiên /cook": {
       "runs": 2,
@@ -126,5 +116,5 @@
       "lastRun": "2026-02-27T01:30:51.813Z"
     }
   },
-  "updatedAt": "2026-03-01T09:59:42.000Z"
+  "updatedAt": "2026-03-01T10:06:07.401Z"
 }

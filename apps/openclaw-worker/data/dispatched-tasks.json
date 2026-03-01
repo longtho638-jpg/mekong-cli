@@ -1471,6 +1471,22 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
       "dispatchedAt": 1772359311378
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772359584282
+    },
+    {
+      "hash": "13ac8fdfde03",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: performance",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
+      "dispatchedAt": 1772359620892
     }
   ],
   "chapterIndex": 5

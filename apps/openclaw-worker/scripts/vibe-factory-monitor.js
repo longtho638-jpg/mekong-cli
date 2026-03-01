@@ -212,8 +212,12 @@ function detectPaneState(output) {
     // 🏭 FIX: CC CLI idle patterns — bypass on, cooked (finished), or just ❯ prompt
     // Fresh boot: shows `try "how do I log an error?"` or `try "fix typecheck errors"`
     if (/› try "/.test(output) && /bypass permissions on/.test(output)) return 'IDLE';
-    if (/bypass permissions on/.test(output) && !/Searching|Running|Explore|Read \d|Smooshing|Whisking|Bloviating|Churning|Building|Prestidigitating|Flowing|Crafting|Spiraling|Nesting|Puttering|Sautéed|Zigzagging|Cogitated|Enchanting|Perambulating|Hashing|Crunched/.test(output)) return 'IDLE';
+    if (/bypass permissions on/.test(output) && !/Searching|Running|Explore|Read \d|Smooshing|Whisking|Bloviating|Churning|Building|Prestidigitating|Flowing|Crafting|Spiraling|Nesting|Puttering|Zigzagging|Perambulating|Hashing/.test(output)) return 'IDLE';
     if (/Cooked for \d/.test(output)) return 'IDLE';
+    if (/Crunched for \d/.test(output)) return 'IDLE';
+    if (/Choreographed for \d/.test(output)) return 'IDLE';
+    if (/Sautéed for \d/.test(output)) return 'IDLE';
+    if (/\w+ed for \d+[ms]/.test(output) && /bypass permissions on/.test(output) && /❯/.test(output)) return 'IDLE';
     if (/❯\s*$/.test(output)) return 'IDLE';
     if (/(Whisking|Bloviating|Churning|Crystallizing|Sprouting|Deciphering|Prestidigitating|Puttering|Nesting|Crafting|Crunched|Warping|Flowing|Sock-hopping|Building|Sautéed|Zigzagging|Quantumizing|Cogitated|Enchanting|Discombobulating|Smooshing|Spiraling|Explore agents|Running \d|Perambulating|Hashing)/i.test(output)) return 'WORKING';
     return 'ACTIVE';

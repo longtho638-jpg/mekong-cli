@@ -66,5 +66,5 @@ export type {
 // Utilities
 export { isSafari } from './utils/browser-detect';
 
-// Legacy tokens (re-export from original index for backward compat)
-export { colors, gradients, animations, transitions, vibeClasses } from '../index';
+// Design tokens
+export { colors, gradients, animations, transitions, vibeClasses } from './design-tokens';
