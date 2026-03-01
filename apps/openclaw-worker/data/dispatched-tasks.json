@@ -1,30 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "6b2c045f9004",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
-      "preview": "/plan:hard \"Binh Phap Ch.6 虛實: Deep 10x LEARN architecture & pattern from portke",
-      "dispatchedAt": 1772336982771
-    },
-    {
-      "hash": "ab3337ad4eab",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
-      "preview": "/plan:hard \"Binh Phap Ch.7 軍爭: Deep 10x LEARN architecture & pattern from pulumi",
-      "dispatchedAt": 1772336989589
-    },
-    {
-      "hash": "348292998a0b",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
-      "preview": "/plan:hard \"Binh Phap Ch.8 九變: Deep 10x LEARN architecture & pattern from tempor",
-      "dispatchedAt": 1772337061427
-    },
-    {
       "hash": "fa2bbc40614b",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1575,30 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
       "dispatchedAt": 1772362153084
+    },
+    {
+      "hash": "90bda4f85cbc",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Targeting: build",
+      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
+      "dispatchedAt": 1772362268243
+    },
+    {
+      "hash": "a91c57b0f324",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Targeting: build",
+      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
+      "dispatchedAt": 1772362333755
+    },
+    {
+      "hash": "4b6d445c1e4d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
+      "dispatchedAt": 1772362423756
     }
   ],
   "chapterIndex": 5

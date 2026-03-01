@@ -7,7 +7,7 @@
       "type": "build",
       "severity": "critical",
       "file": "package.json",
-      "message": "Build command failed with exit code 1. Output snippet:  > mekong-cli@2.1.33 build > npx turbo run build  • turbo 2.8.12   x Invalid package dependency graph:   `-> Cyclic dependency detected:       \t@agencyos/trading-core, @agencyos/vibe-arbitrage-engine ...",
+      "message": "Build command failed with exit code 1. Output snippet:  > mekong-cli@2.1.33 build > npx turbo run build   WARNING  No locally installed `turbo` found in your repository. Using globally installed version (2.8.12), which can cause unexpected behavior.  Inst...",
       "project": "mekong-cli"
     }
   ],

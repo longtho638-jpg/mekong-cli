@@ -1,8 +1,8 @@
 [
   {
     "project": "algo-trader",
-    "timestamp": "2026-03-01T10:45:38.193Z",
-    "build": "GREEN",
+    "timestamp": "2026-03-01T10:50:14.852Z",
+    "build": "RED",
     "techDebt": {
       "todos": 8,
       "consoleLogs": 50
@@ -12,8 +12,8 @@
   },
   {
     "project": "well",
-    "timestamp": "2026-03-01T10:45:52.129Z",
-    "build": "GREEN",
+    "timestamp": "2026-03-01T10:50:35.088Z",
+    "build": "RED",
     "techDebt": {
       "todos": 536,
       "consoleLogs": 1745
