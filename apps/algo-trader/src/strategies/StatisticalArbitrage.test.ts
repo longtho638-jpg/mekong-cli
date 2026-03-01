@@ -1,4 +1,4 @@
-import { StatisticalArbitrage } from './StatisticalArbitrage';
+import { StatisticalArbitrage } from '@agencyos/trading-core/arbitrage';
 import { SignalType } from '../interfaces/IStrategy';
 
 describe('StatisticalArbitrage', () => {
