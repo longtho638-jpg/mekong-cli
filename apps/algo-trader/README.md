@@ -139,7 +139,36 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 | `arb:engine` | Full SpreadDetectorEngine (scoring + orderbook + circuit breaker) |
 | `arb:orchestrator` | ArbitrageOrchestrator with latency optimizer + adaptive threshold |
 | `arb:auto` | **Unified auto-execution**: detect → score → validate → execute |
+| `arb:spread` | **Spread detector**: BTC/ETH cross-exchange scanner + auto-exec (Binance/OKX/Bybit) |
 | `arb:agi` | **AGI Arbitrage**: regime detection + Kelly sizing + self-tuning (recommended) |
+
+### arb:spread (Cross-Exchange Spread Detector)
+
+```bash
+# Default: BTC/USDT + ETH/USDT on Binance/OKX/Bybit, auto-execute
+npx ts-node src/index.ts arb:spread
+
+# Dry-run (scan only, no trades)
+npx ts-node src/index.ts arb:spread --dry-run
+
+# Custom config
+npx ts-node src/index.ts arb:spread \
+  -p BTC/USDT,ETH/USDT \
+  -e binance,okx,bybit \
+  -s 500 \
+  -t 0.08 \
+  --score-threshold 60 \
+  --max-loss 50
+
+# Limited polls (stop after 100 cycles)
+npx ts-node src/index.ts arb:spread --max-polls 100
+```
+
+**Features:**
+- Real-time spread dashboard every 5 cycles
+- Signal scoring + orderbook validation (auto-exec mode)
+- Circuit breaker with max daily loss protection
+- `--dry-run` for safe monitoring without execution
 
 ### arb:agi (Recommended for Production)
 

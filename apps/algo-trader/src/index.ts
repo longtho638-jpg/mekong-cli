@@ -7,6 +7,7 @@ import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exc
 import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
 import { registerArbCommands } from './cli/arb-cli-commands';
+import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
 import { logger } from './utils/logger';
 import * as dotenv from 'dotenv';
 
@@ -238,6 +239,7 @@ program
 
 // Register all arb:* commands from extracted module
 registerArbCommands(program);
+registerSpreadDetectorCommand(program);
 
 // Global handlers for unhandled promise rejections and uncaught exceptions
 process.on('unhandledRejection', (reason: unknown) => {
