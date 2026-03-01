@@ -1575,6 +1575,14 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
       "dispatchedAt": 1772360430221
+    },
+    {
+      "hash": "13ac8fdfde03",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: performance",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
+      "dispatchedAt": 1772360461986
     }
   ],
   "chapterIndex": 5
