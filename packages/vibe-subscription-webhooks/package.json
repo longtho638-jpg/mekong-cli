@@ -13,17 +13,13 @@
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
-    "@agencyos/vibe-subscription": "workspace:*",
-    "@agencyos/webhook-billing-sdk": "workspace:*"
+    "@agencyos/vibe-subscription": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
   },
   "peerDependenciesMeta": {
     "@agencyos/vibe-subscription": {
-      "optional": true
-    },
-    "@agencyos/webhook-billing-sdk": {
       "optional": true
     }
   }

@@ -153,3 +153,4 @@ test_output.txt
 team_test_output.txt
 coverage_full.txt
 coverage_report.txt
+*.mission-active-*.lock

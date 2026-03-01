@@ -7,10 +7,7 @@
     "esModuleInterop": true,
     "declaration": true,
     "outDir": "./dist",
-    "baseUrl": ".",
-    "paths": {
-      "@agencyos/vibe-arbitrage-engine": ["../vibe-arbitrage-engine/index.ts"]
-    }
+    "baseUrl": "."
   },
   "include": ["**/*.ts"],
   "exclude": ["node_modules", "dist"]

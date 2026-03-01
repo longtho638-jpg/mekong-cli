@@ -2277,9 +2277,6 @@ importers:
       '@supabase/supabase-js':
         specifier: ^2.93.3
         version: 2.98.0(bufferutil@4.1.0)(utf-8-validate@5.0.10)
-      '@types/dompurify':
-        specifier: ^3.0.5
-        version: 3.2.0
       ai:
         specifier: ^4.1.45
         version: 4.3.19(react@19.2.4)(zod@3.25.76)
@@ -3068,9 +3065,6 @@ importers:
 
   packages/trading-core:
     dependencies:
-      '@agencyos/vibe-arbitrage-engine':
-        specifier: workspace:*
-        version: link:../vibe-arbitrage-engine
       ccxt:
         specifier: ^4.0.0
         version: 4.5.40(bufferutil@4.1.0)(utf-8-validate@5.0.10)
@@ -3507,9 +3501,6 @@ importers:
       '@agencyos/vibe-subscription':
         specifier: workspace:*
         version: link:../vibe-subscription
-      '@agencyos/webhook-billing-sdk':
-        specifier: workspace:*
-        version: link:../webhook-billing-sdk
 
   packages/vibe-supabase:
     dependencies:
