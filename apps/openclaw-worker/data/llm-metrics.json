@@ -1,7 +1,7 @@
 {
-  "calls": 10,
+  "calls": 12,
   "successes": 0,
-  "failures": 10,
+  "failures": 12,
   "avgLatencyMs": 0,
-  "totalLatencyMs": 44
+  "totalLatencyMs": 50
 }
