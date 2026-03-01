@@ -1,6 +1,6 @@
 /**
  * Arbitrage CLI commands — All arb:* commands extracted from index.ts.
- * Registers: arb:scan, arb:run, arb:engine, arb:orchestrator, arb:auto
+ * Registers: arb:scan, arb:run, arb:engine, arb:orchestrator, arb:auto, arb:agi
  *
  * All arb logic from @agencyos/trading-core (single source of truth).
  * App provides ExchangeClientBase as IExchange factory for CCXT connectivity.
@@ -12,6 +12,7 @@ import {
   ArbitrageExecutor,
   SpreadDetectorEngine,
   ArbitrageOrchestrator,
+  AgiArbitrageEngine,
   ExchangeConfig,
 } from '@agencyos/trading-core/arbitrage';
 import { ExchangeClientBase } from '@agencyos/trading-core/exchanges';
@@ -38,6 +39,7 @@ export function registerArbCommands(program: Command): void {
   registerArbEngine(program);
   registerArbOrchestrator(program);
   registerArbAuto(program);
+  registerArbAgi(program);
 }
 
 function registerArbScan(program: Command): void {
@@ -259,6 +261,81 @@ function registerArbOrchestrator(program: Command): void {
         process.on('SIGTERM', shutdown);
       } catch (error: unknown) {
         logger.error(`Orchestrator failed: ${error instanceof Error ? error.message : String(error)}`);
+        process.exit(1);
+      }
+    });
+}
+
+function registerArbAgi(program: Command): void {
+  program
+    .command('arb:agi')
+    .description('AGI Arbitrage: intelligent spread detection with regime detection, Kelly sizing, self-tuning')
+    .option('-p, --pairs <string>', 'Comma-separated trading pairs', 'BTC/USDT,ETH/USDT')
+    .option('-e, --exchanges <string>', 'Comma-separated exchange IDs', 'binance,okx,bybit')
+    .option('-s, --size <number>', 'Max position size USD', '1000')
+    .option('-t, --threshold <number>', 'Min spread %', '0.05')
+    .option('--equity <number>', 'Initial equity USD', '10000')
+    .option('--max-loss <number>', 'Max daily loss USD', '100')
+    .option('--score-threshold <number>', 'Base signal score threshold (0-100)', '65')
+    .option('--no-regime', 'Disable regime detection')
+    .option('--no-kelly', 'Disable Kelly position sizing')
+    .option('--no-self-tune', 'Disable self-tuning thresholds')
+    .option('--regime-interval <number>', 'Regime detection interval ms', '30000')
+    .action(async (options) => {
+      const symbols = parseList(options.pairs);
+      const exchangeIds = parseList(options.exchanges);
+      validateMinExchanges(exchangeIds);
+
+      const exchanges = buildExchangeConfigs(exchangeIds);
+
+      logger.info(`[AGI] Starting: ${exchangeIds.join('/')} | ${symbols.join(', ')} | Size: $${options.size} | Score>=${options.scoreThreshold}`);
+
+      const engine = new AgiArbitrageEngine({
+        engine: {
+          exchanges,
+          symbols,
+          exchangeFactory,
+          scanner: { minSpreadPercent: parseFloat(options.threshold), pollIntervalMs: 2000 },
+          executor: { maxPositionSizeUsd: parseFloat(options.size), maxConcurrentTrades: 3 },
+          scorer: { executeThreshold: parseInt(options.scoreThreshold) },
+          circuitBreaker: { maxDailyLossUsd: parseFloat(options.maxLoss), maxConsecutiveLosses: 5 },
+          initialEquity: parseFloat(options.equity),
+          maxOpportunitiesPerCycle: 5,
+          enableOrderBookValidation: true,
+          enableSignalScoring: true,
+          enableSpreadHistory: true,
+        },
+        enableRegimeDetection: options.regime !== false,
+        enableKellySizing: options.kelly !== false,
+        enableSelfTuning: options.selfTune !== false,
+        regimeIntervalMs: parseInt(options.regimeInterval),
+        initialEquity: parseFloat(options.equity),
+      });
+
+      try {
+        await engine.init();
+        await engine.start();
+
+        logger.info('[AGI] AGI arbitrage engine ACTIVE — intelligent spread detection running');
+        logger.info(`[AGI] Regime: ${options.regime !== false ? 'ON' : 'OFF'} | Kelly: ${options.kelly !== false ? 'ON' : 'OFF'} | Self-tune: ${options.selfTune !== false ? 'ON' : 'OFF'}`);
+
+        const shutdown = () => {
+          engine.stop();
+          const stats = engine.getStats();
+          const profit = engine.getProfitSummary();
+          logger.info('\n[AGI] === FINAL REPORT ===');
+          logger.info(`[AGI] Regime: ${stats.currentRegime} (confidence: ${(stats.regimeConfidence * 100).toFixed(0)}%)`);
+          logger.info(`[AGI] Kelly fraction: ${(stats.kellyFraction * 100).toFixed(1)}% | Position: $${stats.currentPositionSize.toFixed(0)}`);
+          logger.info(`[AGI] Effective thresholds: score=${stats.effectiveScoreThreshold.toFixed(0)} | spread=${stats.effectiveSpreadThreshold.toFixed(3)}%`);
+          logger.info(`[AGI] Detections: ${stats.totalDetections} | Executed: ${stats.totalExecuted} | Success: ${stats.successfulExecutions}`);
+          logger.info(`[AGI] P&L: $${profit.cumulativePnl.toFixed(2)} | EMA profit: $${stats.emaProfitability.toFixed(2)} | Regime shifts: ${stats.totalRegimeShifts}`);
+          logger.info(`[AGI] Circuit: ${stats.circuitState}`);
+          process.exit(0);
+        };
+        process.on('SIGINT', shutdown);
+        process.on('SIGTERM', shutdown);
+      } catch (error: unknown) {
+        logger.error(`AGI failed: ${error instanceof Error ? error.message : String(error)}`);
         process.exit(1);
       }
     });

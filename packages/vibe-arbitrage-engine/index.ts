@@ -33,9 +33,14 @@ export * from './websocket-price-feed';
 // Backtesting
 export * from './arbitrage-backtester';
 
+// AGI intelligence layer
+export * from './regime-detector';
+export * from './kelly-position-sizer';
+
 // Engines (top-level orchestrators)
 export * from './spread-detector-engine';
 export * from './arbitrage-orchestrator';
+export * from './agi-arbitrage-engine';
 
 // Strategy implementations
 export * from './strategies';

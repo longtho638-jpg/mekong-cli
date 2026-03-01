@@ -123,6 +123,7 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 | Triangular Arbitrage | Arbitrage | 3-pair price discrepancy |
 | Statistical Arbitrage | Arbitrage | Mean-reversion on correlated pairs |
 | Cross-Exchange Arbitrage | Arbitrage | Same asset price gaps across exchanges |
+| AGI Arbitrage | Arbitrage | Regime-aware, Kelly-sized, self-tuning multi-exchange |
 
 ## CLI Commands
 
@@ -137,9 +138,37 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 | `arb:run` | Live cross-exchange arbitrage (scanner + executor) |
 | `arb:engine` | Full SpreadDetectorEngine (scoring + orderbook + circuit breaker) |
 | `arb:orchestrator` | ArbitrageOrchestrator with latency optimizer + adaptive threshold |
-| `arb:auto` | **Unified auto-execution**: detect → score → validate → execute (recommended) |
+| `arb:auto` | **Unified auto-execution**: detect → score → validate → execute |
+| `arb:agi` | **AGI Arbitrage**: regime detection + Kelly sizing + self-tuning (recommended) |
 
-### arb:auto (Recommended for Production)
+### arb:agi (Recommended for Production)
+
+```bash
+# Default: full AGI pipeline with regime detection + Kelly sizing
+npx ts-node src/index.ts arb:agi
+
+# Custom config
+npx ts-node src/index.ts arb:agi \
+  -p BTC/USDT,ETH/USDT \
+  -e binance,okx,bybit \
+  -s 1000 \
+  --score-threshold 65 \
+  --max-loss 100
+
+# Disable optional AGI features
+npx ts-node src/index.ts arb:agi --no-regime --no-kelly --no-self-tune
+
+# Custom regime detection interval (ms)
+npx ts-node src/index.ts arb:agi --regime-interval 15000
+```
+
+**AGI Features:**
+- **Regime Detection** — Hurst exponent + volatility ratio classifies market (trending/mean-reverting/volatile/quiet)
+- **Kelly Position Sizing** — Optimal position sizing based on historical win rate and payoff ratio
+- **Self-Tuning** — Score/spread thresholds auto-adjust via EMA of profitability
+- **Strategy Routing** — Execution parameters adapt per detected regime
+
+### arb:auto
 
 ```bash
 # Default: BTC/USDT + ETH/USDT on Binance/OKX/Bybit
@@ -170,7 +199,7 @@ npx ts-node src/index.ts arb:auto --no-orderbook --no-scoring
 - **CCXT** — 100+ exchange support
 - **technicalindicators** — RSI, SMA, EMA
 - **winston** — structured logging
-- **jest** — 296 tests across indicators + arbitrage (95% coverage)
+- **jest** — 342 tests across indicators + arbitrage + AGI (95% coverage)
 
 ## Security
 

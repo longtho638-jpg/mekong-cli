@@ -10,7 +10,8 @@
     "./executor": "./arbitrage-executor.ts",
     "./engine": "./spread-detector-engine.ts",
     "./orchestrator": "./arbitrage-orchestrator.ts",
-    "./strategies": "./strategies/index.ts"
+    "./strategies": "./strategies/index.ts",
+    "./agi": "./agi-arbitrage-engine.ts"
   },
   "files": [
     "*.ts",
