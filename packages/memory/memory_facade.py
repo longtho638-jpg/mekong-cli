@@ -130,6 +130,46 @@ class MemoryFacade:
             logger.debug("MemoryFacade.search: Mem0 empty, caller may use YAML fallback")
         return []
 
+    def update(self, memory_id: str, content: str) -> bool:
+        """Update an existing memory's content.
+
+        Args:
+            memory_id: Unique ID returned by Mem0.
+            content: New text content.
+
+        Returns:
+            True on success, False if unavailable or error.
+        """
+        if self._vector_ready:
+            return self._mem0.update(memory_id, content)
+        return False
+
+    def get_all(self, user_id: str = "default:session") -> List[Dict[str, Any]]:
+        """Retrieve all memories for a user/agent scope.
+
+        Args:
+            user_id: Scoping key in ``{agent}:{session}`` format.
+
+        Returns:
+            List of all stored memories.
+        """
+        if self._vector_ready:
+            return self._mem0.get_all(user_id=user_id)
+        return []
+
+    def history(self, memory_id: str) -> List[Dict[str, Any]]:
+        """Get change history of a memory entry.
+
+        Args:
+            memory_id: Unique ID returned by Mem0.
+
+        Returns:
+            List of history entries.
+        """
+        if self._vector_ready:
+            return self._mem0.history(memory_id)
+        return []
+
     def forget(self, memory_id: str) -> bool:
         """Delete a memory by ID from vector store.
 

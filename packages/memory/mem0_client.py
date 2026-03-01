@@ -161,6 +161,67 @@ class Mem0Client:
             logger.warning(f"Mem0 search failed: {e}")
             return []
 
+    def update(
+        self,
+        memory_id: str,
+        content: str,
+    ) -> bool:
+        """Update an existing memory's content.
+
+        Args:
+            memory_id: Unique identifier of the memory to update.
+            content: New text content.
+
+        Returns:
+            True on success, False on any failure.
+        """
+        if not self.is_available:
+            return False
+        try:
+            self._mem0.update(memory_id, content)
+            logger.debug(f"Mem0 update: id={memory_id}")
+            return True
+        except Exception as e:
+            logger.warning(f"Mem0 update failed: {e}")
+            return False
+
+    def get_all(self, user_id: str) -> List[Dict[str, Any]]:
+        """Retrieve all memories for a user/agent scope.
+
+        Args:
+            user_id: Scoping key in format ``{agent}:{session}``.
+
+        Returns:
+            List of all stored memories for the user.
+        """
+        if not self.is_available:
+            return []
+        try:
+            results = self._mem0.get_all(user_id=user_id)
+            logger.debug(f"Mem0 get_all: user={user_id} count={len(results)}")
+            return results if isinstance(results, list) else []
+        except Exception as e:
+            logger.warning(f"Mem0 get_all failed: {e}")
+            return []
+
+    def history(self, memory_id: str) -> List[Dict[str, Any]]:
+        """Get change history of a memory entry.
+
+        Args:
+            memory_id: Unique identifier of the memory.
+
+        Returns:
+            List of history entries (version, content, timestamp).
+        """
+        if not self.is_available:
+            return []
+        try:
+            hist = self._mem0.history(memory_id)
+            return hist if isinstance(hist, list) else []
+        except Exception as e:
+            logger.warning(f"Mem0 history failed: {e}")
+            return []
+
     def forget(self, memory_id: str) -> bool:
         """Delete a specific memory by ID.
 
