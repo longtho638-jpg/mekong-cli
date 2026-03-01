@@ -174,7 +174,7 @@ describe("VIBE UI Design System", () => {
     });
 
     it("should have valid animation objects", () => {
-      const animationKeys = ["initial", "animate", "exit"];
+      const animationKeys: Array<keyof typeof animations.fadeIn> = ["initial", "animate", "exit"];
       animationKeys.forEach((key) => {
         expect(animations.fadeIn[key]).toBeDefined();
         expect(typeof animations.fadeIn[key]).toBe("object");

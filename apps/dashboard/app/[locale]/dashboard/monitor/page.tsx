@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { getSystemStatus, type DashboardResponse } from '@/lib/monitor-api'
 import { SystemHealthCard } from '@/components/SystemHealthCard'
-import { Card, CardContent, CardHeader, CardTitle } from '@agencyos/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '@mekong/ui'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 
 export default function MonitorPage() {

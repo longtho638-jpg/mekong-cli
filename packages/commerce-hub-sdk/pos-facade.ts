@@ -9,7 +9,5 @@
 
 export {
   createOrderEngine,
-  createTableManager,
   createKitchenDisplay,
-  createReceiptGenerator,
 } from '@agencyos/vibe-pos';

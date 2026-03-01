@@ -10,7 +10,6 @@
  *   const session = await hooks.startCheckout({ priceId: 'price_...', email: '...' });
  */
 
-// @ts-expect-error — monorepo workspace resolution at build time
 import type { PlanTier } from '@agencyos/vibe-subscription';
 import type {
   StripeConfig,

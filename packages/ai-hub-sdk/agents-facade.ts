@@ -32,8 +32,12 @@ export interface AgentRun {
   toolCalls: { tool: string; input: unknown; output: unknown }[];
 }
 
+const DEFAULT_MAX_TURNS = 10;
+
 export class AgentsFacade {
   async createAgent(config: AgentConfig): Promise<{ id: string }> {
+    const resolvedConfig = { ...config, maxTurns: config.maxTurns ?? DEFAULT_MAX_TURNS };
+    void resolvedConfig;
     throw new Error('Implement with vibe-agents provider');
   }
 

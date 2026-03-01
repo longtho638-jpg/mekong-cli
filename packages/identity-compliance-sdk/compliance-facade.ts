@@ -19,5 +19,5 @@ export {
 export {
   createRiskScorer,
   createSanctionsScreener,
-  createPerpetualKYCMonitor,
+  createPerpetualKycMonitor,
 } from '@agencyos/vibe-compliance-auto';

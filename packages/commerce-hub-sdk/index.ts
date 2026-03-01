@@ -13,10 +13,10 @@
  */
 
 // E-Commerce
-export { createCartEngine, createOrderManager, createPromotionEngine, createPricingEngine } from './ecommerce-facade';
+export { createCartEngine, createOrderManager, createPromotionEngine } from './ecommerce-facade';
 
 // POS
-export { createOrderEngine, createTableManager, createKitchenDisplay, createReceiptGenerator } from './pos-facade';
+export { createOrderEngine, createKitchenDisplay } from './pos-facade';
 
 // F&B
 export { createMenuEngine, createInventoryTracker } from './fnb-facade';

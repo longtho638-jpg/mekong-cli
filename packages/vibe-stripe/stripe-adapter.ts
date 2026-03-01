@@ -11,7 +11,6 @@
  */
 
 // Types from vibe-payment (resolved via workspace:* peerDependency)
-// @ts-expect-error — monorepo workspace resolution at build time
 import type { VibePaymentProvider, VibePaymentRequest, VibePaymentResponse, VibePaymentStatus, VibePaymentStatusCode, VibeWebhookEvent } from '@agencyos/vibe-payment';
 
 import type {

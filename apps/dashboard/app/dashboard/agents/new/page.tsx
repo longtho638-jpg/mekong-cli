@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { getAvailableSkills, createAgent, type AgentDefinition } from '@/lib/agent-creator-api'
-import { Button, Card, CardHeader, CardTitle, CardContent, Input, Textarea } from '@agencyos/ui'
+import { Button, Card, CardHeader, CardTitle, CardContent, Input, Textarea } from '@mekong/ui'
 import { useRouter } from 'next/navigation'
 
 export default function NewAgentPage() {

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
-import { Button, Card, CardHeader, CardTitle, CardContent, Input } from '@agencyos/ui'
+import { Button, Card, CardHeader, CardTitle, CardContent, Input } from '@mekong/ui'
 import { Shield } from 'lucide-react'
 
 export default function LoginPage() {
@@ -58,7 +58,7 @@ export default function LoginPage() {
               <Input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                 placeholder="admin"
                 required
               />
@@ -68,7 +68,7 @@ export default function LoginPage() {
               <Input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                 placeholder="secret"
                 required
               />

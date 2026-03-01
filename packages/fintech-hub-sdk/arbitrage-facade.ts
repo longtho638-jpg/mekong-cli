@@ -3,8 +3,8 @@
  * Re-exports cross-exchange arbitrage operations from @agencyos/vibe-arbitrage-engine.
  */
 export {
-  createArbitrageScanner,
-  createArbitrageExecutor,
+  ArbitrageScanner,
+  ArbitrageExecutor,
   type ArbitrageOpportunity,
-  type ArbitrageConfig,
+  type ExecutorConfig as ArbitrageConfig,
 } from '@agencyos/vibe-arbitrage-engine';

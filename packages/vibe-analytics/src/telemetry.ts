@@ -16,8 +16,8 @@ export class VibeTelemetry {
     }
   }
 
-  setUser(userId: string): void { this.userId = userId; }
-  setEndpoint(url: string): void { this.endpoint = url; }
+  setUser(userId: string | undefined): void { this.userId = userId; }
+  setEndpoint(url: string | undefined): void { this.endpoint = url; }
 
   track(event: VibeEvent, metadata?: Record<string, unknown>): void {
     const payload: VibeEventPayload = { event, sessionId: getSessionId(), userId: this.userId, timestamp: Date.now(), metadata };

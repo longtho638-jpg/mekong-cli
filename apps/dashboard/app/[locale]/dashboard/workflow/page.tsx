@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import WorkflowEditor from '@/components/workflow/WorkflowEditor'
 import { listWorkflows, executeWorkflow, type WorkflowSummary } from '@/lib/workflow-api'
-import { Button, Card, CardHeader, CardTitle, CardContent } from '@agencyos/ui'
+import { Button, Card, CardHeader, CardTitle, CardContent } from '@mekong/ui'
 import { Play, Plus } from 'lucide-react'
 
 export default function WorkflowPage() {

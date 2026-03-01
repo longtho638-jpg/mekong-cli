@@ -8,6 +8,6 @@ export { SubscriptionsFacade } from './subscriptions-facade';
 export { RevenueFacade } from './revenue-facade';
 export { SubscriptionWebhooksFacade } from './subscription-webhooks-facade';
 // Arbitrage
-export { createArbitrageScanner, createArbitrageExecutor } from './arbitrage-facade';
+export { ArbitrageScanner, ArbitrageExecutor } from './arbitrage-facade';
 // Webhook Billing
 export * from './webhook-facade';

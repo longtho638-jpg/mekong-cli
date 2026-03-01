@@ -17,7 +17,7 @@
 export { createCredentialIssuer, createIdentityWallet, createVerificationEngine } from './identity-facade';
 
 // Compliance (KYC/AML, Audit Trails)
-export { createKYCEngine, createAuditTrail, createComplianceChecker, createRiskScorer, createSanctionsScreener, createPerpetualKYCMonitor } from './compliance-facade';
+export { createKYCEngine, createAuditTrail, createComplianceChecker, createRiskScorer, createSanctionsScreener, createPerpetualKycMonitor } from './compliance-facade';
 
 // Consent (GDPR/CCPA)
 export { createConsentManager, createDSRProcessor, createDataMapper } from './consent-facade';

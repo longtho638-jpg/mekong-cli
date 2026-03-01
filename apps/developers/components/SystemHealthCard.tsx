@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@agencyos/ui'
+import { Card, CardContent, CardHeader, CardTitle } from '@mekong/ui'
 import type { SystemStatus } from '@/lib/monitor-api'
 import { CheckCircle, AlertTriangle, XCircle, HelpCircle } from 'lucide-react'
 

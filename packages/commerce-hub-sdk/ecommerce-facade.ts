@@ -11,5 +11,4 @@ export {
   createCartEngine,
   createOrderManager,
   createPromotionEngine,
-  createPricingEngine,
 } from '@agencyos/vibe-ecommerce';

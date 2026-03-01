@@ -1,10 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, type MockInstance } from 'vitest';
 import { createLogger, createSilentLogger } from './logger.js';
 
 describe('logger', () => {
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>;
-  let consoleWarnSpy: ReturnType<typeof vi.spyOn>;
-  let consoleErrorSpy: ReturnType<typeof vi.spyOn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let consoleLogSpy: MockInstance<any[], void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let consoleWarnSpy: MockInstance<any[], void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let consoleErrorSpy: MockInstance<any[], void>;
   
   beforeEach(() => {
     consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});

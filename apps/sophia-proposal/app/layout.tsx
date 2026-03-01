@@ -1,18 +1,16 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { LazyMotionProvider } from "./components/providers/LazyMotionProvider";
 
-const inter = localFont({
-  src: "./fonts/GeistVF.woff",
+const inter = Geist({
   variable: "--font-inter",
-  weight: "100 900",
+  subsets: ["latin"],
 });
 
-const spaceGrotesk = localFont({
-  src: "./fonts/GeistMonoVF.woff",
+const spaceGrotesk = Geist_Mono({
   variable: "--font-space",
-  weight: "100 900",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {

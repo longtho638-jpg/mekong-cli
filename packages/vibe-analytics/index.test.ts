@@ -251,7 +251,7 @@ describe("VIBE Analytics", () => {
         { name: "other-paint", startTime: 5678 },
       ];
 
-      (performance.getEntriesByType as any).mockImplementation((type) => {
+      (performance.getEntriesByType as any).mockImplementation((type: string) => {
         if (type === "paint") return mockPaintEntries;
         if (type === "navigation") return [];
         return [];
@@ -271,7 +271,7 @@ describe("VIBE Analytics", () => {
         loadEventEnd: 2500,
       };
 
-      (performance.getEntriesByType as any).mockImplementation((type) => {
+      (performance.getEntriesByType as any).mockImplementation((type: string) => {
         if (type === "paint") return [];
         if (type === "navigation") return [mockNavEntry];
         return [];
