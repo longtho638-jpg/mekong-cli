@@ -1,0 +1,18 @@
+{
+  "name": "@agencyos/media-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified media SDK — content verification, synthetic media, media trust",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./content-verification": "./content-verification-facade.ts",
+    "./synthetic-media": "./synthetic-media-facade.ts",
+    "./media-trust": "./media-trust-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-media-trust": "workspace:*"
+  }
+}

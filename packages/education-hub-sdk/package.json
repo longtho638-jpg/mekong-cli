@@ -1,0 +1,16 @@
+{
+  "name": "@agencyos/education-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified education SDK — LMS, assessment, student analytics",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./lms": "./lms-facade.ts",
+    "./assessment": "./assessment-facade.ts",
+    "./student-analytics": "./student-analytics-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {}
+}

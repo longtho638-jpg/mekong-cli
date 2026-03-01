@@ -1,0 +1,18 @@
+{
+  "name": "@agencyos/legal-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified legal SDK — contracts, compliance, IP management",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./contract": "./contract-facade.ts",
+    "./compliance": "./compliance-facade.ts",
+    "./ip": "./ip-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-compliance-auto": "workspace:*"
+  }
+}

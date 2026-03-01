@@ -1,0 +1,18 @@
+{
+  "name": "@agencyos/sustainability-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified sustainability SDK — carbon accounting, ESG reporting, climate risk",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./carbon-accounting": "./carbon-accounting-facade.ts",
+    "./esg-reporting": "./esg-reporting-facade.ts",
+    "./climate-risk": "./climate-risk-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-climate": "workspace:*"
+  }
+}

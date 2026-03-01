@@ -6,3 +6,4 @@ export { BillingFacade } from './billing-facade';
 export { PaymentsFacade } from './payments-facade';
 export { SubscriptionsFacade } from './subscriptions-facade';
 export { RevenueFacade } from './revenue-facade';
+export { SubscriptionWebhooksFacade } from './subscription-webhooks-facade';

@@ -1,0 +1,22 @@
+{
+  "name": "@agencyos/vibe-subscription-webhooks",
+  "version": "0.1.0",
+  "description": "Subscription lifecycle webhook handlers — event routing, status transitions, grace period, dunning management",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./handler": "./subscription-webhook-handler.ts",
+    "./router": "./subscription-event-router.ts",
+    "./types": "./subscription-webhook-types.ts"
+  },
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-subscription": "workspace:*",
+    "@agencyos/webhook-billing-sdk": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

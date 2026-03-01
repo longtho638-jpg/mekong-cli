@@ -1,0 +1,18 @@
+{
+  "name": "@agencyos/logistics-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified logistics SDK — supply chain, autonomous delivery, warehouse operations",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./supply-chain": "./supply-chain-facade.ts",
+    "./autonomous-delivery": "./autonomous-delivery-facade.ts",
+    "./warehouse": "./warehouse-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-logistics": "workspace:*"
+  }
+}

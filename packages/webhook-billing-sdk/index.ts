@@ -76,6 +76,22 @@ export type {
   ChurnRisk,
 } from './billing-hooks';
 
+// ─── Subscription Webhooks ───────────────────────────────────────
+
+export {
+  createSubscriptionWebhookHandler,
+  createSubscriptionEventRouter,
+} from '@agencyos/vibe-subscription-webhooks';
+
+export type {
+  SubscriptionWebhookEventType,
+  SubscriptionWebhookEvent,
+  StatusTransition,
+  SubscriptionWebhookCallbacks,
+  SubscriptionWebhookHandlerConfig,
+  SubscriptionWebhookResult,
+} from '@agencyos/vibe-subscription-webhooks';
+
 // ─── Types ──────────────────────────────────────────────────────
 
 export type {

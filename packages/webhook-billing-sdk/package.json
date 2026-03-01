@@ -18,6 +18,7 @@
     "@agencyos/vibe-stripe": "workspace:*",
     "@agencyos/vibe-payment-router": "workspace:*",
     "@agencyos/vibe-billing-hooks": "workspace:*",
-    "@agencyos/vibe-subscription": "workspace:*"
+    "@agencyos/vibe-subscription": "workspace:*",
+    "@agencyos/vibe-subscription-webhooks": "workspace:*"
   }
 }
