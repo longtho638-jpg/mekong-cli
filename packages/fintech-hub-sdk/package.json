@@ -10,7 +10,9 @@
     "./payments": "./payments-facade.ts",
     "./subscriptions": "./subscriptions-facade.ts",
     "./revenue": "./revenue-facade.ts",
-    "./subscription-webhooks": "./subscription-webhooks-facade.ts"
+    "./subscription-webhooks": "./subscription-webhooks-facade.ts",
+    "./arbitrage": "./arbitrage-facade.ts",
+    "./webhook": "./webhook-facade.ts"
   },
   "license": "MIT",
   "publishConfig": { "access": "public" },
@@ -23,6 +25,11 @@
     "@agencyos/vibe-embedded-finance": "workspace:*",
     "@agencyos/vibe-subscription": "workspace:*",
     "@agencyos/vibe-revenue": "workspace:*",
-    "@agencyos/vibe-subscription-webhooks": "workspace:*"
+    "@agencyos/vibe-subscription-webhooks": "workspace:*",
+    "@agencyos/vibe-arbitrage-engine": "workspace:*",
+    "@agencyos/vibe-billing-hooks": "workspace:*",
+    "@agencyos/vibe-billing-trading": "workspace:*",
+    "@agencyos/vibe-payos-billing-types": "workspace:*",
+    "@agencyos/webhook-billing-sdk": "workspace:*"
   }
 }

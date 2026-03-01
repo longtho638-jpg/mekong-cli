@@ -1,0 +1,20 @@
+{
+  "name": "@agencyos/agritech-hub-sdk",
+  "version": "0.1.0",
+  "description": "AgriTech SDK — precision farming, crop management, farm-to-table marketplace",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./precision-farming": "./precision-farming-facade.ts",
+    "./crop-management": "./crop-management-facade.ts",
+    "./marketplace": "./marketplace-facade.ts"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@agencyos/vibe-climate": "*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

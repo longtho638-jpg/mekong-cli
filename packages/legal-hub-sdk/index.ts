@@ -5,3 +5,4 @@
 export { ContractFacade } from './contract-facade';
 export { ComplianceFacade } from './compliance-facade';
 export { IPFacade } from './ip-facade';
+export * from './identity-facade';

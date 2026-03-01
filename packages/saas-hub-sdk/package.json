@@ -1,0 +1,24 @@
+{
+  "name": "@agencyos/saas-hub-sdk",
+  "version": "0.1.0",
+  "description": "SaaS Platform SDK — multi-tenancy, usage billing, product-led growth",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./tenant": "./tenant-facade.ts",
+    "./billing": "./billing-facade.ts",
+    "./growth": "./growth-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-subscription": "*",
+    "@agencyos/vibe-billing": "*",
+    "@agencyos/vibe-auth": "*",
+    "@agencyos/vibe-analytics": "*",
+    "@agencyos/multi-org-billing-sdk": "workspace:*"
+  }
+}

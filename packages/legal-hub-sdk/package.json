@@ -8,11 +8,13 @@
     ".": "./index.ts",
     "./contract": "./contract-facade.ts",
     "./compliance": "./compliance-facade.ts",
-    "./ip": "./ip-facade.ts"
+    "./ip": "./ip-facade.ts",
+    "./identity": "./identity-facade.ts"
   },
   "license": "MIT",
   "publishConfig": { "access": "public" },
   "peerDependencies": {
-    "@agencyos/vibe-compliance-auto": "workspace:*"
+    "@agencyos/vibe-compliance-auto": "workspace:*",
+    "@agencyos/identity-compliance-sdk": "workspace:*"
   }
 }

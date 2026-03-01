@@ -1,0 +1,21 @@
+{
+  "name": "@agencyos/wellness-hub-sdk",
+  "version": "0.1.0",
+  "description": "Wellness & Health SDK — fitness tracking, nutrition planning, mental health support",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./fitness": "./fitness-facade.ts",
+    "./nutrition": "./nutrition-facade.ts",
+    "./mental-health": "./mental-health-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-wellness": "workspace:*",
+    "@agencyos/vibe-wellbeing": "workspace:*"
+  }
+}

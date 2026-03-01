@@ -1,0 +1,20 @@
+{
+  "name": "@agencyos/devtools-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified developer tools SDK — Supabase helpers, dev workflow, database utilities",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./supabase": "./supabase-facade.ts",
+    "./workflow": "./workflow-facade.ts",
+    "./ui": "./ui-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "peerDependencies": {
+    "@agencyos/vibe-dev": "workspace:*",
+    "@agencyos/vibe-supabase": "workspace:*",
+    "@agencyos/vibe-ui": "workspace:*"
+  }
+}
