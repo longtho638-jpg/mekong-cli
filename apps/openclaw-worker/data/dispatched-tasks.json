@@ -1,14 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "474dfbdb919f",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
-      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
-      "dispatchedAt": 1772338055170
-    },
-    {
       "hash": "9ffe3c8af5c0",
       "project": "mekong-cli",
       "pane": 0,
@@ -1599,6 +1591,14 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
       "dispatchedAt": 1772363726822
+    },
+    {
+      "hash": "dc4ad7472ad3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: resources",
+      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
+      "dispatchedAt": 1772363758698
     }
   ],
   "chapterIndex": 5
