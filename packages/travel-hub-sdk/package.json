@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/travel-hub-sdk",
+  "version": "0.1.0",
+  "description": "Travel & Hospitality SDK — flights, hotels, itinerary planning, loyalty programs",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./booking": "./booking-facade.ts",
+    "./itinerary": "./itinerary-facade.ts",
+    "./loyalty": "./loyalty-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

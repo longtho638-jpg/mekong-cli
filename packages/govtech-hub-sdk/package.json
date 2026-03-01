@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/govtech-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified GovTech SDK — citizen services, digital identity, government procurement, regulatory compliance, audit trails",
+  "description": "Unified GovTech SDK \u2014 citizen services, digital identity, government procurement, regulatory compliance, audit trails",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,9 +11,19 @@
     "./compliance": "./compliance-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-identity": "workspace:*",
     "@agencyos/vibe-compliance": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-identity": {
+      "optional": true
+    },
+    "@agencyos/vibe-compliance": {
+      "optional": true
+    }
   }
 }

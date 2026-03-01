@@ -128,7 +128,15 @@ class FileAgent(AgentBase):
                 )
 
             elif task.id == "file_read":
-                filepath = Path(self.cwd) / task.input.get("path", "")
+                filepath = (Path(self.cwd) / task.input.get("path", "")).resolve()
+                cwd_resolved = Path(self.cwd).resolve()
+                if not filepath.is_relative_to(cwd_resolved):
+                    return Result(
+                        task_id=task.id,
+                        success=False,
+                        output=None,
+                        error="Path traversal denied",
+                    )
                 if not filepath.exists():
                     return Result(
                         task_id=task.id,
@@ -149,7 +157,15 @@ class FileAgent(AgentBase):
                 )
 
             elif task.id == "file_write":
-                filepath = Path(self.cwd) / task.input.get("path", "")
+                filepath = (Path(self.cwd) / task.input.get("path", "")).resolve()
+                cwd_resolved = Path(self.cwd).resolve()
+                if not filepath.is_relative_to(cwd_resolved):
+                    return Result(
+                        task_id=task.id,
+                        success=False,
+                        output=None,
+                        error="Path traversal denied",
+                    )
                 content = task.input.get("content", "")
                 if not filepath.parent.exists():
                     filepath.parent.mkdir(parents=True, exist_ok=True)

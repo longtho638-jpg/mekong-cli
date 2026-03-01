@@ -126,8 +126,8 @@ function isShellPrompt(output) {
  * findIdleWorker — STRICT 1P1 Project Routing (Binh Phap Fix 2026-02-28):
  * Chairman Rule: "MỖI P 1 DỰ ÁN TỪ ĐẦU ĐẾN CUỐI"
  *   P0 ← mekong-cli ONLY
- *   P1 ← algo-trader ONLY
- *   P2 ← well ONLY
+ *   P1 ← well ONLY
+ *   P2 ← algo-trader (abitrade) ONLY
  * 
  * NO FALLBACK. NO OVERFLOW. NO EXCEPTIONS.
  * Unknown projects → REJECTED (-1)
@@ -139,9 +139,9 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION',
   let targetPane = -1;
   if (projectName === 'mekong-cli' || projectDir === config.MEKONG_DIR) {
     targetPane = 0;
-  } else if (projectName === 'algo-trader') {
-    targetPane = 1;
   } else if (projectName === 'well' || projectName === '84tea') {
+    targetPane = 1;
+  } else if (projectName === 'algo-trader') {
     targetPane = 2;
   }
 
@@ -149,6 +149,17 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION',
   if (targetPane === -1) {
     log(`DISPATCH: ❌ REJECTED unknown project="${projectName}" — only mekong-cli/algo-trader/well allowed`);
     return -1;
+  }
+
+  // 🏭 2026-03-01 Vibe Coding Factory Lock
+  try {
+    const factory = require('./factory-pipeline');
+    if (factory.isPaneLocked(targetPane)) {
+      log(`DISPATCH: ⏳ P${targetPane} LOCKED by Vibe Factory Pipeline — 🚫 blocking task injection!`);
+      return -1;
+    }
+  } catch (e) {
+    // Ignore if factory-pipeline not ready
   }
 
   // Check if target pane is free

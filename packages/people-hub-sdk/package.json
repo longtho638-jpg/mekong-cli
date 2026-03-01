@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/people-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified people SDK — HR, CRM, customer success, wellbeing, longevity",
+  "description": "Unified people SDK \u2014 HR, CRM, customer success, wellbeing, longevity",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,13 +11,39 @@
     "./wellbeing": "./wellbeing-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-hr": "workspace:*",
     "@agencyos/vibe-crm": "workspace:*",
     "@agencyos/vibe-customer-success": "workspace:*",
     "@agencyos/vibe-wellbeing": "workspace:*",
     "@agencyos/vibe-wellness": "workspace:*",
-    "@agencyos/vibe-longevity": "workspace:*"
+    "@agencyos/vibe-longevity": "workspace:*",
+    "@agencyos/vibe-digital-therapeutics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-hr": {
+      "optional": true
+    },
+    "@agencyos/vibe-crm": {
+      "optional": true
+    },
+    "@agencyos/vibe-customer-success": {
+      "optional": true
+    },
+    "@agencyos/vibe-wellbeing": {
+      "optional": true
+    },
+    "@agencyos/vibe-wellness": {
+      "optional": true
+    },
+    "@agencyos/vibe-longevity": {
+      "optional": true
+    },
+    "@agencyos/vibe-digital-therapeutics": {
+      "optional": true
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/fintech-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified fintech SDK — billing, payments, subscriptions, revenue, embedded finance, Stripe integration",
+  "description": "Unified fintech SDK \u2014 billing, payments, subscriptions, revenue, embedded finance, Stripe integration",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -15,7 +15,9 @@
     "./webhook": "./webhook-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-billing": "workspace:*",
     "@agencyos/vibe-payment": "workspace:*",
@@ -31,5 +33,49 @@
     "@agencyos/vibe-billing-trading": "workspace:*",
     "@agencyos/vibe-payos-billing-types": "workspace:*",
     "@agencyos/webhook-billing-sdk": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-billing": {
+      "optional": true
+    },
+    "@agencyos/vibe-payment": {
+      "optional": true
+    },
+    "@agencyos/vibe-payment-router": {
+      "optional": true
+    },
+    "@agencyos/vibe-stripe": {
+      "optional": true
+    },
+    "@agencyos/vibe-money": {
+      "optional": true
+    },
+    "@agencyos/vibe-embedded-finance": {
+      "optional": true
+    },
+    "@agencyos/vibe-subscription": {
+      "optional": true
+    },
+    "@agencyos/vibe-revenue": {
+      "optional": true
+    },
+    "@agencyos/vibe-subscription-webhooks": {
+      "optional": true
+    },
+    "@agencyos/vibe-arbitrage-engine": {
+      "optional": true
+    },
+    "@agencyos/vibe-billing-hooks": {
+      "optional": true
+    },
+    "@agencyos/vibe-billing-trading": {
+      "optional": true
+    },
+    "@agencyos/vibe-payos-billing-types": {
+      "optional": true
+    },
+    "@agencyos/webhook-billing-sdk": {
+      "optional": true
+    }
   }
 }

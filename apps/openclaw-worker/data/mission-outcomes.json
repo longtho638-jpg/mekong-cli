@@ -1,350 +1,5 @@
 [
   {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW",
-    "project": "mekong-cli",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T05:34:19.995Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW",
-    "project": "mekong-cli",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T05:37:14.684Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW",
-    "project": "mekong-cli",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T05:44:02.661Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW",
-    "project": "mekong-cli",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T05:47:47.335Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. WORKFLOW",
-    "project": "mekong-cli",
-    "result": "done",
-    "success": true,
-    "elapsedSec": 60,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T05:50:33.041Z"
-  },
-  {
-    "taskId": "/plan:parallel \"Trả lời bằng TIẾNG VIỆT.",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:02:53.679Z"
-  },
-  {
-    "taskId": "/plan:parallel \"Trả lời bằng TIẾNG VIỆT.",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:04:38.150Z"
-  },
-  {
-    "taskId": "/plan:parallel \"Trả lời bằng TIẾNG VIỆT.",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:10:57.282Z"
-  },
-  {
-    "taskId": "/debug \"Trả lời bằng TIẾNG VIỆT. WORKFLO",
-    "project": "Well",
-    "result": "done",
-    "success": true,
-    "elapsedSec": 60,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:28:06.256Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:37:00.948Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. 📜 BINH ",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:38:28.006Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:41:06.024Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:42:59.436Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:45:39.147Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. 📜 BINH ",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T06:47:06.037Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:03:56.259Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. 📜 BINH ",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:05:23.691Z"
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. 📜 BINH ",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:06:51.361Z"
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:17:47.593Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/cook \"Trả lời bằng TIẾNG VIỆT. 📜 BINH ",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:19:22.145Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:22:22.637Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:23:59.433Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:26:57.361Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 87,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:26:57.384Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:28:34.590Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T07:28:37.836Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 89,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:26:29.927Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 89,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:26:32.048Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "done",
-    "success": true,
-    "elapsedSec": 62,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:27:42.762Z",
-    "binhPhapLevel": 100
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "done",
-    "success": true,
-    "elapsedSec": 60,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:27:42.792Z",
-    "binhPhapLevel": 100
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:54:42.576Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:56:25.912Z",
-    "binhPhapLevel": 0
-  },
-  {
-    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
-    "project": "Well",
-    "result": "failed_to_start",
-    "success": false,
-    "elapsedSec": 86,
-    "summary": "",
-    "filesChanged": 0,
-    "timestamp": "2026-02-26T08:58:28.276Z",
-    "binhPhapLevel": 0
-  },
-  {
     "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. 📜 BI",
     "project": "Well",
     "result": "failed_to_start",
@@ -2018,5 +1673,335 @@
     "summary": "",
     "filesChanged": 0,
     "timestamp": "2026-02-28T11:07:25.223Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:01:20.392Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:19:44.585Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 60,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:24:17.088Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:25:22.156Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:28:46.452Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:38:32.261Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:47:23.436Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:48:29.055Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T14:49:47.045Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:03:31.163Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "84tea",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:10:45.974Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:19:47.007Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:22:03.211Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:37:34.281Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:38:51.187Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T15:42:11.514Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T19:08:52.140Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 122,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T19:12:29.370Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "algo-trader",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-02-28T19:17:06.073Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T00:06:51.747Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T05:50:44.808Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 176,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T06:10:19.577Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 211,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T06:15:00.591Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T07:04:00.826Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T08:03:30.834Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 60,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T08:04:37.981Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "well",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T08:07:49.709Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:30:51.074Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 60,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:31:51.127Z"
+  },
+  {
+    "taskId": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:35:05.232Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 90,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:47:31.746Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 64,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:48:36.547Z"
+  },
+  {
+    "taskId": "/plan:ci \"Trả lời bằng TIẾNG VIỆT. WORKF",
+    "project": "mekong-cli",
+    "result": "done",
+    "success": true,
+    "elapsedSec": 65,
+    "summary": "",
+    "filesChanged": 0,
+    "timestamp": "2026-03-01T09:50:03.655Z"
   }
 ]

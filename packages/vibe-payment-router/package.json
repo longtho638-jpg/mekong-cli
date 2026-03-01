@@ -1,0 +1,22 @@
+{
+  "name": "@agencyos/vibe-payment-router",
+  "version": "0.1.0",
+  "description": "Payment routing engine \u2014 provider failover, webhook dispatch, tier-price mapping, state machine",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./provider-router": "./provider-failover-router.ts",
+    "./webhook-dispatch": "./webhook-dispatch-engine.ts",
+    "./tier-mapping": "./tier-price-bidirectional-mapper.ts"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@agencyos/vibe-payment": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-payment": {
+      "optional": true
+    }
+  }
+}

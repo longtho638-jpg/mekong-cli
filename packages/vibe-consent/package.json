@@ -1,12 +1,17 @@
 {
   "name": "@agencyos/vibe-consent",
   "version": "0.1.0",
-  "description": "Privacy consent management SDK — GDPR Art.25, TCF 2.2, GPC signals, DSR/DSAR processing, data flow mapping, consent audit trail",
+  "description": "Privacy consent management SDK \u2014 GDPR Art.25, TCF 2.2, GPC signals, DSR/DSAR processing, data flow mapping, consent audit trail",
   "main": "index.ts",
   "types": "index.ts",
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
     "@agencyos/vibe-auth": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-auth": {
+      "optional": true
+    }
   }
 }

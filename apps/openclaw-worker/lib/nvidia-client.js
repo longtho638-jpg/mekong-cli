@@ -23,8 +23,8 @@ const config = require('../config');
 // ═══════════════════════════════════════════════════════════════
 
 const MODEL_TIERS = {
-    TIER_1: config.FALLBACK_MODEL_NAME || 'gemini-3-flash',     // ⚡ Fast scouts
-    TIER_2: config.FALLBACK_MODEL_NAME || 'gemini-3-flash',     // 🔨 Core workers
+    TIER_1: 'qwen3-235b',     // ⚡ Fast scouts (Free NVIDIA 17 keys)
+    TIER_2: 'qwen3-235b',     // 🔨 Core workers (Free NVIDIA 17 keys)
     TIER_3: 'gemini-3-pro-high',                                 // 🧠 Deep thinkers
 };
 

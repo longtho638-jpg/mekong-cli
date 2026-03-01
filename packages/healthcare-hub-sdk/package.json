@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/healthcare-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified healthcare SDK — digital therapeutics, telehealth, patient data",
+  "description": "Unified healthcare SDK \u2014 digital therapeutics, telehealth, patient data",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,8 +11,15 @@
     "./patient-data": "./patient-data-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-digital-therapeutics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-digital-therapeutics": {
+      "optional": true
+    }
   }
 }

@@ -8,6 +8,7 @@ import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
 import { registerArbCommands } from './cli/arb-cli-commands';
 import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
+import { registerMarketplaceCommands } from './cli/strategy-marketplace-tenant-cli-commands';
 import { logger } from './utils/logger';
 import * as dotenv from 'dotenv';
 
@@ -77,6 +78,7 @@ program
       const strategy = new RsiSmaStrategy();
 
       const engine = new BotEngine(strategy, dataProvider, exchange, {
+        tenantId: 'default',
         symbol: options.symbol,
         riskPercentage: 1, // 1%
         pollInterval: 1000
@@ -240,6 +242,7 @@ program
 // Register all arb:* commands from extracted module
 registerArbCommands(program);
 registerSpreadDetectorCommand(program);
+registerMarketplaceCommands(program);
 
 // Global handlers for unhandled promise rejections and uncaught exceptions
 process.on('unhandledRejection', (reason: unknown) => {

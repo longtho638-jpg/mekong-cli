@@ -1,12 +1,17 @@
 {
   "name": "@agencyos/vibe-wellness",
   "version": "0.1.0",
-  "description": "Wellness & TCM SDK — product catalog, recipe formulation, compliance tracking, subscription health boxes",
+  "description": "Wellness & TCM SDK \u2014 product catalog, recipe formulation, compliance tracking, subscription health boxes",
   "main": "index.ts",
   "types": "index.ts",
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
     "@agencyos/billing": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/billing": {
+      "optional": true
+    }
   }
 }

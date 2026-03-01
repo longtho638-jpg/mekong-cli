@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/infra-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified infrastructure SDK — auth, identity, compliance, consent, edge computing, bridge",
+  "description": "Unified infrastructure SDK \u2014 auth, identity, compliance, consent, edge computing, bridge",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,7 +11,9 @@
     "./edge": "./edge-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-auth": "workspace:*",
     "@agencyos/vibe-identity": "workspace:*",
@@ -20,5 +22,28 @@
     "@agencyos/vibe-consent": "workspace:*",
     "@agencyos/vibe-edge": "workspace:*",
     "@agencyos/vibe-bridge": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-auth": {
+      "optional": true
+    },
+    "@agencyos/vibe-identity": {
+      "optional": true
+    },
+    "@agencyos/vibe-compliance": {
+      "optional": true
+    },
+    "@agencyos/vibe-compliance-auto": {
+      "optional": true
+    },
+    "@agencyos/vibe-consent": {
+      "optional": true
+    },
+    "@agencyos/vibe-edge": {
+      "optional": true
+    },
+    "@agencyos/vibe-bridge": {
+      "optional": true
+    }
   }
 }

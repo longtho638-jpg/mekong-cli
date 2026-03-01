@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/energy-hub-sdk",
   "version": "0.1.0",
-  "description": "Energy & Utilities SDK — smart grid management, renewable monitoring, energy trading",
+  "description": "Energy & Utilities SDK \u2014 smart grid management, renewable monitoring, energy trading",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -12,10 +12,18 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@agencyos/vibe-climate": "*",
-    "@agencyos/vibe-edge": "*"
+    "@agencyos/vibe-climate": "workspace:*",
+    "@agencyos/vibe-edge": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-climate": {
+      "optional": true
+    },
+    "@agencyos/vibe-edge": {
+      "optional": true
+    }
   }
 }

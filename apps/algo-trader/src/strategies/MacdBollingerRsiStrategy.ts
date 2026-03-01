@@ -30,11 +30,11 @@ export interface MacdBollingerRsiConfig {
 export class MacdBollingerRsiStrategy extends BaseStrategy {
   name = 'MACD_BB_RSI_Combo';
 
-  private config: Required<MacdBollingerRsiConfig>;
+  protected strategyConfig: Required<MacdBollingerRsiConfig>;
 
   constructor(config: MacdBollingerRsiConfig = {}) {
     super();
-    this.config = {
+    this.strategyConfig = {
       macdFastPeriod: config.macdFastPeriod || 12,
       macdSlowPeriod: config.macdSlowPeriod || 26,
       macdSignalPeriod: config.macdSignalPeriod || 9,
@@ -47,9 +47,9 @@ export class MacdBollingerRsiStrategy extends BaseStrategy {
 
     // Ensure we keep enough history for the longest period (MACD slow period or BB/RSI period)
     this.maxHistoryBuffer = Math.max(
-      this.config.macdSlowPeriod + this.config.macdSignalPeriod,
-      this.config.bbPeriod,
-      this.config.rsiPeriod
+      this.strategyConfig.macdSlowPeriod + this.strategyConfig.macdSignalPeriod,
+      this.strategyConfig.bbPeriod,
+      this.strategyConfig.rsiPeriod
     ) * 2;
   }
 
@@ -63,9 +63,9 @@ export class MacdBollingerRsiStrategy extends BaseStrategy {
     const closes = this.getCloses();
 
     // Calculate Indicators
-    const macdResult = Indicators.macd(closes, this.config.macdFastPeriod, this.config.macdSlowPeriod, this.config.macdSignalPeriod);
-    const bbResult = Indicators.bbands(closes, this.config.bbPeriod, this.config.bbStdDev);
-    const rsiResult = Indicators.rsi(closes, this.config.rsiPeriod);
+    const macdResult = Indicators.macd(closes, this.strategyConfig.macdFastPeriod, this.strategyConfig.macdSlowPeriod, this.strategyConfig.macdSignalPeriod);
+    const bbResult = Indicators.bbands(closes, this.strategyConfig.bbPeriod, this.strategyConfig.bbStdDev);
+    const rsiResult = Indicators.rsi(closes, this.strategyConfig.rsiPeriod);
 
     if (macdResult.length === 0 || bbResult.length === 0 || rsiResult.length === 0) {
       return null;
@@ -81,7 +81,7 @@ export class MacdBollingerRsiStrategy extends BaseStrategy {
     // 1. Price near or below lower band (allow small margin, e.g. within 2% of band or below it)
     const isPriceLow = currentPrice <= lastBb.lower * 1.02;
     // 2. RSI is oversold or recently oversold
-    const isRsiOversold = lastRsi <= this.config.rsiOversold;
+    const isRsiOversold = lastRsi <= this.strategyConfig.rsiOversold;
     // 3. MACD Histogram is positive or turning positive (bullish cross)
     const isMacdBullish = lastMacd.histogram !== undefined && lastMacd.histogram > 0 &&
                           (prevMacd?.histogram !== undefined ? prevMacd.histogram <= 0 : true);
@@ -103,7 +103,7 @@ export class MacdBollingerRsiStrategy extends BaseStrategy {
     // 1. Price near or above upper band
     const isPriceHigh = currentPrice >= lastBb.upper * 0.98;
     // 2. RSI is overbought
-    const isRsiOverbought = lastRsi >= this.config.rsiOverbought;
+    const isRsiOverbought = lastRsi >= this.strategyConfig.rsiOverbought;
     // 3. MACD Histogram is negative or turning negative (bearish cross)
     const isMacdBearish = lastMacd.histogram !== undefined && lastMacd.histogram < 0 &&
                           (prevMacd?.histogram !== undefined ? prevMacd.histogram >= 0 : true);

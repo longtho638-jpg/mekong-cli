@@ -10,5 +10,8 @@
     "build": "tsc",
     "clean": "rm -rf dist tsconfig.tsbuildinfo",
     "test": "echo 'No tests yet'"
+  },
+  "devDependencies": {
+    "@types/node": "25.3.2"
   }
 }

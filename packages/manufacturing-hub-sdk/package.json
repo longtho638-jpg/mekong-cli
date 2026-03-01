@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/manufacturing-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified Manufacturing SDK — production scheduling, MES, OEE tracking, quality control, SPC, supply chain, BOM management",
+  "description": "Unified Manufacturing SDK \u2014 production scheduling, MES, OEE tracking, quality control, SPC, supply chain, BOM management",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,9 +11,19 @@
     "./supply-chain": "./supply-chain-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-physical-ai": "workspace:*",
     "@agencyos/vibe-robotics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-physical-ai": {
+      "optional": true
+    },
+    "@agencyos/vibe-robotics": {
+      "optional": true
+    }
   }
 }

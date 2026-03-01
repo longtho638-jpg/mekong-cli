@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/ai-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified AI SDK — safety, agents, video intelligence, media trust, digital twins",
+  "description": "Unified AI SDK \u2014 safety, agents, video intelligence, media trust, digital twins",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,12 +11,31 @@
     "./media": "./media-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-ai-safety": "workspace:*",
     "@agencyos/vibe-agents": "workspace:*",
     "@agencyos/vibe-video-intel": "workspace:*",
     "@agencyos/vibe-media-trust": "workspace:*",
     "@agencyos/vibe-digital-twin": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-ai-safety": {
+      "optional": true
+    },
+    "@agencyos/vibe-agents": {
+      "optional": true
+    },
+    "@agencyos/vibe-video-intel": {
+      "optional": true
+    },
+    "@agencyos/vibe-media-trust": {
+      "optional": true
+    },
+    "@agencyos/vibe-digital-twin": {
+      "optional": true
+    }
   }
 }

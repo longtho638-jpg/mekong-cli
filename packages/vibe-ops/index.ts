@@ -104,4 +104,18 @@ export const commands = {
 };
 
 export const ops = new VibeOps();
+
+// Multi-org subdomain routing
+export {
+    createSubdomainRouter,
+    resolveOrgFromPath,
+} from './multi-org-subdomain-router';
+export type {
+    RouteType,
+    TenantResolution,
+    SubdomainRouterConfig,
+    SubdomainRouter,
+    PathRouterConfig,
+} from './multi-org-subdomain-router';
+
 export default { VibeOps, commands, ops };

@@ -59,6 +59,15 @@ const COMMANDS = {
     '/worktree': { principle: '分兵', chapter: '虛實 Ch.6' },
 };
 
+// 5 Lớp Factory Pipeline 🏭
+const FACTORY_STAGES = {
+    SPEC: { principle: '廟算 (Miếu Toán - Định khuôn mẫu)', chapter: '始計 Ch.1' },
+    PLAN: { principle: '校計 (Hiệu Kế - Lên kế hoạch)', chapter: '始計 Ch.1' },
+    BUILD: { principle: '兵之情主速 (Binh quý thần tốc)', chapter: '軍爭 Ch.7' },
+    VERIFY: { principle: '水之形避高而趨下 (Tìm chỗ rỗng test)', chapter: '虛實 Ch.6' },
+    SHIP: { principle: '動如雷震 (Động như sấm sét)', chapter: '行軍 Ch.9' },
+};
+
 // 9 Cửu Địa × Skill Sets (地 — Địa Thế)
 const CUU_DIA = {
     tan: { name: '散地 Tản Địa', situation: 'Dev local', skills: ['planning', 'brainstorm', 'sequential-thinking', 'research'] },

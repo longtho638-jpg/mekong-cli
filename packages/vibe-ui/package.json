@@ -1,23 +1,46 @@
 {
-    "name": "@agencyos/vibe-ui",
-    "version": "1.0.0",
-    "description": "VIBE Design System - Aura Elite Components",
-    "main": "index.ts",
-    "types": "index.ts",
-    "scripts": {
-        "build": "tsc",
-        "test": "vitest"
+  "name": "@agencyos/vibe-ui",
+  "version": "2.0.0",
+  "description": "VIBE UI - Aura Elite Design System Components & Effects",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     },
-    "dependencies": {
-        "framer-motion": "^11.0.0",
-        "tailwindcss": "^4.0.0"
-    },
-    "peerDependencies": {
-        "react": "^18.0.0"
-    },
-    "devDependencies": {
-        "@types/react": "^19.2.8",
-        "typescript": "^5.9.3",
-        "vitest": "^4.0.17"
+    "./styles": "./src/styles/index.css",
+    "./styles/design-system": "./src/styles/design-system.css",
+    "./styles/md3-tokens": "./src/styles/md3-tokens.css"
+  },
+  "files": [
+    "dist",
+    "src/styles"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "framer-motion": "^11.0.0"
+  },
+  "peerDependenciesMeta": {
+    "framer-motion": {
+      "optional": true
     }
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.8",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  },
+  "dependencies": {
+    "lucide-react": "^0.563.0"
+  }
 }

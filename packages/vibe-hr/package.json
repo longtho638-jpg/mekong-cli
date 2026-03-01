@@ -1,12 +1,17 @@
 {
   "name": "@agencyos/vibe-hr",
   "version": "0.1.0",
-  "description": "HR & People Ops facade SDK — employee management, leave tracking, payroll calculation, performance reviews, org chart",
+  "description": "HR & People Ops facade SDK \u2014 employee management, leave tracking, payroll calculation, performance reviews, org chart",
   "main": "index.ts",
   "types": "index.ts",
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
     "@agencyos/vibe-ops": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-ops": {
+      "optional": true
+    }
   }
 }

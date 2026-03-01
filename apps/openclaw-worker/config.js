@@ -46,7 +46,7 @@ const config = {
   USE_GH_MODELS: false,
   GH_MODEL_NAME: 'claude-sonnet-4-6-20250514',
   WORKER_MODEL_NAME: 'claude-sonnet-4-6-20250514', // "Strongest" Local Model
-  FALLBACK_MODEL_NAME: 'gemini-3-flash', // v2026.2.15: Aligned with PROXY_RULES.md (gemini-3-flash)
+  FALLBACK_MODEL_NAME: 'gemini-3-pro', // v2026.3.1: Upgraded for Max x20 intelligence via proxy
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
   // Engine selection: 'antigravity' (default, port 20128) or 'qwen' (port 8081)
   // 🔒 LOCKED — 'antigravity' uses port 20128 → upstream AG 9191 + Google fallback

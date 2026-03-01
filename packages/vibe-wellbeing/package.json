@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/vibe-wellbeing",
+  "version": "0.1.0",
+  "description": "Workplace wellbeing SDK \u2014 wellness scoring, wearable data aggregation, burnout prevention",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-hr": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-hr": {
+      "optional": true
+    }
+  }
+}

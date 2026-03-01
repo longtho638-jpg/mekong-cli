@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/nonprofit-hub-sdk",
   "version": "0.1.0",
-  "description": "Nonprofit & Social Impact SDK — fundraising, volunteer management, impact measurement",
+  "description": "Nonprofit & Social Impact SDK \u2014 fundraising, volunteer management, impact measurement",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -12,10 +12,18 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@agencyos/vibe-compliance": "*",
-    "@agencyos/vibe-crm": "*"
+    "@agencyos/vibe-compliance": "workspace:*",
+    "@agencyos/vibe-crm": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-compliance": {
+      "optional": true
+    },
+    "@agencyos/vibe-crm": {
+      "optional": true
+    }
   }
 }

@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/wellness-hub-sdk",
   "version": "0.1.0",
-  "description": "Wellness & Health SDK — fitness tracking, nutrition planning, mental health support",
+  "description": "Wellness & Health SDK \u2014 fitness tracking, nutrition planning, mental health support",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -17,5 +17,13 @@
   "peerDependencies": {
     "@agencyos/vibe-wellness": "workspace:*",
     "@agencyos/vibe-wellbeing": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-wellness": {
+      "optional": true
+    },
+    "@agencyos/vibe-wellbeing": {
+      "optional": true
+    }
   }
 }

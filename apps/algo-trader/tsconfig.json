@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "types": ["node", "jest"],
-    "typeRoots": ["./node_modules/@types", "../../packages/trading-core/types"],
+    "typeRoots": ["./node_modules/@types", "../../node_modules/.pnpm/node_modules/@types", "../../packages/trading-core/types"],
     "paths": {
       "@agencyos/trading-core": ["../../packages/trading-core/index.ts"],
       "@agencyos/trading-core/*": ["../../packages/trading-core/*"],

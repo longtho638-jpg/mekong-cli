@@ -40,6 +40,7 @@ const makeStrategy = (signalType?: SignalType | null): jest.Mocked<IStrategy> =>
 });
 
 const makeConfig = (overrides: Partial<BotConfig> = {}): BotConfig => ({
+  tenantId: 'test',
   symbol: 'BTC/USDT',
   riskPercentage: 1,
   pollInterval: 1000,
@@ -135,6 +136,8 @@ describe('BotEngine', () => {
 
       const onCandle = (dataProvider.subscribe as jest.Mock).mock.calls[0][0];
       await onCandle(makeCandle());
+      // Allow async onCandle (via SignalMesh) to complete
+      await new Promise(r => setTimeout(r, 50));
 
       expect(dataProvider.stop).toHaveBeenCalledTimes(1);
     });

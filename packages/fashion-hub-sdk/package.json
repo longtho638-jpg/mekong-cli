@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/fashion-hub-sdk",
+  "version": "0.1.0",
+  "description": "Fashion & Apparel SDK — product catalog, AI styling, supply chain tracking",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./catalog": "./catalog-facade.ts",
+    "./styling": "./styling-facade.ts",
+    "./supply-chain": "./supply-chain-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

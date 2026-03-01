@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/insurtech-hub-sdk",
+  "version": "0.1.0",
+  "description": "Insurance & InsurTech SDK — policy management, claims processing, underwriting AI, risk assessment, fraud detection",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./policy": "./policy-facade.ts",
+    "./claims": "./claims-facade.ts",
+    "./underwriting": "./underwriting-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
+}

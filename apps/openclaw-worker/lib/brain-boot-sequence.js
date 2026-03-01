@@ -65,8 +65,8 @@ async function spawnBrain() {
   const cmdApi = generateClaudeCommand('API');
   // 🔒 STRICT 1P1 ROUTING — Each pane MUST cd to its assigned project
   const dirP0 = config.MEKONG_DIR;                                    // P0: mekong-cli
-  const dirP1 = path.join(config.MEKONG_DIR, 'apps', 'algo-trader');  // P1: algo-trader
-  const dirP2 = path.join(config.MEKONG_DIR, 'apps', 'well');         // P2: well
+  const dirP1 = path.join(config.MEKONG_DIR, 'apps', 'well');         // P1: well
+  const dirP2 = path.join(config.MEKONG_DIR, 'apps', 'algo-trader');  // P2: algo-trader
   const sessionName = TMUX_SESSION.split(':')[0];
 
   log(`BRAIN: Creating NEW session [${sessionName}] — STRICT 1P1: P0=${dirP0}, P1=${dirP1}, P2=${dirP2}`);

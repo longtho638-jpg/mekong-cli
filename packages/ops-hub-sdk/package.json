@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/ops-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified operations SDK — analytics, observability, notifications, newsletter, operational automation",
+  "description": "Unified operations SDK \u2014 analytics, observability, notifications, newsletter, operational automation",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,12 +11,31 @@
     "./notifications": "./notifications-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-analytics": "workspace:*",
     "@agencyos/vibe-observability": "workspace:*",
     "@agencyos/vibe-ops": "workspace:*",
     "@agencyos/vibe-notifications": "workspace:*",
     "@agencyos/vibe-newsletter": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-analytics": {
+      "optional": true
+    },
+    "@agencyos/vibe-observability": {
+      "optional": true
+    },
+    "@agencyos/vibe-ops": {
+      "optional": true
+    },
+    "@agencyos/vibe-notifications": {
+      "optional": true
+    },
+    "@agencyos/vibe-newsletter": {
+      "optional": true
+    }
   }
 }

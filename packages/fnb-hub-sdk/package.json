@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/fnb-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified F&B SDK — restaurant operations, POS, table reservations, food delivery, driver fleet, kitchen display, recipe database, ingredient inventory",
+  "description": "Unified F&B SDK \u2014 restaurant operations, POS, table reservations, food delivery, driver fleet, kitchen display, recipe database, ingredient inventory",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -11,10 +11,23 @@
     "./kitchen": "./kitchen-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-fnb": "workspace:*",
     "@agencyos/vibe-food-tech": "workspace:*",
     "@agencyos/vibe-pos": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-fnb": {
+      "optional": true
+    },
+    "@agencyos/vibe-food-tech": {
+      "optional": true
+    },
+    "@agencyos/vibe-pos": {
+      "optional": true
+    }
   }
 }

@@ -1,0 +1,28 @@
+{
+  "name": "@agencyos/creator-marketing-hub-sdk",
+  "version": "0.1.0",
+  "description": "Unified creator & marketing SDK \u2014 content monetization, audience analytics, campaigns, SEO, social media",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./creator": "./creator-facade.ts",
+    "./marketing": "./marketing-facade.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-creator-economy": "workspace:*",
+    "@agencyos/vibe-marketing": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-creator-economy": {
+      "optional": true
+    },
+    "@agencyos/vibe-marketing": {
+      "optional": true
+    }
+  }
+}

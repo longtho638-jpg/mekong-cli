@@ -79,7 +79,7 @@ async function runMission(prompt, projectDir, timeoutMs, modelOverride, complexi
   // will REJECT any mission that tries to run wrong project on wrong pane.
   // ══════════════════════════════════════════════════════════════
   const _projName = projectDir ? require('path').basename(projectDir) : '';
-  const PANE_PROJECT_MAP = { 0: ['mekong-cli'], 1: ['well'], 2: ['algo-trader'] };
+  const PANE_PROJECT_MAP = { 0: ['mekong-cli'], 1: ['well'], 2: ['algo-trader'], 3: ['apex-os'] };
   const allowedProjects = PANE_PROJECT_MAP[workerIdx] || [];
   const isMekongRoot = projectDir === config.MEKONG_DIR;
   if (!isMekongRoot && _projName && !allowedProjects.includes(_projName)) {

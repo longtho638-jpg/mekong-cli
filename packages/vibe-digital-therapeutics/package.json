@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/vibe-digital-therapeutics",
+  "version": "0.1.0",
+  "description": "Digital therapeutics facade SDK \u2014 therapy session engine, wearable sync, outcome tracking, reimbursement claims",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-analytics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-analytics": {
+      "optional": true
+    }
+  }
+}

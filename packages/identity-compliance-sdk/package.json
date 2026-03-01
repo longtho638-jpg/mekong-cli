@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/identity-compliance-sdk",
   "version": "0.1.0",
-  "description": "Unified identity & compliance SDK — DID, verifiable credentials, KYC/AML, consent management, audit trails, GDPR/CCPA",
+  "description": "Unified identity & compliance SDK \u2014 DID, verifiable credentials, KYC/AML, consent management, audit trails, GDPR/CCPA",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -19,5 +19,19 @@
     "@agencyos/vibe-compliance": "workspace:*",
     "@agencyos/vibe-compliance-auto": "workspace:*",
     "@agencyos/vibe-consent": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-identity": {
+      "optional": true
+    },
+    "@agencyos/vibe-compliance": {
+      "optional": true
+    },
+    "@agencyos/vibe-compliance-auto": {
+      "optional": true
+    },
+    "@agencyos/vibe-consent": {
+      "optional": true
+    }
   }
 }

@@ -36,7 +36,7 @@ const https = require('https');
 const path = require('path');
 
 // 🛡️ SECURITY: Load keys from .env — NEVER hardcode API keys in source!
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+// require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 // 🔒 LOCKED — DO NOT CHANGE (2026-02-15)
 const PORT = parseInt(process.argv[2]) || 11436;

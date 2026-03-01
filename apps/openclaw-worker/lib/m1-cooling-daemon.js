@@ -27,11 +27,11 @@ function log(msg) {
 }
 
 const THERMAL_LOG = config.THERMAL_LOG || '/Users/macbookprom1/tom_hum_thermal.log';
-const OVERHEAT_LOAD = 30;    // 🔒 Chairman Fix: M1 load 12 is NORMAL, stop false pauses
+const OVERHEAT_LOAD = 80;    // 🦞 Max x20: 4 CC CLI agents = load 30-50 is NORMAL
 const OVERHEAT_RAM_MB = 30;   // Lower threshold — macOS aggressively caches, 30MB is the true floor
-const SAFE_LOAD = 20;        // Resume at 20 — was blocking at 10 causing STALL loops
+const SAFE_LOAD = 50;        // Resume at 50 — 4 agents running is the baseline
 const SAFE_RAM_MB = 100;     // Safe resume level
-const CRITICAL_LOAD = 40;    // Nuclear intervention
+const CRITICAL_LOAD = 120;    // Nuclear intervention — only at extreme load
 const PROPORTIONAL_DELAY_MS = 2000; // 2s per load point (v4: faster feedback)
 const COHERENCE_PENALTY_FACTOR = 1000; // 1s per subagent (v4: balanced)
 // 🧬 FIX #4: THERMAL THRESHOLD — Raise from 5 to 8 (M1 8-core can handle load 8)
@@ -281,7 +281,7 @@ async function preemptiveCool(complexity) {
   purgeSystemCaches();
 
   // 🔒 Chairman Fix: M1 load 7-10 is NORMAL with active CC CLI. Old value 5 caused permanent PREEMPTIVE WAIT.
-  const DEEP_SAFE_LOAD = 15;
+  const DEEP_SAFE_LOAD = 40;
   while (getLoadAverage() > DEEP_SAFE_LOAD) {
     const current = getLoadAverage();
     log(`PREEMPTIVE WAIT: Waiting for deep safe load < ${DEEP_SAFE_LOAD} (Current: ${current})`);
@@ -330,7 +330,7 @@ function stopCooling() {
 }
 
 // 🧊 DEEP COOLING: Load-gate for scanner operations (npm build/test/lint)
-const SCAN_SAFE_LOAD = 8; // Only allow scanning when load < 8
+const SCAN_SAFE_LOAD = 30; // Only allow scanning when load < 30
 function isSafeToScan() {
   const load = getLoadAverage();
   if (load > SCAN_SAFE_LOAD) {

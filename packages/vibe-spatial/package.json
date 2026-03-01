@@ -1,0 +1,17 @@
+{
+  "name": "@agencyos/vibe-spatial",
+  "version": "0.1.0",
+  "description": "Spatial computing facade SDK \u2014 XR scene management, digital twin sync, device fleet, spatial analytics",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-analytics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-analytics": {
+      "optional": true
+    }
+  }
+}

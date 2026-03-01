@@ -4,13 +4,12 @@
   "cycle": 1,
   "errors": [
     {
-      "type": "lint",
-      "severity": "medium",
+      "type": "build",
+      "severity": "critical",
       "file": "package.json",
-      "message": "Lint command failed with exit code null. Output snippet:  > wellnexus-mvp@1.0.0-seed lint > eslint src  ...",
-      "rule": "general-lint-failure",
-      "project": "well"
+      "message": "Build command failed with exit code 127. Output snippet:  > mekong-cli@2.1.33 build > turbo run build  sh: turbo: command not found ...",
+      "project": "mekong-cli"
     }
   ],
-  "fixIndex": 0
+  "fixIndex": 1
 }

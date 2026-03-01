@@ -10,6 +10,7 @@ Priority:
 
 Runtime failover: If one provider fails, tries the next in priority order.
 Circuit breaker: After 3 consecutive failures, provider is cooled down for 60s.
+Portkey-inspired: Status-code based failover, hooks pipeline, LRU cache.
 """
 
 import os
@@ -22,6 +23,9 @@ from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
 
 import requests
+
+from .hooks import HookContext, HookPhase, HookPipeline, create_default_pipeline
+from .llm_cache import LLMCache
 
 logger = logging.getLogger(__name__)
 
@@ -84,6 +88,8 @@ class LLMClient:
         gemini_key: Optional[str] = None,
         model: str = "gemini-2.5-pro",
         timeout: int = 60,
+        enable_cache: bool = True,
+        enable_hooks: bool = True,
     ) -> None:
         """Initialize LLMClient with provider credentials and failover config.
 
@@ -93,6 +99,8 @@ class LLMClient:
             gemini_key: Google Gemini API key. Falls back to GEMINI_API_KEY env var.
             model: Default model name for requests.
             timeout: HTTP request timeout in seconds.
+            enable_cache: Enable LRU response caching.
+            enable_hooks: Enable hooks middleware pipeline.
         """
         self.proxy_url = proxy_url or os.getenv("ANTIGRAVITY_PROXY_URL", "")
         self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
@@ -100,6 +108,10 @@ class LLMClient:
         self.model = model
         self.timeout = timeout
         self._genai_client = None
+
+        # Portkey-inspired: hooks pipeline + LRU cache
+        self.hooks: Optional[HookPipeline] = create_default_pipeline() if enable_hooks else None
+        self.cache: Optional[LLMCache] = LLMCache() if enable_cache else None
 
         # Provider health tracking for circuit breaker
         self._provider_health = {
@@ -164,25 +176,85 @@ class LLMClient:
     ) -> LLMResponse:
         """
         Send chat completion request with runtime provider failover.
-        Tries providers in order: vertex -> proxy -> openai.
-        On failure, records health and falls through to next provider.
+        Portkey-inspired: hooks pipeline → cache check → status-code failover.
         """
+        use_model = model or self.model
+        call_start = time.time()
+
+        # Pre-request hooks
+        hook_ctx = HookContext(
+            messages=messages, model=use_model,
+            temperature=temperature, max_tokens=max_tokens,
+            start_time=call_start,
+        )
+        if self.hooks:
+            pre_results = self.hooks.run_phase(HookPhase.PRE_REQUEST, hook_ctx)
+            for r in pre_results:
+                if not r.passed:
+                    logger.warning(f"[LLM] Pre-request hook failed: {r.error_message}")
+                    return self._offline_response(messages, error=f"hook: {r.error_message}")
+
+        # Cache check (skip for json_mode — unique responses expected)
+        if self.cache and not json_mode:
+            cached = self.cache.get(messages, use_model, temperature)
+            if cached:
+                logger.debug(f"[LLM] Cache hit for model={use_model}")
+                return LLMResponse(
+                    content=cached.content, model=cached.model,
+                    usage=cached.usage, raw={"cache": True},
+                )
+
+        # Provider failover with status-code awareness
         providers = self._get_ordered_providers()
         if not providers:
             return self._offline_response(messages, error="no providers available")
 
         last_error = ""
         for provider in providers:
+            hook_ctx.provider = provider
             try:
                 result = self._call_provider(
                     provider, messages, model, temperature, max_tokens, json_mode
                 )
                 self._provider_health[provider].record_success()
+
+                # Cache successful response
+                if self.cache and not json_mode and result.content:
+                    self.cache.put(
+                        messages, result.content, result.model,
+                        temperature, result.usage,
+                    )
+
+                # Post-request hooks
+                if self.hooks:
+                    hook_ctx.response_content = result.content
+                    hook_ctx.response_model = result.model
+                    hook_ctx.usage = result.usage or {}
+                    self.hooks.run_phase(HookPhase.POST_REQUEST, hook_ctx)
+
                 return result
+            except requests.HTTPError as e:
+                status_code = e.response.status_code if e.response is not None else 0
+                last_error = f"{provider}:{status_code}:{e}"
+                logger.warning(f"[LLM] Provider {provider} HTTP {status_code}: {e}")
+                self._provider_health[provider].record_failure()
+
+                # Status-code based routing (Portkey pattern)
+                if status_code == 400:
+                    # Client error: don't retry, return immediately
+                    return self._offline_response(messages, error=f"bad request: {e}")
+                # 401/403: auth error — skip to next provider
+                # 429/5xx: transient — continue failover
+                continue
             except Exception as e:
                 last_error = str(e)
                 logger.warning(f"[LLM] Provider {provider} failed: {e}")
                 self._provider_health[provider].record_failure()
+
+                # Error hooks
+                if self.hooks:
+                    hook_ctx.error = e
+                    self.hooks.run_phase(HookPhase.ON_ERROR, hook_ctx)
                 continue
 
         return self._offline_response(messages, error=f"all providers failed: {last_error}")

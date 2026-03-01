@@ -1,0 +1,9 @@
+/cook "A2UI Integration Phase 1: 
+1. git clone https://github.com/google/A2UI.git apps/a2ui
+2. cd apps/a2ui/renderers/web_core && npm install && npm run build  
+3. cd ../lit && npm install && npm run build
+4. Tạo .claude/skills/a2ui-renderer/SKILL.md với A2UI spec knowledge (component JSON format, data binding, event system)
+5. Tạo apps/a2ui/CLAUDE.md với project context
+6. Test: cd samples/client/lit/shell && npm install && npm run dev — verify Restaurant Finder demo
+7. Commit all changes.
+RaaS AGI Goal: Agents tự render UI cho khách hàng — từ code gen sang UI gen." --auto

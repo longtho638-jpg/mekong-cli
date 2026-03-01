@@ -1,0 +1,11 @@
+PROJECT: algo-trader
+PRIORITY: HIGH
+INTENT: COOK
+
+/cook "AGI OpenClaw Focus — Trả lời TIẾNG VIỆT. 100% tập trung vào thuật toán trading AGI cho algo-trader:
+1. Deep scan toàn bộ trading logic (strategies, indicators, signals)
+2. Tối ưu thuật toán: backtest accuracy, risk management, position sizing
+3. Tích hợp OpenClaw-RL feedback loop: reward signal dựa trên P&L
+4. Review security API keys (Binance/exchange credentials)
+5. Ensure build+test pass, fix bugs
+Sửa tối đa 5 file mỗi mission. Commit kết quả." --auto

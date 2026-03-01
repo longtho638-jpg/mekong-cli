@@ -1,4 +1,4 @@
-import { IStrategy, ISignal, SignalType } from '../interfaces/IStrategy';
+import { IStrategy, ISignal } from '../interfaces/IStrategy';
 import { ICandle } from '../interfaces/ICandle';
 
 export abstract class BaseStrategy implements IStrategy {
@@ -6,17 +6,42 @@ export abstract class BaseStrategy implements IStrategy {
   protected candles: ICandle[] = [];
   protected maxHistoryBuffer: number = 200; // Default buffer size
 
+  protected config: Record<string, unknown> = {};
+
   /**
-   * Initialize the strategy with historical data.
-   * Can be overridden by subclasses if needed.
+   * Initialize the strategy with historical data and optional initial config.
    * @param history Array of historical candles
+   * @param config Optional initial configuration (dynamic JSON)
    */
-  async init(history: ICandle[]): Promise<void> {
+  async init(history: ICandle[], config?: Record<string, unknown>): Promise<void> {
     this.candles = [...history];
+    this.config = config ?? {};
     // Trim history to max buffer if it exceeds
     if (this.candles.length > this.maxHistoryBuffer) {
       this.candles = this.candles.slice(-this.maxHistoryBuffer);
     }
+  }
+
+  /**
+   * Update configuration at runtime without restart.
+   */
+  async updateConfig(config: Record<string, unknown>): Promise<void> {
+    this.config = { ...this.config, ...config };
+  }
+
+  /**
+   * Get current configuration.
+   */
+  getConfig(): Record<string, unknown> {
+    return this.config;
+  }
+
+  /**
+   * Strategy configuration schema (JSON Schema compatible).
+   * Subclasses should override this to provide validation and UI hints.
+   */
+  getConfigSchema(): Record<string, unknown> {
+    return {};
   }
 
   /**
@@ -44,4 +69,28 @@ export abstract class BaseStrategy implements IStrategy {
    * @param candle The new candle
    */
   abstract onCandle(candle: ICandle): Promise<ISignal | null>;
+
+  /**
+   * Lifecycle method: called when the strategy is starting.
+   */
+  async onStart(): Promise<void> {}
+
+  /**
+   * Granular tick update (optional).
+   */
+  async onTick(tick: { price: number; timestamp: number }): Promise<ISignal | null> {
+    return null;
+  }
+
+  /**
+   * Called when a strategy produces a signal (pre-execution check/enrichment).
+   */
+  async onSignal(signal: ISignal): Promise<ISignal | null> {
+    return signal;
+  }
+
+  /**
+   * Lifecycle method: called when the strategy is finishing/stopping.
+   */
+  async onFinish(): Promise<void> {}
 }

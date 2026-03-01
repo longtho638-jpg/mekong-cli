@@ -1,0 +1,10 @@
+{
+  "name": "@agencyos/vibe-media-trust",
+  "version": "0.1.0",
+  "description": "Synthetic media trust facade SDK — deepfake detection, C2PA provenance, KYC liveness, content verification",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {}
+}

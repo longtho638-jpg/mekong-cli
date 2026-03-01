@@ -1,0 +1,1413 @@
+{
+  "tasks": [
+    {
+      "hash": "e80c05aa630a",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/plan:hard \"Binh Phap Ch.1 始計: Deep 10x LEARN architecture & pattern from google",
+      "dispatchedAt": 1772335884809
+    },
+    {
+      "hash": "b0fef026ace7",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/plan:hard \"Binh Phap Ch.2 作戰: Deep 10x LEARN architecture & pattern from upstas",
+      "dispatchedAt": 1772335890783
+    },
+    {
+      "hash": "b1cd919314e5",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/plan:hard \"Binh Phap Ch.3 謀攻: Deep 10x LEARN architecture & pattern from n8n-io",
+      "dispatchedAt": 1772336154198
+    },
+    {
+      "hash": "e0c4972137e0",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/plan:hard \"Binh Phap Ch.4 軍形: Deep 10x LEARN architecture & pattern from google",
+      "dispatchedAt": 1772336245596
+    },
+    {
+      "hash": "1f5f724d3e6c",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/plan:hard \"Binh Phap Ch.5 兵勢: Deep 10x LEARN architecture & pattern from vercel",
+      "dispatchedAt": 1772336251454
+    },
+    {
+      "hash": "88076b45fcb1",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/plan:hard \"Binh Phap Ch.6 虛實: Deep 10x LEARN architecture & pattern from BerriA",
+      "dispatchedAt": 1772336338631
+    },
+    {
+      "hash": "cabe7d6e5ba1",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/plan:hard \"Binh Phap Ch.7 軍爭: Deep 10x LEARN architecture & pattern from railwa",
+      "dispatchedAt": 1772336430644
+    },
+    {
+      "hash": "b3bf1797d0b9",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/plan:hard \"Binh Phap Ch.8 九變: Deep 10x LEARN architecture & pattern from tempor",
+      "dispatchedAt": 1772336525288
+    },
+    {
+      "hash": "b151b89fe57e",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/plan:hard \"Binh Phap Ch.9 行軍: Deep 10x LEARN architecture & pattern from grafan",
+      "dispatchedAt": 1772336528614
+    },
+    {
+      "hash": "48323e433dcb",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/plan:hard \"Binh Phap Ch.10 地形: Deep 10x LEARN architecture & pattern from elect",
+      "dispatchedAt": 1772336697539
+    },
+    {
+      "hash": "5c1a5df803ed",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/plan:hard \"Binh Phap Ch.11 九地: Deep 10x LEARN architecture & pattern from netda",
+      "dispatchedAt": 1772336703632
+    },
+    {
+      "hash": "ce1be1f897e4",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/plan:hard \"Binh Phap Ch.12 火攻: Deep 10x LEARN architecture & pattern from cal-c",
+      "dispatchedAt": 1772336787746
+    },
+    {
+      "hash": "a06bb9274a7e",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/plan:hard \"Binh Phap Ch.13 用間: Deep 10x LEARN architecture & pattern from mem0a",
+      "dispatchedAt": 1772336789477
+    },
+    {
+      "hash": "6e95e9845ab8",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/plan:hard \"Binh Phap Ch.1 始計: Deep 10x LEARN architecture & pattern from google",
+      "dispatchedAt": 1772336795725
+    },
+    {
+      "hash": "4e7fe1c194a0",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/plan:hard \"Binh Phap Ch.2 作戰: Deep 10x LEARN architecture & pattern from upstas",
+      "dispatchedAt": 1772336886318
+    },
+    {
+      "hash": "6ff6737a9212",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/plan:hard \"Binh Phap Ch.3 謀攻: Deep 10x LEARN architecture & pattern from n8n-io",
+      "dispatchedAt": 1772336888288
+    },
+    {
+      "hash": "1ca9918f4ef0",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/plan:hard \"Binh Phap Ch.4 軍形: Deep 10x LEARN architecture & pattern from google",
+      "dispatchedAt": 1772336894819
+    },
+    {
+      "hash": "a7fcd2132688",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/plan:hard \"Binh Phap Ch.5 兵勢: Deep 10x LEARN architecture & pattern from vercel",
+      "dispatchedAt": 1772336976340
+    },
+    {
+      "hash": "6b2c045f9004",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/plan:hard \"Binh Phap Ch.6 虛實: Deep 10x LEARN architecture & pattern from portke",
+      "dispatchedAt": 1772336982771
+    },
+    {
+      "hash": "ab3337ad4eab",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/plan:hard \"Binh Phap Ch.7 軍爭: Deep 10x LEARN architecture & pattern from pulumi",
+      "dispatchedAt": 1772336989589
+    },
+    {
+      "hash": "348292998a0b",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/plan:hard \"Binh Phap Ch.8 九變: Deep 10x LEARN architecture & pattern from tempor",
+      "dispatchedAt": 1772337061427
+    },
+    {
+      "hash": "fa2bbc40614b",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/plan:hard \"Binh Phap Ch.9 行軍: Deep 10x LEARN architecture & pattern from grafan",
+      "dispatchedAt": 1772337146351
+    },
+    {
+      "hash": "629d9fe7a129",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/plan:hard \"Binh Phap Ch.10 地形: Deep 10x LEARN architecture & pattern from niceg",
+      "dispatchedAt": 1772337241285
+    },
+    {
+      "hash": "182d2bcbda7c",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/plan:hard \"Binh Phap Ch.11 九地: Deep 10x LEARN architecture & pattern from louis",
+      "dispatchedAt": 1772337248733
+    },
+    {
+      "hash": "7eda819abc5d",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/plan:hard \"Binh Phap Ch.12 火攻: Deep 10x LEARN architecture & pattern from formb",
+      "dispatchedAt": 1772337328790
+    },
+    {
+      "hash": "8bbe00e61e2b",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/plan:hard \"Binh Phap Ch.13 用間: Deep 10x LEARN architecture & pattern from mem0a",
+      "dispatchedAt": 1772337426098
+    },
+    {
+      "hash": "03d45dc60d8e",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/plan:hard \"Binh Phap Ch.1 始計: Deep 10x LEARN architecture & pattern from anthro",
+      "dispatchedAt": 1772337428015
+    },
+    {
+      "hash": "fa7da1574edc",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/plan:hard \"Binh Phap Ch.2 作戰: Deep 10x LEARN architecture & pattern from upstas",
+      "dispatchedAt": 1772337508022
+    },
+    {
+      "hash": "a517a41aef82",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/plan:hard \"Binh Phap Ch.3 謀攻: Deep 10x LEARN architecture & pattern from langch",
+      "dispatchedAt": 1772337509489
+    },
+    {
+      "hash": "74a63283f9fa",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/plan:hard \"Binh Phap Ch.4 軍形: Deep 10x LEARN architecture & pattern from google",
+      "dispatchedAt": 1772337598206
+    },
+    {
+      "hash": "c9e414e1be1a",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
+      "dispatchedAt": 1772337765671
+    },
+    {
+      "hash": "5010f9958c5b",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from BerriAI/l",
+      "dispatchedAt": 1772337873126
+    },
+    {
+      "hash": "c617843bed34",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from railway/n",
+      "dispatchedAt": 1772337874327
+    },
+    {
+      "hash": "88c4eae94d6d",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
+      "dispatchedAt": 1772337963025
+    },
+    {
+      "hash": "dde9c480db05",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from grafana/g",
+      "dispatchedAt": 1772337968907
+    },
+    {
+      "hash": "573b26cdc1dd",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
+      "dispatchedAt": 1772338053619
+    },
+    {
+      "hash": "474dfbdb919f",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
+      "dispatchedAt": 1772338055170
+    },
+    {
+      "hash": "9ffe3c8af5c0",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from cal-com/",
+      "dispatchedAt": 1772338242197
+    },
+    {
+      "hash": "64881fdd4cf0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
+      "dispatchedAt": 1772338246055
+    },
+    {
+      "hash": "2cdb5cf50a8c",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN architecture & pattern from google/A2",
+      "dispatchedAt": 1772338248073
+    },
+    {
+      "hash": "a593f03e7bfe",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from upstash/q",
+      "dispatchedAt": 1772338568414
+    },
+    {
+      "hash": "0cee9dcc1096",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from n8n-io/n8",
+      "dispatchedAt": 1772338648755
+    },
+    {
+      "hash": "369a581767b8",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
+      "dispatchedAt": 1772338676090
+    },
+    {
+      "hash": "2b2bf8ded4ca",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
+      "dispatchedAt": 1772338679429
+    },
+    {
+      "hash": "9e245f5f443e",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from BerriAI/l",
+      "dispatchedAt": 1772338681341
+    },
+    {
+      "hash": "703c4e77e8f4",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from railway/n",
+      "dispatchedAt": 1772338768487
+    },
+    {
+      "hash": "8c2080c3e70e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
+      "dispatchedAt": 1772338957671
+    },
+    {
+      "hash": "57ce7b550023",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from grafana/g",
+      "dispatchedAt": 1772339037746
+    },
+    {
+      "hash": "8478fd2e3322",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
+      "dispatchedAt": 1772339043690
+    },
+    {
+      "hash": "e547645ab08a",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
+      "dispatchedAt": 1772339130544
+    },
+    {
+      "hash": "1d47caa98160",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from cal-com/",
+      "dispatchedAt": 1772339132644
+    },
+    {
+      "hash": "54a0f96e48b7",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
+      "dispatchedAt": 1772339138759
+    },
+    {
+      "hash": "d0fb64feaf8d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN architecture & pattern from google/A2",
+      "dispatchedAt": 1772339228036
+    },
+    {
+      "hash": "b3259c53cd77",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from upstash/q",
+      "dispatchedAt": 1772339317827
+    },
+    {
+      "hash": "50123c1957d1",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from n8n-io/n8",
+      "dispatchedAt": 1772339398075
+    },
+    {
+      "hash": "4c2cbda01418",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
+      "dispatchedAt": 1772339404274
+    },
+    {
+      "hash": "514f5c9c7583",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
+      "dispatchedAt": 1772339498006
+    },
+    {
+      "hash": "1b351bbf579f",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from portkey-a",
+      "dispatchedAt": 1772339500134
+    },
+    {
+      "hash": "c1d1478c3169",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from railway/n",
+      "dispatchedAt": 1772339572386
+    },
+    {
+      "hash": "21a4768d1860",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
+      "dispatchedAt": 1772339755907
+    },
+    {
+      "hash": "994d1a50fae7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from grafana/g",
+      "dispatchedAt": 1772339944741
+    },
+    {
+      "hash": "c780d0ed4b2c",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
+      "dispatchedAt": 1772340026926
+    },
+    {
+      "hash": "4d6044274e1f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
+      "dispatchedAt": 1772340045703
+    },
+    {
+      "hash": "2e19a2128ec8",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from cal-com/",
+      "dispatchedAt": 1772340049663
+    },
+    {
+      "hash": "53bf74236fab",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
+      "dispatchedAt": 1772340328103
+    },
+    {
+      "hash": "5b855a92812e",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN architecture & pattern from google/A2",
+      "dispatchedAt": 1772340331918
+    },
+    {
+      "hash": "b666c4d3eb4a",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from trigger-d",
+      "dispatchedAt": 1772340418000
+    },
+    {
+      "hash": "d6a5599cf1e0",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from n8n-io/n8",
+      "dispatchedAt": 1772340507956
+    },
+    {
+      "hash": "0b8fbd0493e8",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
+      "dispatchedAt": 1772340511615
+    },
+    {
+      "hash": "88c68040914d",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from huggingfa",
+      "dispatchedAt": 1772340559957
+    },
+    {
+      "hash": "27b5af18f52a",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from BerriAI/l",
+      "dispatchedAt": 1772340646512
+    },
+    {
+      "hash": "f4a9283267cb",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from pulumi/pu",
+      "dispatchedAt": 1772340740005
+    },
+    {
+      "hash": "486de74df00c",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from inngest/i",
+      "dispatchedAt": 1772340919824
+    },
+    {
+      "hash": "646a5126f1b3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from grafana/g",
+      "dispatchedAt": 1772341010606
+    },
+    {
+      "hash": "2933cbfa86a1",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
+      "dispatchedAt": 1772341108672
+    },
+    {
+      "hash": "7fd2c302d34b",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from louislam",
+      "dispatchedAt": 1772341111962
+    },
+    {
+      "hash": "426d5201e598",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from cal-com/",
+      "dispatchedAt": 1772341138580
+    },
+    {
+      "hash": "d0013fefa9a7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
+      "dispatchedAt": 1772341330791
+    },
+    {
+      "hash": "536e05d11ad6",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN architecture & pattern from anthropic",
+      "dispatchedAt": 1772341412500
+    },
+    {
+      "hash": "4c5c56ff1ed4",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ upstas",
+      "dispatchedAt": 1772341511238
+    },
+    {
+      "hash": "2394f1e2060c",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from langchain",
+      "dispatchedAt": 1772341529032
+    },
+    {
+      "hash": "6c2311d55f4c",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from biomejs/b",
+      "dispatchedAt": 1772341676793
+    },
+    {
+      "hash": "25234d694c2c",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
+      "dispatchedAt": 1772341850104
+    },
+    {
+      "hash": "14b3debeb172",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from portkey-a",
+      "dispatchedAt": 1772341982396
+    },
+    {
+      "hash": "3ef18c36a958",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from railway/n",
+      "dispatchedAt": 1772342343476
+    },
+    {
+      "hash": "ce8d4bb643d5",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ temporal-io/",
+      "dispatchedAt": 1772342373047
+    },
+    {
+      "hash": "6f8dbb1ab322",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from highlight",
+      "dispatchedAt": 1772342433180
+    },
+    {
+      "hash": "a01b5b0a769f",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from nicegui/",
+      "dispatchedAt": 1772342605965
+    },
+    {
+      "hash": "42cbe620d352",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ netdata/net",
+      "dispatchedAt": 1772342965531
+    },
+    {
+      "hash": "1dbfbf501085",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from formbric",
+      "dispatchedAt": 1772343062397
+    },
+    {
+      "hash": "3782833deaab",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
+      "dispatchedAt": 1772343234882
+    },
+    {
+      "hash": "93b3cb5e9722",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/A2UI ",
+      "dispatchedAt": 1772343415586
+    },
+    {
+      "hash": "ac6d31352cd3",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ upstas",
+      "dispatchedAt": 1772343693758
+    },
+    {
+      "hash": "5042965f72ee",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from n8n-io/n8",
+      "dispatchedAt": 1772343725360
+    },
+    {
+      "hash": "79a8b613782f",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from biomejs/b",
+      "dispatchedAt": 1772343956791
+    },
+    {
+      "hash": "1b37b7816458",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
+      "dispatchedAt": 1772344052654
+    },
+    {
+      "hash": "d97b74e46303",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from BerriAI/l",
+      "dispatchedAt": 1772344141133
+    },
+    {
+      "hash": "0af827c10450",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ railway/nixp",
+      "dispatchedAt": 1772344319601
+    },
+    {
+      "hash": "adaff92a3681",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from inngest/i",
+      "dispatchedAt": 1772344413955
+    },
+    {
+      "hash": "69704bc24701",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from highlight",
+      "dispatchedAt": 1772344447108
+    },
+    {
+      "hash": "50bd4a31d25e",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ electron/el",
+      "dispatchedAt": 1772344499950
+    },
+    {
+      "hash": "7a676571e240",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from louislam",
+      "dispatchedAt": 1772344594342
+    },
+    {
+      "hash": "36b83727d0be",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from formbric",
+      "dispatchedAt": 1772344627398
+    },
+    {
+      "hash": "51785e13c96a",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ mem0a",
+      "dispatchedAt": 1772344684555
+    },
+    {
+      "hash": "b8c3f739708b",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN architecture & pattern from anthropic",
+      "dispatchedAt": 1772344774769
+    },
+    {
+      "hash": "cfd50cb7128b",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from upstash/q",
+      "dispatchedAt": 1772344951712
+    },
+    {
+      "hash": "382c9631fbc2",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ n8n-io",
+      "dispatchedAt": 1772345045054
+    },
+    {
+      "hash": "d04f9cd49ddd",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/zx & ",
+      "dispatchedAt": 1772345079787
+    },
+    {
+      "hash": "804407618f9c",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
+      "dispatchedAt": 1772345132186
+    },
+    {
+      "hash": "ecf598fefe1f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ BerriA",
+      "dispatchedAt": 1772345225358
+    },
+    {
+      "hash": "53f02796f622",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from pulumi/pu",
+      "dispatchedAt": 1772345402106
+    },
+    {
+      "hash": "61fd143df04c",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ temporal-io/",
+      "dispatchedAt": 1772345489891
+    },
+    {
+      "hash": "466cd5d53358",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ grafan",
+      "dispatchedAt": 1772346032571
+    },
+    {
+      "hash": "6f87c0ceb562",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ electron/el",
+      "dispatchedAt": 1772346065446
+    },
+    {
+      "hash": "433403a8d2be",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
+      "dispatchedAt": 1772346092382
+    },
+    {
+      "hash": "eedaa7f5abee",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ cal-com/cal",
+      "dispatchedAt": 1772347288331
+    },
+    {
+      "hash": "2cb32585f4dd",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
+      "dispatchedAt": 1772347315066
+    },
+    {
+      "hash": "48835c38313d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
+      "dispatchedAt": 1772347472732
+    },
+    {
+      "hash": "548462f096b3",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from upstash/q",
+      "dispatchedAt": 1772347657655
+    },
+    {
+      "hash": "6d70d5dac976",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ n8n-io",
+      "dispatchedAt": 1772347743052
+    },
+    {
+      "hash": "fb09864e3256",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
+      "dispatchedAt": 1772347770125
+    },
+    {
+      "hash": "d6a1b30cf439",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
+      "dispatchedAt": 1772347910978
+    },
+    {
+      "hash": "2fe07eaa5908",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ Berri",
+      "dispatchedAt": 1772348013195
+    },
+    {
+      "hash": "705d46291016",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from pulumi/pu",
+      "dispatchedAt": 1772348272959
+    },
+    {
+      "hash": "49aabd1c6d96",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
+      "dispatchedAt": 1772348542895
+    },
+    {
+      "hash": "23994a4bef01",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
+      "dispatchedAt": 1772348818060
+    },
+    {
+      "hash": "84d00f4e06c6",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
+      "dispatchedAt": 1772348844724
+    },
+    {
+      "hash": "3cde94df9c47",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ netdata/net",
+      "dispatchedAt": 1772349088588
+    },
+    {
+      "hash": "12185a51f757",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from formbric",
+      "dispatchedAt": 1772349115178
+    },
+    {
+      "hash": "84ee81998ff0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
+      "dispatchedAt": 1772349358091
+    },
+    {
+      "hash": "bbd50166c1e3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/A2UI ",
+      "dispatchedAt": 1772349629526
+    },
+    {
+      "hash": "30e75980f883",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from trigger-d",
+      "dispatchedAt": 1772349899083
+    },
+    {
+      "hash": "9d962e91d8f7",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from langchain",
+      "dispatchedAt": 1772349925984
+    },
+    {
+      "hash": "3a8aa99e2a19",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/zx & ",
+      "dispatchedAt": 1772350168071
+    },
+    {
+      "hash": "00903235ebff",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
+      "dispatchedAt": 1772350194792
+    },
+    {
+      "hash": "84064cb38933",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from portkey-a",
+      "dispatchedAt": 1772350437556
+    },
+    {
+      "hash": "224cdfc502d2",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ railw",
+      "dispatchedAt": 1772350449856
+    },
+    {
+      "hash": "7c5d47e3dbae",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ tempor",
+      "dispatchedAt": 1772355925949
+    },
+    {
+      "hash": "a84cdb903917",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
+      "dispatchedAt": 1772355958789
+    },
+    {
+      "hash": "88124972444f",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from nicegui/",
+      "dispatchedAt": 1772355986091
+    },
+    {
+      "hash": "0d4c10536ff8",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
+      "dispatchedAt": 1772356121025
+    },
+    {
+      "hash": "05eb2e4211ad",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ cal-com/cal",
+      "dispatchedAt": 1772356192678
+    },
+    {
+      "hash": "1d9a15d6dca3",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
+      "dispatchedAt": 1772356219521
+    },
+    {
+      "hash": "602d50d4f06d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
+      "dispatchedAt": 1772356376674
+    },
+    {
+      "hash": "91b967d2acff",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ upstash/qsta",
+      "dispatchedAt": 1772356409511
+    },
+    {
+      "hash": "396b5ea7e684",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ n8n-i",
+      "dispatchedAt": 1772356436102
+    },
+    {
+      "hash": "95ef77e2d364",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from biomejs/b",
+      "dispatchedAt": 1772356467897
+    },
+    {
+      "hash": "f2df4a3a33ae",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
+      "dispatchedAt": 1772356483247
+    },
+    {
+      "hash": "c5a2bf97cde9",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
+      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ BerriAI/lite",
+      "dispatchedAt": 1772356642700
+    },
+    {
+      "hash": "70a72497b6b3",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ railw",
+      "dispatchedAt": 1772356670016
+    },
+    {
+      "hash": "b6a99172c318",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
+      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from inngest/i",
+      "dispatchedAt": 1772356714922
+    },
+    {
+      "hash": "a7dabf9a03fc",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
+      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
+      "dispatchedAt": 1772356812806
+    },
+    {
+      "hash": "b9c08dc8f276",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
+      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ electron/el",
+      "dispatchedAt": 1772356901585
+    },
+    {
+      "hash": "01862bbdbcf6",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
+      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ netdata/net",
+      "dispatchedAt": 1772356991893
+    },
+    {
+      "hash": "a810f93b24a8",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
+      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ cal-c",
+      "dispatchedAt": 1772357086381
+    },
+    {
+      "hash": "8fb90e4c4a4d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
+      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ mem0a",
+      "dispatchedAt": 1772357176483
+    },
+    {
+      "hash": "e3f844e4e67e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.1 始計 Kế Sách (Planning)",
+      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
+      "dispatchedAt": 1772357266754
+    },
+    {
+      "hash": "3ced6d667164",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
+      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ upstas",
+      "dispatchedAt": 1772357356633
+    },
+    {
+      "hash": "1e4fd79d72a7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ n8n-io",
+      "dispatchedAt": 1772357450120
+    },
+    {
+      "hash": "b8a4cc8061a9",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
+      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/zx & ",
+      "dispatchedAt": 1772357532585
+    },
+    {
+      "hash": "c72f1a16a09b",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
+      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
+      "dispatchedAt": 1772357621268
+    },
+    {
+      "hash": "13ac8fdfde03",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: performance",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
+      "dispatchedAt": 1772357685741
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772357874452
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772357960949
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358050941
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358140425
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358230604
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358320876
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358410803
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358499117
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358575942
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358655453
+    },
+    {
+      "hash": "13ac8fdfde03",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: performance",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
+      "dispatchedAt": 1772358687488
+    },
+    {
+      "hash": "b055f4a83fa7",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
+      "dispatchedAt": 1772358725854
+    },
+    {
+      "hash": "aa91a686d0af",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Targeting: ci_cd",
+      "preview": "/cook \"Binh Phap Ch.3 謀攻: Tạo .github/workflows/ci.yml với lint, type-check, tes",
+      "dispatchedAt": 1772358753147
+    },
+    {
+      "hash": "13ac8fdfde03",
+      "project": "apex-os",
+      "pane": 3,
+      "chapter": "Targeting: performance",
+      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
+      "dispatchedAt": 1772358784196
+    }
+  ],
+  "chapterIndex": 5
+}

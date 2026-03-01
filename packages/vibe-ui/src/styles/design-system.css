@@ -1,0 +1,341 @@
+/* ============================================
+   AURA DESIGN SYSTEM - MASTER LEVEL WOW
+   "The Void" Aesthetic
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&display=swap');
+
+/* MD3 Design Tokens */
+@import './md3-tokens.css';
+
+
+:root {
+  /* 
+   * UNIFIED DESIGN TOKENS
+   * Source of Truth: tailwind.config.js
+   * Base: Dark background (#0F172A)
+   * Accents: Deep Teal (#00575A) + Marigold (#FFBF00)
+   */
+
+  /* Backgrounds - ALIGNED WITH TAILWIND */
+  --bg-void: #0F172A;
+  /* Dark bg from tailwind.config.js */
+  --bg-panel: #1E293B;
+  /* Dark surface from tailwind.config.js */
+  --bg-surface: #334155;
+  /* Dark border from tailwind.config.js */
+  --bg-elevated: #475569;
+  /* Slate 600 */
+
+  /* Text - ALIGNED WITH TAILWIND */
+  --text-primary: #F1F5F9;
+  /* Dark text.primary from tailwind.config.js */
+  --text-secondary: #CBD5E1;
+  /* Dark text.secondary from tailwind.config.js */
+  --text-muted: #94A3B8;
+  /* Dark text.muted from tailwind.config.js */
+
+  /* Borders */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-muted: #334155;
+  /* Slate 700 from tailwind */
+  --border-highlight: #475569;
+  /* Slate 600 from tailwind */
+
+  /* Primary Brand Colors - ALIGNED WITH TAILWIND */
+  --accent-primary: #00575A;
+  /* Brand primary (Deep Teal) */
+  --accent-accent: #FFBF00;
+  /* Brand accent (Marigold) */
+
+  /* Secondary Accents for variety */
+  --accent-cyan: #06b6d4;
+  /* Cyan 500 */
+  --accent-emerald: #10b981;
+  /* Emerald 500 */
+  --accent-violet: #8b5cf6;
+  /* Violet 500 (Secondary) */
+  --accent-pink: #ec4899;
+  /* Pink 500 (Secondary) */
+  --accent-amber: #f59e0b;
+  /* Amber 500 (Warning) */
+
+  /* Glows - Updated for primary colors */
+  --glow-primary: 0 0 20px rgba(0, 87, 90, 0.3);
+  --glow-accent: 0 0 20px rgba(255, 191, 0, 0.3);
+  --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.3);
+
+  /* Gradients - UNIFIED */
+  --gradient-aura: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+  --gradient-glow: radial-gradient(circle at center, rgba(0, 87, 90, 0.15) 0%, transparent 70%);
+  --gradient-text-aura: linear-gradient(to right, #00575A, #FFBF00);
+  --gradient-border-aura: linear-gradient(to bottom right, rgba(0, 87, 90, 0.5), rgba(255, 191, 0, 0.3));
+
+  /* ===== SPACING & RADIUS ===== */
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  /* ===== ANIMATION ===== */
+  --ease-aura: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ===== GLOBAL RESET ===== */
+body {
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  selection-background-color: var(--accent-cyan);
+  selection-color: var(--bg-void);
+}
+
+/* ===== UTILITIES ===== */
+
+/* Aura Panel (Bento Card) */
+.aura-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-aura);
+}
+
+.aura-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-glow);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-aura);
+  pointer-events: none;
+}
+
+.aura-card:hover {
+  border-color: var(--border-highlight);
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+}
+
+.aura-card:hover::before {
+  opacity: 1;
+}
+
+/* Aura Text */
+.text-aura {
+  background: var(--gradient-text-aura);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Aura Button */
+.btn-aura {
+  background: var(--text-primary);
+  color: var(--bg-void);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-aura);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-aura:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.btn-aura-outline {
+  background: transparent;
+  border: 1px solid var(--border-highlight);
+  color: var(--text-primary);
+  font-weight: 500;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all 0.3s var(--ease-aura);
+}
+
+.btn-aura-outline:hover {
+  background: var(--bg-surface);
+  border-color: var(--text-primary);
+}
+
+/* Grid Background */
+.bg-grid-pattern {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, var(--border-muted) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border-muted) 1px, transparent 1px);
+  mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+}
+
+/* Spotlight Effect */
+.spotlight-group:hover .spotlight-target {
+  opacity: 1;
+}
+
+/* ============================================
+   ULTRA WOW ADDITIONS - Dark Premium Theme
+   ============================================ */
+
+/* Dramatic Gradients */
+:root {
+  --gradient-hero: linear-gradient(135deg,
+      #00897B 0%,
+      #26A69A 25%,
+      #B794F6 50%,
+      #9F7AEA 75%,
+      #FF6B58 100%);
+
+  --gradient-dark-bg: linear-gradient(135deg,
+      #0F172A 0%,
+      #1E293B 50%,
+      #0F172A 100%);
+
+  --gradient-card: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.05) 100%);
+
+  --gradient-text-ultra: linear-gradient(135deg,
+      #00897B 0%,
+      #9F7AEA 50%,
+      #FF6B58 100%);
+
+  --gradient-glow-teal: radial-gradient(circle at center,
+      rgba(0, 137, 123, 0.4) 0%,
+      rgba(0, 137, 123, 0) 70%);
+
+  --gradient-glow-coral: radial-gradient(circle at center,
+      rgba(255, 107, 88, 0.4) 0%,
+      rgba(255, 107, 88, 0) 70%);
+
+  /* Ultra Premium Shadows */
+  --shadow-ultra:
+    0 50px 100px -20px rgba(0, 137, 123, 0.3),
+    0 30px 60px -30px rgba(159, 122, 234, 0.3),
+    0 -2px 6px 0 rgba(255, 255, 255, 0.1) inset;
+
+  --shadow-glow-teal: 0 0 60px rgba(0, 137, 123, 0.6);
+  --shadow-glow-coral: 0 0 60px rgba(255, 107, 88, 0.6);
+  --shadow-glow-violet: 0 0 60px rgba(159, 122, 234, 0.6);
+}
+
+/* Glassmorphism Ultra */
+.glass-ultra {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 8px 32px 0 rgba(0, 137, 123, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* 3D Transform Effects */
+.card-3d {
+  transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover {
+  transform: perspective(1000px) rotateX(-5deg) rotateY(5deg) translateY(-10px);
+  box-shadow: var(--shadow-ultra);
+}
+
+/* Gradient Text Ultra */
+.gradient-text-ultra {
+  background: var(--gradient-text-ultra);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Dark Background */
+.bg-dark-ultra {
+  background: var(--gradient-dark-bg);
+}
+
+/* Button Ultra */
+.btn-ultra {
+  position: relative;
+  background: linear-gradient(135deg, #FF6B58, #FF8A7A);
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 1.5rem 3rem;
+  border-radius: 1rem;
+  font-size: 1.25rem;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 0 60px rgba(255, 107, 88, 0.6),
+    0 20px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.btn-ultra:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 100px rgba(255, 107, 88, 0.8),
+    0 30px 60px rgba(0, 0, 0, 0.4);
+}
+
+.btn-ultra:active {
+  transform: scale(0.95);
+}
+
+/* Floating Animation */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glow Pulse */
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    opacity: 0.5;
+    filter: blur(100px);
+  }
+
+  50% {
+    opacity: 0.8;
+    filter: blur(120px);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 8s ease-in-out infinite;
+}
+
+/* Text Glow */
+.text-glow {
+  text-shadow: 0 0 80px currentColor;
+}

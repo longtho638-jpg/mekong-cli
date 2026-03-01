@@ -1,0 +1,453 @@
+/* ============================================
+   MATERIAL DESIGN 3 (MD3) INTEGRATION
+   100% MD3 Compliant Design Tokens
+   ============================================ */
+
+/*
+ * MD3 Color System
+ * Generated from Material Theme Builder
+ * Primary: Teal (#00897B)
+ * Secondary: Violet (#9F7AEA)
+ * Tertiary: Coral (#FF6B58)
+ */
+
+:root {
+    /* ===== MD3 PRIMARY ===== */
+    --md-sys-color-primary: #00897B;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #A7F3EC;
+    --md-sys-color-on-primary-container: #002019;
+
+    /* ===== MD3 SECONDARY ===== */
+    --md-sys-color-secondary: #9F7AEA;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-secondary-container: #E9DDFF;
+    --md-sys-color-on-secondary-container: #23005C;
+
+    /* ===== MD3 TERTIARY ===== */
+    --md-sys-color-tertiary: #FF6B58;
+    --md-sys-color-on-tertiary: #FFFFFF;
+    --md-sys-color-tertiary-container: #FFDAD4;
+    --md-sys-color-on-tertiary-container: #410002;
+
+    /* ===== MD3 ERROR ===== */
+    --md-sys-color-error: #BA1A1A;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-sys-color-error-container: #FFDAD6;
+    --md-sys-color-on-error-container: #410002;
+
+    /* ===== MD3 SURFACE (Dark Theme) ===== */
+    --md-sys-color-surface: #0F172A;
+    --md-sys-color-on-surface: #E2E2E9;
+    --md-sys-color-surface-variant: #1E293B;
+    --md-sys-color-on-surface-variant: #C4C6D0;
+
+    /* ===== MD3 SURFACE LEVELS ===== */
+    --md-sys-color-surface-dim: #0C111D;
+    --md-sys-color-surface-bright: #334155;
+    --md-sys-color-surface-container-lowest: #0A0E17;
+    --md-sys-color-surface-container-low: #0F172A;
+    --md-sys-color-surface-container: #141C2F;
+    --md-sys-color-surface-container-high: #1E293B;
+    --md-sys-color-surface-container-highest: #334155;
+
+    /* ===== MD3 OUTLINE ===== */
+    --md-sys-color-outline: #8D9199;
+    --md-sys-color-outline-variant: #43474E;
+    --md-sys-color-inverse-surface: #E2E2E9;
+    --md-sys-color-inverse-on-surface: #2F3033;
+    --md-sys-color-inverse-primary: #006B5F;
+
+    /* ===== MD3 ELEVATION ===== */
+    --md-sys-elevation-level0: none;
+    --md-sys-elevation-level1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    --md-sys-elevation-level3: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    --md-sys-elevation-level4: 0 6px 10px 4px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+    --md-sys-elevation-level5: 0 8px 12px 6px rgba(0, 0, 0, 0.15), 0 4px 4px 0 rgba(0, 0, 0, 0.3);
+
+    /* ===== MD3 SHAPE ===== */
+    --md-sys-shape-corner-none: 0px;
+    --md-sys-shape-corner-extra-small: 4px;
+    --md-sys-shape-corner-small: 8px;
+    --md-sys-shape-corner-medium: 12px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-extra-large: 28px;
+    --md-sys-shape-corner-full: 9999px;
+
+    /* ===== MD3 MOTION ===== */
+    --md-sys-motion-duration-short1: 50ms;
+    --md-sys-motion-duration-short2: 100ms;
+    --md-sys-motion-duration-short3: 150ms;
+    --md-sys-motion-duration-short4: 200ms;
+    --md-sys-motion-duration-medium1: 250ms;
+    --md-sys-motion-duration-medium2: 300ms;
+    --md-sys-motion-duration-medium3: 350ms;
+    --md-sys-motion-duration-medium4: 400ms;
+    --md-sys-motion-duration-long1: 450ms;
+    --md-sys-motion-duration-long2: 500ms;
+    --md-sys-motion-duration-long3: 550ms;
+    --md-sys-motion-duration-long4: 600ms;
+
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0.0, 0, 1.0);
+    --md-sys-motion-easing-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+    --md-sys-motion-easing-emphasized-accelerate: cubic-bezier(0.3, 0.0, 0.8, 0.15);
+    --md-sys-motion-easing-standard: cubic-bezier(0.2, 0.0, 0, 1.0);
+    --md-sys-motion-easing-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+    --md-sys-motion-easing-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+    --md-sys-motion-easing-legacy: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* ===== MD3 TYPESCALE ===== */
+    --md-sys-typescale-display-large-size: 57px;
+    --md-sys-typescale-display-medium-size: 45px;
+    --md-sys-typescale-display-small-size: 36px;
+    --md-sys-typescale-headline-large-size: 32px;
+    --md-sys-typescale-headline-medium-size: 28px;
+    --md-sys-typescale-headline-small-size: 24px;
+    --md-sys-typescale-title-large-size: 22px;
+    --md-sys-typescale-title-medium-size: 16px;
+    --md-sys-typescale-title-small-size: 14px;
+    --md-sys-typescale-label-large-size: 14px;
+    --md-sys-typescale-label-medium-size: 12px;
+    --md-sys-typescale-label-small-size: 11px;
+    --md-sys-typescale-body-large-size: 16px;
+    --md-sys-typescale-body-medium-size: 14px;
+    --md-sys-typescale-body-small-size: 12px;
+
+    /* ===== MD3 STATE (Opacity) ===== */
+    --md-sys-state-hover-state-layer-opacity: 0.08;
+    --md-sys-state-focus-state-layer-opacity: 0.12;
+    --md-sys-state-pressed-state-layer-opacity: 0.12;
+    --md-sys-state-dragged-state-layer-opacity: 0.16;
+}
+
+/* ===== MD3 COMPONENTS ===== */
+
+/* MD3 Filled Button */
+.md3-button-filled {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: var(--md-sys-shape-corner-full);
+    padding: 10px 24px;
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+    box-shadow: var(--md-sys-elevation-level0);
+    position: relative;
+    overflow: hidden;
+}
+
+.md3-button-filled:hover {
+    box-shadow: var(--md-sys-elevation-level1);
+}
+
+.md3-button-filled:active {
+    box-shadow: var(--md-sys-elevation-level0);
+}
+
+/* MD3 Outlined Button */
+.md3-button-outlined {
+    background-color: transparent;
+    color: var(--md-sys-color-primary);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    padding: 10px 24px;
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.md3-button-outlined:hover {
+    background-color: rgba(0, 137, 123, var(--md-sys-state-hover-state-layer-opacity));
+}
+
+/* MD3 Tonal Button */
+.md3-button-tonal {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border: none;
+    border-radius: var(--md-sys-shape-corner-full);
+    padding: 10px 24px;
+    font-size: var(--md-sys-typescale-label-large-size);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+/* MD3 Card */
+.md3-card {
+    background-color: var(--md-sys-color-surface-container);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 16px;
+    box-shadow: var(--md-sys-elevation-level1);
+    transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-card:hover {
+    box-shadow: var(--md-sys-elevation-level2);
+}
+
+/* MD3 Card Elevated */
+.md3-card-elevated {
+    background-color: var(--md-sys-color-surface-container-low);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 16px;
+    box-shadow: var(--md-sys-elevation-level1);
+    transition: all var(--md-sys-motion-duration-medium2) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-card-elevated:hover {
+    box-shadow: var(--md-sys-elevation-level2);
+}
+
+/* MD3 Card Filled */
+.md3-card-filled {
+    background-color: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 16px;
+    box-shadow: var(--md-sys-elevation-level0);
+}
+
+/* MD3 Card Outlined */
+.md3-card-outlined {
+    background-color: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: var(--md-sys-shape-corner-medium);
+    padding: 16px;
+    box-shadow: var(--md-sys-elevation-level0);
+}
+
+/* MD3 FAB */
+.md3-fab {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border: none;
+    border-radius: var(--md-sys-shape-corner-large);
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--md-sys-elevation-level3);
+    transition: all var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-fab:hover {
+    box-shadow: var(--md-sys-elevation-level4);
+}
+
+/* MD3 Chip */
+.md3-chip {
+    background-color: transparent;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-small);
+    padding: 6px 16px;
+    font-size: var(--md-sys-typescale-label-large-size);
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+}
+
+.md3-chip:hover {
+    background-color: rgba(255, 255, 255, var(--md-sys-state-hover-state-layer-opacity));
+}
+
+.md3-chip-selected {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    border-color: transparent;
+}
+
+/* MD3 Dialog/Modal */
+.md3-dialog {
+    background-color: var(--md-sys-color-surface-container-high);
+    border-radius: var(--md-sys-shape-corner-extra-large);
+    padding: 24px;
+    box-shadow: var(--md-sys-elevation-level3);
+    max-width: 560px;
+}
+
+/* MD3 Navigation Rail */
+.md3-navigation-rail {
+    background-color: var(--md-sys-color-surface);
+    width: 80px;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.md3-navigation-rail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: var(--md-sys-shape-corner-large);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.md3-navigation-rail-item:hover {
+    background-color: rgba(255, 255, 255, var(--md-sys-state-hover-state-layer-opacity));
+}
+
+.md3-navigation-rail-item.active {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+/* MD3 Snackbar */
+.md3-snackbar {
+    background-color: var(--md-sys-color-inverse-surface);
+    color: var(--md-sys-color-inverse-on-surface);
+    border-radius: var(--md-sys-shape-corner-extra-small);
+    padding: 14px 16px;
+    box-shadow: var(--md-sys-elevation-level3);
+    font-size: var(--md-sys-typescale-body-medium-size);
+}
+
+/* MD3 Progress Indicator */
+.md3-progress-linear {
+    height: 4px;
+    background-color: var(--md-sys-color-surface-container-highest);
+    border-radius: var(--md-sys-shape-corner-full);
+    overflow: hidden;
+}
+
+.md3-progress-linear-track {
+    height: 100%;
+    background-color: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-full);
+    transition: width var(--md-sys-motion-duration-long1) var(--md-sys-motion-easing-emphasized);
+}
+
+/* MD3 Text Field */
+.md3-text-field {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.md3-text-field input {
+    width: 100%;
+    padding: 16px;
+    padding-top: 24px;
+    background-color: var(--md-sys-color-surface-container-highest);
+    border: none;
+    border-bottom: 2px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-small) var(--md-sys-shape-corner-small) 0 0;
+    color: var(--md-sys-color-on-surface);
+    font-size: var(--md-sys-typescale-body-large-size);
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-standard);
+}
+
+.md3-text-field input:focus {
+    outline: none;
+    border-bottom-color: var(--md-sys-color-primary);
+}
+
+.md3-text-field label {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: var(--md-sys-typescale-body-large-size);
+    pointer-events: none;
+    transition: all var(--md-sys-motion-duration-short4) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-text-field input:focus+label,
+.md3-text-field input:not(:placeholder-shown)+label {
+    top: 4px;
+    font-size: var(--md-sys-typescale-body-small-size);
+    color: var(--md-sys-color-primary);
+}
+
+/* MD3 Switch */
+.md3-switch {
+    position: relative;
+    width: 52px;
+    height: 32px;
+    background-color: var(--md-sys-color-surface-container-highest);
+    border: 2px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-switch::after {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 16px;
+    height: 16px;
+    background-color: var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-full);
+    transition: all var(--md-sys-motion-duration-medium1) var(--md-sys-motion-easing-emphasized);
+}
+
+.md3-switch.active {
+    background-color: var(--md-sys-color-primary);
+    border-color: var(--md-sys-color-primary);
+}
+
+.md3-switch.active::after {
+    left: 26px;
+    width: 24px;
+    height: 24px;
+    top: 2px;
+    background-color: var(--md-sys-color-on-primary);
+}
+
+/* MD3 Divider */
+.md3-divider {
+    height: 1px;
+    background-color: var(--md-sys-color-outline-variant);
+    margin: 16px 0;
+}
+
+/* MD3 Badge */
+.md3-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    background-color: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-error);
+    border-radius: var(--md-sys-shape-corner-full);
+    font-size: var(--md-sys-typescale-label-small-size);
+    font-weight: 500;
+}
+
+/* MD3 Ripple Effect */
+.md3-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.md3-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: currentColor;
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s, opacity 0.3s;
+}
+
+.md3-ripple:active::before {
+    width: 200%;
+    height: 200%;
+    opacity: var(--md-sys-state-pressed-state-layer-opacity);
+}

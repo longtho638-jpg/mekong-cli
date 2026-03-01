@@ -1,0 +1,11 @@
+PROJECT: well
+PRIORITY: HIGH
+INTENT: COOK
+
+/cook "Well AGI RaaS — Trả lời TIẾNG VIỆT. 100% tập trung vào Well project:
+1. Deep scan toàn bộ Well codebase (hooks, stores, pages, components)
+2. Fix missing i18n translations, Supabase query error handling
+3. Verify PayOS integration, forgot/reset password flows
+4. Ensure zero console errors on production build
+5. Optimize performance, clean dead code
+Sửa tối đa 5 file mỗi mission. Commit kết quả." --auto

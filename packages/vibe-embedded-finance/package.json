@@ -1,0 +1,23 @@
+{
+  "name": "@agencyos/vibe-embedded-finance",
+  "version": "0.1.0",
+  "description": "Embedded finance SDK \u2014 virtual accounts, ledger engine, card issuing, KYC flows, lending pipeline",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./accounts": "./embedded-finance-account-manager.ts",
+    "./ledger": "./embedded-finance-ledger-engine.ts",
+    "./kyc": "./embedded-finance-kyc-verification.ts",
+    "./types": "./types.ts"
+  },
+  "license": "MIT",
+  "peerDependencies": {
+    "@agencyos/vibe-payment": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-payment": {
+      "optional": true
+    }
+  }
+}

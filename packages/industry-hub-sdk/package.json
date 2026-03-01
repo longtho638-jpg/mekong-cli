@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/industry-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified industry verticals SDK — construction, climate, robotics, space tech, logistics, physical AI",
+  "description": "Unified industry verticals SDK \u2014 construction, climate, robotics, space tech, logistics, physical AI",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -12,7 +12,9 @@
     "./logistics": "./logistics-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-construction": "workspace:*",
     "@agencyos/vibe-climate": "workspace:*",
@@ -21,5 +23,28 @@
     "@agencyos/vibe-space-tech": "workspace:*",
     "@agencyos/vibe-spatial": "workspace:*",
     "@agencyos/vibe-logistics": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-construction": {
+      "optional": true
+    },
+    "@agencyos/vibe-climate": {
+      "optional": true
+    },
+    "@agencyos/vibe-robotics": {
+      "optional": true
+    },
+    "@agencyos/vibe-physical-ai": {
+      "optional": true
+    },
+    "@agencyos/vibe-space-tech": {
+      "optional": true
+    },
+    "@agencyos/vibe-spatial": {
+      "optional": true
+    },
+    "@agencyos/vibe-logistics": {
+      "optional": true
+    }
   }
 }

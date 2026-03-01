@@ -1,32 +1,477 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Hello, World!</title>
-	</head>
-	<body>
-		<h1 id="heading"></h1>
-		<p>This page comes from a static asset stored at `public/index.html` as configured in `wrangler.jsonc`.</p>
-		<button id="button" type="button">Fetch a random UUID</button>
-		<output id="random" for="button"></output>
-		<script>
-			fetch('/message')
-				.then((resp) => resp.text())
-				.then((text) => {
-					const h1 = document.getElementById('heading');
-					h1.textContent = text;
-				});
 
-			const button = document.getElementById("button");
-			button.addEventListener("click", () => {
-				fetch('/random')
-					.then((resp) => resp.text())
-					.then((text) => {
-						const random = document.getElementById('random');
-						random.textContent = text;
-					});
-			});
-		</script>
-	</body>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>🏭 Vibe Factory — War Room</title>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap"
+		rel="stylesheet">
+	<style>
+		:root {
+			--bg: #0a0a0f;
+			--surface: rgba(255, 255, 255, 0.04);
+			--glass: rgba(255, 255, 255, 0.08);
+			--border: rgba(255, 255, 255, 0.1);
+			--text: #e4e4e7;
+			--dim: #71717a;
+			--green: #22c55e;
+			--yellow: #eab308;
+			--red: #ef4444;
+			--blue: #3b82f6;
+			--purple: #a855f7;
+			--cyan: #06b6d4;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: 'Inter', sans-serif;
+			background: var(--bg);
+			color: var(--text);
+			min-height: 100vh;
+		}
+
+		.header {
+			padding: 16px 24px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.header h1 {
+			font-size: 20px;
+			font-weight: 900;
+			background: linear-gradient(135deg, var(--cyan), var(--purple));
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+
+		.header .status {
+			font-size: 12px;
+			color: var(--dim);
+			font-family: 'JetBrains Mono', monospace;
+		}
+
+		.header .live {
+			display: inline-block;
+			width: 8px;
+			height: 8px;
+			background: var(--green);
+			border-radius: 50%;
+			margin-right: 6px;
+			animation: pulse 2s infinite;
+		}
+
+		@keyframes pulse {
+
+			0%,
+			100% {
+				opacity: 1
+			}
+
+			50% {
+				opacity: 0.3
+			}
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 12px;
+			padding: 16px 24px;
+		}
+
+		@media(max-width:900px) {
+			.grid {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		.card {
+			background: var(--glass);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 16px;
+			backdrop-filter: blur(12px);
+			transition: all 0.3s;
+		}
+
+		.card:hover {
+			border-color: var(--cyan);
+			box-shadow: 0 0 20px rgba(6, 182, 212, 0.1);
+		}
+
+		.card .top {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 8px;
+		}
+
+		.card .name {
+			font-weight: 700;
+			font-size: 14px;
+		}
+
+		.card .badge {
+			font-size: 11px;
+			padding: 2px 8px;
+			border-radius: 6px;
+			font-weight: 600;
+			font-family: 'JetBrains Mono', monospace;
+		}
+
+		.badge.WORKING {
+			background: rgba(34, 197, 94, 0.15);
+			color: var(--green);
+		}
+
+		.badge.IDLE {
+			background: rgba(234, 179, 8, 0.15);
+			color: var(--yellow);
+		}
+
+		.badge.DEAD,
+		.badge.CRASHED {
+			background: rgba(239, 68, 68, 0.15);
+			color: var(--red);
+		}
+
+		.badge.ACTIVE {
+			background: rgba(59, 130, 246, 0.15);
+			color: var(--blue);
+		}
+
+		.badge.COMPLETE {
+			background: rgba(168, 85, 247, 0.15);
+			color: var(--purple);
+		}
+
+		.badge.RATE_LIMITED {
+			background: rgba(239, 68, 68, 0.15);
+			color: var(--red);
+		}
+
+		.score-row {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin: 8px 0;
+		}
+
+		.score {
+			font-size: 24px;
+			font-weight: 900;
+			font-family: 'JetBrains Mono', monospace;
+		}
+
+		.grade {
+			font-size: 14px;
+			font-weight: 700;
+			padding: 2px 8px;
+			border-radius: 6px;
+		}
+
+		.grade.S {
+			background: rgba(234, 179, 8, 0.2);
+			color: var(--yellow);
+		}
+
+		.grade.A {
+			background: rgba(34, 197, 94, 0.2);
+			color: var(--green);
+		}
+
+		.grade.B {
+			background: rgba(59, 130, 246, 0.2);
+			color: var(--blue);
+		}
+
+		.grade.C,
+		.grade.F {
+			background: rgba(239, 68, 68, 0.2);
+			color: var(--red);
+		}
+
+		.output {
+			font-family: 'JetBrains Mono', monospace;
+			font-size: 11px;
+			color: var(--dim);
+			background: rgba(0, 0, 0, 0.3);
+			padding: 8px;
+			border-radius: 6px;
+			max-height: 60px;
+			overflow: hidden;
+			white-space: pre-wrap;
+			word-break: break-all;
+			margin-top: 8px;
+		}
+
+		.sections {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 12px;
+			padding: 0 24px 16px;
+		}
+
+		@media(max-width:900px) {
+			.sections {
+				grid-template-columns: 1fr;
+			}
+		}
+
+		.section {
+			background: var(--glass);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 16px;
+			backdrop-filter: blur(12px);
+		}
+
+		.section h2 {
+			font-size: 13px;
+			font-weight: 700;
+			color: var(--dim);
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-bottom: 12px;
+		}
+
+		.pipeline {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+		}
+
+		.stage {
+			flex: 1;
+			min-width: 80px;
+			text-align: center;
+			padding: 8px;
+			border-radius: 8px;
+			background: rgba(0, 0, 0, 0.3);
+		}
+
+		.stage .num {
+			font-size: 24px;
+			font-weight: 900;
+			font-family: 'JetBrains Mono', monospace;
+		}
+
+		.stage .label {
+			font-size: 10px;
+			color: var(--dim);
+			margin-top: 2px;
+		}
+
+		.health-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 8px;
+		}
+
+		.health-item {
+			text-align: center;
+			padding: 8px;
+			border-radius: 8px;
+			background: rgba(0, 0, 0, 0.3);
+		}
+
+		.health-item .icon {
+			font-size: 18px;
+		}
+
+		.health-item .val {
+			font-size: 12px;
+			font-family: 'JetBrains Mono', monospace;
+			margin-top: 4px;
+		}
+
+		.budget-bars {
+			display: flex;
+			gap: 12px;
+		}
+
+		.budget-bar {
+			flex: 1;
+		}
+
+		.budget-bar .label {
+			font-size: 11px;
+			color: var(--dim);
+			margin-bottom: 4px;
+		}
+
+		.bar-bg {
+			height: 8px;
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 4px;
+			overflow: hidden;
+		}
+
+		.bar-fill {
+			height: 100%;
+			border-radius: 4px;
+			transition: width 0.5s;
+		}
+
+		.log-box {
+			background: rgba(0, 0, 0, 0.4);
+			border-radius: 8px;
+			padding: 8px;
+			max-height: 200px;
+			overflow-y: auto;
+			font-family: 'JetBrains Mono', monospace;
+			font-size: 11px;
+			line-height: 1.6;
+		}
+
+		.log-box::-webkit-scrollbar {
+			width: 4px;
+		}
+
+		.log-box::-webkit-scrollbar-thumb {
+			background: var(--border);
+			border-radius: 2px;
+		}
+
+		.log-line {
+			padding: 1px 0;
+		}
+
+		.log-line:hover {
+			background: rgba(255, 255, 255, 0.03);
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="header">
+		<h1>🏭 VIBE FACTORY — WAR ROOM</h1>
+		<div class="status"><span class="live"></span>LIVE · <span id="clock">--:--:--</span> · Auto-refresh 10s</div>
+	</div>
+
+	<div class="grid" id="panes"></div>
+
+	<div class="sections">
+		<div class="section">
+			<h2>📊 Pipeline Tracker</h2>
+			<div class="pipeline" id="pipeline"></div>
+		</div>
+		<div class="section">
+			<h2>🏥 System Health</h2>
+			<div class="health-grid" id="health"></div>
+		</div>
+		<div class="section">
+			<h2>💰 Token Budget (LLM Guard)</h2>
+			<div class="budget-bars" id="tokens"></div>
+		</div>
+		<div class="section">
+			<h2>📜 Live Log</h2>
+			<div class="log-box" id="logs"></div>
+		</div>
+	</div>
+
+	<script>
+		const API = '';
+		const stateColors = { WORKING: 'var(--green)', IDLE: 'var(--yellow)', DEAD: 'var(--red)', CRASHED: 'var(--red)', ACTIVE: 'var(--blue)', COMPLETE: 'var(--purple)', RATE_LIMITED: 'var(--red)' };
+		const stateEmoji = { WORKING: '🟢', IDLE: '🟡', DEAD: '💀', CRASHED: '🔴', ACTIVE: '🔵', COMPLETE: '🏆', RATE_LIMITED: '🔶' };
+
+		function renderPanes(panes) {
+			document.getElementById('panes').innerHTML = panes.map(p => `
+    <div class="card">
+      <div class="top">
+        <span class="name">🦞 P${p.idx} · ${p.project}</span>
+        <span class="badge ${p.state}">${stateEmoji[p.state] || '⚪'} ${p.state}</span>
+      </div>
+      <div class="score-row">
+        <span class="score">${p.score}/100</span>
+        <span class="grade ${p.grade}">${p.grade}</span>
+      </div>
+      <div class="output">${esc(p.lastOutput)}</div>
+    </div>
+  `).join('');
+		}
+
+		function renderPipeline(p) {
+			const stages = [
+				{ key: 'intake', label: 'Intake', color: 'var(--cyan)' },
+				{ key: 'bootstrap', label: 'Bootstrap', color: 'var(--purple)' },
+				{ key: 'coding', label: 'Coding', color: 'var(--blue)' },
+				{ key: 'qa', label: 'QA', color: 'var(--yellow)' },
+				{ key: 'scoring', label: 'Scoring', color: 'var(--green)' },
+				{ key: 'handover', label: 'Handover', color: 'var(--purple)' },
+			];
+			document.getElementById('pipeline').innerHTML = stages.map(s => `
+    <div class="stage">
+      <div class="num" style="color:${s.color}">${p[s.key] || 0}</div>
+      <div class="label">${s.label}</div>
+    </div>
+  `).join('');
+		}
+
+		function renderHealth(h) {
+			const items = [
+				{ icon: h.cto ? '✅' : '❌', val: 'CTO', label: h.cto ? 'Online' : 'Offline' },
+				{ icon: h.proxy ? '✅' : '❌', val: 'Proxy 9191', label: h.proxy ? 'Healthy' : 'Down' },
+				{ icon: h.vibeFactory ? '✅' : '❌', val: 'Vibe Factory', label: h.vibeFactory ? 'Running' : 'Stopped' },
+				{ icon: '💾', val: 'Disk ' + (h.diskUsagePercent || '?') + '%', label: (h.diskUsagePercent || 0) > 90 ? '⚠️ Full' : 'OK' },
+				{ icon: '🧠', val: 'RAM: ' + (h.memoryPressure || '?'), label: h.memoryPressure === 'critical' ? '⚠️ High' : 'OK' },
+				{ icon: '🦞', val: 'Nodes: ' + (h.nodeProcessCount || '?'), label: 'Claude: ' + (h.claudeProcessCount || '?') }
+			];
+			document.getElementById('health').innerHTML = items.map(i => `
+				<div class="health-item"><div class="icon">${i.icon}</div><div class="val">${i.val}</div><div style="font-size:10px;color:var(--dim)">${i.label}</div></div>
+			`).join('');
+		}
+
+		function renderTokens(t) {
+			const panes = ['P0', 'P1', 'P2', 'P3'];
+			document.getElementById('tokens').innerHTML = panes.map(p => {
+				const d = t[p] || { used: 0, budget: 15, remaining: 15 };
+				const pct = Math.min(100, (d.used / d.budget) * 100);
+				const color = pct > 80 ? 'var(--red)' : pct > 50 ? 'var(--yellow)' : 'var(--green)';
+				return `<div class="budget-bar"><div class="label">${p}: ${d.used}/${d.budget}</div><div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div></div>`;
+			}).join('');
+		}
+
+		function renderLogs(lines) {
+			const box = document.getElementById('logs');
+			const wasBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 20;
+			box.innerHTML = lines.map(l => `<div class="log-line">${esc(l.replace(/\\[VIBE-FACTORY\\]\\s*/, ''))}</div>`).join('');
+			if (wasBottom) box.scrollTop = box.scrollHeight;
+		}
+
+		function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+		async function refresh() {
+			try {
+				const [panes, health, logs, tokens, pipeline] = await Promise.all([
+					fetch(API + '/api/panes').then(r => r.json()),
+					fetch(API + '/api/health').then(r => r.json()),
+					fetch(API + '/api/logs').then(r => r.json()),
+					fetch(API + '/api/tokens').then(r => r.json()),
+					fetch(API + '/api/pipeline').then(r => r.json()),
+				]);
+				renderPanes(panes);
+				renderHealth(health);
+				renderLogs(logs);
+				renderTokens(tokens);
+				renderPipeline(pipeline);
+			} catch (e) { console.error('Refresh failed:', e); }
+			document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour12: false });
+		}
+
+		refresh();
+		setInterval(refresh, 5000); // 5s refresh
+	</script>
+</body>
+
 </html>

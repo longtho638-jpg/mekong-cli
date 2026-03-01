@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/events-hub-sdk",
   "version": "0.1.0",
-  "description": "Events & Experiences SDK — event planning, ticketing, virtual & hybrid events",
+  "description": "Events & Experiences SDK \u2014 event planning, ticketing, virtual & hybrid events",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -12,10 +12,18 @@
   },
   "license": "MIT",
   "peerDependencies": {
-    "@agencyos/vibe-notifications": "*",
-    "@agencyos/vibe-marketing": "*"
+    "@agencyos/vibe-notifications": "workspace:*",
+    "@agencyos/vibe-marketing": "workspace:*"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-notifications": {
+      "optional": true
+    },
+    "@agencyos/vibe-marketing": {
+      "optional": true
+    }
   }
 }

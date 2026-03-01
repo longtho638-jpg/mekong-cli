@@ -307,7 +307,14 @@ clearStaleState();
   // 🧠 Brain Supervisor (知己知彼: monitor BOTH CTO + CC CLI)
   safeBoot('startSupervisor', startSupervisor);
 
-  log('始計 + 防 + 🏯: Task Queue PRIORITY #1 → Brain + Auto-CTO + Scanner + Cooling + Healer + Supervisor ACTIVE');
+  // 🏭 BOOT DISPATCH: DISABLED — Vibe Factory Binh Pháp Scanner now handles idle pane task injection
+  // Old BOOT_TASKS caused /cook conflicts with new /plan:hard Binh Pháp format.
+  // See: vibe-factory-monitor.js for the new round-robin chapter-based task generation.
+  safeBoot('bootDispatchTasks', () => {
+    log('🏭 BOOT DISPATCH: DISABLED — Vibe Factory Binh Pháp Scanner handles task injection');
+  });
+
+  log('始計 + 防 + 🏯: Task Queue PRIORITY #1 → Brain + Auto-CTO + Scanner + Cooling + Healer + Supervisor + BOOT DISPATCH ACTIVE');
 })();
 
 // --- Keepalive: prevent Node from exiting when event loop is idle ---

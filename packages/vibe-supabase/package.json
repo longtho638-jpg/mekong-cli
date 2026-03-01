@@ -1,0 +1,18 @@
+{
+  "name": "@agencyos/vibe-supabase",
+  "version": "1.0.0",
+  "description": "Typed Supabase query helpers \u2014 org-scoped CRUD, subscription queries, generic wrappers",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-subscription": "workspace:*",
+    "typescript": "^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-subscription": {
+      "optional": true
+    }
+  }
+}

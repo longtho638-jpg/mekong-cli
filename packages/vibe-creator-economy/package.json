@@ -1,0 +1,21 @@
+{
+  "name": "@agencyos/vibe-creator-economy",
+  "version": "0.1.0",
+  "description": "Creator economy facade SDK \u2014 content monetization, audience analytics, IP management, multi-platform distribution",
+  "main": "index.ts",
+  "types": "index.ts",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "@agencyos/vibe-analytics": "workspace:*",
+    "@agencyos/vibe-billing": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-analytics": {
+      "optional": true
+    },
+    "@agencyos/vibe-billing": {
+      "optional": true
+    }
+  }
+}

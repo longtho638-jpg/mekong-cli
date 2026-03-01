@@ -1,0 +1,33 @@
+{
+  "name": "@agencyos/multi-org-billing-sdk",
+  "version": "0.1.0",
+  "description": "Multi-org billing SDK \u2014 tenant-scoped webhook orchestration, subdomain routing, org-aware subscription activation",
+  "main": "index.ts",
+  "types": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./orchestrator": "./multi-org-billing-orchestrator.ts",
+    "./tenant-router": "./multi-org-tenant-router.ts",
+    "./types": "./multi-org-billing-types.ts"
+  },
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "@agencyos/vibe-payment": "workspace:*",
+    "@agencyos/vibe-ops": "workspace:*",
+    "@agencyos/vibe-subscription": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-payment": {
+      "optional": true
+    },
+    "@agencyos/vibe-ops": {
+      "optional": true
+    },
+    "@agencyos/vibe-subscription": {
+      "optional": true
+    }
+  }
+}

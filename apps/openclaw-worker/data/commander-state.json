@@ -1,8 +1,9 @@
 {
   "lastRebalance": null,
   "projectScores": {
-    "well": 0,
-    "algo-trader": 0
+    "mekong-cli": 15,
+    "well": 13,
+    "algo-trader": 10
   },
   "crossProjectFixes": [],
   "portfolioSnapshot": null,

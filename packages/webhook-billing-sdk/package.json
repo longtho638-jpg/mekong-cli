@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/webhook-billing-sdk",
   "version": "0.1.0",
-  "description": "Unified webhook & billing SDK — provider-agnostic webhook verification, event routing, idempotency, billing lifecycle hooks, subscription management",
+  "description": "Unified webhook & billing SDK \u2014 provider-agnostic webhook verification, event routing, idempotency, billing lifecycle hooks, subscription management",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -20,5 +20,22 @@
     "@agencyos/vibe-billing-hooks": "workspace:*",
     "@agencyos/vibe-subscription": "workspace:*",
     "@agencyos/vibe-subscription-webhooks": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-stripe": {
+      "optional": true
+    },
+    "@agencyos/vibe-payment-router": {
+      "optional": true
+    },
+    "@agencyos/vibe-billing-hooks": {
+      "optional": true
+    },
+    "@agencyos/vibe-subscription": {
+      "optional": true
+    },
+    "@agencyos/vibe-subscription-webhooks": {
+      "optional": true
+    }
   }
 }

@@ -1,22 +1,22 @@
 [
   {
-    "project": "well",
-    "timestamp": "2026-02-28T11:49:55.255Z",
-    "build": "RED",
+    "project": "algo-trader",
+    "timestamp": "2026-03-01T09:50:26.774Z",
+    "build": "GREEN",
     "techDebt": {
-      "todos": 78,
-      "consoleLogs": 784
+      "todos": 8,
+      "consoleLogs": 50
     },
-    "gitStatus": "DIRTY",
+    "gitStatus": "NOT_A_REPO",
     "recommendations": []
   },
   {
-    "project": "algo-trader",
-    "timestamp": "2026-02-28T11:50:25.063Z",
-    "build": "GREEN",
+    "project": "well",
+    "timestamp": "2026-03-01T09:50:45.725Z",
+    "build": "RED",
     "techDebt": {
-      "todos": 3,
-      "consoleLogs": 49
+      "todos": 536,
+      "consoleLogs": 1754
     },
     "gitStatus": "DIRTY",
     "recommendations": []

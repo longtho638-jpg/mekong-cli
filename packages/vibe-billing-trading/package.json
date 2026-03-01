@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/vibe-billing-trading",
   "version": "0.1.0",
-  "description": "Reusable arbitrage billing hooks — fee calculation, profit tracking, net-profit analysis for cross-exchange trading",
+  "description": "Reusable arbitrage billing hooks \u2014 fee calculation, profit tracking, net-profit analysis for cross-exchange trading",
   "main": "index.ts",
   "types": "index.ts",
   "license": "MIT",
@@ -14,5 +14,10 @@
   "dependencies": {},
   "peerDependencies": {
     "@agencyos/trading-core": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/trading-core": {
+      "optional": true
+    }
   }
 }

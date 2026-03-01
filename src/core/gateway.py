@@ -228,7 +228,8 @@ def verify_token(token: str) -> None:
             status_code=500,
             detail="MEKONG_API_TOKEN not configured on server",
         )
-    if token != expected:
+    import hmac as _hmac
+    if not _hmac.compare_digest(token.encode(), expected.encode()):
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
@@ -700,7 +701,8 @@ def create_app() -> FastAPI:
         server_token = os.environ.get("MEKONG_API_TOKEN", "")
         if not server_token:
             raise HTTPException(status_code=500, detail="MEKONG_API_TOKEN not configured")
-        if req.token != server_token:
+        import hmac as _hmac
+        if not _hmac.compare_digest(req.token.encode(), server_token.encode()):
             raise HTTPException(status_code=401, detail="Invalid token")
 
         from src.core.governance import Governance

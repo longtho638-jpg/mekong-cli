@@ -77,6 +77,62 @@ graph TD
 
 ---
 
+## 📁 Monorepo — Danh sách dự án (`apps/`)
+
+### Core Infrastructure
+| App | Mô tả | Stack | Size | Status |
+|-----|--------|-------|------|--------|
+| `openclaw-worker` | Tôm Hùm daemon — autonomous task dispatch | Node.js | 1.0G | Active |
+| `raas-gateway` | Cloud API gateway, Cloudflare Workers | Node.js | 739M | Active |
+| `engine` | Core Python engine, Plan-Execute-Verify | Python, FastAPI | 900M | Active |
+| `api` | Backend API service | Python, FastAPI | 767M | Active |
+| `worker` | Background job processing | Node.js | 147M | Active |
+| `antigravity-cli` | Antigravity CLI tools | Node.js | 16K | Scaffold |
+| `antigravity-gateway` | Antigravity proxy gateway | Node.js | 44K | Scaffold |
+| `gemini-proxy-clone` | Gemini proxy clone | Node.js | 4.5M | Active |
+
+### Client Products
+| App | Mô tả | Stack | Size | Status |
+|-----|--------|-------|------|--------|
+| `84tea` | Vietnamese tea franchise (MD3 brand) | Next.js, TS | 257M | Active ⭐ |
+| `anima119` | Fermented Oriental medicine e-commerce | Next.js, TS | 1.4G | Active ⭐ |
+| `apex-os` | Trading platform | Next.js, TS | 747M | Active ⭐ |
+| `com-anh-duong-10x` | Restaurant POS + customer app | Next.js, TS | 1.0G | Active |
+| `sophia-ai-factory` | Video SaaS, AI pipeline | Next.js, TS | 1.8G | Active ⭐ |
+| `sophia-proposal` | Sales proposals, pitches | Next.js, TS | 1.0G | Archive |
+| `sa-dec-flower-hunt` | Flower hunt game app | Next.js, TS | 120M | Archive |
+| `well` | WellNexus health platform (symlink → archive) | Next.js, TS | 955M | Symlink |
+
+### AgencyOS Platform
+| App | Mô tả | Stack | Size | Status |
+|-----|--------|-------|------|--------|
+| `dashboard` | Main dashboard, client portal | Next.js, TS | 38M | Active |
+| `admin` | Internal admin panel | Next.js, TS | 796K | Scaffold |
+| `agencyos-web` | AgencyOS main web app | Next.js, TS | 1.5G | Active |
+| `agencyos-landing` | Marketing landing page | Next.js, TS | 216M | Active |
+| `landing` | Public landing page | Next.js, TS | 1.0M | Scaffold |
+| `web` | Web frontend | Next.js, TS | 1.4M | Active |
+| `analytics` | Analytics dashboard | Next.js, TS | 72M | Active |
+| `developers` | Developer portal & docs | Next.js, TS | 14M | Active |
+| `docs` | Documentation site | Next.js, TS | 35M | Active |
+
+### Experimental / Support
+| App | Mô tả | Stack | Size | Status |
+|-----|--------|-------|------|--------|
+| `algo-trader` | Algorithmic trading engine | Node.js, TS | 2.3M | Experimental |
+| `agentic-brain` | Agentic AI brain research | Markdown, docs | 16K | Research |
+| `stealth-engine` | Stealth execution engine | Node.js | 10M | Experimental |
+| `vibe-coding-cafe` | Vibe coding environment | Mixed | 3.5M | Experimental |
+| `raas-demo` | RaaS demo app | Next.js, TS | 420M | Demo |
+| `starter-template` | Project template | Mixed | 156K | Template |
+| `tasks` | Task queue (Tôm Hùm inbox) | Data | 100K | System |
+| `project` | Build placeholder | Node.js | 24K | Scaffold |
+
+> **Git Submodules:** `84tea`, `anima119`, `apex-os`, `sophia-ai-factory`, `gemini-proxy-clone`
+> **Symlink:** `well` → `~/archive-2026/Well`
+
+---
+
 ## 💎 RaaS Foundation
 
 Mekong CLI is the reference implementation of the **Revenue-as-a-Service (RaaS)** model, where value is delivered via autonomous missions.

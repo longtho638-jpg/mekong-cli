@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/vibe-arbitrage-engine",
   "version": "0.1.0",
-  "description": "Cross-exchange arbitrage engine — spread detection, signal scoring, orderbook validation, circuit breaker, auto-execution for Binance/OKX/Bybit",
+  "description": "Cross-exchange arbitrage engine \u2014 spread detection, signal scoring, orderbook validation, circuit breaker, auto-execution for Binance/OKX/Bybit",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -22,5 +22,10 @@
   },
   "peerDependencies": {
     "@agencyos/trading-core": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/trading-core": {
+      "optional": true
+    }
   }
 }

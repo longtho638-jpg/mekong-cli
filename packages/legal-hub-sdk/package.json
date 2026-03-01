@@ -1,7 +1,7 @@
 {
   "name": "@agencyos/legal-hub-sdk",
   "version": "0.1.0",
-  "description": "Unified legal SDK — contracts, compliance, IP management",
+  "description": "Unified legal SDK \u2014 contracts, compliance, IP management",
   "main": "index.ts",
   "types": "index.ts",
   "exports": {
@@ -12,9 +12,19 @@
     "./identity": "./identity-facade.ts"
   },
   "license": "MIT",
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "@agencyos/vibe-compliance-auto": "workspace:*",
     "@agencyos/identity-compliance-sdk": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-compliance-auto": {
+      "optional": true
+    },
+    "@agencyos/identity-compliance-sdk": {
+      "optional": true
+    }
   }
 }

@@ -1,12 +1,17 @@
 {
   "name": "@agencyos/vibe-identity",
   "version": "0.1.0",
-  "description": "Decentralized Identity facade SDK — verifiable credentials, DID wallets, trust chain verification, selective disclosure",
+  "description": "Decentralized Identity facade SDK \u2014 verifiable credentials, DID wallets, trust chain verification, selective disclosure",
   "main": "index.ts",
   "types": "index.ts",
   "license": "MIT",
   "dependencies": {},
   "peerDependencies": {
     "@agencyos/vibe-auth": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@agencyos/vibe-auth": {
+      "optional": true
+    }
   }
 }
