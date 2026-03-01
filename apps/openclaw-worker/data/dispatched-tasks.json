@@ -1,30 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "88c4eae94d6d",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
-      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
-      "dispatchedAt": 1772337963025
-    },
-    {
-      "hash": "dde9c480db05",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
-      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN architecture & pattern from grafana/g",
-      "dispatchedAt": 1772337968907
-    },
-    {
-      "hash": "573b26cdc1dd",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
-      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
-      "dispatchedAt": 1772338053619
-    },
-    {
       "hash": "474dfbdb919f",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1575,30 @@
       "chapter": "Targeting: production",
       "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
       "dispatchedAt": 1772363511388
+    },
+    {
+      "hash": "dc4ad7472ad3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "Targeting: resources",
+      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
+      "dispatchedAt": 1772363542994
+    },
+    {
+      "hash": "e800cb7686dd",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "Targeting: tests",
+      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
+      "dispatchedAt": 1772363569439
+    },
+    {
+      "hash": "4b6d445c1e4d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "Targeting: production",
+      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
+      "dispatchedAt": 1772363726822
     }
   ],
   "chapterIndex": 5

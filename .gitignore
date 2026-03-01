@@ -127,6 +127,8 @@ temp_well/
 tasks/processed/
 tasks/archive/
 **/tasks/mission_*.txt
+**/tasks/*_mission_*.txt
+**/tasks/HIGH_mission_*.txt
 !tasks/examples/
 
 # Dataset & Mission Wins (Private)

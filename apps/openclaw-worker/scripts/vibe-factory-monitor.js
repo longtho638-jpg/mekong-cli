@@ -208,7 +208,7 @@ function recordInjection(paneIdx) {
 
 function detectPaneState(output) {
     if (!output || output.includes('Pane is dead')) return 'DEAD';
-    if (/macbookprom1@.*%\s*$/.test(output)) return 'CRASHED';
+    if (/macbookprom1@.*%/.test(output) || /zsh: command not found/.test(output) || /zsh: no such file or directory/.test(output) || /bash-3\.2\$/.test(output)) return 'CRASHED';
     if (/Context low.*[0-5]% remaining/.test(output)) return 'LOW_CONTEXT';
     if (/rate-limit-options|You've hit your limit/.test(output)) return 'RATE_LIMITED';
     if (/❯ git (push|commit|add)|queued messages|Press up to edit/.test(output)) return 'PENDING';
