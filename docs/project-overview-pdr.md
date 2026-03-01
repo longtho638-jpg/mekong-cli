@@ -1,68 +1,86 @@
-# Tổng Quan Dự Án & Yêu Cầu Phát Triển Sản Phẩm (PDR)
+# Mekong CLI v3.0.0 — Project Overview & PDR
 
-**Phiên bản:** 2.1.0
-**Dựa trên:** `MASTER_PRD.md`
+**Version:** 3.0.0 (AGI Vibe Coding Factory)
+**Status:** Open Source (MIT License)
+**Target:** Python 3.9+, PyPI distribution
 
-## 1. Tổng Quan Dự Án
-**AgencyOS (Mekong CLI)** là nền tảng Robot-as-a-Service (RaaS) được thiết kế để chuyển đổi mô hình agency từ dựa trên dịch vụ sang dựa trên kết quả (outcome-based). Hệ thống sử dụng kiến trúc Hub-and-Spoke để điều phối các AI agent nhằm cung cấp kết quả hữu hình (leads, nội dung, báo cáo) thay vì chỉ cung cấp công cụ.
+## 1. Project Overview
 
-### Triết Lý Cốt Lõi
-> "Chúng ta không bán công cụ. Chúng ta bán Kết Quả (Deliverables)."
+**Mekong CLI** is an AGI Vibe Coding Factory framework transforming service-based agencies into outcome-driven automation engines. Enables developers to:
 
-### Các Thành Phần Chính
-1.  **Lớp Tài Chính (Spoke 1)**: Nền tảng web Next.js dành cho chủ agency (non-tech) để mua tín dụng và đặt hàng kết quả.
-2.  **Lớp Lan Truyền (Spoke 2)**: Bộ công cụ Open Source Developer Kit (CLI + Recipes) cho lập trình viên xây dựng và chia sẻ quy trình agent.
-3.  **Lớp Động Cơ (Hub)**: Hạ tầng backend tập trung (OpenClaw, BullMQ, PostgreSQL) điều phối việc thực thi nhiệm vụ thông qua **Tôm Hùm Daemon**.
+- Build type-safe AI agents implementing `plan → execute → verify`
+- Orchestrate parallel task execution via DAG scheduling
+- Plug in custom LLM providers (Gemini, OpenAI, Ollama, offline)
+- Create shareable recipes (automation templates)
+- Deploy autonomous daemons for 24/7 processing
 
-## 2. Yêu Cầu Phát Triển Sản Phẩm (PDR)
+### Philosophy
+> "We don't sell tools. We sell Outcomes."
 
-### 2.1 Yêu Cầu Chức Năng (Functional Requirements)
+### v3.0.0 Features
+- **Phase 1**: Type-safe AgentProtocol + AgentRegistry
+- **Phase 2**: Parallel DAG execution (ThreadPoolExecutor)
+- **Phase 3**: Pluggable LLM provider abstraction (auto-failover)
+- **Phase 4**: Autonomous daemon (watcher → classifier → executor → gate → DLQ)
+- **Phase 5**: Community plugins (PyPI + ~/.mekong/plugins/)
+- **Phase 6**: PyPI package shim (`import mekong` works)
 
-#### A. Xác Thực & Quản Lý Người Dùng
-- **FR-AUTH-01**: Hệ thống hỗ trợ xác thực API Key cho CLI.
-- **FR-AUTH-02**: Nền tảng Web hỗ trợ đăng ký/đăng nhập qua Supabase Auth.
-- **FR-AUTH-03**: Người dùng có số dư tín dụng (AgencyCoin) để chi trả cho các tác vụ.
+## 2. Product Requirements (PDR)
 
-#### B. Thực Thi Công Việc (Engine & Tôm Hùm)
-- **FR-JOB-01**: Hệ thống tiếp nhận yêu cầu qua REST API hoặc File IPC (`tasks/`).
-- **FR-JOB-02**: Tôm Hùm (OpenClaw) tự động phát hiện và điều phối nhiệm vụ tới CC CLI.
-- **FR-JOB-03**: Mọi cuộc gọi LLM phải đi qua **Antigravity Proxy** (Port 9191) để quản lý quota.
-- **FR-JOB-04**: Hệ thống hỗ trợ cơ chế "Auto-CTO" để tự động sinh ra các task bảo trì chất lượng code.
+### Functional Requirements
 
-#### C. CLI & Công Thức (Recipes)
-- **FR-CLI-01**: CLI (Mekong Cook) cho phép người dùng lập kế hoạch (Plan), thực thi (Execute) và kiểm tra (Verify).
-- **FR-CLI-02**: Công thức (Recipes) được định nghĩa bằng Markdown/JSON chuẩn hóa.
-- **FR-CLI-03**: Tích hợp chặt chẽ với Binh Pháp Quality Gates (kiểm tra type safety, security, performance).
+**FR-AGENT-01**: Agents implement AgentProtocol
+- `name` property identifies agent
+- `plan(input: str) → Task[]` decomposes goals
+- `execute(task: Task) → Result` executes atomic tasks
+- `verify(result: Result) → bool` validates output
 
-### 2.2 Yêu Cầu Phi Chức Năng (Non-Functional Requirements)
+**FR-SCHEDULE-01**: DAG scheduler executes steps in topological order
+- Identifies ready steps (dependencies satisfied)
+- Runs independent steps in parallel (ThreadPoolExecutor)
+- Cancels downstream on failure (transitive)
 
-#### A. Hiệu Năng
-- **NFR-PERF-01**: Thời gian phản hồi API cho việc gửi job < 200ms.
-- **NFR-PERF-02**: Build time cho các dự án con phải < 10s (Binh Pháp Gate).
+**FR-PROVIDER-01**: LLMProvider abstraction supports pluggable backends
+- Built-in: GeminiProvider, OpenAICompatibleProvider, OfflineProvider
+- Custom providers subclass LLMProvider
+- Circuit-breaker failover on quota/error
 
-#### B. Độ Tin Cậy & Khả Năng Phục Hồi
-- **NFR-REL-01**: Hệ thống tự động retry khi gặp lỗi mạng hoặc lỗi LLM tạm thời.
-- **NFR-REL-02**: Tôm Hùm Daemon giám sát brain process với healthcheck & model failover, không respawn tự động.
-- **NFR-REL-03**: Dữ liệu quan trọng (credits, trạng thái job) được lưu trữ bền vững trong PostgreSQL.
+**FR-PLUGIN-01**: Plugin system discovers agents + providers
+- Entry points for PyPI packages (`mekong.agents`, `mekong.providers`)
+- Local plugins in `~/.mekong/plugins/*.py`
+- Plugin failures logged (never crash CLI)
 
-#### C. Khả Năng Mở Rộng
-- **NFR-SCALE-01**: Kiến trúc hỗ trợ mở rộng ngang các Worker node.
-- **NFR-SCALE-02**: Hỗ trợ thực thi song song (Agent Teams) trên nhiều worktree.
+**FR-DAEMON-01**: Autonomous daemon processes tasks 24/7
+- Watcher monitors task directory
+- Classifier pre-routes to agents
+- Executor runs task → Verifier validates → Journal logs
+- Failed tasks in DLQ (operator review)
 
-#### D. Bảo Mật
-- **NFR-SEC-01**: API Keys phải được luân chuyển và bảo vệ.
-- **NFR-SEC-02**: Tuân thủ quy tắc "Không commit secrets" (được kiểm tra bởi Binh Pháp).
-- **NFR-SEC-03**: Input đầu vào được validate chặt chẽ (Zod/Pydantic) để chống injection.
+### Non-Functional Requirements
 
-## 3. Tóm Tắt Kiến Trúc
-- **Frontend**: Next.js 14, Tailwind CSS.
-- **Backend API**: Node.js, Fastify.
-- **Worker (Tôm Hùm)**: Node.js, OpenClaw Autonomous Daemon.
-- **CLI Engine**: Python 3.11, Typer.
-- **Database**: PostgreSQL (Prod), SQLite (Dev).
-- **Proxy**: Antigravity Proxy (Load balancing LLM).
+| Area | Requirement |
+|------|-------------|
+| **Performance** | Plan < 2s, Execute < 30s per task, Verify < 5s |
+| **Reliability** | No task data loss, graceful provider failover |
+| **Scalability** | Parallel agent execution, pluggable providers |
+| **Maintainability** | Zero `any` types, >80% test coverage, documented code |
+| **Security** | No secrets in code, input validation (Pydantic), type-safe |
 
-## 4. Chỉ Số Thành Công
-- **Ổn định**: Không có "Ghost Jobs" (job bị mất trạng thái).
-- **Sẵn sàng**: 99.9% uptime cho Engine API.
-- **Chất lượng**: 100% code được merge phải vượt qua Binh Pháp Quality Gates.
+## 3. Architecture Summary
+
+| Component | Tech | Location |
+|-----------|------|----------|
+| **CLI** | Python 3.9+ / Typer | `src/main.py` |
+| **Engine** | Python / Pydantic | `src/core/` |
+| **Agents** | AgentProtocol | `src/agents/` + plugins |
+| **Providers** | LLMProvider | `src/core/providers.py` |
+| **Daemon** | Python threading | `src/daemon/` |
+| **Testing** | pytest | `tests/` |
+| **Package** | Poetry / PyPI | `mekong/` shim + `src/` impl |
+
+## 4. Success Metrics
+
+- **Stability**: Zero silent task failures, clear error reporting
+- **Adoption**: Community contributions (plugins on PyPI)
+- **Quality**: All merged code passes type safety + tests
+- **Performance**: CLI startup < 1s, recipe execution < 1min for typical workflows
