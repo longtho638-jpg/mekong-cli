@@ -3,10 +3,12 @@
  * LatencyOptimizer, ArbitrageOrchestrator.
  */
 
-import { MultiExchangeConnector } from './MultiExchangeConnector';
-import { RealTimePriceAggregator } from './RealTimePriceAggregator';
-import { LatencyOptimizer } from './LatencyOptimizer';
-import { ArbitrageOrchestrator } from './ArbitrageOrchestrator';
+import {
+  MultiExchangeConnector,
+  RealTimePriceAggregator,
+  LatencyOptimizer,
+  ArbitrageOrchestrator,
+} from '@agencyos/vibe-arbitrage-engine';
 import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { IOrder, IBalance } from '../interfaces/IExchange';
 

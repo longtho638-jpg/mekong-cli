@@ -2,8 +2,8 @@
  * Tests for ArbitrageScanner + ArbitrageExecutor.
  */
 
-import { ArbitrageScanner, ArbitrageOpportunity } from './ArbitrageScanner';
-import { ArbitrageExecutor } from './ArbitrageExecutor';
+import { ArbitrageScanner, ArbitrageOpportunity } from '@agencyos/vibe-arbitrage-engine';
+import { ArbitrageExecutor } from '@agencyos/vibe-arbitrage-engine';
 import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { IOrder, IBalance } from '../interfaces/IExchange';
 

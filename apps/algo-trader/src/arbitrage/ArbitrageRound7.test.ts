@@ -2,9 +2,12 @@
  * Tests for Round 7: WebSocketPriceFeed, ProfitTracker, AdaptiveSpreadThreshold.
  */
 
-import { WebSocketPriceFeed, WsPriceUpdate } from './WebSocketPriceFeed';
-import { ProfitTracker } from './ProfitTracker';
-import { AdaptiveSpreadThreshold } from './AdaptiveSpreadThreshold';
+import {
+  WebSocketPriceFeed,
+  WsPriceUpdate,
+  ProfitTracker,
+  AdaptiveSpreadThreshold,
+} from '@agencyos/vibe-arbitrage-engine';
 
 // ---- WebSocketPriceFeed Tests ----
 

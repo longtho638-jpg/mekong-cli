@@ -2,9 +2,13 @@
  * Tests for Round 5: OrderBookAnalyzer, FeeCalculator, ArbitrageBacktester.
  */
 
-import { OrderBookAnalyzer, OrderBook } from './OrderBookAnalyzer';
-import { FeeCalculator } from './FeeCalculator';
-import { ArbitrageBacktester, MultiExchangePriceSnapshot } from './ArbitrageBacktester';
+import {
+  OrderBookAnalyzer,
+  OrderBook,
+  FeeCalculator,
+  ArbitrageBacktester,
+  MultiExchangePriceSnapshot,
+} from '@agencyos/vibe-arbitrage-engine';
 
 // ---- Helper: create orderbook ----
 

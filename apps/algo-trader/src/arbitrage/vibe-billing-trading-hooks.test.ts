@@ -4,8 +4,7 @@
  */
 
 // Tests use core classes directly (same logic wrapped by vibe-billing-trading hooks)
-import { FeeCalculator } from './FeeCalculator';
-import { ProfitTracker } from './ProfitTracker';
+import { FeeCalculator, ProfitTracker } from '@agencyos/vibe-arbitrage-engine';
 
 // ---- FeeCalculatorHook Tests (direct class usage matching hook API) ----
 

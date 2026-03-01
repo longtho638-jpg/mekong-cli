@@ -1,6 +1,4 @@
-import { CrossExchangeArbitrage } from './CrossExchangeArbitrage';
-import { TriangularArbitrage } from './TriangularArbitrage';
-import { StatisticalArbitrage } from './StatisticalArbitrage';
+import { CrossExchangeArbitrage, TriangularArbitrage, StatisticalArbitrage } from '@agencyos/vibe-arbitrage-engine/strategies';
 import { SignalType } from '../interfaces/IStrategy';
 import { ICandle } from '../interfaces/ICandle';
 

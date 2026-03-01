@@ -2,9 +2,13 @@
  * Tests for Round 6: SpreadHistoryTracker, BalanceRebalancer, ArbitrageSignalScorer.
  */
 
-import { SpreadHistoryTracker } from './SpreadHistoryTracker';
-import { BalanceRebalancer, ExchangeBalance } from './BalanceRebalancer';
-import { ArbitrageSignalScorer, SignalFactors } from './ArbitrageSignalScorer';
+import {
+  SpreadHistoryTracker,
+  BalanceRebalancer,
+  ExchangeBalance,
+  ArbitrageSignalScorer,
+  SignalFactors,
+} from '@agencyos/vibe-arbitrage-engine';
 
 // ---- SpreadHistoryTracker Tests ----
 

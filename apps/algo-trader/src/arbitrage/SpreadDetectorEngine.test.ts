@@ -3,11 +3,14 @@
  * spread detection + execution pipeline.
  */
 
-import { SpreadDetectorEngine, TARGET_EXCHANGES } from './SpreadDetectorEngine';
-import { ArbitrageSignalScorer } from './ArbitrageSignalScorer';
-import { EmergencyCircuitBreaker } from './EmergencyCircuitBreaker';
-import { SpreadHistoryTracker } from './SpreadHistoryTracker';
-import { OrderBookAnalyzer } from './OrderBookAnalyzer';
+import {
+  SpreadDetectorEngine,
+  TARGET_EXCHANGES,
+  ArbitrageSignalScorer,
+  EmergencyCircuitBreaker,
+  SpreadHistoryTracker,
+  OrderBookAnalyzer,
+} from '@agencyos/vibe-arbitrage-engine';
 
 // ---- SpreadDetectorEngine Tests ----
 

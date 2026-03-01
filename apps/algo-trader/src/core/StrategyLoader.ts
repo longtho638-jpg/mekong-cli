@@ -4,9 +4,7 @@ import { RsiCrossoverStrategy } from '../strategies/RsiCrossoverStrategy';
 import { BollingerBandStrategy } from '../strategies/BollingerBandStrategy';
 import { MacdCrossoverStrategy } from '../strategies/MacdCrossoverStrategy';
 import { MacdBollingerRsiStrategy } from '../strategies/MacdBollingerRsiStrategy';
-import { CrossExchangeArbitrage } from '../strategies/CrossExchangeArbitrage';
-import { TriangularArbitrage } from '../strategies/TriangularArbitrage';
-import { StatisticalArbitrage } from '../strategies/StatisticalArbitrage';
+import { CrossExchangeArbitrage, TriangularArbitrage, StatisticalArbitrage } from '@agencyos/vibe-arbitrage-engine/strategies';
 
 export class StrategyLoader {
   private static strategies: Map<string, new () => IStrategy> = new Map<string, new () => IStrategy>([
