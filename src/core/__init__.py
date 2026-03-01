@@ -18,6 +18,11 @@ from .orchestrator import (
     OrchestrationStatus,
     StepResult,
 )
+from .protocols import AgentProtocol, StreamingMixin
+from .agent_registry import AgentRegistry
+from .dag_scheduler import DAGScheduler, DAGStepResult, validate_dag
+from .plugin_loader import PluginLoader
+from .providers import LLMProvider, LLMResponse, GeminiProvider, OpenAICompatibleProvider, OfflineProvider
 
 __all__ = [
     # Base components
@@ -46,4 +51,20 @@ __all__ = [
     "OrchestrationResult",
     "OrchestrationStatus",
     "StepResult",
+    # Agent Protocol & Registry
+    "AgentProtocol",
+    "StreamingMixin",
+    "AgentRegistry",
+    # DAG Scheduler
+    "DAGScheduler",
+    "DAGStepResult",
+    "validate_dag",
+    # Plugin System
+    "PluginLoader",
+    # LLM Providers
+    "LLMProvider",
+    "LLMResponse",
+    "GeminiProvider",
+    "OpenAICompatibleProvider",
+    "OfflineProvider",
 ]

@@ -29,6 +29,7 @@ from .nlu import IntentClassifier
 from .execution_history import ExecutionHistory, ExecutionEvent, EventKind
 from .retry_policy import RetryPolicy
 from .workflow_state import WorkflowState, WorkflowStatus, StepStatus
+from .dag_scheduler import DAGScheduler, validate_dag
 
 
 class OrchestrationStatus(Enum):
@@ -116,12 +117,12 @@ class RecipeOrchestrator:
             self.dispatcher = None
 
         # Initialize BMAD loader
+        self.bmad_loader: Optional[Any] = None
         try:
             from packages.core.bmad.loader import BMADWorkflowLoader
 
             self.bmad_loader = BMADWorkflowLoader()
         except ImportError:
-            self.bmad_loader = None
             self.console.print("[yellow]Warning: BMAD loader not available[/yellow]")
 
     def run_from_goal(
@@ -167,7 +168,8 @@ class RecipeOrchestrator:
                 from .parser import RecipeParser
 
                 try:
-                    recipe = RecipeParser().parse_file(route.recipe_path)
+                    from pathlib import Path as _Path
+                    recipe = RecipeParser().parse(_Path(route.recipe_path))
                     self.console.print(
                         f"[green]NLU:[/green] Matched recipe '{route.recipe_name}'"
                     )
@@ -265,7 +267,67 @@ class RecipeOrchestrator:
         # Create executor
         executor = RecipeExecutor(recipe)
 
-        # Execute each step with verification
+        # DAG parallel path: if steps have dependencies, use DAGScheduler
+        dag = DAGScheduler(recipe.steps)
+        if dag.has_dependencies():
+            cycle_err = validate_dag(recipe.steps)
+            if cycle_err:
+                result.status = OrchestrationStatus.FAILED
+                result.errors.append(cycle_err)
+                self._display_report(result)
+                return result
+
+            self.console.print("[dim]DAG mode: parallel execution enabled[/dim]")
+
+            def _dag_executor(step: RecipeStep) -> StepResult:
+                return self._execute_and_verify_step(
+                    executor, step, workflow_id, wf_state,
+                )
+
+            def _on_dag_complete(order: int, dag_result: Any) -> None:
+                if dag_result.success:
+                    result.completed_steps += 1
+                    self.console.print(f"[green]✓[/green] Step {order} passed")
+                else:
+                    result.failed_steps += 1
+                    self.console.print(f"[red]✗[/red] Step {order} failed")
+
+            dag_results = dag.execute_all(_dag_executor, _on_dag_complete)
+
+            # Collect results
+            for order in sorted(dag_results):
+                dr = dag_results[order]
+                if dr.result:
+                    result.step_results.append(dr.result)
+                if not dr.success:
+                    result.status = OrchestrationStatus.PARTIAL
+                    if dr.error:
+                        result.errors.append(f"Step {order}: {dr.error}")
+
+            for cancelled_order in dag.cancelled_steps:
+                result.errors.append(f"Step {cancelled_order}: cancelled (upstream failure)")
+
+            # Skip sequential loop — jump to finalize
+            # Finalize workflow state
+            if result.failed_steps == 0 and not dag.cancelled_steps:
+                result.status = OrchestrationStatus.SUCCESS
+                wf_state.transition(WorkflowStatus.COMPLETED)
+                self.history.append(ExecutionEvent.create(
+                    EventKind.WORKFLOW_COMPLETED, workflow_id,
+                    data={"success_rate": result.success_rate},
+                ))
+            else:
+                wf_state.transition(WorkflowStatus.FAILED)
+                self.history.append(ExecutionEvent.create(
+                    EventKind.WORKFLOW_FAILED, workflow_id,
+                    data={"errors": result.errors[:5]},
+                ))
+
+            self.history.persist(workflow_id)
+            self._display_report(result)
+            return result
+
+        # Sequential path: execute each step in order
         for step in recipe.steps:
             # Record step scheduled event
             self.history.append(ExecutionEvent.create(

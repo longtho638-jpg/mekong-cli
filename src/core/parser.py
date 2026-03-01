@@ -19,6 +19,7 @@ class RecipeStep:
     description: str
     agent: Optional[str] = None
     params: Dict[str, Any] = field(default_factory=dict)
+    dependencies: List[int] = field(default_factory=list)
 
 
 @dataclass

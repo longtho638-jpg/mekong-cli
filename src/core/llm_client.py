@@ -1,84 +1,78 @@
 """
 Mekong CLI - LLM Client
 
-Provides LLM integration supporting Google GenAI (Gemini), Antigravity Proxy, and OpenAI.
-Priority:
-1. GEMINI_API_KEY (Google GenAI - Gemini 2.5 Pro)
-2. ANTIGRAVITY_PROXY_URL (custom proxy)
-3. OPENAI_API_KEY (direct OpenAI)
-4. Fallback: offline mode
+Thin router over pluggable LLMProvider backends.
+Priority (auto-detected from env vars when no providers passed):
+1. GEMINI_API_KEY  → GeminiProvider
+2. ANTIGRAVITY_PROXY_URL / LLM_BASE_URL  → OpenAICompatibleProvider
+3. OPENAI_API_KEY  → OpenAICompatibleProvider
+4. Fallback  → OfflineProvider
 
-Runtime failover: If one provider fails, tries the next in priority order.
-Circuit breaker: After 3 consecutive failures, provider is cooled down for 60s.
-Portkey-inspired: Status-code based failover, hooks pipeline, LRU cache.
+Runtime failover: if one provider fails, tries the next in priority order.
+Circuit breaker: after 3 consecutive failures, provider cools down for 60s.
+Portkey-inspired: status-code based failover, hooks pipeline, LRU cache.
 """
 
-import os
 import json
 import logging
-import random
+import os
 import re
 import time
-from typing import Optional, Dict, Any, List
 from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from .hooks import HookContext, HookPhase, HookPipeline, create_default_pipeline
 from .llm_cache import LLMCache
+from .providers import (
+    GeminiProvider,
+    LLMProvider,
+    LLMResponse,
+    OfflineProvider,
+    OpenAICompatibleProvider,
+)
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
-class LLMResponse:
-    """Response from LLM call"""
-
-    content: str
-    model: str = ""
-    usage: Optional[Dict[str, int]] = None
-    raw: Optional[Dict[str, Any]] = None
-
-    def __post_init__(self) -> None:
-        """Set default values for mutable fields after dataclass init."""
-        if self.usage is None:
-            self.usage = {}
-        if self.raw is None:
-            self.raw = {}
-
-
-@dataclass
 class ProviderHealth:
     """Tracks consecutive failures per provider for circuit breaker."""
+
     failures: int = 0
     last_failure: float = 0.0
     cooldown_secs: float = 60.0
 
     @property
     def is_healthy(self) -> bool:
-        """Check if this provider is healthy enough to receive requests.
-
-        Returns:
-            True if fewer than 3 consecutive failures, or cooldown has elapsed.
-        """
+        """True if fewer than 3 failures, or cooldown has elapsed."""
         if self.failures < 3:
             return True
         return (time.time() - self.last_failure) > self.cooldown_secs
 
     def record_failure(self) -> None:
-        """Record a failed request, incrementing the failure counter."""
         self.failures += 1
         self.last_failure = time.time()
 
     def record_success(self) -> None:
-        """Record a successful request, resetting the failure counter."""
         self.failures = 0
 
 
 class LLMClient:
     """
-    LLMClient supporting Google GenAI (Gemini), Antigravity Proxy, and OpenAI.
-    Runtime failover between providers with circuit breaker protection.
+    LLMClient — thin router over List[LLMProvider] with circuit-breaker failover.
+
+    Usage:
+        # Auto-detect from env vars (backward-compatible)
+        client = LLMClient()
+
+        # Explicit providers
+        from src.core.providers import GeminiProvider
+        client = LLMClient(providers=[GeminiProvider(os.getenv("GEMINI_API_KEY"))])
+
+        # From YAML config
+        client = LLMClient.from_config("configs/default.yaml")
     """
 
     def __init__(
@@ -90,81 +84,174 @@ class LLMClient:
         timeout: int = 60,
         enable_cache: bool = True,
         enable_hooks: bool = True,
+        providers: Optional[List[LLMProvider]] = None,
     ) -> None:
-        """Initialize LLMClient with provider credentials and failover config.
+        """
+        Initialize LLMClient.
 
         Args:
-            proxy_url: Antigravity Proxy URL. Falls back to ANTIGRAVITY_PROXY_URL env var.
+            proxy_url: Proxy base URL. Falls back to ANTIGRAVITY_PROXY_URL / LLM_BASE_URL env var.
             api_key: OpenAI API key. Falls back to OPENAI_API_KEY env var.
-            gemini_key: Google Gemini API key. Falls back to GEMINI_API_KEY env var.
-            model: Default model name for requests.
-            timeout: HTTP request timeout in seconds.
+            gemini_key: Gemini API key. Falls back to GEMINI_API_KEY env var.
+            model: Default model name.
+            timeout: HTTP timeout in seconds.
             enable_cache: Enable LRU response caching.
             enable_hooks: Enable hooks middleware pipeline.
+            providers: Explicit provider list. If None, auto-detects from env vars.
         """
-        self.proxy_url = proxy_url or os.getenv("ANTIGRAVITY_PROXY_URL", "")
-        self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
-        self.gemini_key = gemini_key or os.getenv("GEMINI_API_KEY", "")
         self.model = model
         self.timeout = timeout
-        self._genai_client = None
+
+        # Keep legacy attrs for backward compat (some callers read them directly)
+        self.proxy_url = proxy_url or os.getenv("ANTIGRAVITY_PROXY_URL", "") or os.getenv("LLM_BASE_URL", "")
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY", "")
+        self.gemini_key = gemini_key or os.getenv("GEMINI_API_KEY", "")
 
         # Portkey-inspired: hooks pipeline + LRU cache
         self.hooks: Optional[HookPipeline] = create_default_pipeline() if enable_hooks else None
         self.cache: Optional[LLMCache] = LLMCache() if enable_cache else None
 
-        # Provider health tracking for circuit breaker
-        self._provider_health = {
-            "vertex": ProviderHealth(),
-            "proxy": ProviderHealth(),
-            "openai": ProviderHealth(),
+        # Build provider list
+        if providers is not None:
+            self.providers: List[LLMProvider] = providers
+        else:
+            self.providers = self._build_providers_from_env()
+
+        # Circuit breaker health keyed by provider.name
+        self._provider_health: Dict[str, ProviderHealth] = {
+            p.name: ProviderHealth() for p in self.providers
         }
 
-        # Remove GOOGLE_API_KEY entirely — google-genai SDK auto-reads it
-        # and it conflicts with GEMINI_API_KEY, causing empty responses.
-        if self.gemini_key:
-            popped = os.environ.pop("GOOGLE_API_KEY", None)
-            if popped:
-                logger.info("[LLM] Removed GOOGLE_API_KEY from env to prevent SDK conflict")
-
-        # Determine initial mode (for is_available check)
-        if self.gemini_key:
+        # Legacy mode attr (used by is_available property)
+        available_names = {p.name for p in self.providers if p.is_available()}
+        if "gemini" in available_names:
             self.mode = "vertex"
-            try:
-                from google import genai
-
-                self._genai_client = genai.Client(api_key=self.gemini_key)
-            except ImportError:
-                logger.warning("google-genai not installed, falling back")
-                self.mode = "offline"
-        elif self.proxy_url:
-            self.mode = "proxy"
-            self.base_url = self.proxy_url.rstrip("/")
-        elif self.api_key:
-            self.mode = "openai"
-            self.base_url = "https://api.openai.com/v1"
+        elif any(n not in ("offline",) for n in available_names):
+            self.mode = "proxy"  # generic "online" mode
         else:
             self.mode = "offline"
-            self.base_url = ""
+
+    # ------------------------------------------------------------------
+    # Class method constructor (from YAML config)
+    # ------------------------------------------------------------------
+
+    @classmethod
+    def from_config(
+        cls,
+        config_path: str,
+        model: str = "gemini-2.5-pro",
+        timeout: int = 60,
+        enable_cache: bool = True,
+        enable_hooks: bool = True,
+    ) -> "LLMClient":
+        """Create LLMClient from YAML provider config."""
+        providers = cls._build_providers_from_config(config_path)
+        return cls(
+            model=model,
+            timeout=timeout,
+            enable_cache=enable_cache,
+            enable_hooks=enable_hooks,
+            providers=providers,
+        )
+
+    # ------------------------------------------------------------------
+    # Provider builders
+    # ------------------------------------------------------------------
+
+    def _build_providers_from_env(self) -> List[LLMProvider]:
+        """Auto-detect providers from environment variables (priority order)."""
+        built: List[LLMProvider] = []
+
+        gemini_key = self.gemini_key
+        if gemini_key:
+            built.append(GeminiProvider(api_key=gemini_key, model=self.model))
+
+        proxy_url = self.proxy_url
+        if proxy_url:
+            built.append(
+                OpenAICompatibleProvider(
+                    base_url=proxy_url,
+                    api_key=self.api_key or "",
+                    model=self.model,
+                    provider_name="proxy",
+                    timeout=self.timeout,
+                )
+            )
+
+        openai_key = self.api_key
+        if openai_key and not proxy_url:
+            built.append(
+                OpenAICompatibleProvider(
+                    base_url="https://api.openai.com/v1",
+                    api_key=openai_key,
+                    model=self.model,
+                    provider_name="openai",
+                    timeout=self.timeout,
+                )
+            )
+
+        built.append(OfflineProvider())
+        return built
+
+    @staticmethod
+    def _build_providers_from_config(config_path: str) -> List[LLMProvider]:
+        """Load providers from YAML config file."""
+        try:
+            import yaml  # type: ignore
+        except ImportError:
+            logger.error("[LLMClient] PyYAML not installed — cannot load config")
+            return [OfflineProvider()]
+
+        try:
+            with open(config_path, "r") as f:
+                config = yaml.safe_load(f)
+        except OSError as e:
+            logger.error("[LLMClient] Cannot read config %s: %s", config_path, e)
+            return [OfflineProvider()]
+
+        built: List[LLMProvider] = []
+        for entry in config.get("providers", []):
+            ptype = entry.get("type", "")
+            if ptype == "gemini":
+                key_env = entry.get("api_key_env", "GEMINI_API_KEY")
+                api_key = os.getenv(key_env, "")
+                model = entry.get("model", "gemini-2.5-pro")
+                if api_key:
+                    built.append(GeminiProvider(api_key=api_key, model=model))
+            elif ptype == "openai_compatible":
+                base_url = entry.get("base_url", "")
+                key_env = entry.get("api_key_env", "OPENAI_API_KEY")
+                api_key = os.getenv(key_env, "")
+                model = entry.get("model", "")
+                pname = entry.get("name", "openai_compatible")
+                timeout = entry.get("timeout", 60)
+                if base_url:
+                    built.append(
+                        OpenAICompatibleProvider(
+                            base_url=base_url,
+                            api_key=api_key,
+                            model=model,
+                            provider_name=pname,
+                            timeout=timeout,
+                        )
+                    )
+            else:
+                logger.warning("[LLMClient] Unknown provider type in config: %s", ptype)
+
+        built.append(OfflineProvider())
+        return built
+
+    # ------------------------------------------------------------------
+    # Public API (UNCHANGED)
+    # ------------------------------------------------------------------
 
     @property
     def is_available(self) -> bool:
-        """Check if LLM is available"""
-        return self.mode != "offline"
-
-    def _get_ordered_providers(self) -> List[str]:
-        """Return available providers in priority order, skipping unhealthy ones."""
-        candidates = []
-        if self.gemini_key:
-            candidates.append("vertex")
-        if self.proxy_url:
-            candidates.append("proxy")
-        if self.api_key:
-            candidates.append("openai")
-        healthy = [p for p in candidates if self._provider_health[p].is_healthy]
-        if not healthy:
-            return candidates  # All unhealthy — try all anyway
-        return healthy
+        """True if any non-offline provider is configured."""
+        return any(
+            p.is_available() and p.name != "offline"
+            for p in self.providers
+        )
 
     def chat(
         self,
@@ -175,8 +262,8 @@ class LLMClient:
         json_mode: bool = False,
     ) -> LLMResponse:
         """
-        Send chat completion request with runtime provider failover.
-        Portkey-inspired: hooks pipeline → cache check → status-code failover.
+        Send chat completion with runtime provider failover.
+        Portkey-inspired: hooks → cache → status-code failover.
         """
         use_model = model or self.model
         call_start = time.time()
@@ -191,32 +278,43 @@ class LLMClient:
             pre_results = self.hooks.run_phase(HookPhase.PRE_REQUEST, hook_ctx)
             for r in pre_results:
                 if not r.passed:
-                    logger.warning(f"[LLM] Pre-request hook failed: {r.error_message}")
+                    logger.warning("[LLM] Pre-request hook failed: %s", r.error_message)
                     return self._offline_response(messages, error=f"hook: {r.error_message}")
 
-        # Cache check (skip for json_mode — unique responses expected)
+        # Cache check (skip for json_mode)
         if self.cache and not json_mode:
             cached = self.cache.get(messages, use_model, temperature)
             if cached:
-                logger.debug(f"[LLM] Cache hit for model={use_model}")
+                logger.debug("[LLM] Cache hit for model=%s", use_model)
                 return LLMResponse(
                     content=cached.content, model=cached.model,
                     usage=cached.usage, raw={"cache": True},
                 )
 
-        # Provider failover with status-code awareness
-        providers = self._get_ordered_providers()
-        if not providers:
+        # Provider failover with circuit breaker
+        candidates = self._get_healthy_providers()
+        if not candidates:
             return self._offline_response(messages, error="no providers available")
 
         last_error = ""
-        for provider in providers:
-            hook_ctx.provider = provider
+        for provider in candidates:
+            if provider.name == "offline":
+                break  # Reached fallback — handled below
+
+            # Ensure health entry exists (providers may be added after init)
+            if provider.name not in self._provider_health:
+                self._provider_health[provider.name] = ProviderHealth()
+
+            hook_ctx.provider = provider.name
             try:
-                result = self._call_provider(
-                    provider, messages, model, temperature, max_tokens, json_mode
+                result = provider.chat(
+                    messages=messages,
+                    model=use_model,
+                    temperature=temperature,
+                    max_tokens=max_tokens,
+                    json_mode=json_mode,
                 )
-                self._provider_health[provider].record_success()
+                self._provider_health[provider.name].record_success()
 
                 # Cache successful response
                 if self.cache and not json_mode and result.content:
@@ -233,25 +331,22 @@ class LLMClient:
                     self.hooks.run_phase(HookPhase.POST_REQUEST, hook_ctx)
 
                 return result
+
             except requests.HTTPError as e:
                 status_code = e.response.status_code if e.response is not None else 0
-                last_error = f"{provider}:{status_code}:{e}"
-                logger.warning(f"[LLM] Provider {provider} HTTP {status_code}: {e}")
-                self._provider_health[provider].record_failure()
+                last_error = f"{provider.name}:{status_code}:{e}"
+                logger.warning("[LLM] Provider %s HTTP %d: %s", provider.name, status_code, e)
+                self._provider_health[provider.name].record_failure()
 
-                # Status-code based routing (Portkey pattern)
                 if status_code == 400:
-                    # Client error: don't retry, return immediately
                     return self._offline_response(messages, error=f"bad request: {e}")
-                # 401/403: auth error — skip to next provider
-                # 429/5xx: transient — continue failover
                 continue
+
             except Exception as e:
                 last_error = str(e)
-                logger.warning(f"[LLM] Provider {provider} failed: {e}")
-                self._provider_health[provider].record_failure()
+                logger.warning("[LLM] Provider %s failed: %s", provider.name, e)
+                self._provider_health[provider.name].record_failure()
 
-                # Error hooks
                 if self.hooks:
                     hook_ctx.error = e
                     self.hooks.run_phase(HookPhase.ON_ERROR, hook_ctx)
@@ -259,228 +354,59 @@ class LLMClient:
 
         return self._offline_response(messages, error=f"all providers failed: {last_error}")
 
-    def _call_provider(
-        self,
-        provider: str,
-        messages: List[Dict[str, str]],
-        model: Optional[str],
-        temperature: float,
-        max_tokens: int,
-        json_mode: bool,
-    ) -> LLMResponse:
-        """Dispatch to provider-specific implementation. Raises on failure."""
-        if provider == "vertex":
-            # Clean GOOGLE_API_KEY at call time too (env var may be set after init)
-            if "GOOGLE_API_KEY" in os.environ:
-                os.environ.pop("GOOGLE_API_KEY")
-            if not self._genai_client:
-                try:
-                    from google import genai
-                    self._genai_client = genai.Client(api_key=self.gemini_key)
-                except ImportError:
-                    raise RuntimeError("google-genai not installed")
-            return self._vertex_chat(messages, model, temperature, max_tokens, json_mode)
-
-        # proxy or openai — both use OpenAI-compatible REST API
-        use_model = model or self.model
-        payload: Dict[str, Any] = {
-            "model": use_model,
-            "messages": messages,
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-        }
-        if json_mode:
-            payload["response_format"] = {"type": "json_object"}
-
-        headers = {"Content-Type": "application/json"}
-
-        if provider == "proxy":
-            base = self.proxy_url.rstrip("/")
-        else:  # openai
-            base = "https://api.openai.com/v1"
-            headers["Authorization"] = f"Bearer {self.api_key}"
-
-        if self.api_key and provider == "proxy":
-            headers["Authorization"] = f"Bearer {self.api_key}"
-
-        url = f"{base}/chat/completions"
-        logger.debug(f"[LLM] {provider} -> {use_model}: {url}")
-
-        response = requests.post(url, headers=headers, json=payload, timeout=self.timeout)
-        response.raise_for_status()
-        data = response.json()
-
-        content = data["choices"][0]["message"]["content"]
-        usage = data.get("usage", {})
-
-        return LLMResponse(
-            content=content,
-            model=data.get("model", use_model),
-            usage=usage,
-            raw=data,
-        )
-
-    def _vertex_chat(
-        self,
-        messages: List[Dict[str, str]],
-        model: Optional[str] = None,
-        temperature: float = 0.7,
-        max_tokens: int = 2048,
-        json_mode: bool = False,
-    ) -> LLMResponse:
-        """Handle chat via Google GenAI SDK with retry, jitter backoff, and circuit breaker."""
-        use_model = model or self.model
-
-        system_instruction = None
-        prompt_parts = []
-
-        for m in messages:
-            role = m["role"]
-            content = m["content"]
-            if role == "system":
-                system_instruction = content
-            elif role == "user":
-                prompt_parts.append(content)
-
-        prompt_text = "\n\n".join(prompt_parts) if prompt_parts else ""
-
-        if not prompt_text.strip():
-            logger.warning("[LLM] Vertex called with empty prompt, returning offline")
-            return self._offline_response(messages, error="empty prompt")
-
-        config = {
-            "temperature": temperature,
-            "max_output_tokens": max_tokens,
-        }
-        if json_mode:
-            config["response_mime_type"] = "application/json"
-
-        if system_instruction:
-            config["system_instruction"] = system_instruction
-
-        # Retry with exponential backoff + jitter (3 attempts)
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                logger.debug(
-                    f"[LLM] vertex -> {use_model} (attempt {attempt + 1}/{max_retries})"
-                )
-                response = self._genai_client.models.generate_content(
-                    model=use_model,
-                    contents=prompt_text,
-                    config=config,
-                )
-
-                # Safely extract text
-                text = None
-                try:
-                    text = response.text
-                except (ValueError, AttributeError):
-                    if (
-                        response.candidates
-                        and response.candidates[0].content
-                        and response.candidates[0].content.parts
-                    ):
-                        text = response.candidates[0].content.parts[0].text
-
-                finish_reason = "unknown"
-                if response.candidates:
-                    finish_reason = str(response.candidates[0].finish_reason)
-
-                if not text:
-                    logger.warning(
-                        f"[LLM] Vertex empty response (attempt {attempt + 1}). "
-                        f"Finish reason: {finish_reason}. "
-                        f"Model: {use_model}, prompt_len: {len(prompt_text)}"
-                    )
-                    if attempt < max_retries - 1:
-                        delay = random.uniform(0, 2 ** attempt)  # full jitter
-                        logger.info(f"[LLM] Retrying in {delay:.1f}s...")
-                        time.sleep(delay)
-                        continue
-                    return self._offline_response(
-                        messages, error=f"empty after {max_retries} attempts"
-                    )
-
-                tokens = 0
-                if response.usage_metadata:
-                    tokens = response.usage_metadata.total_token_count
-
-                return LLMResponse(
-                    content=text,
-                    model=use_model,
-                    usage={"total_tokens": tokens},
-                    raw={"finish_reason": finish_reason},
-                )
-
-            except Exception as e:
-                error_str = str(e).lower()
-                is_retryable = any(
-                    kw in error_str
-                    for kw in [
-                        "429",
-                        "resource_exhausted",
-                        "quota",
-                        "503",
-                        "500",
-                        "deadline",
-                        "timeout",
-                        "unavailable",
-                    ]
-                )
-
-                if is_retryable and attempt < max_retries - 1:
-                    delay = random.uniform(0, 2 ** attempt)  # full jitter
-                    logger.warning(
-                        f"[LLM] Vertex error (attempt {attempt + 1}): {e}. "
-                        f"Retrying in {delay:.1f}s..."
-                    )
-                    time.sleep(delay)
-                    continue
-
-                logger.error(f"[LLM] Vertex call failed: {e}")
-                raise  # Let caller handle failover
-
-    def generate(self, prompt: str, **kwargs) -> str:
+    def generate(self, prompt: str, **kwargs: Any) -> str:
         """Simple text generation helper."""
         messages = [{"role": "user", "content": prompt}]
         response = self.chat(messages, **kwargs)
         return response.content
 
-    def generate_json(self, prompt: str, **kwargs) -> Dict[str, Any]:
+    def generate_json(self, prompt: str, **kwargs: Any) -> Dict[str, Any]:
         """Generate and parse JSON response."""
         messages = [
-            {
-                "role": "system",
-                "content": "You are a helpful assistant. Always respond with valid JSON.",
-            },
+            {"role": "system", "content": "You are a helpful assistant. Always respond with valid JSON."},
             {"role": "user", "content": prompt},
         ]
         response = self.chat(messages, json_mode=True, **kwargs)
 
         try:
-            return json.loads(response.content)
+            return dict(json.loads(response.content))
         except json.JSONDecodeError:
             json_match = re.search(
                 r"```(?:json)?\s*\n(.*?)\n```", response.content, re.DOTALL
             )
             if json_match:
                 try:
-                    return json.loads(json_match.group(1))
+                    return dict(json.loads(json_match.group(1)))
                 except json.JSONDecodeError:
                     pass
             return {"raw_content": response.content}
 
+    # ------------------------------------------------------------------
+    # Internal helpers
+    # ------------------------------------------------------------------
+
+    def _get_healthy_providers(self) -> List[LLMProvider]:
+        """Return providers in order, skipping circuit-broken ones."""
+        available = [p for p in self.providers if p.is_available()]
+        if not available:
+            return [OfflineProvider()]
+
+        healthy = [
+            p for p in available
+            if p.name == "offline"
+            or self._provider_health.get(p.name, ProviderHealth()).is_healthy
+        ]
+        return healthy if healthy else available  # All unhealthy — try all
+
     def _offline_response(
         self, messages: List[Dict[str, str]], error: str = ""
     ) -> LLMResponse:
-        """Generate offline placeholder response"""
+        """Generate offline placeholder response."""
         user_msg = "unknown"
         for m in reversed(messages):
-            if m["role"] == "user":
-                user_msg = m["content"]
+            if m.get("role") == "user":
+                user_msg = m.get("content", "")
                 break
-
         content = (
             f"[OFFLINE MODE] LLM unavailable"
             f"{f' ({error})' if error else ''}. "
@@ -489,12 +415,15 @@ class LLMClient:
         return LLMResponse(content=content, model="offline")
 
 
+# ---------------------------------------------------------------------------
 # Module-level convenience
+# ---------------------------------------------------------------------------
+
 _default_client: Optional[LLMClient] = None
 
 
 def get_client() -> LLMClient:
-    """Get or create default LLM client"""
+    """Get or create default LLM client (env-var auto-detection)."""
     global _default_client
     if _default_client is None:
         _default_client = LLMClient()

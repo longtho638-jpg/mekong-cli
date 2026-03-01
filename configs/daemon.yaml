@@ -1,0 +1,39 @@
+# Mekong CLI — Daemon Configuration
+#
+# Autonomous task watcher, classifier, executor with learning journal.
+# Start: mekong daemon start
+# Stop:  mekong daemon stop (or SIGTERM/SIGINT)
+
+# Task watcher settings
+watch_dir: ./tasks
+poll_interval_secs: 5
+max_retries: 3
+working_dir: .
+default_timeout: 1800
+
+# Post-mission verification commands (all must exit 0)
+verify_commands: []
+  # - "python3 -m pytest tests/ -x --tb=short"
+  # - "python3 -m mypy src/ --ignore-missing-imports"
+
+# Journal path for mission telemetry
+journal_path: .mekong/daemon-journal.jsonl
+
+# Dead letter queue for failed missions
+dlq_dir: ./tasks/dead-letter
+
+# Complexity classifier keywords
+# Missions are classified by highest matching level
+complexity:
+  simple:
+    keywords: [add, update, fix, rename, remove]
+    timeout: 900
+  medium:
+    keywords: [implement, create, migrate, optimize]
+    timeout: 1800
+  complex:
+    keywords: [refactor, redesign, architecture, rewrite]
+    timeout: 3600
+  strategic:
+    keywords: [audit, overhaul, platform, infrastructure]
+    timeout: 5400

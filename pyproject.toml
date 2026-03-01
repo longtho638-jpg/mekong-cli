@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mekong-cli"
-version = "2.2.0"
-description = "AGI CLI Platform — Plan-Execute-Verify autonomous engine"
+version = "3.0.0"
+description = "AGI Vibe Coding Factory — Plan-Execute-Verify autonomous engine with pluggable providers, DAG execution, and community plugins"
 authors = ["Binh Phap Venture Studio <admin@binhphap.io>"]
 license = "MIT"
 homepage = "https://github.com/mekong-cli/mekong-cli"
@@ -9,12 +9,15 @@ repository = "https://github.com/mekong-cli/mekong-cli"
 keywords = ["cli", "agi", "ai", "agents", "automation"]
 classifiers = [
     "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries",
     "License :: OSI Approved :: MIT License",
 ]
 readme = "README.md"
-packages = [{include = "api"}, {include = "automation"}, {include = "src"}]
+packages = [{include = "mekong"}, {include = "src"}, {include = "api"}, {include = "automation"}]
 
 [tool.poetry.scripts]
 mekong = "src.main:app"

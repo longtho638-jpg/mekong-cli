@@ -16,11 +16,12 @@ unavailable the JSON write path continues unaffected.
 
 import json
 import logging
+import threading
 import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ _facade = None
 _facade_loaded = False
 
 
-def _get_facade():
+def _get_facade() -> Optional[Any]:
     """Lazily import and cache ObservabilityFacade (breaks circular import)."""
     global _facade, _facade_loaded
     if _facade_loaded:
@@ -88,6 +89,7 @@ class TelemetryCollector:
         self._trace: Optional[ExecutionTrace] = None
         self._start_time: float = 0.0
         self._output_dir = Path(output_dir) if output_dir else Path(".mekong/telemetry")
+        self._lock = threading.Lock()
 
     def start_trace(self, goal: str, user_id: Optional[str] = None) -> None:
         """
@@ -100,9 +102,10 @@ class TelemetryCollector:
         self._trace = ExecutionTrace(goal=goal)
         self._start_time = time.time()
 
-        if _get_facade() is not None:
+        _facade_ref = _get_facade()
+        if _facade_ref is not None:
             try:
-                _get_facade().start_trace(goal, user_id=user_id)
+                _facade_ref.start_trace(goal, user_id=user_id)
             except Exception as exc:
                 logger.warning("facade.start_trace error: %s", exc)
 
@@ -115,24 +118,26 @@ class TelemetryCollector:
         self_healed: bool = False,
         agent: Optional[str] = None,
     ) -> None:
-        """Record a completed step in the current trace."""
+        """Record a completed step in the current trace (thread-safe)."""
         if self._trace is None:
             return
 
-        self._trace.steps.append(
-            StepTrace(
-                step_order=step_order,
-                title=title,
-                duration_seconds=round(duration, 3),
-                exit_code=exit_code,
-                self_healed=self_healed,
-                agent_used=agent,
+        with self._lock:
+            self._trace.steps.append(
+                StepTrace(
+                    step_order=step_order,
+                    title=title,
+                    duration_seconds=round(duration, 3),
+                    exit_code=exit_code,
+                    self_healed=self_healed,
+                    agent_used=agent,
+                )
             )
-        )
 
-        if _get_facade() is not None:
+        _facade_ref = _get_facade()
+        if _facade_ref is not None:
             try:
-                _get_facade().record_step(step_order, title, duration, exit_code, self_healed, agent)
+                _facade_ref.record_step(step_order, title, duration, exit_code, self_healed, agent)
             except Exception as exc:
                 logger.warning("facade.record_step error: %s", exc)
 
@@ -148,9 +153,10 @@ class TelemetryCollector:
         if self._trace is not None:
             self._trace.llm_calls += 1
 
-        if _get_facade() is not None:
+        _facade_ref = _get_facade()
+        if _facade_ref is not None:
             try:
-                _get_facade().record_llm_call(model=model, input_tokens=input_tokens, output_tokens=output_tokens)
+                _facade_ref.record_llm_call(model=model, input_tokens=input_tokens, output_tokens=output_tokens)
             except Exception as exc:
                 logger.warning("facade.record_llm_call error: %s", exc)
 
@@ -159,9 +165,10 @@ class TelemetryCollector:
         if self._trace is not None:
             self._trace.errors.append(error_msg)
 
-        if _get_facade() is not None:
+        _facade_ref = _get_facade()
+        if _facade_ref is not None:
             try:
-                _get_facade().record_error(error_msg)
+                _facade_ref.record_error(error_msg)
             except Exception as exc:
                 logger.warning("facade.record_error error: %s", exc)
 
@@ -179,9 +186,10 @@ class TelemetryCollector:
 
         # Determine overall status for Langfuse
         status = "error" if self._trace.errors else "success"
-        if _get_facade() is not None:
+        _facade_ref = _get_facade()
+        if _facade_ref is not None:
             try:
-                _get_facade().finish_trace(status=status)
+                _facade_ref.finish_trace(status=status)
             except Exception as exc:
                 logger.warning("facade.finish_trace error: %s", exc)
 
