@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
 
 interface ContactSubmission {
   name: string
@@ -8,8 +6,6 @@ interface ContactSubmission {
   message: string
   submittedAt: string
 }
-
-const SUBMISSIONS_FILE = path.resolve(process.cwd(), 'data/contact-submissions.json')
 
 export async function POST(request: Request) {
   try {
@@ -33,20 +29,10 @@ export async function POST(request: Request) {
       submittedAt: new Date().toISOString(),
     }
 
-    // Read existing submissions
-    let submissions: ContactSubmission[] = []
-    try {
-      const raw = await fs.readFile(SUBMISSIONS_FILE, 'utf-8')
-      submissions = JSON.parse(raw)
-    } catch {
-      // File doesn't exist yet — start fresh
-    }
-
-    submissions.push(submission)
-
-    // Ensure data directory exists
-    await fs.mkdir(path.dirname(SUBMISSIONS_FILE), { recursive: true })
-    await fs.writeFile(SUBMISSIONS_FILE, JSON.stringify(submissions, null, 2))
+    // TODO: Integrate with Supabase or Resend for persistent storage/email delivery
+    // e.g. await supabase.from('contact_submissions').insert(submission)
+    // e.g. await resend.emails.send({ to: 'hello@agencyos.network', ... })
+    console.log('[contact] new submission', submission)
 
     return NextResponse.json({ success: true })
   } catch {

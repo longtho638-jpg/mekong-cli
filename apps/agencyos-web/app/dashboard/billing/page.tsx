@@ -64,12 +64,14 @@ export default async function BillingPage() {
             <span className={`text-2xl font-bold ${currentPlan.accentClass}`}>{currentPlan.label}</span>
             <span className="text-sm text-zinc-400">{currentPlan.priceLabel}</span>
           </div>
-          <button
-            type="button"
-            className="w-full rounded-lg bg-purple-600 hover:bg-purple-500 px-4 py-2 text-sm font-medium text-white transition-colors"
+          <a
+            href={process.env.NEXT_PUBLIC_BILLING_URL ?? 'https://agencyos.network/#pricing'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full rounded-lg bg-purple-600 hover:bg-purple-500 px-4 py-2 text-sm font-medium text-white text-center transition-colors"
           >
             Upgrade Plan
-          </button>
+          </a>
         </div>
 
         {/* MCU balance card */}
