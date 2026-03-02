@@ -5,6 +5,8 @@
  */
 
 import Fastify, { FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
+import * as path from 'path';
 import { TenantStrategyManager } from '../core/tenant-strategy-manager';
 import { StrategyMarketplace } from '../core/strategy-marketplace';
 import { TenantArbPositionTracker } from '../core/tenant-arbitrage-position-tracker';
@@ -97,6 +99,22 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   const subscriptionService = new PolarSubscriptionService();
   const webhookHandler = new PolarWebhookEventHandler(subscriptionService);
   void server.register(buildPolarBillingRoutes(subscriptionService, webhookHandler));
+
+  // Dashboard static files (built by: cd dashboard && npm run build)
+  const dashboardDir = path.join(__dirname, '..', '..', 'dist', 'dashboard');
+  void server.register(fastifyStatic, {
+    root: dashboardDir,
+    prefix: '/dashboard/',
+    decorateReply: false,
+  });
+
+  // SPA fallback: redirect /dashboard/* to dashboard index.html
+  server.setNotFoundHandler((request, reply) => {
+    if (request.url.startsWith('/dashboard')) {
+      return reply.sendFile('index.html', dashboardDir);
+    }
+    return reply.code(404).send({ error: 'Not found' });
+  });
 
   return server;
 }

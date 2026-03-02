@@ -13,13 +13,17 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "typecheck": "tsc --noEmit",
-    "lint": "tsc --noEmit --pretty"
+    "lint": "tsc --noEmit --pretty",
+    "dashboard:dev": "cd dashboard && npx vite",
+    "dashboard:build": "cd dashboard && npx vite build",
+    "api:serve": "ts-node src/index.ts api:serve"
   },
   "dependencies": {
     "@agencyos/trading-core": "workspace:*",
     "@agencyos/vibe-arbitrage-engine": "workspace:*",
     "@agencyos/vibe-billing-trading": "workspace:*",
     "@fastify/cors": "^10.1.0",
+    "@fastify/static": "9.0.0",
     "@polar-sh/sdk": "^0.41.5",
     "@prisma/client": "5.21.1",
     "@tensorflow/tfjs": "4.22.0",
