@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+const isVercel = process.env.VERCEL === '1';
+
 export default defineConfig({
   plugins: [react()],
-  base: '/dashboard/',
+  base: isVercel ? '/' : '/dashboard/',
   build: {
-    outDir: '../dist/dashboard',
+    outDir: isVercel ? 'dist' : '../dist/dashboard',
     emptyOutDir: true,
   },
   server: {

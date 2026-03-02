@@ -3,7 +3,7 @@
  */
 import { useState, useCallback } from 'react';
 
-const BASE = '/api/v1';
+const BASE = (import.meta.env.VITE_API_URL ?? '') + '/api/v1';
 
 export function useApiClient() {
   const [loading, setLoading] = useState(false);

@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { useTradingStore, PriceTick } from '../stores/trading-store';
 
-export function useWebSocketPriceFeed(url = `ws://${window.location.host}/ws`) {
+export function useWebSocketPriceFeed(url = import.meta.env.VITE_WS_URL ?? `ws://${window.location.host}/ws`) {
   const wsRef = useRef<WebSocket | null>(null);
   const bufferRef = useRef<PriceTick[]>([]);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
