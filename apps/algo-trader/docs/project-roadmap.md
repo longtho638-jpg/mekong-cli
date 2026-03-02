@@ -118,13 +118,25 @@
 - [x] ExchangeRouter integration for live order execution with failover
 - [x] 20 tests
 
-### Phase 7.3+ (Planned)
-- [ ] Position management service (open/close, PnL tracking, risk limits)
-- [ ] Circuit breaker v2 (per-exchange, per-pair, adaptive thresholds)
-- [ ] Telegram/Discord alert bot (trade signals, PnL reports, anomaly detection)
+### Phase 7.3: Position Management (Completed ✅)
+- [x] StrategyPositionManager — open/close positions per strategy per symbol
+- [x] Realized + unrealized PnL, risk limits (max size, concurrent, daily loss)
+- [x] 21 tests
+
+### Phase 7.4: Adaptive Circuit Breaker v2 (Completed ✅)
+- [x] Per-exchange, per-pair circuit breaker (closed → open → half_open)
+- [x] Adaptive backoff, latency-based tripping, failure window pruning
+- [x] 17 tests
+
+### Phase 7.5: Telegram Alert Bot (Completed ✅)
+- [x] Trade signals, position PnL, anomaly alerts, daily summaries via Telegram
+- [x] Rate-limited message queue, injectable fetch for testing
+- [x] 13 tests
+
+### Phase 7.6+ (Planned)
 - [ ] Dry-run simulation mode (live data, paper orders)
 - [ ] Multi-region deployment (Cloudflare Workers edge)
 
-**Current Status:** 1000+ tests, 0 TS errors, 200+ source files.
+**Current Status:** 1000+ tests, 0 TS errors, 210+ source files.
 
 Updated: 2026-03-02
