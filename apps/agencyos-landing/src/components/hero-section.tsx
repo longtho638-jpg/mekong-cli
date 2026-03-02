@@ -7,6 +7,7 @@ import { TerminalAnimation } from "@/components/sections/terminal-animation";
 import { m as motion } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { trackEvent } from "@/lib/vibe-analytics-client";
 
 export function HeroSection() {
   const t = useTranslations('hero');
@@ -54,13 +55,20 @@ export function HeroSection() {
                 variant="primary"
                 size="lg"
                 magnetic
-                onClick={scrollToPricing}
+                onClick={() => {
+                  trackEvent('hero_cta_click', { button: 'get_started' })
+                  scrollToPricing()
+                }}
               >
                 {t('cta')}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </GlassButton>
 
-              <GlassButton variant="outline" size="lg">
+              <GlassButton
+                variant="outline"
+                size="lg"
+                onClick={() => trackEvent('hero_cta_click', { button: 'secondary' })}
+              >
                 {t('ctaSecondary')}
               </GlassButton>
             </div>

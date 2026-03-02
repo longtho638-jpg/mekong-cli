@@ -200,6 +200,16 @@
       "4": "> Ready! Your RaaS is live 🚀"
     }
   },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "Have questions? We'd love to hear from you.",
+    "name": "Your Name",
+    "email": "Email Address",
+    "message": "Your Message",
+    "submit": "Send Message",
+    "success": "Message sent! We'll get back to you soon.",
+    "error": "Something went wrong. Please try again."
+  },
   "errors": {
     "checkout": "Failed to start checkout. Please check console for details."
   },

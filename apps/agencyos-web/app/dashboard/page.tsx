@@ -1,32 +1,26 @@
 import { createClient } from '@/lib/supabase/server'
-import { Target, Bot, DollarSign, TrendingUp } from 'lucide-react'
-
-const STATS = [
-  { label: 'Active Missions', value: '12', icon: Target, color: 'text-purple-400' },
-  { label: 'Agents Running', value: '3', icon: Bot, color: 'text-blue-400' },
-  { label: 'Revenue Today', value: '$840', icon: DollarSign, color: 'text-green-400' },
-  { label: 'Success Rate', value: '94%', icon: TrendingUp, color: 'text-yellow-400' },
-]
-
-const RECENT_ACTIVITY = [
-  { id: 1, event: 'Mission "Scrape 500 CEO leads" completed', time: '2 min ago', status: 'success' },
-  { id: 2, event: 'Agent Tôm Hùm dispatched new task', time: '8 min ago', status: 'info' },
-  { id: 3, event: 'Mission "SEO articles batch #7" running', time: '15 min ago', status: 'running' },
-  { id: 4, event: 'Revenue milestone: $800 daily target hit', time: '32 min ago', status: 'success' },
-  { id: 5, event: 'Mission "Competitor report - Notion" failed', time: '1 hr ago', status: 'error' },
-]
-
-const STATUS_COLORS: Record<string, string> = {
-  success: 'bg-green-500/20 text-green-400',
-  error: 'bg-red-500/20 text-red-400',
-  running: 'bg-blue-500/20 text-blue-400',
-  info: 'bg-zinc-700 text-zinc-300',
-}
+import { Target, Bot, TrendingUp, Activity } from 'lucide-react'
+import { MissionFeedTable } from '@/components/mission-feed-table'
+import { AgentActivityLog } from '@/components/agent-activity-log-scrollable'
+import { McuUsageBarChart } from '@/components/mcu-usage-bar-chart-svg'
+import { getMissions, getDashboardStats } from '@/lib/fetch-dashboard-data'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const email = user?.email ?? 'User'
+
+  const [stats, recentMissions] = await Promise.all([
+    getDashboardStats(),
+    getMissions(5),
+  ])
+
+  const STATS = [
+    { label: 'Total Missions',  value: String(stats.totalMissions),    icon: Target,    color: 'text-purple-400' },
+    { label: 'Agents Running',  value: String(stats.activeAgentsCount), icon: Bot,       color: 'text-blue-400' },
+    { label: 'Active Tasks',    value: String(stats.activeMissions),    icon: Activity,  color: 'text-cyan-400' },
+    { label: 'Success Rate',    value: stats.successRate,               icon: TrendingUp, color: 'text-yellow-400' },
+  ]
 
   return (
     <div className="space-y-8 max-w-5xl">
@@ -54,27 +48,14 @@ export default async function DashboardPage() {
         ))}
       </div>
 
-      {/* Recent Activity */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-        <div className="px-5 py-4 border-b border-zinc-800">
-          <h2 className="text-sm font-semibold text-white">Recent Activity</h2>
-        </div>
-        <ul className="divide-y divide-zinc-800/60">
-          {RECENT_ACTIVITY.map((item) => (
-            <li key={item.id} className="flex items-center justify-between px-5 py-3 gap-4">
-              <span className="text-sm text-zinc-300 truncate">{item.event}</span>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="text-xs text-zinc-600">{item.time}</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLORS[item.status]}`}
-                >
-                  {item.status}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
+      {/* MCU Chart + Activity Log side by side on large screens */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <McuUsageBarChart />
+        <AgentActivityLog />
       </div>
+
+      {/* Recent Missions — dữ liệu thực từ mission-history.json */}
+      <MissionFeedTable title="Recent Missions" missions={recentMissions} maxRows={5} />
     </div>
   )
 }

@@ -200,6 +200,16 @@
       "4": "> Sẵn sàng! RaaS của bạn đã hoạt động 🚀"
     }
   },
+  "contact": {
+    "title": "Liên Hệ Với Chúng Tôi",
+    "subtitle": "Bạn có câu hỏi? Chúng tôi rất muốn nghe từ bạn.",
+    "name": "Tên Của Bạn",
+    "email": "Địa Chỉ Email",
+    "message": "Tin Nhắn Của Bạn",
+    "submit": "Gửi Tin Nhắn",
+    "success": "Đã gửi tin nhắn! Chúng tôi sẽ liên lạc lại với bạn sớm.",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại."
+  },
   "errors": {
     "checkout": "Không thể bắt đầu thanh toán. Vui lòng kiểm tra console để biết chi tiết."
   },

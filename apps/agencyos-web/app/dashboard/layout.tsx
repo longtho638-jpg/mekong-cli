@@ -8,14 +8,18 @@ import {
   Bot,
   DollarSign,
   Settings,
+  Key,
+  CreditCard,
 } from 'lucide-react'
 
 const NAV_LINKS = [
-  { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { href: '/dashboard/missions', label: 'Missions', icon: Target },
-  { href: '/dashboard/agents', label: 'Agents', icon: Bot },
-  { href: '/dashboard/revenue', label: 'Revenue', icon: DollarSign },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard',          label: 'Overview',  icon: LayoutDashboard },
+  { href: '/dashboard/missions', label: 'Missions',  icon: Target },
+  { href: '/dashboard/agents',   label: 'Agents',    icon: Bot },
+  { href: '/dashboard/revenue',  label: 'Revenue',   icon: DollarSign },
+  { href: '/dashboard/api-keys', label: 'API Keys',  icon: Key },
+  { href: '/dashboard/billing',  label: 'Billing',   icon: CreditCard },
+  { href: '/dashboard/settings', label: 'Settings',  icon: Settings },
 ]
 
 export default async function DashboardLayout({

@@ -1,16 +1,19 @@
-// Analytics client stub — replaced by @agencyos/vibe-analytics SDK when available
+// Analytics client — console in dev, Vercel Analytics stub in production
+
+const IS_DEV = process.env.NODE_ENV === 'development'
 
 export const analytics = {
-  track: (_event: { event: string; properties?: Record<string, unknown> }) => {
+  track: (event: { event: string; properties?: Record<string, unknown> }) => {
     if (typeof window === 'undefined') return;
-    // Stub: no-op until SDK integration
+    if (IS_DEV) console.log('[analytics:track]', event.event, event.properties)
+    // Vercel Analytics: window.va?.('event', { name: event.event, ...event.properties })
   },
-  page: (_data: { path?: string; url?: string; referrer?: string }) => {
+  page: (data: { path?: string; url?: string; referrer?: string }) => {
     if (typeof window === 'undefined') return;
-    // Stub: no-op until SDK integration
+    if (IS_DEV) console.log('[analytics:page]', data.path)
   },
-  identify: (_data: { userId: string; traits?: Record<string, unknown> }) => {
-    // Stub: no-op until SDK integration
+  identify: (data: { userId: string; traits?: Record<string, unknown> }) => {
+    if (IS_DEV) console.log('[analytics:identify]', data.userId)
   },
 };
 
