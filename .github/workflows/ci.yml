@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest pytest-asyncio anyio
+          pip install ruff pytest pytest-asyncio anyio "httpx<0.28"
           pip install -e .
 
       - name: Verify CLI Entry Point
