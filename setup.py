@@ -7,7 +7,7 @@ setup(
     author="Antigravity Team",
     packages=find_packages(exclude=["tests", "docs", "plans", "scripts"]),
     install_requires=[
-        "typer>=0.9.0",
+        "typer>=0.12.0",
         "rich>=13.0.0",
         "fastapi>=0.100.0",
         "uvicorn>=0.23.0",
