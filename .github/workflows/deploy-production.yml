@@ -28,13 +28,13 @@ jobs:
         run: pnpm install
 
       - name: Typecheck
-        run: pnpm turbo typecheck --filter='!./apps/84tea' --filter='!./apps/anima119' --filter='!./apps/well' --filter='!./apps/com-anh-duong' --filter='!./apps/com-anh-duong-10x' --filter='!./apps/apex-os' --filter='!./apps/gemini-proxy-clone' --filter='!./apps/raas-demo' --filter='!./apps/web' --filter='!./apps/agencyos-landing' --filter='!./apps/agencyos-web' --filter='!./apps/sophia-proposal'
+        run: pnpm turbo typecheck --filter='./apps/algo-trader' --filter='./apps/dashboard' --filter='./packages/*'
 
       - name: Lint
-        run: pnpm turbo lint --filter='!./apps/84tea' --filter='!./apps/anima119' --filter='!./apps/well' --filter='!./apps/com-anh-duong' --filter='!./apps/com-anh-duong-10x' --filter='!./apps/apex-os' --filter='!./apps/gemini-proxy-clone' --filter='!./apps/raas-demo' --filter='!./apps/web'
+        run: pnpm turbo lint --filter='./apps/algo-trader' --filter='./apps/dashboard' --filter='./packages/*'
 
       - name: Run Tests
-        run: pnpm turbo test --filter='!./apps/84tea' --filter='!./apps/anima119' --filter='!./apps/well' --filter='!./apps/com-anh-duong' --filter='!./apps/com-anh-duong-10x' --filter='!./apps/apex-os' --filter='!./apps/gemini-proxy-clone' --filter='!./apps/raas-demo' --filter='!./apps/web'
+        run: pnpm turbo test --filter='./apps/algo-trader' --filter='./apps/dashboard' --filter='./packages/*'
 
   deploy:
     needs: validate
