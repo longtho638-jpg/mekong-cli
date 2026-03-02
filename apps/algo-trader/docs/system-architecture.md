@@ -49,6 +49,49 @@ graph TD
 - **CLI Dashboard** — Terminal dashboard real-time với chalk, hiển thị spreads, positions, P&L.
 - **Trade History Exporter** — Export CSV/JSON cho phân tích.
 
+### Phase 5: RaaS Dashboard (React SPA)
+**Dashboard** (`dashboard/`):
+- **React 19 + TypeScript 5.9 + Tailwind CSS 3.4** — Dark trading terminal theme.
+- **Vite 6** — Dev server proxy API (:3000) + WS, build to `dist/dashboard/`.
+- **Zustand 5** — State: prices, positions, spreads, connection status.
+- **lightweight-charts** — TradingView charting library.
+
+**Pages** (`dashboard/src/pages/`):
+- **DashboardPage** — Price tickers, positions table, spread opportunities, PnL stats.
+- **BacktestsPage** — Submit backtest jobs, view results (Sharpe, Sortino, max DD).
+- **MarketplacePage** — Strategy search, filter by type, star ratings.
+- **SettingsPage** — Tenant info, API key management, exchange config, alert rules.
+- **ReportingPage** — Trade history table, PnL summary, CSV export, pagination.
+
+**Components** (`dashboard/src/components/`):
+- **SidebarNavigation** — Nav links + connection status indicator.
+- **PriceTickerStrip** — Horizontal scrollable tickers với flash animation.
+- **PositionsTableSortable** — Sortable columns, PnL color coding.
+- **SpreadOpportunitiesCardGrid** — Card grid với intensity coloring.
+
+**Hooks** (`dashboard/src/hooks/`):
+- **useWebSocketPriceFeed** — WS connection, 25ms buffered updates to Zustand.
+- **useApiClient** — Generic typed fetch wrapper for `/api/v1` endpoints.
+
+### Infrastructure
+**Database** (`prisma/`):
+- **PostgreSQL 16** via Prisma ORM — 6 models (Tenant, ApiKey, Strategy, Trade, BacktestResult, Candle).
+- **Row-level isolation** via tenantId FK on all business tables.
+- **Migration** — `prisma/migrations/20260302000000_init/` (initial schema).
+
+**Job Queue** (`src/jobs/`):
+- **BullMQ + Redis 7** — 4 queues: backtest, scan, webhook, optimization.
+- **Workers**: backtest runner, scan detector, signed webhook delivery, grid search optimizer.
+- **Redis pub/sub** for real-time trade/signal event streaming.
+
+**Billing** (`src/billing/`):
+- **Polar.sh** — 3 tiers (FREE $0, PRO $49, ENTERPRISE custom).
+- **Webhook** — HMAC-SHA256 signature verification.
+
+**Monitoring** (`docker-compose.yml`):
+- **Prometheus** (:9090) — Metrics scraping from `/metrics` endpoint.
+- **Grafana** (:3001) — Pre-configured dashboards.
+
 ## Data Flow: AGI RaaS Arbitrage Pipeline
 
 ```
@@ -98,7 +141,7 @@ graph TD
 - **BullMQ**: Job scheduling cho periodic scans.
 - **Zod**: Request/response validation schemas.
 
-## Phase 2-4 Quality Status
+## Phase 2-5 Quality Status
 ✅ WebSocket price feed manager (Binance/OKX/Bybit, auto-reconnect)
 ✅ Fee-aware spread calculator (dynamic TTL cache, slippage estimation)
 ✅ Atomic order executor (Promise.allSettled, rollback on failure)
@@ -108,7 +151,12 @@ graph TD
 ✅ CLI dashboard (real-time metrics)
 ✅ Trade history exporter (CSV/JSON)
 
-## Quality Gates (Phase 4 — 100% Pass)
+✅ React dashboard — 5 pages, 4 components, WS + API hooks
+✅ Prisma migration — 6 models, 3 enums, indexes, FKs
+✅ BullMQ job queue — 4 queues, 4 workers
+✅ Polar billing — 3 tiers, webhook verification
+
+## Quality Gates (Phase 5 — 100% Pass)
 ✅ **868/868 tests passing** (100% success rate)
 ✅ **0 TypeScript errors** (strict mode)
 ✅ **0 `any` types** (full type coverage)
