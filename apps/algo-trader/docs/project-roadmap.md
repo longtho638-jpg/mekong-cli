@@ -194,11 +194,20 @@
 
 **Status:** Phase 11 COMPLETE ✅. 50 new tests. Full AGI intelligence suite.
 
+## Phase 12: Unified AGI Arbitrage Command (Completed ✅)
+- [x] UnifiedAgiArbOrchestrator — orchestrates ALL arb strategies in single command
+- [x] `arb:agi` CLI: cross-exchange + triangular + funding rate in one session
+- [x] MarketRegimeDetector → adaptive params for all scanners
+- [x] Per-strategy enable/disable flags, comprehensive report on shutdown
+- [x] 22 tests
+
+**Status:** Phase 12 COMPLETE ✅. Client-ready unified arbitrage platform.
+
 ### Future (Planned)
 - [ ] Multi-region deployment (Cloudflare Workers edge)
 - [ ] Advanced ML: ensemble strategies, online learning
 - [ ] Dashboard v2: real-time monitoring for AGI Trade
 
-**Current Status:** 1085+ tests, 0 TS errors, 233+ source files.
+**Current Status:** 1107+ tests, 0 TS errors, 235+ source files.
 
 Updated: 2026-03-02

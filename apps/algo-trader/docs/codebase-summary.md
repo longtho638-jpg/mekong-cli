@@ -1,7 +1,7 @@
 # Codebase Summary — Algo Trader v3.0.0
 
 ## Overview
-Algo Trader là nền tảng RaaS (Robot-as-a-Service) giao dịch tự động multi-tenant. Hỗ trợ 6+ chiến thuật trading, real-time WebSocket price feeds, paper trading, và Fastify API gateway.
+Algo Trader is a RaaS (Robot-as-a-Service) multi-tenant automated trading platform. Supports 6+ strategies, real-time WebSocket price feeds, AGI intelligence suite (regime detection, triangular arb, funding-rate arb), paper trading, and Fastify API gateway.
 
 ## Project Structure
 
@@ -9,30 +9,66 @@ Algo Trader là nền tảng RaaS (Robot-as-a-Service) giao dịch tự động 
 - `BotEngine.ts` — Signal routing, strategy orchestration
 - `RiskManager.ts` — Position sizing, risk calculation
 - `OrderManager.ts` — Order state tracking
-- `TenantArbPositionTracker.ts` — Multi-tenant position store, tier limits
+- `TenantArbPositionTracker.ts` — Multi-tenant positions, tier limits
 - `TenantStrategyManager.ts` — Tenant CRUD, strategy assignment
 - `PaperTradingEngine.ts` — Virtual trading simulation
 - `WebSocketServer.ts` — Real-time stream broadcasting
-- `StrategyAutoDetector.ts` — Nixpacks-inspired auto-detection, build plan generator
+- `StrategyAutoDetector.ts` — Nixpacks-inspired auto-detection, build plan
 - `StrategyLoader.ts` — Dynamic strategy loading by name
+- `pnl-realtime-snapshot-service.ts` — P&L snapshot (realized + unrealized)
+- `signal-market-regime-detector.ts` — Signal-layer regime classification
 
 ### src/strategies/ — Trading Strategies
 - Technical: RSI+SMA, RSI Crossover, Bollinger, MACD, MACD+Bollinger+RSI
 - Arbitrage: Cross-Exchange, Triangular, Statistical, AGI
 
 ### src/execution/ — Order Execution Pipeline
-- `WebSocketMultiExchangePriceFeedManager.ts` — Binance/OKX/Bybit streams, auto-reconnect
-- `FeeAwareCrossExchangeSpreadCalculator.ts` — Net spread = gross - fees - slippage
-- `AtomicCrossExchangeOrderExecutor.ts` — Promise.allSettled buy/sell, rollback
-- `PaperTradingArbitrageBridge.ts` — Paper trading multi-exchange simulator
+| File | Class | Purpose |
+|------|-------|---------|
+| `websocket-multi-exchange-price-feed-manager.ts` | `WebSocketMultiExchangePriceFeedManager` | Binance/OKX/Bybit streams, auto-reconnect |
+| `fee-aware-cross-exchange-spread-calculator.ts` | `FeeAwareCrossExchangeSpreadCalculator` | Net spread = gross - fees - slippage, 5min TTL |
+| `atomic-cross-exchange-order-executor.ts` | `AtomicCrossExchangeOrderExecutor` | Promise.allSettled buy/sell, rollback |
+| `paper-trading-arbitrage-bridge.ts` | `PaperTradingArbitrageBridge` | Paper trading multi-exchange simulator |
+| `realtime-arbitrage-scanner.ts` | `RealtimeArbitrageScanner` | EventEmitter; emits `opportunity` on profitable spreads |
+| `arbitrage-execution-engine.ts` | `ArbitrageExecutionEngine` | Scanner → CircuitBreaker → Executor → Telegram |
+| `order-book-depth-analyzer.ts` | `OrderBookDepthAnalyzer` | Real L2 order book slippage + liquidity check |
+| `market-regime-detector.ts` | `MarketRegimeDetector` | Regime classification, adaptive param suggestions |
+| `triangular-arbitrage-live-scanner.ts` | `TriangularArbitrageLiveScanner` | 3-leg intra-exchange cycle detection |
+| `funding-rate-arbitrage-scanner.ts` | `FundingRateArbitrageScanner` | Cross-exchange funding rate spread detection |
+| `adaptive-circuit-breaker-per-exchange.ts` | `AdaptiveCircuitBreaker` | Per-exchange trip/reset, health gating |
+| `exchange-connection-pool.ts` | `ExchangeConnectionPool` | CCXT connection pooling |
+| `exchange-health-monitor.ts` | `ExchangeHealthMonitor` | Latency + error rate monitoring |
+| `exchange-registry.ts` | `ExchangeRegistry` | Named exchange instance registry |
+| `exchange-router-with-fallback.ts` | `ExchangeRouterWithFallback` | Route with automatic fallback |
+| `live-exchange-manager.ts` | `LiveExchangeManager` | Live session lifecycle management |
+| `portkey-inspired-exchange-gateway-middleware-pipeline.ts` | `ExchangeGatewayMiddlewarePipeline` | Middleware chain for exchange calls |
+| `signal-order-pipeline-live-trading.ts` | — | Signal → order pipeline for live trading |
+| `strategy-position-manager.ts` | `StrategyPositionManager` | Per-strategy position tracking |
+| `telegram-trade-alert-bot.ts` | `TelegramTradeAlertBot` | Trade execution notifications |
+| `tick-to-candle-aggregator.ts` | `TickToCandleAggregator` | Real-time OHLCV candle aggregation |
+
+### Key Interfaces (Phase 9-11)
+| Interface | File | Description |
+|-----------|------|-------------|
+| `ArbitrageOpportunity` | `realtime-arbitrage-scanner.ts` | Cross-exchange opportunity with tick age |
+| `ArbEngineMetrics` | `arbitrage-execution-engine.ts` | Cumulative execution stats |
+| `ArbTradeRecord` | `arbitrage-execution-engine.ts` | Individual trade record |
+| `DepthAnalysis` | `order-book-depth-analyzer.ts` | Single-side L2 depth result |
+| `SpreadDepthAnalysis` | `order-book-depth-analyzer.ts` | Combined buy+sell depth viability |
+| `RegimeStats` | `market-regime-detector.ts` | Rolling volatility/trend stats |
+| `ArbParamSuggestion` | `market-regime-detector.ts` | Adaptive scanner param overrides |
+| `TriArbCycle` | `triangular-arbitrage-live-scanner.ts` | 3-leg path definition |
+| `TriArbOpportunity` | `triangular-arbitrage-live-scanner.ts` | Profitable triangle with net profit |
+| `FundingRateEntry` | `funding-rate-arbitrage-scanner.ts` | Per-exchange funding rate snapshot |
+| `FundingRateOpportunity` | `funding-rate-arbitrage-scanner.ts` | Cross-exchange funding spread |
 
 ### src/api/ — RaaS API Layer (Fastify 5)
 - `fastify-raas-server.ts` — Server bootstrap, plugin registration
 - `routes/arbitrage-scan-execute-routes.ts` — POST /arb/scan, /arb/execute
 - `routes/arbitrage-positions-history-routes.ts` — GET /positions, /history, /stats
-- `routes/tenant-crud-routes.ts` — Tenant CRUD endpoints
+- `routes/tenant-crud-routes.ts` — Tenant CRUD
 - `routes/backtest-job-submission-routes.ts` — Backtest job submission
-- `routes/pnl-realtime-snapshot-history-routes.ts` — P&L current + history endpoints
+- `routes/pnl-realtime-snapshot-history-routes.ts` — P&L current + history
 - `schemas/` — Zod validation schemas
 
 ### src/auth/ — Authentication & Security
@@ -42,24 +78,32 @@ Algo Trader là nền tảng RaaS (Robot-as-a-Service) giao dịch tự động 
 - `sliding-window-rate-limiter.ts` — In-memory + Redis rate limiting
 - `scopes.ts` — Permission scopes (ADMIN, BACKTEST, TRADE, READ)
 
+### src/cli/ — CLI Commands
+| File | Commands |
+|------|----------|
+| `arb-scan-run-commands.ts` | `arb:scan`, `arb:run` |
+| `arb-cli-commands.ts` | `arb:engine`, `arb:orchestrator` |
+| `arb-engine-orchestrator-commands.ts` | Engine/orchestrator wiring |
+| `arb-live-cross-exchange-command.ts` | `arb:live` + `ArbLiveOrchestrator` |
+| `arb-agi-auto-execution-commands.ts` | `arb:agi`, `arb:auto` (unified all strategies) |
+| `spread-detector-command.ts` | `arb:spread` |
+| `live-dry-run-simulation-command.ts` | Dry-run with live data |
+| `agi-trade-multi-exchange-golive-command.ts` | Multi-exchange go-live |
+| `ml-train-and-backtest-commands.ts` | ML train + backtest |
+| `strategy-marketplace-tenant-cli-commands.ts` | Marketplace CLI |
+| `exchange-factory.ts` | Exchange instantiation helper |
+
 ### src/jobs/ — BullMQ Background Processing
 - `bullmq-named-queue-registry-backtest-scan-webhook.ts` — Queue factory
 - `workers/bullmq-backtest-worker-*.ts` — Backtest job processor
 - `workers/bullmq-scan-worker-*.ts` — Scheduled strategy scan
 - `ioredis-connection-factory-and-singleton-pool.ts` — Redis connection pool
-- `redis-sliding-window-rate-limiter-*.ts` — Redis-backed rate limiter
-
-### src/cli/ — CLI Commands
-- `arb-cli-commands.ts` — arb:scan, arb:run, arb:engine, arb:orchestrator
-- `arb-agi-auto-execution-commands.ts` — arb:auto, arb:agi
-- `spread-detector-command.ts` — arb:spread
-- `strategy-marketplace-tenant-cli-commands.ts` — Marketplace CLI
 
 ### src/backtest/ — Backtesting Framework
 - `BacktestRunner.ts` — Standard backtest execution
-- `BacktestEngine.ts` — Advanced: equity curve, Sortino, Calmar, Monte Carlo, walk-forward
+- `BacktestEngine.ts` — Equity curve, Sortino, Calmar, Monte Carlo, walk-forward
 - `BacktestOptimizer.ts` — Grid/random search optimizer
-- `walk-forward-optimizer-pipeline.ts` — Optimize-then-validate pipeline, overfitting detection
+- `walk-forward-optimizer-pipeline.ts` — Optimize-then-validate, overfitting detection
 
 ### src/reporting/ — Export & Analytics
 - `ArbitrageTradeHistoryExporter.ts` — CSV/JSON export
@@ -67,38 +111,39 @@ Algo Trader là nền tảng RaaS (Robot-as-a-Service) giao dịch tự động 
 ### src/ui/ — Dashboard
 - `ArbitrageCLIRealtimeDashboard.ts` — Real-time terminal metrics (chalk)
 
-### src/core/ — P&L Tracking
-- `pnl-realtime-snapshot-service.ts` — P&L snapshot service (realized + unrealized, pluggable store)
-
 ### prisma/ — Database Schema
-- `schema.prisma` — Tenant, Strategy, Order, Trade, PnlSnapshot models (PostgreSQL)
+- `schema.prisma` — Tenant, Strategy, Order, Trade, ApiKey, BacktestResult, Candle, PnlSnapshot, AlertRule (PostgreSQL)
 
-### tests/ — Test Suite
-- `tests/execution/` — Spread calc, order executor, price feed, paper trading
+### tests/ — Test Suite (97 suites)
+- `tests/execution/` — All Phase 9-11 modules: realtime-arbitrage-scanner, arbitrage-execution-engine, order-book-depth-analyzer, market-regime-detector, triangular-arbitrage-live-scanner, funding-rate-arbitrage-scanner, atomic executor, fee-aware spread calc, paper trading bridge, exchange health/registry/pool, telegram alert bot, tick-to-candle, signal-order pipeline, strategy position manager
+- `tests/cli/` — arb-live, agi-trade-golive, live-dry-run-simulation
 - `tests/jobs/` — BullMQ workers, Redis pub/sub, rate limiter
-- `tests/reporting/` — Trade history exporter
-- `tests/ui/` — CLI dashboard
+- `tests/backtest/` — Walk-forward, random search, performance ranker
+- `tests/ml/` — Feature engineering, GRU model, Q-learning, ML strategy loader
+- `tests/core/` — Historical VaR, portfolio correlation, trailing stop
+- `tests/e2e/` — Full RaaS API server integration
+- `tests/load/` — API stress benchmark
+- `src/*/` — Co-located unit tests (arbitrage engine, execution pipeline, API routes, auth, strategies)
 
 ## Key Metrics
-- **190+ source files** (TypeScript 5.9, strict mode)
-- **905 tests** (Jest 29, 76 suites, **100% pass rate**)
-- **14 CLI commands** (Commander)
-- **6+ trading strategies** (RSI, SMA, Bollinger, MACD, Statistical, Cross-Exchange, Triangular, AGI)
+- **233+ source files** (TypeScript 5.9, strict mode)
+- **1085+ tests** (Jest 29, 97 suites, 100% pass rate)
+- **16+ CLI commands** (Commander)
+- **8+ trading strategies** (RSI, SMA, Bollinger, MACD, Statistical, Cross-Exchange, Triangular, AGI, Funding-Rate)
 - **28+ API endpoints** + 5 WebSocket channels (Fastify 5)
 - **3 exchange integrations** (Binance, OKX, Bybit via CCXT 4.5)
-- **9 database models** (Tenant, Strategy, Order, Trade, ApiKey, BacktestResult, Candle, PnlSnapshot via Prisma)
-- **5 dashboard pages** + 10 components, mobile-responsive (React 19, Vite 6, Tailwind, TradingView Charts)
+- **9 database models** (Tenant, Strategy, Order, Trade, ApiKey, BacktestResult, Candle, PnlSnapshot, AlertRule via Prisma)
+- **5 dashboard pages** + 10 components (React 19, Vite 6, Tailwind, TradingView Charts)
 
-## Quality Metrics (Phase 5.4 ✅)
+## Quality Metrics
 - **0 TypeScript errors** (strict mode enforced)
-- **3 `any` types** (test mocks only — acceptable)
+- **0 `any` types** in production (test mocks only — acceptable)
 - **0 console.log** (production clean)
 - **0 TODO/FIXME** (zero tech debt)
 - **0 secrets in code** (.env gitignored)
-- **Binh Phap 6/6 fronts passing** (tech debt, type safety, performance, security, UX, documentation)
-- **Bootstrap Score: 97/100** (Phase 5.4 COMPLETE)
+- **Binh Phap 6/6 fronts passing**
 
 ## Tech Stack
-TypeScript 5.9 | Node.js 20 | Fastify 5 | CCXT 4.5 | BullMQ 5 | Redis (IoRedis) | PostgreSQL (Prisma) | Zod 4.3 | Winston | Jest 29 | Commander CLI
+TypeScript 5.9 | Node.js 20 | Fastify 5 | CCXT 4.5 | BullMQ 5 | Redis (IoRedis) | PostgreSQL (Prisma) | Zod 4.3 | Winston | Jest 29 | Commander CLI | React 19 | Vite 6 | Tailwind CSS | Zustand 5
 
 Updated: 2026-03-02
