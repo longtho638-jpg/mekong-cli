@@ -48,7 +48,7 @@
 - [x] `/metrics` endpoint — heap, uptime, trades, circuit breaker ✅
 - [x] Deployment guide (Docker/K8s) — `docs/deployment-guide.md` ✅
 - [x] E2E integration tests (7 tests — health, metrics, auth, 404) ✅
-- [ ] Polar.sh billing integration (per CLAUDE.md payment rules)
+- [x] Polar.sh billing integration ✅ (subscription service, webhook handler, 22 tests)
 - [ ] Load/stress testing
 
 ## Phase 5: Intelligence & Growth
@@ -58,6 +58,6 @@
 - [ ] Multi-region deployment
 - [ ] Advanced risk: trailing stop, portfolio-level VaR
 
-**Current Status:** Phase 4 near-complete. 781 tests, 0 TS errors. Docker + Prometheus + E2E done. Remaining: Polar billing, load testing.
+**Current Status:** Phase 4 complete (except load testing). 803 tests, 0 TS errors. Docker + Prometheus + Polar billing done.
 
 Updated: 2026-03-02

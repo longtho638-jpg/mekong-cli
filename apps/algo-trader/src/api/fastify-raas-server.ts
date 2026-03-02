@@ -21,6 +21,9 @@ import { backtestJobRoutes } from './routes/backtest-job-submission-routes';
 import { buildArbScanExecuteRoutes } from './routes/arbitrage-scan-execute-routes';
 import { buildArbPositionsHistoryRoutes } from './routes/arbitrage-positions-history-routes';
 import { prometheusMetricsRoutes } from './routes/prometheus-metrics-routes';
+import { PolarSubscriptionService } from '../billing/polar-subscription-service';
+import { PolarWebhookEventHandler } from '../billing/polar-webhook-event-handler';
+import { buildPolarBillingRoutes } from './routes/polar-billing-subscription-routes';
 
 export interface RaasServerOptions {
   port?: number;
@@ -65,7 +68,8 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
     const authMiddleware = createAuthMiddleware(keyStore, rateLimiter);
     server.addHook('preHandler', async (request, reply) => {
       // Skip auth for health routes
-      if (request.url === '/health' || request.url === '/ready' || request.url === '/metrics') {
+      if (request.url === '/health' || request.url === '/ready' || request.url === '/metrics'
+        || request.url === '/api/v1/billing/webhook' || request.url === '/api/v1/billing/products') {
         return;
       }
       return authMiddleware(request as any, reply as any);
@@ -81,6 +85,11 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   void server.register(backtestJobRoutes);
   void server.register(buildArbScanExecuteRoutes(manager, positionTracker));
   void server.register(buildArbPositionsHistoryRoutes(positionTracker));
+
+  // Polar billing routes
+  const subscriptionService = new PolarSubscriptionService();
+  const webhookHandler = new PolarWebhookEventHandler(subscriptionService);
+  void server.register(buildPolarBillingRoutes(subscriptionService, webhookHandler));
 
   return server;
 }
