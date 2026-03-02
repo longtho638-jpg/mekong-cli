@@ -1,201 +1,169 @@
-## 🌊 Mekong CLI — RaaS Agency Operating System
+<p align="center">
+  <img src="docs/assets/logo.png" alt="Mekong CLI" width="120" />
+</p>
 
-<div align="center">
+<h1 align="center">Mekong CLI</h1>
 
-![v2.2.0](https://img.shields.io/badge/v2.2.0-stable-22c55e?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![Architecture](https://img.shields.io/badge/Architecture-Binh_Pháp-ec4899?style=for-the-badge&logo=military-tech&logoColor=white)
+<p align="center">
+  <strong>Open-source AI agent framework for autonomous task execution.</strong><br/>
+  Plan → Execute → Verify — with built-in credit billing for RaaS.
+</p>
 
-**The Revenue-as-a-Service (RaaS) Foundation for Autonomous AI Agencies.**
-*Transforming service models into high-precision execution engines.*
-
-[🚀 Quick Start](#-quick-start) • [📦 Architecture](#-architecture) • [💎 RaaS Foundation](#-raas-foundation) • [🎯 Features](#-features) • [🤝 Contributing](#-contributing) • [🇻🇳 Tiếng Việt](README.vi.md)
-
-</div>
-
----
-
-## 📖 Introduction
-
-**Mekong CLI** is the central nervous system for **Revenue-as-a-Service (RaaS)** agencies. Inspired by **The Art of War (孫子兵法)**, it orchestrates specialized AI agents to plan, execute, and verify complex engineering and business tasks with 100% precision.
-
-It bridges the gap between high-level strategic goals and low-level code execution, ensuring that every "mission" is completed according to strict quality gates.
-
-## 🎯 Key Features
-
-### 🧠 Autonomous Execution Engine (PEV)
-The core **Plan-Execute-Verify** workflow ensures systematic task handling:
-- **Plan**: Deep multi-step decomposition using reasoning models (Opus 4.5, Gemini 2.0).
-- **Execute**: Multi-mode execution (Shell, API, LLM) with self-healing capabilities.
-- **Verify**: Strict **Binh Phap Quality Gates** (Type safety, No tech debt, Security audit).
-
-### 🦞 Tôm Hùm (OpenClaw Daemon)
-The autonomous orchestrator that keeps your agency running 24/7:
-- **Autonomous Dispatch**: Watches `tasks/` directory and routes missions to specialized edge nodes.
-- **Auto-CTO**: Proactively cleans code, fixes types, and audits security during idle time.
-- **Hardware Awareness**: M1 thermal protection and RAM optimization for high-density edge deployments.
-
-### ⚡ Antigravity Proxy
-A unified LLM gateway (`port 9191`) for cost-effective intelligence:
-- **Load Balancing**: Distributes load across Ollama, OpenRouter, and direct providers.
-- **Failover**: Automatic model switching (e.g., Sonnet to Gemini) during quota limits.
-- **Optimization**: Smart routing based on task complexity and budget.
+<p align="center">
+  <a href="https://pypi.org/project/mekong-cli/"><img src="https://img.shields.io/pypi/v/mekong-cli?style=flat-square&color=22c55e" alt="PyPI" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" /></a>
+  <img src="https://img.shields.io/badge/python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/status-beta-orange?style=flat-square" alt="Beta" />
+</p>
 
 ---
 
-## 📦 Architecture
+## What is Mekong CLI?
 
-```mermaid
-graph TD
-    User[User / Webhook] -->|Mission File| Inbox[tasks/ inbox]
-    Inbox --> TomHum[🦞 Tôm Hùm Daemon]
+Mekong CLI is an **autonomous AI agent framework** that decomposes high-level goals into executable tasks, runs them, and verifies the results — all in one pipeline.
 
-    subgraph "Hub (Orchestration)"
-        TomHum -->|Dispatch| Brain[CC CLI Brain]
-        Brain -->|PEV Cycle| Engine[Mekong Engine]
-    end
+It's designed for developers building **Revenue-as-a-Service (RaaS)** platforms where AI agents do the work and users pay per task via credits.
 
-    subgraph "Execution Layer"
-        Engine -->|Edit Code| Files[Source Code]
-        Engine -->|Verify| Test[Pytest / Vitest]
-        Engine -->|Deploy| CI[GitHub Actions]
-    end
-
-    subgraph "Intelligence"
-        Engine -->|Proxy :9191| Antigravity[Antigravity Proxy]
-        Antigravity --> Models[Claude / Gemini / DeepSeek]
-    end
-
-    subgraph "RaaS Ecosystem"
-        Engine --> App1[Sophia AI Factory]
-        Engine --> App2[84tea F&B]
-        Engine --> App3[Apex OS]
-    end
+```
+"Create a FastAPI service with JWT auth"
+    ↓
+  PLAN   → Decompose into 5 steps (LLM-powered)
+    ↓
+  EXECUTE → Run each step (shell, API, or LLM mode)
+    ↓
+  VERIFY  → Validate output against quality gates
+    ↓
+  DONE   → 3 credits deducted
 ```
 
----
+## Quick Start
 
-## 📁 Monorepo — Danh sách dự án (`apps/`)
-
-### Core Infrastructure
-| App | Mô tả | Stack | Size | Status |
-|-----|--------|-------|------|--------|
-| `openclaw-worker` | Tôm Hùm daemon — autonomous task dispatch | Node.js | 1.0G | Active |
-| `raas-gateway` | Cloud API gateway, Cloudflare Workers | Node.js | 739M | Active |
-| `engine` | Core Python engine, Plan-Execute-Verify | Python, FastAPI | 900M | Active |
-| `api` | Backend API service | Python, FastAPI | 767M | Active |
-| `worker` | Background job processing | Node.js | 147M | Active |
-| `antigravity-cli` | Antigravity CLI tools | Node.js | 16K | Scaffold |
-| `antigravity-gateway` | Antigravity proxy gateway | Node.js | 44K | Scaffold |
-| `gemini-proxy-clone` | Gemini proxy clone | Node.js | 4.5M | Active |
-
-### Client Products
-| App | Mô tả | Stack | Size | Status |
-|-----|--------|-------|------|--------|
-| `84tea` | Vietnamese tea franchise (MD3 brand) | Next.js, TS | 257M | Active ⭐ |
-| `anima119` | Fermented Oriental medicine e-commerce | Next.js, TS | 1.4G | Active ⭐ |
-| `apex-os` | Trading platform | Next.js, TS | 747M | Active ⭐ |
-| `com-anh-duong-10x` | Restaurant POS + customer app | Next.js, TS | 1.0G | Active |
-| `sophia-ai-factory` | Video SaaS, AI pipeline | Next.js, TS | 1.8G | Active ⭐ |
-| `sophia-proposal` | Sales proposals, pitches | Next.js, TS | 1.0G | Archive |
-| `sa-dec-flower-hunt` | Flower hunt game app | Next.js, TS | 120M | Archive |
-| `well` | WellNexus health platform (symlink → archive) | Next.js, TS | 955M | Symlink |
-
-### AgencyOS Platform
-| App | Mô tả | Stack | Size | Status |
-|-----|--------|-------|------|--------|
-| `dashboard` | Main dashboard, client portal | Next.js, TS | 38M | Active |
-| `admin` | Internal admin panel | Next.js, TS | 796K | Scaffold |
-| `agencyos-web` | AgencyOS main web app | Next.js, TS | 1.5G | Active |
-| `agencyos-landing` | Marketing landing page | Next.js, TS | 216M | Active |
-| `landing` | Public landing page | Next.js, TS | 1.0M | Scaffold |
-| `web` | Web frontend | Next.js, TS | 1.4M | Active |
-| `analytics` | Analytics dashboard | Next.js, TS | 72M | Active |
-| `developers` | Developer portal & docs | Next.js, TS | 14M | Active |
-| `docs` | Documentation site | Next.js, TS | 35M | Active |
-
-### Experimental / Support
-| App | Mô tả | Stack | Size | Status |
-|-----|--------|-------|------|--------|
-| `algo-trader` | Algorithmic trading engine | Node.js, TS | 2.3M | Experimental |
-| `agentic-brain` | Agentic AI brain research | Markdown, docs | 16K | Research |
-| `stealth-engine` | Stealth execution engine | Node.js | 10M | Experimental |
-| `vibe-coding-cafe` | Vibe coding environment | Mixed | 3.5M | Experimental |
-| `raas-demo` | RaaS demo app | Next.js, TS | 420M | Demo |
-| `starter-template` | Project template | Mixed | 156K | Template |
-| `tasks` | Task queue (Tôm Hùm inbox) | Data | 100K | System |
-| `project` | Build placeholder | Node.js | 24K | Scaffold |
-
-> **Git Submodules:** `84tea`, `anima119`, `apex-os`, `sophia-ai-factory`, `gemini-proxy-clone`
-> **Symlink:** `well` → `~/archive-2026/Well`
-
----
-
-## 💎 RaaS Foundation
-
-Mekong CLI is the reference implementation of the **Revenue-as-a-Service (RaaS)** model, where value is delivered via autonomous missions.
-
-### Tiered Intelligence Model
-| Tier | Deployment | Intelligence | Best For |
-|------|------------|--------------|----------|
-| **Free** | Local Edge | Ollama / Local Models | Developers & OSS |
-| **Agency** | Managed Nodes | Antigravity Proxy (Managed) | AI Agencies & Startups |
-| **Enterprise** | Dedicated Swarm | Fine-tuned / Private Vaults | Corporations |
-
-Detailed tier breakdown can be found in [RaaS Foundation Docs](./docs/raas-foundation.md).
-
----
-
-## 🚀 Quick Start
-
-### Option A: Install from PyPI (Recommended)
 ```bash
+# Install
 pip install mekong-cli
-mekong --help
-```
 
-### Option B: Install from Source
-```bash
+# Or from source
 git clone https://github.com/mekong-cli/mekong-cli.git
-cd mekong-cli
-pip install poetry
-poetry install
-cp .env.example .env  # Edit with your API keys
+cd mekong-cli && pip install -e .
+
+# Configure LLM provider (OpenAI-compatible)
+export LLM_BASE_URL="https://api.openai.com/v1"
+export LLM_API_KEY="sk-..."
+
+# Run your first task
+mekong cook "Create a Python calculator with tests"
 ```
 
-### Basic Usage
-```bash
-# Plan a task (preview steps, no execution)
-mekong plan "Setup a FastAPI service with auth"
+## Core Concepts
 
-# Execute with full Plan-Execute-Verify pipeline
-mekong cook "Create CRUD API for users"
+### Plan-Execute-Verify (PEV)
 
-# Run an existing recipe
-mekong run recipes/setup-project.md
+Every task goes through three phases:
 
-# List available recipes
-mekong list
+| Phase | What happens | Module |
+|-------|-------------|--------|
+| **Plan** | LLM decomposes goal into steps with dependencies | `src/core/planner.py` |
+| **Execute** | Runner handles shell commands, API calls, LLM prompts | `src/core/executor.py` |
+| **Verify** | Validates results: exit codes, file checks, LLM assessment | `src/core/verifier.py` |
 
-# Start AGI daemon (Tôm Hùm)
-mekong agi start
+Failed verification triggers automatic rollback of completed steps.
 
-# Check AGI status
-mekong agi status
+### Agents
+
+Pluggable agents extend Mekong with domain-specific capabilities:
+
+| Agent | Purpose | Usage |
+|-------|---------|-------|
+| `GitAgent` | Git operations (status, diff, commit, branch) | `mekong agent git status` |
+| `FileAgent` | File operations (find, read, tree, grep) | `mekong agent file find "*.py"` |
+| `ShellAgent` | Shell command execution | `mekong agent shell "ls -la"` |
+| `RecipeCrawler` | Discover recipe files in the workspace | `mekong agent crawler scan` |
+
+All agents inherit `AgentBase` with the same `plan() → execute() → verify()` flow.
+
+### Credit System (RaaS)
+
+Built-in credit billing for monetizing AI agent work:
+
+```python
+from src.raas.sdk import MekongClient
+
+client = MekongClient(
+    base_url="https://api.your-raas.com",
+    api_key="mk_your_key_here"
+)
+
+# Submit a mission (auto-deducts credits)
+mission = client.create_mission("Deploy a landing page")
+print(f"Mission {mission.id}: {mission.status} ({mission.credits_cost} credits)")
+
+# Check balance
+summary = client.get_dashboard_summary()
+print(f"Credits remaining: {summary.credits['balance']}")
 ```
 
-### Configuration
+**Credit tiers:**
 
-Copy `.env.example` and configure:
-- `LLM_BASE_URL` — LLM API endpoint (OpenAI-compatible, default: `http://localhost:9191`)
-- `ANTHROPIC_BASE_URL` — Anthropic API base URL
-- `DATABASE_URL` — PostgreSQL connection (optional)
-- See `.env.example` for the full list
+| Complexity | Credits | Example |
+|-----------|---------|---------|
+| Simple | 1 | Single file edit, git operation |
+| Standard | 3 | Multi-step feature implementation |
+| Complex | 5 | Full-stack feature with tests |
 
-### API Gateway
+## CLI Commands
+
 ```bash
+mekong cook "<goal>"      # Full PEV pipeline
+mekong plan "<goal>"      # Plan only (dry run)
+mekong run <recipe.md>    # Execute existing recipe
+mekong agent <name> <cmd> # Run agent directly
+mekong list               # List available recipes
+mekong search <query>     # Search recipes
+mekong version            # Show version
+```
+
+### Flags
+
+| Flag | Description |
+|------|------------|
+| `--verbose` | Show step-by-step execution details |
+| `--dry-run` | Plan only, no execution |
+| `--strict` | Fail on first verification error |
+| `--no-rollback` | Skip rollback on failure |
+
+## Architecture
+
+```
+mekong-cli/
+├── src/
+│   ├── core/                 # PEV Engine
+│   │   ├── planner.py        # LLM task decomposition
+│   │   ├── executor.py       # Multi-mode runner
+│   │   ├── verifier.py       # Result validation
+│   │   ├── orchestrator.py   # PEV coordination + rollback
+│   │   ├── llm_client.py     # OpenAI-compatible client
+│   │   └── gateway.py        # FastAPI server + WebSocket
+│   ├── agents/               # Pluggable agent system
+│   │   ├── git_agent.py      # Git operations
+│   │   ├── file_agent.py     # File operations
+│   │   ├── shell_agent.py    # Shell execution
+│   │   └── recipe_crawler.py # Recipe discovery
+│   └── raas/                 # Credit billing (RaaS)
+│       ├── credits.py        # Credit store (SQLite)
+│       ├── billing.py        # Polar.sh webhook handler
+│       ├── tenant.py         # Multi-tenant management
+│       ├── missions.py       # Mission lifecycle
+│       ├── sdk.py            # Python SDK client
+│       └── rate_limiter.py   # Fair-use rate limiting
+├── tests/                    # Test suite (62+ tests)
+├── recipes/                  # Built-in recipe templates
+└── docs/                     # Documentation
+```
+
+## API Server
+
+```bash
+# Start the gateway
 uvicorn src.core.gateway:app --host 0.0.0.0 --port 8000
 ```
 
@@ -203,23 +171,108 @@ uvicorn src.core.gateway:app --host 0.0.0.0 --port 8000
 |----------|--------|-------------|
 | `/health` | GET | Health check |
 | `/cmd` | POST | Execute PEV pipeline |
-| `/api/agi/health` | GET | AGI daemon health |
-| `/api/agi/metrics` | GET | AGI daemon metrics |
-| `/projects` | GET | List projects |
-| `/presets` | GET | List preset actions |
+| `/missions` | POST | Create mission (credits deducted) |
+| `/missions` | GET | List missions |
+| `/missions/{id}` | GET | Get mission status |
+| `/missions/{id}/cancel` | POST | Cancel + refund credits |
+| `/billing/webhook` | POST | Polar.sh webhook receiver |
+| `/dashboard/summary` | GET | Tenant dashboard data |
+
+## RaaS Integration
+
+Mekong CLI is the open-source engine behind **Agency OS** — a managed platform where non-technical users submit tasks in natural language and pay per execution via credits.
+
+### How it works
+
+```
+Non-tech User → "Build me a landing page"
+    ↓
+Agency OS Dashboard (commercial)
+    ↓
+Mekong CLI API → Plan → Execute → Verify
+    ↓
+Credits deducted → Result delivered
+```
+
+### Build your own RaaS
+
+```python
+# 1. Create a tenant
+from src.raas.tenant import TenantStore
+store = TenantStore()
+tenant = store.create_tenant("Acme Corp")
+print(f"API Key: {tenant.api_key}")  # mk_... (shown once)
+
+# 2. Add credits
+from src.raas.credits import CreditStore
+credits = CreditStore()
+credits.add(tenant.id, 100, "initial_grant")
+
+# 3. Submit missions via API
+# POST /missions with Bearer token
+# Body: {"goal": "Create a REST API for users"}
+```
+
+## Configuration
+
+Copy `.env.example` and set:
+
+```bash
+# LLM Provider (any OpenAI-compatible API)
+LLM_BASE_URL=https://api.openai.com/v1
+LLM_API_KEY=sk-...
+
+# Billing (optional, for RaaS)
+POLAR_WEBHOOK_SECRET=whsec_...
+
+# Database (default: ~/.mekong/raas/tenants.db)
+RAAS_DB_PATH=~/.mekong/raas/tenants.db
+```
+
+## Development
+
+```bash
+# Install dependencies
+pip install poetry && poetry install
+
+# Run tests
+python3 -m pytest tests/ -v
+
+# Type check
+python3 -m mypy src/ --ignore-missing-imports
+
+# Start dev server
+uvicorn src.core.gateway:app --reload --port 8000
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines. Key rules:
+
+1. All code must pass `python3 -m pytest`
+2. Type hints required for all functions
+3. File size < 200 lines (split into modules)
+4. No secrets in code (`grep -r "API_KEY" src` = 0 results)
+
+## Roadmap
+
+- [x] PEV Engine (Plan-Execute-Verify)
+- [x] Agent System (Git, File, Shell)
+- [x] Credit Billing (SQLite, Polar.sh)
+- [x] Multi-tenant isolation
+- [x] Python SDK
+- [ ] DAG execution (parallel task steps)
+- [ ] Plugin marketplace
+- [ ] Web dashboard (open-source)
+- [ ] Community recipe registry
+
+## License
+
+[MIT](LICENSE) — Use it, fork it, build on it.
 
 ---
 
-## 🤝 Contributing
-
-We follow **Binh Phap Standards**.
-1. Read the [Code Standards](./docs/code-standards.md).
-2. Use the `/cook` command for implementations.
-3. Ensure **GREEN PRODUCTION** (Điều 49) before reporting success.
-
----
-
-<div align="center">
-**Mekong CLI** © 2026 Binh Phap Venture Studio.
-*"Speed is the essence of war."*
-</div>
+<p align="center">
+  <strong>Mekong CLI</strong> &copy; 2026 <a href="https://binhphap.io">Binh Phap Venture Studio</a><br/>
+  <em>"Speed is the essence of war." — Sun Tzu</em>
+</p>

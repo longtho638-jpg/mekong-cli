@@ -96,6 +96,52 @@ apps/dashboard-internal/
 **/internal/**
 openclaw-key.json
 
+# Private Client Projects (NOT public — Agency OS commercial layer)
+apps/84tea/
+apps/anima119/
+apps/apex-os/
+apps/sophia-ai-factory/
+apps/sophia-proposal/
+apps/sa-dec-flower-hunt/
+apps/com-anh-duong/
+apps/com-anh-duong-10x/
+apps/well/
+apps/agencyos-web/
+apps/agencyos-landing/
+apps/dashboard/
+apps/admin/
+apps/analytics/
+apps/developers/
+apps/landing/
+apps/web/
+apps/stealth-engine/
+apps/vibe-coding-cafe/
+apps/agentic-brain/
+apps/gemini-proxy-clone/
+apps/antigravity-cli/
+apps/antigravity-gateway/
+apps/project/
+
+# Private Orchestration (Tôm Hùm internal state)
+apps/openclaw-worker/data/
+apps/openclaw-worker/knowledge/
+apps/openclaw-worker/tasks/
+scripts/tom-hum-*.exp
+scripts/proxy-recovery.sh
+
+# Private Plans & Reports
+plans/reports/
+plans/260302-*/
+insights/
+
+# ClaudeKit DNA (private skill configs)
+.claude/
+_bmad/
+claudekit-engineer-dna/
+
+# Antigravity (private orchestration)
+.antigravity/
+
 # Local Database & Runtime
 *.db
 *.pid

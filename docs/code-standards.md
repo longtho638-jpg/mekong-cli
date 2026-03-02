@@ -1,26 +1,104 @@
-# Code Standards & Guidelines (v3.0.0)
+# Code Standards & Contributing Guide
 
-## 1. Core Principles
-- **YAGNI**: No premature functionality
-- **KISS**: Prefer simplicity over cleverness
-- **DRY**: Single source of truth per concept
-- **Type Safe**: Zero `any` types, strict mode always
-- **Testable**: Every public method has tests
-- **Documented**: Complex logic has docstrings/comments
+**Mekong CLI** maintains high quality standards to ensure reliability and maintainability. All contributions must follow these guidelines.
 
-## 2. Python Code Organization
-- **File Naming**: `snake_case` for `.py` files (e.g., `dag_scheduler.py`, `plugin_loader.py`)
-- **Test Files**: `test_*.py` (pytest auto-discovery)
-- **File Size**: < 200 lines per module
-  - Split large files into focused modules
-  - Extract utilities to `utils/` subdirectories
-- **Imports**: Organize as stdlib, third-party, local (black/isort)
-- **Docstrings**: Module + class + public method docstrings (Google style)
+## 1. Python Code Standards
 
-## 3. Agent Development Guide
+### Style Guide
+
+- **Python Version**: 3.9+ (match `pyproject.toml`)
+- **Formatter**: Black (line length 100)
+- **Linter**: Ruff (with strict settings)
+- **Type Checker**: mypy (strict mode)
+
+### Type Hints (Mandatory)
+
+All functions **must** have type hints:
+
+```python
+# ✅ CORRECT
+def plan(self, goal: str) -> List[Task]:
+    """Decompose goal into steps."""
+    return [Task(...), Task(...)]
+
+# ❌ WRONG
+def plan(self, goal):  # Missing type hints
+    return [Task(...), Task(...)]
+
+# ❌ WRONG
+def execute(self, task: Task) -> Any:  # Never use Any
+    return result
+```
+
+**Rule:** Zero `any` types in production code. Use concrete types or generics.
+
+### Docstrings
+
+All classes and public functions **must** have docstrings:
+
+```python
+class Executor:
+    """Multi-mode task runner supporting shell, LLM, and API execution."""
+
+    def run(self, task: Task) -> ExecutionResult:
+        """Execute a single task.
+
+        Args:
+            task: Task to execute with mode and command.
+
+        Returns:
+            ExecutionResult with exit code, output, and metadata.
+
+        Raises:
+            TimeoutError: If step exceeds timeout.
+            ProviderError: If LLM provider unavailable.
+        """
+```
+
+### File Size Limits
+
+Keep files under **200 lines** (excluding comments/docstrings):
+
+```
+✅ src/core/executor.py       (180 lines) → Core logic only
+✅ src/core/executor_shell.py (120 lines) → Shell runner extracted
+❌ src/core/executor.py       (450 lines) → SPLIT INTO MODULES
+```
+
+### Naming Conventions
+
+| Type | Style | Example |
+|------|-------|---------|
+| Module | snake_case | `recipe_parser.py`, `credit_ledger.py` |
+| Function | snake_case | `execute_task()`, `verify_result()` |
+| Class | PascalCase | `RecipeStep`, `ExecutionResult`, `AgentRegistry` |
+| Constant | UPPER_SNAKE_CASE | `MAX_RETRIES = 3`, `DEFAULT_TIMEOUT = 30` |
+| Private | `_snake_case` | `_parse_recipe()`, `_validate_input()` |
+
+### Imports
+
+Organize imports in groups:
+
+```python
+# Standard library
+import json
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# Third-party
+import pydantic
+from pydantic import BaseModel, Field
+
+# Local
+from src.core.protocols import AgentProtocol
+from src.core.executor import ExecutionResult
+```
+
+## 2. Agent Development
 
 ### AgentProtocol Contract
-Every agent MUST implement the runtime-checkable protocol:
+
+Every agent must implement the runtime-checkable protocol:
 
 ```python
 from src.core.protocols import AgentProtocol
@@ -29,118 +107,182 @@ from src.core.agent_base import Task, Result
 class MyAgent:
     name: str = "my-agent"
 
-    def plan(self, input_data: str) -> list[Task]:
-        """Parse user input into executable tasks."""
-        # Return list of Task objects
+    def plan(self, input_data: str) -> List[Task]:
+        """Parse input into executable tasks."""
+        return [Task(...), Task(...)]
 
     def execute(self, task: Task) -> Result:
-        """Execute single task. No exceptions — return failed Result."""
-        # Return Result(output=str, success=bool)
+        """Execute single task (no exceptions, return Result)."""
+        return Result(output="...", success=True)
 
     def verify(self, result: Result) -> bool:
         """Validate result meets acceptance criteria."""
-        # Return True/False
+        return len(result.output) > 0
 ```
 
-### Registration
-```python
-from src.core.agent_registry import AgentRegistry
+### Plugin Registration
 
-registry = AgentRegistry()
-registry.register("my-agent", MyAgent())  # instance or class
-agent = registry.get("my-agent")  # returns instance
-```
-
-## 4. Provider Development Guide
-
-### LLMProvider Subclass
-```python
-from src.core.providers import LLMProvider, LLMResponse
-
-class MyProvider(LLMProvider):
-    @property
-    def name(self) -> str:
-        return "my-provider"
-
-    def chat(self, messages, model, temperature, max_tokens, json_mode) -> LLMResponse:
-        """Send chat request. Raise on error (caller handles failover)."""
-        # Return LLMResponse(content=str, model=str, usage=dict)
-
-    def is_available(self) -> bool:
-        """Check if provider is ready."""
-        # Return True/False
-```
-
-### Error Handling
-- Raise `LLMProviderError` on failures (enables circuit-breaker fallover)
-- Do NOT silently return empty responses
-- Include error message for debugging
-
-## 5. Plugin Convention
-
-### Entry Point Registration (PyPI Plugin)
-In `setup.cfg` or `pyproject.toml`:
+**PyPI Entry Point:**
 ```toml
+# In pyproject.toml
 [project.entry-points."mekong.agents"]
 my_agent = "my_package.agents:MyAgent"
 ```
 
-### Local Plugin (~/.mekong/plugins/)
+**Local Plugin:**
 ```python
 # ~/.mekong/plugins/my_plugin.py
 from src.core.agent_registry import AgentRegistry
 
 def register(registry: AgentRegistry):
-    """Called automatically by plugin loader."""
     registry.register("local-agent", MyAgent())
 ```
 
-## 6. TypeScript / JavaScript
-- **Strict Mode**: `strict: true` in `tsconfig.json`
-- **Types**:
-  - Zero `any` types
-  - Explicit return types required
-  - Use `interface` for objects, `type` for unions
-- **Async/Await**: Prefer over `.then/.catch`
-- **Error Handling**:
-  - Use `try/catch`
-  - Custom error classes
-  - Never swallow errors silently
+## 3. Provider Development
 
-## 7. Python Testing (pytest)
-- **Test Location**: `tests/test_*.py`
-- **Fixtures**: Use `@pytest.fixture` for setup/teardown
-- **Mocking**: Use `unittest.mock` for external dependencies
-- **Assertions**: pytest assertions are clearer than unittest
-- **Coverage**: `pytest --cov=src` target >80% critical paths
+### LLMProvider Subclass
 
-## 8. Code Quality (Python)
-- **Linting**: `ruff check src/` (fast, comprehensive)
-- **Type Checking**: `mypy src/` (strict mode)
-- **Formatting**: `black src/` (line length 100)
-- **No Production Logs**: Console logs only in debug mode
-- **Comments**: Explain *why* not *what*, docstrings for all public APIs
+```python
+from src.core.providers import LLMProvider, LLMResponse
 
-## 9. Backend (Node.js/Fastify)
-- **Architecture**: Controller-Service-Repository pattern
-- **Validation**: Zod for schema validation
-- **Database**: Prisma ORM with versioned migrations
-- **Error Classes**: Custom error classes for domain errors
-- **Testing**: Jest + supertest for API tests
+class CustomProvider(LLMProvider):
+    @property
+    def name(self) -> str:
+        return "custom"
 
-## 10. Git Conventions
-- **Commits**: Conventional Commits format
-  - `feat: [module] - Add agent discovery`
-  - `fix: [module] - Fix DAG cycle detection`
-  - `refactor: [module] - Simplify provider failover`
-  - `docs: Update plugin guide`
-  - `test: Add coverage for scheduler`
-- **Branches**: Feature off `main`, no force-push to `main`
-- **No Secrets**: API keys, env files must NOT be committed
+    def chat(
+        self,
+        messages: List[Dict],
+        model: str,
+        temperature: float = 0.7,
+        max_tokens: int = 2048,
+        json_mode: bool = False
+    ) -> LLMResponse:
+        """Send chat request to your LLM backend."""
+        return LLMResponse(content="...", model=model)
+```
 
-## 11. Documentation
-- Update `docs/` when architecture/features change
-- Inline comments for complex algorithms only
-- `README.md` in every package explaining setup/run/test
-- Examples in docstrings for non-obvious APIs
-- Deprecations flagged with `# Deprecated: ...` comments
+## 4. Quality Gates (Required)
+
+### Type Safety
+
+```bash
+# Zero any types allowed
+grep -r ": any" src/ --include="*.py"  # MUST return 0
+
+# Strict mypy
+python3 -m mypy src/ --strict
+```
+
+### Tests (>80% Coverage)
+
+```bash
+# Run all tests
+python3 -m pytest tests/ -v
+
+# Coverage report
+python3 -m pytest --cov=src --cov-report=html
+```
+
+### Formatting & Linting
+
+```bash
+black src/ tests/
+ruff check src/ tests/
+mypy src/
+```
+
+## 5. Commit & PR Workflow
+
+### Commit Messages
+
+Use conventional format:
+
+```
+feat(agents): add custom agent registration
+fix(executor): handle timeout errors
+docs: update API reference
+refactor(core): split executor module
+test: add DAG scheduler tests
+```
+
+### PR Checklist
+
+- [ ] Tests pass: `pytest`
+- [ ] Type check: `mypy src/`
+- [ ] Format: `black src/`
+- [ ] Lint: `ruff check src/`
+- [ ] No `any` types added
+- [ ] Docstrings updated
+- [ ] No secrets in code
+- [ ] CHANGELOG.md updated (for features)
+
+## 6. Security Standards
+
+### No Hardcoded Secrets
+
+```python
+# ✅ CORRECT
+api_key = os.getenv("LLM_API_KEY")
+
+# ❌ WRONG
+api_key = "sk-proj-..."
+```
+
+### Input Validation
+
+Use Pydantic for all external inputs:
+
+```python
+from pydantic import BaseModel, Field
+
+class MissionRequest(BaseModel):
+    goal: str = Field(..., min_length=10, max_length=1000)
+    priority: int = Field(default=1, ge=1, le=10)
+```
+
+## 7. Testing
+
+### Unit Tests
+
+```python
+def test_recipe_parser_valid_markdown():
+    recipe = RecipeParser.parse("# Goal\n1. Step 1\n2. Step 2")
+    assert len(recipe.steps) == 2
+```
+
+### Integration Tests
+
+```python
+def test_pev_pipeline_success(tmp_path):
+    orch = Orchestrator()
+    result = orch.cook("Create a Python file")
+    assert result.success is True
+    assert result.credits_used == 1
+```
+
+### Mocking
+
+```python
+from unittest.mock import patch
+
+@patch("src.core.providers.OpenAICompatibleProvider.chat")
+def test_executor_with_mock_llm(mock_chat):
+    mock_chat.return_value = LLMResponse(content="print('hi')")
+    result = executor.execute(task)
+    assert result.success
+```
+
+## 8. Documentation
+
+- Add docstrings to all public functions/classes
+- Update CHANGELOG.md for features
+- Include examples in docstrings for non-obvious APIs
+- API docs auto-generated via FastAPI + OpenAPI
+
+## 9. Getting Help
+
+- **Docs**: `/docs` directory
+- **Issues**: GitHub issues for bugs/features
+- **Discussions**: GitHub discussions for questions
+- **Code Review**: All PRs require code review
