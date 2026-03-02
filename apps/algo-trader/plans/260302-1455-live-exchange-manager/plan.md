@@ -1,7 +1,7 @@
 ---
 title: "Live Exchange Manager"
 description: "Unified orchestrator composing pool, WS feeds, and router into a single lifecycle manager with health monitoring and auto-recovery"
-status: pending
+status: completed
 priority: P1
 effort: 3h
 branch: master
@@ -50,9 +50,9 @@ LiveExchangeManager (orchestrator)
 
 ## Success Criteria
 
-- [ ] `LiveExchangeManager.start()` boots all connections (REST pool + WS feeds)
-- [ ] `LiveExchangeManager.stop()` graceful shutdown with 5s drain timeout
-- [ ] Health monitor emits `health:change` events on status transitions
-- [ ] Auto-recovery restarts dead WS feeds within 30s
-- [ ] All new tests pass (`pnpm test`)
-- [ ] TSC compiles with 0 errors
+- [x] `LiveExchangeManager.start()` boots all connections (REST pool + WS feeds)
+- [x] `LiveExchangeManager.stop()` graceful shutdown with 5s drain timeout
+- [x] Health monitor emits `health:change` events on status transitions
+- [x] Auto-recovery restarts dead WS feeds within 30s
+- [x] All new tests pass (`pnpm test`) — 28/28 PASS
+- [x] TSC compiles with 0 errors
