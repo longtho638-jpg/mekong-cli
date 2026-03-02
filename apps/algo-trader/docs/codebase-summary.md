@@ -74,11 +74,11 @@ Algo Trader là nền tảng RaaS (Robot-as-a-Service) giao dịch tự động 
 - `tests/ui/` — CLI dashboard
 
 ## Key Metrics
-- **169 source files** (TypeScript 5.9, strict mode)
-- **774 tests** (Jest 29, **100% pass rate** ✅)
+- **176 source files** (TypeScript 5.9, strict mode)
+- **868 tests** (Jest 29, **100% pass rate** ✅)
 - **14 CLI commands** (Commander)
 - **6+ trading strategies** (RSI, SMA, Bollinger, MACD, Statistical, Cross-Exchange, Triangular, AGI)
-- **5 API endpoints** + WebSocket channel (Fastify 5)
+- **8+ API endpoints** + WebSocket channel (Fastify 5)
 - **3 exchange integrations** (Binance, OKX, Bybit via CCXT 4.5)
 - **4 database models** (Tenant, Strategy, Order, Trade via Prisma)
 

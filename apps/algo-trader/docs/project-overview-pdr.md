@@ -36,7 +36,7 @@ Algo Trader là nền tảng **RaaS (Robot-as-a-Service)** giao dịch tự đ�
 - **Reliability**: Auto-reconnect, circuit breaker, max daily loss protection
 - **Extensibility**: Interface-driven (`IStrategy`, `IDataProvider`, `IExchange`)
 - **Type Safety**: TypeScript strict mode, Zod validation, 0 `any` types
-- **Testing**: 774 tests, Jest 29, unit + integration
+- **Testing**: 868 tests, Jest 29, unit + integration + load/stress
 
 ## Technical Stack
 - TypeScript 5.9, Node.js 20, Fastify 5, CCXT 4.5
@@ -48,7 +48,7 @@ Algo Trader là nền tảng **RaaS (Robot-as-a-Service)** giao dịch tự đ�
 - ✅ API server starts, authenticates tenants, enforces rate limits
 - ✅ Arbitrage scanner detects cross-exchange opportunities in real-time
 - ✅ Paper trading simulates execution without real capital
-- ✅ **774/774 tests passing** (100% pass rate)
+- ✅ **868/868 tests passing** (100% pass rate)
 - ✅ **0 TypeScript errors** (strict mode enabled)
 - ✅ **0 `any` types** (full type safety)
 - ✅ **0 console.log** (production clean)

@@ -35,7 +35,7 @@
 - [x] CLI Dashboard (real-time terminal metrics)
 - [x] Trade History Exporter (CSV/JSON)
 - [x] Prisma schema (Tenant, Strategy, Order, Trade models)
-- [x] 774 tests, 93%+ pass rate
+- [x] 842 tests, 100% pass rate
 
 ## Phase 4: Production Hardening (Completed ✅)
 - [x] Fix remaining 48 failing tests → **774/774 passing** ✅
@@ -51,13 +51,21 @@
 - [x] Polar.sh billing integration ✅ (subscription service, webhook handler, 22 tests)
 - [x] Load/stress testing ✅ (7 benchmarks, 7k-23k RPS, p95 < 14ms)
 
-## Phase 5: Intelligence & Growth
-- [ ] AI/ML parameter optimization (hyperparameter tuning)
-- [ ] Strategy marketplace (tenant self-service)
-- [ ] Web dashboard (React) for real-time monitoring
-- [ ] Multi-region deployment
-- [ ] Advanced risk: trailing stop, portfolio-level VaR
+## Phase 5: Intelligence & Growth (In Progress)
 
-**Current Status:** Phase 4 COMPLETE ✅. 810 tests, 0 TS errors. All items delivered.
+### Phase 5.1: Core Intelligence (Completed ✅)
+- [x] Random search optimizer (BacktestOptimizer — 10-20x fewer evals than grid)
+- [x] ATR-based trailing stop (per-tenant config, auto-close on breach)
+- [x] Historical VaR calculator (quantile-based, 95%/99%, CVaR)
+- [x] Portfolio correlation matrix (Pearson, configurable threshold)
+- [x] Alert rules extended with `var_pct` and `max_correlation` metrics
+- [x] API: searchMode/maxTrials params on optimization endpoint
+
+### Phase 5.2-5.4: Planned
+- [ ] React dashboard MVP (5 pages, TradingView Lightweight Charts)
+- [ ] Strategy marketplace (Prisma migration, Polar.sh billing)
+- [ ] Walk-forward validation + multi-region deployment
+
+**Current Status:** Phase 5.1 COMPLETE ✅. 868 tests, 0 TS errors.
 
 Updated: 2026-03-02

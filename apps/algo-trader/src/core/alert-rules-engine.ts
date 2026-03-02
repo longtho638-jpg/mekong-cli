@@ -5,7 +5,7 @@
 
 import { z } from 'zod';
 
-export const ALERT_METRICS = ['drawdown_pct', 'daily_loss_usd', 'open_positions', 'win_rate'] as const;
+export const ALERT_METRICS = ['drawdown_pct', 'daily_loss_usd', 'open_positions', 'win_rate', 'var_pct', 'max_correlation'] as const;
 export type AlertMetric = typeof ALERT_METRICS[number];
 
 export const ALERT_OPERATORS = ['gt', 'lt', 'gte', 'lte'] as const;
