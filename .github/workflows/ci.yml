@@ -96,5 +96,8 @@ jobs:
       - name: Lint (Turbo)
         run: npx turbo run lint --filter='./apps/dashboard'
 
+      - name: Mekong Engine TypeScript Check
+        run: pnpm --filter mekong-engine typecheck
+
       # - name: Test (Turbo)
       #   run: pnpm test
