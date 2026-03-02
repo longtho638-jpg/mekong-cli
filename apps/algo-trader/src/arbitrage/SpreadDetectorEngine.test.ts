@@ -15,6 +15,19 @@ import {
 // ---- SpreadDetectorEngine Tests ----
 
 describe('SpreadDetectorEngine', () => {
+  const engines: SpreadDetectorEngine[] = [];
+
+  afterEach(() => {
+    engines.forEach(e => e.stop());
+    engines.length = 0;
+  });
+
+  function createEngine(config?: ConstructorParameters<typeof SpreadDetectorEngine>[0]): SpreadDetectorEngine {
+    const e = new SpreadDetectorEngine(config);
+    engines.push(e);
+    return e;
+  }
+
   test('TARGET_EXCHANGES contains binance, okx, bybit', () => {
     expect(TARGET_EXCHANGES).toContain('binance');
     expect(TARGET_EXCHANGES).toContain('okx');
@@ -23,7 +36,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('constructs with default config', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const stats = engine.getStats();
 
     expect(stats.status).toBe('idle');
@@ -34,7 +47,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('constructs with custom config', () => {
-    const engine = new SpreadDetectorEngine({
+    const engine = createEngine({
       symbols: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT'],
       initialEquity: 50000,
       maxOpportunitiesPerCycle: 10,
@@ -47,7 +60,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('init throws with <2 exchanges', async () => {
-    const engine = new SpreadDetectorEngine({
+    const engine = createEngine({
       exchanges: [
         { id: 'binance', enabled: true },
       ],
@@ -58,13 +71,13 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('getEvents returns empty initially', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     expect(engine.getEvents()).toEqual([]);
     expect(engine.getEvents(10)).toEqual([]);
   });
 
   test('getProfitSummary returns initial state', () => {
-    const engine = new SpreadDetectorEngine({ initialEquity: 5000 });
+    const engine = createEngine({ initialEquity: 5000 });
     const summary = engine.getProfitSummary();
 
     expect(summary.initialEquity).toBe(5000);
@@ -74,12 +87,12 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('getSpreadStats returns empty initially', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     expect(engine.getSpreadStats()).toEqual([]);
   });
 
   test('getScoreDistribution returns zeroes initially', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const dist = engine.getScoreDistribution();
 
     expect(dist.A).toBe(0);
@@ -90,7 +103,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('getCircuitBreakerMetrics returns initial state', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const metrics = engine.getCircuitBreakerMetrics();
 
     expect(metrics.state).toBe('closed');
@@ -100,7 +113,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('emergencyStop trips circuit breaker', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     engine.emergencyStop('test emergency');
 
     const stats = engine.getStats();
@@ -112,7 +125,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('resume re-enables trading after emergency', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
 
     engine.emergencyStop('test');
     expect(engine.getStats().status).toBe('halted');
@@ -124,7 +137,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('resetDaily resets counters', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     engine.resetDaily();
 
     const stats = engine.getStats();
@@ -132,12 +145,12 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('isActive returns false when not started', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     expect(engine.isActive()).toBe(false);
   });
 
   test('stop on idle engine does not throw', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     expect(() => engine.stop()).not.toThrow();
 
     const stats = engine.getStats();
@@ -145,7 +158,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('getComponents returns all internal components', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const components = engine.getComponents();
 
     expect(components.connector).toBeDefined();
@@ -159,7 +172,7 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('updateOrderBook accepts external data', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
 
     expect(() => {
       engine.updateOrderBook({
@@ -177,14 +190,14 @@ describe('SpreadDetectorEngine', () => {
   });
 
   test('getBestTradingHours returns empty for no history', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const hours = engine.getBestTradingHours('binance', 'okx', 'BTC/USDT');
 
     expect(hours).toEqual([]);
   });
 
   test('getBestTradingHours returns data after spread history recording', () => {
-    const engine = new SpreadDetectorEngine();
+    const engine = createEngine();
     const { spreadHistory } = engine.getComponents();
 
     // Seed history
@@ -206,6 +219,13 @@ describe('SpreadDetectorEngine', () => {
 // ---- Integration: Scorer + CircuitBreaker + SpreadHistory ----
 
 describe('SpreadDetectorEngine integration components', () => {
+  const breakers: EmergencyCircuitBreaker[] = [];
+
+  afterEach(() => {
+    breakers.forEach(b => b.shutdown());
+    breakers.length = 0;
+  });
+
   test('scorer filters low-quality signals', () => {
     const scorer = new ArbitrageSignalScorer({ executeThreshold: 70 });
 
@@ -244,6 +264,7 @@ describe('SpreadDetectorEngine integration components', () => {
 
   test('circuit breaker blocks after daily loss limit', () => {
     const cb = new EmergencyCircuitBreaker({ maxDailyLossUsd: 50 });
+    breakers.push(cb);
 
     cb.recordTrade(-30);
     expect(cb.isAllowed()).toBe(true);
@@ -255,6 +276,7 @@ describe('SpreadDetectorEngine integration components', () => {
 
   test('circuit breaker blocks after consecutive losses', () => {
     const cb = new EmergencyCircuitBreaker({ maxConsecutiveLosses: 3 });
+    breakers.push(cb);
 
     cb.recordTrade(-1);
     cb.recordTrade(-1);
