@@ -288,7 +288,7 @@ def cook(
         ..., help="High-level goal to plan, execute, and verify"
     ),
     strict: bool = typer.Option(True, help="Strict verification mode"),
-    no_rollback: bool = typer.Option(False, help="Disable rollback on failure"),
+    no_rollback: bool = typer.Option(False, "--no-rollback", help="Disable rollback on failure"),
     verbose: bool = typer.Option(
         False, "--verbose", "-v", help="Show step-by-step output"
     ),

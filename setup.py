@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="mekong-cli",
-    version="2.0.0",
+    version="3.0.0",
     description="Agency OS CLI - The Ultimate Agency Operating System",
     author="Antigravity Team",
     packages=find_packages(exclude=["tests", "docs", "plans", "scripts"]),
@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "mekong=cli.entrypoint:main",
+            "mekong=src.main:app",
         ],
     },
     python_requires=">=3.9",
