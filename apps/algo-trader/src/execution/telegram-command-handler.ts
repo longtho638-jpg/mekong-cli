@@ -120,6 +120,7 @@ export class TelegramCommandHandler extends EventEmitter {
       '',
       '🛡️ Safety:',
       '  /safety — Safety layer status',
+      '  /binh\\_phap — 🏯 Stealth intelligence report',
       '  /kill — ⛔ Emergency stop ALL trading',
       '  /kill\\_reset — Resume after kill',
       '',

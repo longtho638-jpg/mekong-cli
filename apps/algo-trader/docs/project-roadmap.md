@@ -235,6 +235,19 @@
 
 **Status:** Phase 15 COMPLETE ✅. Anti-detection + account protection + kill switch.
 
+## Phase 16: Binh Pháp Stealth Trading Strategy (Completed ✅)
+- [x] BinhPhapStealthStrategy — 13 chapters mapped to anti-detection algorithms
+- [x] 始計 Pre-assessment: profile exchange before every trade
+- [x] 虛實 Deception: order splitting into 2-5 random chunks, size camouflage
+- [x] 兵勢 Momentum: volume-aware timing — only trade in high-volume hours
+- [x] 九變 Adaptation: 5-level threat system, auto-escalate/de-escalate
+- [x] 地形 Terrain: exchange-specific profiles (Binance/OKX/Bybit)
+- [x] 火攻 Decisive: only execute high-confidence opportunities (min score gate)
+- [x] 用間 Intelligence: /binh_phap Telegram command for stealth report
+- [x] 0 TS errors
+
+**Status:** Phase 16 COMPLETE ✅. 孫子兵法-based stealth trading.
+
 ### Future (Planned)
 - [ ] Multi-region deployment (Cloudflare Workers edge)
 - [ ] Advanced ML: ensemble strategies, online learning

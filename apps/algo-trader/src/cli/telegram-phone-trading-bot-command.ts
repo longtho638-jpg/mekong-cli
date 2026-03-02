@@ -15,6 +15,7 @@ import { StrategyLoader } from '../core/StrategyLoader';
 import { MockDataProvider } from '../data/MockDataProvider';
 import { BacktestRunner } from '../backtest/BacktestRunner';
 import { AntiDetectionSafetyLayer } from '../execution/anti-detection-order-randomizer-safety-layer';
+import { BinhPhapStealthStrategy } from '../execution/binh-phap-stealth-trading-strategy';
 import { logger } from '../utils/logger';
 
 /** Shared safety layer instance — accessible from trading commands */
@@ -136,6 +137,21 @@ function registerTradingCommands(handler: TelegramCommandHandler): void {
     const safety = getSafetyLayer();
     safety.resetKill();
     return '✅ Kill switch reset. Trading operations can resume.';
+  });
+
+  // /binh_phap — Binh Phap stealth intelligence report
+  handler.registerCommand('/binh_phap', async () => {
+    const bp = new BinhPhapStealthStrategy();
+    const intel = bp.getIntelligence();
+    const lines = ['🏯 *Binh Pháp Intelligence*', ''];
+    for (const [id, info] of Object.entries(intel)) {
+      const vol = info.isHighVolume ? '📈 High Vol' : '📉 Low Vol';
+      const threat = '⚔️'.repeat(info.threat.level);
+      lines.push(`*${id.toUpperCase()}*: ${vol} | Threat: ${threat} (${info.threat.level}/5)`);
+      lines.push(`  Orders/hr: ${info.recentOrders}/${info.terrain.safeOrdersPerHour} | Risk: ${info.terrain.riskLevel}`);
+    }
+    lines.push('', '_Chapter mapping active based on threat level_');
+    return lines.join('\n');
   });
 
   // /safety — Safety layer status
