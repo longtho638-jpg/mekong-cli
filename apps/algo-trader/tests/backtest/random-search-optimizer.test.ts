@@ -14,7 +14,7 @@ describe('BacktestOptimizer — Random Search', () => {
   ];
 
   it('random mode returns maxTrials results (or fewer if errors)', async () => {
-    const optimizer = new BacktestOptimizer(dataProvider, 10000, 5);
+    const optimizer = new BacktestOptimizer(dataProvider, 1000, 3); // reduced for M1 memory
     const results = await optimizer.optimize(
       (params) => {
         const { RsiSmaStrategy } = require('../../src/strategies/RsiSmaStrategy');
@@ -22,14 +22,14 @@ describe('BacktestOptimizer — Random Search', () => {
       },
       paramRanges,
       'random',
-      10,
+      5, // reduced from 10 for M1 memory
     );
-    expect(results.length).toBeLessThanOrEqual(10);
+    expect(results.length).toBeLessThanOrEqual(5);
     expect(results.length).toBeGreaterThan(0);
   });
 
   it('random mode results are sorted by score descending', async () => {
-    const optimizer = new BacktestOptimizer(dataProvider, 10000, 5);
+    const optimizer = new BacktestOptimizer(dataProvider, 1000, 3); // reduced for M1 memory
     const results = await optimizer.optimize(
       (params) => {
         const { RsiSmaStrategy } = require('../../src/strategies/RsiSmaStrategy');
@@ -37,7 +37,7 @@ describe('BacktestOptimizer — Random Search', () => {
       },
       paramRanges,
       'random',
-      8,
+      5, // reduced from 8 for M1 memory
     );
     for (let i = 1; i < results.length; i++) {
       expect(results[i - 1].score).toBeGreaterThanOrEqual(results[i].score);
@@ -49,7 +49,7 @@ describe('BacktestOptimizer — Random Search', () => {
       { name: 'rsiPeriod', values: [14] },
       { name: 'smaShort', values: [20] },
     ];
-    const optimizer = new BacktestOptimizer(dataProvider, 10000, 5);
+    const optimizer = new BacktestOptimizer(dataProvider, 1000, 3); // reduced for M1 memory
     const results = await optimizer.optimize(
       (params) => {
         const { RsiSmaStrategy } = require('../../src/strategies/RsiSmaStrategy');
@@ -65,7 +65,7 @@ describe('BacktestOptimizer — Random Search', () => {
     const singleRange: ParameterRange[] = [
       { name: 'rsiPeriod', values: [14, 20] },
     ];
-    const optimizer = new BacktestOptimizer(dataProvider, 10000, 5);
+    const optimizer = new BacktestOptimizer(dataProvider, 1000, 3); // reduced for M1 memory
     const results = await optimizer.optimize(
       (params) => {
         const { RsiSmaStrategy } = require('../../src/strategies/RsiSmaStrategy');

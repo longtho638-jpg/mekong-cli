@@ -92,7 +92,7 @@ export function PositionsTableSortable({ positions }: PositionsTableSortableProp
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full text-xs font-mono border-collapse">
+      <table className="w-full min-w-[600px] text-xs font-mono border-collapse">
         <thead>
           <tr className="border-b border-bg-border">
             {COLUMNS.map(({ key, label, align }) => (

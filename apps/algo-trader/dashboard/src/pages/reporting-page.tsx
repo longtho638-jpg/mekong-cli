@@ -183,7 +183,7 @@ export function ReportingPage() {
       {/* Trade history table */}
       <div className="bg-bg-card border border-bg-border rounded-lg overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-xs font-mono">
+          <table className="w-full min-w-[700px] text-xs font-mono">
             <thead className="border-b border-bg-border bg-bg">
               <tr>
                 {COLS.map((c) => (

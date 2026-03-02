@@ -6,6 +6,7 @@ import { useTradingStore } from '../stores/trading-store';
 import { PriceTickerStrip } from '../components/price-ticker-strip';
 import { PositionsTableSortable } from '../components/positions-table-sortable';
 import { SpreadOpportunitiesCardGrid } from '../components/spread-opportunities-card-grid';
+import { EquityCurveChart } from '../components/equity-curve-pnl-chart';
 
 function formatUsd(n: number): string {
   const abs = Math.abs(n);
@@ -55,7 +56,7 @@ export function DashboardPage() {
       </div>
 
       {/* Stats summary */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-bg-card border border-bg-border rounded-lg p-4">
           <p className="text-muted text-[10px] uppercase tracking-widest mb-1">Total PnL</p>
           <p className={`text-xl font-bold ${totalPnl >= 0 ? 'text-profit' : 'text-loss'}`}>
@@ -73,6 +74,17 @@ export function DashboardPage() {
           </p>
         </div>
       </div>
+
+      {/* Equity curve */}
+      <section>
+        <h3 className="text-white text-sm font-semibold mb-2 flex items-center gap-2">
+          <span className="w-1 h-4 bg-accent rounded-full inline-block" />
+          Equity Curve
+        </h3>
+        <div className="bg-bg-card border border-bg-border rounded-lg p-3">
+          <EquityCurveChart positions={positions} />
+        </div>
+      </section>
 
       {/* Price ticker strip */}
       <section>

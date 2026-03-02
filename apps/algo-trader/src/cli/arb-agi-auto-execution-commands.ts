@@ -1,6 +1,7 @@
 /**
  * AGI and auto-execution arbitrage commands — arb:agi, arb:auto.
  * arb:agi: intelligent spread detection with regime detection, Kelly sizing, self-tuning.
+ *   Supports --paper (virtual balances), --dashboard (CLI real-time view), --export (CSV/JSON on exit).
  * arb:auto: unified auto-execution with SpreadDetector + full pipeline (detect→score→validate→execute).
  */
 
@@ -17,6 +18,9 @@ import {
   validateMinExchanges,
   buildExchangeConfigs,
 } from './exchange-factory';
+import { PaperTradingArbBridge } from '../execution/paper-trading-arbitrage-bridge';
+import { ArbCliDashboard } from '../ui/arbitrage-cli-realtime-dashboard';
+import { exportArbHistory } from '../reporting/arbitrage-trade-history-exporter';
 
 /** Bridge: creates ExchangeClientBase (CCXT) from generic ExchangeConfig */
 function exchangeFactory(config: ExchangeConfig): ExchangeClientBase {
@@ -38,12 +42,40 @@ export function registerArbAgi(program: Command): void {
     .option('--no-kelly', 'Disable Kelly position sizing')
     .option('--no-self-tune', 'Disable self-tuning thresholds')
     .option('--regime-interval <number>', 'Regime detection interval ms', '30000')
+    .option('--paper', 'Enable paper trading mode (no real orders, virtual balances)')
+    .option('--dashboard', 'Show real-time CLI dashboard (disables logger console output)')
+    .option('--export <format>', 'Export trade history on exit: csv or json')
+    .option('--export-path <path>', 'Export file path (default: ./arb-history)', './arb-history')
     .action(async (options) => {
       const symbols = parseList(options.pairs);
       const exchangeIds = parseList(options.exchanges);
       validateMinExchanges(exchangeIds);
 
-      const exchanges = buildExchangeConfigs(exchangeIds);
+      // Paper mode: create virtual bridge, skip real exchange API validation
+      let paperBridge: PaperTradingArbBridge | null = null;
+      if (options.paper) {
+        paperBridge = new PaperTradingArbBridge({
+          exchanges: exchangeIds,
+          initialBalancePerExchange: parseFloat(options.equity),
+        });
+        logger.info('[AGI] PAPER MODE — virtual balances, no real orders');
+      }
+
+      // Dashboard mode: suppress logger console output to avoid conflict
+      let dashboard: ArbCliDashboard | null = null;
+      if (options.dashboard) {
+        dashboard = new ArbCliDashboard(1000);
+        dashboard.setPaperMode(!!options.paper);
+        dashboard.start();
+        // Remove console transport to avoid overwriting dashboard
+        logger.transports.forEach((t) => {
+          if (t instanceof (require('winston').transports.Console)) {
+            logger.remove(t);
+          }
+        });
+      }
+
+      const exchanges = options.paper ? [] : buildExchangeConfigs(exchangeIds);
 
       logger.info(`[AGI] Starting: ${exchangeIds.join('/')} | ${symbols.join(', ')} | Size: $${options.size} | Score>=${options.scoreThreshold}`);
 
@@ -76,8 +108,21 @@ export function registerArbAgi(program: Command): void {
         logger.info('[AGI] AGI arbitrage engine ACTIVE — intelligent spread detection running');
         logger.info(`[AGI] Regime: ${options.regime !== false ? 'ON' : 'OFF'} | Kelly: ${options.kelly !== false ? 'ON' : 'OFF'} | Self-tune: ${options.selfTune !== false ? 'ON' : 'OFF'}`);
 
-        const shutdown = () => {
+        const shutdown = async () => {
           engine.stop();
+          dashboard?.stop();
+
+          // Export history on exit if requested
+          if (options.export && paperBridge) {
+            const fmt = options.export as 'csv' | 'json';
+            const history = paperBridge.getCombinedHistory();
+            const result = await exportArbHistory(history, {
+              format: fmt,
+              outputPath: options.exportPath,
+            });
+            logger.info(`[AGI] Exported ${result.count} trades → ${result.path}`);
+          }
+
           const stats = engine.getStats();
           const profit = engine.getProfitSummary();
           logger.info('\n[AGI] === FINAL REPORT ===');
@@ -87,10 +132,14 @@ export function registerArbAgi(program: Command): void {
           logger.info(`[AGI] Detections: ${stats.totalDetections} | Executed: ${stats.totalExecuted} | Success: ${stats.successfulExecutions}`);
           logger.info(`[AGI] P&L: $${profit.cumulativePnl.toFixed(2)} | EMA profit: $${stats.emaProfitability.toFixed(2)} | Regime shifts: ${stats.totalRegimeShifts}`);
           logger.info(`[AGI] Circuit: ${stats.circuitState}`);
+          if (paperBridge) {
+            const pnl = paperBridge.getAggregatedPnl();
+            logger.info(`[AGI] Paper P&L: $${pnl.realized.toFixed(2)} realized | $${pnl.unrealized.toFixed(2)} unrealized`);
+          }
           process.exit(0);
         };
-        process.on('SIGINT', shutdown);
-        process.on('SIGTERM', shutdown);
+        process.on('SIGINT', () => { void shutdown(); });
+        process.on('SIGTERM', () => { void shutdown(); });
       } catch (error: unknown) {
         logger.error(`AGI failed: ${error instanceof Error ? error.message : String(error)}`);
         process.exit(1);

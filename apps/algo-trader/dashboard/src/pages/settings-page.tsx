@@ -1,45 +1,14 @@
 /**
- * Settings page: tenant info, API key management, exchange config, alert rules.
+ * Settings page: composition of tenant config, exchange keys, and alert rules panels.
+ * Data is fetched here and passed down to each sub-component.
  * POST /tenants/:id/api-keys, DELETE /tenants/:id/api-keys/:keyId
  * GET /tenants/me, GET /tenants/:id/api-keys, GET /tenants/:id/alert-rules
  */
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect } from 'react';
 import { useApiClient } from '../hooks/use-api-client';
-
-type Tier = 'FREE' | 'PRO' | 'ENTERPRISE';
-
-interface TenantInfo {
-  id: string;
-  name: string;
-  tier: Tier;
-  createdAt: string;
-  allowedExchanges: string[];
-}
-
-interface ApiKey {
-  id: string;
-  prefix: string;
-  maskedKey: string;
-  createdAt: string;
-}
-
-type AlertCondition = '>' | '<' | '==';
-type AlertAction = 'webhook' | 'email';
-
-interface AlertRule {
-  id: string;
-  metric: string;
-  condition: AlertCondition;
-  threshold: number;
-  action: AlertAction;
-  target: string;
-}
-
-const TIER_STYLES: Record<Tier, string> = {
-  FREE: 'text-muted border-muted',
-  PRO: 'text-accent border-accent',
-  ENTERPRISE: 'text-profit border-profit',
-};
+import { SettingsTenantConfigForm, type TenantInfo } from '../components/settings-tenant-config-form';
+import { SettingsExchangeKeysForm, type ApiKey } from '../components/settings-exchange-keys-form';
+import { SettingsAlertRulesForm, type AlertRule } from '../components/settings-alert-rules-form';
 
 const MOCK_TENANT: TenantInfo = {
   id: 'tenant-001',
@@ -59,23 +28,6 @@ const MOCK_ALERTS: AlertRule[] = [
   { id: 'a2', metric: 'pnl_usd', condition: '<', threshold: -100, action: 'email', target: 'admin@example.com' },
 ];
 
-const EXCHANGE_LABELS: Record<string, string> = {
-  binance: 'Binance',
-  kraken: 'Kraken',
-  coinbase: 'Coinbase',
-  bybit: 'Bybit',
-  okx: 'OKX',
-  kucoin: 'KuCoin',
-};
-
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <h2 className="text-accent text-sm font-semibold uppercase tracking-wider mb-4">
-      {title}
-    </h2>
-  );
-}
-
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <section className="bg-bg-card border border-bg-border rounded-lg p-6 space-y-4">
@@ -90,24 +42,14 @@ export function SettingsPage() {
   const [tenant, setTenant] = useState<TenantInfo>(MOCK_TENANT);
   const [apiKeys, setApiKeys] = useState<ApiKey[]>(MOCK_KEYS);
   const [alerts, setAlerts] = useState<AlertRule[]>(MOCK_ALERTS);
-
   const [newKeyVisible, setNewKeyVisible] = useState<string | null>(null);
   const [creatingKey, setCreatingKey] = useState(false);
-
-  // Alert form state
-  const [alertMetric, setAlertMetric] = useState('spread_pct');
-  const [alertCondition, setAlertCondition] = useState<AlertCondition>('>');
-  const [alertThreshold, setAlertThreshold] = useState(0.5);
-  const [alertAction, setAlertAction] = useState<AlertAction>('webhook');
-  const [alertTarget, setAlertTarget] = useState('');
-  const [addingAlert, setAddingAlert] = useState(false);
-  const [showAlertForm, setShowAlertForm] = useState(false);
 
   useEffect(() => {
     fetchApi<TenantInfo>('/tenants/me').then((d) => { if (d) setTenant(d); });
     fetchApi<ApiKey[]>(`/tenants/${tenant.id}/api-keys`).then((d) => { if (d) setApiKeys(d); });
     fetchApi<AlertRule[]>(`/tenants/${tenant.id}/alert-rules`).then((d) => { if (d) setAlerts(d); });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleCreateKey() {
@@ -119,21 +61,16 @@ export function SettingsPage() {
     setCreatingKey(false);
     if (res) {
       setNewKeyVisible(res.key ?? 'ak_live_mock_' + Math.random().toString(36).slice(2, 10));
-      const newEntry: ApiKey = {
+      setApiKeys((prev) => [...prev, {
         id: res.id ?? `k${Date.now()}`,
         prefix: res.prefix ?? 'ak_live',
         maskedKey: res.maskedKey ?? `ak_live_••••••••${Math.random().toString(36).slice(2, 6)}`,
         createdAt: new Date().toISOString(),
-      };
-      setApiKeys((prev) => [...prev, newEntry]);
+      }]);
     } else {
-      // Mock fallback
       const mockKey = 'ak_live_mock_' + Math.random().toString(36).slice(2, 10);
       setNewKeyVisible(mockKey);
-      setApiKeys((prev) => [
-        ...prev,
-        { id: `k${Date.now()}`, prefix: 'ak_live', maskedKey: mockKey.slice(0, 8) + '••••••••', createdAt: new Date().toISOString() },
-      ]);
+      setApiKeys((prev) => [...prev, { id: `k${Date.now()}`, prefix: 'ak_live', maskedKey: mockKey.slice(0, 8) + '••••••••', createdAt: new Date().toISOString() }]);
     }
   }
 
@@ -142,19 +79,12 @@ export function SettingsPage() {
     setApiKeys((prev) => prev.filter((k) => k.id !== keyId));
   }
 
-  async function handleAddAlert(e: FormEvent) {
-    e.preventDefault();
-    setAddingAlert(true);
-    const body = { metric: alertMetric, condition: alertCondition, threshold: alertThreshold, action: alertAction, target: alertTarget };
+  async function handleAddAlert(payload: Omit<AlertRule, 'id'>) {
     const res = await fetchApi<AlertRule>(`/tenants/${tenant.id}/alert-rules`, {
       method: 'POST',
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     });
-    setAddingAlert(false);
-    const newRule: AlertRule = res ?? { id: `a${Date.now()}`, ...body };
-    setAlerts((prev) => [...prev, newRule]);
-    setShowAlertForm(false);
-    setAlertTarget('');
+    setAlerts((prev) => [...prev, res ?? { id: `a${Date.now()}`, ...payload }]);
   }
 
   async function handleDeleteAlert(alertId: string) {
@@ -165,213 +95,24 @@ export function SettingsPage() {
   return (
     <div className="space-y-8 max-w-3xl">
       <h1 className="text-white text-2xl font-bold">Settings</h1>
-
-      {/* Tenant Info */}
+      <SettingsTenantConfigForm tenant={tenant} />
       <Card>
-        <SectionHeader title="Tenant Info" />
-        <div className="grid grid-cols-2 gap-4 text-sm font-mono">
-          <div>
-            <p className="text-muted text-xs mb-1">Name</p>
-            <p className="text-white">{tenant.name}</p>
-          </div>
-          <div>
-            <p className="text-muted text-xs mb-1">Tier</p>
-            <span className={`border rounded px-2 py-0.5 text-xs font-bold ${TIER_STYLES[tenant.tier]}`}>
-              {tenant.tier}
-            </span>
-          </div>
-          <div>
-            <p className="text-muted text-xs mb-1">Tenant ID</p>
-            <p className="text-muted text-xs">{tenant.id}</p>
-          </div>
-          <div>
-            <p className="text-muted text-xs mb-1">Created</p>
-            <p className="text-white">{new Date(tenant.createdAt).toLocaleDateString()}</p>
-          </div>
-        </div>
+        <SettingsExchangeKeysForm
+          tenantId={tenant.id}
+          apiKeys={apiKeys}
+          newKeyVisible={newKeyVisible}
+          creatingKey={creatingKey}
+          onCreateKey={handleCreateKey}
+          onDeleteKey={handleDeleteKey}
+          onDismissNewKey={() => setNewKeyVisible(null)}
+        />
       </Card>
-
-      {/* API Keys */}
       <Card>
-        <div className="flex items-center justify-between">
-          <SectionHeader title="API Keys" />
-          <button
-            onClick={handleCreateKey}
-            disabled={creatingKey}
-            className="text-xs bg-accent text-bg font-bold px-3 py-1.5 rounded hover:opacity-90 disabled:opacity-50 transition-opacity mb-4"
-          >
-            {creatingKey ? 'Creating…' : '+ New Key'}
-          </button>
-        </div>
-
-        {/* New key reveal */}
-        {newKeyVisible && (
-          <div className="bg-profit/10 border border-profit/30 rounded p-3 mb-2">
-            <p className="text-profit text-xs font-semibold mb-1">
-              Copy this key now — it will not be shown again.
-            </p>
-            <code className="text-white text-xs font-mono break-all">{newKeyVisible}</code>
-            <button
-              onClick={() => setNewKeyVisible(null)}
-              className="ml-3 text-muted text-xs underline hover:text-white"
-            >
-              Dismiss
-            </button>
-          </div>
-        )}
-
-        <div className="space-y-2">
-          {apiKeys.length === 0 && (
-            <p className="text-muted text-sm">No API keys yet.</p>
-          )}
-          {apiKeys.map((k) => (
-            <div
-              key={k.id}
-              className="flex items-center justify-between bg-bg border border-bg-border rounded px-3 py-2"
-            >
-              <div>
-                <code className="text-white text-xs font-mono">{k.maskedKey}</code>
-                <p className="text-muted text-xs mt-0.5">
-                  Created {new Date(k.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-              <button
-                onClick={() => handleDeleteKey(k.id)}
-                className="text-loss text-xs hover:underline font-mono"
-              >
-                Revoke
-              </button>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Exchange Config */}
-      <Card>
-        <SectionHeader title="Exchange Config" />
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {Object.entries(EXCHANGE_LABELS).map(([key, label]) => {
-            const enabled = tenant.allowedExchanges.includes(key);
-            return (
-              <div
-                key={key}
-                className={`flex items-center gap-2 border rounded px-3 py-2 text-xs font-mono ${
-                  enabled
-                    ? 'border-profit/40 text-profit bg-profit/5'
-                    : 'border-bg-border text-muted bg-bg'
-                }`}
-              >
-                <span className={`w-2 h-2 rounded-full shrink-0 ${enabled ? 'bg-profit' : 'bg-muted/40'}`} />
-                {label}
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
-      {/* Alert Rules */}
-      <Card>
-        <div className="flex items-center justify-between">
-          <SectionHeader title="Alert Rules" />
-          <button
-            onClick={() => setShowAlertForm((v) => !v)}
-            className="text-xs bg-accent text-bg font-bold px-3 py-1.5 rounded hover:opacity-90 transition-opacity mb-4"
-          >
-            {showAlertForm ? 'Cancel' : '+ Add Rule'}
-          </button>
-        </div>
-
-        {showAlertForm && (
-          <form onSubmit={handleAddAlert} className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 p-3 border border-bg-border rounded bg-bg">
-            <div className="flex flex-col gap-1">
-              <label className="text-muted text-xs">Metric</label>
-              <input
-                value={alertMetric}
-                onChange={(e) => setAlertMetric(e.target.value)}
-                className="bg-bg-card border border-bg-border rounded px-2 py-1.5 text-white text-xs font-mono focus:outline-none focus:border-accent"
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted text-xs">Condition</label>
-              <select
-                value={alertCondition}
-                onChange={(e) => setAlertCondition(e.target.value as AlertCondition)}
-                className="bg-bg-card border border-bg-border rounded px-2 py-1.5 text-white text-xs font-mono focus:outline-none focus:border-accent"
-              >
-                <option value=">">{'>'}</option>
-                <option value="<">{'<'}</option>
-                <option value="==">{'=='}</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted text-xs">Threshold</label>
-              <input
-                type="number"
-                step="any"
-                value={alertThreshold}
-                onChange={(e) => setAlertThreshold(Number(e.target.value))}
-                className="bg-bg-card border border-bg-border rounded px-2 py-1.5 text-white text-xs font-mono focus:outline-none focus:border-accent"
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-muted text-xs">Action</label>
-              <select
-                value={alertAction}
-                onChange={(e) => setAlertAction(e.target.value as AlertAction)}
-                className="bg-bg-card border border-bg-border rounded px-2 py-1.5 text-white text-xs font-mono focus:outline-none focus:border-accent"
-              >
-                <option value="webhook">webhook</option>
-                <option value="email">email</option>
-              </select>
-            </div>
-            <div className="flex flex-col gap-1 sm:col-span-2">
-              <label className="text-muted text-xs">Target (URL or email)</label>
-              <input
-                value={alertTarget}
-                onChange={(e) => setAlertTarget(e.target.value)}
-                placeholder={alertAction === 'webhook' ? 'https://…' : 'you@example.com'}
-                className="bg-bg-card border border-bg-border rounded px-2 py-1.5 text-white text-xs font-mono focus:outline-none focus:border-accent"
-                required
-              />
-            </div>
-            <div className="flex items-end col-span-2 sm:col-span-3">
-              <button
-                type="submit"
-                disabled={addingAlert}
-                className="bg-accent text-bg text-xs font-bold px-4 py-1.5 rounded hover:opacity-90 disabled:opacity-50 transition-opacity"
-              >
-                {addingAlert ? 'Adding…' : 'Add Rule'}
-              </button>
-            </div>
-          </form>
-        )}
-
-        <div className="space-y-2">
-          {alerts.length === 0 && (
-            <p className="text-muted text-sm">No alert rules configured.</p>
-          )}
-          {alerts.map((a) => (
-            <div
-              key={a.id}
-              className="flex items-center justify-between bg-bg border border-bg-border rounded px-3 py-2 gap-2"
-            >
-              <code className="text-white text-xs font-mono">
-                {a.metric} {a.condition} {a.threshold}
-              </code>
-              <span className="text-muted text-xs font-mono shrink-0">
-                {a.action}: {a.target.length > 30 ? a.target.slice(0, 28) + '…' : a.target}
-              </span>
-              <button
-                onClick={() => handleDeleteAlert(a.id)}
-                className="text-loss text-xs hover:underline font-mono shrink-0"
-              >
-                Delete
-              </button>
-            </div>
-          ))}
-        </div>
+        <SettingsAlertRulesForm
+          alerts={alerts}
+          onAddAlert={handleAddAlert}
+          onDeleteAlert={handleDeleteAlert}
+        />
       </Card>
     </div>
   );

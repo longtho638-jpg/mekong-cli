@@ -125,3 +125,17 @@ model Candle {
   @@index([pair, exchange, time(sort: Desc)])
   @@map("candles")
 }
+
+model PnlSnapshot {
+  id            BigInt   @id @default(autoincrement())
+  tenantId      String
+  totalPnl      Decimal  @db.Decimal(12, 2)
+  realizedPnl   Decimal  @db.Decimal(12, 2)
+  unrealizedPnl Decimal  @db.Decimal(12, 2)
+  openPositions Int      @default(0)
+  equity        Decimal  @db.Decimal(12, 2)
+  snapshotAt    DateTime @default(now())
+
+  @@index([tenantId, snapshotAt(sort: Desc)])
+  @@map("pnl_snapshots")
+}

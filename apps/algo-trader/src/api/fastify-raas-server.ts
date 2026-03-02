@@ -21,6 +21,8 @@ import { backtestJobRoutes } from './routes/backtest-job-submission-routes';
 import { buildArbScanExecuteRoutes } from './routes/arbitrage-scan-execute-routes';
 import { buildArbPositionsHistoryRoutes } from './routes/arbitrage-positions-history-routes';
 import { prometheusMetricsRoutes } from './routes/prometheus-metrics-routes';
+import { buildPnlRoutes } from './routes/pnl-realtime-snapshot-history-routes';
+import { PnlSnapshotService, InMemoryPnlStore } from '../core/pnl-realtime-snapshot-service';
 import { PolarSubscriptionService } from '../billing/polar-subscription-service';
 import { PolarWebhookEventHandler } from '../billing/polar-webhook-event-handler';
 import { buildPolarBillingRoutes } from './routes/polar-billing-subscription-routes';
@@ -85,6 +87,11 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   void server.register(backtestJobRoutes);
   void server.register(buildArbScanExecuteRoutes(manager, positionTracker));
   void server.register(buildArbPositionsHistoryRoutes(positionTracker));
+
+  // P&L snapshot routes
+  const pnlStore = new InMemoryPnlStore();
+  const pnlService = new PnlSnapshotService(positionTracker, pnlStore);
+  void server.register(buildPnlRoutes(pnlService));
 
   // Polar billing routes
   const subscriptionService = new PolarSubscriptionService();

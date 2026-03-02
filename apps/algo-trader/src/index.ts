@@ -10,20 +10,43 @@ import { registerArbCommands } from './cli/arb-cli-commands';
 import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
 import { registerMarketplaceCommands } from './cli/strategy-marketplace-tenant-cli-commands';
 import { logger } from './utils/logger';
-import { startHealthServer, stopHealthServer, setReady } from './core/http-health-check-server';
+import { startRaasServer, stopRaasServer, setReady } from './api/fastify-raas-server';
 import * as dotenv from 'dotenv';
 
 // Load environment variables securely
 dotenv.config();
-
-// Start health server for container liveness/readiness probes
-startHealthServer();
 
 const program = new Command();
 
 program
   .version('0.1.0')
   .description('Algo Trader CLI');
+
+program
+  .command('api:serve')
+  .description('Start Fastify RaaS API server')
+  .option('-p, --port <number>', 'Port to listen on', '3000')
+  .action(async (options) => {
+    const port = parseInt(options.port, 10);
+    logger.info(`Starting Fastify RaaS API on port ${port}...`);
+    try {
+      await startRaasServer({ port });
+      setReady(true);
+
+      const shutdown = async () => {
+        setReady(false);
+        logger.info('Shutting down API server...');
+        await stopRaasServer();
+        process.exit(0);
+      };
+
+      process.on('SIGINT', shutdown);
+      process.on('SIGTERM', shutdown);
+    } catch (error) {
+      logger.error(`Failed to start API: ${error instanceof Error ? error.message : String(error)}`);
+      process.exit(1);
+    }
+  });
 
 program
   .command('backtest')
@@ -94,7 +117,7 @@ program
       const shutdown = async () => {
         setReady(false);
         await engine.stop();
-        stopHealthServer();
+        await stopRaasServer();
         process.exit(0);
       };
 

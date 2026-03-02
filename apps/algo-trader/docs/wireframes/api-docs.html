@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGI Trader - API Documentation Wireframe</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{--bg-1:#0d1117;--bg-2:#161b22;--bg-3:#1c2333;--brd:#30363d;--t1:#e6edf3;--t2:#8b949e;--t3:#484f58;--profit:#00d4aa;--loss:#ff4757;--accent:#58a6ff;--info:#8b5cf6;--warn:#d29922}
+  body{font-family:Inter,system-ui,sans-serif;background:var(--bg-1);color:var(--t1);font-size:14px;line-height:1.5;display:flex;min-height:100vh}
+  .mono{font-family:'JetBrains Mono',monospace}
+  /* SIDEBAR */
+  .api-sidebar{width:260px;background:var(--bg-2);border-right:1px solid var(--brd);position:fixed;top:0;left:0;bottom:0;overflow-y:auto;padding:16px 0}
+  .api-sidebar .logo{padding:0 16px 16px;font-size:16px;font-weight:700;border-bottom:1px solid var(--brd);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .api-sidebar .logo span{font-size:12px;color:var(--info);background:rgba(139,92,246,.12);padding:2px 6px;border-radius:3px}
+  .api-sidebar .section{padding:12px 16px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:600}
+  .api-sidebar a{display:flex;align-items:center;gap:8px;padding:6px 16px;color:var(--t2);text-decoration:none;font-size:13px;transition:.15s}
+  .api-sidebar a:hover,.api-sidebar a.active{color:var(--t1);background:var(--bg-3)}
+  .method-tag{font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;min-width:36px;text-align:center}
+  .method-get{background:rgba(0,212,170,.15);color:var(--profit)}
+  .method-post{background:rgba(88,166,255,.15);color:var(--accent)}
+  .method-put{background:rgba(210,153,34,.15);color:var(--warn)}
+  .method-del{background:rgba(255,71,87,.15);color:var(--loss)}
+  .method-ws{background:rgba(139,92,246,.15);color:var(--info)}
+  /* MAIN */
+  .api-main{margin-left:260px;flex:1;max-width:900px;padding:32px 40px}
+  h1{font-size:28px;font-weight:700;margin-bottom:8px}
+  h2{font-size:20px;font-weight:600;margin:32px 0 12px;padding-top:20px;border-top:1px solid var(--brd)}
+  h3{font-size:15px;font-weight:600;margin:20px 0 8px}
+  p{color:var(--t2);margin-bottom:12px;font-size:14px}
+  .base-url{background:var(--bg-2);border:1px solid var(--brd);border-radius:6px;padding:12px 16px;margin-bottom:24px;font-size:13px;display:flex;align-items:center;gap:12px}
+  .base-url .label{font-size:11px;text-transform:uppercase;color:var(--t3);font-weight:600}
+  /* ENDPOINT */
+  .endpoint{background:var(--bg-2);border:1px solid var(--brd);border-radius:6px;margin-bottom:16px;overflow:hidden}
+  .endpoint-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--brd);cursor:pointer}
+  .endpoint-header .path{font-size:13px;font-weight:500}
+  .endpoint-header .desc{font-size:12px;color:var(--t2);margin-left:auto}
+  .endpoint-body{padding:16px}
+  .endpoint-body .params{margin-bottom:12px}
+  .param-row{display:flex;align-items:baseline;gap:12px;padding:4px 0;font-size:13px}
+  .param-name{color:var(--accent);font-weight:500;min-width:120px}
+  .param-type{color:var(--t3);font-size:12px;min-width:60px}
+  .param-desc{color:var(--t2)}
+  .param-required{color:var(--loss);font-size:11px}
+  /* CODE BLOCK */
+  .code-block{background:var(--bg-3);border:1px solid var(--brd);border-radius:4px;padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin:8px 0 12px;white-space:pre}
+  .code-block .k{color:var(--info)}.code-block .s{color:var(--profit)}.code-block .n{color:var(--warn)}.code-block .c{color:var(--t3)}
+  .auth-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600;background:rgba(210,153,34,.12);color:var(--warn)}
+  /* RESPONSIVE */
+  @media(max-width:768px){.api-sidebar{display:none}.api-main{margin-left:0;padding:20px}}
+</style>
+</head>
+<body>
+<!-- API SIDEBAR NAV -->
+<aside class="api-sidebar">
+  <div class="logo">AGI Trader <span>API v3</span></div>
+  <div class="section">Getting Started</div>
+  <a href="#" class="active">Introduction</a>
+  <a href="#">Authentication</a>
+  <a href="#">Rate Limits</a>
+  <div class="section">Tenants</div>
+  <a href="#"><span class="method-tag method-post">POST</span> Create Tenant</a>
+  <a href="#"><span class="method-tag method-get">GET</span> List Tenants</a>
+  <a href="#"><span class="method-tag method-get">GET</span> Tenant Status</a>
+  <div class="section">Strategies</div>
+  <a href="#"><span class="method-tag method-get">GET</span> List Strategies</a>
+  <a href="#"><span class="method-tag method-get">GET</span> Strategy Detail</a>
+  <a href="#"><span class="method-tag method-post">POST</span> Deploy Strategy</a>
+  <a href="#"><span class="method-tag method-put">PUT</span> Update Config</a>
+  <a href="#"><span class="method-tag method-del">DEL</span> Stop Strategy</a>
+  <div class="section">Trades</div>
+  <a href="#"><span class="method-tag method-get">GET</span> Open Positions</a>
+  <a href="#"><span class="method-tag method-get">GET</span> Trade History</a>
+  <a href="#"><span class="method-tag method-post">POST</span> Manual Order</a>
+  <div class="section">Backtests</div>
+  <a href="#"><span class="method-tag method-post">POST</span> Run Backtest</a>
+  <a href="#"><span class="method-tag method-get">GET</span> Backtest Results</a>
+  <div class="section">WebSocket</div>
+  <a href="#"><span class="method-tag method-ws">WS</span> Price Stream</a>
+  <a href="#"><span class="method-tag method-ws">WS</span> Trade Events</a>
+  <a href="#"><span class="method-tag method-ws">WS</span> Alert Stream</a>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="api-main">
+  <h1>AGI Trader API</h1>
+  <p>RaaS (Robot-as-a-Service) REST API for multi-tenant algorithmic trading. Manage strategies, execute trades, run backtests, and stream real-time data.</p>
+  <div class="base-url"><span class="label">Base URL</span><code class="mono" style="color:var(--accent)">https://api.agitrader.io/v3</code></div>
+
+  <!-- AUTH -->
+  <h2>Authentication</h2>
+  <p>All requests require a Bearer token. Obtain one via tenant creation or the /auth/token endpoint.</p>
+  <div class="code-block"><span class="k">Authorization</span>: Bearer <span class="s">at_live_xxxxxxxxxxxxxxxx</span></div>
+
+  <!-- TENANTS -->
+  <h2>Tenants</h2>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-post">POST</span><span class="path mono">/tenants</span><span class="desc">Create a new tenant account</span><span class="auth-badge">Auth</span></div>
+    <div class="endpoint-body">
+      <h3>Request Body</h3>
+      <div class="params">
+        <div class="param-row"><span class="param-name mono">name</span><span class="param-type">string</span><span class="param-desc">Tenant display name</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">plan</span><span class="param-type">enum</span><span class="param-desc">free | pro | enterprise</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">exchanges</span><span class="param-type">string[]</span><span class="param-desc">Exchange IDs to connect</span></div>
+      </div>
+      <h3>Example</h3>
+      <div class="code-block"><span class="c">// Request</span>
+<span class="k">POST</span> /v3/tenants
+{
+  <span class="s">"name"</span>: <span class="s">"Acme Capital"</span>,
+  <span class="s">"plan"</span>: <span class="s">"pro"</span>,
+  <span class="s">"exchanges"</span>: [<span class="s">"binance"</span>, <span class="s">"okx"</span>]
+}
+
+<span class="c">// Response 201</span>
+{
+  <span class="s">"id"</span>: <span class="s">"tn_abc123"</span>,
+  <span class="s">"apiKey"</span>: <span class="s">"at_live_xxxx"</span>,
+  <span class="s">"status"</span>: <span class="s">"active"</span>
+}</div>
+    </div>
+  </div>
+
+  <!-- STRATEGIES -->
+  <h2>Strategies</h2>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-post">POST</span><span class="path mono">/strategies/deploy</span><span class="desc">Deploy a strategy to your tenant</span><span class="auth-badge">Auth</span></div>
+    <div class="endpoint-body">
+      <div class="params">
+        <div class="param-row"><span class="param-name mono">strategyId</span><span class="param-type">string</span><span class="param-desc">Strategy ID from marketplace</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">pair</span><span class="param-type">string</span><span class="param-desc">Trading pair (e.g. BTC/USDT)</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">exchange</span><span class="param-type">string</span><span class="param-desc">Target exchange ID</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">config</span><span class="param-type">object</span><span class="param-desc">Strategy-specific parameters</span></div>
+        <div class="param-row"><span class="param-name mono">paperMode</span><span class="param-type">boolean</span><span class="param-desc">Paper trading mode (default: true)</span></div>
+      </div>
+      <div class="code-block"><span class="k">POST</span> /v3/strategies/deploy
+{
+  <span class="s">"strategyId"</span>: <span class="s">"agi-arb-v2"</span>,
+  <span class="s">"pair"</span>: <span class="s">"BTC/USDT"</span>,
+  <span class="s">"exchange"</span>: <span class="s">"binance"</span>,
+  <span class="s">"paperMode"</span>: <span class="n">false</span>,
+  <span class="s">"config"</span>: { <span class="s">"scoreThreshold"</span>: <span class="n">65</span> }
+}</div>
+    </div>
+  </div>
+
+  <!-- TRADES -->
+  <h2>Trades</h2>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-get">GET</span><span class="path mono">/trades/positions</span><span class="desc">List open positions for tenant</span><span class="auth-badge">Auth</span></div>
+    <div class="endpoint-body">
+      <div class="code-block"><span class="c">// Response 200</span>
+[{
+  <span class="s">"pair"</span>: <span class="s">"BTC/USDT"</span>,
+  <span class="s">"side"</span>: <span class="s">"long"</span>,
+  <span class="s">"size"</span>: <span class="n">0.15</span>,
+  <span class="s">"entryPrice"</span>: <span class="n">67240</span>,
+  <span class="s">"currentPrice"</span>: <span class="n">67890</span>,
+  <span class="s">"unrealizedPnl"</span>: <span class="n">97.50</span>,
+  <span class="s">"strategy"</span>: <span class="s">"agi-arb-v2"</span>
+}]</div>
+    </div>
+  </div>
+
+  <!-- BACKTESTS -->
+  <h2>Backtests</h2>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-post">POST</span><span class="path mono">/backtests</span><span class="desc">Run a backtest with historical data</span><span class="auth-badge">Auth</span></div>
+    <div class="endpoint-body">
+      <div class="params">
+        <div class="param-row"><span class="param-name mono">strategyId</span><span class="param-type">string</span><span class="param-desc">Strategy to backtest</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">pair</span><span class="param-type">string</span><span class="param-desc">Trading pair</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">days</span><span class="param-type">number</span><span class="param-desc">Historical days (max 365)</span><span class="param-required">required</span></div>
+        <div class="param-row"><span class="param-name mono">balance</span><span class="param-type">number</span><span class="param-desc">Starting balance in USDT</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEBSOCKET -->
+  <h2>WebSocket Streams</h2>
+  <p>Real-time data via WebSocket. Connect to <code class="mono" style="color:var(--accent)">wss://api.agitrader.io/v3/ws</code></p>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-ws">WS</span><span class="path mono">/ws/trades</span><span class="desc">Real-time trade execution events</span></div>
+    <div class="endpoint-body">
+      <div class="code-block"><span class="c">// Subscribe</span>
+{ <span class="s">"action"</span>: <span class="s">"subscribe"</span>, <span class="s">"channel"</span>: <span class="s">"trades"</span> }
+<span class="c">// Event</span>
+{ <span class="s">"type"</span>: <span class="s">"trade.executed"</span>, <span class="s">"pair"</span>: <span class="s">"BTC/USDT"</span>, <span class="s">"side"</span>: <span class="s">"buy"</span>,
+  <span class="s">"price"</span>: <span class="n">67240</span>, <span class="s">"size"</span>: <span class="n">0.15</span>, <span class="s">"strategy"</span>: <span class="s">"agi-arb-v2"</span> }</div>
+    </div>
+  </div>
+  <div class="endpoint">
+    <div class="endpoint-header"><span class="method-tag method-ws">WS</span><span class="path mono">/ws/alerts</span><span class="desc">Strategy signals, spread alerts, system events</span></div>
+    <div class="endpoint-body">
+      <p>Channels: <code class="mono">signals</code>, <code class="mono">spreads</code>, <code class="mono">system</code>, <code class="mono">risk</code></p>
+    </div>
+  </div>
+</main>
+</body>
+</html>

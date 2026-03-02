@@ -6,12 +6,12 @@ function getAuthToken(): string { return process.env.WS_AUTH_TOKEN ?? ''; }
 function getMaxConns(): number { return parseInt(process.env.WS_MAX_CONNECTIONS ?? '50', 10); }
 const HEARTBEAT_INTERVAL_MS = 30_000;
 
-type Channel = 'tick' | 'signal' | 'health';
-const VALID_CHANNELS: Channel[] = ['tick', 'signal', 'health'];
+type Channel = 'tick' | 'signal' | 'health' | 'spread' | 'pnl';
+const VALID_CHANNELS: Channel[] = ['tick', 'signal', 'health', 'spread', 'pnl'];
 
 const ClientMsgSchema = z.object({
   action: z.enum(['subscribe', 'unsubscribe']),
-  channel: z.enum(['tick', 'signal', 'health']),
+  channel: z.enum(['tick', 'signal', 'health', 'spread', 'pnl']),
 });
 
 interface AliveSocket extends WebSocket {
@@ -123,6 +123,32 @@ export async function startWsServer(portOverride?: number): Promise<number> {
       });
     });
   });
+}
+
+export interface SpreadBroadcastData {
+  symbol: string;
+  spreadPct: number;
+  buyExchange: string;
+  sellExchange: string;
+  timestamp: number;
+}
+
+export function broadcastSpread(data: SpreadBroadcastData): void {
+  broadcastToChannel('spread', data);
+}
+
+export interface PnlBroadcastData {
+  tenantId: string;
+  totalPnl: number;
+  realizedPnl: number;
+  unrealizedPnl: number;
+  openPositions: number;
+  equity: number;
+  computedAt: string;
+}
+
+export function broadcastPnl(data: PnlBroadcastData): void {
+  broadcastToChannel('pnl', data);
 }
 
 export function stopWsServer(): Promise<void> {

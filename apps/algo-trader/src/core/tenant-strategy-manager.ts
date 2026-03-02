@@ -7,49 +7,27 @@
 import { logger } from '../utils/logger';
 import { CredentialVault } from '../utils/CredentialVault';
 
-export interface TenantAccount {
-  exchangeId: string;
-  accountName: string; // Identifier within the tenant (e.g. 'main', 'scalping')
-  isTestnet: boolean;
-  vaultKey: string; // Key name in CredentialVault
-}
+// Re-export types for backward compatibility
+export type {
+  TenantAccount,
+  TenantConfig,
+  TenantStrategy,
+  TenantState,
+} from './tenant-strategy-manager-types';
 
-export interface TenantConfig {
-  id: string;
-  name: string;
-  maxStrategies: number;
-  maxDailyLossUsd: number;
-  maxPositionSizeUsd: number;
-  allowedExchanges: string[];
-  tier: 'free' | 'pro' | 'enterprise';
-}
+import {
+  TenantAccount,
+  TenantConfig,
+  TenantState,
+} from './tenant-strategy-manager-types';
 
-export interface TenantStrategy {
-  strategyId: string;
-  strategyName: string;
-  accountName: string;
-  status: 'active' | 'paused' | 'stopped';
-  pnl: number;
-  trades: number;
-  startedAt: number;
-  configOverrides?: Record<string, any>;
-}
-
-export interface TenantState {
-  config: TenantConfig;
-  accounts: TenantAccount[];
-  strategies: TenantStrategy[];
-  dailyPnl: number;
-  dailyTrades: number;
-  lastResetAt: number;
-  circuitBreakerTripped: boolean;
-}
-
-const TIER_MAX_STRATEGIES: Record<TenantConfig['tier'], number> = {
-  free: 1,
-  pro: 5,
-  enterprise: Infinity,
-};
+import {
+  createTenantState,
+  addAccountToTenant,
+  startStrategyOnTenant,
+  stopStrategyOnTenant,
+  resetTenantDailyCounters,
+} from './tenant-crud-operations';
 
 export class TenantStrategyManager {
   private tenants = new Map<string, TenantState>();
@@ -65,15 +43,7 @@ export class TenantStrategyManager {
       logger.warn(`Tenant ${config.id} already registered — skipping`);
       return;
     }
-    this.tenants.set(config.id, {
-      config,
-      accounts: [],
-      strategies: [],
-      dailyPnl: 0,
-      dailyTrades: 0,
-      lastResetAt: Date.now(),
-      circuitBreakerTripped: false,
-    });
+    this.tenants.set(config.id, createTenantState(config));
     logger.info(`Tenant added: ${config.id} (${config.tier})`);
   }
 
@@ -81,15 +51,7 @@ export class TenantStrategyManager {
   addAccount(tenantId: string, account: TenantAccount): boolean {
     const tenant = this.tenants.get(tenantId);
     if (!tenant) return false;
-
-    if (tenant.accounts.find(a => a.accountName === account.accountName)) {
-      logger.warn(`Account ${account.accountName} already exists for tenant ${tenantId}`);
-      return false;
-    }
-
-    tenant.accounts.push(account);
-    logger.info(`Account added: ${account.accountName} (${account.exchangeId}) for tenant ${tenantId}`);
-    return true;
+    return addAccountToTenant(tenant, account);
   }
 
   /** Remove a tenant */
@@ -105,69 +67,24 @@ export class TenantStrategyManager {
     strategyId: string,
     strategyName: string,
     accountName: string,
-    configOverrides?: Record<string, any>
+    configOverrides?: Record<string, unknown>,
   ): boolean {
     const tenant = this.tenants.get(tenantId);
     if (!tenant) {
       logger.warn(`startStrategy: tenant ${tenantId} not found`);
       return false;
     }
-
-    const account = tenant.accounts.find(a => a.accountName === accountName);
-    if (!account) {
-      logger.warn(`startStrategy: account ${accountName} not found for tenant ${tenantId}`);
-      return false;
-    }
-
-    if (tenant.circuitBreakerTripped) {
-      logger.warn(`startStrategy: circuit breaker tripped for ${tenantId}`);
-      return false;
-    }
-
-    const tierLimit = TIER_MAX_STRATEGIES[tenant.config.tier];
-    const activeCount = tenant.strategies.filter(s => s.status === 'active').length;
-    const configLimit = tenant.config.maxStrategies;
-    const effectiveLimit = Math.min(tierLimit === Infinity ? configLimit : tierLimit, configLimit);
-
-    if (activeCount >= effectiveLimit) {
-      logger.warn(`startStrategy: ${tenantId} at strategy limit (${effectiveLimit})`);
-      return false;
-    }
-
-    const existing = tenant.strategies.find(s => s.strategyId === strategyId);
-    if (existing) {
-      existing.status = 'active';
-      existing.accountName = accountName;
-      existing.configOverrides = configOverrides;
-      logger.info(`Strategy resumed: ${strategyId} for tenant ${tenantId}`);
-    } else {
-      tenant.strategies.push({
-        strategyId,
-        strategyName,
-        accountName,
-        status: 'active',
-        pnl: 0,
-        trades: 0,
-        startedAt: Date.now(),
-        configOverrides,
-      });
-      logger.info(`Strategy started: ${strategyId} on account ${accountName} for tenant ${tenantId}`);
-    }
-    return true;
+    return startStrategyOnTenant(tenant, strategyId, strategyName, accountName, configOverrides);
   }
 
   /** Stop a strategy for a tenant */
   stopStrategy(tenantId: string, strategyId: string): boolean {
     const tenant = this.tenants.get(tenantId);
     if (!tenant) return false;
-    const strategy = tenant.strategies.find(s => s.strategyId === strategyId);
-    if (!strategy) return false;
-    strategy.status = 'stopped';
-    logger.info(`Strategy stopped: ${strategyId} for tenant ${tenantId}`);
-    return true;
+    return stopStrategyOnTenant(tenant, strategyId);
   }
 
-  /** Record a trade result for a tenant's strategy */
+  /** Record a trade result; trips circuit breaker if daily loss limit exceeded */
   recordTrade(tenantId: string, strategyId: string, pnl: number): boolean {
     const tenant = this.tenants.get(tenantId);
     if (!tenant) return false;
@@ -218,7 +135,6 @@ export class TenantStrategyManager {
     const totalPnl = tenant.strategies.reduce((sum, s) => sum + s.pnl, 0);
     const totalTrades = tenant.strategies.reduce((sum, s) => sum + s.trades, 0);
     const activeStrategies = tenant.strategies.filter(s => s.status === 'active').length;
-
     const winners = tenant.strategies.reduce((sum, s) => sum + (s.pnl > 0 ? 1 : 0), 0);
     const winRate = tenant.strategies.length > 0 ? winners / tenant.strategies.length : 0;
 
@@ -232,7 +148,11 @@ export class TenantStrategyManager {
   }
 
   /** Get credentials from vault for an account */
-  async getCredentials(tenantId: string, accountName: string, password?: string): Promise<{ apiKey: string; secret: string } | null> {
+  async getCredentials(
+    tenantId: string,
+    accountName: string,
+    password?: string,
+  ): Promise<{ apiKey: string; secret: string } | null> {
     const account = this.getAccount(tenantId, accountName);
     if (!account) return null;
 
@@ -246,21 +166,14 @@ export class TenantStrategyManager {
     try {
       return JSON.parse(credentialsStr);
     } catch {
-      // If not JSON, assume it's just the API key (legacy/simple support)
       return { apiKey: credentialsStr, secret: '' };
     }
   }
 
-  /** Reset daily counters (call on 24h boundary) */
+  /** Reset daily counters for all tenants (call on 24h boundary) */
   resetDaily(): void {
-    const now = Date.now();
     for (const tenant of this.tenants.values()) {
-      tenant.dailyPnl = 0;
-      tenant.dailyTrades = 0;
-      tenant.lastResetAt = now;
-      tenant.circuitBreakerTripped = false;
-      tenant.strategies.forEach(s => { if (s.status === 'paused') s.status = 'active'; });
-      logger.info(`Daily reset for tenant ${tenant.config.id}`);
+      resetTenantDailyCounters(tenant);
     }
   }
 }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGI Trader - RaaS Dashboard Wireframe</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg-1:#0d1117;--bg-2:#161b22;--bg-3:#1c2333;
+    --brd:#30363d;--brd-a:#484f58;
+    --t1:#e6edf3;--t2:#8b949e;--t3:#484f58;
+    --profit:#00d4aa;--loss:#ff4757;--accent:#58a6ff;
+    --warn:#d29922;--info:#8b5cf6;
+    --sp:4px;--r:6px;
+  }
+  body{font-family:Inter,system-ui,sans-serif;background:var(--bg-1);color:var(--t1);font-size:14px;line-height:1.5;display:flex;min-height:100vh}
+  .mono{font-family:'JetBrains Mono',monospace}
+  /* SIDEBAR */
+  .sidebar{width:220px;background:var(--bg-2);border-right:1px solid var(--brd);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:10}
+  .sidebar-logo{padding:16px;font-size:16px;font-weight:700;border-bottom:1px solid var(--brd);display:flex;align-items:center;gap:8px}
+  .sidebar-logo .dot{width:10px;height:10px;border-radius:50%;background:var(--profit);box-shadow:0 0 6px var(--profit)}
+  .sidebar nav{flex:1;padding:8px 0}
+  .sidebar nav a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:var(--t2);text-decoration:none;font-size:13px;font-weight:500;border-left:2px solid transparent;transition:.15s}
+  .sidebar nav a:hover,.sidebar nav a.active{color:var(--t1);background:var(--bg-3);border-left-color:var(--accent)}
+  .sidebar nav .section{padding:12px 16px 6px;font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-weight:600}
+  .sidebar-footer{padding:12px 16px;border-top:1px solid var(--brd);font-size:12px;color:var(--t2)}
+  /* MAIN */
+  .main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+  /* HEADER */
+  .header{height:48px;background:var(--bg-2);border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:9}
+  .header-left{display:flex;align-items:center;gap:16px}
+  .header-left .breadcrumb{font-size:13px;color:var(--t2)}
+  .header-right{display:flex;align-items:center;gap:12px}
+  .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:500}
+  .badge-profit{background:rgba(0,212,170,.12);color:var(--profit)}
+  .badge-loss{background:rgba(255,71,87,.12);color:var(--loss)}
+  .badge-info{background:rgba(139,92,246,.12);color:var(--info)}
+  .badge-warn{background:rgba(210,153,34,.12);color:var(--warn)}
+  .avatar{width:28px;height:28px;border-radius:50%;background:var(--bg-3);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--accent)}
+  /* CONTENT */
+  .content{padding:20px;flex:1}
+  /* STAT ROW */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  .stat-card{background:var(--bg-2);border:1px solid var(--brd);border-radius:var(--r);padding:16px}
+  .stat-card .label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);margin-bottom:4px;font-weight:500}
+  .stat-card .value{font-size:22px;font-weight:600}
+  .stat-card .sub{font-size:12px;color:var(--t2);margin-top:2px}
+  /* GRID */
+  .grid-2{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+  .panel{background:var(--bg-2);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden}
+  .panel-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--brd);font-size:13px;font-weight:600}
+  .panel-header .actions{display:flex;gap:8px}
+  .panel-body{padding:16px}
+  .btn{padding:4px 10px;border-radius:4px;font-size:12px;border:1px solid var(--brd);background:transparent;color:var(--t2);cursor:pointer;transition:.15s}
+  .btn:hover{border-color:var(--brd-a);color:var(--t1)}
+  .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  /* CHART PLACEHOLDER */
+  .chart-placeholder{height:200px;background:linear-gradient(180deg,rgba(0,212,170,.08) 0%,transparent 100%);border:1px dashed var(--brd);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:13px;position:relative}
+  .chart-placeholder::after{content:'';position:absolute;bottom:20px;left:10%;right:10%;height:1px;background:var(--brd)}
+  /* TABLE */
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;padding:8px 12px;background:var(--bg-3);border-bottom:1px solid var(--brd)}
+  td{padding:8px 12px;border-bottom:1px solid var(--brd);font-size:13px}
+  tr:last-child td{border-bottom:none}
+  .text-profit{color:var(--profit)}.text-loss{color:var(--loss)}.text-muted{color:var(--t2)}.text-accent{color:var(--accent)}.text-warn{color:var(--warn)}
+  /* STRATEGY LIST */
+  .strategy-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd)}
+  .strategy-item:last-child{border-bottom:none}
+  .strategy-name{font-weight:500;font-size:13px}
+  .strategy-meta{font-size:12px;color:var(--t2);margin-top:2px}
+  .dot-status{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+  .dot-running{background:var(--profit);box-shadow:0 0 4px var(--profit)}
+  .dot-paused{background:var(--warn)}.dot-stopped{background:var(--loss)}
+  /* ALERTS */
+  .alert-item{padding:10px 0;border-bottom:1px solid var(--brd);font-size:13px}
+  .alert-item:last-child{border-bottom:none}
+  .alert-time{font-size:11px;color:var(--t3);margin-top:2px}
+  /* FOOTER */
+  .footer{padding:10px 20px;border-top:1px solid var(--brd);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--t3);background:var(--bg-2)}
+  .footer .status-dot{width:6px;height:6px;border-radius:50%;background:var(--profit);display:inline-block;margin-right:4px}
+  /* RESPONSIVE */
+  @media(max-width:1024px){.stats{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
+  @media(max-width:768px){.sidebar{display:none}.main{margin-left:0}.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo"><span class="dot"></span> AGI Trader</div>
+  <nav>
+    <div class="section">Overview</div>
+    <a href="#" class="active">Dashboard</a>
+    <a href="#">Portfolio</a>
+    <a href="#">Positions</a>
+    <div class="section">Trading</div>
+    <a href="#">Strategies</a>
+    <a href="#">Marketplace</a>
+    <a href="#">Backtesting</a>
+    <a href="#">Paper Trading</a>
+    <div class="section">Arbitrage</div>
+    <a href="#">AGI Engine</a>
+    <a href="#">Spread Scanner</a>
+    <div class="section">System</div>
+    <a href="#">API Keys</a>
+    <a href="#">Alerts</a>
+    <a href="#">Settings</a>
+  </nav>
+  <div class="sidebar-footer">Tenant: <strong>acme-capital</strong><br>Plan: <span class="badge badge-info">Pro</span></div>
+</aside>
+<!-- MAIN CONTENT -->
+<div class="main">
+  <header class="header">
+    <div class="header-left"><span class="breadcrumb">Dashboard / Overview</span></div>
+    <div class="header-right">
+      <span class="badge badge-profit mono">Binance OK</span>
+      <span class="badge badge-profit mono">OKX OK</span>
+      <span class="badge badge-warn mono">Bybit Slow</span>
+      <button class="btn">Alerts (3)</button>
+      <div class="avatar">AC</div>
+    </div>
+  </header>
+  <div class="content">
+    <!-- STATS ROW -->
+    <div class="stats">
+      <div class="stat-card"><div class="label">Total Equity</div><div class="value mono">$124,580<span class="text-profit" style="font-size:14px;margin-left:8px">+2.4%</span></div><div class="sub mono">24h change: +$2,920</div></div>
+      <div class="stat-card"><div class="label">Open Positions</div><div class="value mono">7</div><div class="sub mono">3 Long / 2 Short / 2 Arb</div></div>
+      <div class="stat-card"><div class="label">Today P&L</div><div class="value mono text-profit">+$1,248.50</div><div class="sub mono">Win rate: 68%</div></div>
+      <div class="stat-card"><div class="label">Active Strategies</div><div class="value mono">4 <span class="text-muted" style="font-size:14px">/ 6</span></div><div class="sub">2 paused</div></div>
+    </div>
+    <!-- EQUITY CURVE + STRATEGIES -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">Equity Curve <div class="actions"><button class="btn">1D</button><button class="btn">1W</button><button class="btn btn-primary">1M</button><button class="btn">ALL</button></div></div>
+        <div class="panel-body"><div class="chart-placeholder">Equity Curve Chart (TradingView Lightweight / Recharts)</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Active Strategies</div>
+        <div class="panel-body">
+          <div class="strategy-item"><div><span class="dot-status dot-running"></span><span class="strategy-name">AGI Arbitrage</span><div class="strategy-meta">BTC/USDT - 3 exchanges</div></div><span class="badge badge-profit mono">+$820</span></div>
+          <div class="strategy-item"><div><span class="dot-status dot-running"></span><span class="strategy-name">RSI+SMA Crossover</span><div class="strategy-meta">ETH/USDT - Binance</div></div><span class="badge badge-profit mono">+$310</span></div>
+          <div class="strategy-item"><div><span class="dot-status dot-running"></span><span class="strategy-name">MACD Bollinger</span><div class="strategy-meta">SOL/USDT - OKX</div></div><span class="badge badge-loss mono">-$42</span></div>
+          <div class="strategy-item"><div><span class="dot-status dot-paused"></span><span class="strategy-name">Statistical Arb</span><div class="strategy-meta">Paused - low correlation</div></div><span class="badge" style="color:var(--t3)">--</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- POSITIONS TABLE + ALERTS -->
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">Open Positions <div class="actions"><button class="btn btn-primary">+ New Order</button></div></div>
+        <div class="panel-body" style="padding:0">
+          <table>
+            <thead><tr><th>Pair</th><th>Side</th><th>Size</th><th>Entry</th><th>Current</th><th>P&L</th><th>Strategy</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">BTC/USDT</td><td><span class="badge badge-profit">LONG</span></td><td class="mono">0.15</td><td class="mono">67,240</td><td class="mono">67,890</td><td class="mono text-profit">+$97.50</td><td class="text-muted">AGI Arb</td></tr>
+              <tr><td class="mono">ETH/USDT</td><td><span class="badge badge-profit">LONG</span></td><td class="mono">2.5</td><td class="mono">3,410</td><td class="mono">3,445</td><td class="mono text-profit">+$87.50</td><td class="text-muted">RSI+SMA</td></tr>
+              <tr><td class="mono">SOL/USDT</td><td><span class="badge badge-loss">SHORT</span></td><td class="mono">50</td><td class="mono">142.80</td><td class="mono">143.20</td><td class="mono text-loss">-$20.00</td><td class="text-muted">MACD</td></tr>
+              <tr><td class="mono">BTC/USDT</td><td><span class="badge badge-info">ARB</span></td><td class="mono">0.08</td><td class="mono">--</td><td class="mono">--</td><td class="mono text-profit">+$12.40</td><td class="text-muted">Cross-Ex</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header">Recent Alerts <div class="actions"><button class="btn">View All</button></div></div>
+        <div class="panel-body">
+          <div class="alert-item"><span class="text-profit">FILLED</span> BTC/USDT Long 0.15 @ $67,240<div class="alert-time mono">14:32:08 UTC</div></div>
+          <div class="alert-item"><span class="text-warn">SIGNAL</span> RSI oversold on ETH/USDT (1h)<div class="alert-time mono">14:28:45 UTC</div></div>
+          <div class="alert-item"><span class="text-accent">SPREAD</span> BTC Binance/OKX 0.12% detected<div class="alert-time mono">14:25:11 UTC</div></div>
+          <div class="alert-item"><span class="text-loss">STOP</span> SOL/USDT trailing SL triggered<div class="alert-time mono">14:20:33 UTC</div></div>
+          <div class="alert-item"><span class="text-muted">SYSTEM</span> Kelly sizing recalculated<div class="alert-time mono">14:15:00 UTC</div></div>
+        </div>
+      </div>
+    </div>
+    <!-- RECENT TRADES -->
+    <div class="panel">
+      <div class="panel-header">Recent Trades (Last 24h) <div class="actions"><button class="btn">Export CSV</button></div></div>
+      <div class="panel-body" style="padding:0">
+        <table>
+          <thead><tr><th>Time</th><th>Pair</th><th>Side</th><th>Price</th><th>Size</th><th>P&L</th><th>Strategy</th><th>Exchange</th></tr></thead>
+          <tbody>
+            <tr><td class="mono text-muted">14:32:08</td><td class="mono">BTC/USDT</td><td class="text-profit">BUY</td><td class="mono">67,240</td><td class="mono">0.15</td><td class="mono">--</td><td class="text-muted">AGI Arb</td><td class="text-muted">Binance</td></tr>
+            <tr><td class="mono text-muted">13:15:22</td><td class="mono">ETH/USDT</td><td class="text-loss">SELL</td><td class="mono">3,455</td><td class="mono">1.2</td><td class="mono text-profit">+$54.00</td><td class="text-muted">RSI+SMA</td><td class="text-muted">OKX</td></tr>
+            <tr><td class="mono text-muted">12:08:44</td><td class="mono">BTC/USDT</td><td class="text-loss">SELL</td><td class="mono">67,110</td><td class="mono">0.10</td><td class="mono text-loss">-$18.50</td><td class="text-muted">MACD</td><td class="text-muted">Binance</td></tr>
+            <tr><td class="mono text-muted">11:42:17</td><td class="mono">SOL/USDT</td><td class="text-profit">BUY</td><td class="mono">141.90</td><td class="mono">30</td><td class="mono text-profit">+$27.00</td><td class="text-muted">RSI+SMA</td><td class="text-muted">Bybit</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div><span class="status-dot"></span> Engine running | Latency: <span class="mono">12ms</span> | Uptime: <span class="mono">4d 12h</span></div>
+    <div>AGI Trader v3.0.0 | RaaS API <span class="text-accent">Connected</span> | WebSocket <span class="text-profit">Live</span></div>
+  </footer>
+</div>
+</body>
+</html>

@@ -13,7 +13,7 @@ export function LayoutShell({ children }: { children: ReactNode }) {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/50 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -21,7 +21,7 @@ export function LayoutShell({ children }: { children: ReactNode }) {
       {/* Sidebar */}
       <aside className={`
         fixed inset-y-0 left-0 z-30 w-56 bg-bg-card border-r border-bg-border
-        transform transition-transform lg:relative lg:translate-x-0
+        transform transition-transform md:relative md:translate-x-0
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="p-4 border-b border-bg-border">
@@ -34,7 +34,7 @@ export function LayoutShell({ children }: { children: ReactNode }) {
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
         {/* Mobile header */}
-        <div className="lg:hidden p-3 border-b border-bg-border flex items-center">
+        <div className="md:hidden p-3 border-b border-bg-border flex items-center">
           <button
             onClick={() => setSidebarOpen(true)}
             className="text-muted hover:text-white p-1"

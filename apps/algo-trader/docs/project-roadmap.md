@@ -61,11 +61,26 @@
 - [x] Alert rules extended with `var_pct` and `max_correlation` metrics
 - [x] API: searchMode/maxTrials params on optimization endpoint
 
-### Phase 5.2-5.4: Planned
-- [ ] React dashboard MVP (5 pages, TradingView Lightweight Charts)
-- [ ] Strategy marketplace (Prisma migration, Polar.sh billing)
-- [ ] Walk-forward validation + multi-region deployment
+### Phase 5.2: Dashboard MVP (Completed ✅)
+- [x] React 19 SPA dashboard (Vite 6, Tailwind CSS, Zustand 5)
+- [x] 5 pages: Dashboard, Backtests, Marketplace, Reporting, Settings
+- [x] 7 components: Layout, Sidebar, PriceTicker, PositionsTable, SpreadGrid, PriceChart, EquityCurve
+- [x] TradingView Lightweight Charts integration
+- [x] Real-time WebSocket price feeds
 
-**Current Status:** Phase 5.1 COMPLETE ✅. 868 tests, 0 TS errors.
+### Phase 5.3: RaaS Dashboard Bootstrap (Completed ✅)
+- [x] Prisma migration (Tenant, Strategy, Order, Trade, AlertRule, BacktestJob)
+- [x] Polar.sh billing integration (subscription, webhook, 22 tests)
+- [x] Strategy marketplace routes (CRUD + deployment)
+- [x] Hyperparameter optimization job routes
+- [x] Prometheus metrics endpoint + Grafana dashboard
+
+### Phase 5.4: Walk-Forward + P&L + Mobile (Completed ✅)
+- [x] Walk-forward validation pipeline (WalkForwardOptimizerPipeline — optimize on train, validate on test, overfitting detection)
+- [x] Real-time P&L tracking with historical snapshots (PnlSnapshotService + Prisma model + API + WS channel)
+- [x] Mobile-responsive dashboard (collapsible sidebar, responsive grids, horizontal scroll tables)
+- [ ] Multi-region deployment (Cloudflare Workers edge) — deferred to Phase 6
+
+**Current Status:** Phase 5.4 COMPLETE ✅. 905 tests, 0 TS errors, 190+ source files.
 
 Updated: 2026-03-02
