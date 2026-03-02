@@ -30,7 +30,27 @@ Mekong CLI is building the **de facto standard for AI-powered agent orchestratio
 - ✅ Python SDK for mission submission
 - ✅ FastAPI server with WebSocket streaming
 - ✅ Automatic rollback on verification failure
-- ✅ 62+ unit tests (>80% coverage)
+- ✅ RaaS API Bootstrap (Phase 1-6) ← **NEW**
+- ✅ 102+ unit tests (>85% coverage) ← **UPDATED**
+
+### RaaS Bootstrap Details (Phase 1-6 Complete)
+
+**Phase 1:** RaaS Core API (router, task store, models)
+**Phase 2:** Dashboard upgrade (tenant views, credit tracking)
+**Phase 3:** Landing page (pricing tiers, feature matrix)
+**Phase 4:** API Gateway upgrade (edge auth + KV limiter)
+**Phase 5:** Billing MCU metering (complexity-based pricing)
+**Phase 6:** Testing (40+ RaaS tests, all passing ✅)
+
+**Key Features:**
+- Production REST API (`/api/v1/missions`, `/api/v1/tasks`)
+- JWT auth middleware + tenant isolation
+- Credit reservation & quota enforcement
+- MCU (Mission Complexity Unit) pricing model
+- Cloudflare Workers edge gateway
+- Polar.sh webhook integration
+- Rate limiting with Cloudflare KV
+- Audit trail for all operations
 
 ### Quality Metrics
 

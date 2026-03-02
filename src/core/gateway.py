@@ -741,6 +741,10 @@ def create_app() -> FastAPI:
 # Module-level app instance for uvicorn
 app = create_app()
 
+# Mount RaaS /v1/ router
+from src.api.raas_router import router as _raas_router  # noqa: E402
+app.include_router(_raas_router)
+
 
 __all__ = [
     "create_app",
