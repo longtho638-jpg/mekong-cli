@@ -11,7 +11,7 @@
 		"directory": "apps/openclaw-worker"
 	},
 	"scripts": {
-		"build": "node --check task-watcher.js && node --check config.js && node --check bridge-server.js && echo '✅ Syntax OK'",
+		"build": "node --check config.js && node --check bridge-server.js && echo '✅ Syntax OK'",
 		"deploy": "wrangler deploy",
 		"dev": "wrangler dev",
 		"start": "wrangler dev",
