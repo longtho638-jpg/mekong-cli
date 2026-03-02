@@ -9,6 +9,7 @@ import { BacktestEngine } from './backtest/BacktestEngine';
 import { registerArbCommands } from './cli/arb-cli-commands';
 import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
 import { registerMarketplaceCommands } from './cli/strategy-marketplace-tenant-cli-commands';
+import { registerMLCommands } from './cli/ml-train-and-backtest-commands';
 import { logger } from './utils/logger';
 import { startRaasServer, stopRaasServer, setReady } from './api/fastify-raas-server';
 import * as dotenv from 'dotenv';
@@ -273,6 +274,10 @@ program
 registerArbCommands(program);
 registerSpreadDetectorCommand(program);
 registerMarketplaceCommands(program);
+registerMLCommands(program);
+
+// Register ML strategies in StrategyLoader
+StrategyLoader.registerMLStrategies();
 
 // Global handlers for unhandled promise rejections and uncaught exceptions
 process.on('unhandledRejection', (reason: unknown) => {
