@@ -1,7 +1,8 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  workerIdleMemoryLimit: '512MB',
+  maxWorkers: 2,
+  workerIdleMemoryLimit: '256MB',
   testMatch: ['**/*.test.ts'],
   moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
   moduleNameMapper: {
