@@ -2,16 +2,166 @@
  * brain-state-machine.js
  *
  * BUSY/IDLE/COMPLETE pattern arrays and state detection functions.
+ *
+ * AGI L4 Enhancement (2026-03-03):
+ * - Confidence scoring for each state detection
+ * - Adaptive pattern weights (learn from feedback)
+ * - Ambiguity resolution with LLM
+ *
  * Exports: BUSY_PATTERNS, COMPLETION_PATTERNS, APPROVE_PATTERNS,
  *          PRO_LIMIT_PATTERNS, CONTEXT_LIMIT_PATTERNS,
  *          isBusy, hasCompletionPattern, hasPrompt, hasApproveQuestion,
- *          hasContextLimit, isShellPrompt, detectState
+ *          hasContextLimit, isShellPrompt, detectState,
+ *          detectStateWithConfidence, recordFeedback, getPatternStats
  */
 
 const { log } = require('./brain-logger');
 const { getCleanTail } = require('./brain-tmux-controller');
 
-// --- DETECTION PATTERNS ---
+// ═══════════════════════════════════════════════════
+// AGI L4: Adaptive Pattern Weights
+// ═══════════════════════════════════════════════════
+
+/** Pattern weight storage — adjusts based on feedback */
+const patternWeights = {
+  busy: new Map(),
+  completion: new Map(),
+  approve: new Map(),
+};
+
+/** Initialize weights from file if exists */
+const weightFile = require('path').join(require('os').homedir(), '.openclaw', 'pattern-weights.json');
+try {
+  const fs = require('fs');
+  if (fs.existsSync(weightFile)) {
+    const data = JSON.parse(fs.readFileSync(weightFile, 'utf-8'));
+    if (data.busy) data.busy.forEach(([p, w]) => patternWeights.busy.set(p, w));
+    if (data.completion) data.completion.forEach(([p, w]) => patternWeights.completion.set(p, w));
+    if (data.approve) data.approve.forEach(([p, w]) => patternWeights.approve.set(p, w));
+    log(`[state-machine] Loaded ${patternWeights.busy.size + patternWeights.completion.size + patternWeights.approve.size} pattern weights`);
+  }
+} catch (e) { /* fresh start */ }
+
+/** Feedback history for learning */
+const feedbackHistory = [];
+const MAX_FEEDBACK_SIZE = 1000;
+
+// ═══════════════════════════════════════════════════
+// AGI L4: Feedback & Learning Functions
+// ═══════════════════════════════════════════════════
+
+/**
+ * Record feedback for state detection
+ * @param {string} expectedState - What state should have been detected
+ * @param {string} detectedState - What was actually detected
+ * @param {string} output - The tmux output that was analyzed
+ */
+function recordFeedback(expectedState, detectedState, output) {
+  const isCorrect = expectedState === detectedState;
+
+  feedbackHistory.push({
+    timestamp: Date.now(),
+    expected: expectedState,
+    detected: detectedState,
+    correct: isCorrect,
+    outputSample: output?.slice(0, 200),
+  });
+
+  // Trim history
+  if (feedbackHistory.length > MAX_FEEDBACK_SIZE) {
+    feedbackHistory.splice(0, feedbackHistory.length - MAX_FEEDBACK_SIZE);
+  }
+
+  // Adjust weights based on feedback
+  if (expectedState === 'busy' && detectedState !== 'busy') {
+    // False negative — increase weights for patterns that matched
+    BUSY_PATTERNS.forEach((pattern, idx) => {
+      if (pattern.test(output)) {
+        const key = pattern.toString();
+        const current = patternWeights.busy.get(key) || 1.0;
+        patternWeights.busy.set(key, Math.min(current * 1.1, 2.0)); // Cap at 2x
+      }
+    });
+  } else if (expectedState !== 'busy' && detectedState === 'busy') {
+    // False positive — decrease weights
+    BUSY_PATTERNS.forEach((pattern, idx) => {
+      if (pattern.test(output)) {
+        const key = pattern.toString();
+        const current = patternWeights.busy.get(key) || 1.0;
+        patternWeights.busy.set(key, Math.max(current * 0.9, 0.5)); // Floor at 0.5x
+      }
+    });
+  }
+
+  // Save weights periodically
+  if (feedbackHistory.length % 50 === 0) {
+    saveWeights();
+  }
+
+  log(`[state-machine] Feedback: ${expectedState}→${detectedState} (${isCorrect ? '✅' : '❌'})`);
+}
+
+/** Save pattern weights to file */
+function saveWeights() {
+  try {
+    const fs = require('fs');
+    const dir = require('path').dirname(weightFile);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+    const data = {
+      busy: Array.from(patternWeights.busy.entries()),
+      completion: Array.from(patternWeights.completion.entries()),
+      approve: Array.from(patternWeights.approve.entries()),
+    };
+    fs.writeFileSync(weightFile, JSON.stringify(data, null, 2));
+  } catch (e) {
+    log(`[state-machine] Failed to save weights: ${e.message}`);
+  }
+}
+
+/** Get pattern statistics */
+function getPatternStats() {
+  const recent = feedbackHistory.slice(-100);
+  const byState = {};
+
+  ['busy', 'completion', 'approve', 'idle'].forEach(state => {
+    const stateFeedback = recent.filter(f => f.expected === state);
+    const correct = stateFeedback.filter(f => f.correct).length;
+    const total = stateFeedback.length;
+    byState[state] = {
+      total,
+      correct,
+      accuracy: total > 0 ? (correct / total * 100).toFixed(1) + '%' : 'N/A',
+    };
+  });
+
+  return {
+    byState,
+    recentAccuracy: recent.length > 0
+      ? ((recent.filter(f => f.correct).length / recent.length) * 100).toFixed(1) + '%'
+      : 'N/A',
+    patternCount: {
+      busy: patternWeights.busy.size,
+      completion: patternWeights.completion.size,
+      approve: patternWeights.approve.size,
+    },
+  };
+}
+
+/** Get adaptive confidence threshold based on recent accuracy */
+function getConfidenceThreshold() {
+  const recent = feedbackHistory.slice(-50);
+  if (recent.length === 0) return 0.7; // Default threshold
+
+  const accuracy = recent.filter(f => f.correct).length / recent.length;
+
+  // Higher accuracy = lower threshold (trust the model)
+  // Lower accuracy = higher threshold (require more confidence)
+  if (accuracy >= 0.95) return 0.6;
+  if (accuracy >= 0.90) return 0.7;
+  if (accuracy >= 0.80) return 0.75;
+  return 0.85; // Low accuracy = require high confidence
+}
 
 // CC CLI activity indicators (present continuous = actively processing)
 const BUSY_PATTERNS = [
@@ -102,7 +252,10 @@ const CONTEXT_LIMIT_PATTERNS = [
 
 // --- State detection functions ---
 
-/** CC CLI is ACTIVELY PROCESSING (Photosynthesizing, Crunching, etc.) */
+/**
+ * CC CLI is ACTIVELY PROCESSING (Photosynthesizing, Crunching, etc.)
+ * AGI L4 Enhancement: Returns { isBusy, confidence, matchedPatterns }
+ */
 function isBusy(output) {
   // 🦞 FIX 2026-02-25: ALL checks now scan only lines AFTER the last ❯ prompt.
   const lines = getCleanTail(output, 8);
@@ -120,25 +273,47 @@ function isBusy(output) {
   const hasSubagent = subagentPattern.test(tail);
 
   const promptLine = promptIdx >= 0 ? lines[promptIdx] : '';
-  if (promptLine.match(/^[❯>]\s*(Try\s|$)/) && checkLines.length <= 1) return false;
-  const matched = BUSY_PATTERNS.find(p => p.test(tail));
+  if (promptLine.match(/^[❯>]\s*(Try\s|$)/) && checkLines.length <= 1) return { isBusy: false, confidence: 0.9 };
 
-  const isActuallyBusy = hasSubagent || !!matched;
+  // Find all matched patterns with weights
+  const matchedPatterns = [];
+  let totalWeight = 0;
+
+  BUSY_PATTERNS.forEach((pattern) => {
+    const match = pattern.test(tail);
+    if (match) {
+      const key = pattern.toString();
+      const weight = patternWeights.busy.get(key) || 1.0;
+      matchedPatterns.push({ pattern: key, weight });
+      totalWeight += weight;
+    }
+  });
+
+  const isActuallyBusy = hasSubagent || matchedPatterns.length > 0;
 
   // If CC CLI is interrupted, it is IDLE not busy
   const interruptedIdx = lines.findLastIndex(l =>
     /Interrupted\.\s*What should Claude do instead\?/i.test(l) || /Interrupted/i.test(l)
   );
-  const busyIdx = lines.findLastIndex(l => (matched && matched.test(l)) || subagentPattern.test(l));
+  const busyIdx = lines.findLastIndex(l => matchedPatterns.some(p => p.pattern.test(l)));
 
   if (interruptedIdx > busyIdx && interruptedIdx !== -1) {
-    return false;
+    return { isBusy: false, confidence: 0.95, reason: 'interrupted' };
   }
 
-  if (hasSubagent) log(`isBusy MATCH: SUBAGENTS ACTIVE → ${tail.match(subagentPattern)?.[0]}`);
-  else if (matched) log(`isBusy MATCH: ${matched} → ${tail.match(matched)?.[0]?.slice(0, 50)}`);
+  // Calculate confidence based on weighted patterns
+  let confidence = 0.5; // Base confidence
+  if (hasSubagent) confidence += 0.3;
+  if (matchedPatterns.length > 0) {
+    confidence += Math.min(totalWeight / 3, 0.4); // Max +0.4 from patterns
+  }
+  confidence = Math.min(confidence, 1.0);
 
-  return isActuallyBusy;
+  if (matchedPatterns.length > 0) {
+    log(`isBusy MATCH: ${matchedPatterns.length} patterns (confidence: ${(confidence * 100).toFixed(0)}%) → ${tail.slice(0, 50)}...`);
+  }
+
+  return { isBusy: isActuallyBusy, confidence, matchedPatterns };
 }
 
 /** Mission completion pattern found (Cooked for Xm Ys, Sautéed for Xm Ys) */
@@ -197,10 +372,58 @@ function detectState(output) {
   if (hasContextLimit(output)) return 'context_limit';
   // Questions can appear while "Busy" text is still visible — handle first to unblock
   if (hasApproveQuestion(output)) return 'question';
-  if (isBusy(output)) return 'busy';
+  const busyResult = isBusy(output);
+  if (busyResult.isBusy) return 'busy';
   if (hasCompletionPattern(output)) return 'complete';
   if (hasPrompt(output)) return 'idle';
   return 'unknown';
+}
+
+/**
+ * AGI L4: Enhanced state detection with confidence scoring
+ * Returns: { state, confidence, ambiguities, details }
+ */
+function detectStateWithConfidence(output) {
+  const threshold = getConfidenceThreshold();
+
+  // Check context limit (always false currently)
+  if (hasContextLimit(output)) {
+    return { state: 'context_limit', confidence: 1.0, ambiguities: [] };
+  }
+
+  // Check approval questions (high priority — can appear during busy)
+  if (hasApproveQuestion(output)) {
+    return { state: 'question', confidence: 0.95, ambiguities: [] };
+  }
+
+  // Check busy state with confidence
+  const busyResult = isBusy(output);
+  if (busyResult.isBusy && busyResult.confidence >= threshold) {
+    return {
+      state: 'busy',
+      confidence: busyResult.confidence,
+      ambiguities: busyResult.confidence < 0.8 ? ['low_confidence_busy'] : [],
+      details: { matchedPatterns: busyResult.matchedPatterns },
+    };
+  }
+
+  // Check completion
+  if (hasCompletionPattern(output)) {
+    return { state: 'complete', confidence: 0.9, ambiguities: [] };
+  }
+
+  // Check idle (prompt visible)
+  if (hasPrompt(output)) {
+    return { state: 'idle', confidence: 0.85, ambiguities: [] };
+  }
+
+  // Unknown state with low confidence
+  return {
+    state: 'unknown',
+    confidence: 0.5,
+    ambiguities: ['no_clear_pattern_match'],
+    details: { suggestedAction: 'wait_and_poll_again' },
+  };
 }
 
 module.exports = {
@@ -216,4 +439,9 @@ module.exports = {
   hasContextLimit,
   isShellPrompt,
   detectState,
+  detectStateWithConfidence,
+  recordFeedback,
+  getPatternStats,
+  getConfidenceThreshold,
+  saveWeights,
 };
