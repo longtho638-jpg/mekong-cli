@@ -1,5 +1,23 @@
 # Project Changelog - Algo Trader
 
+## [0.9.0] - 2026-03-03
+
+### Added
+- **LiveExchangeManager** (`src/execution/live-exchange-manager.ts`) — unified orchestrator composing ExchangeConnectionPool + WS feed manager + ExchangeRouterWithFallback + ExchangeHealthMonitor; auto-recovery, graceful shutdown, health gating. 28 tests.
+- **PhantomOrderCloakingEngine** (`src/execution/phantom-order-cloaking-engine.ts`) — 3-layer order cloaking: split into 2-5 chunks, randomized timing, size camouflage
+- **stealth-cli-fingerprint-masking-middleware.ts** — browser-like HTTP headers injected into CCXT requests to mask bot fingerprint
+- **phantom-stealth-math.ts** — stealth math helpers (jitter distributions, normalization)
+- **stealth-execution-algorithms.ts** — shared stealth execution algorithm implementations
+
+### Changed
+- Total tests: 1107 → 1216 (102 suites)
+- Source files: 239 → 232 (consolidation of stealth modules)
+
+### Fixed
+- Dashboard WebSocket auto-reconnect on connection drop
+- Dashboard frozen clock display
+- Missing scrollbar CSS on dashboard tables
+
 ## [0.6.0] - 2026-03-02
 
 ### Added

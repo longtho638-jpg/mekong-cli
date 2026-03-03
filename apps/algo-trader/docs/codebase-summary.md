@@ -125,11 +125,37 @@ Algo Trader is a RaaS (Robot-as-a-Service) multi-tenant automated trading platfo
 - `tests/load/` — API stress benchmark
 - `src/*/` — Co-located unit tests (arbitrage engine, execution pipeline, API routes, auth, strategies)
 
+### src/execution/ — Stealth Modules (Phase 15-17)
+| File | Class | Purpose |
+|------|-------|---------|
+| `anti-detection-order-randomizer-safety-layer.ts` | `AntiDetectionSafetyLayer` | Order timing/size jitter, rate governor, kill switch |
+| `binh-phap-stealth-trading-strategy.ts` | `BinhPhapStealthStrategy` | 孫子兵法 13-chapter anti-detection algorithm |
+| `phantom-order-cloaking-engine.ts` | `PhantomOrderCloakingEngine` | 3-layer order cloaking: split, timing, size camouflage |
+| `phantom-stealth-math.ts` | — | Stealth math helpers (jitter, normalization) |
+| `stealth-cli-fingerprint-masking-middleware.ts` | — | Browser-like HTTP headers to mask bot fingerprint |
+| `stealth-execution-algorithms.ts` | — | Shared stealth execution algorithms |
+
+### src/a2ui/ — Agent-to-UI Bridge
+- `agent-event-bus.ts` — Event bus between trading agents and UI layer
+- `signal-explainer.ts` — Human-readable signal explanation
+- `surface-manager.ts` — UI surface state management
+- `trade-audit-logger.ts` — Audit trail for all trade events
+
+### src/netdata/ — Collector & Metrics
+- `AgiDbEngine.ts` — AGI state persistence engine
+- `CollectorRegistry.ts` — Metrics collector registry
+- `HealthManager.ts` — System health state management
+- `SignalMesh.ts` — Cross-component signal routing mesh
+- `TickStore.ts` — In-memory tick data store
+
+### src/pipeline/ — Workflow Pipeline
+- `workflow-pipeline-engine.ts` — Generic workflow pipeline with step sequencing
+
 ## Key Metrics
-- **233+ source files** (TypeScript 5.9, strict mode)
-- **1085+ tests** (Jest 29, 97 suites, 100% pass rate)
+- **232+ source files** (TypeScript 5.9, strict mode)
+- **1216 tests** (Jest 29, 102 suites, 100% pass rate)
 - **16+ CLI commands** (Commander)
-- **8+ trading strategies** (RSI, SMA, Bollinger, MACD, Statistical, Cross-Exchange, Triangular, AGI, Funding-Rate)
+- **10+ trading strategies** (RSI, SMA, Bollinger, MACD, Statistical, Cross-Exchange, Triangular, Funding-Rate, AGI, GRU, Q-Learning)
 - **28+ API endpoints** + 5 WebSocket channels (Fastify 5)
 - **3 exchange integrations** (Binance, OKX, Bybit via CCXT 4.5)
 - **9 database models** (Tenant, Strategy, Order, Trade, ApiKey, BacktestResult, Candle, PnlSnapshot, AlertRule via Prisma)
@@ -144,6 +170,6 @@ Algo Trader is a RaaS (Robot-as-a-Service) multi-tenant automated trading platfo
 - **Binh Phap 6/6 fronts passing**
 
 ## Tech Stack
-TypeScript 5.9 | Node.js 20 | Fastify 5 | CCXT 4.5 | BullMQ 5 | Redis (IoRedis) | PostgreSQL (Prisma) | Zod 4.3 | Winston | Jest 29 | Commander CLI | React 19 | Vite 6 | Tailwind CSS | Zustand 5
+TypeScript 5.9 | Node.js 20 | Fastify 5 | CCXT 4.5 | BullMQ 5 | Redis (IoRedis) | PostgreSQL (Prisma) | Zod 4.3 | TensorFlow.js | Winston | Jest 29 | Commander CLI | React 19 | Vite 6 | Tailwind CSS | Zustand 5
 
-Updated: 2026-03-02
+Updated: 2026-03-03

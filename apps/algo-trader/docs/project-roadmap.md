@@ -248,11 +248,21 @@
 
 **Status:** Phase 16 COMPLETE ✅. 孫子兵法-based stealth trading.
 
+## Phase 17: Phantom Order Cloaking + CLI Fingerprint Masking (Completed ✅)
+- [x] PhantomOrderCloakingEngine — 3-layer anti-detection: order splitting, timing randomization, size camouflage
+- [x] phantom-stealth-math.ts — shared stealth math helpers (jitter, normalization)
+- [x] stealth-cli-fingerprint-masking-middleware.ts — browser-like HTTP headers on CCXT requests
+- [x] stealth-execution-algorithms.ts — shared stealth execution algorithms
+- [x] 0 TS errors
+
+**Status:** Phase 17 COMPLETE ✅. Full stealth stack: fingerprint masking + phantom order cloaking.
+
 ### Future (Planned)
 - [ ] Multi-region deployment (Cloudflare Workers edge)
 - [ ] Advanced ML: ensemble strategies, online learning
 - [ ] Dashboard v2: real-time monitoring for AGI Trade
+- [ ] WebSocket auto-reconnect hardening (dashboard WS fixed in 2218ccb7)
 
-**Current Status:** 1107+ tests, 0 TS errors, 239+ source files.
+**Current Status:** 1216 tests, 0 TS errors, 232+ source files, commit efb9dfba.
 
-Updated: 2026-03-02
+Updated: 2026-03-03

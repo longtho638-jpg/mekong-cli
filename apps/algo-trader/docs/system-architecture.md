@@ -90,6 +90,30 @@ graph TD
 - `arb:agi` — Unified command; launches all strategies in parallel: RealtimeArbitrageScanner, TriangularArbitrageLiveScanner, FundingRateArbitrageScanner, with MarketRegimeDetector providing adaptive params. Routes all opportunities through OrderBookDepthAnalyzer → CircuitBreaker → ArbitrageExecutionEngine.
 - `arb:auto` — Autonomous mode with auto-restart on error.
 
+### Phase 7: Live Exchange Manager (Production Live Trading)
+**Core Orchestrator** (`src/execution/live-exchange-manager.ts`):
+- **LiveExchangeManager** — Unified lifecycle orchestrator: composes ExchangeConnectionPool + WebSocketMultiExchangePriceFeedManager + ExchangeRouterWithFallback + ExchangeHealthMonitor.
+- Auto-recovery on connection loss, graceful shutdown, startup health gating.
+- Methods: `start()`, `stop()`, `getRouter()`, `getHealthSnapshot()`.
+
+**Supporting Components** (`src/execution/`):
+- **ExchangeRegistry** (`exchange-registry.ts`) — Central config store: exchange credentials, pairs, rate limits.
+- **ExchangeHealthMonitor** (`exchange-health-monitor.ts`) — Per-exchange health tracking (connected/degraded/disconnected), rolling latency P50/P95, error rate, event bus.
+- **ExchangeConnectionPool** (`exchange-connection-pool.ts`) — CCXT instance pooling, connection lifecycle management.
+- **ExchangeRouterWithFallback** (`exchange-router-with-fallback.ts`) — Route orders with automatic fallback to healthy exchange.
+
+### Phase 15-17: Stealth Execution Layer
+**Anti-Detection** (`src/execution/`):
+- **AntiDetectionSafetyLayer** (`anti-detection-order-randomizer-safety-layer.ts`) — Order timing jitter ±30%, size jitter ±5%, rate governor (calls/min, orders/hour), exchange 429/418 auto-pause, 403/451 kill switch, balance checkpoint auto-stop.
+- **BinhPhapStealthStrategy** (`binh-phap-stealth-trading-strategy.ts`) — 孫子兵法 13-chapter anti-detection: 始計 pre-assessment, 虛實 order splitting (2-5 chunks), 兵勢 volume-aware timing, 九變 5-level threat system, 地形 exchange profiles, 火攻 confidence gate.
+- **PhantomOrderCloakingEngine** (`phantom-order-cloaking-engine.ts`) — 3-layer cloaking: order splitting, randomized timing, size camouflage to mask bot patterns.
+- **stealth-cli-fingerprint-masking-middleware.ts** — Browser-like HTTP headers on all CCXT requests to avoid bot detection.
+- **stealth-execution-algorithms.ts** — Shared stealth math: jitter distributions, normalization.
+
+**Telegram Integration**:
+- Stealth commands: `/safety` (status), `/kill` (emergency stop), `/kill_reset`, `/binh_phap` (stealth report).
+- **TelegramCommandHandler** (`telegram-command-handler.ts`) — Long-polling receiver, chat ID security, commands: /status, /backtest, /balance, /health, /arb, /arb_live, /stop, /help, /safety, /kill.
+
 ### CLI Onboarding (Zero-Config)
 **Setup Wizard** (`src/cli/setup-wizard-command.ts`):
 - Interactive readline wizard — prompts exchange API keys, auto-generates `.env` with smart defaults.
@@ -149,29 +173,34 @@ All Opportunities →
 | CLI | Commander |
 | Dashboard | React 19, Vite 6, Zustand 5, Tailwind, TradingView Charts |
 
-## Quality Status (All 11 Phases)
+## Quality Status (All Phases)
 
 ### Completed Phases
 - Phase 1: Core Strategy Engine
 - Phase 2: AGI RaaS Arbitrage Core (WS feeds, spread calc, atomic executor)
 - Phase 3: Multi-Tenant API & Auth
 - Phase 4: BullMQ Job Queue
-- Phase 5: React Dashboard
-- Phase 6: Backtesting Framework
-- Phase 7: ML & Advanced Analytics
-- Phase 8: AGI Trade Multi-Exchange Go-Live
-- Phase 9: AGI Arbitrage Core (RealtimeArbitrageScanner, ArbitrageExecutionEngine, ArbLiveOrchestrator)
-- Phase 10: Order Book Depth Analyzer (real slippage, liquidity check)
-- Phase 11: AGI Intelligence Suite (MarketRegimeDetector, TriangularArbitrageLiveScanner, FundingRateArbitrageScanner)
+- Phase 5: React Dashboard + RaaS Bootstrap
+- Phase 6: ML Trading (GRU, Q-Learning, Feature Engineering)
+- Phase 7: Production Live Trading (LiveExchangeManager, SignalOrderPipeline, PositionManager, CircuitBreaker v2, TelegramBot, DryRun)
+- Phase 8: AGI Trade Go-Live (AgiTradeOrchestrator, `agi:trade` CLI)
+- Phase 9: AGI Arbitrage Core (RealtimeArbitrageScanner, ArbitrageExecutionEngine)
+- Phase 10: Order Book Depth Analyzer
+- Phase 11: AGI Intelligence Suite (MarketRegimeDetector, TriangularArb, FundingRateArb)
 - Phase 12: Unified AGI Arb Command (`arb:agi`)
+- Phase 13: Zero-Config Quickstart
+- Phase 14: Telegram Phone Trading Bot
+- Phase 15: Anti-Detection Safety Layer
+- Phase 16: BinhPhap Stealth Strategy
+- Phase 17: Phantom Order Cloaking + CLI Fingerprint Masking
 
 ### Quality Gates
-- **1085+ tests** (97 test suites, Jest 29)
-- **233+ source files** (TypeScript 5.9, strict mode)
+- **1216 tests** (102 test suites, Jest 29, 100% pass rate)
+- **232+ source files** (TypeScript 5.9, strict mode)
 - **0 TypeScript errors**
 - **0 `any` types** (test mocks only — acceptable)
 - **0 console.log** (production clean)
 - **0 TODO/FIXME** (zero tech debt)
 - **Binh Phap 6/6 fronts passing**
 
-Updated: 2026-03-02
+Updated: 2026-03-03
