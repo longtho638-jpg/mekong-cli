@@ -21,6 +21,14 @@ export type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+// Global error handler — catch JSON parse errors, unexpected crashes
+app.onError((err, c) => {
+  if (err instanceof SyntaxError) {
+    return c.json({ error: 'Invalid JSON in request body' }, 400)
+  }
+  return c.json({ error: 'Internal server error' }, 500)
+})
+
 // Middleware
 app.use('*', cors())
 
@@ -33,7 +41,7 @@ app.get('/health', async (c) => {
   }
   return c.json({
     status: 'ok',
-    version: '3.1.0',
+    version: '3.2.0',
     engine: 'mekong-pev',
     runtime: 'cloudflare-workers',
     bindings: {

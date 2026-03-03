@@ -47,6 +47,27 @@ export async function listTenants(db: D1Database): Promise<Tenant[]> {
   return results.map((row) => TenantSchema.parse(row))
 }
 
+export async function regenerateApiKey(
+  db: D1Database,
+  tenantId: string,
+  name: string,
+): Promise<{ apiKey: string } | null> {
+  // Verify tenant exists and name matches (basic ownership proof)
+  const row = await db
+    .prepare('SELECT id FROM tenants WHERE id = ? AND name = ?')
+    .bind(tenantId, name)
+    .first()
+  if (!row) return null
+
+  const newApiKey = generateApiKey()
+  const newHash = await hashApiKey(newApiKey)
+  await db
+    .prepare('UPDATE tenants SET api_key_hash = ? WHERE id = ?')
+    .bind(newHash, tenantId)
+    .run()
+  return { apiKey: newApiKey }
+}
+
 export async function deactivateTenant(db: D1Database, tenantId: string): Promise<boolean> {
   const result = await db
     .prepare('DELETE FROM tenants WHERE id = ?')

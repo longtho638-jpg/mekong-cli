@@ -23,6 +23,7 @@ taskRoutes.post('/', creditMeteringMiddleware, async (c) => {
   const tenant = c.get('tenant')
   const body = await c.req.json<{ goal: string }>()
   if (!body.goal?.trim()) return c.json({ error: 'Missing goal' }, 400)
+  if (body.goal.length > 2000) return c.json({ error: 'Goal too long (max 2000 characters)' }, 400)
 
   const credits = estimateCredits(body.goal)
   const deducted = await deductCredits(db, tenant.id, credits, `mission: ${body.goal.slice(0, 50)}`)
@@ -36,8 +37,8 @@ taskRoutes.post('/', creditMeteringMiddleware, async (c) => {
 taskRoutes.get('/', async (c) => {
   const db = c.env.DB!
   const tenant = c.get('tenant')
-  const limit = Math.min(parseInt(c.req.query('limit') ?? '20', 10), 100)
-  const offset = parseInt(c.req.query('offset') ?? '0', 10)
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') ?? '20', 10) || 20, 1), 100)
+  const offset = Math.max(parseInt(c.req.query('offset') ?? '0', 10) || 0, 0)
   const missions = await listMissions(db, tenant.id, limit, offset)
   return c.json({ missions, limit, offset })
 })

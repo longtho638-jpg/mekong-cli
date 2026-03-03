@@ -3,7 +3,7 @@ import type { Bindings } from '../index'
 import type { Tenant } from '../types/raas'
 import { authMiddleware } from '../raas/auth-middleware'
 import { getBalance, getHistory, addCredits } from '../raas/credits'
-import { createTenant } from '../raas/tenant'
+import { createTenant, regenerateApiKey } from '../raas/tenant'
 
 type Variables = { tenant: Tenant }
 
@@ -15,7 +15,27 @@ billingRoutes.post('/tenants', async (c) => {
   const body = await c.req.json<{ name?: string }>()
   if (!body.name?.trim()) return c.json({ error: 'Missing name' }, 400)
   const { tenant, apiKey } = await createTenant(c.env.DB, body.name)
-  return c.json({ tenant_id: tenant.id, name: tenant.name, api_key: apiKey, tier: tenant.tier }, 201)
+  // Grant 10 free welcome credits so user can start immediately
+  await addCredits(c.env.DB, tenant.id, 10, 'welcome: free tier bonus')
+  return c.json({
+    tenant_id: tenant.id, name: tenant.name, api_key: apiKey, tier: tenant.tier,
+    credits: 10, message: 'Save your API key — it cannot be recovered if lost!',
+  }, 201)
+})
+
+// Regenerate API key — requires tenant_id + name as ownership proof
+billingRoutes.post('/tenants/regenerate-key', async (c) => {
+  if (!c.env.DB) return c.json({ error: 'D1 not configured' }, 503)
+  const body = await c.req.json<{ tenant_id?: string; name?: string }>()
+  if (!body.tenant_id?.trim() || !body.name?.trim()) {
+    return c.json({ error: 'Both tenant_id and name are required' }, 400)
+  }
+  const result = await regenerateApiKey(c.env.DB, body.tenant_id, body.name)
+  if (!result) return c.json({ error: 'Tenant not found or name mismatch' }, 404)
+  return c.json({
+    api_key: result.apiKey,
+    message: 'New API key generated. Old key is now invalid. Save this key!',
+  })
 })
 
 billingRoutes.post('/webhook', async (c) => {
@@ -60,7 +80,7 @@ billingRoutes.get('/credits', authMiddleware, async (c) => {
 billingRoutes.get('/credits/history', authMiddleware, async (c) => {
   if (!c.env.DB) return c.json({ error: 'D1 not configured' }, 503)
   const tenant = c.get('tenant')
-  const limit = Math.min(parseInt(c.req.query('limit') ?? '50', 10), 200)
+  const limit = Math.min(Math.max(parseInt(c.req.query('limit') ?? '50', 10) || 50, 1), 200)
   const history = await getHistory(c.env.DB, tenant.id, limit)
   return c.json({ tenant_id: tenant.id, history, limit })
 })

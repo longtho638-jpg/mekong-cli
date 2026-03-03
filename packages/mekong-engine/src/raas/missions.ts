@@ -1,10 +1,10 @@
 import type { Mission, MissionStatus } from '../types/raas'
 import { MissionSchema, CREDIT_TIERS } from '../types/raas'
 
-const GOAL_SANITIZE_RE = /[;&|`$<>\\]/g
+const MAX_GOAL_LENGTH = 2000
 
 function sanitizeGoal(goal: string): string {
-  return goal.replace(GOAL_SANITIZE_RE, '').trim()
+  return goal.slice(0, MAX_GOAL_LENGTH).trim()
 }
 
 function detectComplexity(goal: string): keyof typeof CREDIT_TIERS {

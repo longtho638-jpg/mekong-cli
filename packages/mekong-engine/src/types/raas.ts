@@ -36,9 +36,9 @@ export const MissionSchema = z.object({
   credits_used: z.number().int().default(0),
   total_steps: z.number().int().default(0),
   completed_steps: z.number().int().default(0),
-  result: z.string().optional(),
+  result: z.string().nullable().optional(),
   created_at: z.string(),
-  completed_at: z.string().optional(),
+  completed_at: z.string().nullable().optional(),
 })
 
 // Credit tiers from README
