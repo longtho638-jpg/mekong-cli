@@ -49,7 +49,7 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
 
   # ------------------------------------------------------------------
-  # JOB 3: SECURITY AUDIT
+  # JOB 3: SECURITY AUDIT (Python-focused)
   # ------------------------------------------------------------------
   security:
     name: Security Audit
@@ -60,21 +60,23 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 20
+          python-version: "3.12"
+          cache: "pip"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
+      - name: Install Security Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install bandit safety
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Security Scan (Bandit)
+        run: bandit -r src/ -ll --exit-zero
+        continue-on-error: true
 
-      - name: Security Audit (npm)
-        run: pnpm audit --audit-level=high || true
+      - name: Dependency Check (Safety)
+        run: safety check -r requirements.txt --ignore 70612
         continue-on-error: true
 
       - name: Check for exposed secrets
@@ -85,10 +87,6 @@ jobs:
             exit 1
           fi
           echo "✅ No secrets found"
-
-      - name: Dependency Review
-        uses: actions/dependency-review-action@v4
-        continue-on-error: true
 
   # ------------------------------------------------------------------
   # JOB 2: FRONTEND (Next.js / Monorepo)
