@@ -17,6 +17,7 @@ export const authMiddleware = createMiddleware<{ Bindings: Bindings; Variables: 
       return c.json({ error: 'Empty API key' }, 401)
     }
 
+    if (!c.env.DB) return c.json({ error: 'D1 not configured' }, 503)
     const tenant = await getByApiKey(c.env.DB, apiKey)
     if (!tenant) {
       return c.json({ error: 'Invalid API key' }, 401)

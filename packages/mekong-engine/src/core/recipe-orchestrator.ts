@@ -18,6 +18,7 @@ export class RecipeOrchestrator {
   private verifier: RecipeVerifier
 
   constructor(opts: {
+    ai?: Ai
     llmApiKey?: string
     llmBaseUrl?: string
     model?: string
@@ -25,6 +26,7 @@ export class RecipeOrchestrator {
     enableRollback?: boolean
   }) {
     const llm = new LLMClient({
+      ai: opts.ai,
       llmApiKey: opts.llmApiKey,
       llmBaseUrl: opts.llmBaseUrl,
       model: opts.model,

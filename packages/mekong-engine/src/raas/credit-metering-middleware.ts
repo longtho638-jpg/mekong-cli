@@ -14,8 +14,15 @@ export const creditMeteringMiddleware = createMiddleware<{
     return c.json({ error: 'Unauthorized' }, 401)
   }
 
+  // Skip rate limiting if KV not configured
+  if (!c.env.RATE_LIMIT_KV) {
+    await next()
+    return
+  }
+
+  const kv = c.env.RATE_LIMIT_KV
   const { allowed, dailyUsed, monthlyUsed, retryAfter } = await checkRateLimit(
-    c.env.RATE_LIMIT_KV,
+    kv,
     tenant.id,
     tenant.tier,
   )
@@ -33,5 +40,5 @@ export const creditMeteringMiddleware = createMiddleware<{
   await next()
 
   const creditsUsed = c.get('creditsUsed') ?? 1
-  await recordUsage(c.env.RATE_LIMIT_KV, tenant.id, creditsUsed)
+  await recordUsage(kv, tenant.id, creditsUsed)
 })

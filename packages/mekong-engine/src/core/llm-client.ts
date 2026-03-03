@@ -48,13 +48,16 @@ export class LLMClient {
   private providers: LLMProvider[]
   private health: Map<string, ProviderHealth> = new Map()
   private defaultModel: string
+  private ai?: Ai
 
   constructor(opts: {
+    ai?: Ai
     llmApiKey?: string
     llmBaseUrl?: string
     model?: string
   }) {
-    this.defaultModel = opts.model ?? 'gpt-4o-mini'
+    this.defaultModel = opts.model ?? '@cf/meta/llama-3.1-8b-instruct'
+    this.ai = opts.ai
     this.providers = []
 
     const baseUrl = opts.llmBaseUrl ?? 'https://api.openai.com/v1'
@@ -79,6 +82,7 @@ export class LLMClient {
   }
 
   get isAvailable(): boolean {
+    if (this.ai && this.defaultModel.startsWith('@cf/')) return true
     return this.providers.some((p) => p.name !== 'offline' && p.isAvailable())
   }
 
@@ -87,6 +91,26 @@ export class LLMClient {
     const temperature = opts.temperature ?? 0.7
     const maxTokens = opts.max_tokens ?? 2048
 
+    // Try Workers AI first (free, no key needed)
+    if (this.ai && model.startsWith('@cf/')) {
+      try {
+        const result = await this.ai.run(model as Parameters<Ai['run']>[0], {
+          messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          max_tokens: maxTokens,
+        })
+
+        // Workers AI returns { response: string } for text generation
+        const text = (result as { response?: string })?.response ?? ''
+        if (text) {
+          const usage = (result as { usage?: Record<string, number> })?.usage
+          return { content: text, model, usage }
+        }
+      } catch {
+        // Fall through to HTTP providers
+      }
+    }
+
+    // Fall back to HTTP providers (OpenAI-compatible)
     for (const provider of this.getHealthyProviders()) {
       if (provider.name === 'offline') break
 
@@ -132,7 +156,7 @@ export class LLMClient {
           model: data.model ?? model,
           usage: data.usage,
         }
-      } catch (err) {
+      } catch {
         this.recordFailure(provider.name)
         continue
       }
