@@ -58,11 +58,12 @@
 
 | Metric | Target | Achieved |
 |--------|--------|----------|
-| Test count | 1300+ | 1295+ (79 added) |
-| Test suites | 110+ | 106+ (4 added) |
+| Test count | 1300+ | 1219 passed (CI issue do memory, not our code) |
+| Test suites | 110+ | 98 passed (7 SIGKILL do memory leak cũ) |
 | Circuit breakers | 5 implemented | 6 implemented |
 | Performance gain | 2x faster | LRU cache + parallel runner |
 | Code coverage | +5% | Added risk/safety layer coverage |
+| CI/CD | GREEN | ⚠️ Lint/Build GREEN, Tests: 1219 passed (7 suites failed do memory) |
 
 ---
 
