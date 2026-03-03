@@ -49,6 +49,48 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
 
   # ------------------------------------------------------------------
+  # JOB 3: SECURITY AUDIT
+  # ------------------------------------------------------------------
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Security Audit (npm)
+        run: pnpm audit --audit-level=high || true
+        continue-on-error: true
+
+      - name: Check for exposed secrets
+        run: |
+          echo "Checking for exposed secrets..."
+          if grep -r "API_KEY\|SECRET\|PASSWORD" src/ --include="*.py" --include="*.ts" --include="*.js" 2>/dev/null | grep -v "test" | grep -v ".env.example"; then
+            echo "❌ Found potential secrets in source code!"
+            exit 1
+          fi
+          echo "✅ No secrets found"
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        continue-on-error: true
+
+  # ------------------------------------------------------------------
   # JOB 2: FRONTEND (Next.js / Monorepo)
   # ------------------------------------------------------------------
   frontend:

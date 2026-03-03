@@ -1,51 +1,142 @@
 # Revenue Sharing Program
 
-Mekong CLI powers AgencyOS — a managed RaaS platform. Contributors share in the revenue.
+**Mekong CLI** contributors earn monthly revenue share from **AgencyOS** platform usage.
+
+---
 
 ## How It Works
 
-1. You contribute code to mekong-cli (MIT licensed)
-2. AgencyOS uses mekong-cli as its execution engine
-3. Users pay credits for tasks → revenue generated
-4. Contributors earn a share based on contribution type
+```
+1. Contribute to Mekong CLI (MIT open source)
+   ↓
+2. AgencyOS uses your code in production
+   ↓
+3. Users pay credits to run tasks
+   ↓
+4. 20% of revenue → Contributor pool
+   ↓
+5. Monthly payout via Polar.sh (min $50)
+```
 
-## Tiers
+---
 
-| Contribution | Share | Tracking |
-|-------------|-------|----------|
-| Core PEV Engine | 5% of related task revenue | Git blame on planner/executor/verifier |
-| New Agent | 3% of agent usage revenue | Agent registry attribution |
-| Critical Bug Fix | $50-500 bounty | Issue tracker + PR |
-| Performance Improvement | 2% of savings | Benchmark comparison |
-| Documentation | Community credits | PR review |
+## Contribution Types & Revenue Share
 
-## Payout
+| Type | Share | Example | Tracking |
+|------|-------|---------|----------|
+| **Core Engine** | 5% | Improve `planner.py`, `executor.py`, `verifier.py` | Git blame on executed steps |
+| **New Agent** | 3% | Build `DatabaseAgent`, `CloudAgent` | Agent registry usage logs |
+| **Critical Bug Fix** | $50-500 | Fix security vulnerability, data loss | One-time bounty |
+| **Performance** | 2% | Reduce execution time 30%+ | Before/after benchmarks |
+| **Documentation** | Community credits | Tutorials, docs, translations | GitHub attribution |
 
-- **Provider:** Polar.sh
-- **Minimum threshold:** $50
-- **Frequency:** Monthly
-- **Method:** Bank transfer or crypto
+---
 
-## Attribution
+## Payout Schedule
 
-Revenue attribution is tracked via:
-- Git commit history (who wrote/modified the code)
-- Agent registry (who built the agent)
-- Issue tracker (who fixed the bug)
+**Monthly Cycle:**
 
-## Terms
+| Date | Event |
+|------|-------|
+| **1st** | Revenue calculated from Polar.sh |
+| **2nd** | Usage tracking report generated |
+| **3rd** | Contributor shares calculated |
+| **5th** | Payouts sent via Polar.sh |
+| **7th** | Transparency report published |
 
-- Revenue share applies only to AgencyOS commercial usage
-- Self-hosted mekong-cli usage is free (MIT license)
-- Revenue share percentages may be adjusted with 30-day notice
-- Contributors retain copyright of their contributions
-- All disputes resolved by maintainer team
+**Minimum Threshold:** $50
+- Balances < $50 roll over to next month
+- No maximum limit
 
-## Getting Started
+**Payment Method:** Polar.sh (bank transfer, crypto, PayPal)
 
-1. Read [CONTRIBUTING.md](../CONTRIBUTING.md)
-2. Pick an area from the "Areas We Need Help" section
-3. Submit a PR
-4. Once merged, you're automatically enrolled in revenue sharing
+---
 
-Questions? Open a GitHub issue with the `revenue-sharing` label.
+## Example Payout
+
+**January 2026:**
+
+```
+AgencyOS Revenue: $10,000
+Contributor Pool (20%): $2,000
+
+Usage Tracking:
+- @alice: 500 credits (25% of pool) → $500
+- @bob: 300 credits (15% of pool) → $300
+- @charlie: 200 credits (10% of pool) → $200
+- ... (12 contributors total)
+```
+
+**Transparency Report** published at: `docs/reports/revenue-sharing-2026-01.md`
+
+---
+
+## Eligibility
+
+**Requirements:**
+- ✅ GitHub account with signed contributor license agreement (CLA)
+- ✅ Code merged to `main` branch
+- ✅ Polar.sh account for payouts
+- ✅ Minimum $50 earned
+
+**Exclusions:**
+- ❌ Automated/bot contributions
+- ❌ Duplicate/spam PRs
+- ❌ Code removed within 30 days
+
+---
+
+## Tracking & Transparency
+
+**Monthly Report Includes:**
+- Total AgencyOS revenue
+- Contributor pool size
+- Per-contributor breakdown:
+  - Files contributed
+  - Credits generated
+  - Share percentage
+  - Payout amount
+
+**Audit Rights:**
+- All contributors can request usage logs
+- Disputes resolved within 7 days
+- Final decision by core maintainers
+
+---
+
+## Tax & Legal
+
+**Contributor Responsibility:**
+- Report income per local laws
+- Polar.sh issues 1099 (US) or equivalent
+- Mekong CLI does not withhold taxes
+
+**Terms:**
+- Revenue share % may change with 30-day notice
+- Program may be suspended (force majeure)
+- Void where prohibited
+
+---
+
+## FAQ
+
+**Q: Can I earn if I only fix typos?**
+
+A: Yes! Documentation contributions earn community credits redeemable for swag or donations.
+
+**Q: What if AgencyOS shuts down?**
+
+A: Mekong CLI remains MIT open source. Community can fork and continue independently.
+
+**Q: How do I maximize earnings?**
+
+A: Focus on high-impact areas:
+- Core PEV engine (most used)
+- Popular agents (Git, File, Shell)
+- Performance optimizations (saves credits)
+
+---
+
+**Full Terms:** See [CONTRIBUTING.md](../CONTRIBUTING.md)
+
+**Questions?** Open GitHub issue or email: contributors@mekong-cli.dev
