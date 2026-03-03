@@ -327,6 +327,48 @@ Polar.sh payment completed
   → Return 200 (idempotent)
 ```
 
+### 2.12 Mekong Engine (`packages/mekong-engine/`)
+
+Serverless PEV engine running on Cloudflare Workers, exposing core Mekong functionality as a production-grade API.
+
+**Stack:**
+- **Runtime:** Cloudflare Workers (TypeScript)
+- **Framework:** Hono.js (lightweight HTTP router)
+- **Database:** Cloudflare D1 (SQLite)
+- **Cache:** Cloudflare KV (distributed rate limiting)
+- **LLM:** Workers AI (Llama 3.1 8B) + OpenAI-compatible fallback
+
+**Production URL:** `https://mekong-engine.agencyos-openclaw.workers.dev`
+
+**Core Features:**
+1. **PEV Pipeline** — `/cmd` endpoint for direct PEV execution (no auth)
+2. **RaaS API** — `/v1/tasks/*` for multi-tenant missions with streaming
+3. **Agent Operations** — `/v1/agents/:name/run` for direct agent dispatch
+4. **Billing Integration** — `/billing/webhook/polar` for payment events
+5. **Rate Limiting** — Per-tenant quotas via Cloudflare KV
+
+**Key Endpoints:**
+| Method | Path | Purpose |
+|--------|------|---------|
+| GET | `/health` | Health check |
+| POST | `/cmd` | PEV pipeline (public) |
+| POST | `/v1/tasks` | Create mission |
+| GET | `/v1/tasks/:id` | Get mission status |
+| GET | `/v1/tasks/:id/stream` | Stream updates (SSE) |
+| POST | `/v1/tasks/:id/cancel` | Cancel mission |
+| POST | `/v1/agents/:name/run` | Run agent |
+| GET | `/v1/agents` | List agents |
+| POST | `/billing/webhook/polar` | Polar payment webhook |
+| GET | `/billing/plans` | List subscription plans |
+
+**Database:** 3 tables (tenants, credits, missions) — same schema as RaaS backend, optimized for Cloudflare D1.
+
+**Authentication:** Bearer token (API key) → SHA-256 hash lookup in tenants table.
+
+**Rate Limiting:** Cloudflare KV stores per-tenant quota state. Headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`.
+
+**Deployment:** `wrangler deploy` from `packages/mekong-engine/`. Bindings (D1, KV, AI) configured in `wrangler.toml`.
+
 ## 3. Data Flow
 
 ### Full PEV Pipeline
