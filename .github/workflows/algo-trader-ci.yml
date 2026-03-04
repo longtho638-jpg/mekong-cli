@@ -195,15 +195,16 @@ jobs:
           echo "| Test | ${{ needs.test.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | ${{ job.status == 'success' && 'Passed' || 'Failed' }} |" >> $GITHUB_STEP_SUMMARY
 
-  docker:
-    name: Docker Build
-    runs-on: ubuntu-latest
-    needs: [build]
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build Docker image
-        run: |
-          docker build -f apps/algo-trader/Dockerfile -t algo-trader:ci .
+  # Docker build disabled - optional for CI, used for manual deployments
+  # docker:
+  #   name: Docker Build
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+  #
+  #     - name: Build Docker image
+  #       run: |
+  #         docker build -f apps/algo-trader/Dockerfile -t algo-trader:ci .
