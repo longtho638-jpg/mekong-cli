@@ -176,9 +176,10 @@ jobs:
         run: pnpm run build
 
       - name: Build dashboard
-        working-directory: ${{ env.WORKING_DIRECTORY }}/dashboard
+        working-directory: ${{ env.WORKING_DIRECTORY }}
         run: |
-          pnpm install
+          cd dashboard
+          pnpm install --shamefully-hoist
           pnpm run build
 
       - name: Build summary
