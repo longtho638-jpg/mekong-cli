@@ -1,11 +1,10 @@
 'use strict';
 
 /**
- * 🧠 LLM Perception Layer — Brain Transfer Module
+ * 🧠 LLM Perception Layer — Brain Transfer Module (OpenAI Format)
  * 
- * Replaces regex-based state detection with LLM-powered understanding.
- * Uses Antigravity Proxy (port 9191) to call Gemini/Claude for semantic
- * analysis of CC CLI tmux output.
+ * Uses DashScope OpenAI-compatible endpoint (compatible-mode/v1)
+ * for CTO brain perception. Aligns with OpenClaw $50/month package.
  * 
  * Falls back to regex if LLM call fails/times out.
  */
@@ -14,7 +13,9 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
-const PROXY_URL = 'http://127.0.0.1:9191';
+// DashScope Anthropic-compatible endpoint (coding-intl only supports apps/anthropic)
+const CTO_API_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages';
+const DASHSCOPE_KEY = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
 const LLM_TIMEOUT_MS = 45000;
 const CACHE_TTL_MS = 30000; // Cache LLM results for 30s
 const perceptionCache = new Map();
@@ -36,12 +37,22 @@ RULES:
 - Return ONLY valid JSON, no markdown, no explanation
 - Be concise in context and suggestion fields (max 50 words each)
 - state must be one of: "idle", "busy", "stuck", "error", "complete", "fresh_boot", "rate_limited"
+- suggestion MUST be a concrete task description, NOT a command name
+- NEVER suggest proxy, bridge, health server, or port scanning tasks
+- Focus on: code quality, tests, builds, features, security, documentation
+
+COMMAND MAPPING (you suggest the TASK, CTO picks the COMMAND):
+- Idle/Complete → /bootstrap:auto:parallel (full auto scan+fix+commit)
+- Complex feature → /plan:hard (deep planning)
+- Bug/Error → /debug (root cause analysis)
+- Quick fix → /cook (implement fast)
+- Code review → /review (audit quality)
 
 JSON Schema:
 {
   "state": "idle|busy|stuck|error|complete|fresh_boot|rate_limited",
   "context": "Brief description of what CC CLI is doing/was doing",
-  "suggestion": "What task to assign next (if idle) or how to fix (if stuck/error)",
+  "suggestion": "Concrete task: what to scan, fix, build, or improve next",
   "error": null or "error description",
   "progress": "0-100 estimate of current task completion",
   "blockers": [] 
@@ -74,25 +85,29 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
 
         const trimmedOutput = paneOutput.slice(-2000); // Max 2000 chars
 
+        // Anthropic messages format (DashScope apps/anthropic)
         const payload = JSON.stringify({
-            model: 'gemini-2.5-flash',
-            max_tokens: 300,
+            model: process.env.CTO_LLM_MODEL || 'qwen3.5-plus',
+            max_tokens: 512,
+            system: SYSTEM_PROMPT.trim(),
             messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
                 { role: 'user', content: `Pane: P${paneIdx} | Project: ${projectName}\n\n--- TERMINAL OUTPUT ---\n${trimmedOutput}\n--- END ---` }
             ]
         });
 
-        const url = new URL(`${PROXY_URL}/v1/chat/completions`);
+        const url = new URL(CTO_API_URL);
+        const isHttps = url.protocol === 'https:';
+        const transport = isHttps ? require('https') : http;
 
-        const req = http.request({
+        const req = transport.request({
             hostname: url.hostname,
-            port: url.port,
+            port: url.port || (isHttps ? 443 : 80),
             path: url.pathname,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
+                'x-api-key': DASHSCOPE_KEY, 'anthropic-version': '2023-06-01'
             },
             timeout: LLM_TIMEOUT_MS,
         }, (res) => {
@@ -101,11 +116,19 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
             res.on('end', () => {
                 try {
                     const json = JSON.parse(data);
-                    const content = json.choices?.[0]?.message?.content || '';
+                    // Anthropic format: content[].text
+                    const rawContent = json.content?.find(c => c.type === 'text')?.text || '';
 
                     // Parse JSON from LLM response (may have markdown wrapping)
-                    const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    const result = JSON.parse(cleaned);
+                    const cleaned = rawContent.replace(/```json\n?|\n?```/g, '').trim();
+                    let result;
+                    try {
+                        result = JSON.parse(cleaned);
+                    } catch (e) {
+                        console.warn(`[llm-perception] JSON parse error for P${paneIdx}. RAW HTTP DATA:\n`, data.substring(0, 1000));
+                        reject(new Error(`LLM parse error: ${e.message}`));
+                        return;
+                    }
 
                     // Validate required fields
                     if (!result.state) result.state = 'unknown';
@@ -124,15 +147,66 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
             });
         });
 
+        // ✅ OLLAMA FALLBACK (九變 Ch.8 - Cửu Biến Adaptation)
+        // Mapped from v2026.3.2 memorySearch.fallback="ollama"
+        const attemptOllamaFallback = () => {
+            log(`P${paneIdx} ⚠️ Proxy failed. Executing local Ollama fallback...`);
+            const fallbackReq = http.request({
+                hostname: 'localhost',
+                port: 11434,
+                path: '/v1/chat/completions',
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                timeout: LLM_TIMEOUT_MS
+            }, (fallbackRes) => {
+                let fallbackData = '';
+                fallbackRes.on('data', chunk => fallbackData += chunk);
+                fallbackRes.on('end', () => {
+                    try {
+                        const fJson = JSON.parse(fallbackData);
+                        const fContent = fJson.choices?.[0]?.message?.content || '{}';
+                        const fCleaned = fContent.replace(/```json\n?|\n?```/g, '').trim();
+                        const fResult = JSON.parse(fCleaned);
+                        if (!fResult.state) fResult.state = 'unknown';
+                        if (!fResult.context) fResult.context = '';
+                        if (!fResult.suggestion) fResult.suggestion = '';
+                        // Cache result
+                        perceptionCache.set(cacheKey, { result: fResult, ts: Date.now() });
+                        log(`P${paneIdx} 🦙 OLLAMA: state=${fResult.state} | ${fResult.context.slice(0, 60)}`);
+                        resolve(fResult);
+                    } catch (fe) {
+                        // Ollama not running — resolve with safe default instead of rejecting
+                        resolve({ state: 'unknown', context: 'Ollama parse fail', suggestion: '', error: null, progress: '0', blockers: [] });
+                    }
+                });
+            });
+            fallbackReq.on('error', () => {
+                // Ollama not running — resolve with safe default (non-blocking)
+                resolve({ state: 'unknown', context: 'Ollama offline', suggestion: '', error: null, progress: '0', blockers: [] });
+            });
+
+            // Format prompt for Ollama
+            const ollamaPayload = JSON.stringify({
+                model: 'qwen2', // Replace with local model if different
+                messages: [
+                    { role: 'system', content: SYSTEM_PROMPT.trim() },
+                    { role: 'user', content: `Pane: P${paneIdx} | Project: ${projectName}\n\n--- TERMINAL OUTPUT ---\n${trimmedOutput}\n--- END ---` }
+                ],
+                stream: false
+            });
+            fallbackReq.write(ollamaPayload);
+            fallbackReq.end();
+        };
+
         req.on('error', (e) => {
             log(`P${paneIdx} LLM network error: ${e.message}`);
-            reject(e);
+            attemptOllamaFallback();
         });
 
         req.on('timeout', () => {
             req.destroy();
             log(`P${paneIdx} LLM timeout (${LLM_TIMEOUT_MS}ms)`);
-            reject(new Error('LLM timeout'));
+            attemptOllamaFallback();
         });
 
         req.write(payload);
@@ -168,19 +242,25 @@ function buildSmartPrompt(perception, projectName) {
     switch (perception.state) {
         case 'idle':
         case 'fresh_boot':
-        case 'complete':
-            // Use suggestion if available, else generic scan
+            // POWER COMMAND: /bootstrap:auto:parallel for maximum autonomous work
             if (perception.suggestion && perception.suggestion.length > 10) {
                 return `/bootstrap:auto:parallel "${projectName}: ${perception.suggestion}"`;
             }
-            return null; // Let Binh Phap scanner handle it
+            return `/bootstrap:auto:parallel "${projectName}: Auto-scan codebase, fix tests, fix build errors, improve code quality, commit improvements."`;
+
+        case 'complete':
+            // Task just finished — launch next round immediately
+            if (perception.suggestion && perception.suggestion.length > 10) {
+                return `/bootstrap:auto:parallel "${projectName}: ${perception.suggestion}"`;
+            }
+            return `/bootstrap:auto:parallel "${projectName}: Continue improving — next highest-impact task from backlog."`;
 
         case 'stuck':
-            return `/bootstrap:auto:parallel "${projectName}: UNSTUCK — ${perception.suggestion || 'Analyze current state, identify blocker, fix and continue.'}"`;
+            return `/debug "GIẢI VÂY (${projectName}): ${perception.suggestion || 'Analyze state, identify blocker, fix.'}"`;
 
         case 'error':
             const errorCtx = perception.error || perception.context || 'unknown error';
-            return `/debug "${projectName}: ${errorCtx.slice(0, 100)}"`;
+            return `/debug "TRINH SÁT LỖI (${projectName}): Root cause analysis. ${errorCtx.slice(0, 100)}"`;
 
         default:
             return null;
@@ -275,21 +355,27 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
 
         const trimmed = paneOutput.slice(-1000); // Guard needs less context
         const payload = JSON.stringify({
-            model: 'gemini-2.5-flash',
-            max_tokens: 150,
+            model: process.env.CTO_LLM_MODEL || 'qwen3.5-plus',
+            max_tokens: 512,
+            system: GUARD_PROMPT.trim(),
             messages: [
-                { role: 'system', content: GUARD_PROMPT },
                 { role: 'user', content: `regex_state: ${regexState}\nProject: ${projectName}\n\n${trimmed}` }
             ]
         });
 
-        const url = new URL(`${PROXY_URL}/v1/chat/completions`);
-        const req = http.request({
+        const url = new URL(CTO_API_URL);
+        const isHttps2 = url.protocol === 'https:';
+        const transport2 = isHttps2 ? require('https') : http;
+        const req = transport2.request({
             hostname: url.hostname,
-            port: url.port,
+            port: url.port || (isHttps2 ? 443 : 80),
             path: url.pathname,
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload),
+                'x-api-key': DASHSCOPE_KEY, 'anthropic-version': '2023-06-01'
+            },
             timeout: 30000,
         }, (res) => {
             let data = '';
@@ -297,9 +383,17 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             res.on('end', () => {
                 try {
                     const json = JSON.parse(data);
-                    const content = json.choices?.[0]?.message?.content || '';
-                    const cleaned = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    const result = JSON.parse(cleaned);
+                    const rawContent = json.content?.find(c => c.type === 'text')?.text || '';
+                    const cleaned = rawContent.replace(/```json\n?|\n?```/g, '').trim();
+                    let result;
+                    try {
+                        result = JSON.parse(cleaned);
+                    } catch (e) {
+                        console.warn(`[llm-perception] GUARD JSON parse error for P${paneIdx}. RAW HTTP DATA:\n`, data.substring(0, 1000));
+                        // For guardCheck, we resolve with a fallback on parse error, not reject.
+                        resolve({ agree: true, correctedState: regexState, reason: 'parse fail (LLM output malformed)', shouldAct: true });
+                        return;
+                    }
 
                     recordTokenSpend(paneIdx);
 

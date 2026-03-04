@@ -7,7 +7,7 @@
  * 
  * Flow cho mỗi pane:
  *   1) Quét codebase (git status, recent commits, TODOs, build status)
- *   2) Gửi context cho LLM (qua Antigravity Proxy) để gen /cook task chính xác
+ *   2) Gửi context cho LLM (qua Antigravity Proxy) để gen /bootstrap:auto:parallel task chính xác
  *   3) Inject task vào CC CLI qua tmux buffer (an toàn, không crash)
  *   4) Monitor tiến độ, auto-Enter khi kẹt, auto-restart khi crash
  * 
@@ -23,10 +23,10 @@ const http = require('http');
 // CONFIG
 // ══════════════════════════════════════════════════
 const SESSION = 'tom_hum:brain';
-const LOG_FILE = path.join(process.env.HOME, 'tom_hum_vibe.log');
-const PROXY_PORT = 9191;
-const CHECK_INTERVAL_MS = 90_000; // 90s (smarter = less frequent)
-const FALLBACK_MODEL = 'gemini-3-pro';
+const LOG_FILE = path.join(process.env.HOME, 'tom_hum_cto.log');
+const PROXY_PORT = 443; // DashScope direct (no local proxy)
+const CHECK_INTERVAL_MS = process.env.VIBE_INTERVAL || 30_000;
+const FALLBACK_MODEL = 'qwen3.5-plus'; // CTO Brain = strongest model
 
 const PANES = [
     { idx: 0, project: 'mekong-cli', dir: path.join(process.env.HOME, 'mekong-cli'), focus: 'AGI agentic skills + ClaudeKit commands for all business domains' },
@@ -217,37 +217,36 @@ async function generateScoreTargetedTask(pane, scoreResult) {
     let taskCmd = '';
     const proj = pane.project;
 
-    // ═══ 4-TIER SMART COMMAND SELECTION ═══
-    // Tier 1: score < 60 → /bootstrap:auto:parallel (full rewrite)
-    // Tier 2: stuck ≥ 3  → /cook debug (deep debug)
-    // Tier 3: score < 85 → /cook strategic (targeted fix)
-    // Tier 4: score ≥ 85 → /cook (light fix)
+    // ═══ 4-TIER BINH PHÁP SMART DISPATCH (風林火山) ═══
+    // Mapped from BINH_PHAP_MASTER.md DNA FUSION v4.0
     const totalScore = scoreResult.total;
     const stuckAttempts = getDimAttempts(proj, weakestDim);
 
     let tier, tierCmd;
     if (stuckAttempts >= 3) {
-        tier = 'TIER2-DEBUG';
-        tierCmd = `/bootstrap:auto:parallel "DEBUG ${proj}: dim ${weakestDim} stuck ${stuckAttempts}x. Deep scan root cause. npm run build && npm test. Find WHY it fails. Fix and verify."`;
-        log(`P${pane.idx}: 🔴 TIER 2 → /bootstrap:auto:parallel DEBUG (${weakestDim} stuck ${stuckAttempts}x)`);
+        // TIER 2: 行軍 Ch.9 (Hành Quân) - Recon & Root Cause
+        // 近而靜者恃其險 - Hidden errors require deep reconnaissance
+        tier = 'TIER2-HÀNH-QUÂN';
+        tierCmd = `/cook "HÀNH QUÂN DEBUG (${proj}): Điểm ${weakestDim} kẹt ${stuckAttempts} lần. Tôn chỉ: Tìm Root Cause trước khi fix. Trinh sát log lỗi, tái hiện, phân tích hypothesis, sau đó dứt điểm."`;
+        log(`P${pane.idx}: 🔴 TIER 2 → HÀNH QUÂN DEBUG (${weakestDim} stuck ${stuckAttempts}x)`);
     } else if (totalScore < 60) {
-        tier = 'TIER1-BOOTSTRAP';
-        const BOOTSTRAP_PLANS = {
-            'mekong-cli': `/bootstrap:auto:parallel "AGI RaaS mekong-cli 100/100: 1/ PRODUCTION: npm run build exit 0. Dockerfile. Health-check. 2/ RESOURCES: npm outdated update ALL. npm audit fix. 3/ BUILD: Fix ALL TS errors. strict mode. 4/ TESTS: 10+ unit tests. 80%+ coverage. 5/ SECURITY: .env audit. npm audit 0 critical. 6/ TYPESCRIPT: strict:true. VERIFY: npm run build && npm test."`,
-            'well': `/bootstrap:auto:parallel "AGI RaaS well 100/100: 1/ PLANNING: docs/ARCHITECTURE.md + ROADMAP.md. 2/ PERFORMANCE: React.lazy. Suspense. Bundle <500KB. 3/ RESOURCES: npm outdated. audit fix. 4/ BUILD: npm run build exit 0. 5/ TESTS: Vitest 80%+. 6/ SECURITY: CSP. npm audit 0 critical. 7/ CI_CD: husky + lint-staged. 8/ TYPESCRIPT: strict:true. VERIFY: build && test && lint."`,
-            'algo-trader': `/bootstrap:auto:parallel "AGI RaaS algo-trader 100/100: 1/ PLANNING: ARCHITECTURE.md + API.md. 2/ PERFORMANCE: Cache + WebSocket optimize. 3/ CI_CD: GitHub Actions. 4/ PRODUCTION: PM2 + Dockerfile + health. 5/ RESOURCES: npm outdated. 6/ BUILD: exit 0. strict. 7/ TESTS: 80%+ coverage. 8/ SECURITY: rate limit + validation. 9/ TYPESCRIPT: strict + Zod. VERIFY: build && test && lint."`,
-            'apex-os': `/bootstrap:auto:parallel "AGI RaaS apex-os 100/100: 1/ PLANNING: ARCHITECTURE.md + SECURITY.md. 2/ PERFORMANCE: Redis + DB indexes. 3/ PRODUCTION: Dockerfile + docker-compose. 4/ RESOURCES: update 77 deps. 5/ BUILD: strict exit 0. 6/ TESTS: Fix 16 failing + 80%+. 7/ SECURITY: MFA + JWT + SOC2. 8/ CI_CD: security scan CI. 9/ TYPESCRIPT: strict. VERIFY: build && test && lint."`
-        };
-        tierCmd = BOOTSTRAP_PLANS[proj] || `/bootstrap:auto:parallel "${proj}: Full AGI RaaS 100/100. Fix ALL dimensions. VERIFY: npm run build && npm test."`;
-        log(`P${pane.idx}: 🚀 TIER 1 → /bootstrap:auto:parallel (score ${totalScore} < 60)`);
+        // TIER 1: 侵掠如火 (Mạnh như LỬA - Complex Rewrite)
+        // 兵無常勢，水無常形 - Total attack to establish the foundation
+        tier = 'TIER1-LỬA-CÔNG';
+        tierCmd = `/cook "LỬA CÔNG BOOTSTRAP (${proj}): Tái cấu trúc toàn diện. Setup vững chắc 100/100 (Build/Test Xanh). Không ngần ngại đập đi xây lại chuẩn mực."`;
+        log(`P${pane.idx}: 🚀 TIER 1 → LỬA CÔNG BOOTSTRAP (score ${totalScore} < 60)`);
     } else if (totalScore < 85) {
-        tier = 'TIER3-STRATEGIC';
-        tierCmd = `/bootstrap:auto:parallel "${proj}: Nâng ${weakestDim} từ ${weakestScore}→10. Scan codebase, fix issues, add tests/docs as needed. npm run build && npm test must pass."`;
-        log(`P${pane.idx}: ⚔️ TIER 3 → /bootstrap:auto:parallel STRATEGIC (score ${totalScore}, dim ${weakestDim}=${weakestScore})`);
+        // TIER 3: 徐如林 (Lặng như RỪNG - Targeted Strategy)
+        // 避實擊虛 - Avoid strong, hit weak points
+        tier = 'TIER3-RỪNG-CHIẾN';
+        tierCmd = `/cook "RỪNG CHIẾN LƯỢC (${proj}): Đánh thẳng điểm yếu ${weakestDim} (${weakestScore}→10), bỏ qua phần khác. Dứt điểm 1 mục tiêu gọn gàng. Verify test pass."`;
+        log(`P${pane.idx}: ⚔️ TIER 3 → RỪNG CHIẾN LƯỢC (score ${totalScore}, dim ${weakestDim}=${weakestScore})`);
     } else {
-        tier = 'TIER4-POLISH';
-        tierCmd = `/bootstrap:auto:parallel "${proj}: Polish ${weakestDim} (${weakestScore}→10). Quick fix and verify: npm run build && npm test."`;
-        log(`P${pane.idx}: 🍳 TIER 4 → /bootstrap:auto:parallel POLISH (score ${totalScore} ≥ 85, dim ${weakestDim}=${weakestScore})`);
+        // TIER 4: 疾如風 (Nhanh như GIÓ - Polish)
+        // 兵貴勝不貴久 - Speed and perfection
+        tier = 'TIER4-GIÓ-POLISH';
+        tierCmd = `/cook "GIÓ POLISH (${proj}): Tút tát thần tốc ${weakestDim} lên điểm tuyệt đối 10. Hoàn thiện final touch. Build/Test phải Xanh 100%."`;
+        log(`P${pane.idx}: 🌪️ TIER 4 → GIÓ POLISH (score ${totalScore} ≥ 85, dim ${weakestDim}=${weakestScore})`);
     }
 
     taskCmd = tierCmd;
@@ -283,17 +282,32 @@ function recordInjection(paneIdx) {
 
 function detectPaneState(output) {
     if (!output || output.includes('Pane is dead')) return 'DEAD';
-    if (/macbookprom1@.*%/.test(output) || /zsh: command not found/.test(output) || /zsh: no such file or directory/.test(output) || /bash-3\.2\$/.test(output)) return 'CRASHED';
-    if (/Context low.*[0-5]% remaining/.test(output)) return 'LOW_CONTEXT';
+    // 🦞 Robust CRASHED check: accounts for tmux wrapping the prompt, or "Resume this session" text from CC CLI crashing.
+    if (/macbookprom1@/.test(output) || /Resume this session with:/.test(output) || /zsh: command not found/.test(output) || /zsh: no such file or directory/.test(output) || /bash-3\.2\$/.test(output)) return 'CRASHED';
+    // 🦞 NEW IDLE TEST: If the prompt is totally empty and waiting for input, it is 100% IDLE.
+    // The visual prompt looks like:
+    // ────────────────────────────────────────────
+    // ❯ 
+    // ────────────────────────────────────────────
+    if (/(›|❯)\s*\n[─━]+/.test(output)) return 'IDLE';
+
+    // 🦞 Detect low context BEFORE it hits 0% and crashes. CC CLI shows "Context left until auto-compact: X%"
+    if (/Context limit reached/.test(output)) return 'CONTEXT_LIMIT';
+    if (/Context left until auto-compact: ([0-9]|1[0-5])%/.test(output)) return 'LOW_CONTEXT';
     if (/rate-limit-options|You've hit your limit/.test(output)) return 'RATE_LIMITED';
-    if (/❯ git (push|commit|add)|queued messages|Press up to edit/.test(output)) return 'PENDING';
+    if (/(›|❯)\s*(git (push|commit|add)|queued messages|Press up to edit)/.test(output)) return 'PENDING';
     if (/(›|❯)\s*\/(cook|bootstrap|plan|debug) /.test(output)) return 'STUCK_PROMPT';
     // ClaudeKit interactive prompts (validation, options menu, submit answers)
     if (/Enter to select|↑\/↓ to navigate|Esc to cancel|Yes \(Recommended\)|Type something|Submit answers|Review your answers|Ready to submit/.test(output)) return 'INTERACTIVE';
+
+    // Explicit LOW_CONTEXT string
+    if (/Context left until auto-compact: 0%/.test(output)) return 'LOW_CONTEXT';
+
     // 🏭 FIX: CC CLI idle patterns — bypass on, cooked (finished), or just ❯ prompt
     // Fresh boot: shows `try "how do I log an error?"` or `try "fix typecheck errors"`
     // 🔴 CRITICAL: Check WORKING FIRST before IDLE to prevent blind injection
-    if (/(Whisking|Bloviating|Churning|Crystallizing|Sprouting|Deciphering|Prestidigitating|Puttering|Nesting|Crafting|Crunched|Warping|Flowing|Sock-hopping|Building|Sautéed|Zigzagging|Quantumizing|Cogitated|Enchanting|Discombobulating|Smooshing|Spiraling|Explore agents|Running \d|Perambulating|Hashing|Processing|Unfurling|thinking|thought for|Moseying|Waddling|Jitterbugging|Flummoxing|Swooping|Hatching|Searching for)/i.test(output)) return 'WORKING';
+    // Note: removed past-tense words like Sautéed/Crunched/Cogitated as they indicate it FINISHED working
+    if (/(Whisking|Bloviating|Churning|Crystallizing|Sprouting|Deciphering|Prestidigitating|Puttering|Nesting|Crafting|Warping|Flowing|Sock-hopping|Building|Zigzagging|Quantumizing|Enchanting|Discombobulating|Smooshing|Spiraling|Explore agents|Running \d|Perambulating|Hashing|Processing|Unfurling|thinking|Moseying|Waddling|Jitterbugging|Flummoxing|Swooping|Hatching|Searching for)/i.test(output)) return 'WORKING';
     if (/Running…|Waiting…|Bash\(|Read\(|Write\(|fullstack-developer\(|planner\(|debugger\(|tester\(|code-reviewer\(|researcher\(|hook error|background tasks/i.test(output)) return 'WORKING';
     if (/(›|❯)\s*[Tt]ry "/.test(output) && /bypass permissions on/.test(output)) return 'IDLE';
     if (/bypass permissions on/.test(output) && !/Searching|Running|Explore|Read \d|Smooshing|Whisking|Bloviating|Churning|Building|Prestidigitating|Flowing|Crafting|Spiraling|Nesting|Puttering|Zigzagging|Perambulating|Hashing|Processing|Unfurling|thinking|thought for|Running…|Waiting…|Bash\(/.test(output)) return 'IDLE';
@@ -348,17 +362,18 @@ async function checkAllPanes() {
         log(`Warning: Intake scanner error - ${err.message}`);
     }
 
-    // CTO health
+    // CTO health — check own process (vibe-factory-monitor)
     try {
-        const cto = execSync('pgrep -f task-watcher 2>/dev/null').toString().trim();
+        const cto = execSync('pgrep -f "vibe-factory-monitor" 2>/dev/null').toString().trim();
         log(`CTO: ${cto ? '✅' : '❌'}`);
-    } catch { log('CTO: ❌'); }
+    } catch { log('CTO: ✅ (self)'); }
 
-    // Proxy health (Tôm Hùm self-healer handles restart)
+    // DashScope API health (apps/anthropic format)
+    const dsKey = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
     try {
-        execSync('curl -sf http://localhost:9191/health 2>/dev/null', { timeout: 3000 });
-        log('PROXY: ✅');
-    } catch { log('PROXY: ❌ — restart needed'); }
+        execSync(`curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages -H "x-api-key: ${dsKey}" -H "anthropic-version: 2023-06-01" -H "Content-Type: application/json" -d '{"model":"qwen3.5-plus","max_tokens":1,"messages":[{"role":"user","content":"ping"}]}' 2>/dev/null | grep -q 200`, { timeout: 12000 });
+        log('DASHSCOPE: ✅');
+    } catch { log('DASHSCOPE: ⚠️ slow/timeout (non-blocking)'); }
 
     for (const pane of PANES) {
         const output = tmuxCapture(pane.idx);
@@ -371,16 +386,20 @@ async function checkAllPanes() {
                 const lp = require('../lib/llm-perception');
                 global.llmPerception = lp;
             }
-            // Only guard-check actionable states (DEAD, CRASHED, IDLE, PENDING)
-            // Skip guard for WORKING/ACTIVE (no action needed anyway)
-            if (['DEAD', 'CRASHED', 'IDLE', 'PENDING'].includes(regexState)) {
+
+            // 🦞 HARD BYPASS: Do not ask the LLM if we confidently know it's crashed.
+            // The LLM often hallucinates the shell prompt as an acceptable IDLE state.
+            if (['CRASHED', 'DEAD'].includes(regexState)) {
+                state = regexState;
+                log(`P${pane.idx}: ⚡ Regex confident: ${state} — bypassing LLM guard`);
+            } else if (['IDLE', 'PENDING'].includes(regexState)) {
                 const guard = await global.llmPerception.guardCheck(output, regexState, pane.project, pane.idx);
                 if (!guard.agree && guard.correctedState) {
                     state = guard.correctedState;
                 }
                 if (!guard.shouldAct) {
                     log(`P${pane.idx}: 🛡️ GUARD: ${regexState} → SKIP (${guard.reason})`);
-                    continue; // Skip this pane entirely
+                    continue;
                 }
             }
         } catch (e) {
@@ -389,22 +408,50 @@ async function checkAllPanes() {
 
         switch (state) {
             case 'DEAD':
-                log(`P${pane.idx}: 💀 DEAD — respawning`);
-                try { execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`); } catch { }
+                log(`P${pane.idx}: 💀 DEAD — respawning with --continue`);
+                try { execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions --continue"`); } catch { }
                 // Will inject task next cycle after bootlog(`P${pane.idx}: ✅ Respawned, task will inject next cycle`);
                 break;
 
             case 'CRASHED':
-                log(`P${pane.idx}: 🔴 CRASHED — respawn-pane -k (clean restart)`);
+                log(`P${pane.idx}: 🔴 CRASHED — respawn-pane -k with --continue`);
                 try {
-                    execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
+                    execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions --continue"`);
                 } catch { }
                 break;
 
-            case 'LOW_CONTEXT':
-                log(`P${pane.idx}: 🟡 LOW CONTEXT — fresh restart`);
-                try { execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`); } catch { }
+            case 'CONTEXT_LIMIT': {
+                // Check if context is truly at 0% — if so, respawn fresh (compact won't help)
+                const ctxOutput = tmuxCapture(pane.idx, 5);
+                if (/0% remaining/.test(ctxOutput) || /Context low \(0%/.test(ctxOutput)) {
+                    log(`P${pane.idx}: 🔴 CONTEXT 0% — /compact won't help. RESPAWNING FRESH...`);
+                    try {
+                        execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
+                    } catch { }
+                    lastInjection[pane.idx] = Date.now();
+                } else {
+                    log(`P${pane.idx}: 🔴 CONTEXT LIMIT REACHED — sending /compact`);
+                    tmuxSendKeys(pane.idx, 'Escape');
+                    await sleep(300);
+                    execSync(`tmux send-keys -t ${SESSION}.${pane.idx} 'C-u' '/compact' Enter 2>/dev/null || true`);
+                    lastInjection[pane.idx] = Date.now();
+                }
                 break;
+            }
+
+            case 'LOW_CONTEXT': {
+                const lowCtxOut = tmuxCapture(pane.idx, 5);
+                if (/0% remaining/.test(lowCtxOut)) {
+                    log(`P${pane.idx}: 🟡 LOW CONTEXT 0% — RESPAWNING FRESH...`);
+                    try {
+                        execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
+                    } catch { }
+                    lastInjection[pane.idx] = Date.now();
+                } else {
+                    log(`P${pane.idx}: 🟡 LOW CONTEXT — letting CC CLI finish (no restart)`);
+                }
+                break;
+            }
 
             case 'RATE_LIMITED':
                 log(`P${pane.idx}: 🔶 RATE LIMITED — selecting "Stop and wait"`);
@@ -447,6 +494,20 @@ async function checkAllPanes() {
             case 'IDLE': {
                 // 🛡️ COOLDOWN CHECK — skip if recently injected
                 if (isInCooldown(pane.idx)) break;
+
+                // 🦞 PRE-FLIGHT CONTEXT CHECK: Prevent starting massive tasks with low battery
+                const ctxMatch = output.match(/Context left until auto-compact: (\d+)%/);
+                if (ctxMatch) {
+                    const ctx = parseInt(ctxMatch[1], 10);
+                    if (ctx <= 30) {
+                        log(`P${pane.idx}: 🟡 PRE-FLIGHT BLOCKED (Context ${ctx}% <= 30%). Restarting fresh...`);
+                        try {
+                            execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
+                        } catch { }
+                        lastInjection[pane.idx] = Date.now();
+                        break;
+                    }
+                }
 
                 // 🏭 BINH PHÁP SCANNER: Round-robin chapter → gen task → inject
                 log(`P${pane.idx}: ⏸️ IDLE — BINH PHÁP SCANNER...`);
@@ -520,6 +581,60 @@ async function checkAllPanes() {
                 }
 
                 // ═══ 🧠 CTO VISION: LLM-FIRST DECISION ENGINE ═══
+                // --- 📋 EXTERNAL TASK QUEUE CHECK ---
+                if (!cookCmd) {
+                    try {
+                        const fs = require('fs');
+                        const path = require('path');
+                        const tasksDir = '/Users/macbookprom1/mekong-cli/tasks';
+                        if (fs.existsSync(tasksDir)) {
+                            const files = fs.readdirSync(tasksDir).filter(f => f.endsWith('.txt'));
+                            if (files.length > 0) {
+                                // Match logic: find files specifically meant for this pane
+                                const myTasks = files.filter(f => {
+                                    const n = f.toLowerCase();
+                                    const isP0 = pane.project === 'mekong-cli';
+                                    const isP1 = pane.project === 'well';
+                                    const isP2 = pane.project === 'algo-trader';
+
+                                    const hasP0 = n.includes('mekong') || n.includes('p0');
+                                    const hasP1 = n.includes('well') || n.includes('p1');
+                                    const hasP2 = n.includes('algo') || n.includes('p2');
+
+                                    if (isP0 && hasP0) return true;
+                                    if (isP1 && hasP1) return true;
+                                    if (isP2 && hasP2) return true;
+
+                                    // If no specific routing indicator exists, default to P0
+                                    if (isP0 && !hasP0 && !hasP1 && !hasP2) return true;
+
+                                    return false;
+                                });
+
+                                if (myTasks.length > 0) {
+                                    myTasks.sort((a, b) => {
+                                        const w = f => f.startsWith('CRITICAL') ? 3 : f.startsWith('HIGH') ? 2 : 1;
+                                        return w(b) - w(a);
+                                    });
+                                    const taskFile = myTasks[0];
+                                    const content = fs.readFileSync(path.join(tasksDir, taskFile), 'utf8');
+
+                                    // Binh Phap Standard Rule 3: Use ClaudeKit commands!
+                                    // Escape the content so it survives tmux bash injection
+                                    const safeContent = content.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`').slice(0, 1500);
+                                    cookCmd = `/cook "EXTERNAL TASK: ${taskFile}\\n${safeContent}" --auto`;
+
+                                    const procDir = path.join(tasksDir, 'processed');
+                                    if (!fs.existsSync(procDir)) fs.mkdirSync(procDir);
+                                    fs.renameSync(path.join(tasksDir, taskFile), path.join(procDir, taskFile));
+                                    log(`P${pane.idx}: �� DISPATCHED task: ${taskFile}`);
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        log(`P${pane.idx}: ⚠️ Task Queue error: ${e.message}`);
+                    }
+                }
                 // Antigravity Brain Transfer — read CC CLI output, understand, decide
                 if (!cookCmd) {
                     try {
@@ -547,7 +662,7 @@ async function checkAllPanes() {
                             }
                             // Stuck → /bootstrap UNSTUCK
                             else if (guard.correctedState === 'stuck' || guard.correctedState === 'STUCK') {
-                                cookCmd = `/bootstrap:auto:parallel "${pane.project}: UNSTUCK — ${guard.reason.slice(0, 80)}"`;
+                                cookCmd = `/cook "${pane.project}: UNSTUCK — ${guard.reason.slice(0, 80)}"`;
                                 log(`P${pane.idx}: 🧠 GUARD → UNSTUCK: ${guard.reason}`);
                             }
                         }
@@ -596,8 +711,24 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // ══════════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════════
-log('🏭 VIBE CODING FACTORY v1 STARTED');
+log('🏭 VIBE CODING FACTORY v2026.3.2 STARTED');
 log(`Interval: ${CHECK_INTERVAL_MS / 1000}s | Panes: ${PANES.length} | Proxy: localhost:${PROXY_PORT}`);
+
+// ✅ 1. CONFIG VALIDATE GATE (始計 Ch.1 - 多算勝)
+try {
+    require('../config.js');
+    log('✅ Config Validate: OK');
+} catch (configErr) {
+    log(`❌ FATAL: Config validation failed: ${configErr.message}`);
+    process.exit(1);
+}
+
+// ✅ 2. SECRETS (Default injected if missing from bash triggers)
+if (!process.env.DASHSCOPE_API_KEY) {
+    process.env.DASHSCOPE_API_KEY = 'sk-sp-652cd51db1774704a992863926cd1f67';
+    log('⚠️ Injected missing DASHSCOPE_API_KEY env var automatically');
+}
+log('✅ Secrets Check: OK');
 
 // Run immediately
 checkAllPanes();
