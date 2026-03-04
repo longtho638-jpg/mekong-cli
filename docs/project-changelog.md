@@ -8,6 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **AI/ML Engineering Commands**: 12 new commands added for AI/ML development workflows
+- **Infinite Command Expansion**: Batch 4/4 complete with 19 new commands (100+ total commands)
+- **Algo-trader Deployment**: Docker + GCP Cloud Run deployment support enabled
+- **Vibe Factory Monitor**: Algo-trader pane enabled in monitoring dashboard
+- **New Command Categories**: AntiBridge, Bridge, Quantum operations, Model status commands
+- **Command Scaffolding**: Enhanced capabilities for creating new commands
+- **Telegram Bot Integration**: Enhanced remote commander bot functionality
+- **AGI Daemon Management**: New commands for Tom Hum AGI daemon operations
+- **System Health Checks**: Enhanced diagnostic tools for API status
+- **Environment Management**: New commands for environment configuration
+- **Advanced Testing**: New strategies for sophisticated test scenarios
+
+### Changed
+- **Fixed CI/CD Loop Rule**: Added CẤM CI/CD polling loop rule to prevent context burnout crash
+- **Algo-trader Improvements**: Enhanced Docker and GCP Cloud Run deployment capabilities
+- **CI/CD Pipeline**: Disabled Docker build (optional for CI), disabled dashboard build (optional component)
+- **Installation Process**: Used --shamefully-hoist for dashboard install, removed --frozen-lockfile for dashboard build
+- **Performance**: Improved command execution and response times
+
+### Fixed
+- **Algo-trader Pane**: Enabled algo-trader pane in vibe-factory-monitor
+- **CI/CD Stability**: Fixed context burnout crash prevention mechanism
+- **Gateway Connectivity**: Fixed Telegram auth middleware in gateway
+- **Dependency Issues**: Resolved various package and module dependency problems
+
+### Added (Previous additions from earlier versions)
 - **AGI Deep 10x Master (L11-L12)**: Nâng cấp hệ thống kiến thức & memory.
   - **Level 11 (ClawWork)**: Tích hợp `clawwork-integration.js` cho phân tích kết quả & sinh insight.
   - **Level 12 (Moltbook)**: Tích hợp `moltbook-integration.js` quản lý agent identity & metadata bền vững.
