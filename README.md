@@ -1,126 +1,163 @@
 <p align="center">
-  <img src="docs/assets/logo.png" alt="Mekong CLI" width="120" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/🐉_MEKONG_CLI-0d1117?style=for-the-badge&labelColor=0d1117&color=0d1117">
+    <img alt="Mekong CLI" src="https://img.shields.io/badge/🐉_MEKONG_CLI-ffffff?style=for-the-badge&labelColor=ffffff&color=ffffff">
+  </picture>
 </p>
 
-<h1 align="center">Mekong CLI</h1>
+<h1 align="center">
+  Autonomous AI Agent Framework
+</h1>
 
 <p align="center">
-  <strong>Open-source AI agent framework for autonomous task execution.</strong><br/>
-  Plan → Execute → Verify — with built-in credit billing for RaaS.
+  <em>Give it a goal. It plans. It executes. It verifies. Done.</em>
 </p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT License" /></a>
-  <img src="https://img.shields.io/badge/python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+" />
-  <img src="https://img.shields.io/badge/tests-1121%20passing-22c55e?style=flat-square" alt="Tests" />
-  <img src="https://img.shields.io/badge/version-3.1.0-orange?style=flat-square" alt="v3.1.0" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="MIT" /></a>
+  <a href="https://github.com/longtho638-jpg/mekong-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/longtho638-jpg/mekong-cli/ci.yml?style=flat-square&label=CI" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
+  <img src="https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node" />
+  <img src="https://img.shields.io/badge/LLM-Any_Provider-8B5CF6?style=flat-square" alt="LLM" />
+</p>
+
+<p align="center">
+  <a href="#quick-start">Quick Start</a> •
+  <a href="#how-it-works">How It Works</a> •
+  <a href="#agents">Agents</a> •
+  <a href="#api">API</a> •
+  <a href="#raas">RaaS</a> •
+  <a href="CONTRIBUTING.md">Contribute</a>
 </p>
 
 ---
 
-## What is Mekong CLI?
+## Why Mekong?
 
-Mekong CLI is an **autonomous AI agent framework** that decomposes high-level goals into executable tasks, runs them, and verifies the results — all in one pipeline.
-
-It's the open-source engine behind **AgencyOS** — a managed RaaS (Revenue-as-a-Service) platform. Contributors who improve the core engine **share in the revenue**. See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Most AI coding tools generate code and hope for the best. Mekong **plans**, **executes**, and **verifies** — then rolls back if anything breaks.
 
 ```
-"Create a FastAPI service with JWT auth"
-    ↓
-  PLAN    → LLM decomposes into 5 steps
-    ↓
-  EXECUTE → Run each step (shell, API, or LLM)
-    ↓
-  VERIFY  → Validate output against quality gates
-    ↓
-  DONE    → 3 credits deducted
+You say:  "Create a FastAPI service with JWT auth and tests"
+
+Mekong:   ┌─ PLAN ────── LLM decomposes into 5 steps with dependencies
+          ├─ EXECUTE ── Runs each step (shell, API, code generation)
+          ├─ VERIFY ─── Validates: tests pass? types check? builds clean?
+          └─ DONE ───── All green. 3 credits deducted. Ship it.
 ```
+
+**Zero babysitting.** If verification fails, it auto-rolls back and retries.
 
 ## Quick Start
 
 ```bash
-# Install from source
-git clone https://github.com/mekong-cli/mekong-cli.git
+# Clone & install
+git clone https://github.com/longtho638-jpg/mekong-cli.git
 cd mekong-cli
 pip install -e ".[dev]"
 
-# Configure LLM (any OpenAI-compatible API)
-cp .env.example .env
-# Edit .env → set LLM_API_KEY
-
-# Run your first task
-mekong cook "Create a Python calculator with tests"
-
-# Plan without executing
-mekong plan "Build a REST API with FastAPI"
-
-# Debug an issue
-mekong debug "Fix the broken tests"
-```
-
-### Works with any LLM provider
-
-```bash
-# OpenAI
+# Set your LLM (any OpenAI-compatible provider)
 export LLM_BASE_URL="https://api.openai.com/v1"
 export LLM_API_KEY="sk-..."
 
-# Anthropic (via compatible proxy)
-export LLM_BASE_URL="https://your-proxy.com/v1"
-export LLM_API_KEY="your-key"
-
-# Local (Ollama, LM Studio, etc.)
-export LLM_BASE_URL="http://localhost:11434/v1"
-export LLM_API_KEY="not-needed"
+# 🚀 Go
+mekong cook "Create a Python calculator with tests"
 ```
 
-## Core Concepts
+### Works with every LLM
 
-### Plan-Execute-Verify (PEV)
+| Provider | Config |
+|----------|--------|
+| **OpenAI** | `LLM_BASE_URL=https://api.openai.com/v1` |
+| **Anthropic** | Via any compatible proxy |
+| **Google Gemini** | `LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` |
+| **DashScope (Qwen)** | `LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| **Local (Ollama)** | `LLM_BASE_URL=http://localhost:11434/v1` |
 
-Every task goes through three phases:
+## How It Works
 
-| Phase | What happens | Module |
-|-------|-------------|--------|
-| **Plan** | LLM decomposes goal into steps with dependencies | `src/core/planner.py` |
-| **Execute** | Runner handles shell commands, API calls, LLM prompts | `src/core/executor.py` |
-| **Verify** | Validates results: exit codes, file checks, LLM assessment | `src/core/verifier.py` |
+### Plan → Execute → Verify (PEV)
 
-Failed verification triggers **automatic rollback** of completed steps.
+The core loop that makes Mekong reliable:
 
-### Agents
+```mermaid
+graph LR
+    A[🎯 Goal] --> B[📋 Plan]
+    B --> C[⚡ Execute]
+    C --> D{✅ Verify}
+    D -->|Pass| E[🏁 Done]
+    D -->|Fail| F[⏪ Rollback]
+    F --> B
+```
+
+| Phase | What | Module |
+|-------|------|--------|
+| **Plan** | LLM decomposes goal into ordered steps with dependency graph | `src/core/planner.py` |
+| **Execute** | Runs shell commands, API calls, LLM prompts — in parallel where possible | `src/core/executor.py` |
+| **Verify** | Checks exit codes, file existence, test results, LLM assessment | `src/core/verifier.py` |
+
+## Agents
 
 Pluggable agents extend Mekong with domain-specific capabilities:
 
-| Agent | Purpose | Usage |
-|-------|---------|-------|
-| `GitAgent` | Git operations (status, diff, commit, branch) | `mekong agent git status` |
-| `FileAgent` | File operations (find, read, tree, grep) | `mekong agent file find "*.py"` |
-| `ShellAgent` | Shell command execution | `mekong agent shell "ls -la"` |
-| `DatabaseAgent` | Database operations (connect, query, migrate, backup) | `mekong agent database query "SELECT * FROM users"` |
-| `RecipeCrawler` | Discover recipe files in the workspace | `mekong agent crawler scan` |
-| `LeadHunter` | Find CEO/decision-maker contacts | `mekong agent lead hunt` |
-| `ContentWriter` | Generate SEO content | `mekong agent content write` |
+```bash
+mekong agent git status          # Git operations
+mekong agent file find "*.py"    # File search & analysis
+mekong agent shell "npm test"    # Shell execution with safety
+mekong agent database query ...  # Database ops (connect, query, migrate)
+mekong agent crawler scan        # Recipe discovery
+mekong agent lead hunt           # Lead generation
+mekong agent content write       # SEO content generation
+```
 
-All agents inherit `AgentBase` with the same `plan() → execute() → verify()` flow. **Want to build your own agent? See [CONTRIBUTING.md](CONTRIBUTING.md).**
+All agents follow the same `plan() → execute() → verify()` pattern. [Build your own →](CONTRIBUTING.md)
 
-### Credit System (RaaS)
+## CLI
 
-Built-in credit billing for monetizing AI agent work:
+```bash
+mekong cook  "Build a REST API"     # Full PEV pipeline
+mekong plan  "Add OAuth support"    # Plan only (dry run)
+mekong debug "Fix login bug"        # Debug analysis
+mekong run   recipe.md              # Execute recipe file
+mekong agent <name> <cmd>           # Run agent directly
+mekong gateway                      # Start API server
+mekong evolve                       # Self-improvement cycle
+```
+
+| Flag | Description |
+|------|-------------|
+| `--verbose` `-v` | Step-by-step execution details |
+| `--dry-run` `-n` | Plan only, no execution |
+| `--strict` | Fail on first verification error |
+| `--json` `-j` | Machine-readable JSON output |
+
+## API
+
+Start the gateway: `mekong gateway --port 8000`
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Health check |
+| `/cmd` | POST | Execute PEV pipeline |
+| `/v1/tasks` | POST | Submit task (credits deducted) |
+| `/v1/tasks/{id}` | GET | Poll task status |
+| `/v1/tasks/{id}/stream` | GET | SSE real-time progress |
+| `/v1/agents` | GET | List available agents |
+| `/v1/agents/{name}/run` | POST | Invoke agent directly |
+| `/billing/webhook` | POST | Polar.sh webhook |
+
+## RaaS
+
+**Revenue as a Service** — built-in credit billing to monetize AI agent work:
 
 ```python
 from src.raas.sdk import MekongClient
 
-client = MekongClient(
-    base_url="https://api.your-raas.com",
-    api_key="mk_your_key_here"
-)
+client = MekongClient("https://api.your-raas.com", "mk_your_key")
 
-# Submit a task (auto-deducts credits)
+# Submit task → auto-deducts credits
 result = client.submit_task("Deploy a landing page")
-print(f"Task {result.task_id}: {result.status}")
 
-# Stream real-time progress (SSE)
+# Stream real-time progress
 for event in client.stream_task(result.task_id):
     print(f"Step {event['order']}: {event['title']}")
 ```
@@ -128,157 +165,62 @@ for event in client.stream_task(result.task_id):
 | Complexity | Credits | Example |
 |-----------|---------|---------|
 | Simple | 1 | Single file edit, git operation |
-| Standard | 3 | Multi-step feature implementation |
-| Complex | 5 | Full-stack feature with tests |
-
-## CLI Commands
-
-```bash
-mekong cook "<goal>"          # Full PEV pipeline
-mekong plan "<goal>"          # Plan only (dry run)
-mekong run <recipe.md>        # Execute existing recipe
-mekong agent <name> <cmd>     # Run agent directly
-mekong list                   # List available recipes
-mekong search <query>         # Search recipes
-mekong ask "<question>"       # Quick plan for a question
-mekong debug "<issue>"        # Generate debug plan
-mekong gateway                # Start API server
-mekong dash                   # Interactive action menu
-mekong evolve                 # Self-improvement cycle
-mekong version                # Show version (v3.0.0)
-```
-
-### Flags
-
-| Flag | Description |
-|------|------------|
-| `--verbose` / `-v` | Show step-by-step execution details |
-| `--dry-run` / `-n` | Plan only, no execution |
-| `--strict` | Fail on first verification error (default: on) |
-| `--no-rollback` | Skip rollback on failure |
-| `--json` / `-j` | Machine-readable JSON output |
+| Standard | 3 | Multi-step feature with tests |
+| Complex | 5 | Full-stack feature + deployment |
 
 ## Architecture
 
 ```
 mekong-cli/
-├── src/
-│   ├── core/                  # PEV Engine
-│   │   ├── planner.py         # LLM task decomposition
-│   │   ├── executor.py        # Multi-mode runner
-│   │   ├── verifier.py        # Result validation + quality gates
-│   │   ├── orchestrator.py    # PEV coordination + rollback
-│   │   ├── llm_client.py      # OpenAI-compatible LLM client
-│   │   ├── gateway.py         # FastAPI server + WebSocket
-│   │   ├── dag_scheduler.py   # DAG-based parallel execution
-│   │   ├── providers.py       # Multi-provider LLM support
-│   │   ├── plugin_loader.py   # Community plugin system
-│   │   └── ...                # 30+ core modules
-│   ├── agents/                # Pluggable agent system
-│   │   ├── git_agent.py       # Git operations
-│   │   ├── file_agent.py      # File operations
-│   │   ├── shell_agent.py     # Shell execution
-│   │   ├── recipe_crawler.py  # Recipe discovery
-│   │   ├── lead_hunter.py     # Lead generation
-│   │   └── content_writer.py  # Content creation
-│   └── raas/                  # Credit billing (RaaS)
-│       ├── credits.py         # Credit store (SQLite)
-│       ├── billing.py         # Polar.sh webhook handler
-│       ├── tenant.py          # Multi-tenant management
-│       ├── missions.py        # Mission lifecycle
-│       ├── sdk.py             # Python SDK (sync + async)
-│       └── rate_limiter.py    # Fair-use rate limiting
-├── tests/                     # 1168 tests (100% pass rate)
-├── recipes/                   # Built-in recipe templates
-└── docs/                      # Documentation
-```
-
-## API Server
-
-```bash
-# Start the gateway
-mekong gateway --port 8000
-# Or: make server
-```
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/health` | GET | Health check |
-| `/cmd` | POST | Execute PEV pipeline |
-| `/v1/tasks` | POST | Submit task (credits deducted) |
-| `/v1/tasks/{id}` | GET | Poll task status + results |
-| `/v1/tasks/{id}/stream` | GET | SSE real-time progress |
-| `/v1/agents` | GET | List registered agents |
-| `/v1/agents/{name}/run` | POST | Run agent directly |
-| `/billing/webhook` | POST | Polar.sh webhook receiver |
-
-## Build Your Own RaaS
-
-```python
-# 1. Create a tenant
-from src.raas.tenant import TenantStore
-store = TenantStore()
-tenant = store.create_tenant("Acme Corp")
-print(f"API Key: {tenant.api_key}")  # mk_... (shown once)
-
-# 2. Add credits
-from src.raas.credits import CreditStore
-credits = CreditStore()
-credits.add(tenant.id, 100, "initial_grant")
-
-# 3. Submit tasks via API or SDK
-from src.raas.sdk import MekongClient
-client = MekongClient("https://api.your-raas.com", tenant.api_key)
-result = client.submit_task("Create a REST API for users")
+├── src/                    # Core engine
+│   ├── core/               # PEV pipeline (planner, executor, verifier)
+│   ├── agents/             # Pluggable agent system
+│   └── raas/               # Credit billing & SDK
+├── apps/                   # Production services
+│   ├── algo-trader/        # Trading engine (Fastify + BullMQ)
+│   ├── openclaw-worker/    # Autonomous CTO brain (Tôm Hùm 🦞)
+│   └── raas-gateway/       # Cloudflare Worker gateway
+├── packages/               # Shared libraries
+├── cli/                    # CLI entry point
+├── recipes/                # Built-in task templates
+├── docker/                 # Container configs
+├── tests/                  # Test suite
+├── docs/                   # Documentation
+└── examples/               # Usage examples
 ```
 
 ## Development
 
 ```bash
-make install    # Install (editable)
-make dev        # Install with dev deps
-make test       # Run 1168 tests
-make lint       # Ruff + mypy
-make format     # Auto-format
-make server     # Start dev server
-make clean      # Remove artifacts
+pnpm install              # Install dependencies
+pnpm run build            # Build all packages
+pnpm run test             # Run test suite
+pnpm run lint             # Lint check
 ```
 
 ## Contributing & Revenue Sharing
 
-We believe contributors should share in the value they create. See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+Contributors **share in the revenue** generated by AgencyOS usage of their code. This isn't charity — it's aligned incentives.
 
-- **Revenue sharing program** — earn from AgencyOS usage of your contributions
-- **Code standards** — quality gates, architecture patterns
-- **PR workflow** — fork, branch, test, submit
+See [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- 💰 Revenue sharing program
+- 📐 Code standards & architecture patterns
+- 🔀 PR workflow
 
 ## Roadmap
 
-- [x] PEV Engine (Plan-Execute-Verify)
-- [x] Agent System (Git, File, Shell, Lead, Content)
-- [x] Credit Billing (SQLite, Polar.sh)
+- [x] PEV Engine (Plan → Execute → Verify)
+- [x] Agent System (Git, File, Shell, Database, Lead, Content)
+- [x] Credit Billing (SQLite + Polar.sh)
 - [x] Multi-tenant isolation
 - [x] Python SDK (sync + async)
-- [x] DAG scheduler (parallel task steps)
+- [x] DAG scheduler (parallel execution)
 - [x] Multi-provider LLM support
-- [x] Plugin loader
+- [x] Plugin system
 - [ ] Plugin marketplace
-- [ ] Web dashboard (open-source)
+- [ ] Web dashboard
 - [ ] Community recipe registry
 - [ ] npm/pip package publishing
-
-## Built With
-
-Mekong CLI stands on the shoulders of giants:
-
-- [AI Agent Toolkit](https://claudekit.cc/?ref=B0DXGRIX) — The engineer framework powering our PEV pipeline
-- [Multi-Agent Orchestration](https://claudekit.cc/?ref=B0DXGRIX) — 17+ specialized agents for parallel task execution
-- [Agentic Workflow Engine](https://claudekit.cc/?ref=B0DXGRIX) — 50+ commands and 80+ skills for autonomous coding
-- [OpenAI](https://openai.com) / [Anthropic](https://anthropic.com) / [Google](https://ai.google.dev) — LLM providers
-- [FastAPI](https://fastapi.tiangolo.com) — API gateway
-- [Polar.sh](https://polar.sh) — Open-source billing
-
-> 💡 **For developers building AI agents**: Check out the [engineer toolkit](https://claudekit.cc/?ref=B0DXGRIX) we use internally — it dramatically accelerates agent development with pre-built skills, commands, and orchestration patterns.
 
 ## License
 
@@ -287,6 +229,6 @@ Mekong CLI stands on the shoulders of giants:
 ---
 
 <p align="center">
-  <strong>Mekong CLI</strong> v3.0.0 &copy; 2026 <a href="https://binhphap.io">Binh Phap Venture Studio</a><br/>
-  <em>"Speed is the essence of war." — Sun Tzu</em>
+  <sub>Built with 🐉 by <a href="https://binhphap.io">Binh Phap Venture Studio</a></sub><br/>
+  <sub><em>"Speed is the essence of war." — Sun Tzu, The Art of War</em></sub>
 </p>
