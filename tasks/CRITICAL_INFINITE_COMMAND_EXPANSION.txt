@@ -1,0 +1,23 @@
+MISSION: Infinite Command Expansion Loop — ClaudeKit DNA Vòng Lặp Vô Tận
+DISPATCH: P0 (mekong-cli workspace)
+PRIORITY: CRITICAL
+FORMAT: /bootstrap:auto:parallel
+
+OBJECTIVE:
+Triển khai vòng lặp liên tục trên P0 để tự động tạo, làm giàu, và mở rộng hệ thống commands.
+Lấy ClaudeKit (engineer@v2.9.1) làm DNA gốc — mỗi vòng lặp phải:
+
+1. SCAN: Quét toàn bộ .claude/commands/ và .agent/workflows/ hiện có
+2. ANALYZE: So sánh với ClaudeKit DNA (50+ commands, 80+ skills, 17+ agents)
+3. GENERATE: Tạo commands mới dựa trên kiến trúc có sẵn (format chuẩn .md với YAML frontmatter)
+4. ENRICH: Làm giàu commands cũ — thêm flags, thêm logic, thêm parallel support
+5. COMMIT: Git commit + push mỗi batch commands mới
+6. LOOP: Quay lại bước 1 — KHÔNG BAO GIỜ DỪNG
+
+ARCHITECTURE DNA:
+- Commands phải tuân theo format: .claude/commands/[name].md hoặc .agent/workflows/[name].md  
+- Mỗi command có YAML frontmatter: description, triggers
+- Commands phải tận dụng skills có sẵn trong .agent/skills/
+- Ưu tiên tạo commands cho: revenue ops, deployment, monitoring, security audit, content generation
+
+QUALITY: 100/100 Binh Phap standard. Mỗi command phải có description rõ ràng và steps chi tiết.

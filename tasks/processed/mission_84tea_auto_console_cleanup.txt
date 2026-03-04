@@ -1,1 +1,0 @@
-/cook "Trả lời bằng TIẾNG VIỆT. Clean all console.log and debug statements from production code in 84tea. Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại. CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations." --fast --no-test --auto

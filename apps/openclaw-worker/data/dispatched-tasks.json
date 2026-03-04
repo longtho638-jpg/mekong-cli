@@ -1,22 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "84ee81998ff0",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
-      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
-      "dispatchedAt": 1772349358091
-    },
-    {
-      "hash": "bbd50166c1e3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.1 始計 Kế Sách (Planning)",
-      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/A2UI ",
-      "dispatchedAt": 1772349629526
-    },
-    {
       "hash": "30e75980f883",
       "project": "well",
       "pane": 1,
@@ -1599,6 +1583,22 @@
       "chapter": "TIER3-STRATEGIC: tests",
       "preview": "/cook \"mekong-cli: Nâng tests từ 5→10. Scan codebase, fix issues, add tests/docs",
       "dispatchedAt": 1772415309549
+    },
+    {
+      "hash": "9ed19a06ae24",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-STRATEGIC: production",
+      "preview": "/cook \"mekong-cli: Nâng production từ 4→10. Scan codebase, fix issues, add tests",
+      "dispatchedAt": 1772591614110
+    },
+    {
+      "hash": "192cf124f6c3",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-STRATEGIC: resources",
+      "preview": "/cook \"mekong-cli: Nâng resources từ 5→10. Scan codebase, fix issues, add tests/",
+      "dispatchedAt": 1772591623390
     }
   ],
   "chapterIndex": 5

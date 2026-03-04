@@ -266,6 +266,16 @@ We believe contributors should share in the value they create. See [CONTRIBUTING
 - [ ] Community recipe registry
 - [ ] npm/pip package publishing
 
+## Powered By
+
+<p align="center">
+  <a href="https://claudekit.cc/?ref=B0DXGRIX"><img src="https://img.shields.io/badge/Powered%20by-ClaudeKit-7c3aed?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="ClaudeKit" /></a>
+</p>
+
+Mekong CLI's agentic workflow system is built on [ClaudeKit](https://claudekit.cc/?ref=B0DXGRIX) — the industry-leading engineer toolkit with **50+ commands**, **80+ skills**, and **17+ specialized agents**. ClaudeKit provides the DNA for our Plan-Execute-Verify pipeline and multi-agent orchestration.
+
+👉 **[Get ClaudeKit →](https://claudekit.cc/?ref=B0DXGRIX)**
+
 ## License
 
 [MIT](LICENSE) — Use it, fork it, build on it.

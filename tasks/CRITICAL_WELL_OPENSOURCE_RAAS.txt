@@ -1,0 +1,25 @@
+MISSION: Well → Open Source RaaS Transformation (Mekong-CLI Pattern)
+DISPATCH: P1 (apps/well workspace)
+PRIORITY: CRITICAL
+FORMAT: /bootstrap:auto:parallel
+
+OBJECTIVE:
+Biến Well thành dự án nguồn mở theo mô hình RaaS (Revenue-as-a-Service) giống Mekong-CLI.
+Tận dụng sức mạnh cộng đồng developer để phát triển tính năng, thu tiền từ user no-tech muốn dùng.
+
+STRATEGY (Binh Phap 謀攻 — Win Without Fighting):
+1. OPEN SOURCE: Chuyển repo Well sang PUBLIC, setup CONTRIBUTING.md, LICENSE (MIT/Apache)
+2. COMMUNITY: Tạo issue templates, PR templates, discussion board cho contributors
+3. MONETIZATION: Freemium model — core miễn phí, premium features (AI, analytics, advanced UI) thu phí
+4. RAAS ENGINE: Tích hợp RaaS pattern từ Mekong-CLI — subscription billing, feature flags, usage metering
+5. DOCUMENTATION: README chuẩn open-source, API docs, getting started guide cho devs
+6. CI/CD: GitHub Actions pipeline cho community PRs — auto test, auto review, auto merge
+
+REVENUE MODEL:
+- Free tier: Core features (basic wellness tracking, simple UI)
+- Pro tier ($9/mo): AI insights, advanced analytics, custom themes
+- Enterprise tier ($29/mo): White-label, API access, priority support
+- Community features: Devs build plugins → marketplace → revenue share
+
+CONTINUOUS LOOP: Giám sát liên tục, mỗi vòng tạo thêm features, docs, và community infrastructure.
+QUALITY: 100/100 Binh Phap standard.

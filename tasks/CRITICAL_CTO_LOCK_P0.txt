@@ -1,0 +1,15 @@
+MISSION: FORCE CTO SUPERVISION ON P0
+DISPATCH: P0 (mekong-cli workspace)
+PRIORITY: CRITICAL
+FORMAT: /cook
+
+OBJECTIVE:
+Khóa chặt giám sát của CTO vào P0. Không để P0 rơi vào trạng thái nhàn rỗi (IDLE). Nhiệm vụ của CTO là phải giữ cho vòng lặp tạo command mới (Infinite Command Expansion Loop) hoạt động liên tục.
+
+STRATEGY:
+1. CTO (thông qua mission-dispatcher) phải check log tmux của P0 mỗi 10 giây.
+2. Nếu P0 thoát về shell (`%`) hoặc đang hỏi menu tương tác → Tự động bypass hoặc gõ lại `/cook` để resume vòng lặp.
+3. Bắt buộc P0 phải tiếp tục quét `.claude/commands/`, tạo file `.md` mới, và commit liên tục.
+4. Đừng rời mắt. Nếu P0 báo "Done", lập tức khởi động lại vòng lặp báo cáo thành rác /cook mới.
+
+QUALITY: 100/100 Binh Phap standard.

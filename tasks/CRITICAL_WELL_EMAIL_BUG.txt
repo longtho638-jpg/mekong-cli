@@ -1,0 +1,17 @@
+MISSION: Fix Well Email Verification Flow Bug
+DISPATCH: P2 (apps/well workspace)
+PRIORITY: CRITICAL
+FORMAT: /bootstrap:auto:parallel
+
+OBJECTIVE:
+Fix the email verification bug in the WellNexus project (apps/well).
+Ensure users can successfully verify their emails and log in without encountering 'Invalid Link' or token mismatch errors.
+
+STRATEGY:
+1. AUDIT FLOW: Inspect `src/pages/confirm-email.tsx` and `src/pages/confirm-email/use-confirm-email-verification-flow.ts` 
+2. SUPABASE PKCE: Ensure the email template in Supabase uses the correct PKCE link format `{{ .ConfirmationURL }}` rather than explicit hashing if PKCE is enabled.
+3. FIX CLIENT LOGIC: The client-side logic in `useConfirmEmailVerificationFlow.ts` needs to correctly handle the `#access_token` and `&code=` parameters properly without timing out.
+4. TYPE SAFETY: Ensure `src/services/email-service.ts` type definitions align with any new email template requirements.
+5. VERIFICATION: Push fixes and confirm CI build is green.
+
+QUALITY: 100/100 Binh Phap standard. Fix must be clean, secure, and fully operational.

@@ -21,6 +21,7 @@ module.exports = {
     'indicators.test',
     'arbitrage-scan-execute-routes-api',
     'sliding-window-rate-limiter',
+    'ml-strategy-loader-integration',
   ],
   testMatch: ['**/*.test.ts'],
   moduleDirectories: ['node_modules', '<rootDir>/node_modules'],

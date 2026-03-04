@@ -45,7 +45,7 @@ check_heartbeat_age() {
 # --- Core Checks ---
 
 check_cto() {
-  if pgrep -f 'node.*task-watcher' > /dev/null 2>&1; then
+  if pgrep -f 'node.*vibe-factory-monitor' > /dev/null 2>&1; then
     return 0  # alive
   else
     return 1  # dead
@@ -111,13 +111,13 @@ check_tasks_pending() {
 
 restart_cto() {
   log "🔧 RESTART CTO: task-watcher process dead — restarting..."
-  pkill -9 -f 'node.*task-watcher' 2>/dev/null || true
+  pkill -9 -f 'node.*vibe-factory-monitor' 2>/dev/null || true
   sleep 2
   
   # DO NOT rm -f .mission-active*.lock here! It corrupts running tmux sessions.
   
   cd "$OPENCLAW_DIR"
-  nohup node task-watcher.js > /dev/null 2>&1 &
+  nohup node scripts/vibe-factory-monitor.js > /dev/null 2>&1 &
   disown
   local pid=$!
   log "✅ CTO RESTARTED: PID=$pid"

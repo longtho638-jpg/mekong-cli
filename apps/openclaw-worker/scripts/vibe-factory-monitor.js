@@ -228,8 +228,8 @@ async function generateScoreTargetedTask(pane, scoreResult) {
     let tier, tierCmd;
     if (stuckAttempts >= 3) {
         tier = 'TIER2-DEBUG';
-        tierCmd = `/cook "DEBUG ${proj}: dim ${weakestDim} stuck ${stuckAttempts}x. Deep scan root cause. npm run build && npm test. Find WHY it fails. Fix and verify."`;
-        log(`P${pane.idx}: 🔴 TIER 2 → /cook DEBUG (${weakestDim} stuck ${stuckAttempts}x)`);
+        tierCmd = `/bootstrap:auto:parallel "DEBUG ${proj}: dim ${weakestDim} stuck ${stuckAttempts}x. Deep scan root cause. npm run build && npm test. Find WHY it fails. Fix and verify."`;
+        log(`P${pane.idx}: 🔴 TIER 2 → /bootstrap:auto:parallel DEBUG (${weakestDim} stuck ${stuckAttempts}x)`);
     } else if (totalScore < 60) {
         tier = 'TIER1-BOOTSTRAP';
         const BOOTSTRAP_PLANS = {
@@ -242,12 +242,12 @@ async function generateScoreTargetedTask(pane, scoreResult) {
         log(`P${pane.idx}: 🚀 TIER 1 → /bootstrap:auto:parallel (score ${totalScore} < 60)`);
     } else if (totalScore < 85) {
         tier = 'TIER3-STRATEGIC';
-        tierCmd = `/cook "${proj}: Nâng ${weakestDim} từ ${weakestScore}→10. Scan codebase, fix issues, add tests/docs as needed. npm run build && npm test must pass."`;
-        log(`P${pane.idx}: ⚔️ TIER 3 → /cook STRATEGIC (score ${totalScore}, dim ${weakestDim}=${weakestScore})`);
+        tierCmd = `/bootstrap:auto:parallel "${proj}: Nâng ${weakestDim} từ ${weakestScore}→10. Scan codebase, fix issues, add tests/docs as needed. npm run build && npm test must pass."`;
+        log(`P${pane.idx}: ⚔️ TIER 3 → /bootstrap:auto:parallel STRATEGIC (score ${totalScore}, dim ${weakestDim}=${weakestScore})`);
     } else {
         tier = 'TIER4-POLISH';
-        tierCmd = `/cook "${proj}: Polish ${weakestDim} (${weakestScore}→10). Quick fix and verify: npm run build && npm test."`;
-        log(`P${pane.idx}: 🍳 TIER 4 → /cook (score ${totalScore} ≥ 85, dim ${weakestDim}=${weakestScore})`);
+        tierCmd = `/bootstrap:auto:parallel "${proj}: Polish ${weakestDim} (${weakestScore}→10). Quick fix and verify: npm run build && npm test."`;
+        log(`P${pane.idx}: 🍳 TIER 4 → /bootstrap:auto:parallel POLISH (score ${totalScore} ≥ 85, dim ${weakestDim}=${weakestScore})`);
     }
 
     taskCmd = tierCmd;
@@ -545,9 +545,9 @@ async function checkAllPanes() {
                                 cookCmd = `/debug "${pane.project}: ${guard.reason.slice(0, 80)}"`;
                                 log(`P${pane.idx}: 🧠 GUARD → DEBUG: ${guard.reason}`);
                             }
-                            // Stuck → /cook UNSTUCK
+                            // Stuck → /bootstrap UNSTUCK
                             else if (guard.correctedState === 'stuck' || guard.correctedState === 'STUCK') {
-                                cookCmd = `/cook "${pane.project}: UNSTUCK — ${guard.reason.slice(0, 80)}" --auto`;
+                                cookCmd = `/bootstrap:auto:parallel "${pane.project}: UNSTUCK — ${guard.reason.slice(0, 80)}"`;
                                 log(`P${pane.idx}: 🧠 GUARD → UNSTUCK: ${guard.reason}`);
                             }
                         }
@@ -567,7 +567,8 @@ async function checkAllPanes() {
 
                     // Step 4: Fallback — Score-based Binh Pháp (last resort)
                     if (!cookCmd) {
-                        cookCmd = await generateScoreTargetedTask(pane, scoreResult);
+                        log(`P${pane.idx}: ⏸️ LLM did not suggest a command. Waiting instead of blind fallback.`);
+                        // cookCmd = await generateScoreTargetedTask(pane, scoreResult);
                     }
                 }
 
