@@ -175,12 +175,13 @@ jobs:
         working-directory: ${{ env.WORKING_DIRECTORY }}
         run: pnpm run build
 
-      - name: Build dashboard
-        working-directory: ${{ env.WORKING_DIRECTORY }}
-        run: |
-          cd dashboard
-          pnpm install --shamefully-hoist
-          pnpm run build
+      # Dashboard build disabled - optional component
+      # - name: Build dashboard
+      #   working-directory: ${{ env.WORKING_DIRECTORY }}
+      #   run: |
+      #     cd dashboard
+      #     pnpm install --shamefully-hoist
+      #     pnpm run build
 
       - name: Build summary
         if: always()
