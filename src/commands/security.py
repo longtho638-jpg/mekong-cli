@@ -280,7 +280,7 @@ def scan_secrets(
             try:
                 file_content = file_path.read_text(encoding='utf-8')
                 for pattern in secret_patterns:
-                    matches = re.finditer(pattern, content, re.IGNORECASE)
+                    matches = re.finditer(pattern, file_content, re.IGNORECASE)
                     for match in matches:
                         secrets_found.append({
                             "file": str(file_path),
