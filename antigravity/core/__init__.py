@@ -1,12 +1,6 @@
 """
-🏗️ AntigravityKit Core Module
-=============================
-
+AntigravityKit Core Module
 Provides the foundational building blocks for the Agency OS ecosystem.
-Orchestrates identity, lead generation, content production, revenue tracking,
-and the VIBE IDE suite.
-
-"Không đánh mà thắng" - Win Without Fighting 🏯
 """
 
 from .agency_dna import AgencyDNA, PricingTier, Service, Tone
@@ -37,77 +31,27 @@ from .vibe_ide import VIBEIDE
 from .vibe_orchestrator import VIBEOrchestrator
 from .vibe_workflow import VIBEWorkflow
 
-# Domain models - optional imports
 try:
     from .models import (
-        AgentTask,
-        AgentType,
-        ChainResult,
-        CodeReviewResult,
-        DealStage,
-        ExecutionMode,
-        Forecast,
-        Invoice,
-        InvoiceStatus,
-        Plan,
-        StartupDeal,
-        Task,
-        TaskStatus,
-        TodoItem,
-        WinCheck,
-        WinType,
-        WorkflowStep,
+        AgentTask, AgentType, ChainResult, CodeReviewResult,
+        DealStage, ExecutionMode, Forecast, Invoice, InvoiceStatus,
+        Plan, StartupDeal, Task, TaskStatus, TodoItem,
+        WinCheck, WinType, WorkflowStep,
     )
 except ImportError:
     pass
 
-# Backward compatibility aliases
 save_data = persist_save
 load_data = persist_load
 
 __all__ = [
-    # Infrastructure
-    "BaseModel",
-    "BaseEngine",
-    "AntigravityError",
-    "ValidationError",
-    "PersistenceError",
-    "WinWinWinError",
-    "WorkflowError",
-    "ConfigError",
-    # Configuration
-    "Currency",
-    "EXCHANGE_RATES",
-    "ARR_TARGET_2026",
-    "DealTier",
-    "TIER_PRICING",
-    "MAX_FILE_LINES",
-    "DEFAULT_GROWTH_RATE",
-    # Persistence
-    "JSONStore",
-    "get_persistence_store",
-    "persist_save",
-    "persist_load",
-    "save_data",
-    "load_data",
-    # Operations
-    "AgencyDNA",
-    "Tone",
-    "PricingTier",
-    "Service",
-    "ClientMagnet",
-    "Lead",
-    "Client",
-    "LeadSource",
-    "LeadStatus",
-    "ContentFactory",
-    "ContentIdea",
-    "ContentPiece",
-    "ContentType",
-    "RevenueEngine",
-    "SalesPipeline",
-    # DX / VIBE
-    "VIBEWorkflow",
-    "VIBEIDE",
-    "VIBEOrchestrator",
+    "BaseModel", "BaseEngine", "AntigravityError", "ValidationError",
+    "PersistenceError", "WinWinWinError", "WorkflowError", "ConfigError",
+    "Currency", "EXCHANGE_RATES", "ARR_TARGET_2026", "DealTier",
+    "TIER_PRICING", "MAX_FILE_LINES", "DEFAULT_GROWTH_RATE",
+    "JSONStore", "get_persistence_store", "persist_save", "persist_load",
+    "save_data", "load_data", "AgencyDNA", "Tone", "PricingTier", "Service",
+    "ClientMagnet", "Lead", "Client", "LeadSource", "LeadStatus",
+    "ContentFactory", "ContentIdea", "ContentPiece", "ContentType",
+    "RevenueEngine", "SalesPipeline", "VIBEWorkflow", "VIBEIDE", "VIBEOrchestrator",
 ]
