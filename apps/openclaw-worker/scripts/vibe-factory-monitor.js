@@ -14,19 +14,16 @@
  * Binh Pháp: 始計 (scan) → 謀攻 (plan) → 軍爭 (execute) → 九變 (adapt)
  */
 
-const { execSync, spawn } = require('child_process');
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const http = require('http');
 
 // ══════════════════════════════════════════════════
 // CONFIG
 // ══════════════════════════════════════════════════
 const SESSION = 'tom_hum:brain';
 const LOG_FILE = path.join(process.env.HOME, 'tom_hum_cto.log');
-const PROXY_PORT = 443; // DashScope direct (no local proxy)
 const CHECK_INTERVAL_MS = process.env.VIBE_INTERVAL || 30_000;
-const FALLBACK_MODEL = 'qwen3.5-plus'; // CTO Brain = strongest model
 
 const PANES = [
     { idx: 0, project: 'mekong-cli', dir: path.join(process.env.HOME, 'mekong-cli'), focus: 'AGI agentic skills + ClaudeKit commands for all business domains' },
@@ -113,23 +110,6 @@ function scanCodebase(pane) {
 }
 
 // ══════════════════════════════════════════════════
-// BINH PHAP OPEN-SOURCE MAP
-// ══════════════════════════════════════════════════
-const BINH_PHAP_MAP = [
-    { chapter: 'Ch.1 始計 Kế Sách (Planning)', repos: 'google/A2UI, anthropics/claude-code' },
-    { chapter: 'Ch.2 作戰 Tác Chiến (Resources)', repos: 'upstash/qstash, trigger-dev/trigger.dev' },
-    { chapter: 'Ch.3 謀攻 Mưu Công (Win W/O Fight)', repos: 'n8n-io/n8n, langchain-ai/langgraph' },
-    { chapter: 'Ch.4 軍形 Quân Hình (CI/CD Gates)', repos: 'google/zx, biomejs/biome' },
-    { chapter: 'Ch.5 兵勢 Binh Thế (Momentum)', repos: 'vercel/ai, huggingface/transformers.js' },
-    { chapter: 'Ch.6 虛實 Hư Thực (Smart Routing)', repos: 'BerriAI/litellm, portkey-ai/gateway' },
-    { chapter: 'Ch.7 軍爭 Quân Tranh (Execution)', repos: 'railway/nixpacks, pulumi/pulumi' },
-    { chapter: 'Ch.8 九變 Cửu Biến (Adaptation)', repos: 'temporal-io/temporal, inngest/inngest' },
-    { chapter: 'Ch.9 行軍 Hành Quân (Observability)', repos: 'grafana/grafana, highlight/highlight' },
-    { chapter: 'Ch.10 地形 Địa Hình (Architecture)', repos: 'electron/electron, nicegui/nicegui' },
-    { chapter: 'Ch.11 九地 Cửu Địa (Recovery)', repos: 'netdata/netdata, louislam/uptime-kuma' },
-    { chapter: 'Ch.12 火攻 Hỏa Công (Disruption)', repos: 'cal-com/cal.com, formbricks/formbricks' },
-    { chapter: 'Ch.13 用間 Dụng Gián (Intelligence)', repos: 'mem0ai/mem0, qdrant/qdrant' }
-];
 
 const dedup = require('../lib/task-dedup-registry.js');
 
@@ -260,24 +240,36 @@ async function generateScoreTargetedTask(pane, scoreResult) {
 // PANE STATE DETECTOR
 // ══════════════════════════════════════════════════
 
-// 🛡️ INJECTION COOLDOWN — prevent duplicate task injection
-const INJECTION_COOLDOWN_MS = 180000; // 3 minutes
-const lastInjection = {}; // paneIdx → timestamp
+// 🛡️ DYNAMIC COOLDOWN — based on task complexity
+// Simple tasks (/cook, /fix, /test, /debug): 60s
+// Complex tasks (/bootstrap, /plan:hard, /plan:parallel): 180s
+const SIMPLE_COOLDOWN_MS = 60000;
+const COMPLEX_COOLDOWN_MS = 180000;
+const lastInjection = {}; // paneIdx → { ts, type: 'simple'|'complex' }
+
+function getCooldownForTask(taskCmd) {
+    // Complex commands need more time to show progress
+    const isComplex = /\/(bootstrap|plan:hard|plan:parallel|review:codebase)/.test(taskCmd);
+    return isComplex ? COMPLEX_COOLDOWN_MS : SIMPLE_COOLDOWN_MS;
+}
 
 function isInCooldown(paneIdx) {
     const last = lastInjection[paneIdx];
     if (!last) return false;
-    const elapsed = Date.now() - last;
-    if (elapsed < INJECTION_COOLDOWN_MS) {
-        const remaining = Math.ceil((INJECTION_COOLDOWN_MS - elapsed) / 1000);
-        log(`P${paneIdx}: 🛡️ COOLDOWN — ${remaining}s remaining, SKIP injection`);
+    const elapsed = Date.now() - last.ts;
+    const cooldownMs = last.type === 'complex' ? COMPLEX_COOLDOWN_MS : SIMPLE_COOLDOWN_MS;
+    if (elapsed < cooldownMs) {
+        const remaining = Math.ceil((cooldownMs - elapsed) / 1000);
+        log(`P${paneIdx}: 🛡️ COOLDOWN (${last.type}) — ${remaining}s remaining, SKIP injection`);
         return true;
     }
     return false;
 }
 
-function recordInjection(paneIdx) {
-    lastInjection[paneIdx] = Date.now();
+function recordInjection(paneIdx, taskCmd) {
+    const type = /\/(bootstrap|plan:hard|plan:parallel|review:codebase)/.test(taskCmd) ? 'complex' : 'simple';
+    lastInjection[paneIdx] = { ts: Date.now(), type };
+    log(`P${paneIdx}: 📝 Recorded ${type} injection, cooldown=${type === 'complex' ? '180s' : '60s'}`);
 }
 
 function detectPaneState(output) {
@@ -682,8 +674,8 @@ async function checkAllPanes() {
 
                     // Step 4: Fallback — Score-based Binh Pháp (last resort)
                     if (!cookCmd) {
-                        log(`P${pane.idx}: ⏸️ LLM did not suggest a command. Waiting instead of blind fallback.`);
-                        // cookCmd = await generateScoreTargetedTask(pane, scoreResult);
+                        log(`P${pane.idx}: ⏸️ LLM did not suggest a command. Using score fallback...`);
+                        cookCmd = await generateScoreTargetedTask(pane, scoreResult);
                     }
                 }
 
@@ -691,7 +683,7 @@ async function checkAllPanes() {
                 if (cookCmd) {
                     log(`P${pane.idx}: 🚀 INJECTING: ${cookCmd.slice(0, 100)}...`);
                     tmuxSendBuffer(pane.idx, cookCmd);
-                    recordInjection(pane.idx); // 🛡️ Start cooldown 3min
+                    recordInjection(pane.idx, cookCmd); // 🛡️ Start dynamic cooldown
                 }
                 break;
             }
@@ -712,7 +704,7 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 // BOOT
 // ══════════════════════════════════════════════════
 log('🏭 VIBE CODING FACTORY v2026.3.2 STARTED');
-log(`Interval: ${CHECK_INTERVAL_MS / 1000}s | Panes: ${PANES.length} | Proxy: localhost:${PROXY_PORT}`);
+log(`Interval: ${CHECK_INTERVAL_MS / 1000}s | Panes: ${PANES.length}`);
 
 // ✅ 1. CONFIG VALIDATE GATE (始計 Ch.1 - 多算勝)
 try {

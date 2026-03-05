@@ -17,7 +17,7 @@ const path = require('path');
 const CTO_API_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages';
 const DASHSCOPE_KEY = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
 const LLM_TIMEOUT_MS = 45000;
-const CACHE_TTL_MS = 30000; // Cache LLM results for 30s
+const CACHE_TTL_MS = 60000; // Cache LLM results for 30s
 const perceptionCache = new Map();
 
 function log(msg) {
@@ -282,7 +282,7 @@ function clearCache(paneIdx = null) {
 // 🛡️ LLM GUARD GATE — Validate ALL states before action
 // ══════════════════════════════════════════════════
 
-const TOKEN_BUDGET_PER_HOUR = 15; // Max LLM calls per pane per hour
+const TOKEN_BUDGET_PER_HOUR = 10; // Max LLM calls per pane per hour
 const tokenUsage = new Map(); // paneIdx → [{ ts }]
 
 /**
