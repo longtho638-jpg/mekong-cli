@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   maxWorkers: 1,
-  workerIdleMemoryLimit: '128MB',
+  workerIdleMemoryLimit: '512MB',
   testTimeout: 60000,
   // Skip heavy tests that cause SIGKILL on M1 16GB RAM
   testPathIgnorePatterns: [

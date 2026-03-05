@@ -1,5 +1,4 @@
 import * as winston from 'winston';
-import * as path from 'path';
 
 const logFormat = winston.format.printf((info: winston.Logform.TransformableInfo) => {
   const { level, message, timestamp } = info;
@@ -32,4 +31,4 @@ export const logger = winston.createLogger({
 }) as winston.Logger & { critical: (message: string) => void };
 
 // Add critical alias for emergencies
-(logger as any).critical = (message: string) => logger.error(`[CRITICAL] ${message}`);
+logger.critical = (message: string) => logger.error(`[CRITICAL] ${message}`);

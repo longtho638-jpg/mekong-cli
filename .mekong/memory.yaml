@@ -1246,3 +1246,273 @@
   recipe_used: ''
   status: success
   timestamp: 1772680694.915393
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772687370.6042
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772687694.137426
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772687694.4741619
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772687830.937909
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772687831.1893592
+- duration_ms: 10.34688949584961
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772692045.7841249
+- duration_ms: 6.888151168823242
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772692046.5054379
+- duration_ms: 5.393028259277344
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772692047.149857
+- duration_ms: 68.47119331359863
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772692048.032201
+- duration_ms: 7.030963897705078
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772692048.859425
+- duration_ms: 6.604194641113281
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772692050.015878
+- duration_ms: 6.5021514892578125
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772692054.389628
+- duration_ms: 16.292095184326172
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772692062.0719721
+- duration_ms: 13.115167617797852
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772692064.961462
+- duration_ms: 5.917072296142578
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772692068.553372
+- duration_ms: 8.565187454223633
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772692155.5609589
+- duration_ms: 4.954814910888672
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772692156.129311
+- duration_ms: 5.026102066040039
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772692156.708163
+- duration_ms: 663.1360054016113
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772692157.9565172
+- duration_ms: 5.454778671264648
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772692158.741419
+- duration_ms: 5.488157272338867
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772692159.702695
+- duration_ms: 6.181955337524414
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772692162.6010199
+- duration_ms: 6.548881530761719
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772692170.7129018
+- duration_ms: 18.298864364624023
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772692172.6284869
+- duration_ms: 7.009983062744141
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772692175.1379561
+- duration_ms: 12.395858764648438
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772692199.545519
+- duration_ms: 8.790016174316406
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772692200.493123
+- duration_ms: 9.874820709228516
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772692201.518404
+- duration_ms: 48.81095886230469
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772692202.5331771
+- duration_ms: 9.60993766784668
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772692203.5552819
+- duration_ms: 4.639863967895508
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772692205.164164
+- duration_ms: 10.360002517700195
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772692209.84025
+- duration_ms: 16.34502410888672
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772692225.161491
+- duration_ms: 20.128965377807617
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772692229.23521
+- duration_ms: 46.678781509399414
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772692234.696543
+- duration_ms: 7.401943206787109
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772692910.644681
+- duration_ms: 12.243986129760742
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772692911.293971
+- duration_ms: 3.947019577026367
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772692911.8091211
+- duration_ms: 57.190895080566406
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772692912.396265
+- duration_ms: 4.137277603149414
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772692912.92709
+- duration_ms: 5.073785781860352
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772692913.76896
+- duration_ms: 7.050037384033203
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772692916.2454772
+- duration_ms: 5.226850509643555
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772692923.2621388
+- duration_ms: 6.90913200378418
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772692924.944436
+- duration_ms: 5.686044692993164
+  error_summary: 'Step 1: Output does not contain: pass'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772692927.033704

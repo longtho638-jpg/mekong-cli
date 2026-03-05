@@ -1920,3 +1920,33 @@ jobs:
     last_run: 0.0
     next_run: 1772680580.341046
     run_count: 0
+  - id: c88c698f
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772693360.737717
+    run_count: 0
+  - id: 98bec433
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772758800.0
+    run_count: 0
+  - id: ce157c25
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772693181.534101
+    run_count: 0

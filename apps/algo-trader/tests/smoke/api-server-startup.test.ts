@@ -8,15 +8,16 @@
  * - Shutdown gracefully
  */
 
-import { buildServer } from '../../src/api/fastify-raas-server';
+import { buildServer, startRaasServer, stopRaasServer } from '../../src/api/fastify-raas-server';
 import { FastifyInstance } from 'fastify';
 
 describe('Smoke Tests — API Server Startup', () => {
-  let server: FastifyInstance;
+  let server: FastifyInstance | null = null;
 
   afterEach(async () => {
     if (server) {
       await server.close();
+      server = null;
     }
   });
 
@@ -25,24 +26,31 @@ describe('Smoke Tests — API Server Startup', () => {
   describe('Server Startup', () => {
     test('Server starts without errors', async () => {
       server = buildServer({ skipAuth: true });
-      await expect(server.ready()).resolves.not.toThrow();
+      await server.ready();
+      // Server needs to listen to be considered "started"
+      const port = 0; // Use random available port
+      await server.listen({ port, host: '127.0.0.1' });
       expect(server.server.listening).toBe(true);
     });
 
     test('Server has expected routes registered', async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
 
       const routes = server.printRoutes();
-      expect(routes).toContain('/health');
-      expect(routes).toContain('/ready');
-      expect(routes).toContain('/metrics');
+      expect(routes).toContain('health');
+      expect(routes).toContain('ready');
+      expect(routes).toContain('metrics');
     });
 
     test('Server startup time is reasonable (< 5s)', async () => {
       const start = Date.now();
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
       const duration = Date.now() - start;
       expect(duration).toBeLessThan(5000);
     });
@@ -54,17 +62,19 @@ describe('Smoke Tests — API Server Startup', () => {
     beforeEach(async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
     });
 
     test('Health routes are registered', async () => {
       const routes = server.printRoutes();
-      expect(routes).toMatch(/\/health/);
-      expect(routes).toMatch(/\/ready/);
+      expect(routes).toMatch(/health/);
+      expect(routes).toMatch(/ready/);
     });
 
     test('API v1 routes are registered', async () => {
       const routes = server.printRoutes();
-      expect(routes).toMatch(/\/api\/v1/);
+      expect(routes).toMatch(/api\/v1/);
     });
   });
 
@@ -74,6 +84,8 @@ describe('Smoke Tests — API Server Startup', () => {
     test('Server shuts down gracefully', async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
 
       const closePromise = server.close();
       await expect(closePromise).resolves.not.toThrow();
@@ -82,6 +94,8 @@ describe('Smoke Tests — API Server Startup', () => {
     test('Server rejects requests after shutdown', async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
 
       // Make request before shutdown
       const beforeRes = await server.inject({ method: 'GET', url: '/health' });
@@ -107,6 +121,8 @@ describe('Smoke Tests — API Server Startup', () => {
     beforeEach(async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
     });
 
     test('Server handles 10 concurrent health requests', async () => {
@@ -142,6 +158,8 @@ describe('Smoke Tests — API Server Startup', () => {
     test('Server memory stable after multiple requests', async () => {
       server = buildServer({ skipAuth: true });
       await server.ready();
+      const port = 0;
+      await server.listen({ port, host: '127.0.0.1' });
 
       const initialMemory = process.memoryUsage();
 

@@ -6,449 +6,456 @@ nodes:
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680331.208368
+    last_heartbeat: 1772692929.8683689
   - id: 6d2d989d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680333.21357
+    last_heartbeat: 1772692931.870424
   - id: 73086b4e
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680335.216877
+    last_heartbeat: 1772692933.873204
   - id: a3f91fcc
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680337.222275
+    last_heartbeat: 1772692935.876182
   - id: 0202789a
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680339.226481
+    last_heartbeat: 1772692937.878888
   - id: 0a722887
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680341.2305028
+    last_heartbeat: 1772692939.906045
   - id: 2cb54c9d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680343.2350562
+    last_heartbeat: 1772692942.1618829
   - id: 1c0b01d3
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680345.240556
+    last_heartbeat: 1772692944.16475
   - id: 16eafb6d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680347.246677
+    last_heartbeat: 1772692946.167872
   - id: ec57aa36
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680349.251677
+    last_heartbeat: 1772692948.18095
   - id: 523e2f62
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680351.259475
+    last_heartbeat: 1772692950.18442
   - id: e52b12a0
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680353.264732
+    last_heartbeat: 1772692952.1880379
   - id: e08b6528
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680355.270367
+    last_heartbeat: 1772692954.190751
   - id: 7e29ecc6
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680357.302453
+    last_heartbeat: 1772692956.19607
   - id: df0fe863
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680359.3069189
+    last_heartbeat: 1772692958.200352
   - id: 4461eb4d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680361.311328
+    last_heartbeat: 1772692960.203687
   - id: b3e16853
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680363.31685
+    last_heartbeat: 1772692962.206093
   - id: 4a5d5538
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680365.322488
+    last_heartbeat: 1772692964.211808
   - id: f6e4cfa4
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680367.328172
+    last_heartbeat: 1772692966.214823
   - id: bba6abc8
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680369.341107
+    last_heartbeat: 1772692968.217637
   - id: 361167a9
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680371.348563
+    last_heartbeat: 1772692970.220525
   - id: 8e9e0c2d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680373.3559098
+    last_heartbeat: 1772692972.231946
   - id: d0e22a48
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680375.362967
+    last_heartbeat: 1772692974.3240662
   - id: ba2b8244
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680377.368299
+    last_heartbeat: 1772692976.328156
   - id: 4c916da1
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680379.375631
+    last_heartbeat: 1772692978.33092
   - id: ef06839c
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680381.382049
+    last_heartbeat: 1772692980.3346639
   - id: 15c02338
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680383.3896089
+    last_heartbeat: 1772692982.339359
   - id: dbdabd7d
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680385.396773
+    last_heartbeat: 1772692984.345312
   - id: dba14fdd
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680387.441557
+    last_heartbeat: 1772692986.348746
   - id: d3709c04
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680389.446031
+    last_heartbeat: 1772692988.352134
   - id: a04345cb
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680391.45054
+    last_heartbeat: 1772692990.355409
   - id: 6e3ffa66
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680393.4554172
+    last_heartbeat: 1772692992.3592262
   - id: 4c906e83
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680395.4578109
+    last_heartbeat: 1772692994.3622808
   - id: 72607a31
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680397.4633758
+    last_heartbeat: 1772692996.3659961
   - id: 903d7c41
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680399.469755
+    last_heartbeat: 1772692998.3699782
   - id: 0c6ee201
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680401.475486
+    last_heartbeat: 1772693000.374391
   - id: 3fb9c76b
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680403.480468
+    last_heartbeat: 1772693002.388643
   - id: 92e3a46f
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680405.4851992
+    last_heartbeat: 1772693004.427613
   - id: c9208a09
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680407.4899771
+    last_heartbeat: 1772693006.432089
   - id: d145af03
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680409.4957309
+    last_heartbeat: 1772693008.437948
   - id: 167291fa
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680411.500501
+    last_heartbeat: 1772693010.445256
   - id: ca53c0da
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680413.505446
+    last_heartbeat: 1772693012.448338
   - id: 131b6bec
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680415.689595
+    last_heartbeat: 1772693014.451839
   - id: 8319d3ad
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680417.818319
+    last_heartbeat: 1772693016.455532
   - id: 496f532e
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680419.821229
+    last_heartbeat: 1772693018.458666
   - id: 405b7a0f
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680421.825078
+    last_heartbeat: 1772693020.462454
   - id: 1df83963
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680423.829333
+    last_heartbeat: 1772693022.4675891
   - id: fe460bd3
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680425.833376
+    last_heartbeat: 1772693024.470403
   - id: d45e9c3a
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680427.8373172
+    last_heartbeat: 1772693026.474533
   - id: f71e01a8
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680429.841123
+    last_heartbeat: 1772693028.477555
   - id: 9b4219b4
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680431.844883
+    last_heartbeat: 1772693030.480732
   - id: 80be1e00
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680433.848895
+    last_heartbeat: 1772693032.4841752
   - id: 768a1edd
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680435.853421
+    last_heartbeat: 1772693034.503273
   - id: ee3029e8
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680437.857739
+    last_heartbeat: 1772693036.535554
   - id: accacb8c
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680439.8640032
+    last_heartbeat: 1772693038.538359
   - id: fad927a8
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680441.867414
+    last_heartbeat: 1772693040.541112
   - id: e132a215
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680443.871403
+    last_heartbeat: 1772693042.543953
   - id: 07f496a9
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680445.875128
+    last_heartbeat: 1772693044.546984
   - id: d88dcde6
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680447.8793101
+    last_heartbeat: 1772693046.54972
   - id: 9deba090
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680449.908637
+    last_heartbeat: 1772693048.552206
   - id: 9e0fc35a
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680451.912549
+    last_heartbeat: 1772693050.555007
   - id: 668db2f9
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680453.917844
+    last_heartbeat: 1772693052.557821
   - id: c8dfbaaf
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680455.9218051
+    last_heartbeat: 1772693054.657265
   - id: 6e4d4971
     name: test-node
     host: 10.0.0.1
     port: 8001
     token: secret
     status: unreachable
-    last_heartbeat: 1772680457.9256241
+    last_heartbeat: 1772693056.7151139
   - id: 15ae7b51
+    name: test-node
+    host: 10.0.0.1
+    port: 8001
+    token: secret
+    status: unreachable
+    last_heartbeat: 1772693058.717908
+  - id: 4689f626
     name: test-node
     host: 10.0.0.1
     port: 8001

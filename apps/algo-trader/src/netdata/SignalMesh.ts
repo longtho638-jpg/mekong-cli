@@ -101,8 +101,9 @@ export class SignalMesh {
     handler: MarketEventHandler<T>
   ): () => void {
     const route = `${type}:${tenantId}`;
-    this.bus.on(route, handler as any);
-    return () => this.bus.off(route, handler as any);
+    // EventEmitter requires generic type for proper handler typing
+    this.bus.on(route, handler as (...args: unknown[]) => void);
+    return () => this.bus.off(route, handler as (...args: unknown[]) => void);
   }
 
   /** Subscribe to a specific event type globally */
@@ -111,8 +112,9 @@ export class SignalMesh {
     handler: MarketEventHandler<T>
   ): () => void {
     const route = `type:${type}`;
-    this.bus.on(route, handler as any);
-    return () => this.bus.off(route, handler as any);
+    // EventEmitter requires generic type for proper handler typing
+    this.bus.on(route, handler as (...args: unknown[]) => void);
+    return () => this.bus.off(route, handler as (...args: unknown[]) => void);
   }
 
   /**

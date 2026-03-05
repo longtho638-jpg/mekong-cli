@@ -171,7 +171,7 @@ export class ExchangeClient {
         validatedSymbol,
         validatedSide,
         validatedAmount,
-        limitsCheck.rejectedReason || 'Unknown limit exceeded'
+        limitsCheck.currentUsage?.dailyLimit || 0
       );
       throw new Error(`Order rejected: ${limitsCheck.rejectedReason}`);
     }
@@ -253,7 +253,7 @@ export class ExchangeClient {
         validatedSymbol,
         validatedSide,
         validatedAmount,
-        limitsCheck.rejectedReason || 'Unknown limit exceeded'
+        limitsCheck.currentUsage?.dailyLimit || 0
       );
       throw new Error(`Order rejected: ${limitsCheck.rejectedReason}`);
     }

@@ -68,16 +68,16 @@ class MockExchangeManager {
     this.prices.set(symbol, price);
   }
 
-  getWsFeed(): any {
+  getWsFeed(): { on: jest.Mock; removeAllListeners: jest.Mock } {
     return {
       on: jest.fn(),
       removeAllListeners: jest.fn()
     };
   }
 
-  getRouter(): any {
+  getRouter(): { route: jest.Mock } {
     return {
-      route: jest.fn(async (_: string, handler: any) => {
+      route: jest.fn(async (_: string, handler: (exchangeId: string) => Promise<unknown>) => {
         const result = await handler('mock-exchange');
         return {
           success: true,
@@ -162,7 +162,7 @@ describe('SignalOrderPipeline Integration', () => {
         dryRun: true
       });
 
-      const allSignals: any[] = [];
+      const allSignals: ISignal[] = [];
       pipeline.on('signals', (signalsBatch) => allSignals.push(...signalsBatch));
 
       await pipeline.start();
@@ -211,7 +211,7 @@ describe('SignalOrderPipeline Integration', () => {
         minConfirmations: 2
       });
 
-      const allSignals: any[] = [];
+      const allSignals: ISignal[] = [];
       pipeline.on('signals', (signalsBatch) => allSignals.push(...signalsBatch));
 
       await pipeline.start();
@@ -233,7 +233,7 @@ describe('SignalOrderPipeline Integration', () => {
         maxPositionUsd: 1000
       });
 
-      const orders: any[] = [];
+      const orders: { side: string; dryRun?: boolean; [key: string]: unknown }[] = [];
       pipeline.on('order', (o) => orders.push(o));
 
       await pipeline.start();
@@ -254,7 +254,7 @@ describe('SignalOrderPipeline Integration', () => {
         dryRun: true
       });
 
-      const orders: any[] = [];
+      const orders: { side: string; dryRun?: boolean; [key: string]: unknown }[] = [];
       pipeline.on('order', (o) => orders.push(o));
 
       await pipeline.start();
@@ -282,7 +282,7 @@ describe('SignalOrderPipeline Integration', () => {
         minConfirmations: 2 // Need 2 confirmations
       });
 
-      const orders: any[] = [];
+      const orders: { side: string; dryRun?: boolean; [key: string]: unknown }[] = [];
       pipeline.on('order', (o) => orders.push(o));
 
       await pipeline.start();
@@ -301,7 +301,7 @@ describe('SignalOrderPipeline Integration', () => {
         dryRun: true
       });
 
-      const orders: any[] = [];
+      const orders: { side: string; dryRun?: boolean; [key: string]: unknown }[] = [];
       pipeline.on('order', (o) => orders.push(o));
 
       await pipeline.start();
@@ -330,7 +330,7 @@ describe('SignalOrderPipeline Integration', () => {
         maxPositionUsd: 1000
       });
 
-      const events: { type: string; data: any }[] = [];
+      const events: { type: string; data: unknown }[] = [];
       pipeline.on('signals', (s) => events.push({ type: 'signal', data: s }));
       pipeline.on('order', (o) => events.push({ type: 'order', data: o }));
 
@@ -402,7 +402,7 @@ describe('SignalOrderPipeline Integration', () => {
         dryRun: true
       });
 
-      const allSignals: any[] = [];
+      const allSignals: ISignal[] = [];
       pipeline.on('signals', (signalsBatch) => allSignals.push(...signalsBatch));
 
       await pipeline.start();
