@@ -1,4 +1,3 @@
-from __future__ import annotations
 """Mekong CLI - Routing Strategy Engine.
 
 Portkey-inspired declarative routing for LLM provider selection.
