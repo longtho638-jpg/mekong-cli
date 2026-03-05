@@ -1,246 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "ea37a1a324a6",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/cook \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example if .env ex",
-      "dispatchedAt": 1772365500282
-    },
-    {
-      "hash": "c0aebcdc889b",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: ci_cd",
-      "preview": "/cook \"CI/CD algo-trader: 1/ Create .github/workflows/ci.yml: lint + typecheck +",
-      "dispatchedAt": 1772365510266
-    },
-    {
-      "hash": "761f52d66d6a",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS mekong-cli: 1/ npm test — fix failing tests. 2/ Write 3+ unit tests",
-      "dispatchedAt": 1772365663266
-    },
-    {
-      "hash": "a91c57b0f324",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
-      "dispatchedAt": 1772365758021
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772365841852
-    },
-    {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772366014887
-    },
-    {
-      "hash": "a0ffc660b4cc",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:parallel \"PERFORMANCE algo-trader: 1/ find src -name '*.ts' -o -name '*.ts",
-      "dispatchedAt": 1772366073096
-    },
-    {
-      "hash": "3316081d0fec",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Targeting: tests",
-      "preview": "/plan:parallel \"TESTS apex-os: 1/ npm test — fix failing tests. 2/ Write 3+ unit",
-      "dispatchedAt": 1772366154742
-    },
-    {
-      "hash": "8c1e2ae661cc",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/plan:parallel \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example i",
-      "dispatchedAt": 1772366400402
-    },
-    {
-      "hash": "eca420e2ba54",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:parallel \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commi",
-      "dispatchedAt": 1772366895367
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772366942668
-    },
-    {
-      "hash": "79113b878692",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES mekong-cli: 1/ npm outdated — update critical deps. 2/ npm",
-      "dispatchedAt": 1772367214161
-    },
-    {
-      "hash": "e4523d0c1d78",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES algo-trader: 1/ npm outdated — update critical deps. 2/ np",
-      "dispatchedAt": 1772367620230
-    },
-    {
-      "hash": "3c03636598ad",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m",
-      "dispatchedAt": 1772367655391
-    },
-    {
-      "hash": "3a7a80fc634c",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD mekong-cli: 1/ npm run build — fix ALL errors. 2/ Add build sc",
-      "dispatchedAt": 1772367744888
-    },
-    {
-      "hash": "780e4a3dac99",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:parallel \"PERFORMANCE apex-os: 1/ find src -name '*.ts' -o -name '*.tsx' |",
-      "dispatchedAt": 1772367745697
-    },
-    {
-      "hash": "d8cada4fe1db",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE well: 1/ find src -name '*.ts' -o -name '*.tsx' | xargs ",
-      "dispatchedAt": 1772367775064
-    },
-    {
-      "hash": "a4cd7fe9d4e2",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION well: 1/ git add -A && git status. 2/ git commit -m 'chor",
-      "dispatchedAt": 1772367818084
-    },
-    {
-      "hash": "29a6936924aa",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit",
-      "dispatchedAt": 1772368091692
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772368315580
-    },
-    {
-      "hash": "ed59edb999b7",
-      "project": "apex-os",
-      "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE apex-os: 1/ find src -name '*.ts' -o -name '*.tsx' | xar",
-      "dispatchedAt": 1772368468453
-    },
-    {
-      "hash": "d8cada4fe1db",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE well: 1/ find src -name '*.ts' -o -name '*.tsx' | xargs ",
-      "dispatchedAt": 1772368554397
-    },
-    {
-      "hash": "3c03636598ad",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m",
-      "dispatchedAt": 1772369008233
-    },
-    {
-      "hash": "a4cd7fe9d4e2",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION well: 1/ git add -A && git status. 2/ git commit -m 'chor",
-      "dispatchedAt": 1772369124462
-    },
-    {
-      "hash": "29a6936924aa",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit",
-      "dispatchedAt": 1772369135285
-    },
-    {
-      "hash": "2ab757258df1",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD well: 1/ npm run build — fix ALL errors. 2/ Add build script i",
-      "dispatchedAt": 1772369189295
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772369231832
-    },
-    {
-      "hash": "e4523d0c1d78",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES algo-trader: 1/ npm outdated — update critical deps. 2/ np",
-      "dispatchedAt": 1772369242201
-    },
-    {
-      "hash": "9183c6d489e9",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build s",
-      "dispatchedAt": 1772369268433
-    },
-    {
-      "hash": "f0148009e9eb",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/plan:hard \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit",
-      "dispatchedAt": 1772369296038
-    },
-    {
       "hash": "e7a42a2ab141",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1359,246 @@
       "chapter": "TIER3-RỪNG-CHIẾN: production",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
       "dispatchedAt": 1772694826583
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772694839668
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772694993793
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772695009362
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772695087348
+    },
+    {
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772695209899
+    },
+    {
+      "hash": "a6174fba3695",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
+      "dispatchedAt": 1772695242837
+    },
+    {
+      "hash": "4372f8097df0",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
+      "dispatchedAt": 1772695360086
+    },
+    {
+      "hash": "45814c911863",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (4→10), bỏ qua phầ",
+      "dispatchedAt": 1772695365112
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772695503130
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772695518046
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772695535531
+    },
+    {
+      "hash": "04e32b81b0fa",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772695545973
+    },
+    {
+      "hash": "7b117d8ae377",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu performance (5→10), bỏ",
+      "dispatchedAt": 1772695770846
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772696000177
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772696017218
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772696110803
+    },
+    {
+      "hash": "09e799e361ba",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (7→10), bỏ qua phầ",
+      "dispatchedAt": 1772696214537
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772696300020
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772696424012
+    },
+    {
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772696557629
+    },
+    {
+      "hash": "a6174fba3695",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
+      "dispatchedAt": 1772696857190
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772696858902
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772697581204
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772697591117
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772697593787
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772697716076
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772697820771
+    },
+    {
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772697840667
+    },
+    {
+      "hash": "a6174fba3695",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
+      "dispatchedAt": 1772697853022
+    },
+    {
+      "hash": "4372f8097df0",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
+      "dispatchedAt": 1772697963079
     }
   ],
   "chapterIndex": 5
