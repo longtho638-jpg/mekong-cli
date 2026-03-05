@@ -7,8 +7,20 @@
 import { createHmac, timingSafeEqual } from 'crypto';
 import { z } from 'zod';
 import { PolarSubscriptionService, TenantTier } from './polar-subscription-service';
+import { LicenseService, LicenseTier } from '../lib/raas-gate';
 
 const WEBHOOK_SECRET = process.env.POLAR_WEBHOOK_SECRET ?? '';
+
+function mapTenantTierToLicenseTier(tenantTier: TenantTier): LicenseTier {
+  switch (tenantTier) {
+    case 'pro':
+      return LicenseTier.PRO;
+    case 'enterprise':
+      return LicenseTier.ENTERPRISE;
+    default:
+      return LicenseTier.FREE;
+  }
+}
 
 export const PolarWebhookPayloadSchema = z.object({
   type: z.string(),
@@ -32,10 +44,14 @@ export interface WebhookResult {
 }
 
 export class PolarWebhookEventHandler {
+  private licenseService: LicenseService;
+
   constructor(
     private subscriptionService: PolarSubscriptionService,
     private onTierChange?: (tenantId: string, newTier: TenantTier) => void,
-  ) {}
+  ) {
+    this.licenseService = LicenseService.getInstance();
+  }
 
   /**
    * Verify Polar webhook signature (HMAC-SHA256).
@@ -91,12 +107,17 @@ export class PolarWebhookEventHandler {
       return { handled: false, event: payload.type, tenantId, tier: null, action: 'ignored' };
     }
 
+    // Activate in Polar subscription service
     this.subscriptionService.activateSubscription(
       tenantId,
       tier,
       payload.data.product_id,
       payload.data.current_period_end ?? null,
     );
+
+    // Sync with LicenseService
+    const licenseTier = mapTenantTierToLicenseTier(tier);
+    this.licenseService.activateSubscription(tenantId, licenseTier, payload.data.id || payload.data.product_id);
 
     this.onTierChange?.(tenantId, tier);
 
@@ -113,12 +134,17 @@ export class PolarWebhookEventHandler {
       return { handled: false, event: payload.type, tenantId, tier: null, action: 'ignored' };
     }
 
+    // Update in Polar subscription service
     this.subscriptionService.activateSubscription(
       tenantId,
       tier,
       payload.data.product_id,
       payload.data.current_period_end ?? null,
     );
+
+    // Sync with LicenseService
+    const licenseTier = mapTenantTierToLicenseTier(tier);
+    this.licenseService.activateSubscription(tenantId, licenseTier, payload.data.id || payload.data.product_id);
 
     this.onTierChange?.(tenantId, tier);
 
@@ -130,7 +156,12 @@ export class PolarWebhookEventHandler {
       return { handled: false, event, tenantId, tier: null, action: 'ignored' };
     }
 
+    // Deactivate in Polar subscription service
     this.subscriptionService.deactivateSubscription(tenantId);
+
+    // Sync with LicenseService - downgrade to FREE
+    this.licenseService.deactivateSubscription(tenantId);
+
     this.onTierChange?.(tenantId, 'free');
 
     return { handled: true, event, tenantId, tier: 'free', action: 'deactivated' };

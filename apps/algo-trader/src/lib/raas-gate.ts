@@ -442,12 +442,50 @@ export class LicenseService {
   /**
    * Activate license for a key (webhook handler)
    */
-  async activateLicense(licenseKey: string, tier: LicenseTier): Promise<void> {
+async activateLicense(licenseKey: string, tier: LicenseTier): Promise<void> {
     this.validatedLicense = {
       valid: true,
       tier: tier || LicenseTier.PRO,
       features: this.getFeaturesForTier(tier || LicenseTier.PRO),
     };
+  }
+
+  /**
+   * Activate subscription from Polar webhook (tenant-based)
+   */
+  async activateSubscription(tenantId: string, tier: LicenseTier, _subscriptionId: string): Promise<void> {
+    this.validatedLicense = {
+      valid: true,
+      tier,
+      features: this.getFeaturesForTier(tier),
+    };
+    this.logAudit({
+      event: 'license_check',
+      feature: 'subscription_activation',
+      success: true,
+      tier,
+      ip: tenantId,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  /**
+   * Deactivate subscription (webhook handler for cancellation)
+   */
+  async deactivateSubscription(tenantId: string): Promise<void> {
+    this.validatedLicense = {
+      valid: false,
+      tier: LicenseTier.FREE,
+      features: this.getFeaturesForTier(LicenseTier.FREE),
+    };
+    this.logAudit({
+      event: 'license_check',
+      feature: 'subscription_deactivation',
+      success: false,
+      tier: LicenseTier.FREE,
+      ip: tenantId,
+      timestamp: new Date().toISOString(),
+    });
   }
 
   /**
@@ -606,4 +644,13 @@ export function requireLicenseMiddleware(tier: LicenseTier = LicenseTier.PRO) {
       }
     }
   };
+}
+
+// Polar subscription methods
+export async function activateSubscription(tenantId: string, tier: LicenseTier, subscriptionId: string): Promise<void> {
+  LicenseService.getInstance().activateSubscription(tenantId, tier, subscriptionId);
+}
+
+export async function deactivateSubscription(tenantId: string): Promise<void> {
+  LicenseService.getInstance().deactivateSubscription(tenantId);
 }
