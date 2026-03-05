@@ -13,8 +13,6 @@ from core.telemetry import TelemetryCollector
 
 def test_recursion_fix():
     """Test that telemetry collection doesn't cause recursion depth errors."""
-    print("Testing telemetry recursion fix...")
-
     # Create a telemetry collector
     collector = TelemetryCollector()
 
@@ -41,33 +39,15 @@ def test_recursion_fix():
     collector.record_error("Test error 2")
 
     # Finish the trace - this is where recursion issues occurred
-    try:
-        trace = collector.finish_trace()
-        print("✓ Trace finished successfully without recursion errors")
+    trace = collector.finish_trace()
 
-        # Verify we can serialize the trace safely
-        if trace:
-            print("✓ Trace serialization completed successfully")
-            print(f"  - Goal: {trace.goal}")
-            print(f"  - Steps: {len(trace.steps)}")
-            print(f"  - Errors: {len(trace.errors)}")
-            print(f"  - LLM calls: {trace.llm_calls}")
-
-        return True
-
-    except RecursionError as e:
-        print(f"✗ RecursionError still occurs: {e}")
-        return False
-    except Exception as e:
-        print(f"✗ Other error occurred: {e}")
-        return False
+    # Verify we can serialize the trace safely
+    assert trace is not None, "Trace should not be None"
+    assert len(trace.steps) == 5, f"Expected 5 steps, got {len(trace.steps)}"
+    assert len(trace.errors) == 2, f"Expected 2 errors, got {len(trace.errors)}"
+    assert trace.llm_calls == 3, f"Expected 3 LLM calls, got {trace.llm_calls}"
 
 
 if __name__ == "__main__":
-    success = test_recursion_fix()
-    if success:
-        print("\n✓ Recursion depth issue has been fixed!")
-        sys.exit(0)
-    else:
-        print("\n✗ Recursion depth issue still exists!")
-        sys.exit(1)
+    test_recursion_fix()
+    print("✓ Recursion depth issue has been fixed!")
