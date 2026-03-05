@@ -10,7 +10,7 @@
       "agent_used": null
     }
   ],
-  "total_duration": 0.009,
+  "total_duration": 0.005,
   "llm_calls": 0,
   "errors": []
 }

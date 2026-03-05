@@ -1,38 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "e7a42a2ab141",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/plan:hard \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example if .e",
-      "dispatchedAt": 1772369717154
-    },
-    {
-      "hash": "5337072c44a4",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/bootstrap:auto:parallel \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/",
-      "dispatchedAt": 1772371160857
-    },
-    {
-      "hash": "ef3b638f3d03",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/bootstrap:auto:parallel \"RESOURCES mekong-cli: 1/ npm outdated — update critica",
-      "dispatchedAt": 1772371355478
-    },
-    {
-      "hash": "8159a62b0a06",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: build",
-      "preview": "/bootstrap:auto:parallel \"BUILD mekong-cli: 1/ npm run build — fix ALL errors. 2",
-      "dispatchedAt": 1772371618729
-    },
-    {
       "hash": "b8ca1a97da1a",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1567,38 @@
       "chapter": "TIER3-RỪNG-CHIẾN: security",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
       "dispatchedAt": 1772697963079
+    },
+    {
+      "hash": "7b117d8ae377",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu performance (5→10), bỏ",
+      "dispatchedAt": 1772698245243
+    },
+    {
+      "hash": "b7f68d91dc33",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua p",
+      "dispatchedAt": 1772698275551
+    },
+    {
+      "hash": "c55b52570f55",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (7→10), bỏ ",
+      "dispatchedAt": 1772698392357
+    },
+    {
+      "hash": "e74d3e3e848b",
+      "project": "algo-trader",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu typescript (8→10), bỏ ",
+      "dispatchedAt": 1772698420743
     }
   ],
   "chapterIndex": 5
