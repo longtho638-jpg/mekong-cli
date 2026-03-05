@@ -1,17 +1,19 @@
 /**
- * Polar.sh Webhook Handler
+ * Polar.sh Webhook Handler - Phase 2B Billing Integration
  *
  * Handles subscription lifecycle events for RaaS license gating.
+ * Integrates with UsageQuota for automatic quota management.
  *
  * Security patches (2026-03-05):
  * - Timing-safe signature comparison (prevent timing attacks)
  * - Input validation on license_key (format/length)
  * - Webhook secret validation
+ * - Timestamp expiry check (5 minutes)
  */
 
 import { createHmac, timingSafeEqual } from 'crypto';
 import { LicenseService, LicenseTier } from './raas-gate';
-import { validateLicenseKeyFormat } from './jwt-validator';
+import { UsageQuotaService } from './usage-quota';
 
 export interface WebhookEvent {
   type: string;
@@ -38,7 +40,6 @@ function validateLicenseKey(licenseKey: unknown): { valid: boolean; error?: stri
     return { valid: false, error: 'license_key must be 3-256 characters' };
   }
 
-  // Alphanumeric, dash, underscore only
   if (!/^[a-zA-Z0-9_-]+$/.test(licenseKey)) {
     return { valid: false, error: 'license_key contains invalid characters' };
   }
@@ -59,12 +60,10 @@ export function verifyWebhookSignature(
   const expected = Buffer.from(`whsec_${computedSignature}`, 'utf8');
   const actual = Buffer.from(signature, 'utf8');
 
-  // Length check first (constant-time)
   if (expected.length !== actual.length) {
     return false;
   }
 
-  // Timing-safe comparison (prevent timing attacks)
   return timingSafeEqual(expected, actual);
 }
 
@@ -76,7 +75,6 @@ export function parseWebhookPayload(
   signature: string,
   webhookSecret: string
 ): WebhookEvent {
-  // Validate webhook secret is configured
   const secret = webhookSecret || process.env.POLAR_WEBHOOK_SECRET;
   if (!secret) {
     throw new Error('Webhook secret not configured');
@@ -93,7 +91,6 @@ export function parseWebhookPayload(
     throw new Error('Invalid JSON payload');
   }
 
-  // Validate required fields
   if (!event.type || typeof event.type !== 'string') {
     throw new Error('Missing or invalid event type');
   }
@@ -102,7 +99,6 @@ export function parseWebhookPayload(
     throw new Error('Missing or invalid timestamp');
   }
 
-  // Validate timestamp (reject if older than 5 minutes)
   const eventTime = new Date(event.timestamp).getTime();
   const now = Date.now();
   const fiveMinutes = 5 * 60 * 1000;
@@ -115,12 +111,13 @@ export function parseWebhookPayload(
 }
 
 /**
- * Handle subscription lifecycle events
+ * Handle subscription lifecycle events with quota integration
  */
 export async function handleWebhookEvent(
   event: WebhookEvent
 ): Promise<WebhookHandlerResult> {
   const licenseService = LicenseService.getInstance();
+  const quotaService = UsageQuotaService.getInstance();
 
   switch (event.type) {
     case 'payment.success': {
@@ -129,29 +126,22 @@ export async function handleWebhookEvent(
         tier?: unknown;
       };
 
-      // Validate license_key format
       const keyValidation = validateLicenseKey(license_key);
       if (!keyValidation.valid) {
-        return {
-          success: false,
-          message: `Invalid license_key: ${keyValidation.error}`
-        };
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
       }
 
-      // Validate tier if provided
       let validatedTier = LicenseTier.PRO;
       if (tier) {
         const tierStr = String(tier).toLowerCase();
         if (!['free', 'pro', 'enterprise'].includes(tierStr)) {
-          return {
-            success: false,
-            message: `Invalid tier: ${tier}`
-          };
+          return { success: false, message: `Invalid tier: ${tier}` };
         }
         validatedTier = tierStr as LicenseTier;
       }
 
       await licenseService.activateLicense(license_key as string, validatedTier);
+      await quotaService.reset(license_key as string);
 
       return {
         success: true,
@@ -169,18 +159,12 @@ export async function handleWebhookEvent(
 
       const keyValidation = validateLicenseKey(license_key);
       if (!keyValidation.valid) {
-        return {
-          success: false,
-          message: `Invalid license_key: ${keyValidation.error}`
-        };
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
       }
 
       const tierStr = String(tier).toLowerCase();
       if (!['free', 'pro', 'enterprise'].includes(tierStr)) {
-        return {
-          success: false,
-          message: `Invalid tier: ${tier}`
-        };
+        return { success: false, message: `Invalid tier: ${tier}` };
       }
 
       await licenseService.setTier(license_key as string, tierStr as LicenseTier);
@@ -193,15 +177,48 @@ export async function handleWebhookEvent(
       };
     }
 
+    case 'subscription.activated': {
+      const { license_key, tier } = event.data as {
+        license_key: unknown;
+        tier: unknown;
+      };
+
+      const keyValidation = validateLicenseKey(license_key);
+      if (!keyValidation.valid) {
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
+      }
+
+      const tierStr = String(tier).toLowerCase() as LicenseTier;
+      await licenseService.setTier(license_key as string, tierStr);
+      await quotaService.reset(license_key as string);
+
+      return { success: true, licenseKey: license_key as string, newTier: tierStr, message: 'Subscription activated' };
+    }
+
+    case 'subscription.updated': {
+      const { license_key, tier } = event.data as {
+        license_key: unknown;
+        tier: unknown;
+      };
+
+      const keyValidation = validateLicenseKey(license_key);
+      if (!keyValidation.valid) {
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
+      }
+
+      const tierStr = String(tier).toLowerCase() as LicenseTier;
+      await licenseService.setTier(license_key as string, tierStr);
+
+      return { success: true, licenseKey: license_key as string, newTier: tierStr, message: 'Subscription updated' };
+    }
+
+    case 'subscription.deactivated':
     case 'subscription.cancelled': {
       const { license_key } = event.data as { license_key: unknown };
 
       const keyValidation = validateLicenseKey(license_key);
       if (!keyValidation.valid) {
-        return {
-          success: false,
-          message: `Invalid license_key: ${keyValidation.error}`
-        };
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
       }
 
       await licenseService.downgradeToFree(license_key as string);
@@ -214,31 +231,47 @@ export async function handleWebhookEvent(
       };
     }
 
+    case 'payment.paid': {
+      const { license_key } = event.data as { license_key: unknown };
+
+      const keyValidation = validateLicenseKey(license_key);
+      if (!keyValidation.valid) {
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
+      }
+
+      await quotaService.reset(license_key as string);
+
+      return { success: true, licenseKey: license_key as string, message: 'Payment recorded, subscription extended' };
+    }
+
+    case 'payment.failed': {
+      const { license_key } = event.data as { license_key: unknown };
+
+      const keyValidation = validateLicenseKey(license_key);
+      if (!keyValidation.valid) {
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
+      }
+
+      console.log('[Webhook] Payment failed for license:', license_key);
+
+      return { success: true, licenseKey: license_key as string, message: 'Payment failed warning recorded' };
+    }
+
     case 'subscription.refunded': {
       const { license_key } = event.data as { license_key: unknown };
 
       const keyValidation = validateLicenseKey(license_key);
       if (!keyValidation.valid) {
-        return {
-          success: false,
-          message: `Invalid license_key: ${keyValidation.error}`
-        };
+        return { success: false, message: `Invalid license_key: ${keyValidation.error}` };
       }
 
       await licenseService.revokeLicense(license_key as string);
 
-      return {
-        success: true,
-        licenseKey: license_key as string,
-        message: 'License revoked due to refund'
-      };
+      return { success: true, licenseKey: license_key as string, message: 'License revoked due to refund' };
     }
 
     default:
-      return {
-        success: false,
-        message: `Unhandled event type: ${event.type}`
-      };
+      return { success: false, message: `Unhandled event type: ${event.type}` };
   }
 }
 
@@ -250,20 +283,12 @@ export async function webhookHandler(
   signature: string,
   webhookSecret: string
 ): Promise<WebhookHandlerResult> {
-  // Validate rawBody
   if (!rawBody || typeof rawBody !== 'string' || rawBody.length > 1024 * 10) {
-    return {
-      success: false,
-      message: 'Invalid request body'
-    };
+    return { success: false, message: 'Invalid request body' };
   }
 
-  // Validate signature format
   if (!signature || typeof signature !== 'string' || signature.length > 512) {
-    return {
-      success: false,
-      message: 'Invalid signature'
-    };
+    return { success: false, message: 'Invalid signature' };
   }
 
   try {
