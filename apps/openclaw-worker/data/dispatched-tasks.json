@@ -1,14 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "3d22b94be62e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
-      "dispatchedAt": 1772675880655
-    },
-    {
       "hash": "519b20312496",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1591,14 @@
       "chapter": "TIER3-RỪNG-CHIẾN: resources",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
       "dispatchedAt": 1772708530591
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772708713381
     }
   ],
   "chapterIndex": 5

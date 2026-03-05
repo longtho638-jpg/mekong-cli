@@ -7,7 +7,31 @@ RaaS (Revenue as a Service) Open Core licensing gates premium CLI agents and fea
 **Security Model:**
 - Core CLI, commands, skills: **Open Source** (always available)
 - Premium agents (CTO Auto-Pilot, Opus-gated): **License Required**
-- License validation: Environment variable + format verification
+- License validation: Environment variable + format verification + SHA-256 hashing
+- Rate limiting: Token bucket algorithm prevents abuse
+
+---
+
+## Security Features
+
+### License Verification
+
+1. **Format Validation**: Pattern matching for standard/short/legacy formats
+2. **SHA-256 Hashing**: Keys hashed before comparison
+3. **Tier Enforcement**: FREE/PRO/ENTERPRISE access control
+4. **Safe Logging**: Masked keys in logs (`meko...5678`)
+
+### Rate Limiting
+
+Prevents brute-force license validation attacks:
+
+| Tier | Rate Limit | Burst |
+|------|------------|-------|
+| FREE | 10 req/min | 20 |
+| PRO | 100 req/min | 200 |
+| ENTERPRISE | 1000 req/min | 2000 |
+
+**Implementation:** Token bucket algorithm in `apps/algo-trader/src/lib/rate-limiter.ts`
 
 ---
 
