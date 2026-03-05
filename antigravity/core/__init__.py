@@ -9,10 +9,9 @@ and the VIBE IDE suite.
 "Không đánh mà thắng" - Win Without Fighting 🏯
 """
 
-# 1. Base Infrastructure
+from .agency_dna import AgencyDNA, PricingTier, Service, Tone
 from .base import BaseEngine, BaseModel
-
-# 3. Global Configuration
+from .client_magnet import Client, ClientMagnet, Lead, LeadSource, LeadStatus
 from .config import (
     ARR_TARGET_2026,
     DEFAULT_GROWTH_RATE,
@@ -22,8 +21,7 @@ from .config import (
     Currency,
     DealTier,
 )
-
-# 2. Error Governance
+from .content_factory import ContentFactory, ContentIdea, ContentPiece, ContentType
 from .errors import (
     AntigravityError,
     ConfigError,
@@ -32,28 +30,14 @@ from .errors import (
     WinWinWinError,
     WorkflowError,
 )
-
-# 4. Data Persistence (Updated names)
 from .persistence import JSONStore, get_persistence_store, persist_load, persist_save
-
-# Alias for backward compatibility if needed, but preferred to use new names
-save_data = persist_save
-load_data = persist_load
-
-# 5. Core Operational Engines
-from .agency_dna import AgencyDNA, PricingTier, Service, Tone
-from .client_magnet import Client, ClientMagnet, Lead, LeadSource, LeadStatus
-from .content_factory import ContentFactory, ContentIdea, ContentPiece, ContentType
 from .revenue_engine import RevenueEngine
 from .sales_pipeline import SalesPipeline
 from .vibe_ide import VIBEIDE
 from .vibe_orchestrator import VIBEOrchestrator
-
-# 6. VIBE IDE (Developer Experience)
 from .vibe_workflow import VIBEWorkflow
 
-# 7. Domain Models
-# NOTE: Using try-except if models dir structure is still being refactored
+# Domain models - optional imports
 try:
     from .models import (
         AgentTask,
@@ -75,8 +59,11 @@ try:
         WorkflowStep,
     )
 except ImportError:
-    # Fallback placeholders for models if not yet available
     pass
+
+# Backward compatibility aliases
+save_data = persist_save
+load_data = persist_load
 
 __all__ = [
     # Infrastructure

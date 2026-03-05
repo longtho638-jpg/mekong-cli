@@ -4,14 +4,13 @@ Usage Metering — ROIaaS Phase 2
 Tracks and enforces usage limits per license key.
 """
 
-import os
 import json
 from datetime import datetime, date
 from typing import Optional, Dict
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
-from src.lib.license_generator import get_tier_limits, TIER_LIMITS
+from src.lib.license_generator import get_tier_limits
 
 
 @dataclass

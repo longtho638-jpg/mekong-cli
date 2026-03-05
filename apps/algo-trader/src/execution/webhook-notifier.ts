@@ -5,7 +5,7 @@
 
 import { logger } from '../utils/logger';
 import { RetryHandler, RetryConfig } from './retry-handler';
-import { CircuitBreaker, CircuitBreakerConfig } from './circuit-breaker';
+import { CircuitBreakerLegacy as CircuitBreaker, CircuitBreakerConfig } from './circuit-breaker';
 
 export interface WebhookConfig {
   url: string;

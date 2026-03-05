@@ -1,127 +1,127 @@
+/**
+ * Circuit Breaker — Auto-halt on abnormal conditions
+ * License-gated: PRO for advanced circuit breaker
+ */
 
-export enum CircuitBreakerState {
-  CLOSED = 'CLOSED',
-  OPEN = 'OPEN',
-  HALF_OPEN = 'HALF_OPEN'
-}
+import { LicenseService, LicenseTier, LicenseError } from '../lib/raas-gate';
 
 export interface CircuitBreakerConfig {
-  failureThreshold: number;
-  timeoutMs: number;
-  successThreshold: number;
+  maxDrawdownPercent?: number;
+  maxErrorRate?: number;
+  maxLossesInRow?: number;
+  cooldownMs?: number;
 }
 
-export interface CircuitBreakerMetrics {
-  state: CircuitBreakerState;
-  failureCount: number;
-  successCount: number;
-  lastFailureTime: number | null;
-  totalRequests: number;
-  totalFailures: number;
-  totalSuccesses: number;
+export interface CircuitBreakerState {
+  isHalted: boolean;
+  haltedAt?: number;
+  reason?: string;
+  consecutiveLosses: number;
+  totalTrades: number;
+  totalLosses: number;
+  errorCount: number;
 }
 
 export class CircuitBreaker {
-  private state: CircuitBreakerState = CircuitBreakerState.CLOSED;
-  private failureCount: number = 0;
-  private successCount: number = 0;
-  private lastFailureTime: number | null = null;
-  private totalRequests: number = 0;
-  private totalFailures: number = 0;
-  private totalSuccesses: number = 0;
+  private state: CircuitBreakerState = {
+    isHalted: false,
+    consecutiveLosses: 0,
+    totalTrades: 0,
+    totalLosses: 0,
+    errorCount: 0,
+  };
+  private config: Required<CircuitBreakerConfig>;
+  private licenseService: LicenseService;
 
-  private openedAt: number | null = null;
-
-  constructor(private config: CircuitBreakerConfig) {}
-
-  async execute<T>(operation: () => Promise<T>): Promise<T> {
-    this.totalRequests++;
-
-    if (this.state === CircuitBreakerState.OPEN && this.isTimeoutExceeded()) {
-      this.halfOpen();
-    }
-
-    if (this.state === CircuitBreakerState.OPEN) {
-      throw new Error(`Circuit breaker is OPEN. Last failure: ${this.lastFailureTime}`);
-    }
-
-    try {
-      const result = await operation();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure(error);
-      throw error;
-    }
+  constructor(config?: CircuitBreakerConfig) {
+    this.config = {
+      maxDrawdownPercent: config?.maxDrawdownPercent ?? 5,
+      maxErrorRate: config?.maxErrorRate ?? 0.1,
+      maxLossesInRow: config?.maxLossesInRow ?? 3,
+      cooldownMs: config?.cooldownMs ?? 300000,
+    };
+    this.licenseService = LicenseService.getInstance();
   }
 
-  private onSuccess(): void {
-    this.totalSuccesses++;
-
-    if (this.state === CircuitBreakerState.HALF_OPEN) {
-      this.successCount++;
-
-      if (this.successCount >= this.config.successThreshold) {
-        this.close();
+  recordTrade(pnl: number): void {
+    if (this.state.isHalted) return;
+    this.state.totalTrades += 1;
+    if (pnl < 0) {
+      this.state.totalLosses += 1;
+      this.state.consecutiveLosses += 1;
+      if (this.state.consecutiveLosses >= this.config.maxLossesInRow) {
+        this.halt('Max consecutive losses reached');
       }
-    } else if (this.state === CircuitBreakerState.CLOSED) {
-      this.successCount = 0;
+    } else {
+      this.state.consecutiveLosses = 0;
+    }
+    const lossRate = this.state.totalLosses / this.state.totalTrades;
+    if (lossRate > this.config.maxErrorRate && this.state.totalTrades >= 10) {
+      this.halt('Max loss rate exceeded');
     }
   }
 
-  private onFailure(_error: unknown): void {
-    this.totalFailures++;
-    this.failureCount++;
-    this.lastFailureTime = Date.now();
-
-    if (this.failureCount >= this.config.failureThreshold) {
-      this.open();
+  recordError(error: string): void {
+    this.state.errorCount += 1;
+    if (this.state.errorCount >= 5) {
+      this.halt('Max error count reached');
     }
   }
 
-  private open(): void {
-    this.state = CircuitBreakerState.OPEN;
-    this.openedAt = Date.now();
-    this.successCount = 0;
+  private halt(reason: string): void {
+    this.state.isHalted = true;
+    this.state.haltedAt = Date.now();
+    this.state.reason = reason;
+    console.log(`[CircuitBreaker] HALTED: ${reason}`);
   }
 
-  private halfOpen(): void {
-    this.state = CircuitBreakerState.HALF_OPEN;
-    this.failureCount = 0;
+  canTrade(): boolean {
+    if (!this.state.isHalted) return true;
+    if (!this.state.haltedAt) return false;
+    const elapsed = Date.now() - this.state.haltedAt;
+    if (elapsed >= this.config.cooldownMs) {
+      this.state.isHalted = false;
+      this.state.haltedAt = undefined;
+      this.state.reason = undefined;
+      this.state.errorCount = 0;
+      this.state.consecutiveLosses = 0;
+      console.log('[CircuitBreaker] Resumed trading');
+    }
+    return !this.state.isHalted;
   }
 
-  private close(): void {
-    this.state = CircuitBreakerState.CLOSED;
-    this.failureCount = 0;
-    this.successCount = 0;
-    this.openedAt = null;
-  }
-
-  private isTimeoutExceeded(): boolean {
-    if (!this.openedAt) return false;
-    return Date.now() - this.openedAt >= this.config.timeoutMs;
+  getState(): CircuitBreakerState {
+    return { ...this.state };
   }
 
   reset(): void {
-    this.state = CircuitBreakerState.CLOSED;
-    this.failureCount = 0;
-    this.successCount = 0;
-    this.lastFailureTime = null;
-    this.totalRequests = 0;
-    this.totalFailures = 0;
-    this.totalSuccesses = 0;
-    this.openedAt = null;
+    this.state = {
+      isHalted: false,
+      consecutiveLosses: 0,
+      totalTrades: 0,
+      totalLosses: 0,
+      errorCount: 0,
+    };
+  }
+}
+
+// Compatibility methods for existing code
+export type CircuitBreakerStateLegacy = 'OPEN' | 'CLOSED' | 'HALF_OPEN';
+
+export class CircuitBreakerLegacy extends CircuitBreaker {
+  execute<T>(fn: () => Promise<T>): Promise<T> {
+    if (!this.canTrade()) {
+      throw new Error('Circuit breaker is open');
+    }
+    return fn();
   }
 
-  getMetrics(): CircuitBreakerMetrics {
+  getMetrics(): { state: CircuitBreakerStateLegacy; consecutiveLosses: number; totalTrades: number } {
+    const state = this.getState();
     return {
-      state: this.state,
-      failureCount: this.failureCount,
-      successCount: this.successCount,
-      lastFailureTime: this.lastFailureTime,
-      totalRequests: this.totalRequests,
-      totalFailures: this.totalFailures,
-      totalSuccesses: this.totalSuccesses
+      state: state.isHalted ? 'OPEN' : 'CLOSED',
+      consecutiveLosses: state.consecutiveLosses,
+      totalTrades: state.totalTrades,
     };
   }
 }

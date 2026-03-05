@@ -7,13 +7,11 @@ Reference: /Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md
 """
 
 import os
-import hashlib
 import requests
 from typing import Optional, Tuple
-from datetime import datetime
 
 from src.lib.raas_gate_utils import get_upgrade_message, format_license_preview
-from src.lib.license_generator import validate_license, get_tier_limits
+from src.lib.license_generator import validate_license
 from src.lib.usage_meter import record_usage, get_usage_summary
 
 
