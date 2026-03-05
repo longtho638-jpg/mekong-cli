@@ -7,7 +7,7 @@ Coordinates NLU, Memory, Router, Orchestrator, Learner, RecipeGen, Governance.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     pass
