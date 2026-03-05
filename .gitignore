@@ -295,3 +295,6 @@ cc/
 bin/
 configs/
 \!apps/algo-trader/tests/jobs/workers/
+
+# Agent benchmarks (private testing results)
+.agent/
