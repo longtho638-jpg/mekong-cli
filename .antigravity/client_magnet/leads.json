@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "last_updated": "2026-01-28T13:30:36.490557"
+    "last_updated": "2026-03-05T20:34:06.944546"
   },
   "leads": [
     {
@@ -76623,6 +76623,32 @@
       "budget": 0.0,
       "notes": "",
       "created_at": "2026-01-28T13:30:36.490543",
+      "metadata": {}
+    },
+    {
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "source": "facebook",
+      "status": "won",
+      "score": 85,
+      "budget": 5000,
+      "notes": "",
+      "created_at": "2026-03-05T20:34:06.710406",
+      "metadata": {}
+    },
+    {
+      "name": "XYZ Ltd",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "source": "referral",
+      "status": "qualified",
+      "score": 72,
+      "budget": 3000,
+      "notes": "",
+      "created_at": "2026-03-05T20:34:06.770518",
       "metadata": {}
     }
   ]

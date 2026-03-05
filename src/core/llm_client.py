@@ -19,6 +19,7 @@ import logging
 import os
 import re
 import time
+import hashlib
 from dataclasses import dataclass
 from typing import Any
 
@@ -110,6 +111,9 @@ class LLMClient:
         # Portkey-inspired: hooks pipeline + LRU cache
         self.hooks: HookPipeline | None = create_default_pipeline() if enable_hooks else None
         self.cache: LLMCache | None = LLMCache() if enable_cache else None
+
+        # Request deduplication — in-flight requests
+        self._pending_requests: dict[str, LLMResponse | None] = {}  # Keyed by hash
 
         # Build provider list
         if providers is not None:
@@ -396,6 +400,15 @@ class LLMClient:
             or self._provider_health.get(p.name, ProviderHealth()).is_healthy
         ]
         return healthy if healthy else available  # All unhealthy — try all
+
+    def _request_hash(self, messages: list[dict[str, str]], model: str, temperature: float) -> str:
+        """Generate hash for request deduplication."""
+        content = json.dumps({
+            "messages": messages,
+            "model": model,
+            "temperature": temperature,
+        }, sort_keys=True)
+        return hashlib.sha256(content.encode()).hexdigest()[:16]
 
     def _offline_response(
         self, messages: list[dict[str, str]], error: str = "",

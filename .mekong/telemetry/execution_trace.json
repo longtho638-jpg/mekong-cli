@@ -1,52 +1,179 @@
 {
-  "goal": "Algo trader retry operation simulation",
+  "goal": "Nested serialization test",
   "steps": [
     {
       "step_order": 0,
-      "title": "API call attempt 1",
-      "duration_seconds": 0.5,
+      "title": "Complex step 0 with detailed information",
+      "duration_seconds": 1.5,
       "exit_code": 0,
       "self_healed": false,
-      "agent_used": "exchange-api-agent"
+      "agent_used": "agent_0"
     },
     {
       "step_order": 1,
-      "title": "API call attempt 2",
-      "duration_seconds": 0.5,
+      "title": "Complex step 1 with detailed information",
+      "duration_seconds": 1.5,
       "exit_code": 0,
       "self_healed": false,
-      "agent_used": "exchange-api-agent"
+      "agent_used": "agent_1"
     },
     {
       "step_order": 2,
-      "title": "API call attempt 3",
-      "duration_seconds": 0.5,
-      "exit_code": 1,
-      "self_healed": true,
-      "agent_used": "exchange-api-agent"
+      "title": "Complex step 2 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_2"
     },
     {
       "step_order": 3,
-      "title": "API call attempt 4",
-      "duration_seconds": 0.5,
+      "title": "Complex step 3 with detailed information",
+      "duration_seconds": 1.5,
       "exit_code": 0,
       "self_healed": false,
-      "agent_used": "exchange-api-agent"
+      "agent_used": "agent_3"
     },
     {
       "step_order": 4,
-      "title": "API call attempt 5",
-      "duration_seconds": 0.5,
+      "title": "Complex step 4 with detailed information",
+      "duration_seconds": 1.5,
       "exit_code": 0,
       "self_healed": false,
-      "agent_used": "exchange-api-agent"
+      "agent_used": "agent_4"
+    },
+    {
+      "step_order": 5,
+      "title": "Complex step 5 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_0"
+    },
+    {
+      "step_order": 6,
+      "title": "Complex step 6 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_1"
+    },
+    {
+      "step_order": 7,
+      "title": "Complex step 7 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_2"
+    },
+    {
+      "step_order": 8,
+      "title": "Complex step 8 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_3"
+    },
+    {
+      "step_order": 9,
+      "title": "Complex step 9 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_4"
+    },
+    {
+      "step_order": 10,
+      "title": "Complex step 10 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_0"
+    },
+    {
+      "step_order": 11,
+      "title": "Complex step 11 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_1"
+    },
+    {
+      "step_order": 12,
+      "title": "Complex step 12 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_2"
+    },
+    {
+      "step_order": 13,
+      "title": "Complex step 13 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_3"
+    },
+    {
+      "step_order": 14,
+      "title": "Complex step 14 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_4"
+    },
+    {
+      "step_order": 15,
+      "title": "Complex step 15 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_0"
+    },
+    {
+      "step_order": 16,
+      "title": "Complex step 16 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_1"
+    },
+    {
+      "step_order": 17,
+      "title": "Complex step 17 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_2"
+    },
+    {
+      "step_order": 18,
+      "title": "Complex step 18 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_3"
+    },
+    {
+      "step_order": 19,
+      "title": "Complex step 19 with detailed information",
+      "duration_seconds": 1.5,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "agent_4"
     }
   ],
   "total_duration": 0.0,
-  "llm_calls": 1,
+  "llm_calls": 5,
   "errors": [
-    "Connection timeout to exchange API",
-    "Rate limit exceeded on Binance",
-    "Invalid nonce error - retry with regenerated nonce"
+    "Error #0 in complex scenario",
+    "Error #1 in complex scenario",
+    "Error #2 in complex scenario",
+    "Error #3 in complex scenario",
+    "Error #4 in complex scenario",
+    "Error #5 in complex scenario",
+    "Error #6 in complex scenario",
+    "Error #7 in complex scenario",
+    "Error #8 in complex scenario",
+    "Error #9 in complex scenario"
   ]
 }

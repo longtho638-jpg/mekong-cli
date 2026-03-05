@@ -70,17 +70,22 @@ class ExecutionHistory:
 
     Inspired by Temporal's event sourcing: every state mutation
     is recorded as an immutable event. Supports replay and recovery.
+
+    OPTIMIZATION: Batch events in memory before persisting to reduce I/O.
     """
 
-    def __init__(self, storage_dir: str | None = None) -> None:
+    def __init__(self, storage_dir: str | None = None, batch_size: int = 10) -> None:
         """Initialize history store.
 
         Args:
             storage_dir: Directory for history files. Defaults to .mekong/history/
+            batch_size: Number of events to buffer before persisting (default: 10)
 
         """
         self._storage_dir = Path(storage_dir) if storage_dir else Path(".mekong/history")
         self._events: dict[str, list[ExecutionEvent]] = {}
+        self._batch_size = batch_size
+        self._pending_events: dict[str, list[ExecutionEvent]] = {}  # Unpersisted events
 
     def append(self, event: ExecutionEvent) -> None:
         """Append an event to the workflow's history (immutable, never modified)."""
@@ -88,6 +93,14 @@ class ExecutionHistory:
         if wf_id not in self._events:
             self._events[wf_id] = []
         self._events[wf_id].append(event)
+
+        # Batch buffering — persist when batch_size reached
+        if wf_id not in self._pending_events:
+            self._pending_events[wf_id] = []
+        self._pending_events[wf_id].append(event)
+
+        if len(self._pending_events[wf_id]) >= self._batch_size:
+            self.flush(wf_id)
 
     def get_history(self, workflow_id: str) -> list[ExecutionEvent]:
         """Get all events for a workflow, ordered by timestamp."""
@@ -130,6 +143,30 @@ class ExecutionHistory:
                 line = json.dumps(asdict(event), default=str)
                 f.write(line + "\n")
         return filepath
+
+    def flush(self, workflow_id: str) -> Path | None:
+        """Flush pending events to disk (batch persist).
+
+        Returns:
+            Path to file if events were flushed, None if no pending events.
+        """
+        if not self._pending_events.get(workflow_id):
+            return None
+
+        self._storage_dir.mkdir(parents=True, exist_ok=True)
+        filepath = self._storage_dir / f"{workflow_id}.jsonl"
+        with open(filepath, "a", encoding="utf-8") as f:
+            for event in self._pending_events[workflow_id]:
+                line = json.dumps(asdict(event), default=str)
+                f.write(line + "\n")
+
+        self._pending_events[workflow_id] = []
+        return filepath
+
+    def flush_all(self) -> None:
+        """Flush all pending events to disk."""
+        for wf_id in list(self._pending_events.keys()):
+            self.flush(wf_id)
 
     def load(self, workflow_id: str) -> list[ExecutionEvent]:
         """Load workflow history from disk."""

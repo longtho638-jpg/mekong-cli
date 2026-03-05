@@ -28,7 +28,7 @@ from src.cli.helpers import (
 from src.cli.validators import (
     require_api_token,
 )
-from src.lib.raas_gate import require_license, check_license
+from src.lib.raas_gate import require_license
 
 
 console = Console()

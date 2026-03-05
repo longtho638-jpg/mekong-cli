@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "last_updated": "2026-01-28T13:30:36.587987"
+    "last_updated": "2026-03-05T20:34:06.998066"
   },
   "clients": [
     {
@@ -7801,6 +7801,17 @@
       "total_ltv": 5000,
       "active_projects": 0,
       "joined_at": "2026-01-28T13:30:19.024185"
+    },
+    {
+      "id": "cli_1772717646",
+      "name": "ABC Corp",
+      "company": "",
+      "email": "",
+      "phone": "",
+      "zalo": "",
+      "total_ltv": 5000,
+      "active_projects": 0,
+      "joined_at": "2026-03-05T20:34:06.944543"
     }
   ]
 }
