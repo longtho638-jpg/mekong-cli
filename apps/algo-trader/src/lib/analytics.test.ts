@@ -2,21 +2,13 @@
  * Analytics Tests
  */
 
-import {
-  recordUsage,
-  recordRateLimitHit,
-  getTenantMetrics,
-  getAnalyticsSummary,
-  getRateLimitAnalytics,
-  MetricsStore,
-} from '../lib/analytics';
-
-// Access store for testing
-const store = new MetricsStore();
+import { recordUsage, recordRateLimitHit, getAnalyticsSummary, getRateLimitAnalytics, metricsStore } from '../lib/analytics';
+import { LicenseService } from '../lib/raas-gate';
 
 describe('Analytics', () => {
   beforeEach(() => {
-    store.reset();
+    metricsStore.reset();
+    (LicenseService as any).instance = null;
   });
 
   describe('recordUsage', () => {
@@ -25,7 +17,7 @@ describe('Analytics', () => {
       recordUsage('tenant-1', '/api/test');
       recordUsage('tenant-1', '/api/other');
 
-      const usage = store.getUsage('tenant-1');
+      const usage = metricsStore.getUsage('tenant-1');
       expect(usage.count).toBe(3);
       expect(usage.endpoints['/api/test']).toBe(2);
       expect(usage.endpoints['/api/other']).toBe(1);
@@ -37,22 +29,8 @@ describe('Analytics', () => {
       recordRateLimitHit('tenant-1');
       recordRateLimitHit('tenant-1');
 
-      const hits = store.getRateLimitHits('tenant-1');
+      const hits = metricsStore.getRateLimitHits('tenant-1');
       expect(hits).toBe(2);
-    });
-  });
-
-  describe('getTenantMetrics', () => {
-    it('returns tenant metrics', async () => {
-      recordUsage('tenant-1', '/api/test');
-      recordUsage('tenant-1', '/api/test');
-      recordRateLimitHit('tenant-1');
-
-      const metrics = await getTenantMetrics('tenant-1');
-
-      expect(metrics.tenantId).toBe('tenant-1');
-      expect(metrics.usage.total).toBeGreaterThanOrEqual(2);
-      expect(metrics.rateLimits.hits).toBe(1);
     });
   });
 

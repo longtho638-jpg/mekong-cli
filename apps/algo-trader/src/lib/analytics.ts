@@ -2,40 +2,24 @@
  * Usage Analytics API - Phase 2C
  *
  * Collects and serves usage metrics for RaaS dashboard.
+ *
+ * Production ready:
+ * - In-memory store for dev/testing
+ * - Upgrade to TimescaleDB/ClickHouse for production
  */
 
-import { UsageQuotaService, QUOTA_LIMITS } from '../lib/usage-quota';
+import { UsageQuotaService } from '../lib/usage-quota';
 import { LicenseService, LicenseTier } from '../lib/raas-gate';
 
-/**
- * Usage metrics for a tenant
- */
 export interface TenantUsageMetrics {
   tenantId: string;
   tier: string;
-  period: {
-    start: string;
-    end: string;
-  };
-  usage: {
-    total: number;
-    limit: number;
-    remaining: number;
-    percentUsed: number;
-  };
-  rateLimits: {
-    hits: number;
-    byEndpoint: Record<string, number>;
-  };
-  revenue: {
-    monthly: number;
-    projected: number;
-  };
+  period: { start: string; end: string };
+  usage: { total: number; limit: number; remaining: number; percentUsed: number };
+  rateLimits: { hits: number; byEndpoint: Record<string, number> };
+  revenue: { monthly: number; projected: number };
 }
 
-/**
- * Aggregated analytics
- */
 export interface AnalyticsSummary {
   totalTenants: number;
   activeTenants: number;
@@ -44,9 +28,6 @@ export interface AnalyticsSummary {
   topEndpoints: Array<{ endpoint: string; hits: number }>;
 }
 
-/**
- * In-memory metrics store (production: use TimescaleDB/ClickHouse)
- */
 export class MetricsStore {
   private usageData: Map<string, { count: number; endpoints: Record<string, number> }> = new Map();
   private rateLimitHits: Map<string, number> = new Map();
@@ -82,24 +63,16 @@ export class MetricsStore {
 }
 
 const metricsStore = new MetricsStore();
+export { metricsStore };
 
-/**
- * Record API usage for a tenant
- */
 export function recordUsage(tenantId: string, endpoint: string): void {
   metricsStore.incrementUsage(tenantId, endpoint);
 }
 
-/**
- * Record rate limit hit
- */
 export function recordRateLimitHit(tenantId: string): void {
   metricsStore.incrementRateLimit(tenantId);
 }
 
-/**
- * Get usage metrics for a tenant
- */
 export async function getTenantMetrics(tenantId: string): Promise<TenantUsageMetrics> {
   const quotaService = UsageQuotaService.getInstance();
   const licenseService = LicenseService.getInstance();
@@ -109,43 +82,20 @@ export async function getTenantMetrics(tenantId: string): Promise<TenantUsageMet
   const usage = metricsStore.getUsage(tenantId);
   const rateLimitHits = metricsStore.getRateLimitHits(tenantId);
 
-  const pricing = {
-    free: 0,
-    pro: 99,
-    enterprise: 499,
-  };
+  const pricing = { free: 0, pro: 99, enterprise: 499 };
 
   return {
     tenantId,
     tier,
-    period: {
-      start: quota.periodStart.toISOString(),
-      end: quota.periodEnd.toISOString(),
-    },
-    usage: {
-      total: quota.used,
-      limit: quota.limit,
-      remaining: quota.remaining,
-      percentUsed: quota.percentUsed,
-    },
-    rateLimits: {
-      hits: rateLimitHits,
-      byEndpoint: usage.endpoints,
-    },
-    revenue: {
-      monthly: pricing[tier as keyof typeof pricing] || 0,
-      projected: pricing[tier as keyof typeof pricing] || 0,
-    },
+    period: { start: quota.periodStart.toISOString(), end: quota.periodEnd.toISOString() },
+    usage: { total: quota.used, limit: quota.limit, remaining: quota.remaining, percentUsed: quota.percentUsed },
+    rateLimits: { hits: rateLimitHits, byEndpoint: usage.endpoints },
+    revenue: { monthly: pricing[tier as keyof typeof pricing] || 0, projected: pricing[tier as keyof typeof pricing] || 0 },
   };
 }
 
-/**
- * Get analytics summary across all tenants
- */
 export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
   const tenants = metricsStore.getAllTenants();
-  const quotaService = UsageQuotaService.getInstance();
-
   let totalRevenue = 0;
   const usageByTier: Record<string, number> = { free: 0, pro: 0, enterprise: 0 };
   const endpointHits: Record<string, number> = {};
@@ -153,7 +103,6 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
   for (const tenantId of tenants) {
     const tier = LicenseService.getInstance().getTier();
     usageByTier[tier] = (usageByTier[tier] || 0) + 1;
-
     const pricing = { free: 0, pro: 99, enterprise: 499 };
     totalRevenue += pricing[tier as keyof typeof pricing] || 0;
 
@@ -163,27 +112,19 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
     }
   }
 
-  const topEndpoints = Object.entries(endpointHits)
-    .map(([endpoint, hits]) => ({ endpoint, hits }))
-    .sort((a, b) => b.hits - a.hits)
-    .slice(0, 10);
-
   return {
     totalTenants: tenants.length,
     activeTenants: tenants.filter(t => metricsStore.getUsage(t).count > 0).length,
     totalRevenue,
     usageByTier,
-    topEndpoints,
+    topEndpoints: Object.entries(endpointHits)
+      .map(([endpoint, hits]) => ({ endpoint, hits }))
+      .sort((a, b) => b.hits - a.hits)
+      .slice(0, 10),
   };
 }
 
-/**
- * Get rate limit analytics
- */
-export async function getRateLimitAnalytics(): Promise<{
-  totalHits: number;
-  byTenant: Record<string, number>;
-}> {
+export async function getRateLimitAnalytics(): Promise<{ totalHits: number; byTenant: Record<string, number> }> {
   const tenants = metricsStore.getAllTenants();
   const byTenant: Record<string, number> = {};
   let totalHits = 0;
