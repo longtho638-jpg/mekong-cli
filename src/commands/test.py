@@ -1,5 +1,6 @@
 """Test command - Run tests with various options"""
 
+from typing import Optional
 import typer
 from rich.console import Console
 from rich.panel import Panel
@@ -18,7 +19,7 @@ def run(
     coverage: bool = typer.Option(False, "--coverage", help="Run with coverage"),
     specific: str = typer.Option(None, "--specific", "-s", help="Run specific test file or directory"),
     watch: bool = typer.Option(False, "--watch", "-w", help="Watch mode"),
-) -> bool | None:
+) -> Optional[bool]:
     """Run tests with various options"""
     cmd = [sys.executable, "-m", "pytest"]
 
