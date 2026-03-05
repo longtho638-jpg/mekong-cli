@@ -2,6 +2,7 @@
 Core CLI Commands - Main application commands
 
 Extracted from main.py for better maintainability.
+ROIaaS Phase 1: RaaS License Gate integrated
 """
 
 import typer
@@ -27,6 +28,7 @@ from src.cli.helpers import (
 from src.cli.validators import (
     require_api_token,
 )
+from src.lib.raas_gate import require_license, check_license
 
 
 console = Console()
@@ -43,6 +45,9 @@ def cook(
     json_output: bool = typer.Option(False, "--json", "-j", help="Machine-readable JSON output"),
 ) -> None:
     """Cook: Plan -> Execute -> Verify workflow (Binh Phap engine)"""
+    # Check license for premium command
+    require_license("cook")
+
     llm_client = get_client()
 
     orchestrator = RecipeOrchestrator(
@@ -146,6 +151,10 @@ def plan_cmd(
 ) -> None:
     """📋 Plan: Decompose a goal into executable steps (plan only, no execution)"""
     from src.cli.validators import validate_complexity
+
+    # Check license for complex plans (premium feature)
+    if complexity.lower() == "complex":
+        require_license("plan")
 
     complexity_map = {
         "simple": TaskComplexity.SIMPLE,
@@ -267,6 +276,9 @@ def gateway(
     host: str = typer.Option("127.0.0.1", "--host", "-H", help="Server bind address"),
 ) -> None:
     """🌐 Gateway: Start the OpenClaw Hybrid Commander HTTP server"""
+    # Check license for premium command
+    require_license("gateway")
+
     import uvicorn
 
     api_token = require_api_token()

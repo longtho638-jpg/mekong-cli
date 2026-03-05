@@ -3,6 +3,7 @@ Mekong CLI - Main Entry Point
 
 RaaS Agency Operating System CLI
 Refactored: 2026-03-05 — Modular architecture
+ROIaaS Phase 1: RaaS License Gate integrated
 """
 
 import typer
@@ -10,6 +11,9 @@ from rich.console import Console
 
 # Core imports
 from src.core.llm_client import get_client
+
+# RaaS License Gate
+from src.lib.raas_gate import get_license_gate, require_license
 
 # Command modules
 from src.cli.binh_phap_commands import app as binh_phap_app
@@ -46,6 +50,9 @@ app = typer.Typer(
     help="🚀 Mekong CLI: RaaS Agency Operating System",
     add_completion=False,
 )
+
+# Initialize license gate on startup
+_license_gate = get_license_gate()
 
 
 def _register_legacy_commands() -> None:
