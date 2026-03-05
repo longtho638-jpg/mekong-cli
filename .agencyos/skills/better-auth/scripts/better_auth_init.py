@@ -323,7 +323,8 @@ class BetterAuthInit:
     }""")
 
         if social_providers:
-            config_parts.append(f"  socialProviders: {{\n{',\\n'.join(social_providers)}\n  }}")
+            separator = ',\n'
+            config_parts.append(f"  socialProviders: {{\n{separator.join(social_providers)}\n  }}")
 
         # Plugins
         if "5" in auth_methods:
