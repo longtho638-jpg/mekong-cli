@@ -1,14 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "b7f68d91dc33",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua p",
-      "dispatchedAt": 1772691709090
-    },
-    {
       "hash": "e74d3e3e848b",
       "project": "algo-trader",
       "pane": 2,
@@ -1599,6 +1591,14 @@
       "chapter": "TIER3-RỪNG-CHIẾN: production",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (4→10), bỏ qua phầ",
       "dispatchedAt": 1772725875088
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772726615094
     }
   ],
   "chapterIndex": 5
