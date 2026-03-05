@@ -16,8 +16,10 @@ class CommandRequest(BaseModel):
 class StepSummary(BaseModel):
     """Summary of a single execution step"""
     order: int
-    status: str
-    result: str
+    title: str
+    passed: bool
+    exit_code: int
+    summary: str
 
 
 class HumanSummary(BaseModel):
@@ -30,9 +32,8 @@ class CommandResponse(BaseModel):
     """Response returned to the cloud caller"""
     status: str
     goal: str
-    success: bool
     total_steps: int
-    successful_steps: int
+    completed_steps: int
     failed_steps: int
     success_rate: float
     errors: List[str]
@@ -63,7 +64,7 @@ class ProjectInfo(BaseModel):
     """A project discovered in the apps/ directory"""
     name: str
     path: str
-    has_claude_md: bool
+    has_git: bool
 
 
 class SwarmNodeInfo(BaseModel):
@@ -97,7 +98,92 @@ class ScheduleJobInfo(BaseModel):
     id: str
     name: str
     goal: str
-    schedule: str
+    job_type: str = Field("interval", pattern="^(interval|daily)$")
+    interval_seconds: int = Field(300, ge=10)
+    daily_time: str = Field("09:00")
     enabled: bool
-    last_run: Optional[str] = None
-    next_run: Optional[str] = None
+    last_run: Optional[float] = None
+    next_run: Optional[float] = None
+    run_count: int = 0
+
+
+class ScheduleAddRequest(BaseModel):
+    """Request to add a new scheduled job"""
+    name: str = Field(..., min_length=1)
+    goal: str = Field(..., min_length=1)
+    job_type: str = Field("interval", pattern="^(interval|daily)$")
+    interval_seconds: int = Field(300, ge=10)
+    daily_time: str = Field("09:00")
+
+
+class MemoryEntryInfo(BaseModel):
+    """Memory entry returned by API"""
+    goal: str
+    status: str
+    timestamp: float
+    duration_ms: float
+    error_summary: str
+    recipe_used: str
+
+
+class MemoryStatsResponse(BaseModel):
+    """Memory aggregate statistics"""
+    total: int
+    success_rate: float
+    top_goals: List[str]
+    recent_failures: int
+
+
+class NLUParseRequest(BaseModel):
+    """NLU parse request"""
+    goal: str = Field(..., min_length=1)
+
+
+class NLUParseResponse(BaseModel):
+    """NLU parse response"""
+    intent: str
+    confidence: float
+    entities: Dict[str, str]
+    suggested_recipe: str
+
+
+class RecipeGenerateRequest(BaseModel):
+    """Recipe generation request"""
+    goal: str = Field(..., min_length=1)
+    steps: List[str] = Field(default_factory=list)
+
+
+class RecipeGenerateResponse(BaseModel):
+    """Recipe generation response"""
+    name: str
+    content: str
+    source: str
+    valid: bool
+    path: str
+
+
+class RecipeValidateRequest(BaseModel):
+    """Recipe validation request"""
+    content: str = Field(..., min_length=1)
+
+
+class RecipeValidateResponse(BaseModel):
+    """Recipe validation response"""
+    valid: bool
+    errors: List[str]
+
+
+class AutoRecipeInfo(BaseModel):
+    """Auto-generated recipe info"""
+    name: str
+    path: str
+
+
+class GovernanceCheckRequest(BaseModel):
+    """Request to check governance classification."""
+    goal: str = Field(..., min_length=1)
+
+
+class HaltRequest(BaseModel):
+    """Request to halt autonomous operations."""
+    token: str = Field(..., min_length=1)
