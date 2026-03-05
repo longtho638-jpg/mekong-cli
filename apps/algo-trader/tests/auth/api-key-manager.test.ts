@@ -296,10 +296,12 @@ describe('API Key Manager', () => {
     });
 
     it('fast-fails on different length strings', () => {
-      // timingSafeEqual returns false for different lengths without timing attack
+      // timingSafeEqual throws RangeError for different lengths - this is expected behavior
       const crypto = require('crypto');
 
-      expect(crypto.timingSafeEqual(Buffer.from('abc', 'utf8'), Buffer.from('abcdef', 'utf8'))).toBe(false);
+      expect(() => {
+        crypto.timingSafeEqual(Buffer.from('abc', 'utf8'), Buffer.from('abcdef', 'utf8'));
+      }).toThrow('Input buffers must have the same byte length');
     });
   });
 
