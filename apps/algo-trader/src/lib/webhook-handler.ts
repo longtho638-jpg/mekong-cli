@@ -209,7 +209,7 @@ export async function handleWebhookEvent(
       return {
         success: true,
         licenseKey: license_key as string,
-        newTier: 'free',
+        newTier: LicenseTier.FREE,
         message: 'Subscription cancelled, downgraded to FREE'
       };
     }

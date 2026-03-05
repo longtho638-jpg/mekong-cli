@@ -162,3 +162,6 @@ export function requireLicenseHandler<T extends (...args: any[]) => any>(
     }
   }) as T;
 }
+
+// Re-export for convenience
+export { LicenseService, LicenseTier, LicenseError };

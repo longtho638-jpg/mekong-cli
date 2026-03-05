@@ -168,9 +168,7 @@ export class GruPricePredictionModel {
 
     if (!this.model) this.build();
 
-    return new Promise((resolve, reject) => {
-      this.model!.loadWeights(artifacts).then(resolve).catch(reject);
-    });
+    await this.model.loadWeights(artifacts);
   }
 
   /** Get config for reconstruction. */
