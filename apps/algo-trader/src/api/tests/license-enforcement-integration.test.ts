@@ -50,6 +50,7 @@ describe('License Enforcement - Premium Feature Gating', () => {
     licenseService = LicenseService.getInstance();
     licenseService.reset();
     delete process.env.RAAS_LICENSE_KEY;
+    delete process.env.DEBUG_AUDIT; // Clear audit flag for clean state
     backtestEngine = new BacktestEngine();
   });
 
@@ -392,6 +393,7 @@ describe('License Enforcement - Premium Feature Gating', () => {
   describe('Audit Logging', () => {
     test('should log license check events', () => {
       // Arrange
+      process.env.DEBUG_AUDIT = 'true'; // Enable audit logging for this test
       licenseService.validateSync();
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
@@ -405,6 +407,7 @@ describe('License Enforcement - Premium Feature Gating', () => {
       );
 
       consoleSpy.mockRestore();
+      delete process.env.DEBUG_AUDIT; // Cleanup
     });
   });
 });

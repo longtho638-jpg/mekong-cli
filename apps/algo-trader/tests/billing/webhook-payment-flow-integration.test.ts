@@ -8,6 +8,7 @@
 import { createHmac } from 'crypto';
 import { PolarWebhookPayload } from '../../src/billing/polar-webhook-event-handler';
 import { PolarSubscriptionService } from '../../src/billing/polar-subscription-service';
+import { LicenseService } from '../../src/lib/raas-gate';
 import { buildServer } from '../../src/api/fastify-raas-server';
 import { FastifyInstance } from 'fastify';
 
@@ -37,6 +38,8 @@ describe('Webhook Integration — Dev Mode Scenarios', () => {
   beforeEach(() => {
     originalSecret = process.env.POLAR_WEBHOOK_SECRET;
     process.env.POLAR_WEBHOOK_SECRET = ''; // Dev mode
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
   });
 
   afterEach(() => {
@@ -44,7 +47,7 @@ describe('Webhook Integration — Dev Mode Scenarios', () => {
   });
 
   test('should accept any signature in dev mode (no secret)', () => {
-    const service = new PolarSubscriptionService();
+    const service = PolarSubscriptionService.getInstance();
     const { PolarWebhookEventHandler } = require('../../src/billing/polar-webhook-event-handler');
     const handler = new PolarWebhookEventHandler(service);
 
@@ -63,6 +66,8 @@ describe('Webhook Integration — Rate Limiting Scenarios', () => {
 
   beforeAll(async () => {
     process.env.POLAR_WEBHOOK_SECRET = ''; // Dev mode
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
     server = buildServer({ skipAuth: true });
     await server.ready();
   });
@@ -159,7 +164,9 @@ describe('Webhook Integration — Error Handling Scenarios', () => {
   let tierChanges: Array<{ tenantId: string; tier: string }>;
 
   beforeEach(() => {
-    service = new PolarSubscriptionService();
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
+    service = PolarSubscriptionService.getInstance();
     tierChanges = [];
     const { PolarWebhookEventHandler } = require('../../src/billing/polar-webhook-event-handler');
     handler = new PolarWebhookEventHandler(service, (tenantId: string, tier: string) => {
@@ -236,7 +243,9 @@ describe('Webhook Integration — Circuit Breaker Scenarios', () => {
   let handler: any;
 
   beforeEach(() => {
-    service = new PolarSubscriptionService();
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
+    service = PolarSubscriptionService.getInstance();
     const { PolarWebhookEventHandler } = require('../../src/billing/polar-webhook-event-handler');
     handler = new PolarWebhookEventHandler(service);
   });
@@ -325,6 +334,8 @@ describe('Webhook Integration — End-to-End Checkout Flow', () => {
 
   beforeAll(async () => {
     process.env.POLAR_WEBHOOK_SECRET = ''; // Dev mode for e2e
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
     server = buildServer({ skipAuth: true });
     await server.ready();
   });
@@ -595,6 +606,8 @@ describe('Webhook Integration — Multi-Tenant Scenarios', () => {
 
   beforeAll(async () => {
     process.env.POLAR_WEBHOOK_SECRET = '';
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
     server = buildServer({ skipAuth: true });
     await server.ready();
   });

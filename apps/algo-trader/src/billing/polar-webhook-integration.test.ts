@@ -15,9 +15,12 @@ describe('Polar Webhook Integration', () => {
   let licenseService: LicenseService;
 
   beforeEach(() => {
-    subscriptionService = new PolarSubscriptionService();
+    // Reset singletons for each test
+    PolarSubscriptionService.resetInstance();
+    LicenseService.getInstance().reset();
+
+    subscriptionService = PolarSubscriptionService.getInstance();
     licenseService = LicenseService.getInstance();
-    licenseService.reset();
 
     webhookHandler = new PolarWebhookEventHandler(
       subscriptionService,
@@ -50,11 +53,18 @@ describe('Polar Webhook Integration', () => {
       // Re-create handler to pick up env var
       const newHandler = new PolarWebhookEventHandler(subscriptionService);
       expect(newHandler.verifySignature(payload, signature)).toBe(true);
+
+      // Cleanup
+      delete process.env.POLAR_WEBHOOK_SECRET;
     });
 
-    test('should accept all signatures when no secret configured', () => {
+    test('should accept all webhooks in dev mode (no secret configured)', () => {
       delete process.env.POLAR_WEBHOOK_SECRET;
-      expect(webhookHandler.verifySignature('any', 'any')).toBe(true);
+      // Re-create handler to pick up env var change
+      const newHandler = new PolarWebhookEventHandler(subscriptionService);
+      // Dev mode: accept webhooks without signature verification (allows local dev)
+      // Production: must set POLAR_WEBHOOK_SECRET for signature verification
+      expect(newHandler.verifySignature('any', 'any')).toBe(true); // Dev mode = accept
     });
   });
 
