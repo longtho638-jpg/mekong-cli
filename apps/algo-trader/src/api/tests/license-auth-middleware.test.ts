@@ -55,7 +55,7 @@ describe('License Auth Middleware', () => {
 
     test('PRO tier should access PRO endpoints', () => {
       const service = LicenseService.getInstance();
-      service.validate('raas-pro-test-key');
+      service.validateSync('raas-pro-test-key');
 
       expect(service.hasTier(LicenseTier.PRO)).toBe(true);
       expect(service.hasTier(LicenseTier.FREE)).toBe(true);
@@ -63,7 +63,7 @@ describe('License Auth Middleware', () => {
 
     test('ENTERPRISE tier should access all endpoints', () => {
       const service = LicenseService.getInstance();
-      service.validate('raas-ent-test-key');
+      service.validateSync('raas-ent-test-key');
 
       expect(service.hasTier(LicenseTier.ENTERPRISE)).toBe(true);
       expect(service.hasTier(LicenseTier.PRO)).toBe(true);

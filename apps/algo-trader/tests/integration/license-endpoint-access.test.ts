@@ -26,7 +26,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('should identify FREE tier when no license key', () => {
       const service = LicenseService.getInstance();
-      const validation = service.validate();
+      const validation = service.validateSync();
 
       expect(validation.tier).toBe(LicenseTier.FREE);
       expect(validation.valid).toBe(false);
@@ -35,7 +35,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('FREE tier should have basic features only', () => {
       const service = LicenseService.getInstance();
-      service.validate();
+      service.validateSync();
 
       expect(service.hasFeature('basic_strategies')).toBe(true);
       expect(service.hasFeature('live_trading')).toBe(true);
@@ -52,7 +52,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('should identify PRO tier with valid key', () => {
       const service = LicenseService.getInstance();
-      const validation = service.validate();
+      const validation = service.validateSync();
 
       expect(validation.tier).toBe(LicenseTier.PRO);
       expect(validation.valid).toBe(true);
@@ -61,7 +61,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('PRO tier should have premium features', () => {
       const service = LicenseService.getInstance();
-      service.validate();
+      service.validateSync();
 
       expect(service.hasFeature('ml_models')).toBe(true);
       expect(service.hasFeature('premium_data')).toBe(true);
@@ -70,7 +70,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('PRO tier should have basic features too (hierarchy)', () => {
       const service = LicenseService.getInstance();
-      service.validate();
+      service.validateSync();
 
       expect(service.hasFeature('basic_strategies')).toBe(true);
       expect(service.hasFeature('live_trading')).toBe(true);
@@ -85,7 +85,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('should identify ENTERPRISE tier with valid key', () => {
       const service = LicenseService.getInstance();
-      const validation = service.validate();
+      const validation = service.validateSync();
 
       expect(validation.tier).toBe(LicenseTier.ENTERPRISE);
       expect(validation.valid).toBe(true);
@@ -94,7 +94,7 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('ENTERPRISE tier should have all features', () => {
       const service = LicenseService.getInstance();
-      service.validate();
+      service.validateSync();
 
       expect(service.hasFeature('ml_models')).toBe(true);
       expect(service.hasFeature('premium_data')).toBe(true);
@@ -143,18 +143,18 @@ describe('License Endpoint Access Control - Integration', () => {
       const service = LicenseService.getInstance();
 
       // Test FREE tier
-      service.validate('invalid-key');
+      service.validateSync('invalid-key');
       expect(service.hasTier(LicenseTier.FREE)).toBe(true);
       expect(service.hasTier(LicenseTier.PRO)).toBe(false);
 
       // Test PRO tier
-      service.validate('raas-pro-test');
+      service.validateSync('raas-pro-test');
       expect(service.hasTier(LicenseTier.FREE)).toBe(true);
       expect(service.hasTier(LicenseTier.PRO)).toBe(true);
       expect(service.hasTier(LicenseTier.ENTERPRISE)).toBe(false);
 
       // Test ENTERPRISE tier
-      service.validate('raas-ent-test');
+      service.validateSync('raas-ent-test');
       expect(service.hasTier(LicenseTier.FREE)).toBe(true);
       expect(service.hasTier(LicenseTier.PRO)).toBe(true);
       expect(service.hasTier(LicenseTier.ENTERPRISE)).toBe(true);
@@ -174,7 +174,7 @@ describe('License Endpoint Access Control - Integration', () => {
       expect(() => service.requireFeature('ml_models')).toThrow();
 
       // PRO tier - should pass
-      service.validate('raas-pro-test');
+      service.validateSync('raas-pro-test');
       expect(() => service.requireFeature('ml_models')).not.toThrow();
     });
 
@@ -186,7 +186,7 @@ describe('License Endpoint Access Control - Integration', () => {
       expect(() => service.requireFeature('premium_data')).toThrow();
 
       // PRO tier - should pass
-      service.validate('raas-pro-test');
+      service.validateSync('raas-pro-test');
       expect(() => service.requireFeature('premium_data')).not.toThrow();
     });
 
@@ -198,7 +198,7 @@ describe('License Endpoint Access Control - Integration', () => {
       expect(() => service.requireTier(LicenseTier.PRO, 'optimization')).toThrow();
 
       // PRO tier - should pass
-      service.validate('raas-pro-test');
+      service.validateSync('raas-pro-test');
       expect(() => service.requireTier(LicenseTier.PRO, 'optimization')).not.toThrow();
     });
   });
@@ -210,25 +210,25 @@ describe('License Endpoint Access Control - Integration', () => {
 
     test('should recognize raas-pro-* format', () => {
       const service = LicenseService.getInstance();
-      service.validate('raas-pro-12345');
+      service.validateSync('raas-pro-12345');
       expect(service.getTier()).toBe(LicenseTier.PRO);
     });
 
     test('should recognize RPP-* format (legacy)', () => {
       const service = LicenseService.getInstance();
-      service.validate('RPP-12345');
+      service.validateSync('RPP-12345');
       expect(service.getTier()).toBe(LicenseTier.PRO);
     });
 
     test('should recognize raas-ent-* format', () => {
       const service = LicenseService.getInstance();
-      service.validate('raas-ent-12345');
+      service.validateSync('raas-ent-12345');
       expect(service.getTier()).toBe(LicenseTier.ENTERPRISE);
     });
 
     test('should recognize REP-* format (legacy)', () => {
       const service = LicenseService.getInstance();
-      service.validate('REP-12345');
+      service.validateSync('REP-12345');
       expect(service.getTier()).toBe(LicenseTier.ENTERPRISE);
     });
 

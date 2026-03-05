@@ -15,7 +15,7 @@ describe('StrategyLoader - ML License Gate', () => {
   test('should load basic strategies without license', () => {
     const strategy = StrategyLoader.load('RsiSma');
     expect(strategy).toBeDefined();
-    expect(strategy.name).toBe('RSI SMA Strategy');
+    expect(strategy.name).toBe('RSI + SMA Strategy');
   });
 
   test('should register ML strategies with PRO license then load', async () => {
