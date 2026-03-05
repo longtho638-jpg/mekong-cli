@@ -139,6 +139,15 @@ describe('RAAS License Gate - Security Patches', () => {
   });
 
   describe('Audit Logging', () => {
+    beforeEach(() => {
+      // Enable audit logging for tests
+      process.env.DEBUG_AUDIT = 'true';
+    });
+
+    afterEach(() => {
+      delete process.env.DEBUG_AUDIT;
+    });
+
     test('should log feature access checks', () => {
       const service = LicenseService.getInstance();
       service.validateSync('raas-pro-test');
