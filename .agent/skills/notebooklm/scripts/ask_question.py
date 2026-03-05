@@ -93,7 +93,7 @@ def ask_notebooklm(question: str, notebook_url: str, headless: bool = True) -> s
                 if query_element:
                     print(f"  ✓ Found input: {selector}")
                     break
-            except:
+            except Exception:
                 continue
 
         if not query_element:
@@ -129,7 +129,7 @@ def ask_notebooklm(question: str, notebook_url: str, headless: bool = True) -> s
                 if thinking_element and thinking_element.is_visible():
                     time.sleep(1)
                     continue
-            except:
+            except Exception:
                 pass
 
             # Try to find response with MCP selectors
@@ -150,7 +150,7 @@ def ask_notebooklm(question: str, notebook_url: str, headless: bool = True) -> s
                             else:
                                 stable_count = 0
                                 last_text = text
-                except:
+                except Exception:
                     continue
 
             if answer:
@@ -177,13 +177,13 @@ def ask_notebooklm(question: str, notebook_url: str, headless: bool = True) -> s
         if context:
             try:
                 context.close()
-            except:
+            except Exception:
                 pass
 
         if playwright:
             try:
                 playwright.stop()
-            except:
+            except Exception:
                 pass
 
 

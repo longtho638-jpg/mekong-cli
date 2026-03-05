@@ -205,6 +205,11 @@ export class AtomicCrossExchangeOrderExecutor {
     const errorMsg = this.extractError(buyResult, sellResult);
     logger.error(`[AtomicExec] Failed: ${errorMsg} | rollback=${rollbackPerformed}`);
 
+    // Throw error to trigger retry when both exchanges fail (temporary failure)
+    if (!buyFulfilled && !sellFulfilled) {
+      throw new Error(errorMsg);
+    }
+
     return {
       success: false,
       buyOrder: buyFulfilled ? buyResult.value : undefined,

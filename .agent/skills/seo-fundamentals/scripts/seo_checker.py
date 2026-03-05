@@ -26,7 +26,7 @@ from pathlib import Path
 # Fix Windows console encoding
 try:
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-except:
+except Exception:
     pass
 
 

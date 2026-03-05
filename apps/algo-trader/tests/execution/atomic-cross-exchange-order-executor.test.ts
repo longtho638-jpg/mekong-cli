@@ -61,7 +61,7 @@ describe('AtomicCrossExchangeOrderExecutor', () => {
           sellExchange,
         });
 
-        expect(result.success).toBe(true);
+      expect(result.success).toBe(true);
         expect(result.buyOrder).toBeDefined();
         expect(result.sellOrder).toBeDefined();
         expect(result.rollbackPerformed).toBe(false);
@@ -453,6 +453,130 @@ describe('AtomicCrossExchangeOrderExecutor', () => {
 
       expect(result.rollbackPerformed).toBe(true);
       expect(rollbackAttempts).toBe(3);
+    });
+  });
+
+  describe('edge cases - capital safety', () => {
+    let executor: AtomicCrossExchangeOrderExecutor;
+
+    beforeEach(() => {
+      const retryConfig: RetryConfig = {
+        maxRetries: 2,
+        baseDelayMs: 10,
+        maxDelayMs: 100,
+        factor: 2,
+        jitter: false,
+        retryableErrors: ['timeout', 'rate limit', 'network error']
+      };
+      executor = new AtomicCrossExchangeOrderExecutor({ retryConfig });
+    });
+
+    it('should exhaust retries and fail gracefully when both exchanges always fail', async () => {
+      buyExchange.createMarketOrder.mockRejectedValue(new Error('timeout error'));
+      sellExchange.createMarketOrder.mockRejectedValue(new Error('timeout error'));
+
+      const result = await executor.executeAtomic({
+        symbol: 'BTC/USDT',
+        amount: 0.1,
+        buyExchange,
+        sellExchange,
+      });
+
+      // Verify failure state
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('timeout');
+      expect(result.rollbackPerformed).toBe(false);
+    });
+
+    it('should retry on rate limit errors when BOTH exchanges fail', async () => {
+      let buyAttempts = 0;
+      let sellAttempts = 0;
+      
+      buyExchange.createMarketOrder.mockImplementation(() => {
+        buyAttempts++;
+        if (buyAttempts === 1) {
+          return Promise.reject(new Error('rate limit exceeded'));
+        }
+        return Promise.resolve(makeOrder('ord-1', 'buy', 68000, 0.1));
+      });
+      
+      sellExchange.createMarketOrder.mockImplementation(() => {
+        sellAttempts++;
+        if (sellAttempts === 1) {
+          return Promise.reject(new Error('rate limit exceeded'));
+        }
+        return Promise.resolve(makeOrder('ord-2', 'sell', 68200, 0.1));
+      });
+
+      const result = await executor.executeAtomic({
+        symbol: 'BTC/USDT',
+        amount: 0.1,
+        buyExchange,
+        sellExchange,
+      });
+
+      expect(buyAttempts).toBe(2);
+      expect(sellAttempts).toBe(2);
+      expect(result.success).toBe(true);
+    });
+
+    it('should retry on network errors when BOTH exchanges fail', async () => {
+      let attempts = 0;
+      
+      buyExchange.createMarketOrder.mockImplementation(() => {
+        attempts++;
+        if (attempts === 1) {
+          return Promise.reject(new Error('network error'));
+        }
+        return Promise.resolve(makeOrder('ord-1', 'buy', 68000, 0.1));
+      });
+      
+      sellExchange.createMarketOrder.mockImplementation(() => {
+        if (attempts === 1) {
+          return Promise.reject(new Error('network error'));
+        }
+        return Promise.resolve(makeOrder('ord-2', 'sell', 68200, 0.1));
+      });
+
+      const result = await executor.executeAtomic({
+        symbol: 'BTC/USDT',
+        amount: 0.1,
+        buyExchange,
+        sellExchange,
+      });
+
+      expect(attempts).toBe(2);
+      expect(result.success).toBe(true);
+    });
+
+    it('should NOT retry on authentication errors', async () => {
+      buyExchange.createMarketOrder.mockRejectedValue(new Error('Invalid API key'));
+      sellExchange.createMarketOrder.mockRejectedValue(new Error('Invalid API key'));
+
+      const result = await executor.executeAtomic({
+        symbol: 'BTC/USDT',
+        amount: 0.1,
+        buyExchange,
+        sellExchange,
+      });
+
+      // Should NOT retry (auth errors are not retryable)
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Invalid API key');
+    });
+
+    it('should handle insufficient balance gracefully', async () => {
+      buyExchange.createMarketOrder.mockRejectedValue(new Error('Insufficient balance'));
+
+      const result = await executor.executeAtomic({
+        symbol: 'BTC/USDT',
+        amount: 0.1,
+        buyExchange,
+        sellExchange,
+      });
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Insufficient');
     });
   });
 });

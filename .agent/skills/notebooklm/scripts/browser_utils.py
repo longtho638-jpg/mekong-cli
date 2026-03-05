@@ -72,7 +72,7 @@ class StealthUtils:
             # Try waiting if not immediately found
             try:
                 element = page.wait_for_selector(selector, timeout=2000)
-            except:
+            except Exception:
                 pass
         
         if not element:

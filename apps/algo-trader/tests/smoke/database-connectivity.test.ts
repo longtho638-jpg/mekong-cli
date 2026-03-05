@@ -8,12 +8,10 @@
  * - Read/write operations
  *
  * Requires DATABASE_URL or SUPABASE_URL env vars.
+ * Tests are skipped when DATABASE_URL is not set.
  */
 
 import { Client } from 'pg';
-
-// Custom error for skipping tests when env var not set
-class SkipTestError extends Error {}
 
 describe('Smoke Tests — Database Connectivity', () => {
   let client: Client | null = null;
@@ -36,26 +34,26 @@ describe('Smoke Tests — Database Connectivity', () => {
   // ── Basic Connectivity (P0) ──
 
   describe('Basic Database Operations', () => {
-    beforeAll(() => {
-      if (!databaseUrl) {
-        throw new SkipTestError('DATABASE_URL not set');
-      }
-    });
-
     test('Database connects successfully', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return; // Skip when DATABASE_URL not set
+      }
       const result = await client.query('SELECT 1 as check');
       expect(result.rows[0].check).toBe(1);
     });
 
     test('Database version is accessible', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const result = await client.query('SELECT version()');
       expect(result.rows[0].version).toContain('PostgreSQL');
     });
 
     test('Database has reasonable connection latency (< 100ms)', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const start = Date.now();
       await client.query('SELECT 1');
       const duration = Date.now() - start;
@@ -67,7 +65,9 @@ describe('Smoke Tests — Database Connectivity', () => {
 
   describe('Schema Validation', () => {
     test('Public schema exists', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const result = await client.query(
         "SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'public'"
       );
@@ -75,7 +75,9 @@ describe('Smoke Tests — Database Connectivity', () => {
     });
 
     test('Expected tables exist in database', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       // List of expected tables for algo-trader
       const expectedTables = [
         'api_keys',
@@ -101,7 +103,9 @@ describe('Smoke Tests — Database Connectivity', () => {
 
   describe('Read/Write Operations', () => {
     test('Can create and drop test table', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const testTable = 'smoke_test_table';
 
       try {
@@ -135,7 +139,9 @@ describe('Smoke Tests — Database Connectivity', () => {
     });
 
     test('Transaction rollback works correctly', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const testTable = 'smoke_test_txn';
 
       try {
@@ -172,7 +178,9 @@ describe('Smoke Tests — Database Connectivity', () => {
 
   describe('Connection Health', () => {
     test('Multiple sequential queries work', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       for (let i = 0; i < 5; i++) {
         const result = await client.query('SELECT $1 as num', [i]);
         expect(result.rows[0].num).toBe(i);
@@ -180,7 +188,9 @@ describe('Smoke Tests — Database Connectivity', () => {
     });
 
     test('Concurrent queries work', async () => {
-      if (!client) return;
+      if (!databaseUrl || !client) {
+        return;
+      }
       const queries = [1, 2, 3, 4, 5].map(num =>
         client.query('SELECT $1 as num', [num])
       );

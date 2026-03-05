@@ -333,7 +333,7 @@ class TestBackupManager:
 
 
 # Import os for cleanup test
-import os
+# import os  # Unused import removed
 
 
 if __name__ == "__main__":

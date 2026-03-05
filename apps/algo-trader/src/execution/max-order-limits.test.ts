@@ -200,7 +200,7 @@ describe('MaxOrderLimits', () => {
 
     describe('updateConfig', () => {
       it('updates configuration', () => {
-        checker.updateConfig({ maxOrderSize: 20 });
+        checker.updateConfig({ maxOrderSize: 20, maxOrderValue: 1_000_000 });
 
         const result = checker.validateOrder('tenant1', 'BTC/USDT', 'buy', 15, 40000);
         expect(result.passed).toBe(true);

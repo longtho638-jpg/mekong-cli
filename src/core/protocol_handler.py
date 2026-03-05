@@ -9,8 +9,12 @@ import threading
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from urllib.parse import parse_qs, urlparse
+
+if TYPE_CHECKING:
+    from src.core.orchestrator import RecipeOrchestrator
+    from src.core.recipe_registry import RecipeRegistry
 
 
 class ProtocolScheme(str, Enum):
@@ -31,8 +35,8 @@ class ProtocolRequest:
     raw_uri: str = ""
 
 
-# Handler signature: (request: ProtocolRequest) -> Any
-HandlerFn = Callable[[ProtocolRequest], Any]
+# Handler signature: (request: ProtocolRequest) -> object
+HandlerFn = Callable[[ProtocolRequest], object]
 
 
 class ProtocolHandler:
@@ -49,9 +53,9 @@ class ProtocolHandler:
 
     def __init__(
         self,
-        orchestrator: Any = None,
-        recipe_registry: Any = None,
-        agent_registry: dict[str, Any] | None = None,
+        orchestrator: "RecipeOrchestrator | None" = None,
+        recipe_registry: "RecipeRegistry | None" = None,
+        agent_registry: dict[str, object] | None = None,
     ) -> None:
         """Args:
         orchestrator: RecipeOrchestrator for mekong:// routes.
@@ -82,7 +86,7 @@ class ProtocolHandler:
         with self._lock:
             self._handlers.pop(scheme.value, None)
 
-    def handle(self, uri: str) -> Any:
+    def handle(self, uri: str) -> object:
         """Parse URI and dispatch to the matching handler.
 
         Raises:
@@ -127,7 +131,7 @@ class ProtocolHandler:
     # Built-in handlers
     # ------------------------------------------------------------------
 
-    def _handle_mekong(self, request: ProtocolRequest) -> Any:
+    def _handle_mekong(self, request: ProtocolRequest) -> object:
         """Handle mekong://cook/<goal> → orchestrator.run(goal)."""
         parts = request.path.split("/", 1)
         action, goal = parts[0], (parts[1] if len(parts) > 1 else "")
@@ -139,7 +143,7 @@ class ProtocolHandler:
         msg = f"Unknown mekong action: '{action}'"
         raise ValueError(msg)
 
-    def _handle_recipe(self, request: ProtocolRequest) -> Any:
+    def _handle_recipe(self, request: ProtocolRequest) -> object:
         """Handle recipe://run/<recipe_name> → registry.execute(recipe_name)."""
         parts = request.path.split("/", 1)
         action, recipe_name = parts[0], (parts[1] if len(parts) > 1 else "")
@@ -151,7 +155,7 @@ class ProtocolHandler:
         msg = f"Unknown recipe action: '{action}'"
         raise ValueError(msg)
 
-    def _handle_agent(self, request: ProtocolRequest) -> Any:
+    def _handle_agent(self, request: ProtocolRequest) -> object:
         """Handle agent://<agent_name>/<action> → agent.execute(action)."""
         parts = request.path.split("/", 1)
         agent_name, action = parts[0], (parts[1] if len(parts) > 1 else "")

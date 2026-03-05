@@ -13,9 +13,9 @@ Usage:
 """
 
 from .analytics import (
-    create_default_metrics,
-    generate_analytics_report,
-    update_metrics,
+    create_default_metrics as create_default_metrics,
+    generate_analytics_report as generate_analytics_report,
+    update_metrics as update_metrics,
 )
 from .inference import (
     calculate_statistical_optimization,
@@ -79,6 +79,9 @@ def get_game_changing_analytics():
 
 
 __all__ = [
+    "create_default_metrics",
+    "generate_analytics_report",
+    "update_metrics",
     # Main class
     "MLOptimizer",
     "ml_optimizer",

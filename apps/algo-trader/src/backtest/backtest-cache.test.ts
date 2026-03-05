@@ -16,7 +16,7 @@ function createMockCandle(timestamp: number, close: number): ICandle {
   };
 }
 
-function createMockResult(returnPercent: number): any {
+function createMockResult(returnPercent: number): import('./BacktestRunner').BacktestResult {
   return {
     strategyName: 'TestStrategy',
     totalReturn: returnPercent,

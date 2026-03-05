@@ -20,7 +20,7 @@ except ImportError:
 
 try:
     import psycopg2
-    from psycopg2 import sql
+    
     POSTGRES_AVAILABLE = True
 except ImportError:
     POSTGRES_AVAILABLE = False

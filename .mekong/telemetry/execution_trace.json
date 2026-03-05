@@ -1,16 +1,51 @@
 {
-  "goal": "test",
+  "goal": "Test goal for recursion fix",
   "steps": [
     {
-      "step_order": 1,
-      "title": "test",
-      "duration_seconds": 0.001,
+      "step_order": 0,
+      "title": "Test step 0",
+      "duration_seconds": 1.0,
       "exit_code": 0,
       "self_healed": false,
-      "agent_used": null
+      "agent_used": "test-agent"
+    },
+    {
+      "step_order": 1,
+      "title": "Test step 1",
+      "duration_seconds": 1.0,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "test-agent"
+    },
+    {
+      "step_order": 2,
+      "title": "Test step 2",
+      "duration_seconds": 1.0,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "test-agent"
+    },
+    {
+      "step_order": 3,
+      "title": "Test step 3",
+      "duration_seconds": 1.0,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "test-agent"
+    },
+    {
+      "step_order": 4,
+      "title": "Test step 4",
+      "duration_seconds": 1.0,
+      "exit_code": 0,
+      "self_healed": false,
+      "agent_used": "test-agent"
     }
   ],
-  "total_duration": 0.005,
-  "llm_calls": 0,
-  "errors": []
+  "total_duration": 0.0,
+  "llm_calls": 3,
+  "errors": [
+    "Test error 1",
+    "Test error 2"
+  ]
 }

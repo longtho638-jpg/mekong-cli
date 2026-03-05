@@ -271,6 +271,9 @@ frontend/
 api/
 agents/
 !packages/**/agents/
+!apps/algo-trader/src/api/
+!apps/algo-trader/src/jobs/workers/
+!apps/algo-trader/tests/jobs/workers/
 cli/
 workers/
 mekong-docs/
@@ -291,3 +294,4 @@ tmp/
 cc/
 bin/
 configs/
+\!apps/algo-trader/tests/jobs/workers/

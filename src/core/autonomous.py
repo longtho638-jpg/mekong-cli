@@ -7,7 +7,10 @@ Coordinates NLU, Memory, Router, Orchestrator, Learner, RecipeGen, Governance.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    pass
 
 from .event_bus import EventType, get_event_bus
 from .governance import ActionClass, AuditEntry, Governance, GovernanceDecision
