@@ -17,7 +17,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 readme = "README.md"
-packages = [{include = "mekong"}, {include = "src"}, {include = "api"}, {include = "automation"}]
+packages = [{include = "mekong"}, {include = "src"}, {include = "api"}]
 
 [tool.poetry.scripts]
 mekong = "src.main:app"
