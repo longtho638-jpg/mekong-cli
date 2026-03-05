@@ -75,8 +75,9 @@ class LicenseKeyGenerator:
         Returns:
             Tuple of (is_valid, license_info, error_message)
         """
-        # Parse key
-        parts = key.split("-")
+        # Parse key: raas-[tier]-[key_id]-[signature]
+        # Signature may contain dashes, so we split into max 4 parts
+        parts = key.split("-", 3)  # Split into max 4 parts
         if len(parts) < 4:
             return False, None, "Invalid format: expected raas-[tier]-[id]-[signature]"
 
@@ -88,11 +89,9 @@ class LicenseKeyGenerator:
             return False, None, f"Invalid tier: {tier}"
 
         key_id = parts[2]
-        signature = parts[3]
+        signature = parts[3]  # Rest of the string is signature
 
-        # Reconstruct payload (without signature)
-        # Note: We can't fully validate without storing the original payload
-        # For now, just verify signature format
+        # Verify signature format (base64url)
         try:
             # Decode and verify signature format
             base64.urlsafe_b64decode(signature + "=" * (4 - len(signature) % 4))
@@ -140,7 +139,7 @@ class LicenseKeyGenerator:
         Returns:
             True if signature matches
         """
-        parts = key.split("-")
+        parts = key.split("-", 3)
         if len(parts) < 4:
             return False
 

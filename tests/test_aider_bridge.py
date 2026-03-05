@@ -1,14 +1,20 @@
-"""Integration tests for apps/openclaw-worker/lib/aider-bridge.js — tested via subprocess."""
+"""Integration tests for apps/openclaw-worker/lib/aider-bridge.js — tested via subprocess.
+
+DEPRECATED: aider-bridge.js was removed in v2.0. Tests kept for reference.
+Skipped due to missing file.
+"""
 
 import subprocess
 import json
 import os
+import pytest
 
 AIDER_BRIDGE_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "apps", "openclaw-worker", "lib", "aider-bridge.js")
 )
 
 
+@pytest.mark.skip(reason="aider-bridge.js removed in v2.0 - module no longer exists")
 class TestAiderBridgeSyntax:
     def test_js_syntax_valid(self):
         """aider-bridge.js passes Node.js syntax check."""
@@ -36,6 +42,7 @@ console.log(JSON.stringify(keys));
         assert "extractAffectedFiles" in exports
 
 
+@pytest.mark.skip(reason="aider-bridge.js removed in v2.0 - module no longer exists")
 class TestExtractAffectedFiles:
     def test_extracts_source_files(self):
         """extractAffectedFiles pulls file paths from error logs."""
@@ -119,6 +126,7 @@ console.log(JSON.stringify(files));
         assert isinstance(files, list)
 
 
+@pytest.mark.skip(reason="aider-bridge.js removed in v2.0 - module no longer exists")
 class TestIsAiderAvailable:
     def test_returns_boolean(self):
         """isAiderAvailable() returns a boolean."""
