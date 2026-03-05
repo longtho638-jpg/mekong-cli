@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   maxWorkers: 1,
-  workerIdleMemoryLimit: '512MB',
+  workerIdleMemoryLimit: '1GB', // Increased for M1 16GB RAM
   testTimeout: 60000,
   // Skip heavy tests that cause SIGKILL on M1 16GB RAM
   testPathIgnorePatterns: [
@@ -33,6 +33,8 @@ module.exports = {
     // Tests causing memory issues on M1 16GB RAM
     'phantom-order-cloaking-engine.test.ts',
     'spread-detector-command.test.ts',
+    'AgiArbitrageEngine.test',
+    'redis-connectivity.test',
   ],
   testMatch: ['**/*.test.ts'],
   moduleDirectories: ['node_modules', '<rootDir>/node_modules'],

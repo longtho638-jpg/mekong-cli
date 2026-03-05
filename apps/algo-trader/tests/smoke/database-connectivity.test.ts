@@ -12,6 +12,9 @@
 
 import { Client } from 'pg';
 
+// Custom error for skipping tests when env var not set
+class SkipTestError extends Error {}
+
 describe('Smoke Tests — Database Connectivity', () => {
   let client: Client | null = null;
   const databaseUrl = process.env.DATABASE_URL;
