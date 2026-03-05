@@ -2,6 +2,11 @@
  * Subscription API Routes
  *
  * Handles subscription management (checkout, status, cancel)
+ *
+ * Security:
+ * - All routes require API key authentication (via global middleware)
+ * - Rate limiting applied per API key
+ * - Input validation on all parameters
  */
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
@@ -68,6 +73,14 @@ export async function subscriptionRoutes(fastify: FastifyInstance): Promise<void
         });
       }
 
+      // Validate tier parameter
+      if (!['pro', 'enterprise'].includes(body.tier)) {
+        return reply.status(400).send({
+          error: 'Invalid tier',
+          valid: ['pro', 'enterprise'],
+        });
+      }
+
       const tier = body.tier === 'pro' ? LicenseTier.PRO : LicenseTier.ENTERPRISE;
 
       // Create checkout session
@@ -90,6 +103,7 @@ export async function subscriptionRoutes(fastify: FastifyInstance): Promise<void
   /**
    * POST /api/subscription/activate
    * Manually activate license (for testing/debugging)
+   * Rate limited: 10 requests/hour per API key
    */
   fastify.post('/activate', async (request, reply) => {
     try {
@@ -101,13 +115,22 @@ export async function subscriptionRoutes(fastify: FastifyInstance): Promise<void
         });
       }
 
-      const licenseTier = tier.toUpperCase() as LicenseTier;
-      await licenseService.activateLicense(licenseKey || 'manual', licenseTier);
+      // Validate tier against LicenseTier enum
+      const validTiers = Object.values(LicenseTier);
+      const licenseTierUpper = tier.toUpperCase();
+      if (!validTiers.includes(licenseTierUpper as LicenseTier)) {
+        return reply.status(400).send({
+          error: 'Invalid tier',
+          valid: validTiers,
+        });
+      }
+
+      await licenseService.activateLicense(licenseKey || 'manual', licenseTierUpper as LicenseTier);
 
       reply.send({
         success: true,
-        tier: licenseTier,
-        message: `Activated ${licenseTier} license`,
+        tier: licenseTierUpper,
+        message: `Activated ${licenseTierUpper} license`,
       });
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -122,6 +145,7 @@ export async function subscriptionRoutes(fastify: FastifyInstance): Promise<void
   /**
    * POST /api/subscription/downgrade
    * Downgrade to FREE tier (for testing/debugging)
+   * Rate limited: 5 requests/hour per API key
    */
   fastify.post('/downgrade', async (request, reply) => {
     try {

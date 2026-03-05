@@ -1,14 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "9dc78a5a3628",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
-      "dispatchedAt": 1772692445889
-    },
-    {
       "hash": "3d22b94be62e",
       "project": "mekong-cli",
       "pane": 0,
@@ -1599,6 +1591,14 @@
       "chapter": "TIER3-RỪNG-CHIẾN: performance",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
       "dispatchedAt": 1772727821134
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772727930212
     }
   ],
   "chapterIndex": 5
