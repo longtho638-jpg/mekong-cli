@@ -1830,3 +1830,175 @@
   recipe_used: 'Plan: test'
   status: rolled_back
   timestamp: 1772717372.366316
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772720710.074558
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772720710.848573
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772722360.155216
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772722360.904045
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772722665.2824378
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772722666.177376
+- duration_ms: 6777.273178100586
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772722685.342504
+- duration_ms: 4.96983528137207
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772722686.115607
+- duration_ms: 5.458831787109375
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772722686.7632241
+- duration_ms: 52.41870880126953
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772722687.668916
+- duration_ms: 5.359888076782227
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772722688.561686
+- duration_ms: 5.290985107421875
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772722690.118561
+- duration_ms: 5.505084991455078
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772722693.205863
+- duration_ms: 3749.6590614318848
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772722706.0934248
+- duration_ms: 7.661104202270508
+  error_summary: 'Step 1: Output does not contain: pass; Step 1: Output contains forbidden
+    pattern: failed'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772722708.6761441
+- duration_ms: 7.192134857177734
+  error_summary: 'Step 1: Output does not contain: pass; Step 1: Output contains forbidden
+    pattern: failed'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772722711.6008708
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772722938.3179169
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772722939.110872
+- duration_ms: 7489.783048629761
+  error_summary: ''
+  goal: fail task
+  recipe_used: 'Plan: fail task'
+  status: success
+  timestamp: 1772723227.101642
+- duration_ms: 6.249189376831055
+  error_summary: ''
+  goal: deploy app
+  recipe_used: 'Plan: deploy app'
+  status: success
+  timestamp: 1772723228.459828
+- duration_ms: 6.252050399780273
+  error_summary: ''
+  goal: my custom goal
+  recipe_used: 'Plan: my custom goal'
+  status: success
+  timestamp: 1772723229.250418
+- duration_ms: 74.85795021057129
+  error_summary: ''
+  goal: list files
+  recipe_used: 'Plan: list files'
+  status: success
+  timestamp: 1772723230.090219
+- duration_ms: 5.453824996948242
+  error_summary: ''
+  goal: install
+  recipe_used: 'Plan: install'
+  status: success
+  timestamp: 1772723231.046014
+- duration_ms: 5.429983139038086
+  error_summary: ''
+  goal: no trace
+  recipe_used: 'Plan: no trace'
+  status: success
+  timestamp: 1772723232.4096498
+- duration_ms: 5.424737930297852
+  error_summary: ''
+  goal: crash
+  recipe_used: 'Plan: crash'
+  status: success
+  timestamp: 1772723235.296184
+- duration_ms: 2433.7527751922607
+  error_summary: ''
+  goal: deploy
+  recipe_used: 'Plan: deploy'
+  status: success
+  timestamp: 1772723245.37809
+- duration_ms: 6.389141082763672
+  error_summary: 'Step 1: Output does not contain: pass; Step 1: Output contains forbidden
+    pattern: failed'
+  goal: test goal
+  recipe_used: 'Plan: test goal'
+  status: rolled_back
+  timestamp: 1772723247.160008
+- duration_ms: 5.6171417236328125
+  error_summary: 'Step 1: Output does not contain: pass; Step 1: Output contains forbidden
+    pattern: failed'
+  goal: test
+  recipe_used: 'Plan: test'
+  status: rolled_back
+  timestamp: 1772723249.478831

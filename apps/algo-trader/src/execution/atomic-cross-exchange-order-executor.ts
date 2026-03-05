@@ -268,13 +268,15 @@ export class AtomicCrossExchangeOrderExecutor {
     } else {
       if (buyFulfilled) {
         this.buyCircuitBreaker!.recordTrade(0);
-      } else {
-        this.buyCircuitBreaker!.recordError(buyResult.reason instanceof Error ? buyResult.reason.message : String(buyResult.reason));
+      } else if (buyResult.status === 'rejected') {
+        const reason = buyResult.reason instanceof Error ? buyResult.reason.message : String(buyResult.reason);
+        this.buyCircuitBreaker!.recordError(reason);
       }
       if (sellFulfilled) {
         this.sellCircuitBreaker!.recordTrade(0);
-      } else {
-        this.sellCircuitBreaker!.recordError(sellResult.reason instanceof Error ? sellResult.reason.message : String(sellResult.reason));
+      } else if (sellResult.status === 'rejected') {
+        const reason = sellResult.reason instanceof Error ? sellResult.reason.message : String(sellResult.reason);
+        this.sellCircuitBreaker!.recordError(reason);
       }
     }
 
