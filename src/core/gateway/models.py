@@ -62,6 +62,7 @@ class PresetAction(BaseModel):
 
     id: str
     label: str
+    label_vi: str
     description: str
     goal: str
     icon: str
