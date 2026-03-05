@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest pytest-asyncio anyio "httpx<0.28"
+          pip install ruff pytest pytest-asyncio anyio "httpx<0.28" pytest-cov
           pip install -e .
 
       - name: Verify CLI Entry Point
@@ -81,12 +81,13 @@ jobs:
 
       - name: Check for exposed secrets
         run: |
-          echo "Checking for exposed secrets..."
-          if grep -r "API_KEY\|SECRET\|PASSWORD" src/ --include="*.py" --include="*.ts" --include="*.js" 2>/dev/null | grep -v "test" | grep -v ".env.example"; then
-            echo "❌ Found potential secrets in source code!"
+          echo "Checking for hardcoded secrets (not env var references)..."
+          # Check for hardcoded secrets (not env var references)
+          if grep -rE "(API_KEY|SECRET|PASSWORD)\s*=\s*['\"][^'\"]+['\"]" src/ --include="*.py" --include="*.ts" --include="*.js" 2>/dev/null | grep -v "test" | grep -v ".env.example" | grep -v "os.getenv" | grep -v "os.environ"; then
+            echo "❌ Found hardcoded secrets in source code!"
             exit 1
           fi
-          echo "✅ No secrets found"
+          echo "✅ No hardcoded secrets found"
 
   # ------------------------------------------------------------------
   # JOB 2: FRONTEND (Next.js / Monorepo)
