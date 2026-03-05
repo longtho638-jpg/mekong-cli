@@ -26,7 +26,7 @@ def test_decision_maker():
     assert isinstance(similar, list)
 
     # Test getting recommendation (won't find anything yet but should return None)
-    recommendation = dm.get_recommendation("Should we implement feature X?")
+    dm.get_recommendation("Should we implement feature X?")
     # Recommendation could be None if no similar decisions exist yet
 
     print("✅ DecisionMaker tests passed")

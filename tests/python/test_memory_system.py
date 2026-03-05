@@ -8,22 +8,22 @@ def test_memory_imports():
 
     # Test importing the packages
     try:
-        import mem0
+        import mem0  # noqa: F401 - availability check
         print("✓ Successfully imported mem0")
     except ImportError as e:
-        print(f"✗ Failed to import mem0: {e}")
+        print(f"✗ Failed to import mem0  # noqa: F401 - availability check: {e}")
 
     try:
-        from mem0 import Memory as Mem0Memory
+        from mem0 import Memory as Mem0Memory  # noqa: F401 - availability check
         print("✓ Successfully imported Mem0Memory from mem0")
     except ImportError as e:
         print(f"✗ Failed to import Mem0Memory from mem0: {e}")
 
     try:
-        import qdrant_client
+        import qdrant_client  # noqa: F401 - availability check
         print("✓ Successfully imported qdrant_client")
     except ImportError as e:
-        print(f"✗ Failed to import qdrant_client: {e}")
+        print(f"✗ Failed to import qdrant_client  # noqa: F401 - availability check: {e}")
 
     # Test the memory facade directly
     print("\nTesting memory facade...")

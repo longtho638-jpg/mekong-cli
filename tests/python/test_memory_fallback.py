@@ -10,7 +10,7 @@ def test_memory_with_fallback():
     print("Testing memory system with fallback mechanism...")
 
     # Create a temporary directory for YAML storage
-    with tempfile.TemporaryDirectory() as temp_dir:
+    with tempfile.TemporaryDirectory():
         # Set up a custom MemoryFacade that can use a temporary storage
         facade = MemoryFacade()
 

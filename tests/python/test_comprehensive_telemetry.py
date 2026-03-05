@@ -46,7 +46,7 @@ def test_comprehensive_telemetry():
             collector.record_error(f"Transient error in subsystem {i}")
 
         # Finish the trace - main point where recursion occurred
-        trace = collector.finish_trace()
+        trace = collector.finish_trace()  # Used below for validation
 
         if trace:
             print("✓ Trace completed successfully")
@@ -108,7 +108,7 @@ def test_nested_serialization():
             collector.record_error(f"Error #{i} in complex scenario")
 
         # Finish trace
-        trace = collector.finish_trace()
+        collector.finish_trace()
         print("✓ Nested serialization test passed!")
         return True
 

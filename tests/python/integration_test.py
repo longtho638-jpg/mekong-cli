@@ -18,7 +18,7 @@ def test_memory_integration():
     # Test 1: Memory system availability
     print("\n1. Testing Memory System Availability...")
     try:
-        from packages.memory.memory_facade import get_memory_facade, MemoryFacade
+        from packages.memory.memory_facade import get_memory_facade  # noqa: F401 - availability check
         print("   ✓ Memory facade imported successfully")
 
         facade = get_memory_facade()
@@ -70,7 +70,7 @@ def test_memory_integration():
         print("   ✓ MemoryChat instantiated successfully")
 
         # Simulate a brief conversation
-        response = chat.chat("Hello, this is an integration test")
+        chat.chat("Hello, this is an integration test")
         print("   ✓ Chat interaction completed successfully")
 
         # Check status
