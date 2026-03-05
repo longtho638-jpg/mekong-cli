@@ -25,12 +25,19 @@ env:
   GCP_REGION: us-central1
   SERVICE_NAME: algo-trader
 
+# Prevent concurrent deployments
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   docker:
     name: Docker Build & Push
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     outputs:
       image_url: us-central1-docker.pkg.dev/${{ env.GCP_PROJECT_ID }}/algo-trader/algo-trader:${{ github.sha }}
+      previous_revision: ${{ steps.get-prev-rev.outputs.revision }}
 
     steps:
       - name: Checkout code
@@ -40,6 +47,14 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Get previous stable revision (for rollback)
+        id: get-prev-rev
+        run: |
+          PREV_REV=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --region ${{ env.GCP_REGION }} \
+            --format 'value(status.latestCreatedRevisionName)' 2>/dev/null || echo "")
+          echo "revision=$PREV_REV" >> $GITHUB_OUTPUT
 
       - name: Configure Docker for Artifact Registry
         run: |
@@ -59,7 +74,11 @@ jobs:
   deploy:
     name: Deploy to Cloud Run
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [docker]
+    environment:
+      name: production
+      url: https://algo-trader-${{ env.GCP_REGION }}-${{ env.GCP_PROJECT_ID }}.run.app
 
     steps:
       - name: Checkout code
@@ -102,8 +121,11 @@ jobs:
   post-deploy-verify:
     name: Verify Deployment
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [deploy]
     if: always()
+    outputs:
+      verify_status: ${{ steps.health-check.outputs.status }}
 
     steps:
       - name: Google Auth
@@ -119,9 +141,24 @@ jobs:
             --format 'value(status.url)')
           echo "url=$URL" >> $GITHUB_OUTPUT
 
-      - name: Health Check
+      - name: Health Check (Liveness)
+        id: health-check
         run: |
-          curl -f "${{ steps.get-url.outputs.url }}/health" || exit 1
+          echo "status=checking" >> $GITHUB_OUTPUT
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.get-url.outputs.url }}/health" || echo "000")
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+            echo "✅ Health check passed (HTTP $HTTP_CODE)"
+            exit 0
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "❌ Health check failed (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+
+      - name: Deep Health Check (Readiness)
+        run: |
+          curl -f "${{ steps.get-url.outputs.url }}/health/ready" || echo "⚠️ Readiness endpoint not available"
 
       - name: Deployment Summary
         if: always()
@@ -132,6 +169,49 @@ jobs:
           echo "|------|--------|" >> $GITHUB_STEP_SUMMARY
           echo "| Docker Build | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Cloud Run Deploy | ${{ needs.deploy.result }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| Health Check | ${{ job.status == 'success' && 'Passed' || 'Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Health Check | ${{ steps.health-check.outputs.status }} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Service URL: ${{ steps.get-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Service URL:** ${{ steps.get-url.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+
+  auto-rollback:
+    name: Auto-Rollback on Failure
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [docker, post-deploy-verify]
+    if: always() && needs.post-deploy-verify.result == 'failure' && needs.docker.outputs.previous_revision != ''
+
+    steps:
+      - name: Google Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: Configure GCP
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.GCP_PROJECT_ID }}
+
+      - name: Rollback to Previous Revision
+        id: rollback
+        run: |
+          echo "🔄 Rolling back to revision: ${{ needs.docker.outputs.previous_revision }}"
+          gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
+            --to-revisions=${{ needs.docker.outputs.previous_revision }}=100 \
+            --region ${{ env.GCP_REGION }}
+          echo "status=completed" >> $GITHUB_OUTPUT
+
+      - name: Verify Rollback
+        run: |
+          sleep 30
+          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} \
+            --region ${{ env.GCP_REGION }} \
+            --format 'value(status.url)')
+          curl -f "$URL/health" || echo "⚠️ Rollback health check failed"
+
+      - name: Rollback Summary
+        run: |
+          echo "## 🔄 Auto-Rollback Executed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** Deployment verification failed" >> $GITHUB_STEP_SUMMARY
+          echo "**Rolled back to:** ${{ needs.docker.outputs.previous_revision }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.rollback.outputs.status }}" >> $GITHUB_STEP_SUMMARY
