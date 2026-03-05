@@ -3,7 +3,7 @@ Mekong CLI - Main Entry Point
 
 RaaS Agency Operating System CLI
 Refactored: 2026-03-05 — Modular architecture
-ROIaaS Phase 1: RaaS License Gate integrated
+ROIaaS Phase 2: Remote Validation, Usage Metering, Key Generation
 """
 
 import typer
@@ -24,6 +24,7 @@ from src.commands.schedule_commands import app as schedule_app
 from src.commands.memory_commands import app as memory_app
 from src.commands.telegram_commands import app as telegram_app
 from src.commands.autonomous_commands import app as autonomous_app
+from src.commands.license_commands import app as license_app
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -73,6 +74,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(ci_app, name="ci", help="CI/CD")
     app.add_typer(env_app, name="env", help="Environment")
     app.add_typer(test_advanced_app, name="test-advanced", help="Advanced testing")
+    app.add_typer(license_app, name="license", help="License management")
 
 
 # Register all commands
