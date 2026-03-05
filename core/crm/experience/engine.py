@@ -32,7 +32,8 @@ class CXEngine:
         return client
 
     def create_project(self, client_id: str, name: str, service: ServiceType, budget: float = 0.0, deliverables: Optional[List[str]] = None) -> Project:
-        if client_id not in self.clients: raise KeyError("Invalid Client ID")
+        if client_id not in self.clients:
+            raise KeyError("Invalid Client ID")
         project = Project(id=f"PR-{uuid.uuid4().hex[:6].upper()}", client_id=client_id, name=name, service=service, budget=budget, deliverables=deliverables or [])
         self.projects[project.id] = project
         return project

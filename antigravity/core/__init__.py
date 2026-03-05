@@ -31,16 +31,6 @@ from .vibe_ide import VIBEIDE
 from .vibe_orchestrator import VIBEOrchestrator
 from .vibe_workflow import VIBEWorkflow
 
-try:
-    from .models import (
-        AgentTask, AgentType, ChainResult, CodeReviewResult,
-        DealStage, ExecutionMode, Forecast, Invoice, InvoiceStatus,
-        Plan, StartupDeal, Task, TaskStatus, TodoItem,
-        WinCheck, WinType, WorkflowStep,
-    )
-except ImportError:
-    pass
-
 save_data = persist_save
 load_data = persist_load
 
@@ -54,4 +44,9 @@ __all__ = [
     "ClientMagnet", "Lead", "Client", "LeadSource", "LeadStatus",
     "ContentFactory", "ContentIdea", "ContentPiece", "ContentType",
     "RevenueEngine", "SalesPipeline", "VIBEWorkflow", "VIBEIDE", "VIBEOrchestrator",
+    # Models (optional, may not be available in all environments)
+    "AgentTask", "AgentType", "ChainResult", "CodeReviewResult",
+    "DealStage", "ExecutionMode", "Forecast", "Invoice", "InvoiceStatus",
+    "Plan", "StartupDeal", "Task", "TaskStatus", "TodoItem",
+    "WinCheck", "WinType", "WorkflowStep",
 ]

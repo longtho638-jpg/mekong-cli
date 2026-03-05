@@ -47,10 +47,14 @@ class HealthEngine:
             level = HealthLevel.CRITICAL
 
         risks = []
-        if engagement < 50: risks.append(RiskFactor.LOW_ENGAGEMENT)
-        if payment < 70: risks.append(RiskFactor.MISSED_PAYMENTS)
-        if results < 50: risks.append(RiskFactor.DECLINING_RESULTS)
-        if communication < 50: risks.append(RiskFactor.COMMUNICATION_GAP)
+        if engagement < 50:
+            risks.append(RiskFactor.LOW_ENGAGEMENT)
+        if payment < 70:
+            risks.append(RiskFactor.MISSED_PAYMENTS)
+        if results < 50:
+            risks.append(RiskFactor.DECLINING_RESULTS)
+        if communication < 50:
+            risks.append(RiskFactor.COMMUNICATION_GAP)
 
         client = ClientHealth(
             id=f"CHK-{uuid.uuid4().hex[:6].upper()}",
