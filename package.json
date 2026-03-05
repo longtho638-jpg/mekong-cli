@@ -30,7 +30,7 @@
     "dev:api": "cd apps/api && uvicorn app.main:app --reload --port 8000",
     "build": "npx turbo run build --concurrency=4",
     "test": "npx turbo run test --concurrency=5",
-    "lint": "npx turbo run lint --concurrency=10",
+    "lint": "npx turbo run lint --concurrency=1",
     "format": "npx turbo run format --concurrency=10",
     "gws": "npx -y @googleworkspace/cli"
   },
@@ -46,6 +46,7 @@
   "dependencies": {},
   "pnpm": {
     "overrides": {
+      "esbuild": "0.24.2",
       "undici@<6.23.0": ">=6.23.0",
       "path-to-regexp@>=4.0.0 <6.3.0": ">=6.3.0",
       "tmp@<=0.2.3": ">=0.2.4",
