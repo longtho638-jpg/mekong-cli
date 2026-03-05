@@ -2002,3 +2002,15 @@
   recipe_used: 'Plan: test'
   status: rolled_back
   timestamp: 1772723249.478831
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772726471.280351
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772726472.331977
