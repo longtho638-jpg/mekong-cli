@@ -440,7 +440,7 @@ def generate_report(output_file: str = typer.Option("security-report.json", "--o
 
 
 @app.command()
-def harden():
+def harden() -> None:
     """Suggest security hardening measures"""
 
     console.print("[bold]🔒 Security Hardening Recommendations:[/bold]")
