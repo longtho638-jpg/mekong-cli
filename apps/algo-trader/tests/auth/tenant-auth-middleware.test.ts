@@ -114,8 +114,8 @@ describe('tenant-auth-middleware', () => {
       expect(reply.sendPayload.error).toBe('Invalid or expired token');
     });
 
-    it('falls back to API key if JWT is invalid', async () => {
-      // JWT is invalid
+    it('rejects invalid JWT without falling back to API key', async () => {
+      // JWT is invalid - middleware rejects immediately, no fallback
       const middleware = createAuthMiddleware(apiKeyStore, limiter);
       const request = {
         headers: {
@@ -127,9 +127,9 @@ describe('tenant-auth-middleware', () => {
 
       await middleware(request, reply as any);
 
-      // Should reject with invalid API key message
+      // JWT invalid takes precedence over API key fallback
       expect(reply.codeCalledWith).toBe(401);
-      expect(reply.sendPayload.error).toBe('Invalid API key');
+      expect(reply.sendPayload.error).toBe('Invalid or expired token');
     });
 
     it('validates API key from store', async () => {
@@ -429,25 +429,26 @@ function createMockReply() {
   let headerCalled = false;
   let headersMap: Record<string, string> = {};
 
-  const reply = {
+  const reply: any = {
     code: (statusCode: number) => {
       codeCalledWith = statusCode;
-      return reply;
+      return reply; // Enable chaining
     },
     header: (key: string, value: string) => {
       headerCalled = true;
       headersMap[key] = value;
-      return reply;
+      return reply; // Enable chaining
     },
     send: (payload: any) => {
       sendCalled = true;
       sendPayload = payload;
+      return reply; // Enable chaining
     },
-    codeCalledWith,
-    sendCalled,
-    sendPayload,
-    headerCalled,
-    headersMap,
+    get codeCalledWith() { return codeCalledWith; },
+    get sendCalled() { return sendCalled; },
+    get sendPayload() { return sendPayload; },
+    get headerCalled() { return headerCalled; },
+    get headersMap() { return headersMap; },
   };
 
   return reply;
