@@ -3,16 +3,20 @@ Mekong CLI - Main Entry Point
 
 RaaS Agency Operating System CLI
 Refactored: 2026-03-05 — Modular architecture
+ROIaaS Phase 1: Startup License Validation (TypeScript source of truth)
 ROIaaS Phase 2: Remote Validation, Usage Metering, Key Generation
 """
 
 import typer
 from rich.console import Console
+import sys
 
 # Core imports
 from src.core.llm_client import get_client
 
-# RaaS License Gate
+# RaaS License Gate - Phase 1: Startup Validation (TypeScript source of truth)
+from src.lib.raas_gate_validator import validate_at_startup, require_valid_license
+# RaaS License Gate - Phase 2: Command-level validation
 from src.lib.raas_gate import get_license_gate, require_license
 
 # Command modules
@@ -52,8 +56,51 @@ app = typer.Typer(
     add_completion=False,
 )
 
-# Initialize license gate on startup
-_license_gate = get_license_gate()
+# Free commands that don't require license validation
+FREE_COMMANDS = {
+    "init", "version", "list", "search", "status", "config",
+    "doctor", "help", "dash", "license", "clean", "test"
+}
+
+
+def _get_invoked_command(ctx: typer.Context) -> str:
+    """Get the command being invoked."""
+    if ctx.invoked_subcommand:
+        return ctx.invoked_subcommand
+    return ""
+
+
+def _validate_startup_license(ctx: typer.Context) -> None:
+    """
+    Validate license at CLI startup.
+
+    Free commands skip validation.
+    Premium commands require valid license.
+    """
+    command = _get_invoked_command(ctx)
+
+    # Free commands don't need validation
+    if command in FREE_COMMANDS or ctx.invoked_subcommand is None:
+        return
+
+    # Check for --help flag
+    if "--help" in sys.argv or "-h" in sys.argv:
+        return
+
+    # Validate license for premium commands
+    is_valid, error = validate_at_startup()
+
+    if not is_valid:
+        console.print(f"[bold red]License Error:[/bold red] {error}")
+        console.print(
+            "\n[yellow]Generate a license key:[/yellow]"
+        )
+        console.print("  [cyan]mekong license generate --tier pro[/cyan]")
+        console.print(
+            "\n[yellow]Or set environment variable:[/yellow]"
+        )
+        console.print("  [cyan]export RAAS_LICENSE_KEY=your_key[/cyan]\n")
+        raise SystemExit(1)
 
 
 def _register_legacy_commands() -> None:
@@ -114,6 +161,9 @@ def main(
     version_flag: bool = typer.Option(False, "--version", "-v", help="Show version"),
 ) -> None:
     """Mekong CLI - Autonomous AI Agent Framework"""
+    # Validate license at startup
+    _validate_startup_license(ctx)
+
     if version_flag:
         version()
     elif ctx.invoked_subcommand is None:
