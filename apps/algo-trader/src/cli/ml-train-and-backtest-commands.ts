@@ -3,6 +3,7 @@ import { MockDataProvider } from '../data/MockDataProvider';
 import { BacktestRunner } from '../backtest/BacktestRunner';
 import { IDataProvider } from '../interfaces/IDataProvider';
 import { StrategyLoader } from '../core/StrategyLoader';
+import { LicenseService, LicenseTier, LicenseError } from '../lib/raas-gate';
 import { QLearningStrategy } from '../ml/tabular-q-learning-rl-trading-strategy';
 import { QLearningEpisodeTrainer } from '../ml/tabular-q-learning-episode-trainer';
 import { GruPricePredictionModel } from '../ml/gru-price-prediction-model';
@@ -41,12 +42,22 @@ function buildGruTrainingData(candles: ICandle[], windowSize: number) {
 export function registerMLCommands(program: Command): void {
   program
     .command('ml:train:qlearn')
-    .description('Train Q-learning RL strategy on historical data')
+    .description('Train Q-learning RL strategy on historical data (PRO feature)')
     .option('-e, --episodes <number>', 'Training episodes', '50')
     .option('-d, --days <number>', 'Days of historical data', '90')
     .option('--epsilon <number>', 'Initial exploration rate', '0.5')
     .option('--lr <number>', 'Learning rate', '0.1')
     .action(async (options) => {
+      // Gate premium feature
+      const licenseService = LicenseService.getInstance();
+      if (!licenseService.hasTier(LicenseTier.PRO)) {
+        throw new LicenseError(
+          'ml:train:qlearn requires PRO license',
+          LicenseTier.PRO,
+          'ml_training'
+        );
+      }
+
       const episodes = parseInt(options.episodes, 10);
       const days = parseInt(options.days, 10);
 
@@ -77,13 +88,23 @@ export function registerMLCommands(program: Command): void {
 
   program
     .command('ml:train:gru')
-    .description('Train GRU price prediction model')
+    .description('Train GRU price prediction model (PRO feature)')
     .option('-e, --epochs <number>', 'Training epochs', '20')
     .option('-d, --days <number>', 'Days of historical data', '90')
     .option('-w, --window <number>', 'Lookback window size', '30')
     .option('--units <number>', 'GRU hidden units', '32')
     .option('--batch <number>', 'Batch size', '32')
     .action(async (options) => {
+      // Gate premium feature
+      const licenseService = LicenseService.getInstance();
+      if (!licenseService.hasTier(LicenseTier.PRO)) {
+        throw new LicenseError(
+          'ml:train:gru requires PRO license',
+          LicenseTier.PRO,
+          'ml_training'
+        );
+      }
+
       const epochs = parseInt(options.epochs, 10);
       const days = parseInt(options.days, 10);
       const windowSize = parseInt(options.window, 10);
@@ -120,12 +141,22 @@ export function registerMLCommands(program: Command): void {
 
   program
     .command('ml:backtest')
-    .description('Train ML strategy and immediately backtest it')
+    .description('Train ML strategy and immediately backtest it (PRO feature)')
     .option('-m, --model <string>', 'ML model (QLearning, GruPrediction)', 'QLearning')
     .option('-d, --days <number>', 'Days of data (split: 70% train, 30% test)', '90')
     .option('-b, --balance <number>', 'Initial balance for backtest', '10000')
     .option('-e, --episodes <number>', 'Training episodes/epochs', '30')
     .action(async (options) => {
+      // Gate premium feature
+      const licenseService = LicenseService.getInstance();
+      if (!licenseService.hasTier(LicenseTier.PRO)) {
+        throw new LicenseError(
+          'ml:backtest requires PRO license',
+          LicenseTier.PRO,
+          'ml_training'
+        );
+      }
+
       const modelType = options.model;
       const days = parseInt(options.days, 10);
       const balance = parseFloat(options.balance);
