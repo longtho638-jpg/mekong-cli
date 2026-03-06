@@ -12,22 +12,13 @@ from rich.console import Console
 import sys
 
 # Core imports
-from src.core.llm_client import get_client
 
 # RaaS License Gate - Phase 1: Startup Validation (TypeScript source of truth)
-from src.lib.raas_gate_validator import validate_at_startup, require_valid_license
 # RaaS License Gate - Phase 2: Command-level validation
-from src.lib.raas_gate import get_license_gate, require_license
 
 # Command modules
 from src.cli.binh_phap_commands import app as binh_phap_app
 from src.cli.commands_registry import register_all_commands
-from src.commands.core_commands import app as core_app
-from src.commands.swarm_commands import app as swarm_app
-from src.commands.schedule_commands import app as schedule_app
-from src.commands.memory_commands import app as memory_app
-from src.commands.telegram_commands import app as telegram_app
-from src.commands.autonomous_commands import app as autonomous_app
 from src.commands.license_commands import app as license_app
 
 # Legacy command imports (not yet refactored)
@@ -88,10 +79,15 @@ def _validate_startup_license(ctx: typer.Context) -> None:
         return
 
     # Validate license for premium commands
-    is_valid, error = validate_at_startup()
+    from src.lib.raas_gate_validator import RaasGateValidator
+    validator = RaasGateValidator()
+    is_valid, error = validator.validate()
 
     if not is_valid:
-        console.print(f"[bold red]License Error:[/bold red] {error}")
+        # Get actual command name for error message
+        from src.lib.raas_gate_utils import get_upgrade_message
+        error_message = get_upgrade_message(command)
+        console.print(f"[bold red]License Error:[/bold red] {error_message}")
         console.print(
             "\n[yellow]Generate a license key:[/yellow]"
         )
