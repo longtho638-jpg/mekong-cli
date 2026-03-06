@@ -171,3 +171,17 @@ model LicenseAuditLog {
   @@index([licenseId, createdAt(sort: Desc)])
   @@map("license_audit_logs")
 }
+
+model UsageEvent {
+  id          String   @id @default(uuid())
+  licenseKey  String
+  tenantId    String?
+  eventType   String   // api_call, compute_minute, ml_inference
+  units       Int
+  metadata    Json?
+  createdAt   DateTime @default(now())
+
+  @@index([licenseKey, createdAt])
+  @@index([tenantId, createdAt])
+  @@map("usage_events")
+}
