@@ -9,7 +9,7 @@ Commands:
 import typer
 from rich.console import Console
 from rich.table import Table
-from datetime import datetime, timedelta
+from datetime import datetime
 import secrets
 import hashlib
 
@@ -115,6 +115,7 @@ def generate_license(
         raise typer.Exit(1)
 
     license_tier: LicenseTier = tier_lower  # type: ignore
+    tier_upper = tier_lower.upper()
 
     console.print(f"\n[bold]Generating {quantity} {tier_upper} license key(s)...[/bold]\n")
 
@@ -163,7 +164,7 @@ def validate_license(
         console.print(f"\n[green]✅ Valid {validation.tier.upper()} license![/green]")
         console.print(f"Features enabled: {len(validation.features)}")
     else:
-        console.print(f"\n[red]❌ Invalid or missing license.[/red]")
+        console.print("\n[red]❌ Invalid or missing license.[/red]")
         console.print(f"Tier: {validation.tier.upper()} (limited access)")
 
     console.print("\n[bold]Available Features:[/bold]")

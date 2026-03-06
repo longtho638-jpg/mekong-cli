@@ -300,7 +300,7 @@ class TestRuleBasedDecompose(unittest.TestCase):
     def test_agent_suggestion_not_overwritten(self):
         """Existing agent field should not be overwritten."""
         context = PlanningContext(goal="test")
-        tasks = self.planner._rule_based_decompose("test", context)
+        _ = self.planner._rule_based_decompose("test", context)
 
 
 class TestGenerateVerificationCriteria(unittest.TestCase):

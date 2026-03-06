@@ -10,7 +10,6 @@ Reference: docs/HIEN_PHAP_ROIAAS.md - ROIaaS Phase 1
 import json
 import os
 import subprocess
-import sys
 from typing import Optional, Tuple, Dict, Any
 
 from src.lib.raas_gate_utils import get_upgrade_message
@@ -115,7 +114,7 @@ class RaasGateValidator:
         except subprocess.CalledProcessError:
             # Subprocess failed - fallback to local validation
             return self._fallback_validate(license_key)
-        except Exception as e:
+        except Exception:
             # Any other error - fallback to local validation
             return self._fallback_validate(license_key)
 
