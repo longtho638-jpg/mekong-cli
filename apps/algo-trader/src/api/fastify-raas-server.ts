@@ -29,6 +29,7 @@ import { PolarSubscriptionService } from '../billing/polar-subscription-service'
 import { PolarWebhookEventHandler } from '../billing/polar-webhook-event-handler';
 import { buildPolarBillingRoutes } from './routes/polar-billing-subscription-routes';
 import { subscriptionRoutes } from './routes/subscription';
+import { licenseManagementRoutes } from './routes/license-management-routes';
 import { IdempotencyStore, idempotencyMiddleware, createIdempotencyResponseHandler } from '../middleware/idempotency-middleware';
 
 export interface RaasServerOptions {
@@ -110,6 +111,9 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   const webhookHandler = new PolarWebhookEventHandler(subscriptionService);
   void server.register(buildPolarBillingRoutes(subscriptionService, webhookHandler));
   void server.register(subscriptionRoutes);
+
+  // License management routes (admin only)
+  void server.register(licenseManagementRoutes);
 
   // Dashboard static files (built by: cd dashboard && npm run build)
   const dashboardDir = path.join(__dirname, '..', '..', 'dist', 'dashboard');

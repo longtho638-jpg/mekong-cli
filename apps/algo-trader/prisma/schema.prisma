@@ -139,3 +139,35 @@ model PnlSnapshot {
   @@index([tenantId, snapshotAt(sort: Desc)])
   @@map("pnl_snapshots")
 }
+
+model License {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  tier        Tier
+  tenantId    String?
+  status      String   @default("active") // active, revoked, expired
+  expiresAt   DateTime?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  revokedAt   DateTime?
+  revokedBy   String?
+
+  @@index([key])
+  @@index([tenantId])
+  @@index([status])
+  @@map("licenses")
+}
+
+model LicenseAuditLog {
+  id          BigInt   @id @default(autoincrement())
+  licenseId   String
+  event       String   // created, activated, revoked, validated, expired
+  tier        String?
+  ip          String?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  @@index([licenseId, createdAt(sort: Desc)])
+  @@map("license_audit_logs")
+}
