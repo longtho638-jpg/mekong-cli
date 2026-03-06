@@ -1,0 +1,349 @@
+{% extends "base.html" %}
+
+{% block title %}Mekong Analytics Dashboard - ROIaaS{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-gray-700">
+        <div>
+            <h1 class="text-3xl font-bold text-primary">🐉 Mekong Analytics Dashboard</h1>
+            <p class="text-gray-400 mt-1">RaaS Usage Tracking & Revenue Analytics</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-4 md:mt-0">
+            <!-- Range Selector -->
+            <select id="rangeSelect" class="bg-card border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary">
+                <option value="7">7 ngày</option>
+                <option value="30" selected>30 ngày</option>
+                <option value="90">90 ngày</option>
+            </select>
+
+            <!-- Export Buttons -->
+            <button onclick="exportData('json')" class="bg-secondary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                Export JSON
+            </button>
+            <button onclick="exportData('csv')" class="bg-primary hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                Export CSV
+            </button>
+
+            <!-- Last Updated -->
+            <span class="text-gray-400 text-sm ml-2">
+                Last updated: <span id="lastUpdated" class="text-gray-300">-</span>
+            </span>
+
+            <!-- Refresh Indicator -->
+            <span id="refreshIndicator" class="text-xs text-gray-500">
+                Auto-refresh in <span id="countdown">30</span>s
+            </span>
+        </div>
+    </header>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total API Calls -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Total API Calls</h3>
+            <p class="metric-value text-primary" id="totalCalls">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="callsChange">-</p>
+        </div>
+
+        <!-- Active Licenses -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Active Licenses</h3>
+            <p class="metric-value text-secondary" id="activeLicenses">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="licensesChange">-</p>
+        </div>
+
+        <!-- Estimated Revenue -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Est. Revenue</h3>
+            <p class="metric-value text-purple-500" id="estRevenue">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="revenueChange">-</p>
+        </div>
+
+        <!-- Avg Calls/Day -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Avg Calls/Day</h3>
+            <p class="metric-value text-orange-500" id="avgCalls">-</p>
+            <p class="text-gray-500 text-sm mt-1">Past 30 days</p>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-card rounded-xl p-6 border border-gray-700 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">API Call Volume</h2>
+
+            <!-- Timeframe Buttons -->
+            <div class="flex gap-2">
+                <button onclick="setGranularity('day')" class="timeframe-btn px-3 py-1 text-sm rounded bg-primary text-white" data-granularity="day">
+                    Daily
+                </button>
+                <button onclick="setGranularity('week')" class="timeframe-btn px-3 py-1 text-sm rounded bg-gray-700 hover:bg-gray-600" data-granularity="week">
+                    Weekly
+                </button>
+                <button onclick="setGranularity('month')" class="timeframe-btn px-3 py-1 text-sm rounded bg-gray-700 hover:bg-gray-600" data-granularity="month">
+                    Monthly
+                </button>
+            </div>
+        </div>
+
+        <div id="apiCallsChart" class="chart-container"></div>
+    </div>
+
+    <!-- Tables Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Active Licenses by Tier -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h2 class="text-xl font-bold mb-4">Active Licenses by Tier</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="licensesTable">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">Tier</th>
+                            <th class="pb-3 font-medium">Active</th>
+                            <th class="pb-3 font-medium">Usage</th>
+                            <th class="pb-3 font-medium">% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="licensesTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Endpoints -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h2 class="text-xl font-bold mb-4">Top Endpoints</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="endpointsTable">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">Endpoint</th>
+                            <th class="pb-3 font-medium">Calls</th>
+                            <th class="pb-3 font-medium">Avg Duration</th>
+                            <th class="pb-3 font-medium">% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="endpointsTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+/**
+ * Dashboard JavaScript — Real-time Analytics
+ */
+
+const API_BASE = '/api';
+let chart;
+let chartSeries;
+let currentGranularity = 'day';
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', () => {
+    initChart();
+    loadMetrics();
+    setupAutoRefresh();
+});
+
+// Initialize lightweight-charts
+function initChart() {
+    const chartContainer = document.getElementById('apiCallsChart');
+    chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: 400,
+        layout: {
+            background: { color: '#1e293b' },
+            textColor: '#f1f5f9',
+        },
+        grid: {
+            vertLines: { color: '#334155' },
+            horzLines: { color: '#334155' },
+        },
+        timeScale: {
+            timeVisible: true,
+            secondsVisible: false,
+        },
+    });
+
+    chartSeries = chart.addAreaSeries({
+        lineColor: '#22c55e',
+        topColor: '#22c55e40',
+        bottomColor: '#22c55e00',
+        lineWidth: 2,
+    });
+
+    // Handle resize
+    new ResizeObserver(() => {
+        chart.applyOptions({ width: chartContainer.clientWidth });
+    }).observe(chartContainer);
+}
+
+// Load metrics from API
+async function loadMetrics() {
+    const rangeDays = document.getElementById('rangeSelect').value;
+
+    try {
+        const response = await fetch(`${API_BASE}/metrics?range_days=${rangeDays}&granularity=${currentGranularity}`);
+        const result = await response.json();
+
+        if (result.success) {
+            updateDashboard(result.data);
+        }
+    } catch (error) {
+        console.error('Failed to load metrics:', error);
+    }
+}
+
+// Update dashboard UI
+function updateDashboard(data) {
+    // Calculate total API calls
+    const totalCalls = data.api_calls.reduce((sum, d) => sum + d.calls, 0);
+
+    // Update metric cards
+    document.getElementById('totalCalls').textContent = formatNumber(totalCalls);
+    document.getElementById('activeLicenses').textContent = formatNumber(data.active_licenses.total || 0);
+    document.getElementById('estRevenue').textContent = formatCurrency(data.revenue?.total || 0);
+    document.getElementById('avgCalls').textContent = formatNumber(Math.round(totalCalls / 30));
+
+    // Update chart
+    if (chartSeries) {
+        chartSeries.setData(
+            data.api_calls.map(d => ({
+                time: d.date,
+                value: d.calls,
+            }))
+        );
+    }
+
+    // Update tables
+    updateLicensesTable(data.tier_distribution);
+    updateEndpointsTable(data.top_endpoints);
+
+    // Update timestamp
+    document.getElementById('lastUpdated').textContent = new Date(data.last_updated).toLocaleString('vi-VN');
+
+    // Reset countdown
+    countdownSeconds = 30;
+}
+
+// Update licenses table
+function updateLicensesTable(tierDist) {
+    const tbody = document.getElementById('licensesTableBody');
+    const tiers = tierDist || {};
+    const total = Object.values(tiers).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0);
+
+    if (total === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-gray-500 py-4">No license data available</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = Object.entries(tiers).map(([tier, count]) => {
+        const countNum = typeof count === 'number' ? count : 0;
+        const percentage = total > 0 ? ((countNum / total) * 100).toFixed(1) : 0;
+        return `
+            <tr class="border-b border-gray-800 hover:bg-gray-800">
+                <td class="py-3 font-medium text-primary">${tier.toUpperCase()}</td>
+                <td class="py-3">${formatNumber(countNum)}</td>
+                <td class="py-3 text-gray-400">-</td>
+                <td class="py-3 text-gray-400">${percentage}%</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update endpoints table
+function updateEndpointsTable(endpoints) {
+    const tbody = document.getElementById('endpointsTableBody');
+
+    if (!endpoints || endpoints.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-gray-500 py-4">No endpoint data available</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = endpoints.map(ep => `
+        <tr class="border-b border-gray-800 hover:bg-gray-800">
+            <td class="py-3 font-mono text-sm text-secondary">${ep.endpoint || ep.path || '-'}</td>
+            <td class="py-3">${formatNumber(ep.calls || 0)}</td>
+            <td class="py-3 text-gray-400">${ep.avg_duration || '-'}ms</td>
+            <td class="py-3 text-gray-400">${(ep.percentage || 0).toFixed(1)}%</td>
+        </tr>
+    `).join('');
+}
+
+// Set granularity
+function setGranularity(granularity) {
+    currentGranularity = granularity;
+
+    // Update button styles
+    document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        if (btn.dataset.granularity === granularity) {
+            btn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+            btn.classList.add('bg-primary', 'text-white');
+        } else {
+            btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+            btn.classList.remove('bg-primary', 'text-white');
+        }
+    });
+
+    loadMetrics();
+}
+
+// Export data
+async function exportData(format) {
+    const rangeDays = document.getElementById('rangeSelect').value;
+    const url = `${API_BASE}/export?format=${format}&range_days=${rangeDays}`;
+
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `mekong-analytics-${new Date().toISOString().split('T')[0]}.${format}`;
+        a.click();
+
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+        console.error('Export failed:', error);
+        alert('Export failed: ' + error.message);
+    }
+}
+
+// Helper functions
+function formatNumber(num) {
+    return new Intl.NumberFormat('vi-VN').format(num);
+}
+
+function formatCurrency(num) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(num);
+}
+
+// Auto-refresh every 30 seconds
+let countdownSeconds = 30;
+
+function setupAutoRefresh() {
+    setInterval(() => {
+        countdownSeconds--;
+        document.getElementById('countdown').textContent = countdownSeconds;
+
+        if (countdownSeconds <= 0) {
+            loadMetrics();
+        }
+    }, 1000);
+}
+</script>
+{% endblock %}

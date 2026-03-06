@@ -20,6 +20,7 @@ import sys
 from src.cli.binh_phap_commands import app as binh_phap_app
 from src.cli.commands_registry import register_all_commands
 from src.commands.license_commands import app as license_app
+from src.commands.license_renewal import app as renewal_app
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -52,7 +53,7 @@ app = typer.Typer(
 FREE_COMMANDS = {
     "init", "version", "list", "search", "status", "config",
     "doctor", "help", "dash", "license", "clean", "test",
-    "license-admin",  # Admin dashboard is free
+    "license-admin", "analytics",  # Admin dashboard and analytics are free
 }
 
 
@@ -121,6 +122,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(test_advanced_app, name="test-advanced", help="Advanced testing")
     app.add_typer(license_app, name="license", help="License management")
     app.add_typer(license_admin_app, name="license-admin", help="License Admin Dashboard")
+    app.add_typer(renewal_app, name="renewal", help="License renewal flow")
 
 
 # Register all commands
@@ -154,6 +156,22 @@ def version() -> None:
     console.print("[dim]RaaS Agency Operating System[/dim]")
 
 
+@app.command()
+def analytics(
+    port: int = typer.Option(8080, "--port", "-p", help="Server port"),
+    no_browser: bool = typer.Option(False, "--no-browser", "-n", help="Don't open browser"),
+) -> None:
+    """📊 Launch analytics dashboard (RaaS usage tracking)."""
+    from src.api.dashboard.app import run_dashboard
+
+    console.print(f"[bold cyan]🐉 Mekong Analytics Dashboard[/bold cyan]")
+    console.print(f"[dim]Starting server at http://localhost:{port}[/dim]")
+    console.print(f"[dim]API docs: http://localhost:{port}/api/docs[/dim]")
+    console.print()
+
+    run_dashboard(port=port, open_browser=not no_browser)
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
@@ -172,7 +190,8 @@ def main(
 [dim]Quick Start:[/dim]
   [bold]mekong cook[/bold] "[your goal]"    Plan → Execute → Verify
   [bold]mekong plan[/bold] "[your goal]"    Plan only (dry run)
-  [bold]mekong dash[/bold]                  Interactive dashboard
+  [bold]mekong analytics[/bold]             Analytics dashboard
+  [bold]mekong dash[/bold]                  Action menu (Washing Machine)
 
 [dim]Help:[/dim]
   [bold]mekong --help[/bold]                Show all commands
