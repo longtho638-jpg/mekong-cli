@@ -14,10 +14,22 @@ import hashlib
 import uuid
 import base64
 import os
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 from datetime import datetime, timedelta
 
+from src.config.logging_config import get_logger
 from src.db.repository import get_repository
+
+# Fail-fast: Validate LICENSE_SECRET at module load
+_LICENSE_SECRET = os.getenv("LICENSE_SECRET")
+if _LICENSE_SECRET is None:
+    # Allow dev mode with warning
+    _LICENSE_SECRET = "dev-secret-key-not-for-production"
+    logger = get_logger(__name__)
+    logger.warning(
+        "license_generator.missing_secret",
+        message="LICENSE_SECRET not set. Using dev key. Set LICENSE_SECRET env var in production.",
+    )
 
 
 class LicenseKeyGenerator:
@@ -30,9 +42,7 @@ class LicenseKeyGenerator:
         Args:
             secret_key: HMAC secret key. Falls back to LICENSE_SECRET env var.
         """
-        self._secret_key = secret_key or os.getenv("LICENSE_SECRET", "dev-secret-key")
-        if self._secret_key == "dev-secret-key":
-            print("⚠️  WARNING: Using dev secret key. Set LICENSE_SECRET env var in production.")
+        self._secret_key: str = secret_key or _LICENSE_SECRET
 
     def generate_key(self, tier: str, email: str, days: Optional[int] = None) -> str:
         """
@@ -121,8 +131,10 @@ class LicenseKeyGenerator:
 
     def _sign(self, payload: str) -> str:
         """Create HMAC signature for payload."""
+        # self._secret_key is never None due to default in __init__
+        secret_key: str = self._secret_key if self._secret_key else ""
         signature = hmac.new(
-            self._secret_key.encode(),
+            secret_key.encode(),
             payload.encode(),
             hashlib.sha256
         ).digest()
@@ -163,9 +175,10 @@ TIER_LIMITS = {
 }
 
 
-def get_tier_limits(tier: str) -> dict:
+def get_tier_limits(tier: str) -> dict[str, Any]:
     """Get usage limits for a tier."""
-    return TIER_LIMITS.get(tier, TIER_LIMITS["free"])
+    from typing import cast
+    return cast(dict[str, Any], TIER_LIMITS.get(tier, TIER_LIMITS["free"]))
 
 
 # Global instance
@@ -195,6 +208,43 @@ async def check_revocation(key_id: str) -> bool:
     return await get_generator().is_revoked(key_id)
 
 
+def parse_license_key(license_key: str) -> tuple[bool, Optional[dict], str]:
+    """
+    Parse license key to extract key_id and tier.
+
+    Args:
+        license_key: Full license key (raas-{tier}-{key_id}-{signature})
+
+    Returns:
+        Tuple of (is_valid, parsed_info, error_message)
+        parsed_info contains: {"key_id": str, "tier": str}
+    """
+    if not license_key:
+        return False, None, "Empty license key"
+
+    # Parse: raas-{tier}-{key_id}-{signature}
+    parts = license_key.split("-", 3)
+    if len(parts) < 4:
+        return False, None, "Invalid format: expected raas-{tier}-{id}-{signature}"
+
+    if parts[0] != "raas":
+        return False, None, "Invalid prefix: must start with 'raas-'"
+
+    tier = parts[1]
+    if tier not in {"free", "trial", "pro", "enterprise"}:
+        return False, None, f"Invalid tier: {tier}"
+
+    key_id = parts[2]
+    # parts[3] is signature (optional to validate)
+
+    parsed_info = {
+        "key_id": key_id,
+        "tier": tier,
+    }
+
+    return True, parsed_info, ""
+
+
 __all__ = [
     "LicenseKeyGenerator",
     "get_generator",
@@ -203,4 +253,5 @@ __all__ = [
     "get_tier_limits",
     "TIER_LIMITS",
     "check_revocation",
+    "parse_license_key",
 ]

@@ -1,6 +1,7 @@
 """Monitor command - Monitor system resources, performance, and application health"""
 
 import typer
+from typing import Optional
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
@@ -71,7 +72,7 @@ def resources(
         console.print("\n[yellow]⚠️  Monitoring stopped by user[/yellow]")
 
 
-def show_top_processes():
+def show_top_processes() -> None:
     """Show top processes by CPU and memory usage"""
     if psutil is None:
         console.print("[red]❌ psutil not installed. Install with: pip install psutil[/red]")
@@ -179,14 +180,14 @@ def health(
         raise typer.Exit(code=1)
 
 
-def check_web_health(base_url: str, port: int, timeout: int):
+def check_web_health(base_url: str, port: int, timeout: int) -> tuple[str, str]:
     """Check if web server is responding"""
     try:
         import urllib.request
         import urllib.error
 
         url = f"{base_url}:{port}"
-        req = urllib.request.Request(url, headers={'User-Agent': 'Mekong CLI Monitor'})
+        req = urllib.request.Request(url, headers={"User-Agent": "Mekong CLI Monitor"})
         start_time = time.time()
         response = urllib.request.urlopen(req, timeout=timeout)
         response_time = time.time() - start_time
@@ -199,7 +200,7 @@ def check_web_health(base_url: str, port: int, timeout: int):
         return ("❌ Unhealthy", f"Error: {str(e)}")
 
 
-def check_endpoint(url: str, timeout: int):
+def check_endpoint(url: str, timeout: int) -> tuple[str, str]:
     """Check a specific endpoint"""
     try:
         import urllib.request
@@ -295,7 +296,7 @@ def logs(
         console.print("[dim]Supported services: app, nginx, apache, docker, custom[/dim]")
 
 
-def tail_log(log_file: str, lines: int, follow: bool, filter_pattern: str = None):
+def tail_log(log_file: str, lines: int, follow: bool, filter_pattern: Optional[str] = None) -> None:
     """Display log file contents"""
     try:
         import subprocess
@@ -344,7 +345,7 @@ def is_command_available(command: str) -> bool:
 def performance(
     duration: int = typer.Option(30, "--duration", "-d", help="Duration to monitor in seconds"),
     output_file: str = typer.Option(None, "--output", "-o", help="Output file for metrics"),
-):
+) -> None:
     """Monitor application performance over time"""
 
     if psutil is None:
@@ -433,7 +434,7 @@ def performance(
 
 
 @app.command()
-def alerts():
+def alerts() -> None:
     """Set up and manage monitoring alerts"""
 
     console.print(Panel("[bold]🔔 Monitoring Alerts[/bold]", title="Alert Configuration"))
