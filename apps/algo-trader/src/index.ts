@@ -7,6 +7,7 @@ import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exc
 import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
 import { LicenseError } from './lib/raas-gate';
+import { initLicenseValidation } from './lib/license-validator';
 import { registerArbCommands } from './cli/arb-cli-commands';
 import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
 import { registerMarketplaceCommands } from './cli/strategy-marketplace-tenant-cli-commands';
@@ -25,6 +26,10 @@ import * as dotenv from 'dotenv';
 
 // Load environment variables securely
 dotenv.config();
+
+// Initialize license validation (exit if invalid)
+const licenseResult = initLicenseValidation();
+logger.info(`📄 License status: ${licenseResult.valid ? 'VALID' : 'FREE TIER'}`);
 
 const program = new Command();
 
