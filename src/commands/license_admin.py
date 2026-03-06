@@ -9,7 +9,7 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
-from rich.prompt import Prompt, Confirm
+from rich.prompt import Confirm
 from datetime import datetime
 
 from src.api.admin_license_service import get_admin_service
@@ -238,8 +238,8 @@ def interactive_dashboard() -> None:
 
     # Summary stats
     total_licenses = licenses["total"]
-    active_count = sum(1 for l in licenses["items"] if l.get("status") == "active")
-    revoked_count = sum(1 for l in licenses["items"] if l.get("status") == "revoked")
+    active_count = sum(1 for license in licenses["items"] if license.get("status") == "active")
+    revoked_count = sum(1 for license in licenses["items"] if license.get("status") == "revoked")
     recent_actions = len(logs)
 
     console.print(Panel(
