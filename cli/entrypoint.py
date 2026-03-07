@@ -72,6 +72,10 @@ def register_commands():
     from cli.commands.outreach import outreach_app
     app.add_typer(outreach_app, name="outreach")
 
+    # RaaS Integration Commands
+    from cli.commands.sync_raas import app as sync_raas_app
+    app.add_typer(sync_raas_app, name="sync-raas")
+
     # Utility & Dev Commands - these are lightweight
     from cli.commands.dev_commands import register_dev_commands
     from cli.commands.utility_commands import register_utility_commands

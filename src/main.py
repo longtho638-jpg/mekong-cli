@@ -68,7 +68,7 @@ app = typer.Typer(
 FREE_COMMANDS = {
     "init", "version", "list", "search", "status", "config",
     "doctor", "help", "dash", "license", "clean", "test",
-    "license-admin", "analytics", "tier-admin", "debug-rate-limits",
+    "license-admin", "analytics", "tier-admin", "debug-rate-limits", "sync-raas",
     "compliance", "billing", "roi", "dashboard",
 }
 

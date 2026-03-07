@@ -31,6 +31,7 @@ def register_all_commands(app: typer.Typer) -> None:
     from src.commands.ci import app as ci_app
     from src.commands.env import app as env_app
     from src.commands.test_advanced import app as test_advanced_app
+    from src.commands.sync_raas import app as sync_raas_app
 
     # BMAD commands
     spec = importlib.util.spec_from_file_location(
@@ -76,6 +77,9 @@ def register_all_commands(app: typer.Typer) -> None:
     # Telegram sub-commands
     telegram_app = typer.Typer(help="Telegram: remote commander bot")
     app.add_typer(telegram_app, name="telegram")
+
+    # RaaS Integration Commands
+    app.add_typer(sync_raas_app, name="sync-raas", help="RaaS Gateway synchronization: validate, register, track usage")
 
     # Autonomous sub-commands
     autonomous_app = typer.Typer(help="Autonomous: AGI loop control")
