@@ -9,6 +9,7 @@ import os
 import json
 import hashlib
 import hmac
+import logging
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
 from enum import Enum
@@ -17,6 +18,8 @@ import stripe
 from src.auth.user_repository import UserRepository
 from src.auth.rbac import Role
 from src.auth.config import AuthConfig
+
+logger = logging.getLogger(__name__)
 
 
 class StripeEventType(str, Enum):
@@ -73,7 +76,7 @@ def get_tier_to_role_mapping() -> Dict[str, Role]:
         }
     except (json.JSONDecodeError, ValueError) as e:
         # Fall back to defaults on parse error
-        print(f"Warning: Could not parse STRIPE_PRICE_IDS, using defaults: {e}")
+        logger.warning("Could not parse STRIPE_PRICE_IDS, using defaults: %s", e)
         return DEFAULT_TIER_TO_ROLE
 
 

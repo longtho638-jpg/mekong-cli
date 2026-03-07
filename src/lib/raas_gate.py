@@ -8,8 +8,11 @@ Reference: /Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md
 
 import os
 import asyncio
+import logging
 import requests
 from typing import Optional, Tuple, Dict, Any, Coroutine, TypeVar
+
+logger = logging.getLogger(__name__)
 
 from src.lib.raas_gate_utils import get_upgrade_message, format_license_preview
 from src.lib.license_generator import validate_license
@@ -418,11 +421,11 @@ class RaasLicenseGate:
                 if cached_state and cached_state.is_in_grace_period():
                     # Allow with offline mode
                     remaining_hours = cached_state.remaining_grace_hours()
-                    print(f"\n⚠️  OFFLINE MODE: {remaining_hours}h grace period remaining\n")
+                    logger.warning("OFFLINE MODE: %dh grace period remaining", remaining_hours)
                     return True, None, ""  # Allow during grace period
 
             # Fallback to local validation on network error
-            print(f"⚠️  Remote validation unavailable, using local validation: {e}")
+            logger.warning("Remote validation unavailable, using local validation: %s", e)
             is_valid, info, error = validate_license(license_key)
             if is_valid:
                 self._license_tier = info.get("tier") if info else None
@@ -533,9 +536,7 @@ class RaasLicenseGate:
                 if cached_state and cached_state.is_in_grace_period():
                     # Allow with offline mode warning
                     remaining_hours = cached_state.remaining_grace_hours()
-                    offline_mode = True
-                    grace_period_remaining = cached_state.remaining_grace_seconds()
-                    print(f"\n{format_offline_grace_period(remaining_hours)}\n")
+                    logger.warning("Offline mode: %dh grace period remaining", remaining_hours)
                     # Continue with cached state
                     is_valid = True
                 elif cached_state and not cached_state.is_in_grace_period():

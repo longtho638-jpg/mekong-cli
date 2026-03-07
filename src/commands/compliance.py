@@ -5,7 +5,6 @@ CLI commands for audit log export, digital signing, and verification.
 """
 
 import os
-import json
 import asyncio
 import typer
 from rich.console import Console
@@ -13,13 +12,10 @@ from rich.panel import Panel
 from rich.table import Table
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
-from typing import Optional, List, Dict, Any
 
 from src.raas.audit_export import AuditExporter, ExportFilter
 from src.raas.report_signer import (
     ReportSigner,
-    sign_file,
-    verify_file,
     get_signer,
 )
 
@@ -162,7 +158,7 @@ def export(
                     private_key_path=private_key,
                     public_key_path=private_key.replace("audit_signing.pem", "audit_signing_pub.pem")
                 )
-                console.print(f"[green]✓ Generated keys:[/green]")
+                console.print("[green]✓ Generated keys:[/green]")
                 console.print(f"  Private: {priv_path}")
                 console.print(f"  Public:  {pub_path}")
             else:

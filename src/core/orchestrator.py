@@ -42,6 +42,10 @@ from .telemetry import TelemetryCollector
 from .verifier import RecipeVerifier, VerificationReport
 from .workflow_state import StepStatus, WorkflowState, WorkflowStatus
 
+# ROIaaS Phase Completion Handler
+from ..raas.phase_completion_detector import get_detector, PhaseStatus
+from .graceful_shutdown import get_shutdown_handler, ShutdownReason
+
 
 class OrchestrationStatus(Enum):
     """Status of orchestration workflow."""
@@ -528,6 +532,48 @@ class RecipeOrchestrator:
             recipe_used=result.recipe.name if result.recipe else "",
         )
         self.memory.record(entry)
+
+        # ROIaaS Phase 6: Check if all phases are operational after successful workflow
+        if result.status == OrchestrationStatus.SUCCESS:
+            self._check_phase_completion()
+
+    def _check_phase_completion(self) -> None:
+        """
+        Check if all ROIaaS phases are operational.
+
+        If all phases are operational, trigger graceful shutdown.
+        This is called after successful workflow completion.
+        """
+        try:
+            detector = get_detector()
+
+            # Run async check in background
+            async def _check():
+                all_operational = await detector.check_all_phases()
+                if all_operational:
+                    # All phases operational - trigger shutdown
+                    handler = get_shutdown_handler()
+                    await handler.initiate_shutdown(
+                        reason=ShutdownReason.ALL_PHASES_OPERATIONAL,
+                        details={
+                            "phases_status": {
+                                phase_id: info.status.value
+                                for phase_id, info in detector.get_all_phases_status().items()
+                            },
+                        },
+                    )
+
+            # Run the check (don't block on it)
+            try:
+                loop = asyncio.get_running_loop()
+                # Use call_soon_threadsafe for thread-safe scheduling
+                loop.call_soon_threadsafe(asyncio.create_task, _check())
+            except RuntimeError:
+                # No running loop - create new one for background check
+                asyncio.new_event_loop().run_until_complete(_check())
+
+        except Exception as e:
+            self.console.print(f"[yellow]⚠ Phase completion check error: {e}[/yellow]")
 
     def run_from_recipe(
         self,

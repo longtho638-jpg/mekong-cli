@@ -5,8 +5,11 @@ Database connection, pooling, and async operations for license data.
 """
 
 import os
+import logging
 from typing import Optional, Any, Dict, List
 from contextlib import asynccontextmanager
+
+logger = logging.getLogger(__name__)
 
 try:
     import asyncpg
@@ -31,7 +34,7 @@ class DatabaseConnection:
         self._initialized = False
 
         if not self._connection_string:
-            print("⚠️  DATABASE_URL not set. Using SQLite fallback.")
+            logger.warning("DATABASE_URL not set. Using SQLite fallback.")
 
     async def connect(self, min_size: int = 2, max_size: int = 10) -> None:
         """
@@ -57,14 +60,14 @@ class DatabaseConnection:
             command_timeout=60,
         )
         self._initialized = True
-        print(f"✅ PostgreSQL connected (pool: {min_size}-{max_size} connections)")
+        logger.info("PostgreSQL connected (pool: %d-%d connections)", min_size, max_size)
 
     async def disconnect(self) -> None:
         """Close connection pool."""
         if self._pool:
             await self._pool.close()
             self._initialized = False
-            print("✅ PostgreSQL disconnected")
+            logger.info("PostgreSQL disconnected")
 
     @asynccontextmanager
     async def acquire(self):

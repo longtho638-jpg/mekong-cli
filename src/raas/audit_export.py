@@ -5,14 +5,17 @@ Export compliance audit logs to CSV, JSON, and PDF formats.
 Query violation_events, rate_limit_events, and validation_logs tables.
 """
 
+import re
 from typing import Optional, List, Dict, Any, Literal
 from datetime import datetime, timezone
 from dataclasses import dataclass, field
 import csv
 import json
-import io
+import logging
 
 from src.db.database import get_database, DatabaseConnection
+
+logger = logging.getLogger(__name__)
 
 
 ExportFormat = Literal["csv", "json", "pdf"]
@@ -56,6 +59,39 @@ class AuditExporter:
         """
         self._db = db or get_database()
 
+    def _validate_filters(self, filters: ExportFilter) -> None:
+        """Validate filter inputs to prevent SQL injection.
+
+        Args:
+            filters: ExportFilter to validate
+
+        Raises:
+            ValueError: If validation fails
+        """
+        # Validate license_key (alphanumeric, hyphens, underscores only)
+        if filters.license_key:
+            if not re.match(r'^[a-zA-Z0-9_-]{1,255}$', filters.license_key):
+                raise ValueError(
+                    "license_key must contain only alphanumeric characters, "
+                    "hyphens, and underscores (max 255 chars)"
+                )
+
+        # Validate tenant_id (alphanumeric, hyphens, underscores only)
+        if filters.tenant_id:
+            if not re.match(r'^[a-zA-Z0-9_-]{1,255}$', filters.tenant_id):
+                raise ValueError(
+                    "tenant_id must contain only alphanumeric characters, "
+                    "hyphens, and underscores (max 255 chars)"
+                )
+
+        # Validate limit
+        if filters.limit < 1 or filters.limit > 100000:
+            raise ValueError("limit must be between 1 and 100000")
+
+        # Validate date range
+        if filters.date_from > filters.date_to:
+            raise ValueError("date_from must be before or equal to date_to")
+
     async def query_events(
         self,
         filters: ExportFilter
@@ -68,6 +104,9 @@ class AuditExporter:
         Returns:
             Dict with keys: violation_events, rate_limit_events, validation_logs
         """
+        # Input validation for SQL injection prevention
+        self._validate_filters(filters)
+
         events = {
             "violation_events": [],
             "rate_limit_events": [],
@@ -112,7 +151,7 @@ class AuditExporter:
         """
         rate_params = params_base + [date_from, date_to, filters.limit] if params_base else [date_from, date_to, filters.limit]
         if not filters.license_key and not filters.tenant_id:
-            rate_query = f"""
+            rate_query = """
                 SELECT * FROM rate_limit_events
                 WHERE created_at >= $1 AND created_at <= $2
                 ORDER BY created_at DESC

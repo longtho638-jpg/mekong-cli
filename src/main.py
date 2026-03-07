@@ -16,6 +16,14 @@ import sys
 # RaaS License Gate - Phase 1: Startup Validation (TypeScript source of truth)
 # RaaS License Gate - Phase 2: Command-level validation
 
+# ROIaaS Phase Completion & Graceful Shutdown
+from src.raas.phase_completion_detector import get_detector
+from src.core.graceful_shutdown import (
+    get_shutdown_handler,
+    register_shutdown_cleanup,
+    shutdown_on_all_phases_operational,
+)
+
 # Command modules
 from src.cli.binh_phap_commands import app as binh_phap_app
 from src.cli.commands_registry import register_all_commands
@@ -261,6 +269,35 @@ def version() -> None:
 
     console.print(f"[bold cyan]Mekong CLI[/bold cyan] v{ver}")
     console.print("[dim]RaaS Agency Operating System[/dim]")
+
+
+@app.command()
+async def check_phases() -> None:
+    """🔍 Check ROIaaS phase completion status."""
+    detector = get_detector()
+
+    console.print("[bold cyan]🔍 Checking ROIaaS Phase Completion...[/bold cyan]\n")
+
+    all_operational = await detector.check_all_phases()
+
+    if all_operational:
+        console.print("\n[bold green]✓ All phases operational![/bold green]")
+        console.print("[dim]Triggering graceful shutdown sequence...[/dim]\n")
+
+        handler = get_shutdown_handler()
+        await handler.initiate_shutdown(
+            reason="all_phases_operational",
+            details={
+                "phases_status": {
+                    phase_id: info.status.value
+                    for phase_id, info in detector.get_all_phases_status().items()
+                },
+            },
+        )
+        sys.exit(0)
+    else:
+        console.print("\n[yellow]⚠ Some phases are not yet operational[/yellow]")
+        console.print("[dim]Continue development to complete all phases[/dim]\n")
 
 
 @app.command()
