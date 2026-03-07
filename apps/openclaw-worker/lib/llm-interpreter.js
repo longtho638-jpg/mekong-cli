@@ -15,10 +15,11 @@ const path = require('path');
 const config = require('../config');
 
 const DASHSCOPE_OPENAI_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic';
-// DUAL-KEY FAILOVER: Key A fails (429) → auto-switch to Key B
+// TRI-KEY FAILOVER: Key A fails (429) → Key B → Key C
 const DASHSCOPE_KEYS = [
     process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A
-    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B (backup)
+    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B
+    'sk-80d8537485d04f609c498f1881e67c6f',      // Key C
 ];
 let _dsKeyIdx = 0;
 const getDashScopeKey = () => DASHSCOPE_KEYS[_dsKeyIdx];

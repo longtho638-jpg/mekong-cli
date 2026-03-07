@@ -28,8 +28,8 @@ const CHECK_INTERVAL_MS = process.env.VIBE_INTERVAL || 30_000;
 const PANES = [
     { idx: 0, project: 'mekong-cli', dir: path.join(process.env.HOME, 'mekong-cli'), focus: 'AGI agentic skills + ClaudeKit commands for all business domains' },
     { idx: 1, project: 'well', dir: path.join(process.env.HOME, 'mekong-cli/apps/well'), focus: 'RaaS platform, i18n, Supabase, PayOS integration' },
-    { idx: 2, project: 'algo-trader', dir: path.join(process.env.HOME, 'mekong-cli/apps/algo-trader'), focus: 'Cross-exchange arbitrage engine (Binance/OKX/Bybit)' },
-    // { idx: 3, project: 'apex-os', dir: path.join(process.env.HOME, 'mekong-cli/apps/apex-os'), focus: 'SaaS-to-RaaS transformation, crypto zero-fee exchange' },
+    { idx: 2, project: 'sophia-ai-factory', dir: path.join(process.env.HOME, 'mekong-cli/apps/sophia-ai-factory'), focus: 'Sophia AI Video Factory - Zero manual content pipeline' },
+    { idx: 3, project: 'algo-trader', dir: path.join(process.env.HOME, 'mekong-cli/apps/algo-trader'), focus: 'Cross-exchange arbitrage engine (Binance/OKX/Bybit)' },
 ];
 
 // ══════════════════════════════════════════════════
@@ -363,7 +363,8 @@ async function checkAllPanes() {
     // DashScope API health (apps/anthropic format)
     const DASHSCOPE_KEYS = [
         process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',
-        'sk-sp-afce4429a10e41bb901d6012d7f525c8'
+        'sk-sp-afce4429a10e41bb901d6012d7f525c8',
+        'sk-80d8537485d04f609c498f1881e67c6f'
     ];
     let isHealthy = false;
     for (const key of DASHSCOPE_KEYS) {
