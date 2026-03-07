@@ -592,6 +592,11 @@ from src.api.raas_router import router as _raas_router  # noqa: E402
 
 app.include_router(_raas_router)
 
+# Mount Tier Config API routes
+from src.api.tier_config_routes import router as _tier_config_router  # noqa: E402
+
+app.include_router(_tier_config_router)
+
 
 __all__ = [
     "GATEWAY_CONFIG",

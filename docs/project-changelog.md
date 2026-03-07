@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-03-07 - Tier-Based Rate Limiting Phase 6 - COMPLETED)
+
+#### Tier-Based Rate Limiting System
+- **Tier Configuration**: 4 tiers (FREE, TRIAL, PRO, ENTERPRISE) with configurable presets
+- **Endpoint Presets**: `auth_login`, `auth_callback`, `auth_refresh`, `api_default`
+- **Token Bucket Algorithm**: Per-tier rate limiting with configurable burst capacity
+- **Tenant Override System**: Per-tenant custom rate limits and tier overrides
+- **Database Persistence**: PostgreSQL-backed configuration storage
+- **Middleware Integration**: FastAPI middleware for automatic rate limit headers
+
+#### CLI Commands (mekong tier-admin)
+- `list` — List all tier configurations
+- `get <tier>` — Get config for specific tier
+- `set <tier> <preset> <limit> [window]` — Set tier preset configuration
+- `override <tenant_id> <preset> <limit> [window]` — Set tenant override
+- `overrides` — List all tenant overrides
+- `remove-override <tenant_id> <preset>` — Remove tenant override
+
+#### New Files
+- `src/lib/tier_config.py` - Tier enum and default configurations
+- `src/lib/tier_rate_limit_middleware.py` - FastAPI middleware
+- `src/lib/rate_limiter_factory.py` - Factory with caching
+- `src/db/tier_config_repository.py` - Database operations
+- `src/commands/tier_admin.py` - CLI admin commands
+- `src/db/migrations/005_create_tier_configs.sql` - Schema + seed data
+- `tests/test_tier_rate_limiting.py` - Test suite (80+ tests)
+
+#### Default Tier Limits (per minute)
+| Tier | Auth Login | Auth Callback | Auth Refresh | API Default |
+|------|------------|---------------|--------------|-------------|
+| FREE | 5 | 10 | 10 | 20 |
+| TRIAL | 10 | 20 | 20 | 40 |
+| PRO | 30 | 60 | 60 | 100 |
+| ENTERPRISE | 100 | 200 | 200 | 500 |
+
+#### HTTP Headers Added
+- `X-RateLimit-Tier` — License tier
+- `X-RateLimit-Limit` — requests per minute
+- `X-RateLimit-Remaining` — requests remaining
+- `X-RateLimit-Reset` — window reset timestamp
+- `Retry-After` — seconds to wait (429 responses)
+
+#### Documentation
+- `docs/tier-rate-limiting.md` - Complete tier rate limiting guide (600+ lines)
+- `docs/system-architecture.md` - Added middleware section
+
+#### Test Results (2026-03-07)
+- **Tests Passed**: 80+ tests passing
+- **Test Coverage**: ~62 test cases across all modules
+- **Test Files**: `tests/test_tier_rate_limiting.py`
+
 ### Added (2026-03-07 - OAuth2 Authentication Phase 7 - COMPLETED)
 
 #### OAuth2 Authentication System

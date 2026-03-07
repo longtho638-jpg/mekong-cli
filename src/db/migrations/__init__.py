@@ -25,11 +25,13 @@ MIGRATION_001_USERS = get_migration_sql("001_create_users_table.sql")
 MIGRATION_002_ROLES = get_migration_sql("002_add_roles_to_licenses.sql")
 MIGRATION_003_SESSIONS = get_migration_sql("003_create_user_sessions.sql")
 MIGRATION_004_USER_ROLES = get_migration_sql("004_add_role_to_users.sql")
+MIGRATION_005_TIER_CONFIGS = get_migration_sql("005_create_tier_configs.sql")
 
 __all__ = [
     "MIGRATION_001_USERS",
     "MIGRATION_002_ROLES",
     "MIGRATION_003_SESSIONS",
     "MIGRATION_004_USER_ROLES",
+    "MIGRATION_005_TIER_CONFIGS",
     "get_migration_sql",
 ]

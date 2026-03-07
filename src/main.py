@@ -39,6 +39,7 @@ from src.commands.ci import app as ci_app
 from src.commands.env import app as env_app
 from src.commands.test_advanced import app as test_advanced_app
 from src.commands.license_admin import app as license_admin_app
+from src.commands.tier_admin import app as tier_admin_app
 
 console = Console()
 
@@ -53,7 +54,7 @@ app = typer.Typer(
 FREE_COMMANDS = {
     "init", "version", "list", "search", "status", "config",
     "doctor", "help", "dash", "license", "clean", "test",
-    "license-admin", "analytics",  # Admin dashboard and analytics are free
+    "license-admin", "analytics", "tier-admin",  # Admin dashboard and analytics are free
 }
 
 
@@ -122,6 +123,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(test_advanced_app, name="test-advanced", help="Advanced testing")
     app.add_typer(license_app, name="license", help="License management")
     app.add_typer(license_admin_app, name="license-admin", help="License Admin Dashboard")
+    app.add_typer(tier_admin_app, name="tier-admin", help="Tier rate limit configuration")
     app.add_typer(renewal_app, name="renewal", help="License renewal flow")
 
 
