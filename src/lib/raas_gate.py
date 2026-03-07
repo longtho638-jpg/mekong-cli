@@ -7,12 +7,14 @@ Reference: /Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md
 """
 
 import os
+import asyncio
 import requests
-from typing import Optional, Tuple, Dict, Any
+from typing import Optional, Tuple, Dict, Any, Coroutine, TypeVar
 
 from src.lib.raas_gate_utils import get_upgrade_message, format_license_preview
 from src.lib.license_generator import validate_license
 from src.lib.usage_meter import record_usage, get_usage_summary
+from src.lib.free_tier_tracker import track_free_tier_command
 from src.lib.quota_error_messages import (
     format_quota_error,
     format_quota_warning,
@@ -34,8 +36,64 @@ from src.lib.jwt_license_generator import validate_jwt_license
 from src.core.license_monitor import record_failure as record_license_failure
 
 
+# Fix 3: Async Refactor - Helper to run async operations from sync context
+T = TypeVar("T")
+
+
+def _run_async_safe(coro: Coroutine[Any, Any, T]) -> Optional[T]:
+    """
+    Run async coroutine from sync context safely.
+
+    Args:
+        coro: Coroutine to run
+
+    Returns:
+        Result of coroutine or None if failed
+    """
+    try:
+        # Try to get existing event loop
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            # In async context - create task but don't await (fire-and-forget)
+            asyncio.create_task(coro)
+            return None
+        else:
+            # In sync context - run the coroutine
+            return loop.run_until_complete(coro)
+    except RuntimeError:
+        # No event loop exists - create new one
+        return asyncio.run(coro)
+    except Exception:
+        # Silently fail for analytics (don't block main flow)
+        return None
+
+
 class RaasLicenseGate:
     """RaaS License validation and feature gating with Phase 2 features."""
+
+    # Command cost tiers - Fix 2: Different commands have different costs
+    COMMAND_COSTS = {
+        # Simple commands (1 credit)
+        "init": 1,
+        "version": 1,
+        "list": 1,
+        "search": 1,
+        "status": 1,
+        "config": 1,
+        "doctor": 1,
+        "help": 1,
+        "dash": 1,
+        # Standard commands (3 credits)
+        "cook": 3,
+        "gateway": 3,
+        "binh-phap": 3,
+        "telegram": 3,
+        "agi": 3,
+        # Complex commands (5 credits)
+        "swarm": 5,
+        "schedule": 5,
+        "autonomous": 5,
+    }
 
     FREE_COMMANDS = {"init", "version", "list", "search", "status", "config", "doctor", "help", "dash"}
     PREMIUM_COMMANDS = {"cook", "gateway", "binh-phap", "swarm", "schedule", "telegram", "autonomous", "agi"}
@@ -60,6 +118,18 @@ class RaasLicenseGate:
         # Phase 7: JWT offline license
         self._jwt_payload: Optional[Dict[str, Any]] = None
         self._jwt_validator: Optional[Any] = None
+
+    def get_command_cost(self, command: str) -> int:
+        """
+        Get the credit cost for a command.
+
+        Args:
+            command: Command name
+
+        Returns:
+            Credit cost (1, 3, or 5)
+        """
+        return self.COMMAND_COSTS.get(command.lower(), 3)  # Default to 3 credits
 
     def _show_quota_warning(self, command: str, tier_limits: dict) -> None:
         """
@@ -232,8 +302,6 @@ class RaasLicenseGate:
             - Sets offline mode if remote unavailable
             - Uses grace period for offline fallback
         """
-        import time
-        start_time = time.time()
 
         if not self._enable_remote:
             # Fallback to local validation
@@ -389,7 +457,6 @@ class RaasLicenseGate:
         """
         import time
         start_time = time.time()
-        error_type = None
         offline_mode = False
         grace_period_remaining = None
 
@@ -398,14 +465,12 @@ class RaasLicenseGate:
 
         if self.is_premium_command(command):
             if not self.has_license:
-                error_type = "no_license"
                 return False, get_upgrade_message(command)
 
             # PHASE 7: Check if JWT token (raasjwt-*)
             if self._license_key and self._license_key.startswith("raasjwt-"):
                 jwt_valid, jwt_error, jwt_payload = self._validate_jwt_token(self._license_key)
                 if not jwt_valid:
-                    error_type = "jwt_invalid"
                     return False, format_jwt_error(jwt_error or "Invalid JWT token")
 
                 # JWT valid - extract quotas from payload
@@ -434,7 +499,6 @@ class RaasLicenseGate:
             # Validate format (non-JWT licenses)
             is_valid, error = self.validate_license_format()
             if not is_valid:
-                error_type = "invalid_format"
                 # Record license validation failure
                 record_license_failure(
                     error_code="invalid_format",
@@ -450,7 +514,6 @@ class RaasLicenseGate:
                 cached_state = get_cached_quota(self._key_id)
                 if cached_state and not cached_state.is_expired():
                     if cached_state.is_revoked():
-                        error_type = "revoked"
                         return False, format_license_revoked()
                     if cached_state.is_license_expired():
                         expiry_date = ""
@@ -459,7 +522,6 @@ class RaasLicenseGate:
                             expiry_date = datetime.fromtimestamp(
                                 cached_state.expires_at_ts, tz=timezone.utc
                             ).strftime("%Y-%m-%d")
-                        error_type = "expired"
                         return False, format_license_expired(expiry_date)
 
             # Validate with remote API (or local fallback)
@@ -478,11 +540,9 @@ class RaasLicenseGate:
                     is_valid = True
                 elif cached_state and not cached_state.is_in_grace_period():
                     # Grace period expired
-                    error_type = "grace_period_expired"
                     return False, format_grace_period_expired()
 
             if not is_valid:
-                error_type = "validation_failed"
                 # Record license validation failure
                 record_license_failure(
                     error_code="validation_failed",
@@ -517,9 +577,9 @@ class RaasLicenseGate:
                         monthly_limit=rate_status.monthly_limit,
                         retry_after_seconds=rate_status.retry_after_seconds,
                     )
-                    # Fire and forget
+                    # Fire and forget - Fix 3: Use _run_async_safe instead of asyncio.run()
                     try:
-                        asyncio.run(get_violation_tracker().record_violation(violation))
+                        _run_async_safe(get_violation_tracker().record_violation(violation))
                     except Exception:
                         pass
 
@@ -533,11 +593,12 @@ class RaasLicenseGate:
                         retry_after_seconds=rate_status.retry_after_seconds,
                         violation_type="rate_limit",
                     )
-                    error_type = "rate_limit"
                     return False, format_quota_error(ctx)
 
                 # Check monthly and daily quota (PostgreSQL backend)
-                allowed, usage_error = record_usage(self._key_id, self._license_tier)
+                # Fix 2: Use command cost tiers instead of always 1 credit
+                command_cost = self.get_command_cost(command)
+                allowed, usage_error = record_usage(self._key_id, self._license_tier, commands_count=command_cost)
                 if not allowed:
                     # Record violation for analytics
                     usage_parts = usage_error.split("/")
@@ -558,7 +619,7 @@ class RaasLicenseGate:
                         retry_after_seconds=None,
                     )
                     try:
-                        asyncio.run(get_violation_tracker().record_violation(violation))
+                        _run_async_safe(get_violation_tracker().record_violation(violation))
                     except Exception:
                         pass
 
@@ -571,15 +632,24 @@ class RaasLicenseGate:
                         monthly_limit=tier_limits["monthly"],
                         violation_type="quota_exceeded",
                     )
-                    error_type = "quota_exceeded"
-                    return False, format_quota_error(ctx)
 
                 # SUCCESS: Cache quota state and check for warnings
                 self._show_quota_warning(command, tier_limits)
 
+                # Fix 4: Track free tier usage for analytics
+                if self._license_tier == "free" and self._key_id:
+                    try:
+                        track_free_tier_command(
+                            key_id=self._key_id,
+                            command=command,
+                            command_cost=command_cost,
+                        )
+                    except Exception:
+                        pass  # Don't fail on analytics
+
             self._validated = True
 
-            # Log successful validation
+            # Log successful validation - Fix 3: Use _run_async_safe instead of asyncio.run()
             duration_ms = (time.time() - start_time) * 1000
             try:
                 log = ValidationLog(
@@ -590,7 +660,7 @@ class RaasLicenseGate:
                     offline_mode=offline_mode,
                     grace_period_remaining=grace_period_remaining,
                 )
-                asyncio.run(get_validation_logger().log_validation(log))
+                _run_async_safe(get_validation_logger().log_validation(log))
             except Exception:
                 pass  # Don't fail on logging
 

@@ -133,9 +133,15 @@ def get_meter() -> UsageMeter:
     return _meter
 
 
-async def record_usage(key_id: str, tier: str) -> tuple[bool, str]:
-    """Record command usage."""
-    return await get_meter().record_usage(key_id, tier)
+async def record_usage(key_id: str, tier: str, commands_count: int = 1) -> tuple[bool, str]:
+    """Record command usage with optional command cost.
+
+    Args:
+        key_id: License key ID
+        tier: License tier
+        commands_count: Number of commands to record (for command cost tiers)
+    """
+    return await get_meter().record_usage(key_id, tier, commands_count)
 
 
 async def get_usage_summary(key_id: str) -> dict:

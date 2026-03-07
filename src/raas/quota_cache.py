@@ -37,6 +37,7 @@ class QuotaState:
         grace_period_remaining: Seconds remaining in offline grace period
         last_online_validation: ISO timestamp of last successful online validation
         is_offline_mode: True if currently in offline mode
+        last_reset_date: Date string (YYYY-MM-DD) of last daily reset
     """
     key_id: str
     daily_used: int
@@ -52,6 +53,7 @@ class QuotaState:
     grace_period_remaining: int = GRACE_PERIOD_SECONDS  # 24h default
     last_online_validation: str = ""  # ISO timestamp
     is_offline_mode: bool = False
+    last_reset_date: str = ""  # YYYY-MM-DD format
 
     def __post_init__(self):
         if not self.cached_at:
@@ -131,7 +133,8 @@ CREATE TABLE IF NOT EXISTS quota_cache (
     expires_at      TEXT NOT NULL,
     grace_period_remaining INTEGER DEFAULT 86400,
     last_online_validation TEXT,
-    is_offline_mode BOOLEAN DEFAULT FALSE
+    is_offline_mode BOOLEAN DEFAULT FALSE,
+    last_reset_date TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_quota_cache_expires
     ON quota_cache (expires_at);
@@ -139,7 +142,7 @@ CREATE INDEX IF NOT EXISTS idx_quota_cache_expires
 
 
 class QuotaCache:
-    """SQLite-backed quota state cache with TTL."""
+    """SQLite-backed quota state cache with TTL and schema migration."""
 
     def __init__(self, db_path: Path = DB_PATH, ttl_seconds: int = DEFAULT_TTL_SECONDS):
         """Initialize cache.
@@ -160,11 +163,45 @@ class QuotaCache:
         conn.row_factory = sqlite3.Row
         return conn
 
+    def _migrate_schema(self, conn) -> None:
+        """Migrate schema if missing columns exist.
+
+        Adds new columns that may not exist in older DB versions.
+
+        Args:
+            conn: SQLite connection
+        """
+        # Check existing columns
+        cursor = conn.execute("PRAGMA table_info(quota_cache)")
+        existing_columns = {row[1] for row in cursor.fetchall()}
+
+        # Columns to add if missing
+        columns_to_add = {
+            "grace_period_remaining": "INTEGER DEFAULT 86400",
+            "last_online_validation": "TEXT",
+            "is_offline_mode": "BOOLEAN DEFAULT 0",
+            "last_reset_date": "TEXT",
+        }
+
+        # Add missing columns
+        for col_name, col_def in columns_to_add.items():
+            if col_name not in existing_columns:
+                try:
+                    conn.execute(
+                        f"ALTER TABLE quota_cache ADD COLUMN {col_name} {col_def}"
+                    )
+                except sqlite3.OperationalError:
+                    # Column may already exist or table may be locked
+                    pass
+
     def _init_db(self) -> None:
-        """Create quota_cache table if missing."""
+        """Create quota_cache table if missing and migrate schema."""
         try:
             with closing(self._connect()) as conn:
+                # Create table if not exists
                 conn.executescript(_DDL)
+                # Run schema migration if table exists
+                self._migrate_schema(conn)
                 conn.commit()
         except sqlite3.Error as exc:
             raise RuntimeError(f"QuotaCache: DB init failed: {exc}") from exc
@@ -182,6 +219,7 @@ class QuotaCache:
     def get(self, key_id: str) -> Optional[QuotaState]:
         """
         Get cached quota state for key.
+        Implements daily quota reset: if current date != cached date, reset daily_used to 0.
 
         Args:
             key_id: License key ID
@@ -197,7 +235,7 @@ class QuotaCache:
                 ).fetchone()
 
                 if row:
-                    return QuotaState(
+                    state = QuotaState(
                         key_id=row["key_id"],
                         daily_used=row["daily_used"],
                         daily_limit=row["daily_limit"],
@@ -211,7 +249,31 @@ class QuotaCache:
                         grace_period_remaining=row["grace_period_remaining"] if "grace_period_remaining" in row.keys() else GRACE_PERIOD_SECONDS,
                         last_online_validation=row["last_online_validation"] if "last_online_validation" in row.keys() else "",
                         is_offline_mode=bool(row["is_offline_mode"]) if "is_offline_mode" in row.keys() else False,
+                        last_reset_date=row["last_reset_date"] if "last_reset_date" in row.keys() else "",
                     )
+
+                    # Fix 1: Daily Quota Reset - Check if date changed
+                    today = self._now().strftime("%Y-%m-%d")
+                    if state.last_reset_date and state.last_reset_date != today:
+                        # Date changed - reset daily_used to 0
+                        state.daily_used = 0
+                        state.last_reset_date = today
+                        # Update cache with reset values
+                        self.set(
+                            key_id=key_id,
+                            daily_used=0,
+                            daily_limit=state.daily_limit,
+                            tier=state.tier,
+                            status=state.status,
+                            expires_at_ts=state.expires_at_ts,
+                            monthly_used=state.monthly_used,
+                            monthly_limit=state.monthly_limit,
+                            grace_period_remaining=state.grace_period_remaining,
+                            last_online_validation=state.last_online_validation,
+                            is_offline_mode=state.is_offline_mode,
+                        )
+
+                    return state
                 return None
         except sqlite3.Error as exc:
             raise RuntimeError(f"QuotaCache.get failed: {exc}") from exc
@@ -229,6 +291,7 @@ class QuotaCache:
         grace_period_remaining: int = GRACE_PERIOD_SECONDS,
         last_online_validation: str = "",
         is_offline_mode: bool = False,
+        last_reset_date: Optional[str] = None,
     ) -> QuotaState:
         """
         Cache quota state for key.
@@ -245,12 +308,17 @@ class QuotaCache:
             grace_period_remaining: Seconds remaining in grace period
             last_online_validation: ISO timestamp of last online validation
             is_offline_mode: True if currently in offline mode
+            last_reset_date: Date of last daily reset (YYYY-MM-DD), defaults to today
 
         Returns:
             Created QuotaState
         """
         now = self._now()
         expires = now + timedelta(seconds=self.ttl_seconds)
+
+        # Default last_reset_date to today if not provided
+        if last_reset_date is None:
+            last_reset_date = now.strftime("%Y-%m-%d")
 
         state = QuotaState(
             key_id=key_id,
@@ -266,6 +334,7 @@ class QuotaCache:
             grace_period_remaining=grace_period_remaining,
             last_online_validation=last_online_validation or self._iso(now),
             is_offline_mode=is_offline_mode,
+            last_reset_date=last_reset_date,
         )
 
         try:
@@ -274,8 +343,9 @@ class QuotaCache:
                     """INSERT OR REPLACE INTO quota_cache
                        (key_id, daily_used, daily_limit, tier, status, expires_at_ts,
                         monthly_used, monthly_limit, cached_at, expires_at,
-                        grace_period_remaining, last_online_validation, is_offline_mode)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                        grace_period_remaining, last_online_validation, is_offline_mode,
+                        last_reset_date)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
                         key_id,
                         daily_used,
@@ -290,6 +360,7 @@ class QuotaCache:
                         state.grace_period_remaining,
                         state.last_online_validation,
                         state.is_offline_mode,
+                        state.last_reset_date,
                     ),
                 )
                 conn.commit()
@@ -410,9 +481,14 @@ def cache_quota(
     monthly_limit: int = 0,
     is_offline_mode: bool = False,
     grace_period_remaining: int = GRACE_PERIOD_SECONDS,
+    last_reset_date: Optional[str] = None,
 ) -> QuotaState:
     """Cache quota state for key with grace period support."""
     now = datetime.now(timezone.utc)
+
+    # Default last_reset_date to today if not provided
+    if last_reset_date is None:
+        last_reset_date = now.strftime("%Y-%m-%d")
 
     state = QuotaState(
         key_id=key_id,
@@ -428,6 +504,7 @@ def cache_quota(
         last_online_validation=now.isoformat() if not is_offline_mode else "",
         grace_period_remaining=grace_period_remaining,
         is_offline_mode=is_offline_mode,
+        last_reset_date=last_reset_date,
     )
     return get_cache().set(
         key_id,
@@ -441,6 +518,7 @@ def cache_quota(
         grace_period_remaining=grace_period_remaining,
         last_online_validation=state.last_online_validation,
         is_offline_mode=is_offline_mode,
+        last_reset_date=state.last_reset_date,
     )
 
 
