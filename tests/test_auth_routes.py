@@ -671,7 +671,8 @@ class TestSessionCookieManagement:
 
     def test_set_session_cookie_sets_secure_in_prod(self):
         """Session cookie should be secure in production."""
-        with patch('src.auth.session_manager.AUTH_ENVIRONMENT', 'production'):
+        with patch('src.auth.session_manager.os.getenv') as mock_getenv:
+            mock_getenv.return_value = "production"
             session_manager = SessionManager()
             cookie_params = session_manager.create_session_cookie("test-token")
 

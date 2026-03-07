@@ -257,12 +257,17 @@ class SessionManager:
         Returns:
             Dictionary of cookie parameters for Response.set_cookie()
         """
+        # Read environment variables dynamically for each call
+        current_env = os.getenv("AUTH_ENVIRONMENT", "dev")
+        cookie_secure = current_env == "production"
+        cookie_samesite = "none" if cookie_secure else "lax"
+
         return {
             "key": COOKIE_NAME,
             "value": token,
             "httponly": COOKIE_HTTPONLY,
-            "secure": COOKIE_SECURE,
-            "samesite": COOKIE_SAMESITE,
+            "secure": cookie_secure,
+            "samesite": cookie_samesite,
             "max_age": expires_in_days * 24 * 60 * 60,
             "path": "/",
         }

@@ -10,7 +10,7 @@ Handles authentication flow with the RaaS Gateway:
 
 import os
 import platform
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional
 from dataclasses import dataclass
 import requests
 from urllib3.util.retry import Retry
@@ -23,8 +23,6 @@ DEFAULT_GATEWAY_URL = os.environ.get(
     "https://raas.agencyos.network"
 )
 REQUEST_TIMEOUT = int(os.environ.get("RAAS_REQUEST_TIMEOUT", "5"))
-USER_AGENT = f"mekong-cli/{_get_version()}"
-
 
 def _get_version() -> str:
     """Get Mekong CLI version."""
@@ -33,6 +31,8 @@ def _get_version() -> str:
         return importlib.metadata.version("mekong-cli")
     except Exception:
         return "3.0.0"
+
+USER_AGENT = f"mekong-cli/{_get_version()}"
 
 
 @dataclass
@@ -84,7 +84,7 @@ class GatewayClient:
             "X-Mekong-CLI-Version": _get_version(),
             "X-Mekong-Platform": platform.system(),
             "X-Mekong-Arch": platform.machine(),
-        }
+        })
 
         # Retry strategy with exponential backoff
         retry_strategy = Retry(
