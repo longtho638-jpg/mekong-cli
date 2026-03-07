@@ -14,7 +14,7 @@ Features:
 import time
 import logging
 from enum import Enum
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Tuple
 from dataclasses import dataclass
 from datetime import datetime, timezone
 

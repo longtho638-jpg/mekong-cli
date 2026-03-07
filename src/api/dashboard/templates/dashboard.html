@@ -159,6 +159,103 @@
         </div>
     </div>
 
+    <!-- License Health Section (NEW) -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">License Health</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- License Status Cards -->
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Active Licenses</h3>
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-green-500" id="activeLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Currently active</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Suspended</h3>
+                    <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-yellow-500" id="suspendedLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Temporarily suspended</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Revoked</h3>
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-red-500" id="revokedLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Permanently revoked</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Expiring Soon</h3>
+                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-orange-500" id="expiringSoonCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Within 7 days</p>
+            </div>
+        </div>
+
+        <!-- Renewal Prompts Table -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700" id="renewalPromptsSection">
+            <h3 class="text-xl font-bold mb-4">Renewal Required</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">License</th>
+                            <th class="pb-3 font-medium">Organization</th>
+                            <th class="pb-3 font-medium">Tier</th>
+                            <th class="pb-3 font-medium">Status</th>
+                            <th class="pb-3 font-medium">Expires</th>
+                            <th class="pb-3 font-medium">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="renewalPromptsBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Limit Events Timeline -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Rate Limit Events (Last 24h)</h2>
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl font-bold text-blue-500" id="totalRateLimitEvents">-</span>
+                    <span class="text-gray-400 text-sm">events in last 24 hours</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-green-500/10 text-green-400 text-sm rounded-full">
+                        Allowed: <span id="allowedCount">-</span>
+                    </span>
+                    <span class="px-3 py-1 bg-red-500/10 text-red-400 text-sm rounded-full">
+                        Limited: <span id="limitedCount">-</span>
+                    </span>
+                </div>
+            </div>
+            <div class="space-y-2 max-h-64 overflow-y-auto" id="rateLimitEventsTimeline">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Section (Admin+ only) -->
     <div data-min-role="admin" class="role-hidden hidden mt-8">
         <div class="bg-card rounded-xl p-6 border border-gray-700">
@@ -328,6 +425,11 @@ function updateDashboard(data) {
     updateLicensesTable(data.tier_distribution);
     updateEndpointsTable(data.top_endpoints);
 
+    // Update license health metrics (Phase 7)
+    updateLicenseHealth(data.license_health);
+    updateRenewalPrompts(data.renewal_prompts);
+    updateRateLimitEvents(data.rate_limit_events);
+
     // Update timestamp
     document.getElementById('lastUpdated').textContent = new Date(data.last_updated).toLocaleString('vi-VN');
 
@@ -377,6 +479,107 @@ function updateEndpointsTable(endpoints) {
             <td class="py-3 text-gray-400">${(ep.percentage || 0).toFixed(1)}%</td>
         </tr>
     `).join('');
+}
+
+// Update license health metrics (Phase 7)
+function updateLicenseHealth(licenseHealth) {
+    if (!licenseHealth) return;
+
+    const counts = licenseHealth.by_status || {};
+    document.getElementById('activeLicenseCount').textContent = formatNumber(counts.ACTIVE || 0);
+    document.getElementById('suspendedLicenseCount').textContent = formatNumber(counts.SUSPENDED || 0);
+    document.getElementById('revokedLicenseCount').textContent = formatNumber(counts.REVOKED || 0);
+    document.getElementById('expiringSoonCount').textContent = formatNumber(licenseHealth.expiring_soon_count || 0);
+}
+
+// Update renewal prompts table (Phase 7)
+function updateRenewalPrompts(prompts) {
+    const tbody = document.getElementById('renewalPromptsBody');
+    const section = document.getElementById('renewalPromptsSection');
+
+    if (!prompts || prompts.length === 0) {
+        section.classList.add('hidden');
+        return;
+    }
+
+    section.classList.remove('hidden');
+    tbody.innerHTML = prompts.slice(0, 10).map(license => {
+        const days = license.days_since_or_until_expiry || 0;
+        const isExpired = days < 0;
+        const statusClass = isExpired ? 'text-red-400' : 'text-orange-400';
+        const statusLabel = isExpired ? `Đã hết hạn ${Math.abs(days)} ngày` : `Còn ${days} ngày`;
+
+        return `
+            <tr class="border-b border-gray-800 hover:bg-gray-800">
+                <td class="py-3 font-mono text-sm text-secondary">${license.license_key?.substring(0, 20) || '-'}...</td>
+                <td class="py-3">${license.org_name || license.email || '-'}</td>
+                <td class="py-3">
+                    <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded uppercase">${license.tier || '-'}</span>
+                </td>
+                <td class="py-3">
+                    <span class="px-2 py-1 ${statusClass} bg-gray-700 text-xs rounded">${license.renewal_status || 'active'}</span>
+                </td>
+                <td class="py-3 text-gray-400">${license.expires_at ? new Date(license.expires_at).toLocaleDateString('vi-VN') : '-'}</td>
+                <td class="py-3 ${statusClass} font-medium">${statusLabel}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update rate limit events timeline (Phase 7)
+function updateRateLimitEvents(events) {
+    const timeline = document.getElementById('rateLimitEventsTimeline');
+    const totalEl = document.getElementById('totalRateLimitEvents');
+    const allowedEl = document.getElementById('allowedCount');
+    const limitedEl = document.getElementById('limitedCount');
+
+    if (!events || events.length === 0) {
+        timeline.innerHTML = '<div class="text-gray-500 text-sm py-4">No rate limit events in last 24h</div>';
+        totalEl.textContent = '0';
+        allowedEl.textContent = '0';
+        limitedEl.textContent = '0';
+        return;
+    }
+
+    // Count by event type
+    let allowedCount = 0;
+    let limitedCount = 0;
+
+    events.forEach(event => {
+        if (event.event_type === 'rate_limited' || event.event_type === 'license_blocked') {
+            limitedCount++;
+        } else if (event.event_type === 'request_allowed' || event.event_type === 'override_applied') {
+            allowedCount++;
+        }
+    });
+
+    totalEl.textContent = formatNumber(events.length);
+    allowedEl.textContent = formatNumber(allowedCount);
+    limitedEl.textContent = formatNumber(limitedCount);
+
+    // Render timeline
+    timeline.innerHTML = events.slice(0, 20).map(event => {
+        const isLimited = event.event_type === 'rate_limited' || event.event_type === 'license_blocked';
+        const badgeClass = isLimited
+            ? 'bg-red-500/10 text-red-400 border-red-500/30'
+            : 'bg-green-500/10 text-green-400 border-green-500/30';
+        const eventTypeLabel = event.event_type.replace(/_/g, ' ').toUpperCase();
+        const time = event.created_at ? new Date(event.created_at).toLocaleTimeString('vi-VN') : '';
+
+        return `
+            <div class="flex items-center justify-between p-3 bg-dark/30 rounded-lg border border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 text-xs rounded border ${badgeClass}">${eventTypeLabel}</span>
+                    <span class="text-sm text-gray-300">${event.tenant_id || '-'}</span>
+                    <span class="text-xs text-gray-500">(${event.tier || '-'})</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-500 font-mono">${event.endpoint || '/'}</span>
+                    <span class="text-xs text-gray-400">${time}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
 }
 
 // Set granularity

@@ -22,7 +22,6 @@ from src.services.license_enforcement import (
     LicenseStatus,
     LicenseInfo,
     get_license_enforcement,
-    check_license_status,
     is_tier_sufficient,
 )
 
@@ -678,7 +677,6 @@ class TestAuditLogging:
 
     def test_audit_log_format_structure(self):
         """Test audit log entry format has correct structure."""
-        import logging
 
         with patch("src.lib.tier_rate_limit_middleware.get_license_enforcement"):
             with patch("src.lib.tier_rate_limit_middleware.logger") as mock_logger:

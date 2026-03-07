@@ -98,6 +98,10 @@ async def get_metrics(
                 "revenue": metrics.revenue,
                 "tier_distribution": metrics.tier_distribution,
                 "last_updated": metrics.last_updated,
+                # License health metrics (Phase 7)
+                "license_health": metrics.license_health,
+                "renewal_prompts": metrics.renewal_prompts,
+                "rate_limit_events": metrics.rate_limit_events,
             },
         }
     except Exception as e:
@@ -192,6 +196,79 @@ async def health_check():
         "status": "healthy",
         "auth": config_summary,
     }
+
+
+@app.get("/api/license-health")
+@require_permission(Permission.VIEW_DASHBOARD)
+async def get_license_health(request: Request):
+    """Get license health overview with status counts."""
+    try:
+        metrics = await dashboard_service.get_metrics(range_days=30)
+        return {
+            "success": True,
+            "data": metrics.license_health,
+        }
+    except Exception as e:
+        logger.error(f"License health error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/renewal-prompts")
+@require_permission(Permission.VIEW_DASHBOARD)
+async def get_renewal_prompts(
+    request: Request,
+    days: int = Query(default=7, ge=1, le=30),
+):
+    """Get expired/expiring licenses needing renewal attention."""
+    try:
+        metrics = await dashboard_service.get_metrics(range_days=30)
+        # Filter to only show prompts within the specified days window
+        prompts = [
+            p for p in metrics.renewal_prompts
+            if abs(p.get('days_since_or_until_expiry', 0)) <= days
+        ][:20]  # Limit to 20 results
+        return {
+            "success": True,
+            "data": prompts,
+            "metadata": {
+                "window_days": days,
+                "total_count": len(prompts),
+            },
+        }
+    except Exception as e:
+        logger.error(f"Renewal prompts error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/rate-limit-events")
+@require_permission(Permission.VIEW_DASHBOARD)
+async def get_rate_limit_events(
+    request: Request,
+    limit: int = Query(default=50, ge=1, le=200),
+    event_type: Optional[str] = Query(None),
+    tenant_id: Optional[str] = Query(None),
+):
+    """Get recent rate limit events with optional filters."""
+    try:
+        events = await dashboard_service._rate_limit_emitter.get_recent_events(
+            tenant_id=tenant_id,
+            event_type=event_type,
+            limit=limit,
+        )
+        return {
+            "success": True,
+            "data": events,
+            "metadata": {
+                "total_count": len(events),
+                "filters": {
+                    "event_type": event_type,
+                    "tenant_id": tenant_id,
+                },
+            },
+        }
+    except Exception as e:
+        logger.error(f"Rate limit events error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def run_dashboard(port: int = 8080, open_browser: bool = True):

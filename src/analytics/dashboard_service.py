@@ -34,6 +34,11 @@ class DashboardMetrics:
     quota_usage_by_tenant: List[Dict[str, Any]] = field(default_factory=list)
     violations_summary: Dict[str, Any] = field(default_factory=dict)
 
+    # License health metrics (Phase 7)
+    license_health: Dict[str, Any] = field(default_factory=dict)
+    renewal_prompts: List[Dict[str, Any]] = field(default_factory=list)
+    rate_limit_events: List[Dict[str, Any]] = field(default_factory=list)
+
 
 class DashboardService:
     """
@@ -116,6 +121,11 @@ class DashboardService:
         top_violated = await self._rate_limit_emitter.get_top_violated_tenants(limit=10, hours=24)
         events_by_tier = await self._rate_limit_emitter.get_events_by_tier(hours=24)
 
+        # Fetch license health metrics (Phase 7)
+        license_health = await self._queries.get_license_health_summary()
+        renewal_prompts = await self._queries.get_expired_licenses_for_renewal(days=7)
+        recent_rate_events = await self._rate_limit_emitter.get_recent_events(limit=50)
+
         # Build metrics
         metrics = DashboardMetrics(
             api_calls=self._format_chart_data(daily_usage, 'daily'),
@@ -133,6 +143,10 @@ class DashboardService:
             rate_limit_violations=top_violated,
             quota_usage_by_tenant=events_by_tier,
             violations_summary=violations_summary,
+            # License health (Phase 7)
+            license_health=license_health,
+            renewal_prompts=renewal_prompts,
+            rate_limit_events=recent_rate_events,
         )
 
         self._set_cache(cache_key, metrics)
