@@ -16,11 +16,10 @@ Shutdown Sequence:
 7. Exit with code 0
 """
 
-import os
 import sys
-import asyncio
-import signal
 import atexit
+import glob
+import os
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -245,11 +244,36 @@ async def shutdown_on_all_phases_operational() -> None:
     Usage:
         from src.core.graceful_shutdown import shutdown_on_all_phases_operational
         detector.register_callback(shutdown_on_all_phases_operational)
+
+    Shutdown Sequence:
+    1. Print "Goodbye!" message
+    2. Remove temporary session files
+    3. Exit with status code 0
     """
     from src.raas.phase_completion_detector import get_detector
 
     handler = get_shutdown_handler()
     detector = get_detector()
+
+    # Register cleanup handler to remove temporary session files
+    async def cleanup_temp_files() -> bool:
+        """Remove temporary session files."""
+        temp_patterns = [
+            "/tmp/tom_hum_*.txt",
+            "/tmp/tom_hum_*",
+            "/tmp/mekong_*.txt",
+        ]
+        removed_count = 0
+        for pattern in temp_patterns:
+            for filepath in glob.glob(pattern):
+                try:
+                    os.remove(filepath)
+                    removed_count += 1
+                except Exception:
+                    pass
+        return True
+
+    handler.register_cleanup_handler(cleanup_temp_files, "cleanup_temp_files")
 
     await handler.initiate_shutdown(
         reason=ShutdownReason.ALL_PHASES_OPERATIONAL,

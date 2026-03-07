@@ -43,8 +43,8 @@ from .verifier import RecipeVerifier, VerificationReport
 from .workflow_state import StepStatus, WorkflowState, WorkflowStatus
 
 # ROIaaS Phase Completion Handler
-from ..raas.phase_completion_detector import get_detector, PhaseStatus
-from .graceful_shutdown import get_shutdown_handler, ShutdownReason
+from ..raas.phase_completion_detector import get_detector
+from ..core.graceful_shutdown import get_shutdown_handler, ShutdownReason, shutdown_on_all_phases_operational
 
 
 class OrchestrationStatus(Enum):
@@ -342,6 +342,11 @@ class RecipeOrchestrator:
         # Initialize health endpoint if enabled
         if self._health_endpoint_enabled:
             self._init_health_endpoint()
+
+        # ROIaaS Phase Completion: Register shutdown callback
+        # When all 5 phases become operational, trigger graceful shutdown
+        detector = get_detector()
+        detector.register_callback(shutdown_on_all_phases_operational)
 
     def _init_health_endpoint(self) -> None:
         """Initialize health endpoint with component checks."""

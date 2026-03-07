@@ -32,6 +32,7 @@ from src.commands.license_renewal import app as renewal_app
 from src.commands.debug_rate_limits import app as debug_rate_limits_app
 from src.commands.compliance import app as compliance_app
 from src.cli.billing_commands import app as billing_app
+from src.cli.roi_commands import app as roi_app
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -66,7 +67,7 @@ FREE_COMMANDS = {
     "init", "version", "list", "search", "status", "config",
     "doctor", "help", "dash", "license", "clean", "test",
     "license-admin", "analytics", "tier-admin", "debug-rate-limits",
-    "compliance", "billing",
+    "compliance", "billing", "roi",
 }
 
 
@@ -140,6 +141,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(renewal_app, name="renewal", help="License renewal flow")
     app.add_typer(compliance_app, name="compliance", help="Compliance reporting & audit export")
     app.add_typer(billing_app, name="billing", help="💰 Billing operations: usage, reconciliation, events")
+    app.add_typer(roi_app, name="roi", help="🎯 ROI Unified Command - auth, usage, billing, dashboard")
 
 
 # Register all commands

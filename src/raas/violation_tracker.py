@@ -111,6 +111,10 @@ class ViolationTracker:
         Returns:
             List of violation records
         """
+        # Validate days parameter to prevent SQL injection
+        if not isinstance(days, int) or days < 0 or days > 365:
+            raise ValueError("days must be an integer between 0 and 365")
+
         query = f"""
             SELECT * FROM violation_events
             WHERE key_id = $1
@@ -137,6 +141,10 @@ class ViolationTracker:
         Returns:
             Summary statistics
         """
+        # Validate days parameter to prevent SQL injection
+        if not isinstance(days, int) or days < 0 or days > 365:
+            raise ValueError("days must be an integer between 0 and 365")
+
         # Count by violation type
         type_query = f"""
             SELECT violation_type, COUNT(*) as count

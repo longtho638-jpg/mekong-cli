@@ -259,7 +259,7 @@ class ReconciliationService:
             return Decimal(0)
 
         # Convert to usage event objects for billing engine
-        from src.core.usage_metering import UsageEvent, UsageEventType
+        from src.core.usage_metering import UsageEvent
 
         usage_events = []
         for e in events:

@@ -12,9 +12,9 @@ from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
 from src.core.event_bus import get_event_bus, EventType
-from src.billing.engine import BillingResult, LineItem
+from src.billing.engine import BillingResult
 from src.billing.proration import ProrationResult, OverageCalculation
-from src.billing.idempotency import BatchResult, BatchStatus
+from src.billing.idempotency import BatchResult
 
 logger = logging.getLogger(__name__)
 

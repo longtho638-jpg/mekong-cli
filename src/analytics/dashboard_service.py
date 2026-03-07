@@ -11,6 +11,7 @@ import json
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional, Tuple
+from cachetools import LRUCache
 
 from src.db.queries.analytics_queries import AnalyticsQueries
 from src.db.database import DatabaseConnection
@@ -56,28 +57,16 @@ class DashboardService:
         """Initialize service with database connection."""
         self._queries = AnalyticsQueries(db or DatabaseConnection())
         self._rate_limit_emitter = RateLimitMetricsEmitter(db or DatabaseConnection())
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: LRUCache = LRUCache(maxsize=100, ttl=self._cache_ttl)  # LRU cache with max 100 entries and TTL
         self._cache_ttl: int = 300  # 5 minutes
 
-    def _is_cache_valid(self, key: str) -> bool:
-        """Check if cache entry is still valid."""
-        if key not in self._cache:
-            return False
-        age = datetime.now().timestamp() - self._cache[key]['timestamp']
-        return age < self._cache_ttl
-
     def _get_cached(self, key: str) -> Optional[DashboardMetrics]:
-        """Get cached data if valid."""
-        if self._is_cache_valid(key):
-            return self._cache[key]['data']
-        return None
+        """Get cached data if exists."""
+        return self._cache.get(key)
 
     def _set_cache(self, key: str, data: DashboardMetrics) -> None:
-        """Cache data with timestamp."""
-        self._cache[key] = {
-            'data': data,
-            'timestamp': datetime.now().timestamp(),
-        }
+        """Cache data with TTL."""
+        self._cache[key] = data
 
     def invalidate_cache(self, pattern: Optional[str] = None) -> None:
         """Invalidate cache entries."""

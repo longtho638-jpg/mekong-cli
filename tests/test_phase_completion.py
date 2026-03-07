@@ -9,7 +9,6 @@ Tests cover:
 
 import pytest
 import asyncio
-from datetime import datetime, timezone
 from unittest.mock import patch, MagicMock, AsyncMock
 
 from src.raas.phase_completion_detector import (
@@ -22,7 +21,6 @@ from src.raas.phase_completion_detector import (
 from src.core.graceful_shutdown import (
     GracefulShutdownHandler,
     ShutdownReason,
-    ShutdownContext,
     get_shutdown_handler,
     reset_shutdown_handler,
     shutdown_on_all_phases_operational,

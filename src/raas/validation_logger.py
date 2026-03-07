@@ -111,6 +111,10 @@ class ValidationLogger:
         Returns:
             List of validation log records
         """
+        # Validate days parameter to prevent SQL injection
+        if not isinstance(days, int) or days < 0 or days > 365:
+            raise ValueError("days must be an integer between 0 and 365")
+
         query = f"""
             SELECT * FROM license_validation_logs
             WHERE key_id = $1
@@ -137,6 +141,10 @@ class ValidationLogger:
         Returns:
             Statistics dictionary
         """
+        # Validate days parameter to prevent SQL injection
+        if not isinstance(days, int) or days < 0 or days > 365:
+            raise ValueError("days must be an integer between 0 and 365")
+
         # Total validations
         total_query = f"""
             SELECT COUNT(*) as total

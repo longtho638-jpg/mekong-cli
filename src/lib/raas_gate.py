@@ -24,7 +24,6 @@ from src.lib.quota_error_messages import (
     format_free_tier_upgrade,
     format_license_revoked,
     format_license_expired,
-    format_offline_grace_period,
     format_grace_period_expired,
     format_jwt_error,
     get_warning_threshold,

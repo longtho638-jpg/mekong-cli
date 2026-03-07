@@ -175,6 +175,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Summary
 Production-grade OAuth2 authentication system fully implemented with environment-aware enforcement. All 8 phases completed with 20+ files created and 3,000+ lines of code.
 
+## API Usage Billing CLI Phase 8 - COMPLETED (2026-03-07)
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| CLI Commands | ✅ Complete | 5 commands (simulate, submit-usage, reconcile, emit-event, status) |
+| Billing Engine | ✅ Complete | Usage calculation with rate cards per tier |
+| Proration | ✅ Complete | Mid-cycle plan change support |
+| Idempotency | ✅ Complete | Batch ID double-billing prevention |
+| Reconciliation | ✅ Complete | Nightly audit for variance detection |
+| Webhooks | ✅ Complete | Stripe + Polar endpoints with signature verification |
+| Database | ✅ Complete | 7 tables + rate card seed data (migrations/008) |
+| Tests | ✅ Complete | 65+ tests passed (85%+ coverage) |
+| Documentation | ✅ Complete | 600+ line CLI guide |
+
+### Summary
+Comprehensive API usage billing system fully implemented. Includes CLI commands, billing engine with proration, idempotency protection, reconciliation auditing, and webhook support for Stripe/Polar. Database migration creates 7 billing tables with seeded rate cards for 5 tiers (free, starter, growth, premium, enterprise). All 65+ tests passing with 85%+ code coverage.
+
+### New Files Created
+- `src/billing/__init__.py` - Package initialization
+- `src/billing/engine.py` - BillingEngine, RateCardResolver
+- `src/billing/proration.py` - ProrationCalculator, OverageTracker
+- `src/billing/idempotency.py` - IdempotencyManager
+- `src/billing/reconciliation.py` - ReconciliationService
+- `src/billing/event_emitter.py` - BillingEventEmitter
+- `src/api/billing_endpoints.py` - FastAPI endpoints + Stripe/Polar webhooks
+- `src/cli/billing_commands.py` - CLI commands (Typer)
+- `src/db/migrations/008_billing_system.sql` - 7 tables + rate cards
+- `docs/billing-cli.md` - Complete CLI guide (600+ lines)
+
 ## [1.0.0] - 2026-02-06
 
 ### Added
