@@ -14,6 +14,7 @@ from typing import List, Dict, Any, Optional, Tuple
 
 from src.db.queries.analytics_queries import AnalyticsQueries
 from src.db.database import DatabaseConnection
+from src.telemetry.rate_limit_metrics import RateLimitMetricsEmitter
 
 
 @dataclass
@@ -27,6 +28,11 @@ class DashboardMetrics:
     revenue: Dict[str, Any] = field(default_factory=dict)
     tier_distribution: Dict[str, Any] = field(default_factory=dict)
     last_updated: str = ""
+
+    # Rate limit observability metrics (Phase 6)
+    rate_limit_violations: List[Dict[str, Any]] = field(default_factory=list)
+    quota_usage_by_tenant: List[Dict[str, Any]] = field(default_factory=list)
+    violations_summary: Dict[str, Any] = field(default_factory=dict)
 
 
 class DashboardService:
@@ -44,6 +50,7 @@ class DashboardService:
     def __init__(self, db: Optional[DatabaseConnection] = None) -> None:
         """Initialize service with database connection."""
         self._queries = AnalyticsQueries(db or DatabaseConnection())
+        self._rate_limit_emitter = RateLimitMetricsEmitter(db or DatabaseConnection())
         self._cache: Dict[str, Dict[str, Any]] = {}
         self._cache_ttl: int = 300  # 5 minutes
 
@@ -104,6 +111,11 @@ class DashboardService:
         revenue = await self._queries.get_revenue_summary()
         tier_dist = await self._queries.get_license_tier_distribution()
 
+        # Fetch rate limit metrics (Phase 6)
+        violations_summary = await self._rate_limit_emitter.get_violations_summary(hours=24)
+        top_violated = await self._rate_limit_emitter.get_top_violated_tenants(limit=10, hours=24)
+        events_by_tier = await self._rate_limit_emitter.get_events_by_tier(hours=24)
+
         # Build metrics
         metrics = DashboardMetrics(
             api_calls=self._format_chart_data(daily_usage, 'daily'),
@@ -117,6 +129,10 @@ class DashboardService:
             revenue=revenue,
             tier_distribution=tier_dist,
             last_updated=datetime.now().isoformat(),
+            # Rate limit observability (Phase 6)
+            rate_limit_violations=top_violated,
+            quota_usage_by_tenant=events_by_tier,
+            violations_summary=violations_summary,
         )
 
         self._set_cache(cache_key, metrics)

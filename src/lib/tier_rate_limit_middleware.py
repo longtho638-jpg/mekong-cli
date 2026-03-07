@@ -7,7 +7,10 @@ Supports tenant-specific overrides.
 
 import os
 import time
+import logging
+import json
 from typing import Optional, Dict, Any
+from datetime import datetime
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -18,6 +21,9 @@ from src.lib.rate_limiter_factory import get_factory, TierRateLimiter
 from src.lib.jwt_license_generator import validate_jwt_license
 from src.db.tier_config_repository import TierConfigRepository
 from src.lib.tier_config import RateLimitConfig
+
+# Setup structured logger for rate limiting
+logger = logging.getLogger("mekong.rate_limits")
 
 
 class TierRateLimitMiddleware(BaseHTTPMiddleware):
@@ -114,13 +120,75 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
 
         return self._limiters[cache_key]
 
-    async def _get_tenant_override(self, tenant_id: str, preset: str) -> Optional[RateLimitConfig]:
+    def _log_rate_limit_event(
+        self,
+        event_type: str,
+        tenant_id: str,
+        tier: str,
+        endpoint: str,
+        preset: str,
+        quota_limit: Optional[int] = None,
+        quota_remaining: Optional[int] = None,
+        quota_utilization_pct: Optional[float] = None,
+        response_status: Optional[int] = None,
+        retry_after: Optional[int] = None,
+        request_context: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """
+        Log rate limit event with structured JSON format.
+
+        Args:
+            event_type: 'override_applied', 'request_allowed', or 'rate_limited'
+            tenant_id: Tenant identifier
+            tier: Tier name (may include 'custom' suffix)
+            endpoint: Endpoint path
+            preset: Rate limit preset
+            quota_limit: Rate limit quota
+            quota_remaining: Remaining quota
+            quota_utilization_pct: Quota usage percentage
+            response_status: HTTP response status code
+            retry_after: Retry-After header value
+            request_context: Request details (method, path, user_agent, ip)
+            metadata: Additional metadata
+        """
+        log_entry = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "level": "INFO" if event_type != "rate_limited" else "WARNING",
+            "event": "rate_limit_event",
+            "tenant_id": tenant_id,
+            "tier": tier,
+            "endpoint": endpoint,
+            "preset": preset,
+            "event_type": event_type,
+            "quota": {
+                "requests_per_minute": quota_limit,
+                "quota_remaining": quota_remaining,
+                "quota_utilization_pct": quota_utilization_pct,
+            },
+            "response": {
+                "status": response_status,
+                "retry_after": retry_after,
+            },
+        }
+
+        if request_context:
+            log_entry["request"] = request_context
+
+        if metadata:
+            log_entry["metadata"] = metadata
+
+        # Log as JSON
+        logger.info(json.dumps(log_entry))
+
+    async def _get_tenant_override(self, tenant_id: str, preset: str, endpoint: str = "") -> Optional[RateLimitConfig]:
         """
         Check for tenant-specific rate limit override.
 
         Args:
             tenant_id: Tenant identifier (license key ID)
             preset: Rate limit preset name
+            endpoint: Endpoint path for logging
 
         Returns:
             RateLimitConfig if override exists, None otherwise
@@ -128,12 +196,23 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         try:
             override = await self._repo.get_tenant_override(tenant_id, preset)
             if override and not override.is_expired() and override.custom_limit is not None:
-                return RateLimitConfig(
+                config = RateLimitConfig(
                     requests_per_minute=override.custom_limit,
                 )
-        except Exception:
+                # Log override applied
+                self._log_rate_limit_event(
+                    event_type="override_applied",
+                    tenant_id=tenant_id,
+                    tier="custom",
+                    endpoint=endpoint or "unknown",
+                    preset=preset,
+                    quota_limit=override.custom_limit,
+                    metadata={"expires_at": override.expires_at.isoformat() if override.expires_at else None},
+                )
+                return config
+        except Exception as e:
             # DB errors → fall through to tier defaults
-            pass
+            logger.warning(f"Failed to get tenant override: {e}")
         return None
 
     def _is_dev_mode(self) -> bool:
@@ -151,6 +230,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         4. Get rate limiter (tenant override or tier default)
         5. Check rate limit
         6. Add rate limit headers to response
+        7. Log rate limit event
         """
         # Bypass rate limiting in dev mode
         if self._is_dev_mode():
@@ -169,7 +249,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
 
         # Check for tenant-specific override
         tenant_id = license_key or "anonymous"
-        override_config = await self._get_tenant_override(tenant_id, preset)
+        override_config = await self._get_tenant_override(tenant_id, preset, path)
 
         if override_config:
             # Use tenant override - create temp limiter
@@ -185,11 +265,34 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
             config = self._factory.get_config_for_tier(tier, preset)
             applied_tier = tier
 
+        # Build request context for logging
+        request_context = {
+            "method": request.method,
+            "path": str(request.url.path),
+            "user_agent": request.headers.get("user-agent", ""),
+            "ip": request.client.host if request.client else "",
+        }
+
         # Check rate limit
         if not limiter.acquire():
             # Rate limited
             wait_time = limiter.get_wait_time()
             retry_after = max(1, int(wait_time))
+
+            # Log rate_limited event
+            self._log_rate_limit_event(
+                event_type="rate_limited",
+                tenant_id=tenant_id,
+                tier=applied_tier,
+                endpoint=path,
+                preset=preset,
+                quota_limit=config.requests_per_minute,
+                quota_remaining=0,
+                quota_utilization_pct=100.0,
+                response_status=429,
+                retry_after=retry_after,
+                request_context=request_context,
+            )
 
             return JSONResponse(
                 status_code=429,
@@ -211,8 +314,25 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         # Proceed with request
         response = await call_next(request)
 
-        # Add rate limit headers to response
+        # Calculate quota utilization
         remaining = max(0, int(limiter._tokens))
+        quota_utilization = ((config.requests_per_minute - remaining) / config.requests_per_minute * 100) if config.requests_per_minute > 0 else 0
+
+        # Log request_allowed event
+        self._log_rate_limit_event(
+            event_type="request_allowed",
+            tenant_id=tenant_id,
+            tier=applied_tier,
+            endpoint=path,
+            preset=preset,
+            quota_limit=config.requests_per_minute,
+            quota_remaining=remaining,
+            quota_utilization_pct=round(quota_utilization, 2),
+            response_status=response.status_code,
+            request_context=request_context,
+        )
+
+        # Add rate limit headers to response
         reset_time = int(time.time() + 60)  # Reset in 60 seconds
 
         response.headers[self.HEADER_TIER] = applied_tier
