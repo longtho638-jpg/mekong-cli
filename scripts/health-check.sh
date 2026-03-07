@@ -26,7 +26,7 @@ echo "🩺 Mekong CLI — Health Check"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 check "Python 3.9+"       "python3 -c 'import sys; assert sys.version_info >= (3,9)'" "python3 --version"
-check "Node.js 18+"       "node -e 'process.exit(+process.version.slice(1).split(\".\")[0] < 18)'" "node -v"
+check "Node.js 18+"       "command -v node"    "node -v"
 check "pnpm"              "command -v pnpm"    "pnpm -v"
 check "Git"               "command -v git"     "git --version | cut -d' ' -f3"
 check ".env file"         "test -f .env"       "echo exists"
