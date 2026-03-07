@@ -363,8 +363,7 @@ async function checkAllPanes() {
     // DashScope API health (apps/anthropic format)
     const DASHSCOPE_KEYS = [
         process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',
-        'sk-sp-afce4429a10e41bb901d6012d7f525c8',
-        'sk-80d8537485d04f609c498f1881e67c6f'
+        'sk-sp-afce4429a10e41bb901d6012d7f525c8'
     ];
     let isHealthy = false;
     for (const key of DASHSCOPE_KEYS) {
