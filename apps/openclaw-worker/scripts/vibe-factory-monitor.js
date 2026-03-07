@@ -457,10 +457,17 @@ async function checkAllPanes() {
                 break;
             }
 
-            case 'RATE_LIMITED':
-                log(`P${pane.idx}: 🔶 RATE LIMITED — selecting "Stop and wait"`);
-                tmuxSendKeys(pane.idx, 'Enter');
+            case 'RATE_LIMITED': {
+                log(`P${pane.idx}: 🔶 RATE LIMITED on DashScope — FALLING BACK TO BYTEPLUS MODELARK 🚀`);
+                const byteplusKey = '5cee0d73-2a72-4f29-b001-c19f3e1c32ba';
+                const byteplusUrl = 'https://ark.ap-southeast.bytepluses.com/api/coding';
+                const byteplusModel = 'ark-code-latest';
+                try {
+                    execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && export ANTHROPIC_API_KEY=\\"${byteplusKey}\\" && export ANTHROPIC_AUTH_TOKEN=\\"${byteplusKey}\\" && export ANTHROPIC_BASE_URL=\\"${byteplusUrl}\\" && export ANTHROPIC_MODEL=\\"${byteplusModel}\\" && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions --continue"`);
+                    log(`P${pane.idx}: ✅ Respawned with BytePlus ModelArk (${byteplusModel})`);
+                } catch { }
                 break;
+            }
 
             case 'PENDING':
                 log(`P${pane.idx}: 🔵 PENDING — sending Escape+Enter`);
