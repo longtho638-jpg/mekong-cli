@@ -24,10 +24,13 @@ class RateLimitConfig:
     """Rate limit configuration for a single endpoint."""
     requests_per_minute: int
     burst_size: Optional[int] = None  # Token bucket burst size (default = rpm)
+    window_seconds: Optional[int] = None  # Time window in seconds (default: 60)
 
     def __post_init__(self):
         if self.burst_size is None:
             self.burst_size = self.requests_per_minute
+        if self.window_seconds is None:
+            self.window_seconds = 60
 
 
 @dataclass

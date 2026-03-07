@@ -2,6 +2,7 @@
 Tier Rate Limit Middleware — ROIaaS Phase 6
 
 Middleware to extract tier from license key and apply rate limits.
+Supports tenant-specific overrides.
 """
 
 import os
@@ -13,9 +14,10 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
-from src.lib.tier_config import Tier, get_tier_config, get_preset_config, RateLimitConfig
 from src.lib.rate_limiter_factory import get_factory, TierRateLimiter
 from src.lib.jwt_license_generator import validate_jwt_license
+from src.db.tier_config_repository import TierConfigRepository
+from src.lib.tier_config import RateLimitConfig
 
 
 class TierRateLimitMiddleware(BaseHTTPMiddleware):
@@ -46,6 +48,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         self._enable_rate_limiting = enable_rate_limiting
         self._factory = get_factory()
         self._dev_mode = os.getenv("MEKONG_DEV_MODE", "false").lower() == "true"
+        self._repo = TierConfigRepository()
 
         # In-memory rate limiters per tier/preset (for demo purposes)
         # Production should use Redis-backed limiting
@@ -111,6 +114,28 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
 
         return self._limiters[cache_key]
 
+    async def _get_tenant_override(self, tenant_id: str, preset: str) -> Optional[RateLimitConfig]:
+        """
+        Check for tenant-specific rate limit override.
+
+        Args:
+            tenant_id: Tenant identifier (license key ID)
+            preset: Rate limit preset name
+
+        Returns:
+            RateLimitConfig if override exists, None otherwise
+        """
+        try:
+            override = await self._repo.get_tenant_override(tenant_id, preset)
+            if override and not override.is_expired() and override.custom_limit is not None:
+                return RateLimitConfig(
+                    requests_per_minute=override.custom_limit,
+                )
+        except Exception:
+            # DB errors → fall through to tier defaults
+            pass
+        return None
+
     def _is_dev_mode(self) -> bool:
         """Check if running in development mode."""
         return self._dev_mode or os.getenv("DISABLE_RATE_LIMITING", "false").lower() == "true"
@@ -121,10 +146,11 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
 
         Flow:
         1. Extract license key from headers
-        2. Validate key and get tier
-        3. Get rate limiter for tier/endpoint
-        4. Check rate limit
-        5. Add rate limit headers to response
+        2. Validate key and get tier + tenant_id
+        3. Check for tenant-specific override
+        4. Get rate limiter (tenant override or tier default)
+        5. Check rate limit
+        6. Add rate limit headers to response
         """
         # Bypass rate limiting in dev mode
         if self._is_dev_mode():
@@ -141,11 +167,23 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         path = request.url.path
         preset = self._get_preset_for_path(path)
 
-        # Get rate limiter
-        limiter = self._get_rate_limiter(tier, preset)
+        # Check for tenant-specific override
+        tenant_id = license_key or "anonymous"
+        override_config = await self._get_tenant_override(tenant_id, preset)
 
-        # Get config for headers
-        config = self._factory.get_config_for_tier(tier, preset)
+        if override_config:
+            # Use tenant override - create temp limiter
+            limiter = TierRateLimiter(
+                requests_per_minute=override_config.requests_per_minute,
+                window_seconds=override_config.window_seconds,
+            )
+            config = override_config
+            applied_tier = f"{tier} (custom)"
+        else:
+            # Use tier default
+            limiter = self._get_rate_limiter(tier, preset)
+            config = self._factory.get_config_for_tier(tier, preset)
+            applied_tier = tier
 
         # Check rate limit
         if not limiter.acquire():
@@ -157,13 +195,13 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
                 status_code=429,
                 content={
                     "error": "rate_limit_exceeded",
-                    "message": f"Rate limit exceeded for {tier} tier",
+                    "message": f"Rate limit exceeded for {applied_tier}",
                     "retry_after": retry_after,
-                    "tier": tier,
+                    "tier": applied_tier,
                     "limit": config.requests_per_minute,
                 },
                 headers={
-                    self.HEADER_TIER: tier,
+                    self.HEADER_TIER: applied_tier,
                     self.HEADER_LIMIT: str(config.requests_per_minute),
                     self.HEADER_RETRY_AFTER: str(retry_after),
                     "Content-Type": "application/json",
@@ -177,7 +215,7 @@ class TierRateLimitMiddleware(BaseHTTPMiddleware):
         remaining = max(0, int(limiter._tokens))
         reset_time = int(time.time() + 60)  # Reset in 60 seconds
 
-        response.headers[self.HEADER_TIER] = tier
+        response.headers[self.HEADER_TIER] = applied_tier
         response.headers[self.HEADER_LIMIT] = str(config.requests_per_minute)
         response.headers[self.HEADER_REMAINING] = str(remaining)
         response.headers[self.HEADER_RESET] = str(reset_time)

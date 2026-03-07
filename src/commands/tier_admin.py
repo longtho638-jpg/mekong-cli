@@ -140,7 +140,7 @@ def get_config(tier: str) -> None:
 
 def _show_default_tier_config(tier: str) -> None:
     """Show default configuration for a tier."""
-    from src.lib.tier_config import get_tier_config, Tier
+    from src.lib.tier_config import get_tier_config
 
     try:
         config = get_tier_config(tier)
@@ -211,7 +211,7 @@ def set_config(
             repo.update_config(tier.lower(), preset.lower(), rate_limit, window_seconds)
         )
 
-        console.print(f"[bold green]✓ Configuration updated![/bold green]\n")
+        console.print("[bold green]✓ Configuration updated![/bold green]\n")
         console.print(f"  [cyan]Tier:[/cyan] {config.tier}")
         console.print(f"  [cyan]Preset:[/cyan] {config.preset}")
         console.print(f"  [cyan]Rate Limit:[/cyan] {config.rate_limit} requests / {config.window_seconds}s")
@@ -240,7 +240,6 @@ def set_override(
     Example:
         mekong tier-admin override tenant-123 auth_login 100 60
     """
-    from typing import Optional
     from src.db.tier_config_repository import get_repository
 
     # Validate preset
@@ -269,7 +268,7 @@ def set_override(
             )
         )
 
-        console.print(f"[bold green]✓ Tenant override created![/bold green]\n")
+        console.print("[bold green]✓ Tenant override created![/bold green]\n")
         console.print(f"  [cyan]Tenant ID:[/cyan] {override.tenant_id}")
         console.print(f"  [cyan]Preset:[/cyan] {override.preset}")
         console.print(f"  [cyan]Custom Limit:[/cyan] {override.custom_limit} requests / {override.custom_window}s")

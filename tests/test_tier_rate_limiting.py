@@ -11,10 +11,8 @@ Total: ~80 tests
 """
 from __future__ import annotations
 
-import asyncio
 import os
 import time
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
 import pytest
 
@@ -23,7 +21,6 @@ from src.lib.tier_config import (
     DEFAULT_TIER_CONFIGS,
     RateLimitConfig,
     Tier,
-    TierRateLimitConfig,
     get_preset_config,
     get_tier_config,
 )
@@ -472,7 +469,7 @@ class TestGlobalFactoryFunctions:
 
     def test_get_factory_creates_instance(self) -> None:
         """Test get_factory creates global instance."""
-        from src.lib.rate_limiter_factory import get_factory, invalidate_cache
+        from src.lib.rate_limiter_factory import get_factory
 
         factory = get_factory()
         assert factory is not None
@@ -956,7 +953,6 @@ class TestTierRateLimitMiddleware:
     def test_validate_and_get_tier_valid_jwt(self) -> None:
         """Test validate_and_get_tier extracts tier from JWT."""
         from src.lib.tier_rate_limit_middleware import TierRateLimitMiddleware
-        from src.lib.jwt_license_generator import generate_jwt_license
 
         async def app(req, recv, send):
             pass

@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from typing import Optional, Dict
 from threading import Lock
 
-from src.lib.tier_config import Tier, RateLimitConfig, get_tier_config, get_preset_config
+from src.lib.tier_config import Tier, RateLimitConfig, get_preset_config
 
 
 @dataclass

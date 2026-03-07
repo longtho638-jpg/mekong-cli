@@ -4,7 +4,7 @@ Tier Configuration Repository — ROIaaS Phase 6
 Repository layer for tier rate limiting configuration with database operations.
 """
 
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, List
 from dataclasses import dataclass
 
 from src.db.database import get_database, DatabaseConnection
@@ -30,6 +30,33 @@ class TenantRateLimitOverride:
     custom_limit: Optional[int]
     custom_window: int
     expires_at: Optional[str]
+
+    def is_expired(self) -> bool:
+        """Check if this override has expired.
+
+        Returns:
+            True if expires_at is set and in the past, False otherwise.
+        """
+        if self.expires_at is None:
+            return False
+
+        try:
+            import datetime
+            # Handle both ISO format with and without timezone
+            expires_str = self.expires_at.replace("Z", "+00:00")
+            expires_dt = datetime.datetime.fromisoformat(expires_str)
+
+            # Ensure we compare with timezone-aware datetime
+            now = datetime.datetime.now(datetime.timezone.utc)
+
+            # If expires_dt is naive, make it timezone-aware
+            if expires_dt.tzinfo is None:
+                expires_dt = expires_dt.replace(tzinfo=datetime.timezone.utc)
+
+            return now > expires_dt
+        except (ValueError, TypeError):
+            # If parsing fails, assume not expired
+            return False
 
 
 class TierConfigRepository:
