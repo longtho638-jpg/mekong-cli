@@ -121,19 +121,33 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
 
   // Dashboard static files (built by: cd dashboard && npm run build)
   const dashboardDir = path.join(__dirname, '..', '..', 'dist', 'dashboard');
-  void server.register(fastifyStatic, {
-    root: dashboardDir,
-    prefix: '/dashboard/',
-    decorateReply: false,
-  });
+  const fs = require('fs');
+  if (fs.existsSync(dashboardDir)) {
+    void server.register(fastifyStatic, {
+      root: dashboardDir,
+      prefix: '/dashboard/',
+      decorateReply: false,
+    });
 
-  // SPA fallback: redirect /dashboard/* to dashboard index.html
-  server.setNotFoundHandler((request, reply) => {
-    if (request.url.startsWith('/dashboard')) {
-      return reply.sendFile('index.html', dashboardDir);
-    }
-    return reply.code(404).send({ error: 'Not found' });
-  });
+    // SPA fallback: redirect /dashboard/* to dashboard index.html
+    server.setNotFoundHandler((request, reply) => {
+      if (request.url.startsWith('/dashboard')) {
+        return reply.sendFile('index.html', dashboardDir);
+      }
+      return reply.code(404).send({ error: 'Not found' });
+    });
+  } else {
+    // If dashboard not built, return 404 for dashboard routes
+    server.setNotFoundHandler((request, reply) => {
+      if (request.url.startsWith('/dashboard')) {
+        return reply.code(404).send({
+          error: 'Dashboard not found',
+          message: 'Please build the dashboard first: cd dashboard && npm run build'
+        });
+      }
+      return reply.code(404).send({ error: 'Not found' });
+    });
+  }
 
   return server;
 }

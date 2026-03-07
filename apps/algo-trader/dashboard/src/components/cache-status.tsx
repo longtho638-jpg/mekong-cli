@@ -3,8 +3,6 @@
  * Displays cache hit/miss status, hit rate, and local cache size
  */
 import { useState, useEffect } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 interface CacheStats {
   hits: number;
@@ -41,14 +39,14 @@ export function CacheStatus() {
 
   if (loading) {
     return (
-      <Card className="w-64">
-        <CardContent className="p-4">
+      <div className="w-64 bg-bg-card border border-bg-border rounded-lg">
+        <div className="p-4">
           <div className="animate-pulse space-y-2">
             <div className="h-4 bg-muted rounded w-24" />
             <div className="h-3 bg-muted rounded w-16" />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
@@ -58,16 +56,15 @@ export function CacheStatus() {
   const sizeMB = (stats.localSize / 1024 / 1024).toFixed(1);
 
   return (
-    <Card className="w-64">
-      <CardContent className="p-4">
+    <div className="w-64 bg-bg-card border border-bg-border rounded-lg">
+      <div className="p-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Build Cache</span>
-          <Badge
-            variant={stats.hitRate > 0.5 ? 'default' : 'secondary'}
+          <div
             className={
               stats.hitRate > 0.5
-                ? 'bg-green-500/20 text-green-400 border-green-500/40'
-                : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/40'
+                ? 'px-2 py-1 rounded text-xs font-medium bg-green-500/20 text-green-400 border-green-500/40'
+                : 'px-2 py-1 rounded text-xs font-medium bg-yellow-500/20 text-yellow-400 border-yellow-500/40'
             }
           >
             {stats.tier === 'local' || stats.tier === 'raas' ? (
@@ -81,7 +78,7 @@ export function CacheStatus() {
                 MISS
               </span>
             )}
-          </Badge>
+          </div>
         </div>
         <div className="mt-3 space-y-1 text-xs text-muted-foreground">
           <div className="flex justify-between">
@@ -99,7 +96,7 @@ export function CacheStatus() {
             </span>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

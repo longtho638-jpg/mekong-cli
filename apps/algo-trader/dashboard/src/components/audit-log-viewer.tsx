@@ -3,11 +3,10 @@
  * Displays license audit logs in a timeline view with filtering.
  */
 import { useState, useMemo } from 'react';
-import { AuditLog, AuditLogFilters, useAuditLogs } from '../hooks/use-audit-logs';
+import { AuditLogFilters, useAuditLogs } from '../hooks/use-audit-logs';
 
 interface AuditLogViewerProps {
   licenseId?: string;
-  showAllLogs?: boolean;
 }
 
 const EVENT_TYPES: { id: AuditLogFilters['eventType']; label: string; color: string }[] = [
@@ -75,12 +74,12 @@ function formatFullTimestamp(date: string): string {
   });
 }
 
-export function AuditLogViewer({ licenseId, showAllLogs = false }: AuditLogViewerProps) {
+export function AuditLogViewer({ licenseId }: AuditLogViewerProps) {
   const { logs, loading, error } = useAuditLogs(licenseId);
-  const [filter, setFilter] = useState<AuditLogFilters['eventType']>('all');
+  const [filter, setFilter] = useState<'all' | 'created' | 'activated' | 'revoked' | 'api_call' | 'ml_feature' | 'rate_limit'>('all');
 
   const filteredLogs = useMemo(() => {
-    if (filter === 'all') return logs;
+    if (!filter || filter === 'all') return logs;
     return logs.filter((log) => log.event === filter);
   }, [logs, filter]);
 
@@ -151,7 +150,7 @@ export function AuditLogViewer({ licenseId, showAllLogs = false }: AuditLogViewe
 
           {/* Log Entries */}
           <div className="space-y-4">
-            {filteredLogs.map((log, index) => (
+            {filteredLogs.map((log) => (
               <div key={log.id} className="relative pl-10">
                 {/* Timeline Dot */}
                 <div

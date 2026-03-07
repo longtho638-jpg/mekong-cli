@@ -5,7 +5,7 @@
  * Uses lightweight-charts for consistent styling with other charts.
  */
 import { useEffect, useRef, useMemo } from 'react';
-import { createChart, IChartApi, ISeriesApi, ColorType } from 'lightweight-charts';
+import { createChart, IChartApi, ColorType } from 'lightweight-charts';
 
 interface TierData {
   tier: string;
@@ -92,10 +92,6 @@ export function RevenueByTierChart({
         type: 'volume' as const,
       },
       priceScaleId: '',
-      scaleMargins: {
-        top: 0.2,
-        bottom: 0,
-      },
     });
 
     // Prepare histogram data
@@ -135,44 +131,6 @@ export function RevenueByTierChart({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  // Fallback to simple bar display if lightweight-charts isn't suitable
-  const renderSimpleBars = () => (
-    <div className="space-y-4">
-      {data.map((item) => {
-        const colorKey = item.tier.toUpperCase();
-        const colors = TIER_COLORS[colorKey] || TIER_COLORS.PRO;
-
-        return (
-          <div key={item.tier}>
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium text-white">{item.tier}</span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-muted font-mono">
-                  {item.subscriptionCount} subs
-                </span>
-                <span className="text-sm font-bold font-mono text-white">
-                  ${item.revenue.toLocaleString()}
-                </span>
-              </div>
-            </div>
-            <div className="h-3 bg-bg-border rounded-full overflow-hidden">
-              <div
-                className="h-full transition-all duration-500 ease-out"
-                style={{
-                  width: `${item.percentage}%`,
-                  backgroundColor: colors.bar,
-                }}
-              />
-            </div>
-            <div className="text-right text-xs text-muted font-mono mt-0.5">
-              {item.percentage.toFixed(1)}% of revenue
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
 
   return (
     <div className={`bg-bg-secondary border border-bg-border rounded-lg p-4 ${className}`}>

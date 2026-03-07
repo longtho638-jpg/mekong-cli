@@ -8,14 +8,13 @@ import os
 block_cipher = None
 
 # Get the absolute path to the src directory
-src_path = os.path.join(os.path.dirname(__file__), 'src')
+src_path = os.path.join(os.getcwd(), 'src')
 
 a = Analysis(
     ['src/main.py'],
     pathex=[],
     binaries=[],
     datas=[
-        (os.path.join(src_path, 'recipes'), 'recipes'),
         (os.path.join(src_path, 'cli'), 'cli'),
         (os.path.join(src_path, 'core'), 'core'),
         (os.path.join(src_path, 'agents'), 'agents'),
@@ -26,6 +25,18 @@ a = Analysis(
         (os.path.join(src_path, 'a2ui'), 'a2ui'),
         (os.path.join(src_path, 'components'), 'components'),
         (os.path.join(src_path, 'daemon'), 'daemon'),
+        (os.path.join(src_path, 'auth'), 'auth'),
+        (os.path.join(src_path, 'billing'), 'billing'),
+        (os.path.join(src_path, 'config'), 'config'),
+        (os.path.join(src_path, 'db'), 'db'),
+        (os.path.join(src_path, 'jobs'), 'jobs'),
+        (os.path.join(src_path, 'lib'), 'lib'),
+        (os.path.join(src_path, 'models'), 'models'),
+        (os.path.join(src_path, 'pages'), 'pages'),
+        (os.path.join(src_path, 'services'), 'services'),
+        (os.path.join(src_path, 'telemetry'), 'telemetry'),
+        (os.path.join(src_path, 'usage'), 'usage'),
+        (os.path.join(src_path, 'analytics'), 'analytics'),
     ],
     hiddenimports=[
         # Core CLI frameworks
