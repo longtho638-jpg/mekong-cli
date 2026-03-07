@@ -70,7 +70,7 @@ mekong cook "Create a Python calculator with tests"
 | **OpenAI** | `LLM_BASE_URL=https://api.openai.com/v1` |
 | **Anthropic** | Via any compatible proxy |
 | **Google Gemini** | `LLM_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai` |
-| **DashScope (Qwen)** | `LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1` |
+| **DashScope (Qwen)** 🎁 | `LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1` — [Free credits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T) |
 | **Local (Ollama)** | `LLM_BASE_URL=http://localhost:11434/v1` |
 
 ## How It Works

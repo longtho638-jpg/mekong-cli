@@ -41,16 +41,19 @@ The Qwen OAuth token from November 2025 has expired. Choose ONE:
 
 ### Option A: DashScope API Key (RECOMMENDED — most stable)
 
-1. Go to: https://account.alibabacloud.com/register/intl_register.htm
+> 🎁 **Get FREE credits + exclusive benefits:** [Sign up via Alibaba Cloud Benefits](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T)
+
+1. Go to: [**Alibaba Cloud Benefits Portal →**](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T)
 2. Click "Sign up with Google" or "Sign up with GitHub"
-3. Activate "Model Studio" in the console
-4. Create API Key
+3. Activate "Model Studio" (DashScope) in the console
+4. Create API Key at [DashScope Console](https://dashscope.console.aliyun.com/)
 5. Save it:
    ```bash
    echo 'YOUR_KEY' > ~/.qwen/dashscope_key
    ```
 
 **Free tier:** 1M tokens for 90 days + ongoing campaigns (70M tokens for Qwen3)
+**💰 Referral perks:** Extra credits when you sign up through the benefits link above!
 
 ### Option B: Refresh Qwen OAuth (fastest, less stable)
 

@@ -209,6 +209,7 @@ Reviewer Agent   → Code quality + security
 
 > **1 API key, 20 models, $0 cost — mỗi subagent dùng model khác → không rate limit.**
 > **BaseURL:** `https://coding-intl.dashscope.aliyuncs.com/v1`
+> 🎁 **Đăng ký DashScope:** [Alibaba Cloud Benefits (Referral)](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T) — Free credits + exclusive perks
 
 **Full Model Pool** (DashScope Bailian Coding Plan — all free):
 
@@ -562,6 +563,7 @@ Key ĐIỀU: 0(Authority), 47(Command Mandate), 48(Verify), 49(GREEN), 50(Missio
 ## ĐIỀU 56 — DASHSCOPE CODING PLAN API (🔒 PRODUCTION)
 
 > Model: qwen3-coder-plus | Key: sk-sp-* ($50/mo) | TTFB: ~1s
+> 🎁 **Đăng ký Coding Plan:** [Alibaba Cloud Benefits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T)
 
 ```
 🔒 ANTHROPIC_BASE_URL = https://coding-intl.dashscope.aliyuncs.com/apps/anthropic
