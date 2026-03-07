@@ -2,6 +2,7 @@
 
 from .agent_base import AgentBase, Result, Task, TaskStatus
 from .agent_registry import AgentRegistry
+from .alert_router import Alert, AlertConfig, AlertRouter, AlertSeverity, get_alert_router
 from .dag_scheduler import DAGScheduler, DAGStepResult, validate_dag
 from .executor import RecipeExecutor
 from .orchestrator import (
@@ -22,6 +23,7 @@ from .providers import (
     OpenAICompatibleProvider,
 )
 from .registry import RecipeRegistry, RegistryIndex
+from .telegram_client import TelegramClient, TelegramConfig, send_alert
 from .verifier import (
     ExecutionResult,
     RecipeVerifier,
@@ -36,6 +38,11 @@ __all__ = [
     # Agent Protocol & Registry
     "AgentProtocol",
     "AgentRegistry",
+    # Alert Router
+    "Alert",
+    "AlertConfig",
+    "AlertRouter",
+    "AlertSeverity",
     # DAG Scheduler
     "DAGScheduler",
     "DAGStepResult",
@@ -68,9 +75,13 @@ __all__ = [
     "Task",
     "TaskComplexity",
     "TaskStatus",
+    "TelegramClient",
+    "TelegramConfig",
     "VerificationCheck",
     "VerificationCriteria",
     "VerificationReport",
     "VerificationStatus",
+    "get_alert_router",
+    "send_alert",
     "validate_dag",
 ]

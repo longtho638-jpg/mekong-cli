@@ -37,6 +37,27 @@ class EventType(str, Enum):
     HEALTH_CRITICAL = "health_critical"
     COLLECTOR_DISCOVERED = "collector_discovered"
     PROJECT_DISCOVERED = "project_discovered"
+    # License monitoring events (Phase 2)
+    LICENSE_VALIDATION_FAILED = "license:validation_failed"
+    LICENSE_CRITICAL = "license:critical"
+    LICENSE_GRACE_PERIOD_ACTIVE = "license:grace_period_active"
+    LICENSE_THRESHOLD_WARNING = "license:threshold_warning"
+    # Usage monitoring events (Phase 3)
+    USAGE_ANOMALY_DETECTED = "usage:anomaly_detected"
+    USAGE_API_CALL = "usage:api_call"
+    USAGE_AGENT_SPAWN = "usage:agent_spawn"
+    USAGE_MODEL_USAGE = "usage:model_usage"
+    USAGE_LLM_CALL = "usage:llm_call"
+    USAGE_TOKEN_USAGE = "usage:token_usage"
+    # Alert routing events (Phase 4)
+    ALERT_DEDUPLICATED = "alert:deduplicated"
+    ALERT_THROTTLED = "alert:throttled"
+    ALERT_SENT = "alert:sent"
+    # Auto-recovery events (Phase 5)
+    RECOVERY_STARTED = "recovery:started"
+    RECOVERY_ATTEMPTED = "recovery:attempted"
+    RECOVERY_SUCCESS = "recovery:success"
+    RECOVERY_FAILED = "recovery:failed"
 
 
 @dataclass

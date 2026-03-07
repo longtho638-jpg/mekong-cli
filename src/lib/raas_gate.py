@@ -31,6 +31,7 @@ from src.raas.credit_rate_limiter import CreditRateLimiter, TIER_LIMITS
 from src.raas.quota_cache import get_cached_quota, cache_quota, GRACE_PERIOD_SECONDS
 from src.raas.validation_logger import ValidationLog, get_logger as get_validation_logger
 from src.lib.jwt_license_generator import validate_jwt_license
+from src.core.license_monitor import record_failure as record_license_failure
 
 
 class RaasLicenseGate:
@@ -283,6 +284,13 @@ class RaasLicenseGate:
                 return True, data, ""
             elif response.status_code == 401:
                 self._offline_failures = 0
+                # Record license validation failure
+                record_license_failure(
+                    error_code="invalid_or_revoked",
+                    key_id=None,
+                    command=None,
+                    error_message="Invalid or revoked license key",
+                )
                 return False, None, "Invalid or revoked license key"
             elif response.status_code == 403:
                 # License revoked or expired
@@ -290,15 +298,45 @@ class RaasLicenseGate:
                 reason = data.get("reason", "forbidden")
                 self._offline_failures = 0
                 if reason == "revoked":
+                    record_license_failure(
+                        error_code="revoked",
+                        key_id=None,
+                        command=None,
+                        error_message="License has been revoked",
+                    )
                     return False, None, "License has been revoked"
                 elif reason == "expired":
+                    record_license_failure(
+                        error_code="expired",
+                        key_id=None,
+                        command=None,
+                        error_message="License has expired",
+                    )
                     return False, None, "License has expired"
+                record_license_failure(
+                    error_code="access_denied",
+                    key_id=None,
+                    command=None,
+                    error_message="Access denied",
+                )
                 return False, None, "Access denied"
             elif response.status_code == 429:
+                record_license_failure(
+                    error_code="rate_limit",
+                    key_id=None,
+                    command=None,
+                    error_message="Rate limit exceeded",
+                )
                 return False, None, "Rate limit exceeded. Try again later."
             else:
                 self._offline_failures += 1
                 self._last_offline_error = f"HTTP {response.status_code}"
+                record_license_failure(
+                    error_code=f"http_{response.status_code}",
+                    key_id=None,
+                    command=None,
+                    error_message=f"Remote validation failed: {response.status_code}",
+                )
                 return False, None, f"Remote validation failed: {response.status_code}"
 
         except requests.exceptions.RequestException as e:
@@ -397,6 +435,13 @@ class RaasLicenseGate:
             is_valid, error = self.validate_license_format()
             if not is_valid:
                 error_type = "invalid_format"
+                # Record license validation failure
+                record_license_failure(
+                    error_code="invalid_format",
+                    key_id=None,
+                    command=command,
+                    error_message=f"Invalid license: {error}",
+                )
                 return False, f"Invalid license: {error}"
 
             # FAST PATH: Check cached license status first (revoked/expired)
@@ -438,6 +483,13 @@ class RaasLicenseGate:
 
             if not is_valid:
                 error_type = "validation_failed"
+                # Record license validation failure
+                record_license_failure(
+                    error_code="validation_failed",
+                    key_id=self._key_id,
+                    command=command,
+                    error_message=f"License validation failed: {error}",
+                )
                 return False, f"License validation failed: {error}"
 
             # Phase 6: Check quota and rate limits BEFORE allowing

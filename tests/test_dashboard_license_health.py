@@ -9,8 +9,8 @@ Test suite covering:
 """
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock
+from datetime import datetime
 
 from src.analytics.dashboard_service import DashboardService, DashboardMetrics
 from src.db.queries.analytics_queries import AnalyticsQueries

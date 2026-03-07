@@ -13,6 +13,7 @@ import time
 import uuid
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional
 
@@ -25,8 +26,13 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.table import Table
 
 from .dag_scheduler import DAGScheduler, validate_dag
+from .event_bus import get_event_bus
 from .execution_history import EventKind, ExecutionEvent, ExecutionHistory
 from .executor import RecipeExecutor
+from .health_endpoint import (
+    register_component_check,
+    start_health_server,
+)
 from .memory import MemoryEntry, MemoryStore
 from .nlu import IntentClassifier
 from .parser import Recipe, RecipeStep
@@ -291,6 +297,8 @@ class RecipeOrchestrator:
         enable_rollback: bool = True,
         use_swarm: bool = False,
         retry_policy: RetryPolicy | None = None,
+        enable_health_endpoint: bool = True,
+        health_port: int = 9192,
     ) -> None:
         self.planner = RecipePlanner(llm_client=llm_client)
         self.verifier = RecipeVerifier(strict_mode=strict_verification)
@@ -306,6 +314,12 @@ class RecipeOrchestrator:
         self.rollback_handler = RollbackHandler(enable_rollback=enable_rollback)
         self.report_formatter = ReportFormatter()
 
+        # Health endpoint integration
+        self._health_endpoint_enabled = enable_health_endpoint
+        self._health_port = health_port
+        self._heartbeat_interval = 30  # seconds
+        self._last_heartbeat: float | None = None
+
         if use_swarm:
             from .swarm import SwarmDispatcher, SwarmRegistry
 
@@ -320,6 +334,104 @@ class RecipeOrchestrator:
             self.bmad_loader = BMADWorkflowLoader()
         except ImportError:
             self.console.print("[yellow]Warning: BMAD loader not available[/yellow]")
+
+        # Initialize health endpoint if enabled
+        if self._health_endpoint_enabled:
+            self._init_health_endpoint()
+
+    def _init_health_endpoint(self) -> None:
+        """Initialize health endpoint with component checks."""
+        try:
+            # Import here to avoid circular imports
+            from src.core.crash_detector import get_crash_detector
+
+            def check_license() -> dict:
+                from src.core.health_endpoint import ComponentStatus
+                try:
+                    from src.lib.raas_gate_validator import RaasGateValidator
+                    validator = RaasGateValidator()
+                    is_valid, _ = validator.validate()
+                    return ComponentStatus(
+                        status="healthy" if is_valid else "degraded",
+                        message="License valid" if is_valid else "License invalid/expired",
+                    )
+                except Exception as e:
+                    return ComponentStatus(status="unhealthy", message=str(e))
+
+            def check_usage() -> dict:
+                from src.core.health_endpoint import ComponentStatus
+                try:
+                    return ComponentStatus(status="healthy", message="Usage tracking ready")
+                except Exception as e:
+                    return ComponentStatus(status="degraded", message=str(e))
+
+            def check_crash_detector() -> dict:
+                from src.core.health_endpoint import ComponentStatus
+                try:
+                    detector = get_crash_detector()
+                    freq = detector.get_frequency()
+                    if freq.crashes_per_hour > 10:
+                        return ComponentStatus(
+                            status="degraded",
+                            message=f"High crash rate: {freq.crashes_per_hour:.1f}/hour",
+                        )
+                    return ComponentStatus(
+                        status="healthy",
+                        message=f"{freq.crashes_last_hour} crashes in last hour",
+                    )
+                except Exception as e:
+                    return ComponentStatus(status="unhealthy", message=str(e))
+
+            def check_telegram() -> dict:
+                from src.core.health_endpoint import ComponentStatus
+                try:
+                    import os
+                    if os.getenv("TELEGRAM_BOT_TOKEN"):
+                        return ComponentStatus(status="healthy", message="Telegram configured")
+                    return ComponentStatus(status="degraded", message="Telegram not configured")
+                except Exception as e:
+                    return ComponentStatus(status="unhealthy", message=str(e))
+
+            def check_proxy() -> dict:
+                from src.core.health_endpoint import ComponentStatus
+                try:
+                    import os
+                    proxy_url = os.getenv("ANTHROPIC_BASE_URL", "http://localhost:9191")
+                    return ComponentStatus(
+                        status="healthy",
+                        message=f"Proxy at {proxy_url}",
+                    )
+                except Exception as e:
+                    return ComponentStatus(status="unhealthy", message=str(e))
+
+            register_component_check("license", check_license)
+            register_component_check("usage", check_usage)
+            register_component_check("crash_detector", check_crash_detector)
+            register_component_check("telegram", check_telegram)
+            register_component_check("proxy", check_proxy)
+
+            # Start health server
+            start_health_server(port=self._health_port)
+            self.console.print(
+                f"[dim]Health endpoint: http://127.0.0.1:{self._health_port}/health[/dim]",
+            )
+        except Exception as e:
+            self.console.print(f"[yellow]Warning: Failed to start health endpoint: {e}[/yellow]")
+
+    def _emit_heartbeat(self) -> None:
+        """Emit heartbeat event to EventBus."""
+        now = time.time()
+        if self._last_heartbeat is None or (now - self._last_heartbeat) >= self._heartbeat_interval:
+            self._last_heartbeat = now
+            event_bus = get_event_bus()
+            event_bus.emit(
+                EventType.PATTERN_DETECTED,
+                {
+                    "type": "heartbeat",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "interval": self._heartbeat_interval,
+                },
+            )
 
     def _init_step_executor(self, executor: RecipeExecutor) -> StepExecutor:
         self.step_executor = StepExecutor(

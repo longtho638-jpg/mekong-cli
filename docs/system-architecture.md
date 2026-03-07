@@ -58,6 +58,82 @@ Mekong CLI is an autonomous agent framework implementing Plan-Execute-Verify (PE
 │  │ RaaS Gateway: Cloudflare KV (rate limiting cache) │  │
 │  │ Polar.sh Webhooks: payment → credit allocation    │  │
 │  └────────────────────────────────────────────────────┘  │
+└──────────────────┬───────────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────────┐
+│           Health Monitoring System (Phase 1-5)           │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │HealthEndpoint│ │CrashDetector │ │LicenseMonitor   │  │
+│  │ (port 9192)  │ │ (exit codes) │ │ (threshold)     │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │AnomalyDetector││AlertRouter   │ │AutoRecovery     │  │
+│  │ (Z-score)    │ │ (Telegram)   │ │ (recovery)      │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │ EventBus: Real-time event pub/sub                 │  │
+│  │ - Health:HEALTH_CRITICAL → AlertRouter            │  │
+│  │ - License:LICENSE_CRITICAL → AutoRecovery         │  │
+│  │ - Crash:detected → AutoRecovery                   │  │
+│  └────────────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Architecture Layers
+
+```
+┌──────────────────────────────────────────────────────────┐
+│              CLI / REST API / Edge Gateway               │
+│   (Typer CLI + FastAPI + Cloudflare Workers)            │
+│           + RaaS Auth Middleware + Billing              │
+└──────────────────┬───────────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────────┐
+│            Orchestration Layer + RaaS Router             │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │   Planner    │ │  Executor    │ │ Verifier + Gate │  │
+│  │  (LLM)       │ │ (DAG Sched)  │ │ (Quality Check) │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│                                                          │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │  RaaS Router (/api/v1/missions, /api/v1/tasks)  │   │
+│  │  - Mission lifecycle (submit, status, cancel)    │   │
+│  │  - Task store (persistent queue)                 │   │
+│  │  - Rate limiter (per-tenant fair-use)           │   │
+│  └──────────────────────────────────────────────────┘   │
+└──────────────────┬───────────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────────┐
+│        Agent & Provider System + RaaS Auth              │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │ GitAgent     │ │ FileAgent    │ │ Custom Agents   │  │
+│  │ ShellAgent   │ │ RecipeCrawler│ │ (via plugins)   │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│                                                          │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │OpenAIProvider│ │GeminiProvider│ │OfflineProvider │  │
+│  │ (circuit-br) │ │ (circuit-br) │ │ (local models) │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │ RaaS Auth: JWT validation, Tenant isolation      │  │
+│  │ RaaS Billing: Credit ledger, Quota enforcement   │  │
+│  └────────────────────────────────────────────────────┘  │
+└──────────────────┬───────────────────────────────────────┘
+                   │
+┌──────────────────▼───────────────────────────────────────┐
+│         Persistence & Billing + Edge Cache              │
+│  ┌──────────────┐ ┌──────────────┐ ┌─────────────────┐  │
+│  │SQLite Store  │ │ Credit Ledger│ │ Mission Journal │  │
+│  │(Tenants,     │ │ (per-tenant) │ │ (audit trail)   │  │
+│  │Missions)     │ │              │ │                 │  │
+│  └──────────────┘ └──────────────┘ └─────────────────┘  │
+│                                                          │
+│  ┌────────────────────────────────────────────────────┐  │
+│  │ RaaS Gateway: Cloudflare KV (rate limiting cache) │  │
+│  │ Polar.sh Webhooks: payment → credit allocation    │  │
+│  └────────────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -755,3 +831,259 @@ The authentication layer implements OAuth2-based user authentication with JWT se
 | `GITHUB_CLIENT_ID` | (required) | GitHub OAuth client ID |
 | `STRIPE_SECRET_KEY` | (optional) | Stripe API key |
 | `STRIPE_WEBHOOK_SECRET` | (optional) | Stripe webhook secret |
+
+## 11. Health Monitoring System
+
+> **Phase 1-5 Monitoring Architecture** — Real-time detection, alerting, and automated recovery
+
+### 11.1 Overview
+
+The Health Monitoring System provides comprehensive system health visibility with five integrated phases:
+
+| Phase | Component | Purpose |
+|-------|-----------|---------|
+| 1 | Health Endpoint + Crash Detection | HTTP health check + crash event tracking |
+| 2 | License Failure Monitoring | License validation failure tracking with threshold alerting |
+| 3 | Usage Anomaly Detection | Statistical anomaly detection using Z-score analysis |
+| 4 | Alert Routing + Telegram | Centralized alert routing with deduplication and throttling |
+| 5 | Auto-Recovery Actions | Automated recovery with exponential backoff |
+
+### 11.2 Monitoring Components
+
+#### Health Endpoint (`src/core/health_endpoint.py`)
+
+FastAPI-based HTTP health endpoint providing real-time system status.
+
+| Feature | Description |
+|---------|-------------|
+| Port | 9192 (default) |
+| Endpoints | `/health`, `/ready`, `/live` |
+| Format | JSON with component statuses |
+
+**API Endpoints:**
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/health` | GET | Full health status with component checks |
+| `/ready` | GET | Kubernetes-style readiness probe |
+| `/live` | GET | Kubernetes-style liveness probe |
+
+**Component Status Values:**
+
+| Status | Meaning |
+|--------|---------|
+| `healthy` | Component is functioning normally |
+| `degraded` | Component has partial issues but operational |
+| `unhealthy` | Component is not functioning |
+| `unknown` | No health check registered |
+
+#### Crash Detector (`src/core/crash_detector.py`)
+
+Real-time crash detection monitoring CLI execution exit codes.
+
+**Features:**
+- Exit code monitoring and crash event emission
+- Crash frequency tracking (crashes per hour)
+- Crash history persistence to `.mekong/crashes/`
+- Auto-recovery triggering on crash detection
+
+**Event:** `health:critical` with metadata
+
+#### License Monitor (`src/core/license_monitor.py`)
+
+Tracks license validation failures with threshold alerting and grace period support.
+
+**Features:**
+- Failure recording with metadata (error_code, timestamp, retry_count)
+- Threshold alerting (>3 failures in 5min → emit `license:critical`)
+- Grace period for new installations (24h)
+- Failure history persistence to `.mekong/license_failures.json`
+
+**Event:** `license:critical` on threshold exceeded
+
+#### Anomaly Detector (`src/core/anomaly_detector.py`)
+
+Statistical anomaly detection for usage metrics using Z-score analysis.
+
+**Features:**
+- 7-day rolling baseline calculation
+- Z-score detection (|z| > 3.0 = anomaly)
+- Anomaly types: spike, drop, pattern_break
+- Severity levels: low, medium, high, critical
+
+**Event:** `usage:anomaly_detected` with category and metric
+
+#### Alert Router (`src/core/alert_router.py`)
+
+Centralized alert routing with deduplication, throttling, and severity-based routing.
+
+**Features:**
+- Deduplication window: 10 minutes
+- Throttling limit: 10 alerts/hour (except critical)
+- Telegram integration with markdown formatting
+- Severity routing: critical/warning/info
+
+**Subscribed Events:**
+- `health:critical`
+- `license:critical`
+- `halt_triggered`
+- `governance_blocked`
+
+**Event:** `alert:sent`/`alert:deduplicated`/`alert:throttled`
+
+#### Auto Recovery (`src/core/auto_recovery.py`)
+
+Automated recovery actions with exponential backoff.
+
+**Recovery Types:**
+
+| Type | Description |
+|------|-------------|
+| `license:recovery` | License validation failure recovery |
+| `crash:recovery` | Process crash recovery |
+| `health:endpoint_recovery` | Health endpoint restart |
+| `proxy:recovery` | Proxy service restart |
+
+**Backoff Strategy:** min(base × 2^(attempt-1), max)
+- Attempt 1: 1s delay
+- Attempt 2: 2s delay
+- Attempt 3: 4s delay
+- Attempt 4+: 10s (capped)
+
+**Events:** `recovery:started`/`recovery:success`/`recovery:failed`
+
+### 11.3 Event Flow
+
+```
+┌────────────────────────────────────────────────────────────────────┐
+│                        EventBus Pub/Sub                            │
+├────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  ┌──────────────────┐    ┌──────────────────┐    ┌───────────────┐  │
+│  │   Health Events  │    │  License Events  │    │  Usage Events │  │
+│  │  health:critical │    │ license:critical │    │  usage:anomaly│  │
+│  │  recovery:*      │    │  license:*       │    │  usage:anomaly│  │
+│  └────────┬─────────┘    └────────┬─────────┘    └───────┬───────┘  │
+│           │                       │                        │         │
+│           │                       │                        │         │
+│           ▼                       ▼                        ▼         │
+│  ┌────────────────────────────────────────────────────────────────┐ │
+│  │                      AlertRouter                               │ │
+│  │  - Deduplication (10min)                                       │ │
+│  │  - Throttling (10/hr non-critical)                             │ │
+│  │  - Telegram Delivery                                           │ │
+│  └────────────────────────────────────────────────────────────────┘ │
+│                                     │                                │
+│                                     ▼                                │
+│                            ┌──────────────────┐                      │
+│                            │  Telegram Alert  │                      │
+│                            │  - Markdown      │                      │
+│                            │  - Emoji prefix  │                      │
+│                            │  - Timestamp     │                      │
+│                            └──────────────────┘                      │
+│                                                                      │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+### 11.4 Event Types Reference
+
+| Event Type | Phase | Description |
+|------------|-------|-------------|
+| `health:critical` | 1 | Critical health issue detected |
+| `health:warning` | 1 | System health degraded |
+| `recovery:started` | 5 | Recovery action started |
+| `recovery:attempted` | 5 | Recovery attempt in progress |
+| `recovery:success` | 5 | Recovery succeeded |
+| `recovery:failed` | 5 | Recovery failed |
+| `license:validation_failed` | 2 | License validation failed |
+| `license:critical` | 2 | License threshold exceeded |
+| `license:grace_period_active` | 2 | Grace period active |
+| `usage:anomaly_detected` | 3 | Anomaly detected |
+| `usage:api_call` | 3 | API call recorded |
+| `usage:agent_spawn` | 3 | Agent spawn recorded |
+| `alert:deduplicated` | 4 | Alert suppressed (duplicate) |
+| `alert:throttled` | 4 | Alert suppressed (throttle) |
+| `alert:sent` | 4 | Alert sent successfully |
+
+### 11.5 Health Endpoint API
+
+```python
+from src.core.health_endpoint import (
+    start_health_server,
+    stop_health_server,
+    register_component_check,
+    get_health_url,
+)
+
+# Register a health check for a component
+def license_check():
+    from src.core.license_monitor import get_monitor
+    monitor = get_monitor()
+    if monitor.is_critical():
+        return ComponentStatus(status="unhealthy", message="License critical")
+    return ComponentStatus(status="healthy")
+
+register_component_check("license", license_check)
+
+# Start health server
+server = start_health_server(host="127.0.0.1", port=9192)
+
+# Check health
+curl "http://127.0.0.1:9192/health"
+```
+
+### 11.6 File Locations
+
+| File | Purpose |
+|------|---------|
+| `.mekong/license_failures.json` | License failure history |
+| `.mekong/usage_baseline.json` | Anomaly detection baselines |
+| `.mekong/recovery_history.json` | Recovery attempt history |
+| `.mekong/crashes/*.json` | Crash event history |
+| `.mekong/health_endpoint.log` | Health endpoint logs |
+
+### 11.7 Configuration
+
+| Environment Variable | Default | Description |
+|---------------------|---------|-------------|
+| `HEALTH_ENDPOINT_HOST` | `127.0.0.1` | Health endpoint hostname |
+| `HEALTH_ENDPOINT_PORT` | `9192` | Health endpoint port |
+| `TELEGRAM_BOT_TOKEN` | - | Telegram bot token for alerts |
+| `TELEGRAM_OPS_CHANNEL_ID` | - | Telegram ops channel ID |
+
+### 11.8 Monitoring Integration Points
+
+**In Orchestrator:**
+```python
+# After execution fails
+from src.core.crash_detector import get_crash_detector
+detector = get_crash_detector()
+detector.record_crash(exit_code=result.exit_code, command=step.cmd)
+```
+
+**In License Validation:**
+```python
+# On validation failure
+from src.core.license_monitor import record_failure
+record_failure(
+    error_code="invalid_signature",
+    key_id=key_id,
+    command="mekong run",
+)
+```
+
+**In Usage Tracking:**
+```python
+# Record usage metrics
+from src.core.anomaly_detector import get_detector, AnomalyCategory
+detector = get_detector()
+detector.record_metric(AnomalyCategory.API_CALLS, "requests", 100.0)
+```
+
+**In Alert Triggers:**
+```python
+# Emit_CRITICAL event
+from src.core.event_bus import get_event_bus, EventType
+event_bus = get_event_bus()
+event_bus.emit(EventType.LICENSE_CRITICAL, {"data": ...})
+```
