@@ -14,16 +14,17 @@ const fs = require('fs');
 const path = require('path');
 const config = require('../config');
 
-const DASHSCOPE_OPENAI_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic';
-// DUAL-KEY FAILOVER: Key A fails (429) → Key B
+// CTO uses dedicated Key C on DashScope International OpenAI-compatible endpoint
+const DASHSCOPE_OPENAI_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1';
 const DASHSCOPE_KEYS = [
-    process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A
-    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B
+    process.env.CTO_DASHSCOPE_KEY || 'sk-80d8537485d04f609c498f1881e67c6f',  // Key C (CTO dedicated)
+    process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A (Coding Plan fallback)
+    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B (Coding Plan fallback)
 ];
 let _dsKeyIdx = 0;
 const getDashScopeKey = () => DASHSCOPE_KEYS[_dsKeyIdx];
 const rotateDashScopeKey = () => { _dsKeyIdx = (_dsKeyIdx + 1) % DASHSCOPE_KEYS.length; log(`🔄 Rotated to DashScope Key ${_dsKeyIdx + 1}/${DASHSCOPE_KEYS.length}`); };
-const MODEL = process.env.CTO_LLM_MODEL || 'qwen3.5-plus';  // 🦞 CTO Brain = strongest model
+const MODEL = process.env.CTO_LLM_MODEL || 'qwen-plus';  // 🧠 CTO Brain = qwen-plus (Key C)
 const TIMEOUT_MS = 8000;
 const CACHE_TTL_MS = 5000;
 const METRICS_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/llm-metrics.json');
@@ -70,14 +71,14 @@ function callLLM(prompt) {
         const payload = JSON.stringify({
             model: MODEL,
             max_tokens: 150,
-            system: SYSTEM_PROMPT.trim(),
             messages: [
+                { role: 'system', content: SYSTEM_PROMPT.trim() },
                 { role: 'user', content: prompt }
             ]
         });
 
-        // 🦞 Route directly to DashScope (bypassing AG Proxy)
-        const url = new URL(`${DASHSCOPE_OPENAI_URL}/v1/messages`);
+        // 🧠 Route directly to DashScope International (Key C)
+        const url = new URL(`${DASHSCOPE_OPENAI_URL}/chat/completions`);
         const isHttps = url.protocol === 'https:';
         const transport = isHttps ? require('https') : http;
         const req = transport.request({
@@ -88,8 +89,7 @@ function callLLM(prompt) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'x-api-key': getDashScopeKey(),
-                'anthropic-version': '2023-06-01'
+                'Authorization': `Bearer ${getDashScopeKey()}`
             },
             timeout: TIMEOUT_MS,
         }, (res) => {
@@ -104,8 +104,7 @@ function callLLM(prompt) {
                         resolve(null);
                         return;
                     }
-                    const textBlock = json.content?.find(c => c.type === 'text');
-                    const rawContent = textBlock?.text || '';
+                    const rawContent = json.choices?.[0]?.message?.content || json.content?.find(c => c.type === 'text')?.text || '';
                     if (!rawContent) {
                         log(`Empty text in response. Raw: ${data.slice(0, 100)}...`);
                         resolve(null);
