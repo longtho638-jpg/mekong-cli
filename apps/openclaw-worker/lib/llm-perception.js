@@ -363,10 +363,10 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
 
         const trimmed = paneOutput.slice(-1000); // Guard needs less context
         const payload = JSON.stringify({
-            model: process.env.CTO_LLM_MODEL || 'qwen3.5-plus',
+            model: process.env.CTO_LLM_MODEL || 'qwen-plus',
             max_tokens: 512,
-            system: GUARD_PROMPT.trim(),
             messages: [
+                { role: 'system', content: GUARD_PROMPT.trim() },
                 { role: 'user', content: `regex_state: ${regexState}\nProject: ${projectName}\n\n${trimmed}` }
             ]
         });
@@ -382,7 +382,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'x-api-key': getDashScopeKey(), 'anthropic-version': '2023-06-01'
+                'Authorization': `Bearer ${getDashScopeKey()}`
             },
             timeout: 30000,
         }, (res) => {
@@ -391,7 +391,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             res.on('end', () => {
                 try {
                     const json = JSON.parse(data);
-                    const rawContent = json.content?.find(c => c.type === 'text')?.text || '';
+                    const rawContent = json.choices?.[0]?.message?.content || json.content?.find(c => c.type === 'text')?.text || '';
                     const cleaned = rawContent.replace(/```json\n?|\n?```/g, '').trim();
                     let result;
                     try {
