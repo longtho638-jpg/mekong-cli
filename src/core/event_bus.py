@@ -58,6 +58,13 @@ class EventType(str, Enum):
     RECOVERY_ATTEMPTED = "recovery:attempted"
     RECOVERY_SUCCESS = "recovery:success"
     RECOVERY_FAILED = "recovery:failed"
+    # Billing events (Phase 6)
+    BILLING_RECORDED = "billing:recorded"
+    BILLING_OVERAGE = "billing:overage"
+    BILLING_PERIOD_CLOSED = "billing:period_closed"
+    BILLING_RECONCILIATION = "billing:reconciliation"
+    BILLING_BATCH_PROCESSED = "billing:batch_processed"
+    BILLING_IDEMPOTENCY_CONFLICT = "billing:idempotency_conflict"
 
 
 @dataclass

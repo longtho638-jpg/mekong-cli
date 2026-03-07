@@ -14,6 +14,10 @@ from src.db.migrations import (
     MIGRATION_002_ROLES,
     MIGRATION_003_SESSIONS,
     MIGRATION_004_USER_ROLES,
+    MIGRATION_005_TIER_CONFIGS,
+    MIGRATION_006_RATE_LIMIT_EVENTS,
+    MIGRATION_007_LICENSE_ENFORCEMENT,
+    MIGRATION_008_BILLING_SYSTEM,
 )
 
 
@@ -25,6 +29,10 @@ MIGRATIONS = [
     ("005", "Add roles to licenses", MIGRATION_002_ROLES),
     ("006", "User sessions table", MIGRATION_003_SESSIONS),
     ("007", "Add role to users table", MIGRATION_004_USER_ROLES),
+    ("008", "Tier configs table", MIGRATION_005_TIER_CONFIGS),
+    ("009", "Rate limit events table", MIGRATION_006_RATE_LIMIT_EVENTS),
+    ("010", "License enforcement events", MIGRATION_007_LICENSE_ENFORCEMENT),
+    ("011", "Billing system tables", MIGRATION_008_BILLING_SYSTEM),
 ]
 
 
