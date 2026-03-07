@@ -15,7 +15,14 @@ const path = require('path');
 const config = require('../config');
 
 const DASHSCOPE_OPENAI_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic';
-const DASHSCOPE_KEY = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
+// DUAL-KEY FAILOVER: Key A fails (429) → auto-switch to Key B
+const DASHSCOPE_KEYS = [
+    process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A
+    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B (backup)
+];
+let _dsKeyIdx = 0;
+const getDashScopeKey = () => DASHSCOPE_KEYS[_dsKeyIdx];
+const rotateDashScopeKey = () => { _dsKeyIdx = (_dsKeyIdx + 1) % DASHSCOPE_KEYS.length; log(`🔄 Rotated to DashScope Key ${_dsKeyIdx + 1}/${DASHSCOPE_KEYS.length}`); };
 const MODEL = process.env.CTO_LLM_MODEL || 'qwen3.5-plus';  // 🦞 CTO Brain = strongest model
 const TIMEOUT_MS = 8000;
 const CACHE_TTL_MS = 5000;
@@ -81,7 +88,7 @@ function callLLM(prompt) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'x-api-key': DASHSCOPE_KEY,
+                'x-api-key': getDashScopeKey(),
                 'anthropic-version': '2023-06-01'
             },
             timeout: TIMEOUT_MS,

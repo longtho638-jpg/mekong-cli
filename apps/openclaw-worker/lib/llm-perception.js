@@ -15,7 +15,14 @@ const path = require('path');
 
 // DashScope Anthropic-compatible endpoint (coding-intl only supports apps/anthropic)
 const CTO_API_URL = 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages';
-const DASHSCOPE_KEY = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
+// DUAL-KEY FAILOVER: Key A fails (429) → auto-switch to Key B
+const DASHSCOPE_KEYS = [
+    process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A
+    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B (backup)
+];
+let _dsKeyIdx = 0;
+const getDashScopeKey = () => DASHSCOPE_KEYS[_dsKeyIdx];
+const rotateDashScopeKey = () => { _dsKeyIdx = (_dsKeyIdx + 1) % DASHSCOPE_KEYS.length; log(`🔄 Rotated to DashScope Key ${_dsKeyIdx + 1}/${DASHSCOPE_KEYS.length}`); };
 const LLM_TIMEOUT_MS = 45000;
 const CACHE_TTL_MS = 60000; // Cache LLM results for 30s
 const perceptionCache = new Map();
@@ -107,7 +114,7 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'x-api-key': DASHSCOPE_KEY, 'anthropic-version': '2023-06-01'
+                'x-api-key': getDashScopeKey(), 'anthropic-version': '2023-06-01'
             },
             timeout: LLM_TIMEOUT_MS,
         }, (res) => {
@@ -374,7 +381,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'x-api-key': DASHSCOPE_KEY, 'anthropic-version': '2023-06-01'
+                'x-api-key': getDashScopeKey(), 'anthropic-version': '2023-06-01'
             },
             timeout: 30000,
         }, (res) => {

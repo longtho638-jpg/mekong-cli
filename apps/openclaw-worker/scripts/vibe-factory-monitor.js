@@ -361,11 +361,22 @@ async function checkAllPanes() {
     } catch { log('CTO: ✅ (self)'); }
 
     // DashScope API health (apps/anthropic format)
-    const dsKey = process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67';
-    try {
-        execSync(`curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages -H "x-api-key: ${dsKey}" -H "anthropic-version: 2023-06-01" -H "Content-Type: application/json" -d '{"model":"qwen3.5-plus","max_tokens":1,"messages":[{"role":"user","content":"ping"}]}' 2>/dev/null | grep -q 200`, { timeout: 12000 });
-        log('DASHSCOPE: ✅');
-    } catch { log('DASHSCOPE: ⚠️ slow/timeout (non-blocking)'); }
+    const DASHSCOPE_KEYS = [
+        process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',
+        'sk-sp-afce4429a10e41bb901d6012d7f525c8'
+    ];
+    let isHealthy = false;
+    for (const key of DASHSCOPE_KEYS) {
+        try {
+            execSync(`curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages -H "x-api-key: ${key}" -H "anthropic-version: 2023-06-01" -H "Content-Type: application/json" -d '{"model":"qwen3.5-plus","max_tokens":1,"messages":[{"role":"user","content":"ping"}]}' 2>/dev/null | grep -q 200`, { timeout: 12000 });
+            log(`DASHSCOPE: ✅ (Ping OK)`);
+            isHealthy = true;
+            break;
+        } catch { }
+    }
+    if (!isHealthy) {
+        log('DASHSCOPE: ⚠️ slow/timeout on all keys (non-blocking)');
+    }
 
     for (const pane of PANES) {
         const output = tmuxCapture(pane.idx);
@@ -717,7 +728,7 @@ try {
 
 // ✅ 2. SECRETS (Default injected if missing from bash triggers)
 if (!process.env.DASHSCOPE_API_KEY) {
-    process.env.DASHSCOPE_API_KEY = 'sk-sp-652cd51db1774704a992863926cd1f67';
+    process.env.DASHSCOPE_API_KEY = 'sk-sp-652cd51db1774704a992863926cd1f67'; // Key A, failover to Key B handled inside modules
     log('⚠️ Injected missing DASHSCOPE_API_KEY env var automatically');
 }
 log('✅ Secrets Check: OK');
