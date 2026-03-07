@@ -1,6 +1,15 @@
-.PHONY: all install dev test lint format server clean stats help
+.PHONY: all install dev test lint format server clean stats help setup health
 
 all: help
+
+setup:
+	@bash scripts/setup-dev.sh
+
+setup-quick:
+	@bash scripts/setup-dev.sh --quick
+
+health:
+	@bash scripts/health-check.sh
 
 install:
 	pip install -e .
@@ -36,6 +45,8 @@ help:
 	@echo "Mekong CLI — Development Commands"
 	@echo "=================================="
 	@echo ""
+	@echo "  make setup   🚀 One-command dev setup (deps + env + config)"
+	@echo "  make health  🩺 Check dev environment readiness"
 	@echo "  make install  Install package (editable)"
 	@echo "  make dev      Install with dev dependencies"
 	@echo "  make test     Run test suite"
