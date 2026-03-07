@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timedelta
-from unittest.mock import MagicMock, AsyncMock, patch, call
+from datetime import datetime
+from unittest.mock import MagicMock, AsyncMock
 
 import pytest
 
@@ -685,7 +685,6 @@ class TestStructuredLogging:
         """Test that logs include tenant_id field."""
         import logging
         import io
-        import json
 
         # Create a stream handler to capture logs
         log_stream = io.StringIO()

@@ -7,8 +7,8 @@ Persists events to rate_limit_events table and provides query methods.
 
 import logging
 import json
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timedelta
+from dataclasses import dataclass, field
+from datetime import datetime
 from typing import List, Dict, Any, Optional
 
 from src.db.database import DatabaseConnection
