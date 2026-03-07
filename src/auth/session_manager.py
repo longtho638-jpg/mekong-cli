@@ -147,8 +147,8 @@ class SessionManager:
 
         # Store session in database (hash the token)
         import hashlib
-        token_hash = hashlib.sha256(access_token.encode()).hexdigest()
-        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        _ = hashlib.sha256(access_token.encode()).hexdigest()  # token_hash intentionally unused
+        _ = datetime.now(timezone.utc) + timedelta(days=7)  # expires_at intentionally unused
 
         session = await self._user_repo.create_session(
             user_id=user.id,

@@ -3,6 +3,7 @@ Authentication Module Initialization
 
 OAuth2 authentication with Google and GitHub providers,
 JWT session management, and RBAC access control.
+Includes rate limiting for auth endpoints.
 """
 
 from src.auth.oauth2_providers import (
@@ -50,6 +51,31 @@ from src.auth.middleware import (
     create_auth_middleware,
 )
 
+from src.auth.rate_limiter import (
+    RateLimiter,
+    RateLimitPreset,
+    RateLimitConfig,
+    RateLimitExceeded,
+    TokenBucket,
+    InMemoryRateStorage,
+    get_rate_limiter,
+    init_rate_limiter,
+    DEFAULT_RATE_LIMITS,
+)
+
+from src.auth.rate_limit_decorator import (
+    rate_limit,
+    rate_limit_auth_login,
+    rate_limit_auth_callback,
+    rate_limit_auth_refresh,
+    rate_limit_api_write,
+    rate_limit_api_read,
+    get_client_ip,
+    parse_rate_limit,
+    add_rate_limit_headers,
+    create_rate_limit_response,
+)
+
 __all__ = [
     # OAuth2
     "OAuth2Client",
@@ -86,4 +112,25 @@ __all__ = [
     "SessionMiddleware",
     "OptionalAuthMiddleware",
     "create_auth_middleware",
+    # Rate Limiting
+    "RateLimiter",
+    "RateLimitPreset",
+    "RateLimitConfig",
+    "RateLimitExceeded",
+    "TokenBucket",
+    "InMemoryRateStorage",
+    "get_rate_limiter",
+    "init_rate_limiter",
+    "DEFAULT_RATE_LIMITS",
+    # Rate Limit Decorators
+    "rate_limit",
+    "rate_limit_auth_login",
+    "rate_limit_auth_callback",
+    "rate_limit_auth_refresh",
+    "rate_limit_api_write",
+    "rate_limit_api_read",
+    "get_client_ip",
+    "parse_rate_limit",
+    "add_rate_limit_headers",
+    "create_rate_limit_response",
 ]

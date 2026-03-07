@@ -20,6 +20,12 @@ from src.auth.stripe_integration import (
     verify_stripe_webhook,
     process_stripe_webhook,
 )
+from src.auth.rate_limit_decorator import (
+    rate_limit,
+    rate_limit_auth_login,
+    rate_limit_auth_callback,
+    rate_limit_auth_refresh,
+)
 
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
@@ -64,11 +70,15 @@ async def login_page(request: Request):
 
 
 @router.post("/dev-login")
+@rate_limit(limit="10/minute", bypass_dev=True)
 async def dev_login(request: Request):
     """Development mode quick login (bypasses OAuth).
 
     Only available when AUTH_ENVIRONMENT=dev.
     Creates a test user and session for local development.
+
+    Rate Limit: 10 requests/minute.
+    Bypassed in dev mode (AUTH_ENVIRONMENT=dev).
     """
     config = AuthConfig()
 
@@ -113,8 +123,13 @@ async def dev_login(request: Request):
 
 
 @router.get("/google/login")
+@rate_limit_auth_login()
 async def google_login(request: Request):
-    """Initiate Google OAuth2 flow."""
+    """Initiate Google OAuth2 flow.
+
+    Rate Limit: 5 requests/minute (AUTH_LOGIN preset).
+    Bypassed in dev mode.
+    """
     state = os.urandom(16).hex()
     # Store state in session for verification (simplified - use proper session storage)
     request.session["oauth_state"] = state
@@ -128,13 +143,18 @@ async def google_login(request: Request):
 
 
 @router.get("/google/callback")
+@rate_limit_auth_callback()
 async def google_callback(
     request: Request,
     code: Optional[str] = None,
     state: Optional[str] = None,
     error: Optional[str] = None,
 ):
-    """Handle Google OAuth2 callback."""
+    """Handle Google OAuth2 callback.
+
+    Rate Limit: 10 requests/minute (AUTH_CALLBACK preset).
+    Bypassed in dev mode.
+    """
     if error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -190,8 +210,13 @@ async def google_callback(
 
 
 @router.get("/github/login")
+@rate_limit_auth_login()
 async def github_login(request: Request):
-    """Initiate GitHub OAuth2 flow."""
+    """Initiate GitHub OAuth2 flow.
+
+    Rate Limit: 5 requests/minute (AUTH_LOGIN preset).
+    Bypassed in dev mode.
+    """
     state = os.urandom(16).hex()
     request.session["oauth_state"] = state
 
@@ -204,13 +229,18 @@ async def github_login(request: Request):
 
 
 @router.get("/github/callback")
+@rate_limit_auth_callback()
 async def github_callback(
     request: Request,
     code: Optional[str] = None,
     state: Optional[str] = None,
     error: Optional[str] = None,
 ):
-    """Handle GitHub OAuth2 callback."""
+    """Handle GitHub OAuth2 callback.
+
+    Rate Limit: 10 requests/minute (AUTH_CALLBACK preset).
+    Bypassed in dev mode.
+    """
     if error:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -266,8 +296,13 @@ async def github_callback(
 
 
 @router.post("/logout")
+@rate_limit(limit="30/hour", bypass_dev=True)
 async def logout(request: Request):
-    """Logout user and revoke session."""
+    """Logout user and revoke session.
+
+    Rate Limit: 30 requests/hour.
+    Bypassed in dev mode.
+    """
     session_manager = SessionManager()
     user_repo = UserRepository()
 
@@ -307,8 +342,13 @@ async def get_current_user_info(request: Request):
 
 
 @router.get("/refresh")
+@rate_limit_auth_refresh()
 async def refresh_token(request: Request):
-    """Refresh session token."""
+    """Refresh session token.
+
+    Rate Limit: 30 requests/hour (AUTH_REFRESH preset).
+    Bypassed in dev mode.
+    """
     session_manager = SessionManager()
     token = session_manager.get_session_cookie(request)
 
@@ -327,7 +367,7 @@ async def refresh_token(request: Request):
         )
 
     # Generate new tokens
-    new_access, new_refresh = session_manager.create_access_token(user), None
+    new_access, _ = session_manager.create_access_token(user), None  # new_refresh intentionally unused
 
     response = JSONResponse({
         "success": True,

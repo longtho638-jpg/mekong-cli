@@ -2,27 +2,51 @@
 Session Middleware - JWT authentication middleware for FastAPI
 
 Handles session validation, user context injection, and environment-aware auth bypass.
+Includes rate limiting for auth endpoints.
 """
 
 from typing import Optional
-
 from fastapi import Request
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from src.auth.session_manager import SessionManager
 from src.auth.config import AuthConfig
 from src.auth.user_repository import UserRepository
+from src.auth.rate_limiter import (
+    RateLimiter,
+    RateLimitPreset,
+    get_rate_limiter,
+)
 from src.models.user import User
 
 
-class SessionMiddleware(BaseHTTPMiddleware):
-    """Middleware to authenticate requests via JWT session tokens."""
+# Map endpoint paths to rate limit presets
+AUTH_RATE_LIMITS = {
+    "/auth/login": RateLimitPreset.AUTH_LOGIN,
+    "/auth/callback": RateLimitPreset.AUTH_CALLBACK,
+    "/auth/refresh": RateLimitPreset.AUTH_REFRESH,
+    "/auth/dev-login": RateLimitPreset.AUTH_DEV_LOGIN,
+}
 
-    def __init__(self, app: ASGIApp, session_manager: Optional[SessionManager] = None):
+
+class SessionMiddleware(BaseHTTPMiddleware):
+    """Middleware to authenticate requests via JWT session tokens.
+
+    Includes rate limiting for auth endpoints to prevent brute-force attacks.
+    """
+
+    def __init__(
+        self,
+        app: ASGIApp,
+        session_manager: Optional[SessionManager] = None,
+        rate_limiter: Optional[RateLimiter] = None,
+    ):
         super().__init__(app)
         self._session_manager = session_manager or SessionManager()
         self._user_repo = UserRepository()
+        self._rate_limiter = rate_limiter or get_rate_limiter()
 
     async def _authenticate_user(
         self,
@@ -56,9 +80,67 @@ class SessionMiddleware(BaseHTTPMiddleware):
         except (ValueError, Exception):
             return None
 
+    async def _check_rate_limit(
+        self,
+        request: Request,
+    ) -> tuple[bool, dict[str, str]]:
+        """Check rate limit for auth endpoints.
+
+        Args:
+            request: FastAPI Request object
+
+        Returns:
+            Tuple of (allowed: bool, headers: dict)
+        """
+        # Get client IP
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            client_ip = forwarded_for.split(",")[0].strip()
+        elif request.headers.get("X-Real-IP"):
+            client_ip = request.headers.get("X-Real-IP").strip()
+        else:
+            client_ip = request.client.host if request.client else "127.0.0.1"
+
+        # Determine endpoint preset based on path
+        path = request.url.path
+        preset = None
+
+        for endpoint, endpoint_preset in AUTH_RATE_LIMITS.items():
+            if path.startswith(endpoint):
+                preset = endpoint_preset
+                break
+
+        if preset is None:
+            # No rate limit for non-auth endpoints
+            return True, {}
+
+        # Check rate limit
+        key = f"{client_ip}:{path}"
+        allowed, headers = await self._rate_limiter.check_limit(key, preset=preset)
+
+        return allowed, headers
+
     async def dispatch(self, request: Request, call_next):
         """Process request and inject user context."""
         config = AuthConfig()
+
+        # Check rate limit for auth endpoints (even in dev mode for safety)
+        allowed, rate_headers = await self._check_rate_limit(request)
+
+        if not allowed:
+            # Return 429 Too Many Requests
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "error": "rate_limit_exceeded",
+                    "message": "Too many requests. Please try again later.",
+                    "retry_after": int(rate_headers.get("Retry-After", 60)),
+                },
+                headers=rate_headers,
+            )
+
+        # Store rate limit headers in request state for response
+        request.state.rate_limit_headers = rate_headers
 
         # DEV MODE: Auto-authenticate as test user
         if config.is_dev_mode():
@@ -78,6 +160,11 @@ class SessionMiddleware(BaseHTTPMiddleware):
             request.state.is_dev_mode = True
 
             response = await call_next(request)
+
+            # Add rate limit headers to response
+            for header_name, header_value in rate_headers.items():
+                response.headers[header_name] = header_value
+
             return response
 
         # PRODUCTION/STAGING: Normal authentication flow
@@ -109,6 +196,11 @@ class SessionMiddleware(BaseHTTPMiddleware):
             request.state.is_dev_mode = False
 
         response = await call_next(request)
+
+        # Add rate limit headers to response
+        for header_name, header_value in rate_headers.items():
+            response.headers[header_name] = header_value
+
         return response
 
 
@@ -117,12 +209,59 @@ class OptionalAuthMiddleware(BaseHTTPMiddleware):
 
     Unlike SessionMiddleware, this doesn't reject unauthenticated requests.
     Routes must use @require_role or @require_permission decorators to enforce auth.
+    Includes rate limiting for auth endpoints.
     """
 
-    def __init__(self, app: ASGIApp):
+    def __init__(
+        self,
+        app: ASGIApp,
+        session_manager: Optional[SessionManager] = None,
+        rate_limiter: Optional[RateLimiter] = None,
+    ):
         super().__init__(app)
-        self._session_manager = SessionManager()
+        self._session_manager = session_manager or SessionManager()
         self._user_repo = UserRepository()
+        self._rate_limiter = rate_limiter or get_rate_limiter()
+
+    async def _check_rate_limit(
+        self,
+        request: Request,
+    ) -> tuple[bool, dict[str, str]]:
+        """Check rate limit for auth endpoints.
+
+        Args:
+            request: FastAPI Request object
+
+        Returns:
+            Tuple of (allowed: bool, headers: dict)
+        """
+        # Get client IP
+        forwarded_for = request.headers.get("X-Forwarded-For")
+        if forwarded_for:
+            client_ip = forwarded_for.split(",")[0].strip()
+        elif request.headers.get("X-Real-IP"):
+            client_ip = request.headers.get("X-Real-IP").strip()
+        else:
+            client_ip = request.client.host if request.client else "127.0.0.1"
+
+        # Determine endpoint preset based on path
+        path = request.url.path
+        preset = None
+
+        for endpoint, endpoint_preset in AUTH_RATE_LIMITS.items():
+            if path.startswith(endpoint):
+                preset = endpoint_preset
+                break
+
+        if preset is None:
+            # No rate limit for non-auth endpoints
+            return True, {}
+
+        # Check rate limit
+        key = f"{client_ip}:{path}"
+        allowed, headers = await self._rate_limiter.check_limit(key, preset=preset)
+
+        return allowed, headers
 
     async def _authenticate_user(self, token: str) -> Optional[tuple[User, dict]]:
         """Authenticate user from JWT token."""
@@ -145,6 +284,20 @@ class OptionalAuthMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         """Process request and attach user context if authenticated."""
+        # Check rate limit for auth endpoints
+        allowed, rate_headers = await self._check_rate_limit(request)
+
+        if not allowed:
+            return JSONResponse(
+                status_code=429,
+                content={
+                    "error": "rate_limit_exceeded",
+                    "message": "Too many requests. Please try again later.",
+                    "retry_after": int(rate_headers.get("Retry-After", 60)),
+                },
+                headers=rate_headers,
+            )
+
         token = self._session_manager.get_session_cookie(request)
 
         if token:
@@ -166,6 +319,11 @@ class OptionalAuthMiddleware(BaseHTTPMiddleware):
             request.state.user_role = None
 
         response = await call_next(request)
+
+        # Add rate limit headers to response
+        for header_name, header_value in rate_headers.items():
+            response.headers[header_name] = header_value
+
         return response
 
 
