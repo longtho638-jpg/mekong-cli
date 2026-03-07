@@ -32,6 +32,7 @@
     "test": "npx turbo run test --concurrency=5",
     "lint": "npx turbo run lint --concurrency=1",
     "format": "npx turbo run format --concurrency=10",
+    "type-check": "tsc --noEmit",
     "gws": "npx -y @googleworkspace/cli",
     "postinstall": "bash scripts/setup-dev.sh --quick 2>/dev/null || true",
     "health": "bash scripts/health-check.sh"

@@ -36,7 +36,6 @@ export interface CryptoValidationResult {
 /**
  * Secret key for HMAC signing (must be 256-bit for HS256)
  */
-const DEFAULT_SECRET = 'change-me-in-production-min-32-chars!';
 
 /**
  * Validate license key format (basic sanity check)
@@ -108,7 +107,10 @@ export async function verifyLicenseKey(
     return { valid: false, error: formatCheck.error };
   }
 
-  const licenseSecret = secret || process.env.RAAS_LICENSE_SECRET || DEFAULT_SECRET;
+  const licenseSecret = secret || process.env.RAAS_LICENSE_SECRET;
+  if (!licenseSecret) {
+    return { valid: false, error: 'RAAS_LICENSE_SECRET must be set' };
+  }
 
   try {
     const [encodedPayload, signature] = key.split('.');
@@ -164,7 +166,10 @@ export async function generateLicenseKey(
   secret?: string,
   expiresInDays?: number
 ): Promise<string> {
-  const licenseSecret = secret || process.env.RAAS_LICENSE_SECRET || DEFAULT_SECRET;
+  const licenseSecret = secret || process.env.RAAS_LICENSE_SECRET;
+  if (!licenseSecret) {
+    throw new Error('RAAS_LICENSE_SECRET must be set');
+  }
 
   const fullPayload: LicensePayload = {
     ...payload,
