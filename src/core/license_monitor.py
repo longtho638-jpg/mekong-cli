@@ -219,8 +219,17 @@ class LicenseMonitor:
             },
         )
 
-        # Trigger auto-recovery (Phase 5)
-        asyncio.create_task(self._trigger_recovery(recent_failures))
+        # Trigger auto-recovery (Phase 5) - safely handle missing event loop
+        try:
+            loop = asyncio.get_running_loop()
+            # Event loop is running - create task
+            asyncio.create_task(self._trigger_recovery(recent_failures))
+        except RuntimeError:
+            # No running loop - run asynchronously in background
+            asyncio.run(self._trigger_recovery(recent_failures))
+        except Exception:
+            # Silently fail - don't break validation flow
+            pass
 
     async def _trigger_recovery(
         self,

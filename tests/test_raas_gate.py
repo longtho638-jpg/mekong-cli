@@ -50,7 +50,7 @@ class TestRaasLicenseGateInit:
         """Test default initialization with remote enabled."""
         gate = RaasLicenseGate()
         assert gate._enable_remote is True
-        assert gate._remote_url == "http://localhost:8787"
+        assert gate._remote_url == "https://raas.agencyos.network"
         assert gate.license_key is None
         assert gate.has_license is False
 
