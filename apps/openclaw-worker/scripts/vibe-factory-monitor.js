@@ -50,6 +50,20 @@ function tmuxCapture(paneIdx, lines = 15) {
     } catch { return ''; }
 }
 
+// 🧠 Detect REAL project from tmux pane's actual working directory
+function detectRealProject(paneIdx) {
+    try {
+        const panePath = execSync(`tmux display-message -t ${SESSION}.${paneIdx} -p '#{pane_current_path}' 2>/dev/null`, { encoding: 'utf-8', timeout: 3000 }).trim();
+        if (!panePath) return null;
+        // Extract project name from path
+        const match = panePath.match(/\/apps\/([^\/]+)/);
+        if (match) return { project: match[1], dir: panePath };
+        // Root mekong-cli
+        if (panePath.endsWith('/mekong-cli') || panePath.includes('/mekong-cli/packages')) return { project: 'mekong-cli', dir: panePath };
+        return { project: path.basename(panePath), dir: panePath };
+    } catch { return null; }
+}
+
 function tmuxSendBuffer(paneIdx, text) {
     try {
         // Clear any half-written text just in case (Ctrl+U)
@@ -380,6 +394,14 @@ async function checkAllPanes() {
     }
 
     for (const pane of PANES) {
+        // 🧠 DYNAMIC PROJECT DETECTION — override static config with real tmux path
+        const realProject = detectRealProject(pane.idx);
+        if (realProject && realProject.project !== pane.project) {
+            log(`P${pane.idx}: 🔄 PROJECT SYNC: config=${pane.project} → actual=${realProject.project}`);
+            pane.project = realProject.project;
+            pane.dir = realProject.dir;
+        }
+
         const output = tmuxCapture(pane.idx);
         const regexState = detectPaneState(output);
 
