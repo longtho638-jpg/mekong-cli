@@ -64,6 +64,16 @@ function detectRealProject(paneIdx) {
     } catch { return null; }
 }
 
+// 🔧 CENTRALIZED RESPAWN — uses -c flag for reliable cwd (fixes P0 wrong-project bug)
+function respawnPane(paneIdx, dir, flags = '') {
+    const realDir = detectRealProject(paneIdx)?.dir || dir;
+    const cmd = `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions${flags ? ' ' + flags : ''}`;
+    try {
+        execSync(`tmux respawn-pane -k -t ${SESSION}.${paneIdx} -c '${realDir}' '${cmd}'`);
+        return true;
+    } catch { return false; }
+}
+
 function tmuxSendBuffer(paneIdx, text) {
     try {
         // Clear any half-written text just in case (Ctrl+U)
@@ -435,15 +445,13 @@ async function checkAllPanes() {
         switch (state) {
             case 'DEAD':
                 log(`P${pane.idx}: 💀 DEAD — respawning with --continue`);
-                try { execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions --continue"`); } catch { }
+                respawnPane(pane.idx, pane.dir, '--continue');
                 // Will inject task next cycle after bootlog(`P${pane.idx}: ✅ Respawned, task will inject next cycle`);
                 break;
 
             case 'CRASHED':
                 log(`P${pane.idx}: 🔴 CRASHED — respawn-pane -k with --continue`);
-                try {
-                    execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions --continue"`);
-                } catch { }
+                respawnPane(pane.idx, pane.dir, '--continue');
                 break;
 
             case 'CONTEXT_LIMIT': {
@@ -451,9 +459,7 @@ async function checkAllPanes() {
                 const ctxOutput = tmuxCapture(pane.idx, 5);
                 if (/0% remaining/.test(ctxOutput) || /Context low \(0%/.test(ctxOutput)) {
                     log(`P${pane.idx}: 🔴 CONTEXT 0% — /compact won't help. RESPAWNING FRESH...`);
-                    try {
-                        execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
-                    } catch { }
+                    respawnPane(pane.idx, pane.dir);
                     lastInjection[pane.idx] = Date.now();
                 } else {
                     log(`P${pane.idx}: 🔴 CONTEXT LIMIT REACHED — sending /compact`);
@@ -469,9 +475,7 @@ async function checkAllPanes() {
                 const lowCtxOut = tmuxCapture(pane.idx, 5);
                 if (/0% remaining/.test(lowCtxOut)) {
                     log(`P${pane.idx}: 🟡 LOW CONTEXT 0% — RESPAWNING FRESH...`);
-                    try {
-                        execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
-                    } catch { }
+                    respawnPane(pane.idx, pane.dir);
                     lastInjection[pane.idx] = Date.now();
                 } else {
                     log(`P${pane.idx}: 🟡 LOW CONTEXT — letting CC CLI finish (no restart)`);
@@ -525,8 +529,7 @@ async function checkAllPanes() {
                 // Respawn ALL panes (not just this one) since settings changed globally
                 for (const p of PANES) {
                     try {
-                        const realDir = detectRealProject(p.idx)?.dir || p.dir;
-                        execSync(`tmux respawn-pane -k -t ${SESSION}.${p.idx} "cd ${realDir} && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
+                        respawnPane(p.idx, p.dir);
                         log(`P${p.idx}: ✅ Respawned on ${target.name} (${target.model})`);
                     } catch { }
                 }
@@ -576,9 +579,7 @@ async function checkAllPanes() {
                     const ctx = parseInt(ctxMatch[1], 10);
                     if (ctx <= 30) {
                         log(`P${pane.idx}: 🟡 PRE-FLIGHT BLOCKED (Context ${ctx}% <= 30%). Restarting fresh...`);
-                        try {
-                            execSync(`tmux respawn-pane -k -t ${SESSION}.${pane.idx} "cd ${pane.dir} && unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL && unset CLAUDECODE && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions"`);
-                        } catch { }
+                        respawnPane(pane.idx, pane.dir);
                         lastInjection[pane.idx] = Date.now();
                         break;
                     }
