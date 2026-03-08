@@ -51,33 +51,33 @@ const PANES = buildPanesConfig();
 // ══════════════════════════════════════════════════
 const TASK_POOLS = {
     'well': [
-        '/cook "Well: Audit i18n keys, fix missing translations, verify build pass" --auto',
-        '/cook "Well: Fix TypeScript errors, remove any types, verify tsc --noEmit clean" --auto',
-        '/cook "Well: Optimize Supabase queries, add indexes, verify RLS policies" --auto',
-        '/cook "Well: Clean console.log/TODO/FIXME from production code" --auto',
-        '/cook "Well: Add error boundaries, loading states, empty states for UX polish" --auto',
-        '/cook "Well: Security audit — CSP headers, XSS prevention, input validation" --auto',
+        '/cook "Well: Fix PayOS webhook handler — verify signature validation, idempotency, retry logic" --auto',
+        '/cook "Well: Supabase RLS audit — verify all tables have proper row-level security policies" --auto',
+        '/cook "Well: Audit i18n keys — grep t() calls vs vi.ts/en.ts, fix missing translations" --auto',
+        '/cook "Well: Fix TypeScript errors — tsc --noEmit, remove any types, strict null checks" --auto',
+        '/cook "Well: PayOS checkout flow — test all tiers, verify redirect + webhook callback" --auto',
+        '/cook "Well: Clean console.log/TODO/FIXME, add structured logging with pino" --auto',
     ],
     'sophia-ai-factory': [
-        '/cook "Sophia: Fix build errors, TypeScript strict mode, verify deploy" --auto',
-        '/cook "Sophia: Performance audit — code splitting, lazy loading, bundle size" --auto',
-        '/cook "Sophia: Clean tech debt — remove console.log, TODO, FIXME" --auto',
-        '/cook "Sophia: UX polish — loading states, error boundaries, responsive" --auto',
-        '/cook "Sophia: Security headers, API key protection, CORS config" --auto',
+        '/cook "Sophia: Debug video pipeline — ffmpeg transcoding errors, timeout handling, retry logic" --auto',
+        '/cook "Sophia: Fix campaign template rendering — broken variables, preview mode, mobile responsive" --auto',
+        '/cook "Sophia: Fix build errors — TypeScript strict mode, verify Vercel deploy passes" --auto',
+        '/cook "Sophia: Performance — code split heavy components, lazy load video player, reduce LCP" --auto',
+        '/cook "Sophia: Security — CSP headers for video embeds, API key protection, CORS whitelist" --auto',
     ],
     'mekong-cli': [
-        '/cook "Mekong-CLI: Fix Python type hints, add docstrings to public methods" --auto',
-        '/cook "Mekong-CLI: Run pytest, fix failing tests, improve coverage" --auto',
-        '/cook "Mekong-CLI: Clean TODO/FIXME/HACK markers from src/" --auto',
-        '/cook "Mekong-CLI: Optimize Plan-Execute-Verify pipeline, fix edge cases" --auto',
-        '/cook "Mekong-CLI: Update agent modules, add error handling, verify imports" --auto',
+        '/cook "Mekong-CLI: Fix vibe SDK type errors — Pydantic models, type hints on all public methods" --auto',
+        '/cook "Mekong-CLI: CI pipeline repair — pytest failures, fix flaky tests, verify GitHub Actions green" --auto',
+        '/cook "Mekong-CLI: Fix RecipeOrchestrator edge cases — rollback on failed verify, self-healing retry" --auto',
+        '/cook "Mekong-CLI: Agent modules — fix imports in git_agent/file_agent/shell_agent, add error handling" --auto',
+        '/cook "Mekong-CLI: Clean TODO/FIXME/HACK from src/, update docstrings for LLM context" --auto',
     ],
     'algo-trader': [
-        '/cook "Algo-Trader: Fix TypeScript errors, strict null checks, verify build" --auto',
-        '/cook "Algo-Trader: Optimize arbitrage engine performance, reduce latency" --auto',
-        '/cook "Algo-Trader: Security audit — API key rotation, rate limiting, logging" --auto',
-        '/cook "Algo-Trader: Clean console.log, add structured logging with levels" --auto',
-        '/cook "Algo-Trader: Fix failing tests, add edge case coverage" --auto',
+        '/cook "Algo-Trader: Fix exchange WebSocket reconnect — auto-reconnect on disconnect, exponential backoff" --auto',
+        '/cook "Algo-Trader: Order book sync — fix stale data detection, depth snapshot recovery, latency tracking" --auto',
+        '/cook "Algo-Trader: Fix TypeScript build — strict null checks, remove any types, verify tsc clean" --auto',
+        '/cook "Algo-Trader: Arbitrage engine — fix spread calculation edge cases, add slippage protection" --auto',
+        '/cook "Algo-Trader: Security — rotate API keys, add rate limit per exchange, structured audit logging" --auto',
     ],
 };
 const taskPoolCounters = {}; // project → index for round-robin
@@ -89,6 +89,25 @@ function getNextPoolTask(project) {
     const idx = taskPoolCounters[project] % pool.length;
     taskPoolCounters[project]++;
     return pool[idx];
+}
+
+// 🧠 SMART DETECTION: đọc git status/diff để ưu tiên fix file lỗi
+function getSmartTask(pane) {
+    try {
+        const gs = execSync('git status --porcelain 2>/dev/null | head -5', {
+            cwd: pane.dir, encoding: 'utf-8', timeout: 5000
+        }).trim();
+        if (!gs) return null; // Clean repo → use pool
+
+        const dirtyFiles = gs.split('\n').filter(Boolean).map(l => l.trim().slice(3));
+        // Check for build-critical files (.ts, .tsx, .py)
+        const codeFiles = dirtyFiles.filter(f => /\.(ts|tsx|py|js|jsx)$/.test(f));
+        if (codeFiles.length === 0) return null;
+
+        // Try to detect build errors in dirty files
+        const fileList = codeFiles.slice(0, 3).join(', ');
+        return `/cook "${pane.project}: SMART FIX — dirty files detected: ${fileList}. Run build/test, fix errors in these files, commit if clean." --auto`;
+    } catch { return null; }
 }
 
 // ══════════════════════════════════════════════════
@@ -441,25 +460,6 @@ async function checkAllPanes() {
         log(`CTO: ${cto ? '✅' : '❌'}`);
     } catch { log('CTO: ✅ (self)'); }
 
-    // DashScope API health (Key C on intl OpenAI-compatible endpoint)
-    const DASHSCOPE_KEYS = [
-        'sk-80d8537485d04f609c498f1881e67c6f',  // Key C (CTO dedicated)
-        process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',
-        'sk-sp-afce4429a10e41bb901d6012d7f525c8'
-    ];
-    let isHealthy = false;
-    for (const key of DASHSCOPE_KEYS) {
-        try {
-            execSync(`curl -s -o /dev/null -w "%{http_code}" --max-time 8 -X POST https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions -H "Authorization: Bearer ${key}" -H "Content-Type: application/json" -d '{"model":"qwen-plus","max_tokens":1,"messages":[{"role":"user","content":"ping"}]}' 2>/dev/null | grep -q 200`, { timeout: 12000 });
-            log(`DASHSCOPE: ✅ (Ping OK via intl)`);
-            isHealthy = true;
-            break;
-        } catch { }
-    }
-    if (!isHealthy) {
-        log('DASHSCOPE: ⚠️ slow/timeout on all keys (non-blocking)');
-    }
-
     // 🛡️ SYSTEM RAM GUARD: Prevent SSD drowning (Swap files)
     try {
         const memInfo = execSync('top -l 1 | grep PhysMem', { encoding: 'utf-8' });
@@ -497,32 +497,8 @@ async function checkAllPanes() {
         const output = tmuxCapture(pane.idx);
         const regexState = detectPaneState(output);
 
-        // 🛡️ LLM GUARD GATE — validate regex state before action
-        let state = regexState;
-        try {
-            if (!global.llmPerception) {
-                const lp = require('../lib/llm-perception');
-                global.llmPerception = lp;
-            }
-
-            // 🦞 HARD BYPASS: Do not ask the LLM if we confidently know it's crashed.
-            // The LLM often hallucinates the shell prompt as an acceptable IDLE state.
-            if (['CRASHED', 'DEAD', 'MODEL_UNAVAILABLE'].includes(regexState)) {
-                state = regexState;
-                log(`P${pane.idx}: ⚡ Regex confident: ${state} — bypassing LLM guard`);
-            } else if (['IDLE', 'PENDING'].includes(regexState)) {
-                const guard = await global.llmPerception.guardCheck(output, regexState, pane.project, pane.idx);
-                if (!guard.agree && guard.correctedState) {
-                    state = guard.correctedState;
-                }
-                if (!guard.shouldAct) {
-                    log(`P${pane.idx}: 🛡️ GUARD: ${regexState} → SKIP (${guard.reason})`);
-                    continue;
-                }
-            }
-        } catch (e) {
-            // Guard failed → use regex state (safe fallback)
-        }
+        // 🛡️ STATE = regex-only (no LLM guard — CTO không gọi LLM)
+        const state = regexState;
 
         switch (state) {
             case 'DEAD':
@@ -857,14 +833,23 @@ async function checkAllPanes() {
                         log(`P${pane.idx}: ⚠️ Task Queue error: ${e.message}`);
                     }
                 }
-                // 🏭 TASK_POOLS — hardcode round-robin (thay LLM Vision, tiết kiệm tokens)
+                // 🧠 SMART DETECTION → POOL → SCORE FALLBACK (no LLM calls)
                 if (!cookCmd) {
+                    // Step 1: Smart — check git dirty files, prioritize fixing them
+                    const smartTask = getSmartTask(pane);
+                    if (smartTask) {
+                        cookCmd = smartTask;
+                        log(`P${pane.idx}: 🧠 SMART: ${cookCmd.slice(0, 80)}...`);
+                    }
+                }
+                if (!cookCmd) {
+                    // Step 2: Pool — round-robin hardcoded tasks
                     const poolTask = getNextPoolTask(pane.project);
                     if (poolTask) {
                         cookCmd = poolTask;
                         log(`P${pane.idx}: 🏭 POOL TASK: ${cookCmd.slice(0, 80)}...`);
                     } else {
-                        // Fallback — Score-based Binh Pháp cho projects không có pool
+                        // Step 3: Score fallback — Binh Pháp dimension targeting
                         log(`P${pane.idx}: ⏸️ No pool for ${pane.project}. Using score fallback...`);
                         cookCmd = await generateScoreTargetedTask(pane, scoreResult);
                     }
@@ -911,12 +896,7 @@ try {
     process.exit(1);
 }
 
-// ✅ 2. SECRETS (Default injected if missing from bash triggers)
-if (!process.env.DASHSCOPE_API_KEY) {
-    process.env.DASHSCOPE_API_KEY = 'sk-sp-652cd51db1774704a992863926cd1f67'; // Key A, failover to Key B handled inside modules
-    log('⚠️ Injected missing DASHSCOPE_API_KEY env var automatically');
-}
-log('✅ Secrets Check: OK');
+log('✅ CTO: No LLM calls needed — pure regex + pool + smart detection');
 
 // Run immediately
 checkAllPanes();
