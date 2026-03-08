@@ -51,3 +51,11 @@ preview_id = "placeholder_suspension_cache_id"
 binding = "REPORTS_KV"
 id = "placeholder_reports_kv_id"
 preview_id = "placeholder_reports_kv_id"
+
+# KV namespace for alert logs (dashboard analytics/history)
+# Create with: wrangler kv:namespace create "ALERT_LOGS_KV"
+# Then replace id below with the output id
+[[kv_namespaces]]
+binding = "ALERT_LOGS_KV"
+id = "placeholder_alert_logs_kv_id"
+preview_id = "placeholder_alert_logs_kv_id"

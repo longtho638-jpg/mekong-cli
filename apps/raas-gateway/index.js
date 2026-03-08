@@ -10,7 +10,7 @@ import { trackUsage, getUsageMetrics, getPayloadSize, getEndpointType, aggregate
 import { checkSuspensionStatus, syncSuspensionToKV, buildSuspensionStatusHeader } from './src/kv-suspension-checker.js';
 import { validateExtensionFlags, getExtensionStatus, trackExtensionUsage } from './src/extension-validator.js';
 import { checkQuota, incrementUsage } from './src/kv-quota-enforcer.js';
-import { checkAndTriggerAlerts } from './src/quota-alert-webhook.js';
+import { checkAndTriggerAlerts, buildQuotaHeaders } from './src/quota-alert-webhook.js';
 
 const GATEWAY_VERSION = '2.0.0';
 
@@ -248,13 +248,18 @@ export default {
 
     // --- QUOTA CHECK: Block over-quota tenants (after auth & suspension, before rate limit) ---
     const quotaResult = licenseKey ? await checkQuota(env, licenseKey, role) : null;
-    const quotaHeaders = quotaResult && quotaResult.remaining !== Infinity
-      ? { 'X-Quota-Remaining': String(quotaResult.remaining), 'X-Quota-Reset': String(quotaResult.resetIn) }
-      : {};
+    const quotaHeaders = buildQuotaHeaders(quotaResult);
 
     if (quotaResult && !quotaResult.allowed) {
-      // Trigger quota exceeded alert (rate-limited)
-      await checkAndTriggerAlerts(env, quotaResult);
+      // Trigger quota exceeded alert (rate-limited) with billing metadata
+      const billingMetadata = {
+        stripeCustomerId: quotaResult.status?.limit?.stripeCustomerId,
+        polarProductId: quotaResult.status?.limit?.polarProductId,
+        subscriptionId: quotaResult.status?.limit?.subscriptionId,
+        planName: quotaResult.status?.limit?.planName || role,
+        currency: quotaResult.status?.limit?.currency || 'USD'
+      };
+      await checkAndTriggerAlerts(env, quotaResult, billingMetadata);
 
       return jsonResponse(
         { error: 'quota_exceeded', reason: quotaResult.blockReason, resetIn: quotaResult.resetIn },
@@ -531,9 +536,16 @@ export default {
           console.error('Quota increment error:', err);
         });
 
-        // Check and trigger quota alerts (non-blocking)
+        // Check and trigger quota alerts (non-blocking) with billing metadata
         if (quotaResult) {
-          checkAndTriggerAlerts(env, quotaResult).catch(err => {
+          const billingMetadata = {
+            stripeCustomerId: quotaResult.status?.limit?.stripeCustomerId,
+            polarProductId: quotaResult.status?.limit?.polarProductId,
+            subscriptionId: quotaResult.status?.limit?.subscriptionId,
+            planName: quotaResult.status?.limit?.planName || role,
+            currency: quotaResult.status?.limit?.currency || 'USD'
+          };
+          checkAndTriggerAlerts(env, quotaResult, billingMetadata).catch(err => {
             console.error('Quota alert error:', err);
           });
         }
@@ -552,7 +564,8 @@ export default {
         const responseHeaders = new Headers({
           'Content-Type': backendResponse.headers.get('Content-Type') || 'application/json',
           ...corsHeaders,
-          ...rlHeaders
+          ...rlHeaders,
+          ...quotaHeaders
         });
         return new Response(body, { status: backendResponse.status, headers: responseHeaders });
       } catch (err) {
