@@ -87,7 +87,9 @@ class MemoryStore:
                         "timestamp": entry.timestamp,
                     },
                 )
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Vector add failed: {e}")
                 pass  # Vector failure never disrupts YAML persistence
 
     def flush(self) -> None:
@@ -113,7 +115,9 @@ class MemoryStore:
                     matched = [e for e in self._entries if e.goal in matched_goals]
                     if matched:
                         return matched
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Vector search failed: {e}")
                 pass  # Fall through to substring search
 
         # YAML substring fallback

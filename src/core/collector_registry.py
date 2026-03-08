@@ -109,7 +109,9 @@ class CollectorRegistry:
         for name, collector in self._collectors.items():
             try:
                 healthy = collector.check()
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Health check failed for {name}: {e}")
                 healthy = False
             results[name] = healthy
             if name in self._info:

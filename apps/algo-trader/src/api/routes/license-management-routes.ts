@@ -6,6 +6,8 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { licenseQueries } from '../../db/queries/license-queries';
 import { logger } from '../../utils/logger';
 import { LicenseUsageAnalytics } from '../../lib/license-usage-analytics';
+import { featureFlagService, CreateFeatureFlagInput } from '../../services/feature-flag-service';
+import { extensionEligibilityService } from '../../services/extension-eligibility-service';
 
 interface CreateLicenseBody {
   key?: string;
@@ -26,6 +28,15 @@ interface AnalyticsResponse {
   usage: { apiCalls: number; mlFeatures: number; premiumData: number };
   recentActivity: Array<{ event: string; timestamp: string; licenseId: string }>;
 }
+
+// Phase 6: Feature Flags interfaces
+interface FeatureFlagBody extends CreateFeatureFlagInput {}
+interface FeatureFlagParams { name: string }
+interface LicenseFeatureBody { enabled: boolean; overrideValue?: any }
+
+// Phase 6: Extension Eligibility interfaces
+interface ExtensionRequestParams { licenseId: string; extensionName: string }
+interface ExtensionApproveBody { usageLimit?: number; resetAt?: string }
 
 /**
  * Generate secure license key
@@ -225,6 +236,288 @@ export async function licenseManagementRoutes(fastify: FastifyInstance) {
       } catch (error) {
         logger.error('Failed to delete license:', error);
         reply.code(500).send({ error: 'Failed to delete license' });
+      }
+    },
+  });
+
+  // ============================================
+  // Phase 6: Feature Flags Routes (Admin)
+  // ============================================
+
+  // List all feature flags
+  fastify.get('/api/v1/feature-flags', {
+    preHandler: [requireAdmin],
+    handler: async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const flags = await featureFlagService.getAllFlags();
+        reply.send({ flags });
+      } catch (error) {
+        logger.error('Failed to list feature flags:', error);
+        reply.code(500).send({ error: 'Failed to list feature flags' });
+      }
+    },
+  });
+
+  // Get single feature flag
+  fastify.get('/api/v1/feature-flags/:name', {
+    preHandler: [requireAdmin],
+    handler: async (request: FastifyRequest<{ Params: { name: string } }>, reply: FastifyReply) => {
+      try {
+        const flag = await featureFlagService.getFlagByName(request.params.name);
+        if (!flag) {
+          return reply.code(404).send({ error: 'Feature flag not found' });
+        }
+        reply.send({ flag });
+      } catch (error) {
+        logger.error('Failed to get feature flag:', error);
+        reply.code(500).send({ error: 'Failed to get feature flag' });
+      }
+    },
+  });
+
+  // Create feature flag
+  fastify.post('/api/v1/feature-flags', {
+    preHandler: [requireAdmin],
+    handler: async (
+      request: FastifyRequest<{ Body: FeatureFlagBody }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { name, description, enabled, rolloutPercentage, userWhitelist, metadata } = request.body;
+
+        if (!name) {
+          return reply.code(400).send({ error: 'Feature flag name is required' });
+        }
+
+        const flag = await featureFlagService.createFlag({
+          name,
+          description,
+          enabled,
+          rolloutPercentage,
+          userWhitelist,
+          metadata
+        });
+
+        logger.info(`Feature flag created: ${name}`);
+        reply.code(201).send({ flag });
+      } catch (error) {
+        logger.error('Failed to create feature flag:', error);
+        reply.code(500).send({ error: 'Failed to create feature flag' });
+      }
+    },
+  });
+
+  // Update feature flag
+  fastify.patch('/api/v1/feature-flags/:name', {
+    preHandler: [requireAdmin],
+    handler: async (
+      request: FastifyRequest<{ Params: { name: string }; Body: Partial<FeatureFlagBody> }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { name } = request.params;
+        const updates = request.body;
+
+        const flag = await featureFlagService.updateFlag(name, updates);
+        logger.info(`Feature flag updated: ${name}`);
+        reply.send({ flag });
+      } catch (error) {
+        logger.error('Failed to update feature flag:', error);
+        reply.code(500).send({ error: 'Failed to update feature flag' });
+      }
+    },
+  });
+
+  // Delete feature flag
+  fastify.delete('/api/v1/feature-flags/:name', {
+    preHandler: [requireAdmin],
+    handler: async (request: FastifyRequest<{ Params: { name: string } }>, reply: FastifyReply) => {
+      try {
+        await featureFlagService.deleteFlag(request.params.name);
+        logger.info(`Feature flag deleted: ${request.params.name}`);
+        reply.code(204).send();
+      } catch (error) {
+        logger.error('Failed to delete feature flag:', error);
+        reply.code(500).send({ error: 'Failed to delete feature flag' });
+      }
+    },
+  });
+
+  // Get license features
+  fastify.get('/api/v1/licenses/:licenseId/features', {
+    preHandler: [requireAdmin],
+    handler: async (request: FastifyRequest<{ Params: { licenseId: string } }>, reply: FastifyReply) => {
+      try {
+        const features = await featureFlagService.getLicenseFeatures(request.params.licenseId);
+        reply.send({ features });
+      } catch (error) {
+        logger.error('Failed to get license features:', error);
+        reply.code(500).send({ error: 'Failed to get license features' });
+      }
+    },
+  });
+
+  // Set license feature override
+  fastify.patch('/api/v1/licenses/:licenseId/features/:featureName', {
+    preHandler: [requireAdmin],
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string; featureName: string }; Body: LicenseFeatureBody }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { licenseId, featureName } = request.params;
+        const { enabled, overrideValue } = request.body;
+
+        const result = await featureFlagService.setLicenseFeature(licenseId, featureName, enabled, overrideValue);
+        logger.info(`License feature updated: ${licenseId}/${featureName}`);
+        reply.send({ result });
+      } catch (error) {
+        logger.error('Failed to set license feature:', error);
+        reply.code(500).send({ error: 'Failed to set license feature' });
+      }
+    },
+  });
+
+  // Check feature flag (public - for client-side checks)
+  fastify.get('/api/v1/features/:name/check', {
+    handler: async (
+      request: FastifyRequest<{ Params: { name: string }; Querystring: { licenseId?: string } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { name } = request.params;
+        const { licenseId } = request.query;
+
+        const result = await featureFlagService.checkFeature(name, licenseId);
+        reply.send(result);
+      } catch (error) {
+        logger.error('Failed to check feature flag:', error);
+        reply.code(500).send({ error: 'Failed to check feature flag' });
+      }
+    },
+  });
+
+  // ============================================
+  // Phase 6: Extension Eligibility Routes
+  // ============================================
+
+  // Get extension eligibility for a license
+  fastify.get('/api/v1/licenses/:licenseId/extensions/:extensionName', {
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string; extensionName: string } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const status = await extensionEligibilityService.checkEligibility(
+          request.params.licenseId,
+          request.params.extensionName
+        );
+        reply.send({ status });
+      } catch (error) {
+        logger.error('Failed to check extension eligibility:', error);
+        reply.code(500).send({ error: 'Failed to check extension eligibility' });
+      }
+    },
+  });
+
+  // Get all extensions for a license
+  fastify.get('/api/v1/licenses/:licenseId/extensions', {
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const extensions = await extensionEligibilityService.getLicenseExtensions(request.params.licenseId);
+        reply.send({ extensions });
+      } catch (error) {
+        logger.error('Failed to get license extensions:', error);
+        reply.code(500).send({ error: 'Failed to get license extensions' });
+      }
+    },
+  });
+
+  // Request extension access
+  fastify.post('/api/v1/licenses/:licenseId/extensions/:extensionName/request', {
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string; extensionName: string }; Body: { reason?: string } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { licenseId, extensionName } = request.params;
+        const { reason } = request.body;
+
+        const eligibility = await extensionEligibilityService.requestExtension(licenseId, extensionName, reason);
+        logger.info(`Extension requested: ${licenseId}/${extensionName}`);
+        reply.send({ eligibility });
+      } catch (error) {
+        logger.error('Failed to request extension:', error);
+        reply.code(500).send({ error: 'Failed to request extension' });
+      }
+    },
+  });
+
+  // Approve extension (admin only)
+  fastify.post('/api/v1/licenses/:licenseId/extensions/:extensionName/approve', {
+    preHandler: [requireAdmin],
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string; extensionName: string }; Body: ExtensionApproveBody }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { licenseId, extensionName } = request.params;
+        const { usageLimit, resetAt } = request.body;
+
+        const eligibility = await extensionEligibilityService.approveExtension(
+          licenseId,
+          extensionName,
+          usageLimit,
+          resetAt ? new Date(resetAt) : undefined
+        );
+        logger.info(`Extension approved: ${licenseId}/${extensionName}`);
+        reply.send({ eligibility });
+      } catch (error) {
+        logger.error('Failed to approve extension:', error);
+        reply.code(500).send({ error: 'Failed to approve extension' });
+      }
+    },
+  });
+
+  // Deny extension (admin only)
+  fastify.post('/api/v1/licenses/:licenseId/extensions/:extensionName/deny', {
+    preHandler: [requireAdmin],
+    handler: async (
+      request: FastifyRequest<{ Params: { licenseId: string; extensionName: string }; Body: { reason?: string } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { licenseId, extensionName } = request.params;
+        const { reason } = request.body;
+
+        await extensionEligibilityService.denyExtension(licenseId, extensionName, reason);
+        logger.info(`Extension denied: ${licenseId}/${extensionName}`);
+        reply.send({ success: true });
+      } catch (error) {
+        logger.error('Failed to deny extension:', error);
+        reply.code(500).send({ error: 'Failed to deny extension' });
+      }
+    },
+  });
+
+  // Track extension usage (internal API)
+  fastify.post('/api/v1/extensions/:extensionName/track', {
+    handler: async (
+      request: FastifyRequest<{ Params: { extensionName: string }; Body: { licenseId: string; units?: number } }>,
+      reply: FastifyReply
+    ) => {
+      try {
+        const { extensionName } = request.params;
+        const { licenseId, units } = request.body;
+
+        const result = await extensionEligibilityService.trackUsage(licenseId, extensionName, units || 1);
+        reply.send(result);
+      } catch (error) {
+        logger.error('Failed to track extension usage:', error);
+        reply.code(500).send({ error: 'Failed to track extension usage' });
       }
     },
   });

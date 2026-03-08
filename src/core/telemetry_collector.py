@@ -78,7 +78,9 @@ class TelemetryCollector:
         try:
             import sys
             return f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.debug(f"Failed to get Python version: {e}")
             return "unknown"
 
     def _get_os_info(self) -> str:
@@ -86,7 +88,9 @@ class TelemetryCollector:
         try:
             import platform
             return platform.system()
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.debug(f"Failed to get OS info: {e}")
             return "unknown"
 
     def session_start(self) -> None:

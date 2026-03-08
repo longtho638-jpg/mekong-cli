@@ -157,17 +157,19 @@ class SessionCache:
 
 class RaaSAuthClient:
     """
-    RaaS Gateway Authentication Client.
+    RaaS Gateway Authentication Client with Multi-Gateway Failover.
 
     Manages:
     - Credential storage (SecureStorage or ~/.mekong/raas/credentials.json fallback)
-    - Validation against RaaS Gateway
+    - Validation against RaaS Gateway with circuit breaker failover
     - Session management with 5-minute TTL cache
     - Auto-refresh before expiry
     - Device certificate-based auth (X-Cert-ID, X-Cert-Sig headers)
 
     Environment variables:
-    - RAAS_GATEWAY_URL: Gateway endpoint (default: https://raas.agencyos.network)
+    - RAAS_GATEWAY_URL: Primary gateway (default: https://raas.agencyos.network)
+    - RAAS_GATEWAY_URL_SECONDARY: Secondary gateway (default: https://raas-backup.agencyos.network)
+    - RAAS_GATEWAY_URL_TERTIARY: Tertiary gateway (optional)
     - RAAS_LICENSE_KEY: Default license key
     - RAAS_CREDENTIALS_FILE: Custom credentials file path
     - RAAS_USE_SECURE_STORAGE: Use secure storage (default: true)
@@ -176,6 +178,14 @@ class RaaSAuthClient:
 
     DEFAULT_GATEWAY_URL = "https://raas.agencyos.network"
     DEFAULT_GATEWAY_URL_V2 = "https://raas.agencyos.network"
+
+    # Multi-gateway URLs with failover priority
+    GATEWAY_URLS = [
+        os.getenv("RAAS_GATEWAY_URL", "https://raas.agencyos.network"),
+        os.getenv("RAAS_GATEWAY_URL_SECONDARY", "https://raas-backup.agencyos.network"),
+        os.getenv("RAAS_GATEWAY_URL_TERTIARY"),
+    ]
+
     CREDENTIALS_FILE = "~/.mekong/raas/credentials.json"
     SESSION_CACHE_FILE = "~/.mekong/session.json"
     VERIFY_ENDPOINT = "/v1/verify"  # Lightweight gateway check
@@ -183,6 +193,10 @@ class RaaSAuthClient:
     VALIDATION_ENDPOINT_V2 = "/v2/license/validate"
     SESSION_TTL_SECONDS = 300  # 5 minutes
     REFRESH_BUFFER_SECONDS = 60  # 1 minute before expiry
+
+    # Circuit breaker configuration
+    CIRCUIT_FAILURE_THRESHOLD = 3
+    CIRCUIT_RECOVERY_TIMEOUT = 60
 
     def __init__(
         self,
@@ -192,7 +206,7 @@ class RaaSAuthClient:
         use_certificate_auth: bool = True,
     ):
         """
-        Initialize RaaS Auth Client.
+        Initialize RaaS Auth Client with Circuit Breaker.
 
         Args:
             gateway_url: RaaS Gateway URL (default: from env or DEFAULT_GATEWAY_URL)
@@ -213,6 +227,18 @@ class RaaSAuthClient:
         self._certificate_store: Optional[CertificateStore] = None
         self._session_cache: Optional[TenantContext] = None
         self._last_validated: Optional[datetime] = None
+
+        # Circuit breaker state for gateway failover
+        self._gateway_failure_counts: dict[str, int] = {}
+        self._gateway_circuits: dict[str, bool] = {}  # True = open
+        self._gateway_last_failure: dict[str, float] = {}
+
+        # Initialize circuit states
+        for url in self.GATEWAY_URLS:
+            if url:
+                self._gateway_failure_counts[url] = 0
+                self._gateway_circuits[url] = False
+                self._gateway_last_failure[url] = 0.0
 
         if self.use_secure_storage:
             try:

@@ -123,7 +123,9 @@ class HealthWatchdog:
 
             try:
                 value = check.check_fn(ctx)
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Check {name} failed: {e}")
                 value = 100.0  # Treat errors as critical
 
             new_severity = check.evaluate(value, previous)

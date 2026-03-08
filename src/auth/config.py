@@ -5,6 +5,7 @@ Handles dev/prod mode detection and configuration loading.
 """
 
 import os
+import secrets
 from enum import Enum
 from typing import Dict, Any
 from dataclasses import dataclass
@@ -35,13 +36,12 @@ class AuthConfig:
     ENVIRONMENT = AuthEnvironment(os.getenv("AUTH_ENVIRONMENT", "dev"))
     AUTH_DISABLED = ENVIRONMENT == AuthEnvironment.DEV
 
-    # JWT settings
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET")
+    # JWT settings - Use secrets.token_urlsafe for secure random generation
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     if not JWT_SECRET_KEY:
-        import warnings
         # Generate a random secret for dev mode only
         if ENVIRONMENT == AuthEnvironment.DEV:
-            JWT_SECRET_KEY = "dev-secret-change-in-prod"
+            JWT_SECRET_KEY = secrets.token_urlsafe(32)
         else:
             # In staging/production, require JWT_SECRET_KEY
             raise ValueError(
@@ -151,9 +151,13 @@ class AuthConfig:
         warnings = []
 
         if cls.is_production_mode():
-            # Check JWT secret
-            if cls.JWT_SECRET_KEY == "dev-secret-change-in-prod":
-                warnings.append("JWT_SECRET_KEY is set to default dev value")
+            # Check JWT secret - in production, it should NOT be a dev-generated value
+            # We check if it looks like a secure random string (min 32 chars)
+            if not cls.JWT_SECRET_KEY or len(cls.JWT_SECRET_KEY) < 32:
+                warnings.append(
+                    "JWT_SECRET_KEY is not set or too short (< 32 characters). "
+                    "Use a secure random string for production."
+                )
 
             # Check OAuth secrets
             if not cls.GOOGLE_CLIENT_ID or not cls.GOOGLE_CLIENT_SECRET:
@@ -199,7 +203,7 @@ class AuthConfig:
 # Environment variable names for documentation
 ENV_VARS = {
     "AUTH_ENVIRONMENT": "dev|staging|production",
-    "JWT_SECRET": "JWT signing secret (required for production)",
+    "JWT_SECRET_KEY": "JWT signing secret (required for production, min 32 characters)",
     "JWT_ACCESS_EXPIRY_MINUTES": "Access token expiry (default: 30)",
     "JWT_REFRESH_EXPIRY_DAYS": "Refresh token expiry (default: 7)",
     "SESSION_MAX_AGE_SECONDS": "Session cookie max age (default: 604800)",
@@ -230,7 +234,9 @@ def get_env_template() -> str:
         "AUTH_ENVIRONMENT=dev",
         "",
         "# JWT Settings",
-        "JWT_SECRET=change-this-to-random-secret-in-production",
+        "# IMPORTANT: Set a secure random secret for production (min 32 characters)",
+        "# Generate with: python3 -c 'import secrets; print(secrets.token_urlsafe(32))'",
+        "JWT_SECRET_KEY=",
         "JWT_ACCESS_EXPIRY_MINUTES=30",
         "JWT_REFRESH_EXPIRY_DAYS=7",
         "SESSION_MAX_AGE_SECONDS=604800",

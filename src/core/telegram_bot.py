@@ -79,7 +79,9 @@ def _load_inbox() -> list:
     try:
         result = json.loads(INBOX_PATH.read_text())
         return list(result)
-    except Exception:
+    except (json.JSONDecodeError, OSError) as e:
+        import logging
+        logging.error(f"Failed to load inbox: {e}")
         return []
 
 
@@ -196,8 +198,9 @@ class MekongBot:
                 await self._application.updater.stop()
                 await self._application.stop()
                 await self._application.shutdown()
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.error(f"Failed to stop application: {e}")
 
     def is_running(self) -> bool:
         """Whether the Telegram bot polling loop is currently active."""
@@ -406,7 +409,9 @@ class MekongBot:
                 "\n".join(lines),
                 parse_mode="Markdown",
             )
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.error(f"Sessions handler error: {e}")
             await update.message.reply_text("No CC CLI sessions active.")
 
     # ============================================================
@@ -559,8 +564,9 @@ class MekongBot:
             active = len(spawner.active_sessions)
             total = len(spawner.all_sessions)
             cc_info = f"\n🤖 CC CLI: {active} active / {total} total"
-        except Exception:
-            pass
+        except Exception as e:
+            import logging
+            logging.debug(f"CC spawner not available: {e}")
 
         text = (
             f"🟢 *Tôm Hùm Status*\n"

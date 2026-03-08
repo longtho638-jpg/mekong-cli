@@ -5,8 +5,13 @@ const logFormat = winston.format.printf((info: winston.Logform.TransformableInfo
   return `${timestamp} [${level.toUpperCase()}]: ${message}`;
 });
 
+// Determine log level based on environment
+const logLevel = process.env.NODE_ENV === 'test' || process.env.LOG_LEVEL === 'quiet'
+  ? 'error'
+  : (process.env.LOG_LEVEL || 'info');
+
 export const logger = winston.createLogger({
-  level: 'info',
+  level: logLevel,
   format: winston.format.combine(
     winston.format.timestamp(),
     logFormat
@@ -18,15 +23,19 @@ export const logger = winston.createLogger({
         logFormat
       )
     }),
-    new winston.transports.File({
-      filename: 'error.log',
-      level: 'error',
-      dirname: 'logs'
-    }),
-    new winston.transports.File({
-      filename: 'combined.log',
-      dirname: 'logs'
-    })
+    ...(process.env.NODE_ENV !== 'test'
+      ? [
+          new winston.transports.File({
+            filename: 'error.log',
+            level: 'error',
+            dirname: 'logs'
+          }),
+          new winston.transports.File({
+            filename: 'combined.log',
+            dirname: 'logs'
+          })
+        ]
+      : [])
   ]
 }) as winston.Logger & { critical: (message: string) => void };
 

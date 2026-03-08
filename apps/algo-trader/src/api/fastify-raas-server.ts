@@ -34,6 +34,7 @@ import { subscriptionRoutes } from './routes/subscription';
 import { licenseManagementRoutes } from './routes/license-management-routes';
 import { registerOverageRoutes } from './routes/overage-routes';
 import { cacheStatsRoutes } from './routes/cache-stats-routes';
+import { registerUsageRoutes } from './routes/internal/usage-routes';
 import { IdempotencyStore, idempotencyMiddleware, createIdempotencyResponseHandler } from '../middleware/idempotency-middleware';
 import { hardLimitsPlugin } from './middleware/hard-limits-middleware';
 

@@ -162,7 +162,9 @@ class TelemetryReporter:
             if response.status_code == 200:
                 self._mark_sent(records)
 
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.debug(f"Failed to flush telemetry: {e}")
             pass  # Best effort - records saved locally
 
     def _get_auth_token(self) -> Optional[str]:
@@ -172,8 +174,9 @@ class TelemetryReporter:
             try:
                 with open(creds_path) as f:
                     return json.load(f).get("token")
-            except Exception:
-                pass
+            except (json.JSONDecodeError, OSError) as e:
+                import logging
+                logging.debug(f"Failed to load credentials: {e}")
         return os.getenv("RAAS_LICENSE_KEY")
 
     def _get_unsent_records(self) -> list[dict[str, Any]]:

@@ -351,11 +351,24 @@ function startAutoCTO() {
 
           function getTargetPane(filename) {
             const lower = filename.toLowerCase();
-            if (/well|wellnexus|84tea/.test(lower)) return 1;
-            if (/algo.?trader|algotrader|trading/.test(lower)) return 2;
-            // P3-P9: round-robin overflow for other projects
+            // P0: mekong-cli core (fallback to early projects or openclaw-worker)
+            if (/openclaw|brain|cto|factory/.test(lower)) return 0;
+            // P1: apps/well
+            if (/well|wellnexus/.test(lower)) return 1;
+            // P2: mekong-cli core packages
+            if (/vibe|core|package|mekong-cli/.test(lower)) return 2;
+            // P3: sophia-ai-factory
+            if (/sophia/.test(lower)) return 3;
+            // P4: OPUS STRATEGIC LAYER - Must only receive high complexity / strategic tasks
+            if (/strategic|binh_phap|roiaas|architecture|10x|complex|opus/i.test(lower)) return 4;
+            // P5: algo-trader
+            if (/algo.?trader|algotrader|trading/.test(lower)) return 5;
+
+            // Fallback assignment based on file hash if no keywords match 
+            // Distribute specifically between 0, 1, 2, 3, 5 (NEVER default to 4/Opus)
             const hash = filename.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
-            return 3 + (hash % 7);
+            const safeIds = [0, 1, 2, 3, 5];
+            return safeIds[hash % safeIds.length];
           }
 
           let dispatched = 0;
@@ -381,16 +394,12 @@ function startAutoCTO() {
                 const command = firstLine.startsWith('/') ? firstLine : `/cook ${firstLine}`;
 
                 const MODEL_POOL = {
-                  0: 'qwen3.5-plus',              // P0: flagship (1M ctx, best overall)
-                  1: 'qwen3-coder-plus',          // P1: code specialist (1M ctx)
-                  2: 'kimi-k2.5',                 // P2: reviewer + vision (262K ctx)
-                  3: 'qwen3-max-2026-01-23',      // P3: deep reasoning (262K ctx)
-                  4: 'qwen3.5-flash',             // P4: fast tasks (1M ctx)
-                  5: 'qwen3-coder-480b-a35b-instruct', // P5: largest coder (262K ctx)
-                  6: 'MiniMax-M2.5',              // P6: large output (204K ctx)
-                  7: 'MiniMax-M2.5-highspeed',    // P7: fast large output (204K ctx)
-                  8: 'glm-5',                     // P8: fresh perspective (202K ctx)
-                  9: 'glm-4.7'                    // P9: fast review (202K ctx)
+                  0: 'qwen3.5-plus',              // P0: openclaw
+                  1: 'qwen3.5-plus',              // P1: well
+                  2: 'qwen3.5-plus',              // P2: core
+                  3: 'qwen3.5-plus',              // P3: sophia
+                  4: 'claude-opus-4-6',           // P4: strategic
+                  5: 'qwen3.5-plus'               // P5: algo-trader
                 };
                 const paneModel = MODEL_POOL[targetIdx] || MODEL_POOL[0];
 
