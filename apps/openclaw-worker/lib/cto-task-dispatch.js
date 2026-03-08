@@ -55,50 +55,88 @@ function getPaneRole(paneIdx) {
 }
 
 // ──────────────────────────────────────────────────────────────
-// TASK_POOLS — chuyên môn hoá theo role, không thập cẩm
+// PROJECT_BACKLOGS — full pipeline per project, ordered by priority
+// Worker nhận nguyên backlog, tự chạy hết. CTO không inject từng task.
 // ──────────────────────────────────────────────────────────────
-const TASK_POOLS = {
-    // P1 Backend: algo-trader (WebSocket, exchange, API)
+const PROJECT_BACKLOGS = {
     'algo-trader': [
-        '/cook "Algo-Trader: WebSocket reconnect — auto-reconnect on disconnect, exponential backoff, state recovery" --auto',
-        '/cook "Algo-Trader: Order book sync — stale data detection, depth snapshot recovery, latency tracking" --auto',
-        '/cook "Algo-Trader: API key rotate — secure key storage, rotation script, per-exchange rate limit tracking" --auto',
-        '/cook "Algo-Trader: Exchange engine perf — spread calculation edge cases, slippage protection, benchmark latency" --auto',
-        '/cook "Algo-Trader: Database schema — migrate order history to TimescaleDB, add indexes for time-range queries" --auto',
+        '1. WebSocket reconnect — auto-reconnect on disconnect, exponential backoff, state recovery',
+        '2. Order book sync — stale data detection, depth snapshot recovery, latency tracking',
+        '3. API key rotate — secure key storage, rotation script, per-exchange rate limit tracking',
+        '4. Exchange engine perf — spread calculation edge cases, slippage protection, benchmark latency',
+        '5. Database schema — migrate order history to TimescaleDB, add indexes for time-range queries',
+        '6. Risk engine — position sizing, max drawdown limits, portfolio-level stop-loss',
+        '7. Backtesting — historical data replay, strategy comparison, performance metrics',
+        '8. Monitoring — Grafana dashboards for P&L, latency, order fill rates',
+        '9. Unit tests — full test coverage for exchange adapters, order matching, fee calculation',
+        '10. CI pipeline — GitHub Actions green, lint, test, build verification',
     ],
-    // P2 Frontend: well (UI, i18n, auth flow, error boundaries)
     'well': [
-        '/cook "Well: i18n audit — grep t() calls vs vi.ts/en.ts, fix missing keys, verify no raw strings in JSX" --auto',
-        '/cook "Well: Error boundary — add React error boundaries for all route segments, fallback UI, error logging" --auto',
-        '/cook "Well: Auth flow UI — login/register/forgot-password forms, loading states, validation messages" --auto',
-        '/cook "Well: Responsive audit — test all pages on 375px/768px/1024px breakpoints, fix layout issues" --auto',
-        '/cook "Well: Component polish — skeleton loaders, empty states with illustrations, toast notifications" --auto',
+        '1. i18n audit — grep t() calls vs vi.ts/en.ts, fix missing keys, verify no raw strings in JSX',
+        '2. Error boundary — add React error boundaries for all route segments, fallback UI, error logging',
+        '3. Auth flow UI — login/register/forgot-password forms, loading states, validation messages',
+        '4. Responsive audit — test all pages on 375px/768px/1024px breakpoints, fix layout issues',
+        '5. Component polish — skeleton loaders, empty states with illustrations, toast notifications',
+        '6. PayOS webhook — verify signature validation, idempotency key, retry logic, error codes',
+        '7. Supabase RLS — audit all tables have row-level security, test with anon/auth roles',
+        '8. SEO meta tags — dynamic OG images, structured data, sitemap generation',
+        '9. Performance — lazy load routes, image optimization, bundle splitting',
+        '10. Accessibility — WCAG 2.1 AA audit, keyboard navigation, screen reader support',
     ],
-    // P3 QA: sophia (test, deploy verify, security)
     'sophia-ai-factory': [
-        '/cook "Sophia: E2E test suite — Playwright tests for video upload, campaign creation, checkout flow" --auto',
-        '/cook "Sophia: Deploy verify — TypeScript strict mode, build errors, verify Vercel deploy passes clean" --auto',
-        '/cook "Sophia: Security audit — check CSP headers, XSS prevention, API key exposure, input validation" --auto',
-        '/cook "Sophia: Performance test — Lighthouse audit, bundle size analysis, image optimization check" --auto',
+        '1. E2E test suite — Playwright tests for video upload, campaign creation, checkout flow',
+        '2. Deploy verify — TypeScript strict mode, build errors, verify Vercel deploy passes clean',
+        '3. Security audit — check CSP headers, XSS prevention, API key exposure, input validation',
+        '4. Performance test — Lighthouse audit, bundle size analysis, image optimization check',
+        '5. Video pipeline — ffmpeg transcoding errors, timeout handling, retry logic, progress tracking',
+        '6. Campaign template — fix broken variables, preview mode, mobile responsive, edge cases',
+        '7. AI service test — verify all AI endpoints respond, error handling, rate limit degradation',
+        '8. Checkout flow — Polar.sh integration, tier pricing, redirect verification, error states',
+        '9. Analytics — user tracking, conversion funnels, campaign performance metrics',
+        '10. Documentation — API docs, deployment guide, user manual updates',
     ],
-    // P1 fallback: mekong-cli core (backend/infra)
     'mekong-cli': [
-        '/cook "Mekong-CLI: Pytest fix — run full test suite, fix broken tests, ensure 100% pass rate" --auto',
-        '/cook "Mekong-CLI: Agent module audit — fix imports in git_agent/file_agent/shell_agent, error handling" --auto',
-        '/cook "Mekong-CLI: CI pipeline — fix pytest failures, flaky test detection, verify GitHub Actions green" --auto',
-        '/cook "Mekong-CLI: Vibe SDK types — Pydantic models, type hints on all public methods, mypy clean" --auto',
+        '1. Pytest fix — run full test suite, fix broken tests, ensure 100% pass rate',
+        '2. Agent module audit — fix imports in git_agent/file_agent/shell_agent, error handling',
+        '3. CI pipeline — fix pytest failures, flaky test detection, verify GitHub Actions green',
+        '4. Vibe SDK types — Pydantic models, type hints on all public methods, mypy clean',
+        '5. Recipe engine — plan/execute/verify pipeline edge cases, rollback on failure',
+        '6. NLU classifier — intent detection accuracy, add new intents for agent routing',
+        '7. Gateway API — FastAPI endpoints, WebSocket streaming, health checks',
+        '8. Memory store — persistent context, cross-session recall, cleanup policy',
+        '9. Telemetry — execution tracing, performance metrics, error tracking',
+        '10. Security — input validation, secret detection, dependency audit',
     ],
 };
 
-const taskPoolCounters = {};
+// Track which backlog cycle each project is on (for respawn with fresh backlog)
+const backlogCycle = {};
 
+/**
+ * Build a single MISSION BRIEF command for a project's full backlog.
+ * Worker receives entire list and self-executes sequentially.
+ * @param {string} project
+ * @returns {string|null} - A /cook command with full backlog embedded
+ */
+function getProjectMissionBrief(project) {
+    const backlog = PROJECT_BACKLOGS[project];
+    if (!backlog || backlog.length === 0) return null;
+
+    if (!backlogCycle[project]) backlogCycle[project] = 0;
+    backlogCycle[project]++;
+
+    const taskList = backlog.join('\\n');
+
+    return `/cook "MISSION BRIEF #${backlogCycle[project]} for ${project}. ` +
+        `You are autonomous. Execute ALL tasks below in order. ` +
+        `After each task: run build/test, commit if clean, then proceed to next. ` +
+        `If stuck on one task >5min, skip it and move to next. ` +
+        `BACKLOG:\\n${taskList}" --auto`;
+}
+
+/** @deprecated Use getProjectMissionBrief instead */
 function getNextPoolTask(project) {
-    const pool = TASK_POOLS[project];
-    if (!pool || pool.length === 0) return null;
-    if (!taskPoolCounters[project]) taskPoolCounters[project] = 0;
-    const idx = taskPoolCounters[project] % pool.length;
-    taskPoolCounters[project]++;
-    return pool[idx];
+    return getProjectMissionBrief(project);
 }
 
 /**
@@ -250,8 +288,9 @@ function checkExternalQueue(pane, log) {
 module.exports = {
     PANE_ROLES,
     getPaneRole,
-    TASK_POOLS,
-    getNextPoolTask,
+    PROJECT_BACKLOGS,
+    getProjectMissionBrief,
+    getNextPoolTask, // deprecated alias
     wrapWithRole,
     smartTaskFromReality,
     checkExternalQueue,
