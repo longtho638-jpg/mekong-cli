@@ -426,8 +426,9 @@ export class BillingNotificationService {
       return { channel: 'sms', success: false, error: 'Twilio not configured' };
     }
 
-    // TODO: Get tenant phone number from database
-    const to = '+1234567890'; // Placeholder
+    // TODO: Add phone field to Tenant schema and retrieve from database
+    // For now, SMS notifications use placeholder until schema is updated
+    const to = '+1234567890'; // Placeholder - add phone field to Tenant model
 
     const url = `https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`;
     const auth = Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64');

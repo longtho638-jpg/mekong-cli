@@ -128,8 +128,14 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   // Overage billing routes
   void server.register(registerOverageRoutes);
 
+  // Internal usage routes for billing sync
+  void server.register(registerUsageRoutes);
+
   // Cache stats routes (for dashboard monitoring)
   void server.register(cacheStatsRoutes);
+
+  // Internal usage routes (for billing sync and admin dashboards)
+  void server.register(registerUsageRoutes);
 
   // Hard limits middleware (quota enforcement)
   void server.register(hardLimitsPlugin);

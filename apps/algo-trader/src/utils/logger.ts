@@ -1,10 +1,5 @@
 import * as winston from 'winston';
 
-const logFormat = winston.format.printf((info: winston.Logform.TransformableInfo) => {
-  const { level, message, timestamp } = info;
-  return `${timestamp} [${level.toUpperCase()}]: ${message}`;
-});
-
 // Determine log level based on environment
 const logLevel = process.env.NODE_ENV === 'test' || process.env.LOG_LEVEL === 'quiet'
   ? 'error'
@@ -14,13 +9,15 @@ export const logger = winston.createLogger({
   level: logLevel,
   format: winston.format.combine(
     winston.format.timestamp(),
-    logFormat
+    winston.format.errors({ stack: true }),
+    winston.format.splat(),
+    winston.format.json()
   ),
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        logFormat
+        winston.format.simple()
       )
     }),
     ...(process.env.NODE_ENV !== 'test'

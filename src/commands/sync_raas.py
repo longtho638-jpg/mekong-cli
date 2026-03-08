@@ -26,6 +26,19 @@ from pathlib import Path
 console = Console()
 app = typer.Typer()
 
+
+def get_cli_version() -> str:
+    """Get CLI version from package.json dynamically."""
+    try:
+        package_json = Path(__file__).parent.parent.parent / "package.json"
+        if package_json.exists():
+            with open(package_json, "r") as f:
+                data = json.load(f)
+                return data.get("version", "unknown")
+    except Exception:
+        pass
+    return "unknown"
+
 # RaaS Gateway Configuration
 RAAS_GATEWAY_BASE_URL = "https://raas.agencyos.network"
 AUTH_ENDPOINT = f"{RAAS_GATEWAY_BASE_URL}/auth/validate"
@@ -122,7 +135,7 @@ def register_cli_instance(license_key: str) -> bool:
         }
         data = {
             "client_type": "cli",
-            "client_version": "2.1.33",  # TODO: Get from package.json
+            "client_version": get_cli_version(),
             "platform": os.name,
         }
 
@@ -173,7 +186,7 @@ def track_usage(license_key: str, command_name: str, project_id: Optional[str] =
             "command": command_name,
             "timestamp": int(time.time()),
             "project_id": project_id,
-            "client_version": "2.1.33",
+            "client_version": get_cli_version(),
         }
 
         response = requests.post(USAGE_ENDPOINT, headers=headers, json=data, timeout=10)

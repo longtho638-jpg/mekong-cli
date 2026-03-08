@@ -9,6 +9,8 @@ workers_dev = true
 OPENCLAW_URL = ""
 DEFAULT_MODEL = "vertexai/gemini-1.5-pro-preview-0514"
 BACKEND_URL = ""
+AGENCYOS_WEBHOOK_URL = "https://api.agencyos.network/webhooks/dashboard-update"
+AGENCYOS_WEBHOOK_AUTH_TOKEN = "your_webhook_auth_token_here"
 
 # KV namespace for rate limiting counters (TTL-based sliding window)
 # Create with: wrangler kv:namespace create "RATE_LIMIT_KV"
@@ -34,8 +36,10 @@ binding = "SUSPENSION_CACHE"
 id = "placeholder_suspension_cache_id"
 preview_id = "placeholder_suspension_cache_id"
 
-# Secrets (set via: wrangler secret put <NAME>)
-# SERVICE_TOKEN       — internal service auth token
-# TELEGRAM_SECRET_TOKEN — Telegram webhook secret
-# MK_API_KEYS         — comma-separated "mk_<key>:<tenantId>:<tier>" entries
-#                       e.g. "mk_abc123:tenant1:pro,mk_xyz789:tenant2:free"
+# KV namespace for report ingestion and analytics
+# Create with: wrangler kv:namespace create "REPORTS_KV"
+# Then replace id below with the output id
+[[kv_namespaces]]
+binding = "REPORTS_KV"
+id = "placeholder_reports_kv_id"
+preview_id = "placeholder_reports_kv_id"
