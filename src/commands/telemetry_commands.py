@@ -15,9 +15,46 @@ from rich.table import Table
 from rich.panel import Panel
 
 from src.core.telemetry_consent import get_consent_manager
+from src.core.health_reporter import get_health_reporter, report_health
 
 console = Console()
 app = typer.Typer(name="telemetry", help="📊 Telemetry consent management")
+
+
+@app.command("health")
+def health_report():
+    """📈 Show health metrics and report to gateway."""
+    reporter = get_health_reporter()
+    status = reporter.get_status()
+
+    table = Table(title="📈 Health Metrics")
+    table.add_column("Metric", style="dim")
+    table.add_column("Value")
+
+    status_icon = "✅" if status["status"] == "active" else "❌"
+    table.add_row("Status", f"{status_icon} {status['status'].title()}")
+    table.add_row("CLI Version", status.get("cli_version", "unknown"))
+    table.add_row("OS", status.get("os", "unknown"))
+    table.add_row("Python", status.get("python_version", "unknown"))
+    table.add_row("Session ID", status.get("session_id", "N/A"))
+    table.add_row("Commands Executed", str(status.get("commands_executed", 0)))
+    table.add_row("Commands Succeeded", str(status.get("commands_succeeded", 0)))
+    table.add_row("Commands Failed", str(status.get("commands_failed", 0)))
+
+    success_rate = status.get("success_rate", 0) * 100
+    table.add_row("Success Rate", f"{success_rate:.1f}%")
+    table.add_row("Rate Limit Hits", str(status.get("rate_limit_hits", 0)))
+    table.add_row("Last Report", status.get("last_report", "never"))
+
+    console.print(table)
+
+    # Try to report to gateway
+    if status["status"] == "active":
+        console.print("\n[dim]Reporting to gateway...[/dim]")
+        if report_health():
+            console.print("[green]✓ Health metrics reported successfully[/green]")
+        else:
+            console.print("[yellow]⚠ Could not reach gateway (metrics saved locally)[/yellow]")
 
 
 @app.command("status")

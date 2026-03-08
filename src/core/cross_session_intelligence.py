@@ -18,10 +18,10 @@ class UserProfile:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
         self.created_at = datetime.now()
-        self.preferences: dict[str, any] = {}
-        self.interaction_history: list[dict[str, any]] = []
-        self.knowledge_base: dict[str, any] = {}
-        self.session_history: list[dict[str, any]] = []
+        self.preferences: dict[str, Any] = {}
+        self.interaction_history: list[dict[str, Any]] = []
+        self.knowledge_base: dict[str, Any] = {}
+        self.session_history: list[dict[str, Any]] = []
 
 
 class CrossSessionStateManager:
@@ -212,7 +212,7 @@ class CrossSessionStateManager:
 
         return interaction_id
 
-    def add_to_knowledge_base(self, category: str, key: str, value: any) -> None:
+    def add_to_knowledge_base(self, category: str, key: str, value: Any) -> None:
         """Add information to the user's persistent knowledge base.
 
         Args:
