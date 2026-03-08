@@ -56,11 +56,12 @@ function getBaseUrl(cliOptions: CliOptions): string {
 
 /**
  * Build request headers with auth
+ * Gateway expects: Authorization: Bearer {apiKey}
  */
 function buildHeaders(apiKey: string, contentType = 'application/json'): Record<string, string> {
   return {
     'Content-Type': contentType,
-    'X-API-Key': apiKey,
+    'Authorization': `Bearer ${apiKey}`,
   };
 }
 
@@ -78,9 +79,6 @@ function logVerbose(message: string, verbose: boolean): void {
  */
 function redactHeaders(headers: Record<string, string>): Record<string, string> {
   const redacted = { ...headers };
-  if (redacted['X-API-Key']) {
-    redacted['X-API-Key'] = 'Bearer [REDACTED]';
-  }
   if (redacted['Authorization']) {
     redacted['Authorization'] = 'Bearer [REDACTED]';
   }
