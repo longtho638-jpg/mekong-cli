@@ -88,24 +88,84 @@ function getNextPoolTask(project) {
     return pool[idx];
 }
 
-// 🧠 SMART DETECTION: đọc git status/diff để ưu tiên fix file lỗi
-function getSmartTask(pane) {
+// ══════════════════════════════════════════════════
+// 🧠 SMART TASK FROM REALITY — scan project state, return specific task
+// Priority: test fail > build error > dirty files > TODO cleanup > null (fallback to pool)
+// ══════════════════════════════════════════════════
+function smartTaskFromReality(pane) {
+    const { dir, project } = pane;
+
+    // 1) npm test — highest priority: failing tests = broken product
+    try {
+        const testOut = execSync('npm test 2>&1 | tail -10', {
+            cwd: dir, encoding: 'utf-8', timeout: 30000
+        }).trim();
+        // Detect test failures (jest/vitest patterns)
+        if (/FAIL|failing|failed|✕|×|Error:|AssertionError/i.test(testOut)) {
+            const failSnippet = testOut.split('\n').filter(l => /FAIL|✕|Error/i.test(l)).slice(0, 3).join('; ');
+            log(`P${pane.idx}: 🧠 REALITY: npm test FAILED — ${failSnippet.slice(0, 80)}`);
+            return `/debug "${project}: Test failures detected. Analyze: ${failSnippet.slice(0, 200).replace(/"/g, '\\"')}. Fix source code, run npm test to verify." --auto`;
+        }
+    } catch (e) {
+        // npm test exit code != 0 means failure
+        const stderr = (e.stderr || e.stdout || '').trim();
+        if (stderr && !/missing script|ERR!.*test/.test(stderr)) {
+            const snippet = stderr.split('\n').slice(-5).join('; ').slice(0, 200).replace(/"/g, '\\"');
+            log(`P${pane.idx}: 🧠 REALITY: npm test CRASHED — ${snippet.slice(0, 80)}`);
+            return `/debug "${project}: Tests crashed. Error: ${snippet}. Fix and verify with npm test." --auto`;
+        }
+    }
+
+    // 2) git diff --stat — detect uncommitted changes that need attention
+    try {
+        const diffStat = execSync('git diff --stat 2>/dev/null', {
+            cwd: dir, encoding: 'utf-8', timeout: 5000
+        }).trim();
+        if (diffStat) {
+            const changedFiles = diffStat.split('\n').filter(l => l.includes('|')).map(l => l.split('|')[0].trim()).slice(0, 5);
+            const codeFiles = changedFiles.filter(f => /\.(ts|tsx|js|jsx|py)$/.test(f));
+            if (codeFiles.length > 0) {
+                const fileList = codeFiles.join(', ');
+                log(`P${pane.idx}: 🧠 REALITY: git diff has ${codeFiles.length} changed files — ${fileList.slice(0, 80)}`);
+                return `/cook "${project}: Uncommitted changes in ${fileList}. Review changes, run build/test, fix any errors, commit if clean." --auto`;
+            }
+        }
+    } catch { }
+
+    // 3) git status --porcelain — untracked/staged files
     try {
         const gs = execSync('git status --porcelain 2>/dev/null | head -5', {
-            cwd: pane.dir, encoding: 'utf-8', timeout: 5000
+            cwd: dir, encoding: 'utf-8', timeout: 5000
         }).trim();
-        if (!gs) return null; // Clean repo → use pool
+        if (gs) {
+            const dirtyFiles = gs.split('\n').filter(Boolean).map(l => l.trim().slice(3));
+            const codeFiles = dirtyFiles.filter(f => /\.(ts|tsx|py|js|jsx)$/.test(f));
+            if (codeFiles.length > 0) {
+                const fileList = codeFiles.slice(0, 3).join(', ');
+                log(`P${pane.idx}: 🧠 REALITY: dirty files — ${fileList}`);
+                return `/cook "${project}: Dirty files: ${fileList}. Run build/test, fix errors, commit if clean." --auto`;
+            }
+        }
+    } catch { }
 
-        const dirtyFiles = gs.split('\n').filter(Boolean).map(l => l.trim().slice(3));
-        // Check for build-critical files (.ts, .tsx, .py)
-        const codeFiles = dirtyFiles.filter(f => /\.(ts|tsx|py|js|jsx)$/.test(f));
-        if (codeFiles.length === 0) return null;
+    // 4) TODO/FIXME count — if excessive, clean up
+    try {
+        const todoOut = execSync('grep -rc "TODO\\|FIXME\\|HACK" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" . --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.next --exclude-dir=.git --exclude-dir=.claude 2>/dev/null | awk -F: \'{s+=$2} END {print s}\'', {
+            cwd: dir, encoding: 'utf-8', timeout: 5000
+        }).trim();
+        const todoCount = parseInt(todoOut) || 0;
+        if (todoCount > 10) {
+            log(`P${pane.idx}: 🧠 REALITY: ${todoCount} TODOs found — cleaning`);
+            return `/cook "${project}: ${todoCount} TODO/FIXME found. Clean up top 10 most critical TODOs, resolve or remove stale ones. Run build after." --auto`;
+        }
+    } catch { }
 
-        // Try to detect build errors in dirty files
-        const fileList = codeFiles.slice(0, 3).join(', ');
-        return `/cook "${pane.project}: SMART FIX — dirty files detected: ${fileList}. Run build/test, fix errors in these files, commit if clean." --auto`;
-    } catch { return null; }
+    // Nothing actionable found → return null, fallback to TASK_POOLS
+    return null;
 }
+
+// Legacy wrapper (kept for backward compat if referenced elsewhere)
+function getSmartTask(pane) { return smartTaskFromReality(pane); }
 
 // ══════════════════════════════════════════════════
 // LOGGING
@@ -241,6 +301,33 @@ function recordScore(project, scoreResult) {
 // ══════════════════════════════════════════════════
 // PANE STATE DETECTOR
 // ══════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════
+// 🏭 PROGRESS TRACKING — track injected task, check completion before new inject
+// ══════════════════════════════════════════════════
+const paneProgress = {}; // paneIdx → { task, injectedAt, completed }
+
+function isPaneTaskComplete(paneIdx, output) {
+    const progress = paneProgress[paneIdx];
+    if (!progress || progress.completed) return true; // No pending task or already done
+
+    // CC CLI completion indicators: "Cooked for", "Worked for", "Crunched for", etc.
+    const completionPattern = /(?:Cooked|Worked|Crunched|Sautéed|Choreographed|Cogitated)\s+for\s+\d/i;
+    if (completionPattern.test(output)) {
+        const elapsed = Math.round((Date.now() - progress.injectedAt) / 1000);
+        log(`P${paneIdx}: ✅ TASK COMPLETED (${elapsed}s) — ${progress.task.slice(0, 60)}...`);
+        progress.completed = true;
+        return true;
+    }
+
+    const elapsed = Math.round((Date.now() - progress.injectedAt) / 1000);
+    log(`P${paneIdx}: ⏳ TASK IN PROGRESS (${elapsed}s) — waiting for completion`);
+    return false;
+}
+
+function trackInjectedTask(paneIdx, taskCmd) {
+    paneProgress[paneIdx] = { task: taskCmd, injectedAt: Date.now(), completed: false };
+}
 
 // 🛡️ COOLDOWN — 300s unified (tránh inject liên tục gây context cháy)
 const SIMPLE_COOLDOWN_MS = 300000;
@@ -514,11 +601,14 @@ async function checkAllPanes() {
                 // 🛡️ COOLDOWN CHECK — skip if recently injected
                 if (isInCooldown(pane.idx)) break;
 
+                // 🏭 PROGRESS CHECK — if previous task not completed, don't inject new one
+                if (!isPaneTaskComplete(pane.idx, output)) break;
+
                 // 🦞 PRE-FLIGHT CONTEXT CHECK
                 const ctxMatch = output.match(/Context left until auto-compact: (\d+)%/);
                 if (ctxMatch) {
                     const ctx = parseInt(ctxMatch[1], 10);
-                    if (ctx <= 45) { // Increased from 30% to 45% for aggressive stability
+                    if (ctx <= 45) {
                         log(`P${pane.idx}: 🟡 AGGRESSIVE STABILITY: Context ${ctx}% <= 45%. Compacting...`);
                         tmuxSendKeys(pane.idx, 'Escape');
                         await sleep(300);
@@ -528,8 +618,8 @@ async function checkAllPanes() {
                     }
                 }
 
-                // 🏭 BINH PHÁP SCANNER: Round-robin chapter → gen task → inject
-                log(`P${pane.idx}: ⏸️ IDLE — BINH PHÁP SCANNER...`);
+                // 🏭 REALITY SCANNER: scan real state → gen task → inject
+                log(`P${pane.idx}: ⏸️ IDLE — REALITY SCANNER...`);
 
                 // --- SCORE CALCULATION ---
                 if (!global.calculateProjectScore) {
@@ -544,11 +634,11 @@ async function checkAllPanes() {
                 }
 
                 const scoreResult = global.calculateProjectScore(pane.dir);
-                recordScore(pane.project, scoreResult); // Track score history
+                recordScore(pane.project, scoreResult);
                 const isGradeS = scoreResult.grade === 'S';
 
                 const intel = scanCodebase(pane);
-                log(`P${pane.idx}: 📊 ${pane.project} | Score: ${scoreResult.total}/100 (${scoreResult.grade}) | git=${intel.gitStatus}, config=${intel.fileCount}`);
+                log(`P${pane.idx}: 📊 ${pane.project} | Score: ${scoreResult.total}/100 (${scoreResult.grade}) | git=${intel.gitStatus}, todos=${intel.todoCount}`);
 
                 if (isGradeS) {
                     log(`P${pane.idx}: 🏆 RaaS AGI READY (Grade S) — Generating Handover Package for ${pane.project}`);
@@ -576,10 +666,6 @@ async function checkAllPanes() {
 
                     const activePipeline = global.factoryPipeline.getActivePipeline(pane.project, pane.idx);
                     if (activePipeline) {
-                        // Advance to next stage or get current command
-                        // Needs to be handled properly: if we are here, pane is IDLE. 
-                        // It means previous stage completed (or just started).
-                        // Tell pipeline to advance.
                         const result = global.factoryPipeline.advanceStage(activePipeline.id);
                         if (result.advanced) {
                             cookCmd = `${result.command} --auto`;
@@ -587,7 +673,6 @@ async function checkAllPanes() {
                         } else if (result.completed) {
                             log(`P${pane.idx}: 🎉 PIPELINE COMPLETED! All 5 stages shipped.`);
                         } else {
-                            // Couldn't advance (or already active but pane is idle? Maybe retry)
                             const cmd = global.factoryPipeline.getCurrentCommand(activePipeline.id);
                             if (cmd) {
                                 cookCmd = `${cmd.command} --auto`;
@@ -599,24 +684,31 @@ async function checkAllPanes() {
                     log(`P${pane.idx}: ⚠️ Factory Pipeline error: ${e.message}`);
                 }
 
-                // ═══ 🏭 TASK DISPATCH: POOL-FIRST → EXTERNAL QUEUE → SCORE FALLBACK ═══
-                // --- 📋 EXTERNAL TASK QUEUE CHECK ---
+                // ═══ 🧠 SMART DISPATCH: REALITY → EXTERNAL QUEUE → POOL FALLBACK ═══
+
+                // --- Step 1: 🧠 REALITY SCAN — real project state drives task selection ---
+                if (!cookCmd) {
+                    const realityTask = smartTaskFromReality(pane);
+                    if (realityTask) {
+                        cookCmd = realityTask;
+                        log(`P${pane.idx}: 🧠 REALITY TASK: ${cookCmd.slice(0, 80)}...`);
+                    }
+                }
+
+                // --- Step 2: 📋 EXTERNAL TASK QUEUE CHECK ---
                 if (!cookCmd) {
                     try {
-                        const fs = require('fs');
-                        const path = require('path');
                         const tasksDir = '/Users/macbookprom1/mekong-cli/tasks';
                         if (fs.existsSync(tasksDir)) {
                             const files = fs.readdirSync(tasksDir).filter(f => f.endsWith('.txt'));
                             if (files.length > 0) {
-                                // Match logic: find files specifically meant for this pane
                                 const myTasks = files.filter(f => {
                                     const n = f.toLowerCase();
                                     const isP0 = pane.project === 'openclaw-worker';
                                     const isP1 = pane.project === 'well';
                                     const isP2 = pane.project === 'mekong-cli';
                                     const isP3 = pane.project === 'sophia-ai-factory';
-                                    const isP4 = pane.isOpus; // Strategic Opus layer
+                                    const isP4 = pane.isOpus;
                                     const isP5 = pane.project === 'algo-trader';
 
                                     const hasP0 = n.includes('openclaw') || n.includes('brain') || n.includes('cto');
@@ -647,15 +739,13 @@ async function checkAllPanes() {
                                     const taskFile = myTasks[0];
                                     const content = fs.readFileSync(path.join(tasksDir, taskFile), 'utf8');
 
-                                    // Binh Phap Standard Rule 3: Use ClaudeKit commands!
-                                    // Escape the content so it survives tmux bash injection
                                     const safeContent = content.replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`').slice(0, 1500);
                                     cookCmd = `/cook "EXTERNAL TASK: ${taskFile}\\n${safeContent}" --auto`;
 
                                     const procDir = path.join(tasksDir, 'processed');
                                     if (!fs.existsSync(procDir)) fs.mkdirSync(procDir);
                                     fs.renameSync(path.join(tasksDir, taskFile), path.join(procDir, taskFile));
-                                    log(`P${pane.idx}: �� DISPATCHED task: ${taskFile}`);
+                                    log(`P${pane.idx}: 📬 DISPATCHED task: ${taskFile}`);
                                 }
                             }
                         }
@@ -663,36 +753,27 @@ async function checkAllPanes() {
                         log(`P${pane.idx}: ⚠️ Task Queue error: ${e.message}`);
                     }
                 }
-                // 🧠 SMART DETECTION → POOL → SCORE FALLBACK (no LLM calls)
+                // --- Step 3: 🏭 POOL FALLBACK — round-robin hardcoded tasks ---
                 if (!cookCmd) {
-                    // Step 1: Smart — check git dirty files, prioritize fixing them
-                    const smartTask = getSmartTask(pane);
-                    if (smartTask) {
-                        cookCmd = smartTask;
-                        log(`P${pane.idx}: 🧠 SMART: ${cookCmd.slice(0, 80)}...`);
-                    }
-                }
-                if (!cookCmd) {
-                    // Step 2: Pool — round-robin hardcoded tasks (no LLM needed)
                     const poolTask = getNextPoolTask(pane.project);
                     if (poolTask) {
                         cookCmd = poolTask;
-                        log(`P${pane.idx}: 🏭 POOL TASK: ${cookCmd.slice(0, 80)}...`);
+                        log(`P${pane.idx}: 🏭 POOL FALLBACK: ${cookCmd.slice(0, 80)}...`);
                     } else {
-                        log(`P${pane.idx}: ⏸️ No pool for ${pane.project}. Skipping injection.`);
+                        log(`P${pane.idx}: ⏸️ No tasks for ${pane.project}. Skipping injection.`);
                     }
                 }
 
-                // 🛡️ UNIFIED INJECT GATE — cooldown 3min is the guard
-                // ĐIỀU 47: ClaudeKit command prefix BẮT BUỘC — CẤM raw text injection
+                // 🛡️ UNIFIED INJECT GATE — cooldown + command prefix guard
                 if (cookCmd && !cookCmd.startsWith('/')) {
-                    log(`P${pane.idx}: ⛔ BLOCKED raw text injection → wrapping with /cook prefix`);
+                    log(`P${pane.idx}: ⛔ BLOCKED raw text → wrapping with /cook prefix`);
                     cookCmd = `/cook "${cookCmd.replace(/"/g, '\\"')}" --auto`;
                 }
                 if (cookCmd) {
                     log(`P${pane.idx}: 🚀 INJECTING: ${cookCmd.slice(0, 100)}...`);
                     tmuxSendBuffer(pane.idx, cookCmd);
-                    recordInjection(pane.idx, cookCmd); // 🛡️ Start dynamic cooldown
+                    recordInjection(pane.idx, cookCmd);
+                    trackInjectedTask(pane.idx, cookCmd); // 🏭 Track for progress check
                 }
                 break;
             }
