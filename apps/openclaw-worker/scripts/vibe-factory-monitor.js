@@ -484,7 +484,9 @@ async function checkAllPanes() {
             }
 
             case 'RATE_LIMITED': {
-                // 🔄 TRI-PROVIDER FAILOVER: BytePlus → DashScope → Blackbox → BytePlus
+                // 🔄 BIDIRECTIONAL FAILOVER: BytePlus ↔ DashScope
+                // NOTE: Blackbox is OpenAI-only — CC CLI requires Anthropic protocol
+                // Blackbox is used for CTO brain failover only (llm-perception.js)
                 const PROVIDERS = [
                     {
                         id: 'byteplus', name: 'BytePlus',
@@ -499,14 +501,6 @@ async function checkAllPanes() {
                         url: 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
                         model: 'qwen3.5-plus', opus: 'qwen3.5-plus', haiku: 'qwen3-coder-next',
                         small: 'qwen3-coder-plus', large: 'qwen3-coder-plus'
-                    },
-                    {
-                        id: 'blackbox', name: 'Blackbox',
-                        key: 'sk-ELEERyI0MyROHMJY27q-Sg',
-                        url: 'https://api.blackbox.ai',
-                        model: 'blackboxai/moonshotai/kimi-k2.5', opus: 'blackboxai/moonshotai/kimi-k2-thinking',
-                        haiku: 'blackboxai/minimax/minimax-m2.5',
-                        small: 'blackboxai/minimax/minimax-m2.5', large: 'blackboxai/moonshotai/kimi-k2.5'
                     }
                 ];
 

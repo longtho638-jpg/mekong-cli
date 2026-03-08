@@ -1,430 +1,6 @@
 {
   "tasks": [
     {
-      "hash": "519b20312496",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
-      "dispatchedAt": 1772888410444
-    },
-    {
-      "hash": "3d22b94be62e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
-      "dispatchedAt": 1772888489589
-    },
-    {
-      "hash": "45814c911863",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (4→10), bỏ qua phầ",
-      "dispatchedAt": 1772888499566
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: typescript",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772888517817
-    },
-    {
-      "hash": "46aa7365052c",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
-      "dispatchedAt": 1772888523228
-    },
-    {
-      "hash": "c6088ab46330",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
-      "dispatchedAt": 1772888596438
-    },
-    {
-      "hash": "4e4160d71be0",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
-      "dispatchedAt": 1772888605118
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: resources",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772888611683
-    },
-    {
-      "hash": "9dc78a5a3628",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
-      "dispatchedAt": 1772888626129
-    },
-    {
-      "hash": "85cd83d9185d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: tests",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
-      "dispatchedAt": 1772888699649
-    },
-    {
-      "hash": "d2983cba2670",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
-      "dispatchedAt": 1772888708463
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: build",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772888716149
-    },
-    {
-      "hash": "a6174fba3695",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: tests",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
-      "dispatchedAt": 1772888731341
-    },
-    {
-      "hash": "b408fc46d875",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: security",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
-      "dispatchedAt": 1772888806470
-    },
-    {
-      "hash": "c2e2dcb9bdce",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: tests",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
-      "dispatchedAt": 1772888816326
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: tests",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772888833425
-    },
-    {
-      "hash": "4372f8097df0",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: security",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
-      "dispatchedAt": 1772888838622
-    },
-    {
-      "hash": "78a807390d3f",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
-      "dispatchedAt": 1772888913507
-    },
-    {
-      "hash": "04e32b81b0fa",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: security",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
-      "dispatchedAt": 1772888922827
-    },
-    {
-      "hash": "7b117d8ae377",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: performance",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu performance (5→10), bỏ",
-      "dispatchedAt": 1772888927280
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: security",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772888948898
-    },
-    {
-      "hash": "1c91cdb03c89",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
-      "dispatchedAt": 1772888989442
-    },
-    {
-      "hash": "024a2646bcc3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua phần khá",
-      "dispatchedAt": 1772889000351
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: production",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772889025719
-    },
-    {
-      "hash": "31e73c42f497",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
-      "dispatchedAt": 1772889066598
-    },
-    {
-      "hash": "8f6971eef0ba",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu typescript (8→10), bỏ qua phầ",
-      "dispatchedAt": 1772889076374
-    },
-    {
-      "hash": "b7f68d91dc33",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua p",
-      "dispatchedAt": 1772889082433
-    },
-    {
-      "hash": "31e73c42f497",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
-      "dispatchedAt": 1772889144258
-    },
-    {
-      "hash": "7ecce0b36574",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: performance",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
-      "dispatchedAt": 1772889154169
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: performance",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772889172855
-    },
-    {
-      "hash": "519b20312496",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
-      "dispatchedAt": 1772889179087
-    },
-    {
-      "hash": "3d22b94be62e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
-      "dispatchedAt": 1772889250237
-    },
-    {
-      "hash": "45814c911863",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (4→10), bỏ qua phầ",
-      "dispatchedAt": 1772889261856
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: typescript",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772889281815
-    },
-    {
-      "hash": "46aa7365052c",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
-      "dispatchedAt": 1772889288891
-    },
-    {
-      "hash": "c6088ab46330",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
-      "dispatchedAt": 1772889357970
-    },
-    {
-      "hash": "4e4160d71be0",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
-      "dispatchedAt": 1772889370405
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: resources",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772889390804
-    },
-    {
-      "hash": "9dc78a5a3628",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
-      "dispatchedAt": 1772889399019
-    },
-    {
-      "hash": "85cd83d9185d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: tests",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
-      "dispatchedAt": 1772889465999
-    },
-    {
-      "hash": "d2983cba2670",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
-      "dispatchedAt": 1772889476526
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: build",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772889491839
-    },
-    {
-      "hash": "a6174fba3695",
-      "project": "algo-trader",
-      "pane": 3,
-      "chapter": "TIER3-RỪNG-CHIẾN: tests",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
-      "dispatchedAt": 1772889501545
-    },
-    {
-      "hash": "7ecce0b36574",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: performance",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
-      "dispatchedAt": 1772906822112
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: performance",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772906833927
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: typescript",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772906836428
-    },
-    {
-      "hash": "31e73c42f497",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
-      "dispatchedAt": 1772906992701
-    },
-    {
-      "hash": "45814c911863",
-      "project": "well",
-      "pane": 1,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (4→10), bỏ qua phầ",
-      "dispatchedAt": 1772907107455
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: production",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772907551760
-    },
-    {
-      "hash": "e574b6fc48ce",
-      "project": "sophia-ai-factory",
-      "pane": 2,
-      "chapter": "TIER1-LỬA-CÔNG: performance",
-      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
-      "dispatchedAt": 1772907555708
-    },
-    {
-      "hash": "31e73c42f497",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: production",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
-      "dispatchedAt": 1772907922692
-    },
-    {
-      "hash": "3d22b94be62e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
-      "dispatchedAt": 1772908223277
-    },
-    {
-      "hash": "c6088ab46330",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: build",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
-      "dispatchedAt": 1772908311796
-    },
-    {
       "hash": "85cd83d9185d",
       "project": "mekong-cli",
       "pane": 0,
@@ -1599,6 +1175,430 @@
       "chapter": "TIER3-RỪNG-CHIẾN: build",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
       "dispatchedAt": 1772928621744
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772928926073
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772929015857
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772929041371
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772929116393
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772929188759
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772929464314
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772929764326
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772929854493
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772929865215
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772929879601
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772929884384
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772929907917
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 3,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772930088999
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772930998477
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931059132
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931073251
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772931090533
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772931099487
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931106037
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772931155875
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931188903
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931254740
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: resources",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931314579
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931345253
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772931374485
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931386182
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: build",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931401504
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: tests",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931406329
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931452832
+    },
+    {
+      "hash": "04e32b81b0fa",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772931470200
+    },
+    {
+      "hash": "09e799e361ba",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (7→10), bỏ qua phầ",
+      "dispatchedAt": 1772931476284
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: security",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931484886
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931536197
+    },
+    {
+      "hash": "024a2646bcc3",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931563140
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 3,
+      "chapter": "TIER1-LỬA-CÔNG: ci_cd",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931574129
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772931625731
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931962233
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772932156104
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772932549418
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772932649700
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932752027
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772932848811
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932857830
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772932940427
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772932952668
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 3,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772932962242
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: resources",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932967670
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772933049252
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772933063248
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: build",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772933107167
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772933141802
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772933156641
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772933263883
     }
   ],
   "chapterIndex": 5
