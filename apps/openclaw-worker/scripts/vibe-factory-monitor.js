@@ -46,6 +46,52 @@ function buildPanesConfig() {
 const PANES = buildPanesConfig();
 
 // ══════════════════════════════════════════════════
+// TASK_POOLS — hardcoded per project (thay thế LLM Vision)
+// Mỗi project có pool tasks xoay vòng, không cần gọi LLM
+// ══════════════════════════════════════════════════
+const TASK_POOLS = {
+    'well': [
+        '/cook "Well: Audit i18n keys, fix missing translations, verify build pass" --auto',
+        '/cook "Well: Fix TypeScript errors, remove any types, verify tsc --noEmit clean" --auto',
+        '/cook "Well: Optimize Supabase queries, add indexes, verify RLS policies" --auto',
+        '/cook "Well: Clean console.log/TODO/FIXME from production code" --auto',
+        '/cook "Well: Add error boundaries, loading states, empty states for UX polish" --auto',
+        '/cook "Well: Security audit — CSP headers, XSS prevention, input validation" --auto',
+    ],
+    'sophia-ai-factory': [
+        '/cook "Sophia: Fix build errors, TypeScript strict mode, verify deploy" --auto',
+        '/cook "Sophia: Performance audit — code splitting, lazy loading, bundle size" --auto',
+        '/cook "Sophia: Clean tech debt — remove console.log, TODO, FIXME" --auto',
+        '/cook "Sophia: UX polish — loading states, error boundaries, responsive" --auto',
+        '/cook "Sophia: Security headers, API key protection, CORS config" --auto',
+    ],
+    'mekong-cli': [
+        '/cook "Mekong-CLI: Fix Python type hints, add docstrings to public methods" --auto',
+        '/cook "Mekong-CLI: Run pytest, fix failing tests, improve coverage" --auto',
+        '/cook "Mekong-CLI: Clean TODO/FIXME/HACK markers from src/" --auto',
+        '/cook "Mekong-CLI: Optimize Plan-Execute-Verify pipeline, fix edge cases" --auto',
+        '/cook "Mekong-CLI: Update agent modules, add error handling, verify imports" --auto',
+    ],
+    'algo-trader': [
+        '/cook "Algo-Trader: Fix TypeScript errors, strict null checks, verify build" --auto',
+        '/cook "Algo-Trader: Optimize arbitrage engine performance, reduce latency" --auto',
+        '/cook "Algo-Trader: Security audit — API key rotation, rate limiting, logging" --auto',
+        '/cook "Algo-Trader: Clean console.log, add structured logging with levels" --auto',
+        '/cook "Algo-Trader: Fix failing tests, add edge case coverage" --auto',
+    ],
+};
+const taskPoolCounters = {}; // project → index for round-robin
+
+function getNextPoolTask(project) {
+    const pool = TASK_POOLS[project];
+    if (!pool || pool.length === 0) return null;
+    if (!taskPoolCounters[project]) taskPoolCounters[project] = 0;
+    const idx = taskPoolCounters[project] % pool.length;
+    taskPoolCounters[project]++;
+    return pool[idx];
+}
+
+// ══════════════════════════════════════════════════
 // LOGGING
 // ══════════════════════════════════════════════════
 function log(msg) {
@@ -280,18 +326,10 @@ async function generateScoreTargetedTask(pane, scoreResult) {
 // PANE STATE DETECTOR
 // ══════════════════════════════════════════════════
 
-// 🛡️ DYNAMIC COOLDOWN — based on task complexity
-// Simple tasks (/cook, /fix, /test, /debug): 60s
-// Complex tasks (/bootstrap, /plan:hard, /plan:parallel): 180s
-const SIMPLE_COOLDOWN_MS = 60000;
-const COMPLEX_COOLDOWN_MS = 180000;
+// 🛡️ COOLDOWN — 300s unified (tránh inject liên tục gây context cháy)
+const SIMPLE_COOLDOWN_MS = 300000;
+const COMPLEX_COOLDOWN_MS = 300000;
 const lastInjection = {}; // paneIdx → { ts, type: 'simple'|'complex' }
-
-function getCooldownForTask(taskCmd) {
-    // Complex commands need more time to show progress
-    const isComplex = /\/(bootstrap|plan:hard|plan:parallel|review:codebase)/.test(taskCmd);
-    return isComplex ? COMPLEX_COOLDOWN_MS : SIMPLE_COOLDOWN_MS;
-}
 
 function isInCooldown(paneIdx) {
     const last = lastInjection[paneIdx];
@@ -309,7 +347,7 @@ function isInCooldown(paneIdx) {
 function recordInjection(paneIdx, taskCmd) {
     const type = /\/(bootstrap|plan:hard|plan:parallel|review:codebase)/.test(taskCmd) ? 'complex' : 'simple';
     lastInjection[paneIdx] = { ts: Date.now(), type };
-    log(`P${paneIdx}: 📝 Recorded ${type} injection, cooldown=${type === 'complex' ? '180s' : '60s'}`);
+    log(`P${paneIdx}: 📝 Recorded ${type} injection, cooldown=300s`);
 }
 
 function detectPaneState(output) {
@@ -433,7 +471,7 @@ async function checkAllPanes() {
                 for (const p of PANES) {
                     if (p.idx === 0) continue; // P0 = Chủ Tịch pane, SKIP auto-compact
                     const out = tmuxCapture(p.idx, 5);
-                    if (out.includes('❯') && !out.includes('Cooking')) {
+                    if (/❯\s*$/.test(out) && !out.includes('Cooking')) {
                         tmuxSendKeys(p.idx, 'Escape');
                         execSync(`tmux send-keys -t ${SESSION}.${p.idx} '/compact' Enter 2>/dev/null || true`);
                     }
@@ -755,7 +793,7 @@ async function checkAllPanes() {
                     log(`P${pane.idx}: ⚠️ Factory Pipeline error: ${e.message}`);
                 }
 
-                // ═══ 🧠 CTO VISION: LLM-FIRST DECISION ENGINE ═══
+                // ═══ 🏭 TASK DISPATCH: POOL-FIRST → EXTERNAL QUEUE → SCORE FALLBACK ═══
                 // --- 📋 EXTERNAL TASK QUEUE CHECK ---
                 if (!cookCmd) {
                     try {
@@ -819,54 +857,15 @@ async function checkAllPanes() {
                         log(`P${pane.idx}: ⚠️ Task Queue error: ${e.message}`);
                     }
                 }
-                // Antigravity Brain Transfer — read CC CLI output, understand, decide
+                // 🏭 TASK_POOLS — hardcode round-robin (thay LLM Vision, tiết kiệm tokens)
                 if (!cookCmd) {
-                    try {
-                        if (!global.llmPerception) {
-                            global.llmPerception = require('../lib/llm-perception');
-                            log('🧠 LLM Perception Layer loaded');
-                        }
-
-                        // Step 1: Read 30 lines of CC CLI output for context
-                        const fullOutput = tmuxCapture(pane.idx, 30);
-
-                        // Step 2: LLM Guard — quick state check via Gemini
-                        if (global.llmPerception.shouldSpendTokens(pane.idx)) {
-                            const guard = await global.llmPerception.guardCheck(fullOutput, state, pane.project, pane.idx);
-
-                            if (!guard.shouldAct) {
-                                log(`P${pane.idx}: 🧠 GUARD: Don't act — ${guard.reason}`);
-                                break;
-                            }
-
-                            // Error detected → /debug
-                            if (guard.correctedState === 'error' || guard.correctedState === 'ERROR') {
-                                cookCmd = `/debug "${pane.project}: ${guard.reason.slice(0, 80)}"`;
-                                log(`P${pane.idx}: 🧠 GUARD → DEBUG: ${guard.reason}`);
-                            }
-                            // Stuck → /bootstrap UNSTUCK
-                            else if (guard.correctedState === 'stuck' || guard.correctedState === 'STUCK') {
-                                cookCmd = `/cook "${pane.project}: UNSTUCK — ${guard.reason.slice(0, 80)}"`;
-                                log(`P${pane.idx}: 🧠 GUARD → UNSTUCK: ${guard.reason}`);
-                            }
-                        }
-
-                        // Step 3: If guard didn't set cookCmd, use LLM Perception for smart task
-                        if (!cookCmd) {
-                            const perception = await global.llmPerception.perceivePaneWithLLM(fullOutput, pane.project, pane.idx);
-                            cookCmd = global.llmPerception.buildSmartPrompt(perception, pane.project);
-                            if (cookCmd) {
-                                cookCmd += ' --auto';
-                                log(`P${pane.idx}: 🧠 LLM VISION: ${cookCmd.slice(0, 80)}...`);
-                            }
-                        }
-                    } catch (e) {
-                        log(`P${pane.idx}: ⚠️ LLM Vision failed (${e.message}) → score fallback`);
-                    }
-
-                    // Step 4: Fallback — Score-based Binh Pháp (last resort)
-                    if (!cookCmd) {
-                        log(`P${pane.idx}: ⏸️ LLM did not suggest a command. Using score fallback...`);
+                    const poolTask = getNextPoolTask(pane.project);
+                    if (poolTask) {
+                        cookCmd = poolTask;
+                        log(`P${pane.idx}: 🏭 POOL TASK: ${cookCmd.slice(0, 80)}...`);
+                    } else {
+                        // Fallback — Score-based Binh Pháp cho projects không có pool
+                        log(`P${pane.idx}: ⏸️ No pool for ${pane.project}. Using score fallback...`);
                         cookCmd = await generateScoreTargetedTask(pane, scoreResult);
                     }
                 }
