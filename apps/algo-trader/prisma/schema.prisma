@@ -224,3 +224,38 @@ model DunningEvent {
   @@index([eventType])
   @@map("dunning_events")
 }
+
+// SEC/FINRA Compliance Audit Log - Append-only, immutable
+model AuditLog {
+  id              String   @id @default(uuid())
+  eventType       String   // order_created, order_filled, order_cancelled, state_transition, etc.
+  tenantId        String
+  orderId         String?
+  userId          String   // Who triggered the event
+  severity        String   // info, warning, error, critical
+  payload         Json     // Full event data
+  ipAddress       String?
+  userAgent       String?
+
+  // SEC/FINRA CAT (Consolidated Audit Trail) fields
+  catOrderRef     String?  // CAT Order Reference
+  catEventCategory String? // CAT Event Category (2.0, 2.1, etc.)
+
+  // Additional order context
+  symbol          String?
+  side            String?  // buy/sell
+  amount          Decimal? @db.Decimal(18, 8)
+  price           Decimal? @db.Decimal(18, 8)
+
+  // Hash chain fields for tamper evidence
+  prevHash        String?  // SHA-256 of previous log entry
+  hash            String?  // SHA-256 hash of this entry
+
+  createdAt       DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([orderId])
+  @@index([eventType])
+  @@index([userId])
+  @@map("audit_logs")
+}

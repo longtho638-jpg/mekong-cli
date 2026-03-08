@@ -20,7 +20,6 @@ Usage:
 from __future__ import annotations
 
 import base64
-import hashlib
 import json
 import os
 import time
@@ -277,7 +276,7 @@ class RaaSAuthClient:
                 # Gateway error - fail open for local validation
                 return self._local_validate(token)
 
-        except requests.RequestException as e:
+        except requests.RequestException:
             # Network error - fail open for local validation
             return self._local_validate(token)
 

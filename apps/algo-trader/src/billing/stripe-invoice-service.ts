@@ -65,7 +65,7 @@ export class StripeInvoiceService {
     }
 
     this.stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2024-12-18.acacia',
+      apiVersion: '2025-02-24.acacia',
       maxNetworkRetries: 3,
     });
   }
@@ -137,9 +137,8 @@ export class StripeInvoiceService {
       }
 
       // Optionally finalize invoice
-      let finalInvoice = invoice;
       if (options?.autoFinalize) {
-        finalInvoice = await this.finalizeInvoice(invoice.id);
+        await this.finalizeInvoice(invoice.id);
       }
 
       const result: InvoiceResult = {
@@ -207,10 +206,6 @@ export class StripeInvoiceService {
         baseLimit: charge.baseLimit.toString(),
         actualUsage: charge.actualUsage.toString(),
         overageUnits: charge.overageUnits.toString(),
-      },
-      periodicity: {
-        unit: 'month',
-        interval: 1,
       },
     });
 
@@ -291,7 +286,7 @@ export class StripeInvoiceService {
    */
   async listInvoices(
     customerId: string,
-    options?: { limit?: number; status?: string }
+    options?: { limit?: number; status?: Stripe.InvoiceListParams.Status }
   ): Promise<Stripe.Invoice[]> {
     const params: Stripe.InvoiceListParams = {
       customer: customerId,

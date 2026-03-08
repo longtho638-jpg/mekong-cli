@@ -1,86 +1,178 @@
 /**
- * Idempotency Middleware for Webhook Events
+ * Idempotency Middleware for API Requests
  *
- * Prevents duplicate webhook processing using event_id deduplication.
- * In-memory store (Phase 2) → Redis-backed (Phase 3)
+ * Prevents duplicate request processing using Idempotency-Key header.
+ * Supports both Redis-backed store (production) and in-memory fallback.
+ *
+ * Usage:
+ *   fastify.addHook('preHandler', idempotencyMiddleware())
+ *   fastify.addHook('onSend', createIdempotencyResponseHandler())
  *
  * OWASP A08:2021 Data Integrity
  */
 
+import { RedisIdempotencyStore } from '../execution/idempotency-store';
+import { logger } from '../utils/logger';
+
+/**
+ * Idempotency record for in-memory fallback
+ */
 export interface IdempotencyRecord {
-  eventId: string;
+  requestId: string;
+  response: unknown;
   processedAt: number;
-  result?: unknown;
+  ttl: number; // milliseconds
 }
 
-export class IdempotencyStore {
+/**
+ * Middleware configuration options
+ */
+export interface IdempotencyOptions {
+  headerName?: string;      // default: 'Idempotency-Key'
+  ttl?: number;             // default: 24 hours in ms
+  tenantIdHeader?: string;  // default: 'X-Tenant-ID'
+}
+
+const DEFAULT_HEADER_NAME = 'Idempotency-Key';
+const DEFAULT_TENANT_ID_HEADER = 'X-Tenant-ID';
+const DEFAULT_TTL = 24 * 60 * 60 * 1000; // 24 hours
+
+/**
+ * In-memory fallback store when Redis is unavailable
+ */
+export class InMemoryIdempotencyStore {
   private readonly store = new Map<string, IdempotencyRecord>();
   private readonly ttlMs: number;
 
-  constructor(ttlMs: number = 24 * 60 * 60 * 1000) { // 24 hours default
+  constructor(ttlMs: number = DEFAULT_TTL) {
     this.ttlMs = ttlMs;
   }
 
-  /**
-   * Check if event_id was already processed
-   * Returns existing result if duplicate, null if first time
-   */
-  async check(eventId: string): Promise<unknown | null> {
-    const record = this.store.get(eventId);
-
-    if (!record) {
-      return null;
-    }
-
-    // Check TTL
+  async get(key: string): Promise<unknown | null> {
+    const record = this.store.get(key);
+    if (!record) return null;
     if (Date.now() - record.processedAt > this.ttlMs) {
-      this.store.delete(eventId);
+      this.store.delete(key);
       return null;
     }
-
-    return record.result;
+    return record.response;
   }
 
-  /**
-   * Mark event as processed with result
-   */
-  async markProcessed(eventId: string, result?: unknown): Promise<void> {
-    this.store.set(eventId, {
-      eventId,
+  async set(key: string, response: unknown): Promise<boolean> {
+    this.store.set(key, {
+      requestId: key,
+      response,
       processedAt: Date.now(),
-      result,
+      ttl: this.ttlMs,
     });
+    return true;
   }
 
-  /**
-   * Remove expired entries (call periodically)
-   */
-  cleanup(): number {
-    const now = Date.now();
-    let removed = 0;
-
-    for (const [key, record] of this.store.entries()) {
-      if (now - record.processedAt > this.ttlMs) {
-        this.store.delete(key);
-        removed++;
-      }
+  async exists(key: string): Promise<boolean> {
+    const record = this.store.get(key);
+    if (!record) return false;
+    if (Date.now() - record.processedAt > this.ttlMs) {
+      this.store.delete(key);
+      return false;
     }
-
-    return removed;
+    return true;
   }
 
-  /**
-   * Clear all records (for tests)
-   */
   clear(): void {
     this.store.clear();
   }
 
-  /**
-   * Get store size (for monitoring)
-   */
   size(): number {
     return this.store.size;
+  }
+}
+
+/**
+ * Combined store that tries Redis first, falls back to in-memory
+ */
+export class HybridIdempotencyStore {
+  private redisStore: RedisIdempotencyStore;
+  private memoryStore: InMemoryIdempotencyStore;
+  private usingFallback = false;
+
+  constructor(redisUrl?: string, ttlMs?: number) {
+    this.redisStore = new RedisIdempotencyStore(redisUrl);
+    this.memoryStore = new InMemoryIdempotencyStore(ttlMs);
+  }
+
+  async get(idempotencyKey: string, tenantId: string): Promise<unknown | null> {
+    // If already in fallback mode, use memory only
+    if (this.usingFallback) {
+      return this.memoryStore.get(`${tenantId}:${idempotencyKey}`);
+    }
+
+    // Try Redis first
+    const redisResult = await this.redisStore.get(idempotencyKey, tenantId);
+
+    // Redis returned cached data - success
+    if (redisResult !== null) {
+      return redisResult;
+    }
+
+    // Redis returned null (not found or error)
+    // Check memory store as fallback
+    return this.memoryStore.get(`${tenantId}:${idempotencyKey}`);
+  }
+
+  async set(
+    idempotencyKey: string,
+    tenantId: string,
+    response: unknown,
+    ttl?: number
+  ): Promise<boolean> {
+    // If already in fallback mode, use memory only
+    if (this.usingFallback) {
+      return this.memoryStore.set(`${tenantId}:${idempotencyKey}`, response);
+    }
+
+    // Try Redis first
+    const redisSuccess = await this.redisStore.set(idempotencyKey, tenantId, response, ttl);
+
+    // Redis succeeded
+    if (redisSuccess) {
+      return true;
+    }
+
+    // Redis failed (connection error or returned false)
+    // Mark as using fallback and use memory
+    this.usingFallback = true;
+    logger.warn('[IdempotencyStore] Redis unavailable, using in-memory fallback');
+    return this.memoryStore.set(`${tenantId}:${idempotencyKey}`, response);
+  }
+
+  async exists(idempotencyKey: string, tenantId: string): Promise<boolean> {
+    // If already in fallback mode, use memory only
+    if (this.usingFallback) {
+      return this.memoryStore.exists(`${tenantId}:${idempotencyKey}`);
+    }
+
+    // Try Redis first
+    const redisExists = await this.redisStore.exists(idempotencyKey, tenantId);
+
+    // Redis found it
+    if (redisExists) {
+      return true;
+    }
+
+    // Check memory store as fallback
+    return this.memoryStore.exists(`${tenantId}:${idempotencyKey}`);
+  }
+
+  clear(): void {
+    this.memoryStore.clear();
+  }
+
+  size(): number {
+    return this.usingFallback ? this.memoryStore.size() : 0;
+  }
+
+  isUsingFallback(): boolean {
+    return this.usingFallback;
   }
 }
 
@@ -88,47 +180,63 @@ export class IdempotencyStore {
  * Middleware factory for idempotency check
  * Usage: fastify.addHook('preHandler', idempotencyMiddleware(store))
  */
-export function idempotencyMiddleware(store: IdempotencyStore) {
+export function idempotencyMiddleware(
+  store: HybridIdempotencyStore,
+  options?: IdempotencyOptions
+) {
+  const headerName = options?.headerName ?? DEFAULT_HEADER_NAME;
+  const tenantIdHeader = options?.tenantIdHeader ?? DEFAULT_TENANT_ID_HEADER;
+
   return async function idempotencyCheck(request: any, reply: any) {
-    // Only apply to webhook route
-    if (!request.url.includes('/webhook')) {
+    const idempotencyKey = request.headers?.[headerName.toLowerCase()] ||
+                           request.headers?.[headerName];
+
+    if (!idempotencyKey) {
       return;
     }
 
-    const eventId = request.body?.event_id;
+    const tenantId = request.headers?.[tenantIdHeader.toLowerCase()] ||
+                     request.headers?.[tenantIdHeader] ||
+                     'default';
 
-    if (!eventId) {
-      // No event_id — allow through (logging only)
-      request.log?.warn({ url: request.url }, 'Webhook missing event_id');
-      return;
-    }
-
-    // Check if already processed
-    const existingResult = await store.check(eventId);
+    const existingResult = await store.get(idempotencyKey, tenantId);
 
     if (existingResult !== null) {
-      request.log?.info({ eventId }, 'Duplicate webhook event — returning cached result');
+      logger.info(`Duplicate request - idempotencyKey=${idempotencyKey}, tenantId=${tenantId} - returning cached response`);
       return reply.send(existingResult);
     }
 
-    // Mark as "processing" to prevent race condition
-    await store.markProcessed(eventId, { success: true, message: 'Processing...' });
+    await store.set(idempotencyKey, tenantId, {
+      processing: true,
+      timestamp: Date.now(),
+    });
   };
 }
 
 /**
  * Response interceptor to cache actual result
  */
-export function createIdempotencyResponseHandler(store: IdempotencyStore) {
+export function createIdempotencyResponseHandler(
+  store: HybridIdempotencyStore,
+  options?: IdempotencyOptions
+) {
+  const headerName = options?.headerName ?? DEFAULT_HEADER_NAME;
+  const tenantIdHeader = options?.tenantIdHeader ?? DEFAULT_TENANT_ID_HEADER;
+
   return async function cacheResult(request: any, _reply: any, payload: any) {
-    if (!request.url.includes('/webhook')) {
+    const idempotencyKey = request.headers?.[headerName.toLowerCase()] ||
+                           request.headers?.[headerName];
+
+    if (!idempotencyKey) {
       return payload;
     }
 
-    const eventId = request.body?.event_id;
+    const tenantId = request.headers?.[tenantIdHeader.toLowerCase()] ||
+                     request.headers?.[tenantIdHeader] ||
+                     'default';
 
-    if (eventId && payload) {
-      await store.markProcessed(eventId, payload);
+    if (payload) {
+      await store.set(idempotencyKey, tenantId, payload);
     }
 
     return payload;
@@ -136,11 +244,24 @@ export function createIdempotencyResponseHandler(store: IdempotencyStore) {
 }
 
 // Singleton instance for application-wide use
-let defaultIdempotencyStore: IdempotencyStore | null = null;
+let defaultIdempotencyStore: HybridIdempotencyStore | null = null;
 
-export function getDefaultIdempotencyStore(ttlMs?: number): IdempotencyStore {
+export function getDefaultIdempotencyStore(
+  redisUrl?: string,
+  ttlMs?: number
+): HybridIdempotencyStore {
   if (!defaultIdempotencyStore) {
-    defaultIdempotencyStore = new IdempotencyStore(ttlMs);
+    defaultIdempotencyStore = new HybridIdempotencyStore(redisUrl, ttlMs);
   }
   return defaultIdempotencyStore;
 }
+
+/**
+ * Reset singleton (for testing)
+ */
+export function resetDefaultIdempotencyStore(): void {
+  defaultIdempotencyStore = null;
+}
+
+// Backwards-compatible alias for existing code using IdempotencyStore
+export { HybridIdempotencyStore as IdempotencyStore };
