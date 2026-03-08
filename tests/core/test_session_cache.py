@@ -8,18 +8,14 @@ Tests cover:
 - Cache invalidation on logout
 """
 
-import os
 import json
 import pytest
-from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from unittest.mock import patch, MagicMock
 
 from src.core.raas_auth import (
     RaaSAuthClient,
     SessionCache,
-    TenantContext,
-    SessionInfo,
 )
 
 

@@ -5,7 +5,7 @@ Tests Phase 6: Terminal Validation - End-to-end RaaS integration validation.
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import datetime, timezone
 
 from src.raas.final_phase_validator import (

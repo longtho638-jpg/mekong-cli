@@ -15,12 +15,12 @@ import os
 import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any, List, Tuple
+from typing import Optional, Dict, Any, List
 
 import requests
 from rich.console import Console
 
-from src.core.raas_auth import get_auth_client, RaaSAuthClient, TenantContext
+from src.core.raas_auth import RaaSAuthClient
 
 
 @dataclass

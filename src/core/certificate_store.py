@@ -23,13 +23,13 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any
 
 from src.core.device_certificate import DeviceCertificate, CertificateSigner
-from src.auth.secure_storage import get_secure_storage, SecureStorage, SecureStorageError
+from src.auth.secure_storage import get_secure_storage, SecureStorage
 
 
 class CertificateStoreError(Exception):

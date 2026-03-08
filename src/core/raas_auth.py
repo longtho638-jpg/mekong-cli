@@ -30,7 +30,7 @@ from typing import Any, Optional, Dict
 
 import requests
 
-from src.auth.secure_storage import get_secure_storage, SecureStorage, SecureStorageError
+from src.auth.secure_storage import get_secure_storage, SecureStorage
 from src.core.certificate_store import get_certificate_store, CertificateStore
 
 
@@ -54,6 +54,17 @@ class AuthResult:
     tenant: Optional[TenantContext] = None
     error: Optional[str] = None
     error_code: Optional[str] = None
+
+
+@dataclass
+class GatewayVerifyResult:
+    """Result from lightweight /v1/verify endpoint."""
+
+    valid: bool
+    gateway_version: Optional[str] = None
+    gateway_status: Optional[str] = None
+    requires_auth: bool = True
+    error: Optional[str] = None
 
 
 @dataclass
@@ -167,6 +178,7 @@ class RaaSAuthClient:
     DEFAULT_GATEWAY_URL_V2 = "https://raas.agencyos.network"
     CREDENTIALS_FILE = "~/.mekong/raas/credentials.json"
     SESSION_CACHE_FILE = "~/.mekong/session.json"
+    VERIFY_ENDPOINT = "/v1/verify"  # Lightweight gateway check
     VALIDATION_ENDPOINT_V1 = "/v1/auth/validate"
     VALIDATION_ENDPOINT_V2 = "/v2/license/validate"
     SESSION_TTL_SECONDS = 300  # 5 minutes
@@ -564,7 +576,7 @@ class RaaSAuthClient:
                 # Gateway error - fail open for local validation
                 return self._local_validate(token)
 
-        except requests.RequestException as e:
+        except requests.RequestException:
             # Network error - fail open for local validation
             return self._local_validate(token)
 
@@ -675,6 +687,115 @@ class RaaSAuthClient:
             error="Local validation failed",
             error_code="local_validation_failed",
         )
+
+    def verify_gateway(self, token: Optional[str] = None) -> GatewayVerifyResult:
+        """
+        Lightweight gateway verification.
+
+        Makes minimal request to /v1/verify endpoint to check:
+        - Gateway is reachable
+        - License key is valid (format + not revoked)
+        - Returns gateway version and status
+
+        Args:
+            token: Bearer token (JWT or mk_ API key).
+                   If None, uses stored credentials or RAAS_LICENSE_KEY env.
+
+        Returns:
+            GatewayVerifyResult with gateway status
+        """
+        # Get token from various sources
+        if not token:
+            creds = self._load_credentials()
+            token = creds.get("token") or os.getenv("RAAS_LICENSE_KEY")
+
+        if not token:
+            return GatewayVerifyResult(
+                valid=False,
+                error="No credentials provided",
+                requires_auth=True,
+            )
+
+        token = token.strip()
+
+        # Validate format locally first (quick check)
+        if token.startswith("mk_"):
+            if len(token) < 8:
+                return GatewayVerifyResult(
+                    valid=False,
+                    error="Invalid API key format (too short)",
+                    requires_auth=True,
+                )
+        elif "." in token:
+            # JWT format - basic validation
+            payload = self._decode_jwt(token)
+            if not payload:
+                return GatewayVerifyResult(
+                    valid=False,
+                    error="Invalid JWT format",
+                    requires_auth=True,
+                )
+        else:
+            return GatewayVerifyResult(
+                valid=False,
+                error="Unrecognized credential format",
+                requires_auth=True,
+            )
+
+        # Call lightweight verify endpoint
+        try:
+            # Build headers with certificate auth if available
+            headers = {"Authorization": f"Bearer {token}"}
+            cert_headers = self._get_certificate_headers()
+            if cert_headers:
+                headers.update(cert_headers)
+
+            response = requests.get(
+                f"{self.gateway_url}{self.VERIFY_ENDPOINT}",
+                headers=headers,
+                timeout=5,  # Short timeout for lightweight check
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                return GatewayVerifyResult(
+                    valid=True,
+                    gateway_version=data.get("gateway_version"),
+                    gateway_status=data.get("status", "operational"),
+                    requires_auth=False,
+                )
+            elif response.status_code == 401:
+                return GatewayVerifyResult(
+                    valid=False,
+                    error="Invalid or expired credentials",
+                    requires_auth=True,
+                )
+            elif response.status_code == 403:
+                return GatewayVerifyResult(
+                    valid=False,
+                    error="Credentials revoked or insufficient permissions",
+                    requires_auth=True,
+                )
+            elif response.status_code == 404:
+                # Endpoint not found - gateway may be down or using different version
+                return GatewayVerifyResult(
+                    valid=False,
+                    error="Gateway verify endpoint not found",
+                    gateway_status="unreachable",
+                )
+            else:
+                return GatewayVerifyResult(
+                    valid=False,
+                    error=f"Gateway returned {response.status_code}",
+                    gateway_status="error",
+                )
+
+        except requests.RequestException as e:
+            return GatewayVerifyResult(
+                valid=False,
+                error=f"Gateway unreachable: {str(e)}",
+                gateway_status="unreachable",
+            )
 
     def _save_session_cache_from_tenant(self, tenant: TenantContext, token: str) -> None:
         """

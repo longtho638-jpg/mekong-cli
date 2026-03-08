@@ -5,10 +5,10 @@ Tests validate-license and license-status commands with certificate-based authen
 """
 
 import pytest
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from typer.testing import CliRunner
 
-from src.commands.raas_validate import app, validate_license, license_status
+from src.commands.raas_validate import app
 from src.core.raas_auth import AuthResult, TenantContext
 
 

@@ -17,10 +17,8 @@ Environment Variables:
 import typer
 from rich.console import Console
 from rich.panel import Panel
-from rich.table import Table
 from datetime import datetime, timezone
 import os
-import sys
 
 console = Console()
 
@@ -59,8 +57,7 @@ def validate_license(
     - X-Cert-Sig: ECDSA signature
     - X-Cert-Timestamp: ISO8601 timestamp
     """
-    from src.core.raas_auth import RaaSAuthClient, get_auth_client
-    from src.core.certificate_store import CertificateStore
+    from src.core.raas_auth import RaaSAuthClient
 
     console.print("[bold cyan]=== RaaS License Validation ===[/bold cyan]\n")
 
@@ -192,7 +189,7 @@ def _show_failure_result(result):
     detail = error_details.get(error_code, f"Error code: {error_code}")
 
     lines = [
-        f"[bold red]✗ License validation failed[/bold red]\n",
+        "[bold red]✗ License validation failed[/bold red]\n",
         f"[red]{error_message}[/red]",
         "",
         f"[dim]{detail}[/dim]",
@@ -220,7 +217,7 @@ def _show_license_status(client):
     # Check session cache
     if client._session_cache:
         cache = client._session_cache
-        console.print(f"\n[bold]Session Cache:[/bold]")
+        console.print("\n[bold]Session Cache:[/bold]")
         console.print(f"  Tenant: {cache.tenant_id}")
         console.print(f"  Tier: {cache.tier}")
         console.print(f"  Valid: [green]Yes[/green] (expires in {(cache.session_expires_at - datetime.now(timezone.utc)).total_seconds() / 60:.0f} min)")
@@ -230,7 +227,7 @@ def _show_license_status(client):
     # Check certificate
     if client._certificate_store:
         cert_status = client.get_certificate_status()
-        console.print(f"\n[bold]Certificate:[/bold]")
+        console.print("\n[bold]Certificate:[/bold]")
         console.print(f"  Present: {'[green]Yes[/green]' if cert_status.get('has_certificate') else '[red]No[/red]'}")
         if cert_status.get("has_certificate"):
             console.print(f"  ID: {cert_status.get('certificate_id', 'N/A')}")

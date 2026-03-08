@@ -38,7 +38,7 @@ from src.commands.dashboard_commands import app as dashboard_app
 from src.commands.security_commands import app as security_commands_app
 from src.cli.update_commands import app as update_app
 from src.cli.raas_auth_commands import app as raas_auth_app
-from src.commands.raas_validate import app as raas_validate_app
+from src.commands.raas_validate import validate_license, license_status
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -106,7 +106,7 @@ def _validate_startup_license(ctx: typer.Context) -> None:
     if "--help" in sys.argv or "-h" in sys.argv:
         return
 
-    # Validate license for premium commands
+    # Validate license for premium commands using RaaS Gateway
     from src.lib.raas_gate_validator import RaasGateValidator
     validator = RaasGateValidator()
     is_valid, error = validator.validate()
@@ -115,15 +115,15 @@ def _validate_startup_license(ctx: typer.Context) -> None:
         # Get actual command name for error message
         from src.lib.raas_gate_utils import get_upgrade_message
         error_message = get_upgrade_message(command)
-        console.print(f"[bold red]License Error:[/bold red] {error_message}")
+        console.print(f"[bold red]License Error:[/bold red] {error}")
         console.print(
-            "\n[yellow]Generate a license key:[/yellow]"
+            "\n[yellow]Get a license key from RaaS Gateway:[/yellow]"
         )
-        console.print("  [cyan]mekong license generate --tier pro[/cyan]")
+        console.print("  [cyan]https://raas.agencyos.network[/cyan]")
         console.print(
             "\n[yellow]Or set environment variable:[/yellow]"
         )
-        console.print("  [cyan]export RAAS_LICENSE_KEY=your_key[/cyan]\n")
+        console.print("  [cyan]export RAAS_LICENSE_KEY=mk_your_key[/cyan]\n")
         raise SystemExit(1)
 
 
@@ -180,8 +180,10 @@ def _register_legacy_commands() -> None:
     app.add_typer(update_app, name="update", help="🔄 CLI auto-update")
     app.add_typer(raas_auth_app, name="raas-auth", help="🔐 RaaS Gateway auth (login/logout/status)")
     app.add_typer(raas_auth_app, name="auth", help="🔐 RaaS Gateway auth (login/logout/status)")
-    app.add_typer(raas_validate_app, name="validate-license", help="✅ Validate RaaS license with certificate auth")
-    app.add_typer(raas_validate_app, name="license-status", help="📊 Show current license status")
+
+    # Register validate commands directly (not via app to avoid nesting)
+    app.command("validate-license")(validate_license)
+    app.command("license-status")(license_status)
 
 
 # Register all commands

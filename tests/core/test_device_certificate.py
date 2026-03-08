@@ -29,8 +29,6 @@ from src.core.device_certificate import (
 from src.core.certificate_store import (
     CertificateStore,
     CertificateMetadata,
-    get_certificate_store,
-    CertificateStoreError,
 )
 
 

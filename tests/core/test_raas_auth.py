@@ -13,15 +13,13 @@ import os
 import json
 import time
 import pytest
-from pathlib import Path
 from datetime import datetime, timezone
-from unittest.mock import patch, MagicMock, PropertyMock
+from unittest.mock import patch, MagicMock
 
 from src.core.raas_auth import (
     RaaSAuthClient,
     TenantContext,
     AuthResult,
-    SessionInfo,
     get_auth_client,
 )
 
@@ -565,7 +563,6 @@ class TestSingletonPattern:
     @patch("src.core.raas_auth._auth_client", None)
     def test_get_auth_client_creates_singleton(self):
         """Test get_auth_client creates singleton instance."""
-        from src.core.raas_auth import _auth_client
 
         # Reset singleton
         import src.core.raas_auth as module

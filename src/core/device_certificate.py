@@ -21,7 +21,7 @@ from __future__ import annotations
 import hashlib
 import os
 import uuid
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from typing import Optional, Tuple, Dict, Any
 
@@ -36,7 +36,6 @@ from cryptography.x509 import (
     DNSName,
     ObjectIdentifier,
 )
-from cryptography.x509.oid import NameOID
 
 
 @dataclass

@@ -20,13 +20,11 @@ Usage:
 import hashlib
 import json
 import os
-import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
-import requests
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
