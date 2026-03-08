@@ -154,8 +154,13 @@ class TestExecuteStep:
         """Test execution with empty CC CLI prompt."""
         import asyncio
         improvement = {"cc_cli_prompt": "", "title": "Test"}
-        result = asyncio.get_event_loop().run_until_complete(agi_loop._execute(improvement))
-        assert result is False
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            result = loop.run_until_complete(agi_loop._execute(improvement))
+            assert result is False
+        finally:
+            loop.close()
 
     def test_execute_success(self, agi_loop, sample_improvement):
         """Test successful CC CLI execution."""
@@ -170,7 +175,12 @@ class TestExecuteStep:
             mock_spawner = MagicMock()
             mock_spawner.spawn = mock_spawn
             mock_get_spawner.return_value = mock_spawner
-            result = asyncio.get_event_loop().run_until_complete(agi_loop._execute(sample_improvement))
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                result = loop.run_until_complete(agi_loop._execute(sample_improvement))
+            finally:
+                loop.close()
         assert result is True
 
     def test_execute_failure(self, agi_loop, sample_improvement):
@@ -185,7 +195,12 @@ class TestExecuteStep:
             mock_spawner = MagicMock()
             mock_spawner.spawn = mock_spawn
             mock_get_spawner.return_value = mock_spawner
-            result = asyncio.get_event_loop().run_until_complete(agi_loop._execute(sample_improvement))
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                result = loop.run_until_complete(agi_loop._execute(sample_improvement))
+            finally:
+                loop.close()
         assert result is False
 
 
@@ -199,9 +214,12 @@ class TestMemorizeStep:
             mock_mem = MagicMock()
             mock_mem.is_available = False
             mock_get_mem.return_value = mock_mem
-            asyncio.get_event_loop().run_until_complete(
-                agi_loop._memorize(sample_improvement, success=True)
-            )
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(agi_loop._memorize(sample_improvement, success=True))
+            finally:
+                loop.close()
 
 
 class TestReportStep:
@@ -212,9 +230,12 @@ class TestReportStep:
         import asyncio
         agi_loop.telegram_notify = False
         with patch.object(agi_loop, "_send_telegram") as mock_send:
-            asyncio.get_event_loop().run_until_complete(
-                agi_loop._report(sample_improvement, success=True)
-            )
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(agi_loop._report(sample_improvement, success=True))
+            finally:
+                loop.close()
         mock_send.assert_not_called()
 
     def test_report_error(self, agi_loop):
@@ -222,9 +243,12 @@ class TestReportStep:
         import asyncio
         agi_loop.telegram_notify = True
         with patch.object(agi_loop, "_send_telegram") as mock_send:
-            asyncio.get_event_loop().run_until_complete(
-                agi_loop._report_error("Test error message")
-            )
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.run_until_complete(agi_loop._report_error("Test error message"))
+            finally:
+                loop.close()
         mock_send.assert_called_once()
 
 

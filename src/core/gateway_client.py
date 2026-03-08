@@ -26,7 +26,7 @@ from typing import Any, Optional
 import requests
 
 from .raas_auth import RaaSAuthClient, get_auth_client
-from .raas_audit_logger import RAASAuditLogger, get_audit_logger
+from .raas_audit_logger import get_audit_logger
 from .rate_limit_client import RateLimitClient
 from .telemetry_reporter import TelemetryReporter
 

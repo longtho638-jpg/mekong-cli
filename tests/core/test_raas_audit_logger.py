@@ -11,8 +11,7 @@ Tests cover:
 
 import os
 import pytest
-from datetime import datetime, timezone
-from unittest.mock import Mock, patch, MagicMock, PropertyMock
+from unittest.mock import Mock, patch
 
 from src.core.raas_audit_logger import (
     AuditEvent,
@@ -313,14 +312,12 @@ class TestAuditLoggerSingleton:
 
     def teardown_method(self):
         """Reset singleton after each test."""
-        from src.core.raas_audit_logger import _audit_logger
         import src.core.raas_audit_logger as module
         module._audit_logger = None
 
     def test_get_audit_logger(self):
         """Test getting singleton logger."""
         from src.core.raas_audit_logger import _audit_logger as logger1
-        from src.core.raas_audit_logger import get_audit_logger
         logger1 = get_audit_logger()
         logger2 = get_audit_logger()
         assert logger1 is logger2
