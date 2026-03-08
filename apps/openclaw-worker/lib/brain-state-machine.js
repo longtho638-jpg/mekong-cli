@@ -327,7 +327,7 @@ function hasCompletionPattern(output) {
  * WARNING: CC CLI TUI always renders ❯ even when processing.
  */
 function hasPrompt(output) {
-  if (isBusy(output)) return false;
+  if (isBusy(output).isBusy) return false;
   for (const line of getCleanTail(output, 10)) {
     const t = line.trim();
     if (!t) continue;
