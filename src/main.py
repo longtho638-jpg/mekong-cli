@@ -37,6 +37,7 @@ from src.commands.telemetry_commands import app as telemetry_app
 from src.commands.dashboard_commands import app as dashboard_app
 from src.commands.security_commands import app as security_commands_app
 from src.cli.update_commands import app as update_app
+from src.cli.raas_auth_commands import app as raas_auth_app
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -74,6 +75,7 @@ FREE_COMMANDS = {
     "compliance", "billing", "roi", "dashboard",
     "security-cmd", "security",  # Security commands are FREE (basic necessity)
     "update",  # Update check is FREE, but non-security updates require license
+    "raas-auth",  # RaaS auth is FREE (basic necessity)
 }
 
 
@@ -173,6 +175,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(dashboard_app, name="dashboard", help="📊 Analytics Dashboard")
     app.add_typer(security_commands_app, name="security-cmd", help="🔒 Security hardening commands")
     app.add_typer(update_app, name="update", help="🔄 CLI auto-update")
+    app.add_typer(raas_auth_app, name="raas-auth", help="🔐 RaaS Gateway auth (login/logout/status)")
 
 
 # Register all commands

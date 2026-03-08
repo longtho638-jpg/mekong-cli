@@ -604,7 +604,7 @@ export function cliLicenseCheck(): void {
  * Usage: app.use('/api/premium/*', requireLicenseMiddleware('pro'))
  */
 export function requireLicenseMiddleware(tier: LicenseTier = 'pro') {
-  return (req: any, res: any, next: (err?: any) => void) => {
+  return (req: { path: string }, res: { status: (code: number) => { json: (data: object) => void } }, next: (err?: Error) => void) => {
     try {
       LicenseService.getInstance().requireTier(tier, req.path);
       next();
@@ -617,7 +617,7 @@ export function requireLicenseMiddleware(tier: LicenseTier = 'pro') {
           currentTier: getLicenseTier(),
         });
       } else {
-        next(err);
+        next(err as Error);
       }
     }
   };
