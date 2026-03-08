@@ -7,11 +7,12 @@
  * 
  * Flow cho mỗi pane:
  *   1) Quét codebase (git status, recent commits, TODOs, build status)
- *   2) Gửi context cho LLM (qua Antigravity Proxy) để gen /bootstrap:auto:parallel task chính xác
+ *   2) Chọn task từ TASK_POOLS (round-robin) hoặc smart git detection
  *   3) Inject task vào CC CLI qua tmux buffer (an toàn, không crash)
  *   4) Monitor tiến độ, auto-Enter khi kẹt, auto-restart khi crash
- * 
+ *
  * Binh Pháp: 始計 (scan) → 謀攻 (plan) → 軍爭 (execute) → 九變 (adapt)
+ * NO LLM CALLS — pure regex + pool + smart detection
  */
 
 const { execSync } = require('child_process');
@@ -51,33 +52,29 @@ const PANES = buildPanesConfig();
 // ══════════════════════════════════════════════════
 const TASK_POOLS = {
     'well': [
-        '/cook "Well: Fix PayOS webhook handler — verify signature validation, idempotency, retry logic" --auto',
-        '/cook "Well: Supabase RLS audit — verify all tables have proper row-level security policies" --auto',
-        '/cook "Well: Audit i18n keys — grep t() calls vs vi.ts/en.ts, fix missing translations" --auto',
-        '/cook "Well: Fix TypeScript errors — tsc --noEmit, remove any types, strict null checks" --auto',
-        '/cook "Well: PayOS checkout flow — test all tiers, verify redirect + webhook callback" --auto',
-        '/cook "Well: Clean console.log/TODO/FIXME, add structured logging with pino" --auto',
+        '/cook "Well: PayOS webhook — verify signature validation, idempotency key, retry logic, error response codes" --auto',
+        '/cook "Well: Supabase RLS — audit all tables have row-level security policies, test with anon/auth roles" --auto',
+        '/cook "Well: i18n audit — grep t() calls vs vi.ts/en.ts, fix missing keys, verify no raw strings in JSX" --auto',
+        '/cook "Well: Auth flow — login/register/forgot-password, session refresh, protected route guards, error states" --auto',
+        '/cook "Well: Error boundary — add React error boundaries for all route segments, fallback UI, error logging" --auto',
     ],
     'sophia-ai-factory': [
-        '/cook "Sophia: Debug video pipeline — ffmpeg transcoding errors, timeout handling, retry logic" --auto',
-        '/cook "Sophia: Fix campaign template rendering — broken variables, preview mode, mobile responsive" --auto',
-        '/cook "Sophia: Fix build errors — TypeScript strict mode, verify Vercel deploy passes" --auto',
-        '/cook "Sophia: Performance — code split heavy components, lazy load video player, reduce LCP" --auto',
-        '/cook "Sophia: Security — CSP headers for video embeds, API key protection, CORS whitelist" --auto',
-    ],
-    'mekong-cli': [
-        '/cook "Mekong-CLI: Fix vibe SDK type errors — Pydantic models, type hints on all public methods" --auto',
-        '/cook "Mekong-CLI: CI pipeline repair — pytest failures, fix flaky tests, verify GitHub Actions green" --auto',
-        '/cook "Mekong-CLI: Fix RecipeOrchestrator edge cases — rollback on failed verify, self-healing retry" --auto',
-        '/cook "Mekong-CLI: Agent modules — fix imports in git_agent/file_agent/shell_agent, add error handling" --auto',
-        '/cook "Mekong-CLI: Clean TODO/FIXME/HACK from src/, update docstrings for LLM context" --auto',
+        '/cook "Sophia: Video pipeline — ffmpeg transcoding errors, timeout handling, retry logic, progress tracking" --auto',
+        '/cook "Sophia: Campaign template — fix broken variables, preview mode, mobile responsive, edge cases" --auto',
+        '/cook "Sophia: Deploy fix — TypeScript strict mode, build errors, verify Vercel deploy passes clean" --auto',
+        '/cook "Sophia: AI service test — verify all AI endpoints respond, error handling, rate limit graceful degradation" --auto',
     ],
     'algo-trader': [
-        '/cook "Algo-Trader: Fix exchange WebSocket reconnect — auto-reconnect on disconnect, exponential backoff" --auto',
-        '/cook "Algo-Trader: Order book sync — fix stale data detection, depth snapshot recovery, latency tracking" --auto',
-        '/cook "Algo-Trader: Fix TypeScript build — strict null checks, remove any types, verify tsc clean" --auto',
-        '/cook "Algo-Trader: Arbitrage engine — fix spread calculation edge cases, add slippage protection" --auto',
-        '/cook "Algo-Trader: Security — rotate API keys, add rate limit per exchange, structured audit logging" --auto',
+        '/cook "Algo-Trader: WebSocket reconnect — auto-reconnect on disconnect, exponential backoff, state recovery" --auto',
+        '/cook "Algo-Trader: Order book sync — stale data detection, depth snapshot recovery, latency tracking" --auto',
+        '/cook "Algo-Trader: API key rotate — secure key storage, rotation script, per-exchange rate limit tracking" --auto',
+        '/cook "Algo-Trader: Exchange engine perf — spread calculation edge cases, slippage protection, benchmark latency" --auto',
+    ],
+    'mekong-cli': [
+        '/cook "Mekong-CLI: Vibe SDK types — Pydantic models, type hints on all public methods, mypy clean" --auto',
+        '/cook "Mekong-CLI: CI pipeline — fix pytest failures, flaky test detection, verify GitHub Actions green" --auto',
+        '/cook "Mekong-CLI: Pytest fix — run full test suite, fix broken tests, ensure 100% pass rate" --auto',
+        '/cook "Mekong-CLI: Agent module audit — fix imports in git_agent/file_agent/shell_agent, error handling" --auto',
     ],
 };
 const taskPoolCounters = {}; // project → index for round-robin
@@ -215,130 +212,18 @@ function scanCodebase(pane) {
 }
 
 // ══════════════════════════════════════════════════
-
-const dedup = require('../lib/task-dedup-registry.js');
-
-// ══════════════════════════════════════════════════
-// LLM TASK GENERATOR (Binh Pháp Strategic Scanner)
-// NEVER returns null — always produces a /plan:hard task
-// ══════════════════════════════════════════════════
-const DIM_COOLDOWN_FILE = '/tmp/vibe-dim-cooldown.json';
-const DIM_COOLDOWN_MS = 12 * 60 * 1000; // 12 minutes per dimension per pane
-
-function loadDimCooldown() {
-    try { return JSON.parse(fs.readFileSync(DIM_COOLDOWN_FILE, 'utf-8')); } catch { return {}; }
-}
-function saveDimCooldown(data) {
-    try { fs.writeFileSync(DIM_COOLDOWN_FILE, JSON.stringify(data)); } catch { }
-}
-function isDimOnCooldown(paneIdx, dim) {
-    const key = `P${paneIdx}:${dim}`;
-    const data = loadDimCooldown();
-    const ts = data[key];
-    if (!ts) return false;
-    return (Date.now() - ts) < DIM_COOLDOWN_MS;
-}
-// ══════════════════════════════════════════════════
-// SCORE HISTORY TRACKER
+// SCORE HISTORY TRACKER (lightweight, no LLM)
 // ══════════════════════════════════════════════════
 const SCORE_HISTORY_FILE = '/tmp/vibe-score-history.json';
 
-function loadScoreHistory() {
-    try { return JSON.parse(fs.readFileSync(SCORE_HISTORY_FILE, 'utf-8')); } catch { return {}; }
-}
 function recordScore(project, scoreResult) {
-    const history = loadScoreHistory();
-    if (!history[project]) history[project] = [];
-    history[project].push({ ts: Date.now(), total: scoreResult.total, grade: scoreResult.grade, breakdown: scoreResult.breakdown });
-    // Keep last 20 entries per project
-    if (history[project].length > 20) history[project] = history[project].slice(-20);
-    try { fs.writeFileSync(SCORE_HISTORY_FILE, JSON.stringify(history, null, 2)); } catch { }
-}
-function getDimAttempts(project, dim) {
-    const history = loadScoreHistory();
-    const entries = history[project] || [];
-    if (entries.length < 2) return 0;
-    const last = entries[entries.length - 1];
-    const prev = entries[entries.length - 2];
-    if (!last.breakdown || !prev.breakdown) return 0;
-    // If score for this dim hasn't improved between last 2 entries
-    return (last.breakdown[dim] || 0) <= (prev.breakdown[dim] || 0) ? 1 : 0;
-}
-
-function recordDimUsage(paneIdx, dim) {
-    const key = `P${paneIdx}:${dim}`;
-    const data = loadDimCooldown();
-    data[key] = Date.now();
-    // Prune old entries (>1hr)
-    for (const k of Object.keys(data)) { if (Date.now() - data[k] > 3600000) delete data[k]; }
-    saveDimCooldown(data);
-}
-
-async function generateScoreTargetedTask(pane, scoreResult) {
-    // 1. Sort dimensions by score (lowest first)
-    const sorted = Object.entries(scoreResult.breakdown)
-        .sort(([, a], [, b]) => a - b);
-
-    // 2. Always pick the LOWEST scoring dim that is NOT maxed (10) and NOT on cooldown
-    let selectedDim = null;
-    let selectedScore = 0;
-    for (const [dim, score] of sorted) {
-        if (score >= 10) continue; // Already maxed
-        if (!isDimOnCooldown(pane.idx, dim)) {
-            selectedDim = dim;
-            selectedScore = score;
-            break;
-        }
-    }
-    // Fallback: if all dims on cooldown, pick absolute lowest
-    if (!selectedDim) {
-        selectedDim = sorted[0][0];
-        selectedScore = sorted[0][1];
-    }
-    recordDimUsage(pane.idx, selectedDim);
-
-    const weakestDim = selectedDim;
-    const weakestScore = selectedScore;
-    let taskCmd = '';
-    const proj = pane.project;
-
-    // ═══ 4-TIER BINH PHÁP SMART DISPATCH (風林火山) ═══
-    // Mapped from BINH_PHAP_MASTER.md DNA FUSION v4.0
-    const totalScore = scoreResult.total;
-    const stuckAttempts = getDimAttempts(proj, weakestDim);
-
-    let tier, tierCmd;
-    if (stuckAttempts >= 3) {
-        // TIER 2: 行軍 Ch.9 (Hành Quân) - Recon & Root Cause
-        // 近而靜者恃其險 - Hidden errors require deep reconnaissance
-        tier = 'TIER2-HÀNH-QUÂN';
-        tierCmd = `/cook "HÀNH QUÂN DEBUG (${proj}): Điểm ${weakestDim} kẹt ${stuckAttempts} lần. Tôn chỉ: Tìm Root Cause trước khi fix. Trinh sát log lỗi, tái hiện, phân tích hypothesis, sau đó dứt điểm."`;
-        log(`P${pane.idx}: 🔴 TIER 2 → HÀNH QUÂN DEBUG (${weakestDim} stuck ${stuckAttempts}x)`);
-    } else if (totalScore < 60) {
-        // TIER 1: 侵掠如火 (Mạnh như LỬA - Complex Rewrite)
-        // 兵無常勢，水無常形 - Total attack to establish the foundation
-        tier = 'TIER1-LỬA-CÔNG';
-        tierCmd = `/cook "LỬA CÔNG BOOTSTRAP (${proj}): Tái cấu trúc toàn diện. Setup vững chắc 100/100 (Build/Test Xanh). Không ngần ngại đập đi xây lại chuẩn mực."`;
-        log(`P${pane.idx}: 🚀 TIER 1 → LỬA CÔNG BOOTSTRAP (score ${totalScore} < 60)`);
-    } else if (totalScore < 85) {
-        // TIER 3: 徐如林 (Lặng như RỪNG - Targeted Strategy)
-        // 避實擊虛 - Avoid strong, hit weak points
-        tier = 'TIER3-RỪNG-CHIẾN';
-        tierCmd = `/cook "RỪNG CHIẾN LƯỢC (${proj}): Đánh thẳng điểm yếu ${weakestDim} (${weakestScore}→10), bỏ qua phần khác. Dứt điểm 1 mục tiêu gọn gàng. Verify test pass."`;
-        log(`P${pane.idx}: ⚔️ TIER 3 → RỪNG CHIẾN LƯỢC (score ${totalScore}, dim ${weakestDim}=${weakestScore})`);
-    } else {
-        // TIER 4: 疾如風 (Nhanh như GIÓ - Polish)
-        // 兵貴勝不貴久 - Speed and perfection
-        tier = 'TIER4-GIÓ-POLISH';
-        tierCmd = `/cook "GIÓ POLISH (${proj}): Tút tát thần tốc ${weakestDim} lên điểm tuyệt đối 10. Hoàn thiện final touch. Build/Test phải Xanh 100%."`;
-        log(`P${pane.idx}: 🌪️ TIER 4 → GIÓ POLISH (score ${totalScore} ≥ 85, dim ${weakestDim}=${weakestScore})`);
-    }
-
-    taskCmd = tierCmd;
-    log(`P${pane.idx}: 🎯 ${tier} | Score: ${totalScore} | Weakest: ${weakestDim}=${weakestScore} | for ${proj}`);
-    dedup.recordTask(taskCmd, pane.project, pane.idx, `${tier}: ${weakestDim}`);
-
-    return taskCmd;
+    try {
+        const history = JSON.parse(fs.readFileSync(SCORE_HISTORY_FILE, 'utf-8'));
+        if (!history[project]) history[project] = [];
+        history[project].push({ ts: Date.now(), total: scoreResult.total, grade: scoreResult.grade });
+        if (history[project].length > 20) history[project] = history[project].slice(-20);
+        fs.writeFileSync(SCORE_HISTORY_FILE, JSON.stringify(history, null, 2));
+    } catch { }
 }
 
 // ══════════════════════════════════════════════════
@@ -574,76 +459,9 @@ async function checkAllPanes() {
             }
 
             case 'RATE_LIMITED': {
-                // 🔄 BIDIRECTIONAL FAILOVER: BytePlus ↔ DashScope
-                // NOTE: Blackbox is OpenAI-only — CC CLI requires Anthropic protocol
-                // Blackbox is used for CTO brain failover only (llm-perception.js)
-                const PROVIDERS = [
-                    {
-                        id: 'dashscope', name: 'DashScope',
-                        key: 'sk-sp-afce4429a10e41bb901d6012d7f525c8',
-                        url: 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
-                        model: 'qwen3-coder-plus', opus: 'qwen3-coder-plus', haiku: 'qwen3-coder-plus',
-                        small: 'qwen3-coder-plus', large: 'qwen3-coder-plus'
-                    },
-                    {
-                        id: 'byteplus', name: 'BytePlus',
-                        key: '5cee0d73-2a72-4f29-b001-c19f3e1c32ba',
-                        url: 'https://ark.ap-southeast.bytepluses.com/api/coding',
-                        model: 'kimi-k2.5', opus: 'kimi-k2-thinking', haiku: 'ark-code-latest',
-                        small: 'ark-code-latest', large: 'kimi-k2.5'
-                    },
-                    {
-                        id: 'siliconflow', name: 'SiliconFlow',
-                        key: 'sk-sp-afce4429a10e41bb901d6012d7f525c8',
-                        url: 'https://api.siliconflow.cn/v1',
-                        model: 'qwen3-coder-plus', opus: 'qwen3-coder-plus', haiku: 'qwen3-coder-plus',
-                        small: 'qwen3-coder-plus', large: 'qwen3-coder-plus'
-                    }
-                ];
-
-                // Detect current provider and rotate to next
-                let currentIdx = 0;
-                try {
-                    const settings = JSON.parse(fs.readFileSync(path.join(process.env.HOME, '.claude/settings.json'), 'utf-8'));
-                    const baseUrl = settings.env?.ANTHROPIC_BASE_URL || '';
-                    if (baseUrl.includes('siliconflow')) currentIdx = 0;
-                    else if (baseUrl.includes('bytepluses')) currentIdx = 1;
-                    else if (baseUrl.includes('dashscope')) currentIdx = 2;
-                } catch { }
-
-                const nextIdx = (currentIdx + 1) % PROVIDERS.length;
-                const target = PROVIDERS[nextIdx];
-                log(`P${pane.idx}: 🔶 RATE LIMITED on ${PROVIDERS[currentIdx].name} — ROTATING TO ${target.name} 🚀`);
-
-                // Update settings.json for ALL panes (global switch)
-                try {
-                    const settingsPath = path.join(process.env.HOME, '.claude/settings.json');
-                    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
-                    settings.env.ANTHROPIC_API_KEY = target.key;
-                    settings.env.ANTHROPIC_AUTH_TOKEN = target.key;
-                    settings.env.ANTHROPIC_BASE_URL = target.url;
-                    settings.env.ANTHROPIC_MODEL = target.model;
-                    settings.env.ANTHROPIC_DEFAULT_OPUS_MODEL = target.opus;
-                    settings.env.ANTHROPIC_DEFAULT_SONNET_MODEL = target.model;
-                    settings.env.ANTHROPIC_DEFAULT_HAIKU_MODEL = target.haiku;
-                    settings.model = target.model;
-                    settings.smallModelId = target.small;
-                    settings.largeModelId = target.large;
-                    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
-                    log(`P${pane.idx}: 📝 settings.json updated → ${target.name} (${target.model})`);
-                } catch (e) { log(`P${pane.idx}: ⚠️ settings.json update failed: ${e.message}`); }
-
-                // Respawn ALL panes EXCEPT P5 (Opus 4.6 — uses its own auth, NEVER override)
-                for (const p of PANES) {
-                    if (p.isOpus) {
-                        log(`P${p.idx}: 🔒 OPUS PROTECTED — skipping respawn (uses own auth/model)`);
-                        continue;
-                    }
-                    try {
-                        respawnPane(p.idx, p.dir);
-                        log(`P${p.idx}: ✅ Respawned on ${target.name} (${target.model})`);
-                    } catch { }
-                }
+                // Rate limited — respawn pane to reset session (no provider rotation needed)
+                log(`P${pane.idx}: 🔶 RATE LIMITED — respawning pane to reset`);
+                respawnPane(pane.idx, pane.dir);
                 break;
             }
 
@@ -843,15 +661,13 @@ async function checkAllPanes() {
                     }
                 }
                 if (!cookCmd) {
-                    // Step 2: Pool — round-robin hardcoded tasks
+                    // Step 2: Pool — round-robin hardcoded tasks (no LLM needed)
                     const poolTask = getNextPoolTask(pane.project);
                     if (poolTask) {
                         cookCmd = poolTask;
                         log(`P${pane.idx}: 🏭 POOL TASK: ${cookCmd.slice(0, 80)}...`);
                     } else {
-                        // Step 3: Score fallback — Binh Pháp dimension targeting
-                        log(`P${pane.idx}: ⏸️ No pool for ${pane.project}. Using score fallback...`);
-                        cookCmd = await generateScoreTargetedTask(pane, scoreResult);
+                        log(`P${pane.idx}: ⏸️ No pool for ${pane.project}. Skipping injection.`);
                     }
                 }
 
