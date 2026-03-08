@@ -310,7 +310,7 @@ function detectPaneState(output) {
     // 🦞 Detect low context BEFORE it hits 0% and crashes. CC CLI shows "Context left until auto-compact: X%"
     if (/Context limit reached/.test(output)) return 'CONTEXT_LIMIT';
     if (/Context left until auto-compact: ([0-9]|1[0-5])%/.test(output)) return 'LOW_CONTEXT';
-    if (/rate-limit-options|You've hit your limit|API Error: 429|"code":"throttling"|quota exceeded/.test(output)) return 'RATE_LIMITED';
+    if (/rate-limit-options|You've hit your limit|API Error: 429|"code":"throttling"|quota exceeded|AccountQuotaExceeded|TooManyRequests|exceeded the.*usage quota|Retrying in \d+ seconds/.test(output)) return 'RATE_LIMITED';
     if (/(›|❯)\s*(git (push|commit|add)|queued messages|Press up to edit)/.test(output)) return 'PENDING';
     if (/(›|❯)\s*\/(cook|bootstrap|plan|debug) /.test(output)) return 'STUCK_PROMPT';
     // ClaudeKit interactive prompts (validation, options menu, submit answers)
