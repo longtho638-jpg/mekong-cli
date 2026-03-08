@@ -35,6 +35,8 @@ from src.cli.billing_commands import app as billing_app
 from src.cli.roi_commands import app as roi_app
 from src.commands.telemetry_commands import app as telemetry_app
 from src.commands.dashboard_commands import app as dashboard_app
+from src.commands.security_commands import app as security_commands_app
+from src.cli.update_commands import app as update_app
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -70,6 +72,8 @@ FREE_COMMANDS = {
     "doctor", "help", "dash", "license", "clean", "test",
     "license-admin", "analytics", "tier-admin", "debug-rate-limits", "sync-raas",
     "compliance", "billing", "roi", "dashboard",
+    "security-cmd", "security",  # Security commands are FREE (basic necessity)
+    "update",  # Update check is FREE, but non-security updates require license
 }
 
 
@@ -167,6 +171,8 @@ def _register_legacy_commands() -> None:
     app.add_typer(roi_app, name="roi", help="🎯 ROI Unified Command - auth, usage, billing, dashboard")
     app.add_typer(telemetry_app, name="telemetry", help="📊 Telemetry consent management")
     app.add_typer(dashboard_app, name="dashboard", help="📊 Analytics Dashboard")
+    app.add_typer(security_commands_app, name="security-cmd", help="🔒 Security hardening commands")
+    app.add_typer(update_app, name="update", help="🔄 CLI auto-update")
 
 
 # Register all commands

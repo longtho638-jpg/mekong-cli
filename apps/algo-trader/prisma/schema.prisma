@@ -185,3 +185,42 @@ model UsageEvent {
   @@index([tenantId, createdAt])
   @@map("usage_events")
 }
+
+enum DunningStatus {
+  ACTIVE
+  GRACE_PERIOD
+  SUSPENDED
+  REVOKED
+}
+
+model DunningState {
+  id                String         @id @default(uuid())
+  tenantId          String         @unique
+  status            DunningStatus  @default(ACTIVE)
+  failedPayments    Int            @default(0)
+  currentPeriodEnd  DateTime?
+  gracePeriodDays   Int            @default(7)
+  suspendedAt       DateTime?
+  revokedAt       DateTime?
+  lastPaymentFailedAt DateTime?
+  lastPaymentRecoveredAt DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([status])
+  @@index([tenantId, status])
+  @@map("dunning_states")
+}
+
+model DunningEvent {
+  id          String   @id @default(uuid())
+  tenantId    String
+  eventType   String   // payment_failed, grace_started, suspended, revoked, payment_recovered, overage_charged
+  severity    String?  // info, warning, critical
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+
+  @@index([tenantId, createdAt])
+  @@index([eventType])
+  @@map("dunning_events")
+}

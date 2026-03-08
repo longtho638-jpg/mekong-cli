@@ -13,6 +13,7 @@ from rich.text import Text
 
 from src.core.parser import Recipe, RecipeStep
 from src.core.verifier import ExecutionResult
+from src.security.command_sanitizer import CommandSanitizer
 
 
 class RecipeExecutor:
@@ -168,6 +169,32 @@ class RecipeExecutor:
                 stderr="",
                 metadata={"mode": "shell", "skipped": True},
             )
+
+        # SECURITY: Sanitize command before execution
+        sanitizer = CommandSanitizer(strict_mode=True)
+        sanitization_result = sanitizer.sanitize(command)
+
+        if not sanitization_result.is_safe:
+            error_msg = f"Command blocked - dangerous patterns detected: {', '.join(sanitization_result.blocked_patterns)}"
+            self.console.print(f"[bold red]SECURITY ERROR:[/bold red] {error_msg}")
+            return ExecutionResult(
+                exit_code=1,
+                stdout="",
+                stderr=f"SECURITY_BLOCKED: {error_msg}",
+                metadata={
+                    "mode": "shell",
+                    "command": command,
+                    "security_blocked": True,
+                    "blocked_patterns": sanitization_result.blocked_patterns,
+                },
+            )
+
+        # Use sanitized command
+        command = sanitization_result.sanitized_command
+
+        # Log warnings if any
+        for warning in sanitization_result.warnings:
+            self.console.print(f"[yellow]Security Warning:[/yellow] {warning}")
 
         max_attempts = step.params.get("retry", 1) + 1 if step.params else 2
         retry_delay = step.params.get("retry_delay", 2) if step.params else 2
