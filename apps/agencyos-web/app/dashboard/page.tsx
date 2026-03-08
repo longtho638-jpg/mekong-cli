@@ -3,6 +3,7 @@ import { Target, Bot, TrendingUp, Activity } from 'lucide-react'
 import { MissionFeedTable } from '@/components/mission-feed-table'
 import { AgentActivityLog } from '@/components/agent-activity-log-scrollable'
 import { McuUsageBarChart } from '@/components/mcu-usage-bar-chart-svg'
+import { TradeMonitorWidget } from '@/components/trading/TradeMonitorWidget'
 import { getMissions, getDashboardStats } from '@/lib/fetch-dashboard-data'
 
 export default async function DashboardPage() {
@@ -47,6 +48,15 @@ export default async function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* Trade Monitor Widget */}
+      <TradeMonitorWidget
+        tenantId={user?.id || 'anonymous'}
+        apiKey={process.env.NEXT_PUBLIC_RAAS_API_KEY || ''}
+        tier="pro"
+        showHeader={true}
+        compact={false}
+      />
 
       {/* MCU Chart + Activity Log side by side on large screens */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
