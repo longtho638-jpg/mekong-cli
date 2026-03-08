@@ -137,12 +137,14 @@ function detectProjectDir(taskContent, taskFile = '') {
   // 2. FALLBACK TO CONTENT (Only if filename is generic)
   for (const [keyword, dir] of Object.entries(routes)) {
     const target = path.join(config.MEKONG_DIR, dir);
+    // FIX: Short keywords (<=3 chars) need exact match to avoid false positives
     if (keyword.length <= 3 && lowerContent === keyword) {
       if (fs.existsSync(target)) {
         log(`[ROUTING] Content exact match: ${keyword} -> ${target}`);
         return target;
       }
     }
+    // Longer keywords use substring match
     if (keyword.length > 3 && lowerContent.includes(keyword)) {
       if (fs.existsSync(target)) {
         log(`[ROUTING] Content keyword match: ${keyword} -> ${target}`);
@@ -154,7 +156,11 @@ function detectProjectDir(taskContent, taskFile = '') {
   // 3. IRON FOCUS VALIDATION: If config.PROJECTS is set, don't wander off!
   if (config.PROJECTS && config.PROJECTS.length > 0) {
     const defaultProj = config.PROJECTS[0];
-    const target = path.join(config.MEKONG_DIR, routes[defaultProj] || `apps/${defaultProj}`);
+    // FIX: Use correct routes lookup - defaultProj may not exist in routes
+    const routePath = routes[defaultProj];
+    const target = routePath
+      ? path.join(config.MEKONG_DIR, routePath === '.' ? '' : routePath)
+      : path.join(config.MEKONG_DIR, `apps/${defaultProj}`);
     if (fs.existsSync(target)) {
       log(`[ROUTING] Iron Focus fallback: ${defaultProj} -> ${target}`);
       return target;

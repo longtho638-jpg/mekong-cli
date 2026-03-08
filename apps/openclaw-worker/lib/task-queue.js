@@ -83,8 +83,14 @@ async function processQueue() {
     queue.sort((a, b) => getPriority(a) - getPriority(b));
 
     // 🥪 DUAL-STREAM FLYWHEEL: Allow 2 concurrent missions (P0 and P1)
-    if (activeCount >= 2 || queue.length === 0) return;
+    // 🔒 FIX Bug #13: Atomic increment to prevent race condition
+    if (incrementingActive || activeCount >= 2 || queue.length === 0) {
+      _processing = false;
+      return;
+    }
+    incrementingActive = true;
     activeCount++;
+    incrementingActive = false;
   } finally {
     _processing = false;
   }

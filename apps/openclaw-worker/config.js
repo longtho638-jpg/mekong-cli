@@ -51,9 +51,43 @@ const config = {
   // Engine selection: 'antigravity' (default, port 20128) or 'qwen' (port 8081)
   // 🔒 LOCKED — 'antigravity' uses port 20128 → upstream AG 9191 + Google fallback
   ENGINE: process.env.TOM_HUM_ENGINE || 'antigravity',
-  // 🎯 STICKY ROUTING MODE — 3-worker assignment (Feb 28 2026)
-  // P0: mekong-cli | P1: algo-trader | P2: well
-  PROJECTS: ['mekong-cli', 'algo-trader', 'well'],
+  // 🎯 STICKY ROUTING MODE — 6-worker assignment (Mar 08 2026)
+  // P0: openclaw-worker | P1: well | P2: algo-trader | P3: sophia | P4: Opus strategic | P5: mekong-cli-core
+  // FIX: Removed duplicate 'mekong-cli' entry
+  PROJECTS: ['openclaw-worker', 'well', 'algo-trader', 'sophia-ai-factory', 'mekong-cli-core', 'mekong-cli'],
+
+  // FIX: Increased from 100ms to reduce CPU usage on idle
+  // 100ms quá aggressive cho polling, 500ms là hợp lý cho backup poll
+  POLL_INTERVAL_MS: 500, // ⚡ BALANCED: 500ms Polling (reduced CPU usage)
+  COOLING_INTERVAL_MS: 90000,
+  SCANNER_INTERVAL_MS: 30 * 60 * 1000, // 30 mins — Level 4 Scanner
+  AUTO_CTO_EMPTY_THRESHOLD: 10, // 10 polls × 0.2s = 2s idle → generate next task
+  STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
+  API_RATE_GATE_MS: 0, // 🛡️ PROXY_RULES §4: Nuclear Speed — AG Ultra UNLIMITED, zero gap
+  // 🔒 LOCKED — DO NOT CHANGE (2026-02-15) — Port must match running anthropic-adapter.js
+  // 🦞 LOBSTER PILOT v1.0: Route through ADAPTER (20128)
+  // 🦞 HYBRID BRAIN v2.0: Route CC CLI through BRIDGE (20129) -> ADAPTER (20128)
+  PROXY_PORT: process.env.PROXY_PORT ? parseInt(process.env.PROXY_PORT) : 20129,
+  // Anthropic Adapter (translates /v1/messages → dual AG Proxy rotation)
+  // 🦞 LOBSTER: Cân bằng tải 2 acc Ultra qua adapter
+  CLOUD_BRAIN_URL: process.env.CLOUD_BRAIN_URL || 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
+  QWEN_PROXY_PORT: 8081, // Qwen/VLLM dedicated port
+  MODEL_NAME: process.env.MODEL_NAME || 'qwen3-coder-plus', // DashScope direct
+  // 虛實 Binh Phap Model Hierarchy
+  // 🔥LỬA (Complex) → qwen3-max-2026-01-23
+  OPUS_MODEL: 'qwen3-max-2026-01-23', // DashScope strongest
+  USE_GH_MODELS: false,
+  GH_MODEL_NAME: 'qwen3-coder-plus',
+  WORKER_MODEL_NAME: 'qwen3-coder-plus', // DashScope worker model
+  FALLBACK_MODEL_NAME: 'qwen3.5-plus', // CTO Brain = strongest model
+  QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
+  // Engine selection: 'antigravity' (default, port 20128) or 'qwen' (port 8081)
+  // 🔒 LOCKED — 'antigravity' uses port 20128 → upstream AG 9191 + Google fallback
+  ENGINE: process.env.TOM_HUM_ENGINE || 'antigravity',
+  // 🎯 STICKY ROUTING MODE — 6-worker assignment (Mar 08 2026)
+  // P0: openclaw-worker | P1: well | P2: algo-trader | P3: sophia | P4: Opus strategic | P5: mekong-cli-core
+  // FIX: Removed duplicate 'mekong-cli' entry
+  PROJECTS: ['openclaw-worker', 'well', 'algo-trader', 'sophia-ai-factory', 'mekong-cli-core', 'mekong-cli'],
 
   // Self-Healer (v2026.2.13)
   HEALTH_CHECK_INTERVAL_MS: 30_000,
@@ -71,8 +105,8 @@ const config = {
   TMUX_SESSION: 'tom_hum',
 
   // Agent Team orchestration
-  AGENT_TEAM_SIZE_DEFAULT: 3, // 3 workers: P0(standby) P1(well) P2(algo-trader)
-  MAX_CONCURRENT_MISSIONS: 2, // P1 + P2 active, P0 standby
+  AGENT_TEAM_SIZE_DEFAULT: 6, // 6 workers: P0(openclaw) P1(well) P2(core) P3(sophia) P4(Opus) P5(algo-trader)
+  MAX_CONCURRENT_MISSIONS: 5, // 5 active + P4 strategic standby
   AGENT_TEAM_TIMEOUT_MS: 4 * 60 * 60 * 1000, // 4 hours for deep missions
 
   // Complexity classification keywords
