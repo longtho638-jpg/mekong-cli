@@ -317,7 +317,6 @@ class TestAuditLoggerSingleton:
 
     def test_get_audit_logger(self):
         """Test getting singleton logger."""
-        from src.core.raas_audit_logger import _audit_logger as logger1
         logger1 = get_audit_logger()
         logger2 = get_audit_logger()
         assert logger1 is logger2
@@ -375,23 +374,35 @@ class TestGatewayClientIntegration:
         mock_response.headers = {"X-RateLimit-Remaining": "100"}
         mock_session_cls.return_value.request.return_value = mock_response
 
-        # Import after mocks are set up
-        from src.core.gateway_client import GatewayClient
+        # Disable local test mode for this test
+        old_local_test = os.environ.get("RAAS_LOCAL_TEST")
+        os.environ["RAAS_LOCAL_TEST"] = "false"
 
-        client = GatewayClient()
-        result = client.request("POST", "/v1/test", json={"test": "data"})
+        try:
+            # Import after mocks are set up
+            from src.core.gateway_client import GatewayClient
 
-        # Verify request was made with correct headers
-        call_args = mock_session_cls.return_value.request.call_args
-        headers = call_args[1]["headers"]
+            client = GatewayClient()
+            _ = client.request("POST", "/v1/test", json={"test": "data"})
 
-        assert "Authorization" in headers
-        assert "X-RaaS-Source" in headers
-        assert headers["X-RaaS-Source"] == "mekong-cli"
-        assert headers["X-RaaS-Phase"] == "6"
+            # Verify request was made with correct headers
+            call_args = mock_session_cls.return_value.request.call_args
+            assert call_args is not None, "Gateway request was not called"
+            headers = call_args[1]["headers"]
 
-        # Verify audit was logged
-        mock_audit.log_event.assert_called_once()
+            assert "Authorization" in headers
+            assert "X-RaaS-Source" in headers
+            assert headers["X-RaaS-Source"] == "mekong-cli"
+            assert headers["X-RaaS-Phase"] == "6"
+
+            # Verify audit was logged
+            mock_audit.log_event.assert_called_once()
+        finally:
+            # Restore original value
+            if old_local_test is None:
+                os.environ.pop("RAAS_LOCAL_TEST", None)
+            else:
+                os.environ["RAAS_LOCAL_TEST"] = old_local_test
 
 
 class TestRaasDebugFlag:

@@ -74,6 +74,12 @@ class TelemetryReporter:
             conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON usage_records(timestamp)")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_tenant ON usage_records(tenant_id)")
 
+            # Migration: Add tenant_id column if not exists (for existing DBs)
+            try:
+                conn.execute("ALTER TABLE usage_records ADD COLUMN tenant_id TEXT")
+            except sqlite3.OperationalError:
+                pass  # Column already exists
+
     def record_call(
         self,
         endpoint: str,
@@ -230,6 +236,56 @@ class TelemetryReporter:
                 if row[4]
                 else None,
             }
+
+    def get_metrics(self) -> list[dict[str, Any]]:
+        """
+        Get all telemetry metrics for sync.
+
+        Returns:
+            List of metric dictionaries
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            conn.row_factory = sqlite3.Row
+            cursor = conn.execute(
+                """
+                SELECT * FROM usage_records
+                ORDER BY timestamp ASC
+                LIMIT 1000
+                """
+            )
+            return [dict(row) for row in cursor.fetchall()]
+
+    def get_hourly_metrics(self) -> list[dict[str, Any]]:
+        """
+        Get metrics aggregated by hour bucket.
+
+        Returns:
+            List of hourly bucket metrics
+        """
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(
+                """
+                SELECT
+                    strftime('%Y-%m-%d-%H', datetime(timestamp, 'unixepoch')) as hour_bucket,
+                    COUNT(*) as request_count,
+                    SUM(payload_size) as total_payload_size,
+                    endpoint,
+                    method
+                FROM usage_records
+                GROUP BY hour_bucket, endpoint, method
+                ORDER BY hour_bucket ASC
+                """
+            )
+            return [
+                {
+                    "hour_bucket": row[0],
+                    "request_count": row[1],
+                    "payload_size": row[2],
+                    "endpoint": row[3],
+                    "method": row[4],
+                }
+                for row in cursor.fetchall()
+            ]
 
 
 # Singleton

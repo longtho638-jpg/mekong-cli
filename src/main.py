@@ -20,8 +20,6 @@ import sys
 from src.raas.phase_completion_detector import get_detector, PhaseStatus
 from src.core.graceful_shutdown import (
     get_shutdown_handler,
-    register_shutdown_cleanup,
-    shutdown_on_all_phases_operational,
 )
 
 # Command modules
@@ -36,6 +34,7 @@ from src.cli.roi_commands import app as roi_app
 from src.commands.telemetry_commands import app as telemetry_app
 from src.commands.dashboard_commands import app as dashboard_app
 from src.commands.security_commands import app as security_commands_app
+from src.commands.sync_commands import app as sync_app
 from src.cli.update_commands import app as update_app
 from src.cli.raas_auth_commands import app as raas_auth_app
 from src.commands.raas_validate import validate_license, license_status
@@ -112,9 +111,6 @@ def _validate_startup_license(ctx: typer.Context) -> None:
     is_valid, error = validator.validate()
 
     if not is_valid:
-        # Get actual command name for error message
-        from src.lib.raas_gate_utils import get_upgrade_message
-        error_message = get_upgrade_message(command)
         console.print(f"[bold red]License Error:[/bold red] {error}")
         console.print(
             "\n[yellow]Get a license key from RaaS Gateway:[/yellow]"
@@ -177,6 +173,7 @@ def _register_legacy_commands() -> None:
     app.add_typer(telemetry_app, name="telemetry", help="📊 Telemetry consent management")
     app.add_typer(dashboard_app, name="dashboard", help="📊 Analytics Dashboard")
     app.add_typer(security_commands_app, name="security-cmd", help="🔒 Security hardening commands")
+    app.add_typer(sync_app, name="sync", help="🔄 RaaS usage metrics sync")
     app.add_typer(update_app, name="update", help="🔄 CLI auto-update")
     app.add_typer(raas_auth_app, name="raas-auth", help="🔐 RaaS Gateway auth (login/logout/status)")
     app.add_typer(raas_auth_app, name="auth", help="🔐 RaaS Gateway auth (login/logout/status)")
@@ -287,13 +284,13 @@ def health(
     register_component_check("telegram", check_telegram)
     register_component_check("proxy", check_proxy)
 
-    console.print(f"[bold cyan]🏥 Health Endpoint[/bold cyan]")
+    console.print("[bold cyan]🏥 Health Endpoint[/bold cyan]")
     console.print(f"[dim]Starting server at {get_health_url(host, port)}[/dim]")
     console.print(f"[dim]Dashboard: {get_health_url(host, port).replace('/health', '/docs')}[/dim]")
     console.print()
     console.print("[dim]Press Ctrl+C to stop[/dim]\n")
 
-    server = start_health_server(host=host, port=port)
+    start_health_server(host=host, port=port)
 
     try:
         while True:
@@ -392,7 +389,7 @@ async def complete_phase6(
             if save_certificate(cert, export_cert):
                 console.print(f"\n[green]✓ Certificate exported to:[/green] {export_cert}")
             else:
-                console.print(f"\n[yellow]⚠ Failed to export certificate[/yellow]")
+                console.print("\n[yellow]⚠ Failed to export certificate[/yellow]")
         else:
             # Save to default location
             default_path = save_certificate(cert)
@@ -418,7 +415,7 @@ def analytics(
     """📊 Launch analytics dashboard (RaaS usage tracking)."""
     from src.api.dashboard.app import run_dashboard
 
-    console.print(f"[bold cyan]🐉 Mekong Analytics Dashboard[/bold cyan]")
+    console.print("[bold cyan]🐉 Mekong Analytics Dashboard[/bold cyan]")
     console.print(f"[dim]Starting server at http://localhost:{port}[/dim]")
     console.print(f"[dim]API docs: http://localhost:{port}/api/docs[/dim]")
     console.print()

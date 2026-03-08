@@ -91,6 +91,8 @@ class GatewayClient:
         """
         Initialize Gateway Client with Circuit Breaker.
 
+        Phase 6.3: Local test mode via RAAS_LOCAL_TEST environment variable.
+
         Args:
             gateway_url: RaaS Gateway URL (default: from env or DEFAULT)
             auth_client: Optional auth client instance
@@ -103,6 +105,8 @@ class GatewayClient:
         self.telemetry = TelemetryReporter()
         self.audit = get_audit_logger()
         self._session = requests.Session()
+        # Phase 6.3: Local test mode
+        self.local_test_mode = os.getenv("RAAS_LOCAL_TEST", "").lower() == "true"
 
         # Circuit breaker state for each gateway
         self._circuit_states: dict[str, CircuitState] = {}
@@ -233,6 +237,7 @@ class GatewayClient:
         """
         Make authenticated request through gateway with circuit breaker failover.
 
+        Phase 6.3: If RAAS_LOCAL_TEST=true, return mock responses for offline testing.
         Phase 6: Enhanced with JWT-bound usage attribution and audit logging.
         Circuit Breaker: Auto-failover to secondary/tertiary gateways on failures.
 
@@ -248,6 +253,10 @@ class GatewayClient:
         Raises:
             GatewayError: On gateway errors
         """
+        # Phase 6.3: Local test mode - return mock response
+        if self.local_test_mode:
+            return self._mock_request(method, path)
+
         # Check rate limit before request
         if not self.rate_limit.can_proceed():
             self.rate_limit.wait_for_reset()
@@ -528,6 +537,73 @@ class GatewayClient:
     def flush_telemetry(self) -> None:
         """Flush pending telemetry to gateway."""
         self.telemetry.flush()
+
+    def _mock_request(self, method: str, path: str) -> GatewayResponse:
+        """
+        Phase 6.3: Return mock response for local testing.
+
+        Returns mock data for common endpoints without calling gateway.
+        """
+        import random
+        from datetime import datetime
+
+        # Mock response for /v1/usage endpoint
+        if "/v1/usage" in path:
+            mock_data = {
+                "license_key": "mk_mock_key",
+                "tenant_id": "local_mock",
+                "metrics": [
+                    {
+                        "license_key": "mk_mock_key",
+                        "tenant_id": "local_mock",
+                        "tier": "pro",
+                        "endpoint": "/v1/cook",
+                        "method": "POST",
+                        "request_count": random.randint(10, 100),
+                        "payload_size": random.randint(100, 1000),
+                        "timestamp": datetime.now().isoformat(),
+                        "hour_bucket": datetime.now().strftime("%Y-%m-%d-%H"),
+                        "metric_name": "api_calls",
+                        "quantity": random.randint(10, 100),
+                        "unit": "calls",
+                    }
+                    for _ in range(random.randint(1, 5))
+                ],
+                "pagination": {
+                    "limit": 100,
+                    "offset": 0,
+                    "total": random.randint(10, 50),
+                    "has_more": False,
+                },
+                "summary": {
+                    "total_requests": random.randint(100, 1000),
+                    "total_payload_size": random.randint(10000, 100000),
+                    "total_hours": random.randint(10, 50),
+                },
+            }
+
+            return GatewayResponse(
+                status_code=200,
+                data=mock_data,
+                headers={"X-RateLimit-Remaining": str(random.randint(100, 500))},
+                elapsed_ms=random.uniform(1, 10),
+                rate_limit_remaining=random.randint(100, 500),
+                gateway_url="local_mock",
+            )
+
+        # Mock response for other endpoints
+        return GatewayResponse(
+            status_code=200,
+            data={
+                "status": "ok",
+                "mock": True,
+                "local_test_mode": True,
+            },
+            headers={"X-RateLimit-Remaining": "500"},
+            elapsed_ms=random.uniform(1, 5),
+            rate_limit_remaining=500,
+            gateway_url="local_mock",
+        )
 
 
 class GatewayError(Exception):

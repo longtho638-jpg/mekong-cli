@@ -7,9 +7,6 @@ export default defineConfig({
         exclude: [
             '**/node_modules/**', '**/.claude/**', '**/dist/**',
             '**/.git/**', '**/plans/**',
-            // Exclude Workers-specific tests (run in vitest.workers.config.ts)
-            'test/test-exec.test.ts',
-            'test/string-calculator.test.ts',
         ],
     },
 });

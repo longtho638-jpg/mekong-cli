@@ -213,6 +213,9 @@ class RaaSAuthClient:
             credentials_file: Path to credentials file (default: ~/.mekong/raas/credentials.json)
             use_secure_storage: Use platform secure storage (default: True)
             use_certificate_auth: Use device certificate for API requests (default: True)
+
+        Environment variables:
+            RAAS_LOCAL_TEST: If "true", skip gateway calls and use local mock (Phase 6.3)
         """
         self.gateway_url = gateway_url or os.getenv(
             "RAAS_GATEWAY_URL", self.DEFAULT_GATEWAY_URL
@@ -223,6 +226,8 @@ class RaaSAuthClient:
         self.session_cache_path = Path(self.SESSION_CACHE_FILE).expanduser()
         self.use_secure_storage = use_secure_storage and os.getenv("RAAS_USE_SECURE_STORAGE", "true").lower() != "false"
         self.use_certificate_auth = use_certificate_auth and os.getenv("RAAS_USE_CERTIFICATE_AUTH", "true").lower() != "false"
+        # Phase 6.3: Local testing mode
+        self.local_test_mode = os.getenv("RAAS_LOCAL_TEST", "").lower() == "true"
         self._secure_storage: Optional[SecureStorage] = None
         self._certificate_store: Optional[CertificateStore] = None
         self._session_cache: Optional[TenantContext] = None
@@ -464,6 +469,8 @@ class RaaSAuthClient:
         """
         Validate credentials against RaaS Gateway.
 
+        Phase 6.3: If RAAS_LOCAL_TEST=true, skip gateway calls and use local mock.
+
         Args:
             token: Bearer token (JWT or mk_ API key).
                    If None, uses stored credentials or RAAS_LICENSE_KEY env.
@@ -472,6 +479,10 @@ class RaaSAuthClient:
         Returns:
             AuthResult with validation status and tenant context.
         """
+        # Phase 6.3: Local test mode - skip gateway validation
+        if self.local_test_mode:
+            return self._local_validate_mock(token)
+
         # Get token from various sources
         if not token:
             # Try stored credentials first
@@ -531,6 +542,45 @@ class RaaSAuthClient:
             self._save_session_cache_from_tenant(result.tenant, token)
 
         return result
+
+    def _local_validate_mock(self, token: str) -> AuthResult:
+        """
+        Phase 6.3: Local mock validation for offline testing.
+
+        Returns mock tenant context without calling gateway.
+        """
+        import hashlib
+
+        if not token:
+            return AuthResult(
+                valid=False,
+                error="No credentials provided",
+                error_code="missing_credentials",
+            )
+
+        # Generate mock tenant ID from token
+        tenant_id = f"local_{hashlib.md5(token.encode()).hexdigest()[:8]}"
+
+        # Determine tier from token prefix
+        tier = "pro"
+        if token.startswith("mk_free"):
+            tier = "free"
+        elif token.startswith("mk_trial"):
+            tier = "trial"
+        elif token.startswith("mk_enterprise"):
+            tier = "enterprise"
+
+        return AuthResult(
+            valid=True,
+            tenant=TenantContext(
+                tenant_id=tenant_id,
+                tier=tier,
+                role=tier,
+                license_key=token if token.startswith("mk_") else None,
+                features=["cli_commands", "local_testing", "gateway_mock"],
+                expires_at=None,
+            ),
+        )
 
     def _call_gateway_validation(
         self, token: str, endpoint: str
@@ -855,7 +905,6 @@ class RaaSAuthClient:
         """
         creds = self._load_credentials()
         token = creds.get("token") or os.getenv("RAAS_LICENSE_KEY")
-        is_authenticated = bool(token)
         uses_secure_storage = creds.get("uses_secure_storage", False) or (
             self.use_secure_storage and self._secure_storage is not None
         )

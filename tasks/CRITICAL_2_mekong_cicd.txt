@@ -1,0 +1,1 @@
+MEKONG CLI (Khẩn): Cài đặt CI/CD, resolve cyclic dependencies. Mục tiêu: Chạy pnpm build thành công. Cấm chế cháo tính năng mới. SAU KHI XANH: BÁO CÁO NHIỆM VỤ HOÀN THÀNH.

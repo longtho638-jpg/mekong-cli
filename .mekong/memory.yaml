@@ -2540,3 +2540,303 @@
   recipe_used: ''
   status: success
   timestamp: 1772988344.809149
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772995966.459292
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772995966.828206
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772996104.6016052
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772996105.098936
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772996664.102746
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772996664.441073
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772996813.2993548
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772996813.679293
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772996999.50159
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772996999.851089
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772997110.538476
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772997110.8762481
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772997395.2034209
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772997395.5441558
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772997521.3212779
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772997521.670363
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772997720.8964102
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772997721.248031
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772997923.202511
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772997923.57124
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772998228.20102
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772998228.594283
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1772998980.742335
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1772998981.088445
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773001122.094462
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773001122.437352
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773001531.235573
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773001531.587832
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773001857.0908391
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773001857.4396968
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773002753.072243
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773002753.423766
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773003034.821694
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773003035.1830888
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773003337.275188
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773003337.649556
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773004411.79472
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773004412.156856
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773005271.22785
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773005271.5826461
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773005651.7245078
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773005652.082696
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773006257.168663
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773006257.5320268
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773006575.272365
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773006575.6375098
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773006881.4984179
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773006881.86849
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: error
+  timestamp: 1773007210.141015
+- duration_ms: 0.0
+  error_summary: ''
+  goal: list files
+  recipe_used: ''
+  status: success
+  timestamp: 1773007210.586317

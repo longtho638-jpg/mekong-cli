@@ -2700,3 +2700,603 @@ jobs:
     last_run: 0.0
     next_run: 1772989025.855238
     run_count: 0
+  - id: 41a2fe70
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772997437.3157399
+    run_count: 0
+  - id: 7f668803
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: c5442701
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772997257.767383
+    run_count: 0
+  - id: f868d9ab
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772997583.904156
+    run_count: 0
+  - id: 4cd04a91
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 4954a2a8
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772997404.318149
+    run_count: 0
+  - id: 67bad12d
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998173.357276
+    run_count: 0
+  - id: 28f0c861
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 8c1c2507
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772997993.815396
+    run_count: 0
+  - id: 82e3e2ce
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998298.918404
+    run_count: 0
+  - id: 05c90f5f
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 819cfb5b
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998119.526762
+    run_count: 0
+  - id: 3100d729
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998506.1423512
+    run_count: 0
+  - id: 0930cb13
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: ac6aefbd
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998326.5842528
+    run_count: 0
+  - id: 575dc493
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998711.167389
+    run_count: 0
+  - id: 063a022e
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 77eacce1
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998531.651388
+    run_count: 0
+  - id: 973fa8d0
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772999013.2167199
+    run_count: 0
+  - id: bceefa5a
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: ab2b8cee
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772998833.6817899
+    run_count: 0
+  - id: 5cbf00ea
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772999760.775146
+    run_count: 0
+  - id: f3b27da6
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: d0598833
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1772999581.254735
+    run_count: 0
+  - id: e139f324
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773001898.724097
+    run_count: 0
+  - id: 4b10a07d
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 9255cc88
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773001719.208576
+    run_count: 0
+  - id: fa344ade
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002311.165629
+    run_count: 0
+  - id: ec1c4558
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 43f4dfde
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002131.676377
+    run_count: 0
+  - id: 2a027a9c
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002638.686131
+    run_count: 0
+  - id: 8fccd453
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: d1822179
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002459.116811
+    run_count: 0
+  - id: 7aebe1c0
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002733.444629
+    run_count: 0
+  - id: 0fb66a13
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: bf0b8da2
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002553.8883479
+    run_count: 0
+  - id: 8a16e93c
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002922.529469
+    run_count: 0
+  - id: bc48cbd5
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: a502a648
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002742.9629261
+    run_count: 0
+  - id: 2598e83a
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773003030.3226008
+    run_count: 0
+  - id: 91c839d8
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 7bc20264
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773002850.771659
+    run_count: 0
+  - id: 05a851a2
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773006057.756792
+    run_count: 0
+  - id: 030f15c4
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 3f827529
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773005878.262976
+    run_count: 0
+  - id: 8c6b8117
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773006440.542572
+    run_count: 0
+  - id: aa9f8cef
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: b24751c9
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773006261.0313191
+    run_count: 0
+  - id: e1b53657
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007048.605293
+    run_count: 0
+  - id: 5085f13f
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: dbeb689a
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773006869.069025
+    run_count: 0
+  - id: db7dec96
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007369.0007622
+    run_count: 0
+  - id: a0d48fd8
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: a3ace2aa
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007189.4685729
+    run_count: 0
+  - id: dc9e187b
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007677.473616
+    run_count: 0
+  - id: a7f06eb0
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: a8fe997a
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007497.946107
+    run_count: 0
+  - id: 0bf42173
+    name: listed
+    goal: echo listed
+    job_type: interval
+    interval_seconds: 300
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773008009.08389
+    run_count: 0
+  - id: 3764e47e
+    name: daily-job
+    goal: backup db
+    job_type: daily
+    interval_seconds: 300
+    daily_time: "08:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773018000.0
+    run_count: 0
+  - id: 8f4b3424
+    name: test-job
+    goal: echo test
+    job_type: interval
+    interval_seconds: 120
+    daily_time: "09:00"
+    enabled: true
+    last_run: 0.0
+    next_run: 1773007829.543357
+    run_count: 0
