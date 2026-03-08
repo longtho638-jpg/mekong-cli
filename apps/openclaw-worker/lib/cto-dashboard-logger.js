@@ -8,6 +8,7 @@
 const { execSync } = require('child_process');
 const { readAllProgress } = require('./cto-progress-tracker');
 const { getRamPolicy } = require('./cto-ram-policy');
+const { PANE_ROLES } = require('./cto-task-dispatch');
 
 /**
  * Print dashboard table to log.
@@ -24,14 +25,14 @@ function printDashboard(workerPaneIdxs, log) {
             .trim().replace(/[{}]/g, '').trim().split(' ')[0];
     } catch { }
 
-    const W = { pane: 4, project: 10, task: 18, elapsed: 7, status: 10 };
-    const hr   = (c1, c2, c3) => `${c1}${'─'.repeat(W.pane+2)}${c2}${'─'.repeat(W.project+2)}${c2}${'─'.repeat(W.task+2)}${c2}${'─'.repeat(W.elapsed+2)}${c2}${'─'.repeat(W.status+2)}${c3}`;
+    const W = { pane: 4, role: 12, project: 10, task: 18, elapsed: 7, status: 10 };
+    const hr   = (c1, c2, c3) => `${c1}${'─'.repeat(W.pane+2)}${c2}${'─'.repeat(W.role+2)}${c2}${'─'.repeat(W.project+2)}${c2}${'─'.repeat(W.task+2)}${c2}${'─'.repeat(W.elapsed+2)}${c2}${'─'.repeat(W.status+2)}${c3}`;
     const cell = (s, w) => String(s == null ? '—' : s).slice(0, w).padEnd(w);
-    const row  = (p, proj, task, el, st) => `│ ${cell(p,W.pane)} │ ${cell(proj,W.project)} │ ${cell(task,W.task)} │ ${cell(el,W.elapsed)} │ ${cell(st,W.status)} │`;
+    const row  = (p, rl, proj, task, el, st) => `│ ${cell(p,W.pane)} │ ${cell(rl,W.role)} │ ${cell(proj,W.project)} │ ${cell(task,W.task)} │ ${cell(el,W.elapsed)} │ ${cell(st,W.status)} │`;
 
     const lines = [
         hr('┌','┬','┐'),
-        row('Pane','Project','Task','Elapsed','Status'),
+        row('Pane','Role','Project','Task','Elapsed','Status'),
         hr('├','┼','┤'),
     ];
 
@@ -42,7 +43,8 @@ function printDashboard(workerPaneIdxs, log) {
             elapsed = `${Math.round(ms / 60000)}m`;
         }
         const statusLabel = p.status === 'RUNNING' ? 'WORKING' : (p.status || 'UNKNOWN');
-        lines.push(row(`P${p.pane}`, p.project, p.task_summary, elapsed, statusLabel));
+        const roleName = (PANE_ROLES[p.pane] || {}).role || 'generic';
+        lines.push(row(`P${p.pane}`, roleName, p.project, p.task_summary, elapsed, statusLabel));
     }
 
     lines.push(hr('└','┴','┘'));

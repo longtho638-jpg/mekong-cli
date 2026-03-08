@@ -17,7 +17,7 @@ const { trackIdle }             = require('./cto-progress-tracker');
 const { checkEscalation }       = require('./cto-escalation');
 const { isDispatchAllowed }     = require('./cto-ram-policy');
 const { canDispatch }           = require('./cto-worker-coordinator');
-const { getNextPoolTask, smartTaskFromReality, checkExternalQueue } = require('./cto-task-dispatch');
+const { getNextPoolTask, smartTaskFromReality, checkExternalQueue, wrapWithRole } = require('./cto-task-dispatch');
 const { scanCodebase }          = require('./cto-codebase-scanner');
 
 const COMPLETION_PATTERN = /(?:Cooked|Worked|Crunched|Sautéed|Choreographed|Cogitated)\s+for\s+\d/i;
@@ -247,7 +247,11 @@ async function _handleIdle(pane, output, ctx) {
 
     if (!canDispatch(`P${pane.idx}-current`, log)) { trackIdle(pane.idx, pane.project); return; }
 
-    log(`P${pane.idx}: INJECTING: ${cookCmd.slice(0, 100)}`);
+    // Wrap command with pane's agent role context
+    const { PANE_ROLES } = require('./cto-task-dispatch');
+    cookCmd = wrapWithRole(cookCmd, pane.idx);
+    const roleName = (PANE_ROLES[pane.idx] || {}).role || 'generic';
+    log(`P${pane.idx}: INJECTING [${roleName}]: ${cookCmd.slice(0, 100)}`);
     sendBuf(pane.idx, cookCmd);
     recordInjection(pane.idx, cookCmd);
     recordTaskInjected(pane.idx, cookCmd, pane.project);

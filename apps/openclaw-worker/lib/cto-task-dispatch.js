@@ -1,7 +1,7 @@
 /**
  * cto-task-dispatch.js
- * Task selection pipeline: TASK_POOLS, smart reality scan, external queue, pool fallback.
- * Returns a /cook or /debug command string, or null if nothing to dispatch.
+ * CTO Nhà Máy RaaS — Agent Role mapping + chuyên môn hoá từng pane.
+ * Task selection: REALITY scan → External queue → Specialised pool fallback.
  */
 
 'use strict';
@@ -11,43 +11,87 @@ const fs = require('fs');
 const path = require('path');
 
 // ──────────────────────────────────────────────────────────────
-// TASK_POOLS — per-project round-robin pool (no LLM needed)
+// PANE ROLES — Mỗi pane là 1 phòng ban chuyên môn
+// P0 = Chairman (IRON GUARD, không dispatch)
+// ──────────────────────────────────────────────────────────────
+const PANE_ROLES = {
+    1: {
+        role: 'backend-developer',
+        department: 'Backend Engineering',
+        skills: ['senior-backend', 'databases', 'payment-integration', 'devops'],
+        focus: 'API, database, server logic, WebSocket, exchange engines',
+        bootFlags: '--role backend-developer',
+    },
+    2: {
+        role: 'frontend-developer',
+        department: 'Frontend & UX',
+        skills: ['frontend-development', 'ui-styling', 'react-best-practices', 'web-testing'],
+        focus: 'UI components, i18n, responsive design, error boundaries, UX polish',
+        bootFlags: '--role frontend-developer',
+    },
+    3: {
+        role: 'qa-tester',
+        department: 'Quality Assurance',
+        skills: ['test', 'web-testing', 'code-review', 'debug'],
+        focus: 'Test suites, E2E tests, build verification, deploy checks, security audit',
+        bootFlags: '--role qa-tester',
+    },
+    4: {
+        role: 'strategic-architect',
+        department: 'Strategic Planning',
+        skills: ['senior-architect', 'software-architecture', 'plan'],
+        focus: 'Architecture decisions, cross-project coordination, ROI analysis',
+        bootFlags: '--role strategic-architect',
+    },
+};
+
+/**
+ * Get role config for a pane index.
+ * @param {number} paneIdx
+ * @returns {{ role: string, department: string, skills: string[], focus: string, bootFlags: string } | null}
+ */
+function getPaneRole(paneIdx) {
+    return PANE_ROLES[paneIdx] || null;
+}
+
+// ──────────────────────────────────────────────────────────────
+// TASK_POOLS — chuyên môn hoá theo role, không thập cẩm
 // ──────────────────────────────────────────────────────────────
 const TASK_POOLS = {
-    'well': [
-        '/cook "Well: PayOS webhook — verify signature validation, idempotency key, retry logic, error response codes" --auto',
-        '/cook "Well: Supabase RLS — audit all tables have row-level security policies, test with anon/auth roles" --auto',
-        '/cook "Well: i18n audit — grep t() calls vs vi.ts/en.ts, fix missing keys, verify no raw strings in JSX" --auto',
-        '/cook "Well: Auth flow — login/register/forgot-password, session refresh, protected route guards, error states" --auto',
-        '/cook "Well: Error boundary — add React error boundaries for all route segments, fallback UI, error logging" --auto',
-    ],
-    'sophia-ai-factory': [
-        '/cook "Sophia: Video pipeline — ffmpeg transcoding errors, timeout handling, retry logic, progress tracking" --auto',
-        '/cook "Sophia: Campaign template — fix broken variables, preview mode, mobile responsive, edge cases" --auto',
-        '/cook "Sophia: Deploy fix — TypeScript strict mode, build errors, verify Vercel deploy passes clean" --auto',
-        '/cook "Sophia: AI service test — verify all AI endpoints respond, error handling, rate limit graceful degradation" --auto',
-    ],
+    // P1 Backend: algo-trader (WebSocket, exchange, API)
     'algo-trader': [
         '/cook "Algo-Trader: WebSocket reconnect — auto-reconnect on disconnect, exponential backoff, state recovery" --auto',
         '/cook "Algo-Trader: Order book sync — stale data detection, depth snapshot recovery, latency tracking" --auto',
         '/cook "Algo-Trader: API key rotate — secure key storage, rotation script, per-exchange rate limit tracking" --auto',
         '/cook "Algo-Trader: Exchange engine perf — spread calculation edge cases, slippage protection, benchmark latency" --auto',
+        '/cook "Algo-Trader: Database schema — migrate order history to TimescaleDB, add indexes for time-range queries" --auto',
     ],
+    // P2 Frontend: well (UI, i18n, auth flow, error boundaries)
+    'well': [
+        '/cook "Well: i18n audit — grep t() calls vs vi.ts/en.ts, fix missing keys, verify no raw strings in JSX" --auto',
+        '/cook "Well: Error boundary — add React error boundaries for all route segments, fallback UI, error logging" --auto',
+        '/cook "Well: Auth flow UI — login/register/forgot-password forms, loading states, validation messages" --auto',
+        '/cook "Well: Responsive audit — test all pages on 375px/768px/1024px breakpoints, fix layout issues" --auto',
+        '/cook "Well: Component polish — skeleton loaders, empty states with illustrations, toast notifications" --auto',
+    ],
+    // P3 QA: sophia (test, deploy verify, security)
+    'sophia-ai-factory': [
+        '/cook "Sophia: E2E test suite — Playwright tests for video upload, campaign creation, checkout flow" --auto',
+        '/cook "Sophia: Deploy verify — TypeScript strict mode, build errors, verify Vercel deploy passes clean" --auto',
+        '/cook "Sophia: Security audit — check CSP headers, XSS prevention, API key exposure, input validation" --auto',
+        '/cook "Sophia: Performance test — Lighthouse audit, bundle size analysis, image optimization check" --auto',
+    ],
+    // P1 fallback: mekong-cli core (backend/infra)
     'mekong-cli': [
-        '/cook "Mekong-CLI: Vibe SDK types — Pydantic models, type hints on all public methods, mypy clean" --auto',
-        '/cook "Mekong-CLI: CI pipeline — fix pytest failures, flaky test detection, verify GitHub Actions green" --auto',
         '/cook "Mekong-CLI: Pytest fix — run full test suite, fix broken tests, ensure 100% pass rate" --auto',
         '/cook "Mekong-CLI: Agent module audit — fix imports in git_agent/file_agent/shell_agent, error handling" --auto',
+        '/cook "Mekong-CLI: CI pipeline — fix pytest failures, flaky test detection, verify GitHub Actions green" --auto',
+        '/cook "Mekong-CLI: Vibe SDK types — Pydantic models, type hints on all public methods, mypy clean" --auto',
     ],
 };
 
-const taskPoolCounters = {}; // project → round-robin index
+const taskPoolCounters = {};
 
-/**
- * Get next task from project pool (round-robin).
- * @param {string} project
- * @returns {string|null}
- */
 function getNextPoolTask(project) {
     const pool = TASK_POOLS[project];
     if (!pool || pool.length === 0) return null;
@@ -58,11 +102,27 @@ function getNextPoolTask(project) {
 }
 
 /**
- * Smart reality scan: inspect project state, return highest-priority task or null.
+ * Wrap command with pane role context for CC CLI.
+ * Prepends role instruction so CC CLI knows its specialisation.
+ * @param {string} cmd - Original /cook or /debug command
+ * @param {number} paneIdx
+ * @returns {string}
+ */
+function wrapWithRole(cmd, paneIdx) {
+    const role = PANE_ROLES[paneIdx];
+    if (!role) return cmd;
+    // Inject role context as prefix instruction before the actual command
+    const rolePrefix = `[ROLE: ${role.role} | DEPT: ${role.department} | FOCUS: ${role.focus}] `;
+    // For /cook and /debug commands, insert role context into the quoted task description
+    if (/^\/(cook|debug|fix)\s+"/.test(cmd)) {
+        return cmd.replace(/^\/(cook|debug|fix)\s+"/, `/$1 "${rolePrefix}`);
+    }
+    return cmd;
+}
+
+/**
+ * Smart reality scan: inspect project state → highest-priority task or null.
  * Priority: test fail > uncommitted changes > dirty files > TODO overload > null
- * @param {{ idx: number, dir: string, project: string }} pane
- * @param {Function} log
- * @returns {string|null}
  */
 function smartTaskFromReality(pane, log) {
     const { dir, project } = pane;
@@ -87,7 +147,7 @@ function smartTaskFromReality(pane, log) {
         }
     }
 
-    // 2) git diff --stat — uncommitted changes in code files
+    // 2) git diff --stat — uncommitted code changes
     try {
         const diffStat = execSync('git diff --stat 2>/dev/null', {
             cwd: dir, encoding: 'utf-8', timeout: 5000
@@ -106,7 +166,7 @@ function smartTaskFromReality(pane, log) {
         }
     } catch { }
 
-    // 3) git status --porcelain — untracked/staged code files
+    // 3) git status --porcelain — dirty code files
     try {
         const gs = execSync('git status --porcelain 2>/dev/null | head -5', {
             cwd: dir, encoding: 'utf-8', timeout: 5000
@@ -137,15 +197,11 @@ function smartTaskFromReality(pane, log) {
         }
     } catch { }
 
-    return null; // nothing actionable → fall through to pool
+    return null;
 }
 
 /**
  * Check external task queue directory for project-specific .txt files.
- * Moves consumed file to tasks/processed/.
- * @param {{ idx: number, project: string, isOpus?: boolean }} pane
- * @param {Function} log
- * @returns {string|null}
  */
 function checkExternalQueue(pane, log) {
     const tasksDir = '/Users/macbookprom1/mekong-cli/tasks';
@@ -191,4 +247,12 @@ function checkExternalQueue(pane, log) {
     }
 }
 
-module.exports = { TASK_POOLS, getNextPoolTask, smartTaskFromReality, checkExternalQueue };
+module.exports = {
+    PANE_ROLES,
+    getPaneRole,
+    TASK_POOLS,
+    getNextPoolTask,
+    wrapWithRole,
+    smartTaskFromReality,
+    checkExternalQueue,
+};
