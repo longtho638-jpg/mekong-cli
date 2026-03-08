@@ -14,16 +14,53 @@ const fs = require('fs');
 const path = require('path');
 
 // CTO uses dedicated Key C on DashScope International OpenAI-compatible endpoint
-const CTO_API_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
-const CTO_DEDICATED_KEY = process.env.CTO_DASHSCOPE_KEY || 'sk-80d8537485d04f609c498f1881e67c6f'; // Key C — CTO only
-const DASHSCOPE_KEYS = [
-    CTO_DEDICATED_KEY,
-    process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A (Coding Plan fallback)
-    'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B (Coding Plan fallback)
+const CTO_PROVIDERS = [
+    {
+        id: 'dashscope', name: 'DashScope',
+        url: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',
+        keys: [
+            process.env.CTO_DASHSCOPE_KEY || 'sk-80d8537485d04f609c498f1881e67c6f', // Key C — CTO only
+            process.env.DASHSCOPE_API_KEY || 'sk-sp-652cd51db1774704a992863926cd1f67',  // Key A
+            'sk-sp-afce4429a10e41bb901d6012d7f525c8',  // Key B
+        ],
+        model: 'qwen-plus'
+    },
+    {
+        id: 'blackbox', name: 'Blackbox',
+        url: 'https://api.blackbox.ai/v1/chat/completions',
+        keys: ['sk-ELEERyI0MyROHMJY27q-Sg'],
+        model: 'blackboxai/moonshotai/kimi-k2-thinking'
+    }
 ];
-let _dsKeyIdx = 0;
-const getDashScopeKey = () => DASHSCOPE_KEYS[_dsKeyIdx];
-const rotateDashScopeKey = () => { _dsKeyIdx = (_dsKeyIdx + 1) % DASHSCOPE_KEYS.length; log(`🔄 Rotated to DashScope Key ${_dsKeyIdx + 1}/${DASHSCOPE_KEYS.length}`); };
+let _providerIdx = 0;
+let _keyIdx = 0;
+let _consecutiveFailures = 0;
+
+function getActiveProvider() { return CTO_PROVIDERS[_providerIdx]; }
+function getActiveKey() { return getActiveProvider().keys[_keyIdx]; }
+function getActiveUrl() { return getActiveProvider().url; }
+function getActiveModel() { return process.env.CTO_LLM_MODEL || getActiveProvider().model; }
+
+function rotateKey() {
+    const provider = getActiveProvider();
+    _keyIdx = (_keyIdx + 1) % provider.keys.length;
+    if (_keyIdx === 0) {
+        // All keys exhausted for this provider → switch provider
+        _consecutiveFailures++;
+        if (_consecutiveFailures >= 2) {
+            _providerIdx = (_providerIdx + 1) % CTO_PROVIDERS.length;
+            _keyIdx = 0;
+            _consecutiveFailures = 0;
+            log(`🔄 CTO BRAIN PROVIDER SWITCH → ${CTO_PROVIDERS[_providerIdx].name} (${CTO_PROVIDERS[_providerIdx].model})`);
+        } else {
+            log(`🔄 CTO Key rotated to ${_keyIdx + 1}/${provider.keys.length} on ${provider.name}`);
+        }
+    } else {
+        log(`🔄 CTO Key rotated to ${_keyIdx + 1}/${provider.keys.length} on ${provider.name}`);
+    }
+}
+function resetFailures() { _consecutiveFailures = 0; }
+
 const LLM_TIMEOUT_MS = 45000;
 const CACHE_TTL_MS = 60000; // Cache LLM results for 30s
 const perceptionCache = new Map();
@@ -93,9 +130,9 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
 
         const trimmedOutput = paneOutput.slice(-2000); // Max 2000 chars
 
-        // OpenAI Chat Completions format (DashScope International)
+        // OpenAI Chat Completions format (Active Provider)
         const payload = JSON.stringify({
-            model: process.env.CTO_LLM_MODEL || 'qwen-plus',
+            model: getActiveModel(),
             max_tokens: 512,
             messages: [
                 { role: 'system', content: SYSTEM_PROMPT.trim() },
@@ -103,7 +140,7 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
             ]
         });
 
-        const url = new URL(CTO_API_URL);
+        const url = new URL(getActiveUrl());
         const isHttps = url.protocol === 'https:';
         const transport = isHttps ? require('https') : http;
 
@@ -115,7 +152,7 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'Authorization': `Bearer ${getDashScopeKey()}`
+                'Authorization': `Bearer ${getActiveKey()}`
             },
             timeout: LLM_TIMEOUT_MS,
         }, (res) => {
@@ -146,7 +183,8 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
                     // Cache result
                     perceptionCache.set(cacheKey, { result, ts: Date.now() });
 
-                    log(`P${paneIdx} LLM: state=${result.state} | ${result.context.slice(0, 60)}`);
+                    log(`P${paneIdx} LLM [${getActiveProvider().name}]: state=${result.state} | ${result.context.slice(0, 60)}`);
+                    resetFailures();
                     resolve(result);
                 } catch (e) {
                     log(`P${paneIdx} LLM parse error: ${e.message}`);
@@ -207,13 +245,15 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
         };
 
         req.on('error', (e) => {
-            log(`P${paneIdx} LLM network error: ${e.message}`);
+            log(`P${paneIdx} LLM [${getActiveProvider().name}] network error: ${e.message}`);
+            rotateKey();
             attemptOllamaFallback();
         });
 
         req.on('timeout', () => {
             req.destroy();
-            log(`P${paneIdx} LLM timeout (${LLM_TIMEOUT_MS}ms)`);
+            log(`P${paneIdx} LLM [${getActiveProvider().name}] timeout (${LLM_TIMEOUT_MS}ms)`);
+            rotateKey();
             attemptOllamaFallback();
         });
 
@@ -363,7 +403,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
 
         const trimmed = paneOutput.slice(-1000); // Guard needs less context
         const payload = JSON.stringify({
-            model: process.env.CTO_LLM_MODEL || 'qwen-plus',
+            model: getActiveModel(),
             max_tokens: 512,
             messages: [
                 { role: 'system', content: GUARD_PROMPT.trim() },
@@ -371,7 +411,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             ]
         });
 
-        const url = new URL(CTO_API_URL);
+        const url = new URL(getActiveUrl());
         const isHttps2 = url.protocol === 'https:';
         const transport2 = isHttps2 ? require('https') : http;
         const req = transport2.request({
@@ -382,7 +422,7 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             headers: {
                 'Content-Type': 'application/json',
                 'Content-Length': Buffer.byteLength(payload),
-                'Authorization': `Bearer ${getDashScopeKey()}`
+                'Authorization': `Bearer ${getActiveKey()}`
             },
             timeout: 30000,
         }, (res) => {
@@ -415,8 +455,8 @@ function guardCheck(paneOutput, regexState, projectName, paneIdx) {
             });
         });
 
-        req.on('error', () => resolve({ agree: true, correctedState: regexState, reason: 'network fail', shouldAct: true }));
-        req.on('timeout', () => { req.destroy(); resolve({ agree: true, correctedState: regexState, reason: 'timeout', shouldAct: true }); });
+        req.on('error', () => { rotateKey(); resolve({ agree: true, correctedState: regexState, reason: 'network fail', shouldAct: true }); });
+        req.on('timeout', () => { req.destroy(); rotateKey(); resolve({ agree: true, correctedState: regexState, reason: 'timeout', shouldAct: true }); });
         req.write(payload);
         req.end();
     });
