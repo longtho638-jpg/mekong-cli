@@ -866,6 +866,11 @@ async function checkAllPanes() {
                 }
 
                 // 🛡️ UNIFIED INJECT GATE — cooldown 3min is the guard
+                // ĐIỀU 47: ClaudeKit command prefix BẮT BUỘC — CẤM raw text injection
+                if (cookCmd && !cookCmd.startsWith('/')) {
+                    log(`P${pane.idx}: ⛔ BLOCKED raw text injection → wrapping with /cook prefix`);
+                    cookCmd = `/cook "${cookCmd.replace(/"/g, '\\"')}" --auto`;
+                }
                 if (cookCmd) {
                     log(`P${pane.idx}: 🚀 INJECTING: ${cookCmd.slice(0, 100)}...`);
                     tmuxSendBuffer(pane.idx, cookCmd);
