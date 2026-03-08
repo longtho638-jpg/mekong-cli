@@ -10,6 +10,48 @@ import { trackUsage, getUsageMetrics, getPayloadSize, getEndpointType, aggregate
 
 const GATEWAY_VERSION = '2.0.0';
 
+/**
+ * Get features list for role/tier
+ * @param {string} role
+ * @returns {string[]}
+ */
+function getFeaturesForRole(role) {
+  const features = {
+    free: ['basic_cli_commands', 'open_source_agents', 'community_patterns'],
+    trial: ['basic_cli_commands', 'open_source_agents', 'community_patterns', 'trial_agents'],
+    pro: [
+      'basic_cli_commands',
+      'open_source_agents',
+      'community_patterns',
+      'premium_agents',
+      'advanced_patterns',
+      'priority_support',
+      'custom_workflows',
+      'ml_models',
+      'premium_data'
+    ],
+    enterprise: [
+      'basic_cli_commands',
+      'open_source_agents',
+      'community_patterns',
+      'premium_agents',
+      'advanced_patterns',
+      'priority_support',
+      'custom_workflows',
+      'ml_models',
+      'premium_data',
+      'agi_auto_pilot',
+      'team_collaboration',
+      'audit_logs',
+      'sso_integration',
+      'dedicated_support',
+      'custom_integrations'
+    ],
+    service: ['all']
+  };
+  return features[role] || features.free;
+}
+
 /** Allowed CORS origins */
 const CORS_ORIGINS = [
   'https://agencyos.network',
@@ -158,6 +200,32 @@ export default {
       return jsonResponse(
         { error: 'Rate limit exceeded', limit: rlResult.limit, resetIn: rlResult.resetIn },
         429,
+        { ...corsHeaders, ...rlHeaders }
+      );
+    }
+
+    // --- ROUTE: POST /v1/auth/validate (validate credentials) ---
+    if (path === '/v1/auth/validate' && request.method === 'POST') {
+      // Auth already validated above — return tenant context + rate limit info
+      const features = getFeaturesForRole(role);
+      return jsonResponse(
+        {
+          valid: true,
+          tenant_id: tenantId,
+          role,
+          tier: role,
+          features,
+          rateLimit: {
+            remaining: rlResult.remaining,
+            limit: rlResult.limit,
+            resetIn: rlResult.resetIn
+          },
+          gateway: {
+            version: GATEWAY_VERSION,
+            url: env.GATEWAY_URL || 'https://raas.agencyos.network'
+          }
+        },
+        200,
         { ...corsHeaders, ...rlHeaders }
       );
     }

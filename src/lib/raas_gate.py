@@ -8,6 +8,7 @@ Reference: /Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md
 
 import os
 import asyncio
+import time
 import logging
 import requests
 from typing import Optional, Tuple, Dict, Any, Coroutine, TypeVar
@@ -106,7 +107,7 @@ class RaasLicenseGate:
         self._license_tier: Optional[str] = None
         self._key_id: Optional[str] = None
         self._enable_remote = enable_remote
-        self._remote_url = os.getenv("RAAS_API_URL", "http://localhost:8787")
+        self._remote_url = os.getenv("RAAS_API_URL", "https://raas.agencyos.network")
         # Phase 6: Credit rate limiter for sliding window enforcement
         self._rate_limiter: Optional[CreditRateLimiter] = None
         # Phase 6b: Quota warning state
@@ -120,6 +121,9 @@ class RaasLicenseGate:
         # Phase 7: JWT offline license
         self._jwt_payload: Optional[Dict[str, Any]] = None
         self._jwt_validator: Optional[Any] = None
+        # Phase 6: Gateway sync state
+        self._last_gateway_sync: Optional[int] = None  # Unix timestamp
+        self._gateway_rate_limit: Optional[Dict[str, Any]] = None
 
     def get_command_cost(self, command: str) -> int:
         """
@@ -690,6 +694,79 @@ class RaasLicenseGate:
                 pass
 
         return info
+
+    def sync_license_state(self) -> Tuple[bool, Optional[str]]:
+        """
+        Sync license state with RaaS Gateway and AgencyOS dashboard.
+
+        Returns:
+            Tuple of (success, error_message)
+
+        Side Effects:
+            - Updates _gateway_rate_limit with latest from gateway
+            - Updates _last_gateway_sync timestamp
+            - Syncs usage metering to gateway
+        """
+        if not self._license_key:
+            return False, "No license key to sync"
+
+        try:
+            # Call gateway to sync license state
+            response = requests.post(
+                f"{self._remote_url}/v1/auth/validate",
+                headers={"Authorization": f"Bearer {self._license_key}"},
+                timeout=10,
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                # Update gateway state
+                self._gateway_rate_limit = data.get("rateLimit")
+                self._last_gateway_sync = int(time.time())
+
+                # Update license info from gateway response
+                if data.get("valid"):
+                    self._license_tier = data.get("tier", self._license_tier)
+                    self._validated = True
+                    return True, None
+                else:
+                    return False, "Gateway returned invalid license status"
+            else:
+                return False, f"Gateway sync failed: HTTP {response.status_code}"
+
+        except requests.RequestException as e:
+            return False, f"Gateway sync error: {str(e)}"
+
+    def get_gateway_status(self) -> Dict[str, Any]:
+        """
+        Get current gateway connection status.
+
+        Returns:
+            Dict with gateway status info
+        """
+        return {
+            "url": self._remote_url,
+            "last_sync": self._last_gateway_sync,
+            "rate_limit": self._gateway_rate_limit,
+            "license_synced": self._validated and self._last_gateway_sync is not None,
+        }
+
+    def get_rate_limit_info(self) -> Dict[str, Any]:
+        """
+        Get current rate limit info from gateway.
+
+        Returns:
+            Dict with rate limit details
+        """
+        if self._gateway_rate_limit:
+            return self._gateway_rate_limit
+        # Fallback to tier-based limits
+        tier_limits = TIER_LIMITS.get(self._license_tier or "free", TIER_LIMITS["free"])
+        return {
+            "limit": tier_limits.get("daily", 10),
+            "remaining": tier_limits.get("daily", 10),
+            "resetIn": 60,  # 60 seconds
+        }
 
 
 _license_gate: Optional[RaasLicenseGate] = None

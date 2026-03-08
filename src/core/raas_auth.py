@@ -419,6 +419,101 @@ class RaaSAuthClient:
         session = self.get_session()
         return session.authenticated
 
+    def sync_to_dashboard(self) -> Dict[str, Any]:
+        """
+        Sync license state to AgencyOS dashboard.
+
+        Returns:
+            Dict with sync status and dashboard URL
+        """
+        session = self.get_session()
+
+        if not session.authenticated:
+            return {
+                "synced": False,
+                "error": "Not authenticated",
+                "dashboard_url": "https://agencyos.network/dashboard",
+            }
+
+        # Call gateway to sync with dashboard
+        try:
+            creds = self._load_credentials()
+            token = creds.get("token") or os.getenv("RAAS_LICENSE_KEY")
+
+            if not token:
+                return {
+                    "synced": False,
+                    "error": "No credentials",
+                    "dashboard_url": "https://agencyos.network/dashboard",
+                }
+
+            response = requests.post(
+                f"{self.gateway_url}/v1/auth/validate",
+                headers={"Authorization": f"Bearer {token}"},
+                timeout=10,
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                tenant_id = data.get("tenant_id", "unknown")
+                return {
+                    "synced": True,
+                    "tenant_id": tenant_id,
+                    "tier": data.get("tier"),
+                    "dashboard_url": f"https://agencyos.network/dashboard/{tenant_id}",
+                    "features": data.get("features", []),
+                    "rate_limit": data.get("rateLimit"),
+                    "gateway_version": data.get("gateway", {}).get("version"),
+                }
+            else:
+                return {
+                    "synced": False,
+                    "error": f"Gateway returned {response.status_code}",
+                    "dashboard_url": "https://agencyos.network/dashboard",
+                }
+
+        except requests.RequestException as e:
+            return {
+                "synced": False,
+                "error": f"Sync failed: {str(e)}",
+                "dashboard_url": "https://agencyos.network/dashboard",
+            }
+
+    def get_gateway_health(self) -> Dict[str, Any]:
+        """
+        Check RaaS Gateway health status.
+
+        Returns:
+            Dict with gateway health info
+        """
+        try:
+            response = requests.get(
+                f"{self.gateway_url}/health",
+                timeout=10,
+            )
+
+            if response.status_code == 200:
+                data = response.json()
+                return {
+                    "status": data.get("status"),
+                    "version": data.get("version"),
+                    "url": self.gateway_url,
+                    "healthy": True,
+                }
+            else:
+                return {
+                    "healthy": False,
+                    "error": f"Gateway returned {response.status_code}",
+                    "url": self.gateway_url,
+                }
+
+        except requests.RequestException as e:
+            return {
+                "healthy": False,
+                "error": f"Gateway unreachable: {str(e)}",
+                "url": self.gateway_url,
+            }
+
 
 # Singleton instance for CLI-wide usage
 _auth_client: Optional[RaaSAuthClient] = None
