@@ -15,6 +15,7 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { logger } from '../../utils/logger';
 import { overageCalculator, OverageSummary, OverageCharge } from '../../billing/overage-calculator';
+import { stripeInvoiceService, InvoiceOptions } from '../../billing/stripe-invoice-service';
 
 /**
  * Overage calculation response
@@ -36,6 +37,37 @@ export interface BulkOverageResponse {
   tenantsWithOverage: number;
   totalOverageRevenue: number;
   summaries: OverageSummary[];
+}
+
+/**
+ * Invoice creation request
+ */
+export interface InvoiceCreateRequest {
+  /** Stripe customer ID (required) */
+  customerId: string;
+  /** Billing period YYYY-MM (default: current month) */
+  period?: string;
+  /** Number of days until invoice is due (default: 30) */
+  daysUntilDue?: number;
+  /** Custom description for invoice */
+  description?: string;
+  /** Whether to auto-finalize invoice (default: false) */
+  autoFinalize?: boolean;
+  /** Metadata to attach to invoice */
+  metadata?: Record<string, string>;
+}
+
+/**
+ * Invoice creation response
+ */
+export interface InvoiceCreateResponse {
+  success: boolean;
+  invoiceId?: string;
+  invoiceNumber?: string;
+  hostedInvoiceUrl?: string;
+  totalAmount?: number;
+  currency?: string;
+  error?: string;
 }
 
 /**
@@ -372,6 +404,155 @@ export async function registerOverageRoutes(fastify: FastifyInstance) {
           error: 'Internal Server Error',
           message: 'Failed to sync overage data',
         });
+      }
+    }
+  );
+
+  /**
+   * POST /v1/overage/invoice
+   *
+   * Create Stripe invoice for overage charges.
+   * Admin-only endpoint for manual invoice creation.
+   *
+   * Headers:
+   * - Authorization: Bearer <jwt_token> OR
+   * - X-API-Key: <mk_api_key>
+   *
+   * Body:
+   * - customerId: Stripe customer ID (required)
+   * - period: YYYY-MM format (default: current month)
+   * - daysUntilDue: Days until invoice due (default: 30)
+   * - description: Custom invoice description
+   * - autoFinalize: Auto-finalize invoice (default: false)
+   * - metadata: Custom metadata for invoice
+   *
+   * Response:
+   * - success: boolean
+   * - invoiceId: Stripe invoice ID
+   * - invoiceNumber: Invoice number
+   * - hostedInvoiceUrl: URL to view/pay invoice
+   * - totalAmount: Total amount in cents
+   * - currency: Currency code (usd)
+   * - error: Error message if failed
+   */
+  fastify.post(
+    '/v1/overage/invoice',
+    async (
+      request: FastifyRequest<{
+        Body: InvoiceCreateRequest;
+      }>,
+      reply: FastifyReply
+    ) => {
+      // Verify auth (admin only)
+      const auth = await verifyAuth(request);
+      if (!auth || auth.role !== 'admin') {
+        return reply.code(403).send({
+          success: false,
+          error: 'Forbidden',
+          message: 'Admin access required',
+        } as InvoiceCreateResponse);
+      }
+
+      const body = request.body;
+
+      // Validate customerId
+      if (!body.customerId) {
+        return reply.code(400).send({
+          success: false,
+          error: 'Bad Request',
+          message: 'customerId is required',
+        } as InvoiceCreateResponse);
+      }
+
+      // Validate customerId format
+      if (!body.customerId.startsWith('cus_')) {
+        return reply.code(400).send({
+          success: false,
+          error: 'Bad Request',
+          message: 'customerId must be a Stripe customer ID (cus_*)',
+        } as InvoiceCreateResponse);
+      }
+
+      // Validate period format if provided
+      if (body.period && !/^\d{4}-\d{2}$/.test(body.period)) {
+        return reply.code(400).send({
+          success: false,
+          error: 'Bad Request',
+          message: 'Invalid period format - use YYYY-MM',
+        } as InvoiceCreateResponse);
+      }
+
+      try {
+        // Calculate overage for the period
+        const calculator = overageCalculator;
+        const summary = await calculator.calculateOverageWithStripe({
+          customerId: body.customerId,
+          period: body.period,
+        });
+
+        // Check if there are any overage charges
+        if (!summary || summary.totalOverage <= 0) {
+          return reply.code(400).send({
+            success: false,
+            error: 'Bad Request',
+            message: 'No overage charges for this period',
+          } as InvoiceCreateResponse);
+        }
+
+        // Build invoice options
+        const invoiceOptions: InvoiceOptions = {
+          daysUntilDue: body.daysUntilDue || 30,
+          description: body.description || `Overage charges for ${summary.period}`,
+          autoFinalize: body.autoFinalize || false,
+          metadata: {
+            ...body.metadata,
+            tenantId: summary.tenantId,
+            period: summary.period,
+            tier: summary.tier,
+          },
+        };
+
+        // Create invoice
+        const invoiceService = stripeInvoiceService;
+        const result = await invoiceService.createOverageInvoice(
+          body.customerId,
+          summary,
+          invoiceOptions
+        );
+
+        if (!result.success) {
+          return reply.code(500).send({
+            success: false,
+            error: 'Internal Server Error',
+            message: result.error || 'Failed to create invoice',
+          } as InvoiceCreateResponse);
+        }
+
+        logger.info('[Overage API] Invoice created', {
+          invoiceId: result.invoiceId,
+          customerId: body.customerId,
+          tenantId: summary.tenantId,
+          totalAmount: result.totalAmount,
+        });
+
+        return reply.code(200).send({
+          success: true,
+          invoiceId: result.invoiceId,
+          invoiceNumber: result.invoiceNumber,
+          hostedInvoiceUrl: result.hostessUrl,
+          totalAmount: result.totalAmount,
+          currency: result.currency,
+        } as InvoiceCreateResponse);
+      } catch (error) {
+        logger.error('[Overage API] Invoice creation error', {
+          customerId: body.customerId,
+          error: error instanceof Error ? error.message : error,
+        });
+        return reply.code(500).send({
+          success: false,
+          error: 'Internal Server Error',
+          message: 'Failed to create invoice',
+        } as InvoiceCreateResponse);
       }
     }
   );

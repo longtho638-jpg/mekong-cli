@@ -203,3 +203,85 @@ export async function getHourlyUsage(env, licenseKey) {
     return [];
   }
 }
+
+/**
+ * Aggregate usage data for overage billing calculation
+ * @param {object} env - Cloudflare Worker env bindings
+ * @param {string} licenseKey
+ * @param {string} startHour - Start hour bucket (YYYY-MM-DD-HH)
+ * @param {string} endHour - End hour bucket (YYYY-MM-DD-HH)
+ * @returns {Promise<{
+ *   totalRequests: number,
+ *   totalPayloadSize: number,
+ *   hoursActive: number,
+ *   avgRequestsPerHour: number,
+ *   peakHour: { bucket: string, requests: number } | null,
+ *   endpointBreakdown: Record<string, { requests: number, payloadSize: number }>,
+ *   methodBreakdown: Record<string, { requests: number, payloadSize: number }>
+ * }>}
+ */
+export async function aggregateUsageForBilling(env, licenseKey, startHour, endHour) {
+  const metrics = await getUsageMetrics(env, licenseKey, startHour, endHour, 1000, 0);
+
+  if (!metrics.metrics || metrics.metrics.length === 0) {
+    return {
+      totalRequests: 0,
+      totalPayloadSize: 0,
+      hoursActive: 0,
+      avgRequestsPerHour: 0,
+      peakHour: null,
+      endpointBreakdown: {},
+      methodBreakdown: {}
+    };
+  }
+
+  // Aggregate totals
+  let totalRequests = 0;
+  let totalPayloadSize = 0;
+  const endpointMap = new Map();
+  const methodMap = new Map();
+  let peakHour = { bucket: '', requests: 0 };
+  const uniqueHours = new Set();
+
+  for (const m of metrics.metrics) {
+    totalRequests += m.requestCount || 0;
+    totalPayloadSize += m.payloadSize || 0;
+    uniqueHours.add(m.hourBucket);
+
+    // Track peak hour
+    if (m.requestCount > peakHour.requests) {
+      peakHour = { bucket: m.hourBucket, requests: m.requestCount };
+    }
+
+    // Endpoint breakdown
+    const epKey = m.endpoint || 'unknown';
+    if (!endpointMap.has(epKey)) {
+      endpointMap.set(epKey, { requests: 0, payloadSize: 0 });
+    }
+    const epData = endpointMap.get(epKey);
+    epData.requests += m.requestCount || 0;
+    epData.payloadSize += m.payloadSize || 0;
+
+    // Method breakdown
+    const methodKey = m.method || 'unknown';
+    if (!methodMap.has(methodKey)) {
+      methodMap.set(methodKey, { requests: 0, payloadSize: 0 });
+    }
+    const methodData = methodMap.get(methodKey);
+    methodData.requests += m.requestCount || 0;
+    methodData.payloadSize += m.payloadSize || 0;
+  }
+
+  const hoursActive = uniqueHours.size;
+  const avgRequestsPerHour = hoursActive > 0 ? Math.round(totalRequests / hoursActive) : 0;
+
+  return {
+    totalRequests,
+    totalPayloadSize,
+    hoursActive,
+    avgRequestsPerHour,
+    peakHour: peakHour.requests > 0 ? peakHour : null,
+    endpointBreakdown: Object.fromEntries(endpointMap),
+    methodBreakdown: Object.fromEntries(methodMap)
+  };
+}

@@ -18,6 +18,8 @@ import { PrismaClient } from '@prisma/client';
 import { logger } from '../utils/logger';
 import { UsageBillingAdapter, StripeUsageRecord } from './usage-billing-adapter';
 import { UsageTrackerService } from '../metering/usage-tracker-service';
+import { OverageSummary } from './overage-calculator';
+import { StripeInvoiceService, InvoiceResult, InvoiceOptions } from './stripe-invoice-service';
 
 const prisma = new PrismaClient();
 
@@ -62,6 +64,7 @@ export class StripeUsageSyncService {
   private config: StripeSyncConfig;
   private adapter: UsageBillingAdapter;
   private tracker: UsageTrackerService;
+  private invoiceService: StripeInvoiceService;
 
   private constructor(config?: Partial<StripeSyncConfig>) {
     const stripeSecretKey = config?.stripeSecretKey || process.env.STRIPE_SECRET_KEY || '';
@@ -83,6 +86,7 @@ export class StripeUsageSyncService {
 
     this.adapter = UsageBillingAdapter.getInstance();
     this.tracker = UsageTrackerService.getInstance();
+    this.invoiceService = StripeInvoiceService.getInstance();
   }
 
   static getInstance(config?: Partial<StripeSyncConfig>): StripeUsageSyncService {
@@ -324,6 +328,58 @@ export class StripeUsageSyncService {
    */
   async shutdown(): Promise<void> {
     await prisma.$disconnect();
+  }
+
+  /**
+   * Create Stripe invoice for overage charges
+   *
+   * @param customerId - Stripe customer ID
+   * @param summary - Overage summary from OverageCalculator
+   * @param options - Invoice configuration options
+   * @returns Invoice result with invoice ID and details
+   */
+  async createOverageInvoice(
+    customerId: string,
+    summary: OverageSummary,
+    options?: InvoiceOptions
+  ): Promise<InvoiceResult> {
+    logger.info('[StripeUsageSync] Creating overage invoice', {
+      customerId,
+      tenantId: summary.tenantId,
+      period: summary.period,
+      totalOverage: summary.totalOverage,
+    });
+
+    try {
+      // Use StripeInvoiceService to create invoice
+      const result = await this.invoiceService.createOverageInvoice(
+        customerId,
+        summary,
+        options
+      );
+
+      logger.info('[StripeUsageSync] Overage invoice created', {
+        invoiceId: result.invoiceId,
+        totalAmount: result.totalAmount,
+        currency: result.currency,
+      });
+
+      return result;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      logger.error('[StripeUsageSync] Failed to create overage invoice', {
+        customerId,
+        tenantId: summary.tenantId,
+        error: errorMessage,
+      });
+
+      return {
+        success: false,
+        totalAmount: 0,
+        currency: 'usd',
+        error: errorMessage,
+      };
+    }
   }
 }
 

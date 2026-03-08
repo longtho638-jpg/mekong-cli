@@ -26,7 +26,7 @@ const { generateEconomicMission } = require('./clawwork-integration');
 const { dispatchDueTradingMissions } = require('./trading-cadence-scheduler');
 
 let intervalRef = null;
-let _questionLoopCount = 0; // 🧠 QUESTION loop detector (module-level to avoid 'state' TDZ)
+const _paneQuestionCounts = new Map(); // 🧠 Per-pane question loop tracking for P0-P9
 
 // 🔒 Mission dedup: prevent re-dispatching same error within 30min
 const _dispatchedMissions = new Map(); // key → timestamp
@@ -339,7 +339,7 @@ function startAutoCTO() {
 
         // 🦞🦞🦞 DISPATCH FIRST — NO LLM DELAY! Fast regex-only idle check
         log(`🦞 DISPATCH-CHECK: ${fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f)).length} tasks in queue`);
-        // P0 = mekong-cli (default), P1 = well/wellnexus, P2 = algo-trader
+        // P0 = mekong-cli, P1 = well/wellnexus, P2 = algo-trader, P3-P9 = overflow/overflow/overflow/overflow/overflow/overflow/overflow
         const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
         if (tasks.length > 0) {
           const sorted = tasks.sort((a, b) => {
@@ -353,7 +353,9 @@ function startAutoCTO() {
             const lower = filename.toLowerCase();
             if (/well|wellnexus|84tea/.test(lower)) return 1;
             if (/algo.?trader|algotrader|trading/.test(lower)) return 2;
-            return 0;
+            // P3-P9: round-robin overflow for other projects
+            const hash = filename.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+            return 3 + (hash % 7);
           }
 
           let dispatched = 0;
@@ -379,9 +381,16 @@ function startAutoCTO() {
                 const command = firstLine.startsWith('/') ? firstLine : `/cook ${firstLine}`;
 
                 const MODEL_POOL = {
-                  0: 'qwen3-coder-plus',       // P0: fast coder (0.89s TTFB)
-                  1: 'qwen3-coder-plus',        // P1: code specialist
-                  2: 'kimi-k2.5'                // P2: reviewer
+                  0: 'qwen3.5-plus',              // P0: flagship (1M ctx, best overall)
+                  1: 'qwen3-coder-plus',          // P1: code specialist (1M ctx)
+                  2: 'kimi-k2.5',                 // P2: reviewer + vision (262K ctx)
+                  3: 'qwen3-max-2026-01-23',      // P3: deep reasoning (262K ctx)
+                  4: 'qwen3.5-flash',             // P4: fast tasks (1M ctx)
+                  5: 'qwen3-coder-480b-a35b-instruct', // P5: largest coder (262K ctx)
+                  6: 'MiniMax-M2.5',              // P6: large output (204K ctx)
+                  7: 'MiniMax-M2.5-highspeed',    // P7: fast large output (204K ctx)
+                  8: 'glm-5',                     // P8: fresh perspective (202K ctx)
+                  9: 'glm-4.7'                    // P9: fast review (202K ctx)
                 };
                 const paneModel = MODEL_POOL[targetIdx] || MODEL_POOL[0];
 
@@ -413,10 +422,12 @@ function startAutoCTO() {
 
         // 🧠 LLM VISION: 知己知彼 — Use gemini-3-flash to READ CC CLI output
         // Only runs when NO tasks were dispatched (all panes busy or queue empty)
+        // Expanded from 3 to 10 panes (P0-P9) for 10-model pool support
         let isApiBusy = false;
+        const TOTAL_PANES = 10; // P0-P9 for 10-model rotation
         try {
           const { interpretState, clearCache } = require('./llm-interpreter');
-          for (let pIdx = 0; pIdx < 3; pIdx++) {
+          for (let pIdx = 0; pIdx < TOTAL_PANES; pIdx++) {
             try {
               const paneOutput = require('child_process').execSync(
                 `tmux capture-pane -t tom_hum:0.${pIdx} -p -S -50 2>/dev/null`,
@@ -446,20 +457,24 @@ function startAutoCTO() {
 
               const llmResult = await interpretState(paneOutput);
 
-              if (pIdx === 1 && llmResult.state !== 'question') _questionLoopCount = 0;
+              // Reset question count for this pane if not in question state
+              if (llmResult.state !== 'question') {
+                _paneQuestionCounts.set(pIdx, 0);
+              }
 
               if (llmResult.state === 'busy') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI BUSY: ${llmResult.summary}`);
                 isApiBusy = true;
               } else if (llmResult.state === 'question') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI QUESTION: ${llmResult.summary}`);
-                if (pIdx === 1) _questionLoopCount++;
+                const currentCount = (_paneQuestionCounts.get(pIdx) || 0) + 1;
+                _paneQuestionCounts.set(pIdx, currentCount);
 
                 if (llmResult.confidence >= 0.8) {
-                  if (pIdx === 1 && _questionLoopCount >= 3) {
-                    log(`[LLM-VISION][P${pIdx}] LOOP BREAK: ${_questionLoopCount} questions — sending Escape`);
+                  if (currentCount >= 3) {
+                    log(`[LLM-VISION][P${pIdx}] LOOP BREAK: ${currentCount} questions — sending Escape`);
                     try { require('child_process').execSync(`tmux send-keys -t tom_hum:0.${pIdx} Escape`, { timeout: 2000 }); } catch (e) { }
-                    _questionLoopCount = 0;
+                    _paneQuestionCounts.set(pIdx, 0);
                   } else {
                     log(`[LLM-VISION][P${pIdx}] AUTO-APPROVE: Sending Enter`);
                     try { require('child_process').execSync(`tmux send-keys -t tom_hum:0.${pIdx} Enter`, { timeout: 2000 }); } catch (e) { }

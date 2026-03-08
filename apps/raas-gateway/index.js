@@ -6,7 +6,7 @@
 
 import { authenticate } from './src/edge-auth-handler.js';
 import { checkRateLimit, buildRateLimitHeaders } from './src/kv-rate-limiter-per-api-key.js';
-import { trackUsage, getUsageMetrics, getPayloadSize, getEndpointType } from './src/kv-usage-meter.js';
+import { trackUsage, getUsageMetrics, getPayloadSize, getEndpointType, aggregateUsageForBilling, getCurrentHourBucket } from './src/kv-usage-meter.js';
 
 const GATEWAY_VERSION = '2.0.0';
 
@@ -229,6 +229,91 @@ export default {
         }, 200, { ...corsHeaders, ...rlHeaders });
       }).catch(err => {
         return jsonResponse({ error: 'Failed to retrieve usage metrics', details: err.message }, 500, corsHeaders);
+      });
+    }
+
+    // --- ROUTE: GET /v1/overage/calculate (overage billing calculation) ---
+    if (path === '/v1/overage/calculate' && request.method === 'GET') {
+      // Only allow service accounts or mk_ API key holders to calculate overage
+      if (role !== 'service' && !licenseKey) {
+        return jsonResponse({ error: 'Unauthorized to access overage calculation' }, 403, corsHeaders);
+      }
+
+      const url = new URL(request.url);
+      const startHour = url.searchParams.get('start_hour');
+      const endHour = url.searchParams.get('end_hour');
+
+      // Default to last 24 hours if not specified
+      const effectiveEndHour = endHour || getCurrentHourBucket();
+      const effectiveStartHour = startHour || effectiveEndHour; // Default to same hour if not specified
+
+      return aggregateUsageForBilling(env, licenseKey, effectiveStartHour, effectiveEndHour).then(aggregated => {
+        // Forward to algo-trader backend for overage calculation
+        const backendUrl = (env.BACKEND_URL || env.BRIDGE_URL || env.OPENCLAW_URL || '')
+          .replace(/$/, '');
+
+        if (backendUrl) {
+          // Forward usage data to backend for pricing calculation
+          return fetch(`${backendUrl}/v1/billing/calculate-overage`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Tenant-Id': tenantId,
+              'X-Tenant-Role': role,
+              'X-RaaS-Source': 'raas-gateway'
+            },
+            body: JSON.stringify({
+              license_key: licenseKey,
+              tenant_id: tenantId,
+              usage: aggregated,
+              period: {
+                start_hour: effectiveStartHour,
+                end_hour: effectiveEndHour
+              }
+            })
+          }).then(async backendResponse => {
+            const backendData = await backendResponse.arrayBuffer();
+            const responseHeaders = new Headers({
+              'Content-Type': 'application/json',
+              ...corsHeaders,
+              ...rlHeaders,
+              'X-Overage-Total-Requests': String(aggregated.totalRequests),
+              'X-Overage-Payload-Size': String(aggregated.totalPayloadSize),
+              'X-Overage-Hours-Active': String(aggregated.hoursActive)
+            });
+            return new Response(backendData, {
+              status: backendResponse.status,
+              headers: responseHeaders
+            });
+          }).catch(_err => {
+            // Backend unavailable, return aggregated usage only
+            return jsonResponse({
+              license_key: licenseKey,
+              tenant_id: tenantId,
+              period: {
+                start_hour: effectiveStartHour,
+                end_hour: effectiveEndHour
+              },
+              usage_summary: aggregated,
+              overage_status: 'pending_backend_calculation',
+              note: 'Backend unavailable for pricing - usage data only'
+            }, 200, { ...corsHeaders, ...rlHeaders });
+          });
+        }
+
+        // No backend configured, return usage summary only
+        return jsonResponse({
+          license_key: licenseKey,
+          tenant_id: tenantId,
+          period: {
+            start_hour: effectiveStartHour,
+            end_hour: effectiveEndHour
+          },
+          usage_summary: aggregated,
+          overage_status: 'backend_not_configured'
+        }, 200, { ...corsHeaders, ...rlHeaders });
+      }).catch(err => {
+        return jsonResponse({ error: 'Failed to calculate overage', details: err.message }, 500, corsHeaders);
       });
     }
 

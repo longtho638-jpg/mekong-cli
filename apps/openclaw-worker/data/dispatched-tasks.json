@@ -6,14 +6,6 @@
       "pane": 0,
       "chapter": "TIER3-RỪNG-CHIẾN: resources",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
-      "dispatchedAt": 1772911500819
-    },
-    {
-      "hash": "3d22b94be62e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-RỪNG-CHIẾN: resources",
-      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
       "dispatchedAt": 1772912881518
     },
     {
@@ -1599,6 +1591,14 @@
       "chapter": "TIER3-RỪNG-CHIẾN: build",
       "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
       "dispatchedAt": 1772938009619
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772938367102
     }
   ],
   "chapterIndex": 5
