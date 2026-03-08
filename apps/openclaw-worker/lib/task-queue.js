@@ -1,3 +1,8 @@
+/**
+ * Task Queue — FIFO mission queue with Dead Letter Queue (DLQ) support.
+ * Watches tasks/ directory for mission files, dequeues in priority order,
+ * and routes failed missions to DLQ after max retries.
+ */
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');

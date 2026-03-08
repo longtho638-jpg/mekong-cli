@@ -3,9 +3,11 @@ const path = require('path');
 const { execSync } = require('child_process');
 const config = require('../config');
 
-// Hunter Scanner Module v2
-// Scans for: TODO, FIXME, console.log, @ts-ignore, secrets, outdated deps, build health
-// Generates: Priority-scored mission content object
+/**
+ * Hunter Scanner — codebase quality scanner for autonomous mission generation.
+ * Scans for: TODO, FIXME, console.log, @ts-ignore, secrets, outdated deps, build health.
+ * Generates priority-scored mission content objects for CTO dispatch.
+ */
 
 function log(msg) {
     const ts = new Date().toISOString().slice(11, 19);
