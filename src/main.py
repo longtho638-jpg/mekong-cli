@@ -354,12 +354,56 @@ def analytics(
     run_dashboard(port=port, open_browser=not no_browser)
 
 
+@app.command()
+def raas_debug_export(
+    output: str = typer.Option(
+        "~/.mekong/raas-debug-trace.json",
+        "--output",
+        "-o",
+        help="Output path for trace export",
+    ),
+) -> None:
+    """🔍 Export RaaS interaction trace for debugging."""
+    from src.core.raas_audit_logger import get_audit_logger
+
+    logger = get_audit_logger(debug_mode=True)
+    trace_log = logger.get_trace_log()
+
+    if not trace_log:
+        console.print("[yellow]No RaaS interactions traced yet.[/yellow]")
+        console.print("[dim]Run commands with --raas-debug flag to enable tracing.[/dim]")
+        return
+
+    output_path = logger.export_trace(output)
+    console.print(f"[bold green]✓ Exported {len(trace_log)} RaaS interactions[/bold green]")
+    console.print(f"[dim]Path: {output_path}[/dim]")
+
+    # Show summary
+    console.print("\n[bold]Trace Summary:[/bold]")
+    for trace in trace_log[-5:]:  # Last 5 interactions
+        status_color = "green" if trace["status_code"] == 200 else "red"
+        console.print(
+            f"  [{status_color}]{trace['status_code']}[/] {trace['event_type']} "
+            f"→ {trace['elapsed_ms']:.0f}ms"
+        )
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
     version_flag: bool = typer.Option(False, "--version", "-v", help="Show version"),
+    raas_debug: bool = typer.Option(
+        False,
+        "--raas-debug",
+        help="Dump full RaaS interaction trace (headers, payload, status)",
+    ),
 ) -> None:
     """Mekong CLI - Autonomous AI Agent Framework"""
+    # Set RAAS_DEBUG env var for audit logger
+    if raas_debug:
+        import os
+        os.environ["RAAS_DEBUG"] = "true"
+
     # Validate license at startup
     _validate_startup_license(ctx)
 
@@ -378,6 +422,7 @@ def main(
 [dim]Help:[/dim]
   [bold]mekong --help[/bold]                Show all commands
   [bold]mekong <command> --help[/bold]      Show command help
+  [bold]mekong --raas-debug[/bold]          Dump RaaS interaction trace
         """)
 
 

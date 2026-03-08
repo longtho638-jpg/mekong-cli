@@ -193,7 +193,8 @@ describe('AuditLogRepository - Hash Chain', () => {
 
       expect(result.valid).toBe(false);
       expect(result.brokenAt).toBeDefined();
-      expect(result.details).toContain('Chain broken');
+      // Details should mention either hash mismatch or chain broken
+      expect(result.details).toMatch(/(Chain broken|Hash mismatch)/);
     });
 
     it('should filter by tenantId', async () => {

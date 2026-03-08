@@ -26,6 +26,7 @@ class UsageRecord:
     payload_size: int
     timestamp: float
     error: Optional[str] = None
+    tenant_id: Optional[str] = None
 
 
 class TelemetryReporter:
@@ -66,10 +67,12 @@ class TelemetryReporter:
                     status_code INTEGER NOT NULL,
                     payload_size INTEGER NOT NULL,
                     timestamp REAL NOT NULL,
-                    error TEXT
+                    error TEXT,
+                    tenant_id TEXT
                 )
             """)
             conn.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON usage_records(timestamp)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_tenant ON usage_records(tenant_id)")
 
     def record_call(
         self,
@@ -78,6 +81,7 @@ class TelemetryReporter:
         status_code: int,
         payload_size: int,
         error: Optional[str] = None,
+        tenant_id: Optional[str] = None,
     ) -> None:
         """
         Record API call usage.
@@ -88,6 +92,7 @@ class TelemetryReporter:
             status_code: Response status code
             payload_size: Request payload size in bytes
             error: Optional error message
+            tenant_id: Optional tenant ID for attribution
         """
         record = UsageRecord(
             endpoint=endpoint,
@@ -96,6 +101,7 @@ class TelemetryReporter:
             payload_size=payload_size,
             timestamp=time.time(),
             error=error,
+            tenant_id=tenant_id,
         )
         self._buffer.append(record)
 

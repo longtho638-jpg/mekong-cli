@@ -3,9 +3,11 @@ RaaS Gateway Client — Unified Gateway for CLI Requests
 
 Routes all outbound CLI requests through raas.agencyos.network with:
 - JWT/mk_ API key authentication
+- JWT-bound usage attribution (Phase 6)
 - Rate limit enforcement
 - Usage telemetry
 - Centralized license validation
+- Audit logging integration
 
 Usage:
     from src.core.gateway_client import GatewayClient
@@ -24,6 +26,7 @@ from typing import Any, Optional
 import requests
 
 from .raas_auth import RaaSAuthClient, get_auth_client
+from .raas_audit_logger import RAASAuditLogger, get_audit_logger
 from .rate_limit_client import RateLimitClient
 from .telemetry_reporter import TelemetryReporter
 
@@ -44,6 +47,7 @@ class GatewayClient:
     Unified Gateway Client for RaaS.
 
     All CLI requests to AgencyOS services route through here.
+    Phase 6: Enhanced with JWT-bound usage attribution and audit logging.
     """
 
     DEFAULT_GATEWAY_URL = "https://raas.agencyos.network"
@@ -66,15 +70,41 @@ class GatewayClient:
         self.auth = auth_client or get_auth_client()
         self.rate_limit = RateLimitClient()
         self.telemetry = TelemetryReporter()
+        self.audit = get_audit_logger()
         self._session = requests.Session()
 
-    def _get_auth_header(self) -> dict[str, str]:
-        """Get authorization header from stored credentials."""
+    def _get_auth_header(self) -> tuple[dict[str, str], Optional[str]]:
+        """
+        Get authorization header with JWT-bound usage attribution.
+
+        Returns:
+            Tuple of (headers dict, tenant_id)
+        """
         creds = self.auth._load_credentials()
         token = creds.get("token") or os.getenv("RAAS_LICENSE_KEY")
+
+        tenant_id = None
         if token:
-            return {"Authorization": f"Bearer {token}"}
-        return {}
+            # Validate to get tenant info
+            result = self.auth.validate_credentials(token)
+            if result.valid and result.tenant:
+                tenant_id = result.tenant.tenant_id
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-RaaS-Source": "mekong-cli",
+            "X-RaaS-Phase": "6",
+        }
+
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
+            # Add JWT attribution header for usage tracking
+            if "." in token:
+                headers["X-JWT-Attribution"] = token[:100]  # First 100 chars for tracing
+            elif tenant_id:
+                headers["X-RaaS-Tenant-ID"] = tenant_id
+
+        return headers, tenant_id
 
     def request(
         self,
@@ -85,6 +115,8 @@ class GatewayClient:
     ) -> GatewayResponse:
         """
         Make authenticated request through gateway.
+
+        Phase 6: Enhanced with JWT-bound usage attribution and audit logging.
 
         Args:
             method: HTTP method
@@ -102,12 +134,11 @@ class GatewayClient:
         if not self.rate_limit.can_proceed():
             self.rate_limit.wait_for_reset()
 
-        # Build request
+        # Build request with JWT attribution
         url = f"{self.gateway_url}{path}"
+        request_headers, tenant_id = self._get_auth_header()
         request_headers = {
-            "Content-Type": "application/json",
-            "X-RaaS-Source": "mekong-cli",
-            **self._get_auth_header(),
+            **request_headers,
             **(headers or {}),
         }
 
@@ -137,12 +168,24 @@ class GatewayClient:
             remaining = response.headers.get("X-RateLimit-Remaining")
             rate_limit_remaining = int(remaining) if remaining else None
 
-            # Record telemetry
+            # Record telemetry with tenant attribution
             self.telemetry.record_call(
                 endpoint=path,
                 method=method,
                 status_code=response.status_code,
                 payload_size=len(kwargs.get("json", {})),
+                tenant_id=tenant_id,
+            )
+
+            # Log audit event for compliance (Phase 6)
+            self.audit.log_event(
+                event="gateway_call",
+                metadata={
+                    "endpoint": path,
+                    "method": method,
+                    "status_code": response.status_code,
+                    "tenant_id": tenant_id,
+                },
             )
 
             # Raise on error
@@ -168,6 +211,7 @@ class GatewayClient:
                 status_code=0,
                 payload_size=0,
                 error=str(e),
+                tenant_id=tenant_id,
             )
             raise GatewayError(f"Gateway unreachable: {e}", status_code=0) from e
 

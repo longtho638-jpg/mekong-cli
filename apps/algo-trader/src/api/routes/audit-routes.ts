@@ -12,7 +12,6 @@
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { createAuditLogRepository, AuditLogRepository } from '../../execution/audit-log-repository';
-import { createComplianceAuditLogger } from '../../execution/compliance-audit-logger';
 import { logger } from '../../utils/logger';
 
 /**
@@ -89,46 +88,30 @@ interface IntegrityResponse {
 }
 
 /**
- * Create audit routes plugin
+ * Register audit routes with existing Fastify server
  */
-export async function createAuditRoutes(): Promise<FastifyInstance> {
-  const fastify = require('fastify')({ logger: false });
-
-  // Register auth middleware (assumes parent server has raasAuthMiddleware)
-
+export async function registerAuditRoutes(server: FastifyInstance) {
   /**
    * GET /api/v1/audit/logs
    * Query audit logs with filters
    * Requires: admin scope
-   *
-   * Query params:
-   * - from: ISO 8601 start date
-   * - to: ISO 8601 end date
-   * - userId: Filter by user ID
-   * - tenantId: Filter by tenant ID
-   * - orderId: Filter by order ID
-   * - eventType: Filter by event type
-   * - limit: Max results (default: 1000)
-   * - offset: Pagination offset (default: 0)
    */
-  fastify.get<{ Querystring: AuditLogsQuery }>(
+  server.get<{ Querystring: AuditLogsQuery }>(
     '/api/v1/audit/logs',
     {
       preHandler: [requireAdminScope],
       schema: {
-        description: 'Query audit logs with filters (admin only)',
-        tags: ['audit', 'compliance'],
         querystring: {
           type: 'object',
           properties: {
-            from: { type: 'string', format: 'date-time', description: 'Start date (ISO 8601)' },
-            to: { type: 'string', format: 'date-time', description: 'End date (ISO 8601)' },
-            userId: { type: 'string', description: 'Filter by user ID' },
-            tenantId: { type: 'string', description: 'Filter by tenant ID' },
-            orderId: { type: 'string', description: 'Filter by order ID' },
-            eventType: { type: 'string', description: 'Filter by event type' },
-            limit: { type: 'string', description: 'Max results (default: 1000)' },
-            offset: { type: 'string', description: 'Pagination offset' },
+            from: { type: 'string', format: 'date-time' },
+            to: { type: 'string', format: 'date-time' },
+            userId: { type: 'string' },
+            tenantId: { type: 'string' },
+            orderId: { type: 'string' },
+            eventType: { type: 'string' },
+            limit: { type: 'string' },
+            offset: { type: 'string' },
           },
         },
         response: {
@@ -150,7 +133,7 @@ export async function createAuditRoutes(): Promise<FastifyInstance> {
         },
       },
     },
-    async (request, reply) => {
+    async (request: FastifyRequest<{ Querystring: AuditLogsQuery }>, reply: FastifyReply) => {
       try {
         const {
           from,
@@ -234,23 +217,21 @@ export async function createAuditRoutes(): Promise<FastifyInstance> {
    * Get audit trail for a specific order
    * Requires: admin scope
    */
-  fastify.get<{ Params: { orderId: string } }>(
+  server.get<{ Params: { orderId: string } }>(
     '/api/v1/audit/logs/:orderId',
     {
       preHandler: [requireAdminScope],
       schema: {
-        description: 'Get audit trail for a specific order (admin only)',
-        tags: ['audit', 'compliance'],
         params: {
           type: 'object',
           properties: {
-            orderId: { type: 'string', description: 'Order ID' },
+            orderId: { type: 'string' },
           },
           required: ['orderId'],
         },
       },
     },
-    async (request, reply) => {
+    async (request: FastifyRequest<{ Params: { orderId: string } }>, reply: FastifyReply) => {
       try {
         const repository = createAuditLogRepository();
         const logs = await repository.findByOrderId(request.params.orderId);
@@ -284,22 +265,20 @@ export async function createAuditRoutes(): Promise<FastifyInstance> {
    * Verify hash chain integrity
    * Requires: admin scope
    */
-  fastify.get<{ Querystring: { tenantId?: string } }>(
+  server.get<{ Querystring: { tenantId?: string } }>(
     '/api/v1/audit/verify-integrity',
     {
       preHandler: [requireAdminScope],
       schema: {
-        description: 'Verify audit log hash chain integrity (admin only)',
-        tags: ['audit', 'compliance', 'security'],
         querystring: {
           type: 'object',
           properties: {
-            tenantId: { type: 'string', description: 'Optional: verify specific tenant only' },
+            tenantId: { type: 'string' },
           },
         },
       },
     },
-    async (request, reply) => {
+    async (request: FastifyRequest<{ Querystring: { tenantId?: string } }>, reply: FastifyReply) => {
       try {
         const repository = createAuditLogRepository();
         const result = await repository.verifyIntegrity(request.query.tenantId);
@@ -332,14 +311,5 @@ export async function createAuditRoutes(): Promise<FastifyInstance> {
     }
   );
 
-  return fastify;
-}
-
-/**
- * Register audit routes with existing Fastify server
- */
-export async function registerAuditRoutes(server: FastifyInstance) {
-  const auditPlugin = await createAuditRoutes();
-  await server.register(auditPlugin);
   logger.info('[AuditRoutes] Registered /api/v1/audit endpoints');
 }

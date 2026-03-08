@@ -72,7 +72,7 @@ export interface AuditLogInput {
  * Query options for audit log retrieval
  */
 export interface AuditLogQuery {
-  tenantId: string;
+  tenantId?: string;
   orderId?: string;
   userId?: string;
   eventType?: string;
