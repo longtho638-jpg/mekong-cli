@@ -25,12 +25,25 @@ const SESSION = 'tom_hum:0'; // MUST be 0 since window name might change dynamic
 const LOG_FILE = path.join(process.env.HOME, 'tom_hum_cto.log');
 const CHECK_INTERVAL_MS = process.env.VIBE_INTERVAL || 30_000;
 
-const PANES = [
-    { idx: 0, project: 'mekong-cli', dir: path.join(process.env.HOME, 'mekong-cli'), focus: 'AGI agentic skills + ClaudeKit commands for all business domains' },
-    { idx: 1, project: 'well', dir: path.join(process.env.HOME, 'mekong-cli/apps/well'), focus: 'RaaS platform, i18n, Supabase, PayOS integration' },
-    { idx: 2, project: 'sophia-ai-factory', dir: path.join(process.env.HOME, 'mekong-cli/apps/sophia-ai-factory'), focus: 'Sophia AI Video Factory - Zero manual content pipeline' },
-    { idx: 3, project: 'algo-trader', dir: path.join(process.env.HOME, 'mekong-cli/apps/algo-trader'), focus: 'Cross-exchange arbitrage engine (Binance/OKX/Bybit)' },
-];
+// Auto-detect panes from tmux (fallback to static config)
+function buildPanesConfig() {
+    const staticPanes = [
+        { idx: 0, project: 'mekong-cli', dir: path.join(process.env.HOME, 'mekong-cli'), focus: 'Core packages, vibe SDK, scripts, infra tooling' },
+        { idx: 1, project: 'sophia-ai-factory', dir: path.join(process.env.HOME, 'mekong-cli/apps/sophia-ai-factory'), focus: 'Sophia AI Video Factory' },
+        { idx: 2, project: 'well', dir: path.join(process.env.HOME, 'mekong-cli/apps/well'), focus: 'RaaS platform, i18n, Supabase, PayOS' },
+        { idx: 3, project: 'algo-trader', dir: path.join(process.env.HOME, 'mekong-cli/apps/algo-trader'), focus: 'Cross-exchange arbitrage engine' },
+        { idx: 4, project: 'strategic', dir: path.join(process.env.HOME, 'mekong-cli'), focus: '⭐ OPUS 4.6 STRATEGIC', isOpus: true },
+    ];
+    // Validate panes actually exist in tmux
+    try {
+        const tmuxPanes = execSync(`tmux list-panes -t ${SESSION} -F "#{pane_index}" 2>/dev/null`, { encoding: 'utf-8' }).trim().split('\n');
+        const validIdxs = new Set(tmuxPanes.map(Number));
+        return staticPanes.filter(p => validIdxs.has(p.idx));
+    } catch {
+        return staticPanes;
+    }
+}
+const PANES = buildPanesConfig();
 
 // ══════════════════════════════════════════════════
 // LOGGING
@@ -67,7 +80,10 @@ function detectRealProject(paneIdx) {
 // 🔧 CENTRALIZED RESPAWN — uses -c flag for reliable cwd (fixes P0 wrong-project bug)
 function respawnPane(paneIdx, dir, flags = '') {
     const realDir = detectRealProject(paneIdx)?.dir || dir;
-    const cmd = `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions${flags ? ' ' + flags : ''}`;
+    // P5 (paneIdx 4) is legally bound to Opus 4.6
+    const isOpus = paneIdx === 4;
+    const prefix = isOpus ? 'CLAUDE_CONFIG_DIR=~/.claude-opus ' : '';
+    const cmd = `${prefix}/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions${flags ? ' ' + flags : ''}`;
     try {
         execSync(`tmux respawn-pane -k -t ${SESSION}.${paneIdx} -c '${realDir}' '${cmd}'`);
         return true;
@@ -310,6 +326,8 @@ function detectPaneState(output) {
     // 🦞 Detect low context BEFORE it hits 0% and crashes. CC CLI shows "Context left until auto-compact: X%"
     if (/Context limit reached/.test(output)) return 'CONTEXT_LIMIT';
     if (/Context left until auto-compact: ([0-9]|1[0-5])%/.test(output)) return 'LOW_CONTEXT';
+    // 🔴 MODEL_UNAVAILABLE: CC CLI says model doesn't exist or no access
+    if (/issue with the selected model|model.*not exist|not have access to it|Run \/model to pick/.test(output)) return 'MODEL_UNAVAILABLE';
     if (/rate-limit-options|You've hit your limit|API Error: 429|"code":"throttling"|quota exceeded|AccountQuotaExceeded|TooManyRequests|exceeded the.*usage quota|Retrying in \d+ seconds/.test(output)) return 'RATE_LIMITED';
     if (/(›|❯)\s*(git (push|commit|add)|queued messages|Press up to edit)/.test(output)) return 'PENDING';
     if (/(›|❯)\s*\/(cook|bootstrap|plan|debug) /.test(output)) return 'STUCK_PROMPT';
@@ -378,6 +396,7 @@ async function checkAllPanes() {
         log(`Warning: Intake scanner error - ${err.message}`);
     }
 
+
     // CTO health — check own process (vibe-factory-monitor)
     try {
         const cto = execSync('pgrep -f "vibe-factory-monitor" 2>/dev/null').toString().trim();
@@ -403,6 +422,25 @@ async function checkAllPanes() {
         log('DASHSCOPE: ⚠️ slow/timeout on all keys (non-blocking)');
     }
 
+    // 🛡️ SYSTEM RAM GUARD: Prevent SSD drowning (Swap files)
+    try {
+        const memInfo = execSync('top -l 1 | grep PhysMem', { encoding: 'utf-8' });
+        const usedMatch = memInfo.match(/(\d+)G used/);
+        if (usedMatch) {
+            const usedG = parseInt(usedMatch[1]);
+            if (usedG >= 14) { // > 14GB of 16GB
+                log(`🚨 RAM CRITICAL: ${usedG}GB used. Force compacting IDLE panes...`);
+                for (const p of PANES) {
+                    const out = tmuxCapture(p.idx, 5);
+                    if (out.includes('❯') && !out.includes('Cooking')) {
+                        tmuxSendKeys(p.idx, 'Escape');
+                        execSync(`tmux send-keys -t ${SESSION}.${p.idx} '/compact' Enter 2>/dev/null || true`);
+                    }
+                }
+            }
+        }
+    } catch (e) { }
+
     for (const pane of PANES) {
         // 🧠 DYNAMIC PROJECT DETECTION — override static config with real tmux path
         const realProject = detectRealProject(pane.idx);
@@ -425,7 +463,7 @@ async function checkAllPanes() {
 
             // 🦞 HARD BYPASS: Do not ask the LLM if we confidently know it's crashed.
             // The LLM often hallucinates the shell prompt as an acceptable IDLE state.
-            if (['CRASHED', 'DEAD'].includes(regexState)) {
+            if (['CRASHED', 'DEAD', 'MODEL_UNAVAILABLE'].includes(regexState)) {
                 state = regexState;
                 log(`P${pane.idx}: ⚡ Regex confident: ${state} — bypassing LLM guard`);
             } else if (['IDLE', 'PENDING'].includes(regexState)) {
@@ -446,7 +484,8 @@ async function checkAllPanes() {
             case 'DEAD':
                 log(`P${pane.idx}: 💀 DEAD — respawning with --continue`);
                 respawnPane(pane.idx, pane.dir, '--continue');
-                // Will inject task next cycle after bootlog(`P${pane.idx}: ✅ Respawned, task will inject next cycle`);
+                // Will inject task next cycle after boot
+                log(`P${pane.idx}: ✅ Respawned, task will inject next cycle`);
                 break;
 
             case 'CRASHED':
@@ -454,19 +493,50 @@ async function checkAllPanes() {
                 respawnPane(pane.idx, pane.dir, '--continue');
                 break;
 
+            case 'MODEL_UNAVAILABLE': {
+                // Model not available on current provider → switch model for THIS pane only
+                // Read current settings to find available fallback model
+                log(`P${pane.idx}: 🔶 MODEL_UNAVAILABLE — switching to fallback model`);
+                try {
+                    const settingsPath = path.join(process.env.HOME, '.claude/settings.json');
+                    const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+                    const currentModel = settings.env?.ANTHROPIC_MODEL || settings.model || '';
+                    const baseUrl = settings.env?.ANTHROPIC_BASE_URL || '';
+
+                    // Pick fallback based on provider
+                    let fallbackModel = 'qwen-plus'; // safe default on most providers
+                    if (baseUrl.includes('siliconflow')) fallbackModel = 'Qwen/Qwen3-Coder-Plus';
+                    else if (baseUrl.includes('bytepluses')) fallbackModel = 'kimi-k2.5';
+                    else if (baseUrl.includes('dashscope')) fallbackModel = 'qwen3-coder-plus';
+
+                    if (currentModel !== fallbackModel) {
+                        settings.env.ANTHROPIC_MODEL = fallbackModel;
+                        settings.model = fallbackModel;
+                        fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+                        log(`P${pane.idx}: 📝 Model switched: ${currentModel} → ${fallbackModel}`);
+                    }
+                } catch (e) {
+                    log(`P${pane.idx}: ⚠️ Settings update failed: ${e.message}`);
+                }
+                // Respawn only this pane (not all panes)
+                respawnPane(pane.idx, pane.dir);
+                lastInjection[pane.idx] = { ts: Date.now(), type: 'simple' };
+                break;
+            }
+
             case 'CONTEXT_LIMIT': {
                 // Check if context is truly at 0% — if so, respawn fresh (compact won't help)
                 const ctxOutput = tmuxCapture(pane.idx, 5);
                 if (/0% remaining/.test(ctxOutput) || /Context low \(0%/.test(ctxOutput)) {
                     log(`P${pane.idx}: 🔴 CONTEXT 0% — /compact won't help. RESPAWNING FRESH...`);
                     respawnPane(pane.idx, pane.dir);
-                    lastInjection[pane.idx] = Date.now();
+                    lastInjection[pane.idx] = { ts: Date.now(), type: 'simple' };
                 } else {
                     log(`P${pane.idx}: 🔴 CONTEXT LIMIT REACHED — sending /compact`);
                     tmuxSendKeys(pane.idx, 'Escape');
                     await sleep(300);
                     execSync(`tmux send-keys -t ${SESSION}.${pane.idx} 'C-u' '/compact' Enter 2>/dev/null || true`);
-                    lastInjection[pane.idx] = Date.now();
+                    lastInjection[pane.idx] = { ts: Date.now(), type: 'simple' };
                 }
                 break;
             }
@@ -476,7 +546,7 @@ async function checkAllPanes() {
                 if (/0% remaining/.test(lowCtxOut)) {
                     log(`P${pane.idx}: 🟡 LOW CONTEXT 0% — RESPAWNING FRESH...`);
                     respawnPane(pane.idx, pane.dir);
-                    lastInjection[pane.idx] = Date.now();
+                    lastInjection[pane.idx] = { ts: Date.now(), type: 'simple' };
                 } else {
                     log(`P${pane.idx}: 🟡 LOW CONTEXT — letting CC CLI finish (no restart)`);
                 }
@@ -489,6 +559,13 @@ async function checkAllPanes() {
                 // Blackbox is used for CTO brain failover only (llm-perception.js)
                 const PROVIDERS = [
                     {
+                        id: 'dashscope', name: 'DashScope',
+                        key: 'sk-sp-afce4429a10e41bb901d6012d7f525c8',
+                        url: 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
+                        model: 'qwen3-coder-plus', opus: 'qwen3-coder-plus', haiku: 'qwen3-coder-plus',
+                        small: 'qwen3-coder-plus', large: 'qwen3-coder-plus'
+                    },
+                    {
                         id: 'byteplus', name: 'BytePlus',
                         key: '5cee0d73-2a72-4f29-b001-c19f3e1c32ba',
                         url: 'https://ark.ap-southeast.bytepluses.com/api/coding',
@@ -496,10 +573,10 @@ async function checkAllPanes() {
                         small: 'ark-code-latest', large: 'kimi-k2.5'
                     },
                     {
-                        id: 'dashscope', name: 'DashScope',
+                        id: 'siliconflow', name: 'SiliconFlow',
                         key: 'sk-sp-afce4429a10e41bb901d6012d7f525c8',
-                        url: 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
-                        model: 'qwen3.5-plus', opus: 'qwen3.5-plus', haiku: 'qwen3-coder-next',
+                        url: 'https://api.siliconflow.cn/v1',
+                        model: 'qwen3-coder-plus', opus: 'qwen3-coder-plus', haiku: 'qwen3-coder-plus',
                         small: 'qwen3-coder-plus', large: 'qwen3-coder-plus'
                     }
                 ];
@@ -509,9 +586,9 @@ async function checkAllPanes() {
                 try {
                     const settings = JSON.parse(fs.readFileSync(path.join(process.env.HOME, '.claude/settings.json'), 'utf-8'));
                     const baseUrl = settings.env?.ANTHROPIC_BASE_URL || '';
-                    if (baseUrl.includes('bytepluses')) currentIdx = 0;
-                    else if (baseUrl.includes('dashscope')) currentIdx = 1;
-                    else if (baseUrl.includes('blackbox')) currentIdx = 2;
+                    if (baseUrl.includes('siliconflow')) currentIdx = 0;
+                    else if (baseUrl.includes('bytepluses')) currentIdx = 1;
+                    else if (baseUrl.includes('dashscope')) currentIdx = 2;
                 } catch { }
 
                 const nextIdx = (currentIdx + 1) % PROVIDERS.length;
@@ -536,8 +613,12 @@ async function checkAllPanes() {
                     log(`P${pane.idx}: 📝 settings.json updated → ${target.name} (${target.model})`);
                 } catch (e) { log(`P${pane.idx}: ⚠️ settings.json update failed: ${e.message}`); }
 
-                // Respawn ALL panes (not just this one) since settings changed globally
+                // Respawn ALL panes EXCEPT P5 (Opus 4.6 — uses its own auth, NEVER override)
                 for (const p of PANES) {
+                    if (p.isOpus) {
+                        log(`P${p.idx}: 🔒 OPUS PROTECTED — skipping respawn (uses own auth/model)`);
+                        continue;
+                    }
                     try {
                         respawnPane(p.idx, p.dir);
                         log(`P${p.idx}: ✅ Respawned on ${target.name} (${target.model})`);
@@ -583,14 +664,16 @@ async function checkAllPanes() {
                 // 🛡️ COOLDOWN CHECK — skip if recently injected
                 if (isInCooldown(pane.idx)) break;
 
-                // 🦞 PRE-FLIGHT CONTEXT CHECK: Prevent starting massive tasks with low battery
+                // 🦞 PRE-FLIGHT CONTEXT CHECK
                 const ctxMatch = output.match(/Context left until auto-compact: (\d+)%/);
                 if (ctxMatch) {
                     const ctx = parseInt(ctxMatch[1], 10);
-                    if (ctx <= 30) {
-                        log(`P${pane.idx}: 🟡 PRE-FLIGHT BLOCKED (Context ${ctx}% <= 30%). Restarting fresh...`);
-                        respawnPane(pane.idx, pane.dir);
-                        lastInjection[pane.idx] = Date.now();
+                    if (ctx <= 45) { // Increased from 30% to 45% for aggressive stability
+                        log(`P${pane.idx}: 🟡 AGGRESSIVE STABILITY: Context ${ctx}% <= 45%. Compacting...`);
+                        tmuxSendKeys(pane.idx, 'Escape');
+                        await sleep(300);
+                        execSync(`tmux send-keys -t ${SESSION}.${pane.idx} 'C-u' '/compact' Enter 2>/dev/null || true`);
+                        lastInjection[pane.idx] = { ts: Date.now(), type: 'simple' };
                         break;
                     }
                 }
@@ -679,20 +762,29 @@ async function checkAllPanes() {
                                 // Match logic: find files specifically meant for this pane
                                 const myTasks = files.filter(f => {
                                     const n = f.toLowerCase();
-                                    const isP0 = pane.project === 'mekong-cli';
+                                    const isP0 = pane.project === 'openclaw-worker';
                                     const isP1 = pane.project === 'well';
-                                    const isP2 = pane.project === 'algo-trader';
+                                    const isP2 = pane.project === 'mekong-cli';
+                                    const isP3 = pane.project === 'sophia-ai-factory';
+                                    const isP4 = pane.isOpus; // Strategic Opus layer
+                                    const isP5 = pane.project === 'algo-trader';
 
-                                    const hasP0 = n.includes('mekong') || n.includes('p0');
-                                    const hasP1 = n.includes('well') || n.includes('p1');
-                                    const hasP2 = n.includes('algo') || n.includes('p2');
+                                    const hasP0 = n.includes('openclaw') || n.includes('brain') || n.includes('cto');
+                                    const hasP1 = n.includes('well') || n.includes('wellnexus');
+                                    const hasP2 = n.includes('mekong') || n.includes('vibe') || n.includes('core');
+                                    const hasP3 = n.includes('sophia');
+                                    const hasP4 = n.includes('strategic') || n.includes('roiaas') || n.includes('binh_phap') || n.includes('10x') || n.includes('opus');
+                                    const hasP5 = n.includes('algo') || n.includes('trading');
 
                                     if (isP0 && hasP0) return true;
                                     if (isP1 && hasP1) return true;
                                     if (isP2 && hasP2) return true;
+                                    if (isP3 && hasP3) return true;
+                                    if (isP4 && hasP4) return true;
+                                    if (isP5 && hasP5) return true;
 
-                                    // If no specific routing indicator exists, default to P0
-                                    if (isP0 && !hasP0 && !hasP1 && !hasP2) return true;
+                                    // NEVER default unmatched tasks to P4 (Opus)
+                                    if (isP0 && !hasP0 && !hasP1 && !hasP2 && !hasP3 && !hasP4 && !hasP5) return true;
 
                                     return false;
                                 });
