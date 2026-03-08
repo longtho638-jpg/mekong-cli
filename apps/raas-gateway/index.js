@@ -9,6 +9,8 @@ import { checkRateLimit, buildRateLimitHeaders } from './src/kv-rate-limiter-per
 import { trackUsage, getUsageMetrics, getPayloadSize, getEndpointType, aggregateUsageForBilling, getCurrentHourBucket } from './src/kv-usage-meter.js';
 import { checkSuspensionStatus, syncSuspensionToKV, buildSuspensionStatusHeader } from './src/kv-suspension-checker.js';
 import { validateExtensionFlags, getExtensionStatus, trackExtensionUsage } from './src/extension-validator.js';
+import { checkQuota, incrementUsage } from './src/kv-quota-enforcer.js';
+import { checkAndTriggerAlerts } from './src/quota-alert-webhook.js';
 
 const GATEWAY_VERSION = '2.0.0';
 
@@ -244,6 +246,23 @@ export default {
       );
     }
 
+    // --- QUOTA CHECK: Block over-quota tenants (after auth & suspension, before rate limit) ---
+    const quotaResult = licenseKey ? await checkQuota(env, licenseKey, role) : null;
+    const quotaHeaders = quotaResult && quotaResult.remaining !== Infinity
+      ? { 'X-Quota-Remaining': String(quotaResult.remaining), 'X-Quota-Reset': String(quotaResult.resetIn) }
+      : {};
+
+    if (quotaResult && !quotaResult.allowed) {
+      // Trigger quota exceeded alert (rate-limited)
+      await checkAndTriggerAlerts(env, quotaResult);
+
+      return jsonResponse(
+        { error: 'quota_exceeded', reason: quotaResult.blockReason, resetIn: quotaResult.resetIn },
+        429,
+        { ...corsHeaders, ...quotaHeaders }
+      );
+    }
+
     // --- EXTENSION CHECK: Validate extension eligibility for /v1/trade/* and /v1/extension/* ---
     const isExtensionEndpoint = path.startsWith('/v1/trade') || path.startsWith('/v1/extension');
     let extensionResult = null;
@@ -273,7 +292,7 @@ export default {
 
     // --- ROUTE: POST /v1/auth/validate (validate credentials) ---
     if (path === '/v1/auth/validate' && request.method === 'POST') {
-      // Auth already validated above — return tenant context + rate limit info
+      // Auth already validated above — return tenant context + rate limit + quota info
       const features = getFeaturesForRole(role);
       return jsonResponse(
         {
@@ -293,13 +312,20 @@ export default {
             limit: rlResult.limit,
             resetIn: rlResult.resetIn
           },
+          quota: quotaResult ? {
+            remaining: quotaResult.remaining,
+            monthlyUsagePercent: quotaResult.status?.monthlyUsagePercent,
+            isNearQuota: quotaResult.status?.isNearQuota,
+            isOverQuota: quotaResult.status?.isOverQuota,
+            resetIn: quotaResult.resetIn
+          } : null,
           gateway: {
             version: GATEWAY_VERSION,
             url: env.GATEWAY_URL || 'https://raas.agencyos.network'
           }
         },
         200,
-        { ...corsHeaders, ...rlHeaders, ...buildSuspensionStatusHeader(suspensionResult) }
+        { ...corsHeaders, ...rlHeaders, ...buildSuspensionStatusHeader(suspensionResult), ...quotaHeaders }
       );
     }
 
@@ -495,9 +521,22 @@ export default {
           });
         }
 
+        // Track usage in RAAS_USAGE_KV (monthly aggregation)
         trackUsage(env, licenseKey, tenantId, role, endpointType, request.method, payloadSize).catch(err => {
           console.error('Usage tracking failed:', err);
         });
+
+        // Increment quota counters (daily/hourly)
+        incrementUsage(env, licenseKey, payloadSize).catch(err => {
+          console.error('Quota increment error:', err);
+        });
+
+        // Check and trigger quota alerts (non-blocking)
+        if (quotaResult) {
+          checkAndTriggerAlerts(env, quotaResult).catch(err => {
+            console.error('Quota alert error:', err);
+          });
+        }
       }
 
       const backendUrl = (env.BACKEND_URL || env.BRIDGE_URL || env.OPENCLAW_URL || '')

@@ -28,6 +28,14 @@ binding = "RAAS_USAGE_KV"
 id = "placeholder_raas_usage_kv_id"
 preview_id = "placeholder_raas_usage_kv_id"
 
+# KV namespace for quota enforcement (daily/hourly counters + limits)
+# Create with: wrangler kv:namespace create "QUOTA_KV"
+# Then replace id below with the output id
+[[kv_namespaces]]
+binding = "QUOTA_KV"
+id = "placeholder_quota_kv_id"
+preview_id = "placeholder_quota_kv_id"
+
 # KV namespace for tenant suspension cache (SUSPENDED/REVOKED status)
 # Create with: wrangler kv:namespace create "SUSPENSION_CACHE"
 # Then replace id below with the output id
