@@ -333,7 +333,7 @@ class SessionManager:
         Returns:
             RedirectResponse with cleared session cookie
         """
-        redirect = RedirectResponse(url=redirect_to)
+        redirect = RedirectResponse(url=redirect_to, status_code=303)
         self.delete_session_cookie(redirect)
         return redirect
 

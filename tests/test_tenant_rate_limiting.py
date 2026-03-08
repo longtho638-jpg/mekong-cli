@@ -183,7 +183,7 @@ class TestTenantOverrideDetection:
         mw._repo = mock_repo
 
         future_time = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)
-        expires_at = future_time.strftime("%Y-%m-%d %H:%M:%S+00:00")
+        expires_at = future_time  # Pass as datetime object, not string
 
         override = TenantRateLimitOverride(
             id="1",
@@ -750,7 +750,7 @@ class TestIntegrationEdgeCases:
 
     def test_rapid_override_changes(self):
         """Test rapid override changes don't corrupt state."""
-        override1 = RateLimitConfig(requests_per_minute=100, burst_size=150)
+        RateLimitConfig(requests_per_minute=100, burst_size=150)  # override1
         override2 = RateLimitConfig(requests_per_minute=200, burst_size=250)
         override3 = RateLimitConfig(requests_per_minute=300, burst_size=350)
 
@@ -833,4 +833,4 @@ class TestIntegrationEdgeCases:
 # ============================================================================
 # IMPORTS NEEDED FOR TESTS
 # ============================================================================
-import time
+import time  # noqa: E402

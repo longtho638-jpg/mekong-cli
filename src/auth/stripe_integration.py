@@ -45,13 +45,39 @@ class StripeCustomer:
     def from_dict(cls, data: dict) -> "StripeCustomer":
         """Create StripeCustomer from Stripe API response."""
         subscription = data.get("subscriptions", {}).get("data", [{}])[0] if data.get("subscriptions") else {}
+        items_data = subscription.get("items", {}).get("data", [])
+        subscription_tier = items_data[0].get("price", {}).get("id") if items_data else None
         return cls(
             id=data.get("id", ""),
             email=data.get("email", ""),
             name=data.get("name"),
             subscription_status=subscription.get("status"),
-            subscription_tier=subscription.get("items", {}).get("data", [{}])[0].get("price", {}).get("id"),
+            subscription_tier=subscription_tier,
         )
+
+    @classmethod
+    def _from_stripe_object(cls, obj: Any) -> "StripeCustomer":
+        """Create StripeCustomer from Stripe API object (attribute-access style)."""
+        if isinstance(obj, dict):
+            return cls.from_dict(obj)
+        # Stripe API objects use attribute access
+        return cls(
+            id=getattr(obj, "id", "") or "",
+            email=getattr(obj, "email", "") or "",
+            name=getattr(obj, "name", None),
+            subscription_status=getattr(obj, "subscription_status", None),
+            subscription_tier=getattr(obj, "subscription_tier", None),
+        )
+
+    def to_dict(self) -> dict:
+        """Convert StripeCustomer to dict."""
+        return {
+            "id": self.id,
+            "email": self.email,
+            "name": self.name,
+            "subscription_status": self.subscription_status,
+            "subscription_tier": self.subscription_tier,
+        }
 
 
 # Role mapping from Stripe Price ID to application role
@@ -69,6 +95,9 @@ def get_tier_to_role_mapping() -> Dict[str, Role]:
     price_ids_json = os.getenv("STRIPE_PRICE_IDS", "{}")
     try:
         custom_mapping = json.loads(price_ids_json)
+        if not custom_mapping:
+            # Empty mapping — use defaults
+            return DEFAULT_TIER_TO_ROLE
         # Convert string values to Role enums
         return {
             price_id: Role(role_str)
@@ -85,8 +114,9 @@ class StripeService:
 
     def __init__(self):
         """Initialize Stripe client with secret key."""
-        self.api_key = AuthConfig.STRIPE_SECRET_KEY
-        self.webhook_secret = AuthConfig.STRIPE_WEBHOOK_SECRET
+        # Read from env directly to support runtime env patching in tests
+        self.api_key = os.getenv("STRIPE_SECRET_KEY", AuthConfig.STRIPE_SECRET_KEY)
+        self.webhook_secret = os.getenv("STRIPE_WEBHOOK_SECRET", AuthConfig.STRIPE_WEBHOOK_SECRET)
         self.tier_to_role = get_tier_to_role_mapping()
 
         if self.api_key:
@@ -121,10 +151,7 @@ class StripeService:
                 return None
 
             customer_data = customers.data[0]
-            return StripeCustomer.from_dict(customer_data)
-        except stripe.StripeError as e:
-            print(f"Stripe API error: {e}")
-            return None
+            return StripeCustomer._from_stripe_object(customer_data)
         except Exception as e:
             print(f"Error fetching customer: {e}")
             return None
@@ -161,7 +188,7 @@ class StripeService:
                 "current_period_end": sub.current_period_end,
                 "cancel_at_period_end": sub.cancel_at_period_end,
             }
-        except stripe.StripeError as e:
+        except Exception as e:
             print(f"Stripe API error: {e}")
             return None
         except Exception as e:
@@ -181,8 +208,14 @@ class StripeService:
         role = self.tier_to_role.get(stripe_price_id)
         if not role:
             # Try matching by pattern (e.g., "price_123_pro" → "price_pro")
+            # Check if the price ID ends with or contains the pattern key suffix
             for price_pattern, mapped_role in self.tier_to_role.items():
-                if price_pattern in stripe_price_id:
+                # Check both directions: pattern in ID or ID ends with pattern suffix
+                if price_pattern in stripe_price_id or stripe_price_id in price_pattern:
+                    return mapped_role
+                # Extract suffix after last underscore from pattern and check
+                pattern_suffix = price_pattern.split("_", 1)[-1]  # e.g., "pro" from "price_pro"
+                if stripe_price_id.endswith(f"_{pattern_suffix}") or stripe_price_id.endswith(pattern_suffix):
                     return mapped_role
         return role
 
@@ -211,8 +244,10 @@ class StripeService:
             # Fetch Stripe customer
             customer = await self.get_customer_by_email(email)
             if not customer:
-                print(f"No Stripe customer found for {email}")
-                return False
+                # No customer found - downgrade to viewer
+                await user_repo.update_user_role(user.id, Role.VIEWER.value)
+                print(f"No Stripe customer found for {email}, downgrading to viewer")
+                return True
 
             # Get subscription status
             sub_info = await self.get_subscription_status(customer.id)
@@ -321,7 +356,7 @@ class StripeService:
                     return {"success": False, "message": f"User not found: {customer.email}"}
 
                 # Map tier to role and update
-                role = self.map_tier_to_role(price_id) if price_id else Role.MEMBER
+                role = (self.map_tier_to_role(price_id) if price_id else None) or Role.MEMBER
                 await user_repo.update_user_role(user.id, role.value)
 
                 return {
@@ -343,7 +378,7 @@ class StripeService:
                 if not user:
                     return {"success": False, "message": f"User not found: {customer.email}"}
 
-                role = self.map_tier_to_role(price_id) if price_id else Role.MEMBER
+                role = (self.map_tier_to_role(price_id) if price_id else None) or Role.MEMBER
                 await user_repo.update_user_role(user.id, role.value)
 
                 return {
@@ -407,8 +442,8 @@ class StripeService:
         try:
             client = self._get_stripe_client()
             customer = await client.Customer.retrieve(customer_id)
-            return StripeCustomer.from_dict(customer)
-        except stripe.StripeError as e:
+            return StripeCustomer._from_stripe_object(customer)
+        except Exception as e:
             print(f"Stripe API error: {e}")
             return None
         except Exception as e:

@@ -4,6 +4,7 @@ Auth Routes - OAuth2 callback and session management
 Handles OAuth2 callbacks, login/logout, and session endpoints.
 """
 
+import inspect
 import os
 from typing import Optional
 
@@ -139,7 +140,9 @@ async def google_login(request: Request):
         auth_url = client.get_google_oauth_url(state=state)
         return RedirectResponse(url=auth_url)
     finally:
-        await client.close()
+        _close = client.close()
+        if inspect.isawaitable(_close):
+            await _close
 
 
 @router.get("/google/callback")
@@ -206,7 +209,9 @@ async def google_callback(
             detail=f"Authentication failed: {str(e)}",
         )
     finally:
-        await client.close()
+        _close = client.close()
+        if inspect.isawaitable(_close):
+            await _close
 
 
 @router.get("/github/login")
@@ -225,7 +230,9 @@ async def github_login(request: Request):
         auth_url = client.get_github_oauth_url(state=state)
         return RedirectResponse(url=auth_url)
     finally:
-        await client.close()
+        _close = client.close()
+        if inspect.isawaitable(_close):
+            await _close
 
 
 @router.get("/github/callback")
@@ -292,7 +299,9 @@ async def github_callback(
             detail=f"Authentication failed: {str(e)}",
         )
     finally:
-        await client.close()
+        _close = client.close()
+        if inspect.isawaitable(_close):
+            await _close
 
 
 @router.post("/logout")
@@ -446,6 +455,8 @@ async def stripe_webhook(request: Request):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid JSON payload",
         )
+    except HTTPException:
+        raise
     except Exception as e:
         # Still return 200 to prevent Stripe retries for handled errors
         return JSONResponse(

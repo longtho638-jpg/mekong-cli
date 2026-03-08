@@ -57,13 +57,24 @@ class OAuth2Client:
     """OAuth2 client for Google and GitHub authentication."""
 
     def __init__(self):
-        if not HTTPX_AVAILABLE:
-            raise ImportError("httpx not installed. Run: pip install httpx")
-        self._client = httpx.AsyncClient(timeout=30.0)
+        self._client = None
+        # Defer httpx check to actual HTTP calls
+
+    def _get_http_client(self):
+        """Get or create the HTTP client (lazy init, requires httpx)."""
+        if self._client is None:
+            if not HTTPX_AVAILABLE:
+                raise ImportError("httpx not installed. Run: pip install httpx")
+            self._client = httpx.AsyncClient(timeout=30.0)
+        return self._client
 
     async def close(self):
-        """Close the HTTP client."""
-        await self._client.aclose()
+        """Close the HTTP client if it was created."""
+        import inspect
+        if self._client is not None:
+            result = self._client.aclose()
+            if inspect.isawaitable(result):
+                await result
 
     # === Google OAuth2 ===
 
@@ -145,14 +156,14 @@ class OAuth2Client:
         if pkce_verifier:
             data["code_verifier"] = pkce_verifier
 
-        response = await self._client.post(GOOGLE_TOKEN_URL, data=data)
+        response = await self._get_http_client().post(GOOGLE_TOKEN_URL, data=data)
         response.raise_for_status()
         return response.json()
 
     async def _get_google_userinfo(self, access_token: str) -> Dict[str, Any]:
         """Fetch user info from Google."""
         headers = {"Authorization": f"Bearer {access_token}"}
-        response = await self._client.get(GOOGLE_USERINFO_URL, headers=headers)
+        response = await self._get_http_client().get(GOOGLE_USERINFO_URL, headers=headers)
         response.raise_for_status()
         data = response.json()
 
@@ -230,7 +241,7 @@ class OAuth2Client:
             "redirect_uri": REDIRECT_URI,
         }
 
-        response = await self._client.post(
+        response = await self._get_http_client().post(
             GITHUB_TOKEN_URL,
             headers=headers,
             data=data,
@@ -246,7 +257,7 @@ class OAuth2Client:
         }
 
         # Get basic user info
-        response = await self._client.get(GITHUB_USERINFO_URL, headers=headers)
+        response = await self._get_http_client().get(GITHUB_USERINFO_URL, headers=headers)
         response.raise_for_status()
         data = response.json()
 
@@ -274,7 +285,7 @@ class OAuth2Client:
             "Accept": "application/json",
         }
 
-        response = await self._client.get(GITHUB_EMAIL_URL, headers=headers)
+        response = await self._get_http_client().get(GITHUB_EMAIL_URL, headers=headers)
         response.raise_for_status()
         emails = response.json()
 

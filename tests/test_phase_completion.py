@@ -35,11 +35,12 @@ class TestPhaseCompletionDetector:
         reset_detector()
 
     def test_initialize_phases(self) -> None:
-        """Test that all five phases are initialized."""
+        """Test that all phases are initialized."""
         detector = PhaseCompletionDetector()
         phases = detector.get_all_phases_status()
 
-        assert len(phases) == 5
+        # Phases 1-5 are required, phase 6 may also exist
+        assert len(phases) >= 5
         assert "phase_1_license_gate" in phases
         assert "phase_2_license_ui" in phases
         assert "phase_3_payment_webhook" in phases
@@ -204,13 +205,24 @@ class TestPhaseCompletionDetector:
                                     )
                                 ),
                             ):
-                                detector = PhaseCompletionDetector()
-                                detector.register_callback(mock_callback)
+                                with patch.object(
+                                    PhaseCompletionDetector,
+                                    "check_phase_6_terminal_validation",
+                                    new=AsyncMock(
+                                        return_value=PhaseInfo(
+                                            name="Phase 6",
+                                            status=PhaseStatus.OPERATIONAL,
+                                            description="Test",
+                                        )
+                                    ),
+                                ):
+                                    detector = PhaseCompletionDetector()
+                                    detector.register_callback(mock_callback)
 
-                                result = await detector.check_all_phases()
+                                    result = await detector.check_all_phases()
 
-                                assert result is True
-                                assert callback_called is True
+                                    assert result is True
+                                    assert callback_called is True
 
     def test_is_all_operational(self) -> None:
         """Test sync method is_all_operational."""
@@ -274,7 +286,7 @@ class TestGracefulShutdownHandler:
 
         handler.register_cleanup_handler(failing_cleanup, "failing_cleanup")
 
-        exit_code = await handler.initiate_shutdown(
+        await handler.initiate_shutdown(
             reason=ShutdownReason.USER_REQUESTED
         )
 
@@ -323,7 +335,7 @@ class TestGracefulShutdownHandler:
             return handler._exit_code
 
         # First shutdown
-        exit_code1 = asyncio.run(run_shutdown())
+        asyncio.run(run_shutdown())
 
         # Second shutdown should be ignored
         assert handler._shutdown_in_progress is True

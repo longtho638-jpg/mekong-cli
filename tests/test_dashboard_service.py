@@ -137,7 +137,7 @@ class TestDashboardService:
         first_call_count = fully_mocked_service._queries.get_daily_usage.call_count
 
         import asyncio
-        asyncio.run(asyncio.sleep(0.1))  # Small delay to allow TTL expiry
+        await asyncio.sleep(0.1)  # Small delay to allow TTL expiry
 
         await fully_mocked_service.get_metrics()
         second_call_count = fully_mocked_service._queries.get_daily_usage.call_count

@@ -17,13 +17,13 @@ import sys
 mock_stripe = MagicMock()
 sys.modules['stripe'] = mock_stripe
 
-from src.auth.stripe_integration import (
+from src.auth.stripe_integration import (  # noqa: E402
     StripeService,
     StripeCustomer,
     StripeEventType,
     get_tier_to_role_mapping,
 )
-from src.auth.rbac import Role
+from src.auth.rbac import Role  # noqa: E402
 
 
 class TestStripeCustomerDataclass:
@@ -195,7 +195,7 @@ class TestGetCustomerByEmail:
             mock_response = MagicMock()
             mock_response.list = AsyncMock(return_value=mock_customers)
 
-            with patch('stripe.Customer', mock_response):
+            with patch('src.auth.stripe_integration.stripe.Customer', mock_response):
                 customer = await service.get_customer_by_email("found@example.com")
 
                 assert customer is not None
@@ -266,7 +266,7 @@ class TestGetSubscriptionStatus:
             mock_response = MagicMock()
             mock_response.list = AsyncMock(return_value=mock_subscriptions)
 
-            with patch('stripe.Subscription', mock_response):
+            with patch('src.auth.stripe_integration.stripe.Subscription', mock_response):
                 status = await service.get_subscription_status("cus_123")
 
                 assert status is not None

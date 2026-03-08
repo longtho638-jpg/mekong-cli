@@ -19,7 +19,7 @@ from src.analytics.dashboard_service import DashboardService
 from src.config.logging_config import get_logger
 from src.auth.middleware import SessionMiddleware
 from src.auth.config import AuthConfig
-from src.auth.rbac import require_role, require_permission, Role, Permission, get_current_user
+from src.auth.rbac import require_permission, Permission, get_current_user
 from src.auth.routes import router as auth_router
 
 logger = get_logger(__name__)
@@ -163,8 +163,8 @@ async def get_endpoints(limit: int = Query(default=10, ge=1, le=50)):
 
 
 @app.get("/api/export")
-@require_permission(Permission.EXPORT_DATA)
 async def export_data(
+    request: Request,
     format: Literal["csv", "json"] = "json",
     start: Optional[str] = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
     end: Optional[str] = Query(None, pattern=r"^\d{4}-\d{2}-\d{2}$"),

@@ -39,13 +39,10 @@ class TestSelfHealing(unittest.TestCase):
         fail_result = ExecutionResult(exit_code=1, stdout="", stderr="No such file")
         ok_result = ExecutionResult(exit_code=0, stdout="success", stderr="")
 
-        with patch.object(
-            type(orch).__mro__[0], "_execute_and_verify_step", wraps=orch._execute_and_verify_step
-        ):
-            # We need to mock the executor's execute_step method
-            with patch("src.core.executor.RecipeExecutor.execute_step") as mock_exec:
-                mock_exec.side_effect = [fail_result, ok_result]
-                result = orch.run_from_recipe(recipe)
+        # Mock the executor's execute_step method directly
+        with patch("src.core.executor.RecipeExecutor.execute_step") as mock_exec:
+            mock_exec.side_effect = [fail_result, ok_result]
+            result = orch.run_from_recipe(recipe)
 
         # LLM generate should have been called for self-heal
         mock_llm.generate.assert_called_once()

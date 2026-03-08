@@ -182,8 +182,10 @@ class TestWebhookEndpoints:
         payload = {"type": "unknown.event.xyz", "id": "unknown-event-test-456"}
 
         with patch("src.api.polar_webhook.POLAR_WEBHOOK_SECRET", secret):
+            # httpx sends compact JSON (no spaces), match that format
+            payload_bytes = json.dumps(payload, separators=(',', ':')).encode()
             signature = hmac.new(
-                secret.encode(), json.dumps(payload).encode(), hashlib.sha256
+                secret.encode(), payload_bytes, hashlib.sha256
             ).hexdigest()
 
             response = client.post(
@@ -201,8 +203,10 @@ class TestWebhookEndpoints:
         payload = {"type": "subscription.created", "id": "duplicate-test-123"}
 
         with patch("src.api.polar_webhook.POLAR_WEBHOOK_SECRET", secret):
+            # httpx sends compact JSON (no spaces), match that format
+            payload_bytes = json.dumps(payload, separators=(',', ':')).encode()
             signature = hmac.new(
-                secret.encode(), json.dumps(payload).encode(), hashlib.sha256
+                secret.encode(), payload_bytes, hashlib.sha256
             ).hexdigest()
 
             # First request should process
@@ -304,7 +308,7 @@ class TestSubscriptionCancelled:
         }
 
         create_result = process_subscription_created(create_event)
-        license_key = create_result["license_key"]
+        assert create_result["license_key"]  # verify key was created
 
         # Now cancel it
         cancel_event = {

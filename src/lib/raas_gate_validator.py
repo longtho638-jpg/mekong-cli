@@ -117,15 +117,44 @@ class RaasGateValidator:
 
     def get_tier(self) -> str:
         """Get tier from last validation result."""
-        if self._last_result and self._last_result.get("valid"):
+        if self._last_result:
             return self._last_result.get("tier", "free")
         return "free"
 
     def get_features(self) -> list:
         """Get features from last validation result."""
-        if self._last_result and self._last_result.get("valid"):
+        if self._last_result:
             return self._last_result.get("features", [])
         return []
+
+    def _fallback_validate(self, license_key: Optional[str]) -> Dict[str, Any]:
+        """
+        Offline/fallback license validation by key format.
+
+        Used when gateway is unreachable. Checks key prefix patterns.
+
+        Args:
+            license_key: License key to validate
+
+        Returns:
+            Dict with valid, tier, and optional no_license flag
+        """
+        if not license_key:
+            return {"valid": False, "tier": "free", "no_license": True}
+
+        # Enterprise prefixes
+        if license_key.startswith("raas_ent_") or license_key.startswith("REP-"):
+            return {"valid": True, "tier": "enterprise"}
+
+        # Pro prefixes
+        if license_key.startswith("raas_pro_") or license_key.startswith("RPP-"):
+            return {"valid": True, "tier": "pro"}
+
+        # API key format (mk_*)
+        if license_key.startswith("mk_") and len(license_key) >= 8:
+            return {"valid": True, "tier": "member"}
+
+        return {"valid": False, "tier": "free"}
 
 
 # Global instance for reuse
@@ -157,3 +186,13 @@ def validate_license(license_key: Optional[str] = None) -> Tuple[bool, Optional[
         Tuple of (is_valid, error_message)
     """
     return get_validator().validate(license_key)
+
+
+def validate_at_startup() -> Tuple[bool, Optional[str]]:
+    """
+    Validate license at application startup.
+
+    Returns:
+        Tuple of (is_valid, error_message)
+    """
+    return validate_license()

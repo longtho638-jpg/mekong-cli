@@ -81,19 +81,24 @@ class AuthConfig:
     STRIPE_PRICE_IDS = os.getenv("STRIPE_PRICE_IDS", "{}")  # JSON mapping of price_id: role
 
     @classmethod
+    def _current_environment(cls) -> AuthEnvironment:
+        """Get current environment, reading from env at call time."""
+        return AuthEnvironment(os.getenv("AUTH_ENVIRONMENT", cls.ENVIRONMENT.value))
+
+    @classmethod
     def is_dev_mode(cls) -> bool:
         """Check if running in development mode."""
-        return cls.ENVIRONMENT == AuthEnvironment.DEV
+        return cls._current_environment() == AuthEnvironment.DEV
 
     @classmethod
     def is_staging_mode(cls) -> bool:
         """Check if running in staging mode."""
-        return cls.ENVIRONMENT == AuthEnvironment.STAGING
+        return cls._current_environment() == AuthEnvironment.STAGING
 
     @classmethod
     def is_production_mode(cls) -> bool:
         """Check if running in production mode."""
-        return cls.ENVIRONMENT == AuthEnvironment.PRODUCTION
+        return cls._current_environment() == AuthEnvironment.PRODUCTION
 
     @classmethod
     def require_auth(cls) -> bool:
@@ -103,7 +108,7 @@ class AuthConfig:
             True if auth should be enforced (prod/staging),
             False if auth can be bypassed (dev)
         """
-        return not cls.AUTH_DISABLED
+        return not cls.is_dev_mode()
 
     @classmethod
     def auth_enabled(cls) -> bool:

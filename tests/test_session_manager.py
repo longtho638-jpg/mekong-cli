@@ -14,6 +14,7 @@ from unittest.mock import AsyncMock
 
 from src.auth.session_manager import (
     SessionManager,
+    get_token_from_request,
 )
 
 # Test user ID for testing
@@ -557,7 +558,7 @@ class TestCookieHelpers:
 
     def test_create_session_cookie_secure_in_production(self):
         """Cookie should be secure in production environment."""
-        with patch('src.auth.session_manager.AUTH_ENVIRONMENT', 'production'):
+        with patch.dict('os.environ', {'AUTH_ENVIRONMENT': 'production'}):
             manager = SessionManager()
 
             cookie_params = manager.create_session_cookie("token")
@@ -608,15 +609,14 @@ class TestCookieHelpers:
 
         manager = SessionManager()
 
+        # Build cookie header for the session_token cookie
+        cookie_header = b"session_token=test-token-123"
         request = Request(scope={
             "type": "http",
             "method": "GET",
             "path": "/",
-            "headers": [],
+            "headers": [(b"cookie", cookie_header)],
         })
-
-        # Add cookies to request
-        request.cookies = {"session_token": "test-token-123"}
 
         token = manager.get_session_cookie(request)
 
@@ -634,8 +634,6 @@ class TestCookieHelpers:
             "path": "/",
             "headers": [],
         })
-
-        request.cookies = {}
 
         token = manager.get_session_cookie(request)
 
@@ -676,8 +674,6 @@ class TestConvenienceFunctions:
 
     def test_get_token_from_request_calls_session_manager(self):
         """Should get token from request cookie."""
-        manager = SessionManager()
-
         # This is a basic test - the actual function just delegates
         assert callable(get_token_from_request)
 
@@ -745,7 +741,7 @@ class TestEnvironmentVariables:
             if "JWT_SECRET" in os.environ:
                 del os.environ["JWT_SECRET"]
 
-            manager = SessionManager()
+            SessionManager()  # verify init works without JWT_SECRET env
 
             # The JWT_SECRET is set at module import time
             import src.auth.session_manager as session_module

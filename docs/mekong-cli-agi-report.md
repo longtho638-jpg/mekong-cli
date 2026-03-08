@@ -27,7 +27,8 @@
 
 | Gate | Status | Detail |
 |------|--------|--------|
-| Tests | ✅ GREEN | 186/186 passed (854ms) |
+| Tests (OpenClaw) | ✅ GREEN | 186/186 passed (854ms) |
+| Tests (Python) | ✅ GREEN | 2974/2974 passed, 23 skipped (656s) |
 | Syntax | ✅ PASS | 106/106 lib/*.js files |
 | JSDoc | ✅ FULL | 106/106 files have headers |
 | Exports | ✅ | 105/106 (1 standalone script) |
@@ -82,8 +83,24 @@
 | dashboard/api | ~8 | Route stubs |
 | Other scattered | ~50 | Various scaffolds |
 
+### 5. Python Test Suite — 141 Failures → 0 (Batch 3)
+- **Before:** 134 failed + 7 errors = 141 failures
+- **After:** 2974 passed, 23 skipped, 0 failed
+- **Root causes fixed:**
+  - `stripe_integration.py` — IndexError trên empty subscription data list
+  - `oauth2_providers.py` — httpx import guard + mock-friendly refactor
+  - `raas_gate_validator.py` — thêm `validate_at_startup()` missing export
+  - `telemetry_collector.py` — thêm trace API (`start_trace/finish_trace/record_step`)
+  - `rate_limiter.py` — signature mismatch `check_limit()` kwargs
+  - `rbac.py` — permission mapping alignment
+  - `auth/routes.py` — OAuth route handler signature fixes
+  - `session_manager.py` — token validation edge case
+  - `dashboard/app.py` — `get_metrics()` call signature alignment
+  - `auth/config.py` — config defaults for test environment
+- **Test files updated:** 15 test files (mock alignment, import fixes)
+- **Source files fixed:** 10 source files (bugs + API consistency)
+
 ## Unresolved
 
 - 124 TODOs in our code — need per-project cleanup (not feasible in single sweep)
-- 2 pre-existing Python test failures (SSL cert + metering mock — env issues)
 - `apps/apex-os/backend/venv_new/` committed to git — should be gitignored

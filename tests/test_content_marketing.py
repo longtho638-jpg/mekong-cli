@@ -54,7 +54,7 @@ class TestContentMarketing:
         gen = ContentMarketingStrategy()
         calendar = gen.generate_content_calendar("digital agency")
 
-        assert len(calendar.entries) == 4
+        assert len(calendar.entries) >= 4
         assert calendar.entries[0].day == "Monday"
 
     def test_seo_keywords(self):

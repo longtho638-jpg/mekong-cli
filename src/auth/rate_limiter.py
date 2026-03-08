@@ -43,15 +43,15 @@ class RateLimitConfig:
         return self.limit / self.window
 
 
-# Default rate limit configurations (optimized for 10x concurrency)
+# Default rate limit configurations
 DEFAULT_RATE_LIMITS: Dict[RateLimitPreset, RateLimitConfig] = {
-    RateLimitPreset.AUTH_LOGIN: RateLimitConfig(limit=10, window=60),      # 10/min (2x increase)
-    RateLimitPreset.AUTH_CALLBACK: RateLimitConfig(limit=20, window=60),  # 20/min (2x increase)
-    RateLimitPreset.AUTH_REFRESH: RateLimitConfig(limit=60, window=3600), # 60/hour (2x increase)
-    RateLimitPreset.AUTH_DEV_LOGIN: RateLimitConfig(limit=20, window=60), # 20/min (2x increase)
-    RateLimitPreset.API_DEFAULT: RateLimitConfig(limit=200, window=60),   # 200/min (2x increase)
-    RateLimitPreset.API_WRITE: RateLimitConfig(limit=40, window=60),      # 40/min (2x increase)
-    RateLimitPreset.API_READ: RateLimitConfig(limit=400, window=60),      # 400/min (2x increase)
+    RateLimitPreset.AUTH_LOGIN: RateLimitConfig(limit=5, window=60),      # 5/min
+    RateLimitPreset.AUTH_CALLBACK: RateLimitConfig(limit=10, window=60),  # 10/min
+    RateLimitPreset.AUTH_REFRESH: RateLimitConfig(limit=30, window=3600), # 30/hour
+    RateLimitPreset.AUTH_DEV_LOGIN: RateLimitConfig(limit=10, window=60), # 10/min
+    RateLimitPreset.API_DEFAULT: RateLimitConfig(limit=100, window=60),   # 100/min
+    RateLimitPreset.API_WRITE: RateLimitConfig(limit=20, window=60),      # 20/min
+    RateLimitPreset.API_READ: RateLimitConfig(limit=200, window=60),      # 200/min
 }
 
 

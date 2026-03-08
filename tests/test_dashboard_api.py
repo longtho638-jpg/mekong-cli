@@ -62,7 +62,7 @@ class TestDashboardAPI:
 
         # Assert
         assert response.status_code == 200
-        mock_service.get_metrics.assert_called_once_with(60)
+        mock_service.get_metrics.assert_called_once_with(range_days=60, license_key=None, start_date=None, end_date=None)
 
     def test_get_metrics_with_invalid_range(self, mock_service):
         """Test GET /api/metrics with invalid range_days."""
@@ -198,7 +198,6 @@ class TestDashboardAPI:
     def test_export_default_date_range(self, mock_service):
         """Test GET /api/export uses default date range."""
         # Arrange
-        today = datetime.now()
         mock_service.export_to_csv = AsyncMock(return_value="")
 
         # Act

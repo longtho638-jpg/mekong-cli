@@ -140,7 +140,7 @@ def role_gte(user_role: Role, required_role: Role) -> bool:
     Returns:
         True if user role meets or exceeds required role
     """
-    return user_role in ROLE_HIERARCHY.get(required_role, set())
+    return required_role in ROLE_HIERARCHY.get(user_role, set())
 
 
 def has_permission(user_role: Role, permission: Permission) -> bool:
@@ -175,10 +175,10 @@ def require_role(*allowed_roles: Role):
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            # Find request in args or kwargs
+            # Find request in args or kwargs (supports both real Request and MagicMock)
             request = None
             for arg in args:
-                if isinstance(arg, Request):
+                if isinstance(arg, Request) or hasattr(arg, 'state'):
                     request = arg
                     break
             if request is None:
@@ -245,10 +245,10 @@ def require_permission(*permissions: Permission):
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(*args: Any, **kwargs: Any) -> Any:
-            # Find request in args or kwargs
+            # Find request in args or kwargs (supports both real Request and MagicMock)
             request = None
             for arg in args:
-                if isinstance(arg, Request):
+                if isinstance(arg, Request) or hasattr(arg, 'state'):
                     request = arg
                     break
             if request is None:

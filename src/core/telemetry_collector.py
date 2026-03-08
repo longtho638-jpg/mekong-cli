@@ -43,9 +43,14 @@ class TelemetryCollector:
     Collect anonymized usage telemetry.
 
     Events are buffered and uploaded in batches.
+    Also supports trace-based API for execution orchestration.
     """
 
-    def __init__(self, consent_manager: Optional[ConsentManager] = None):
+    def __init__(
+        self,
+        consent_manager: Optional[ConsentManager] = None,
+        output_dir: Optional[str] = None,
+    ):
         self._consent_manager = consent_manager or ConsentManager()
         self._buffer: List[TelemetryEvent] = []
         self._session_id: Optional[str] = None
@@ -54,8 +59,86 @@ class TelemetryCollector:
         self._max_buffer_size = 50
         self._storage_file = Path.home() / ".mekong" / "telemetry-buffer.json"
         self._initialized = False
+        self._output_dir: Optional[Path] = Path(output_dir) if output_dir else None
+
+        # Trace-based API state
+        self._current_trace: Optional[Any] = None
+        self._trace_start_time: Optional[float] = None
 
         atexit.register(self._flush_on_exit)
+
+    # ===== Trace-based API (for orchestration) =====
+
+    def start_trace(self, goal: str) -> None:
+        """Start a new execution trace."""
+        from .telemetry_models import ExecutionTrace
+        self._current_trace = ExecutionTrace(goal=goal)
+        self._trace_start_time = time.time()
+
+    def finish_trace(self) -> Any:
+        """Finish the current trace and optionally write to file."""
+        if self._current_trace is None:
+            from .telemetry_models import ExecutionTrace
+            self._current_trace = ExecutionTrace(goal="")
+
+        if self._trace_start_time is not None:
+            self._current_trace.total_duration = time.time() - self._trace_start_time
+
+        trace = self._current_trace
+
+        if self._output_dir is not None:
+            import dataclasses
+            self._output_dir.mkdir(parents=True, exist_ok=True)
+            trace_file = self._output_dir / "execution_trace.json"
+            trace_dict = dataclasses.asdict(trace)
+            trace_file.write_text(json.dumps(trace_dict, indent=2))
+
+        self._current_trace = None
+        self._trace_start_time = None
+        return trace
+
+    def get_trace(self) -> Any:
+        """Get the current in-progress trace."""
+        return self._current_trace
+
+    def record_step(
+        self,
+        step_order: int,
+        title: str,
+        duration_seconds: float = 0.0,
+        exit_code: int = 0,
+        self_healed: bool = False,
+        agent: Optional[str] = None,
+        duration: Optional[float] = None,  # alias for duration_seconds
+    ) -> None:
+        """Record a step in the current trace."""
+        if self._current_trace is None:
+            return
+        # Support both duration and duration_seconds kwargs
+        if duration is not None:
+            duration_seconds = duration
+        from .telemetry_models import StepTrace
+        step = StepTrace(
+            step_order=step_order,
+            title=title,
+            duration_seconds=duration_seconds,
+            exit_code=exit_code,
+            self_healed=self_healed,
+            agent_used=agent,
+        )
+        self._current_trace.steps.append(step)
+
+    def record_llm_call(self) -> None:
+        """Increment LLM call counter in current trace."""
+        if self._current_trace is not None:
+            self._current_trace.llm_calls += 1
+
+    def record_error(self, error_message: str) -> None:
+        """Record an error in the current trace."""
+        if self._current_trace is not None:
+            self._current_trace.errors.append(error_message)
+
+    # ===== Event-based API =====
 
     def _ensure_anonymous_id(self) -> Optional[str]:
         """Get anonymous ID (only if consent given)."""
