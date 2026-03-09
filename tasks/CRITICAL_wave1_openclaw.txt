@@ -1,1 +1,0 @@
-/cook "OPENCLAW GIAO HÀNG (Khẩn): 'npm test' đang fail 10 tests do lỗi logic hoặc mock trong folder test/. Tập trung fix dứt điểm các file test đang đỏ. Mục tiêu: 100% Tests Pass. Cấm chế cháo tính năng mới. SAU KHI XANH: BÁO CÁO NHIỆM VỤ HOÀN THÀNH." --auto

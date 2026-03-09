@@ -1,1 +1,0 @@
-WELL GIAO HÀNG (Khẩn): Chạy pnpm i18n:validate đang báo lỗi thiếu ~500 keys. PHẢI dùng tool tự động quét parse toàn bộ src/ và tự động điền key còn thiếu vào src/locales/vi.ts và en.ts. Mục tiêu duy nhất: Pass i18n validation. SAU KHI XANH: BÁO CÁO NHIỆM VỤ HOÀN THÀNH.

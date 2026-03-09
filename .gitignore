@@ -364,3 +364,24 @@ cc
 mekong.spec
 docker-compose.qdrant.yml
 i18next-scanner.config.js
+
+# Rogue dirs (third pass)
+antigravity/
+config/
+docker/
+lib/
+locales/
+mekong/
+templates/
+plans/
+tasks/
+
+# Fourth pass — internal tooling
+scripts/
+supabase/
+.claude/
+.geminiignore
+.repomixignore
+.ruffignore
+conftest.py
+.coveragerc
