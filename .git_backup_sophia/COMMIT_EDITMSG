@@ -1,7 +1,0 @@
-feat(84tea): implement Loyalty Program (Phase 4)
-
-- Add Loyalty Dashboard (/club) with MD3 UI
-- Add PointsCard, TierBadge, PointsHistoryList components
-- Add loyalty utility functions and unit tests
-- Update Database types and Schema migrations
-- Add plan documentation for Phase 4

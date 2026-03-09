@@ -1,63 +1,17 @@
-[submodule "apps/sophia-ai-factory"]
-	path = apps/sophia-ai-factory
-	url = https://github.com/longtho638-jpg/sophia-ai-factory.git
-	ignore = dirty
-[submodule "apps/84tea"]
-	path = apps/84tea
-	url = https://github.com/longtho638-jpg/84tea.git
-	ignore = dirty
-
-[submodule "apps/apex-os"]
-	path = apps/apex-os
-	url = https://github.com/longtho638-jpg/apex-os.git
-	ignore = dirty
-
-[submodule "claudekit-engineer-dna"]
-	path = .archive/claudekit-engineer-dna
-	url = https://github.com/claudekit/claudekit-engineer.git
-	ignore = dirty
-
-[submodule "apps/com-anh-duong-10x"]
-	path = apps/com-anh-duong-10x
-	url = https://github.com/PHIHOANG160314/COM-ANH-DUONG.git
-	ignore = dirty
-
-[submodule "apps/anima119"]
-	path = apps/anima119
-	url = https://github.com/longtho638-jpg/anima119.git
-	ignore = dirty
-
-[submodule "apps/com-anh-duong"]
-	path = apps/com-anh-duong
-	url = https://github.com/PHIHOANG160314/COM-ANH-DUONG.git
-	ignore = dirty
-
 [submodule "apps/gemini-proxy-clone"]
 	path = apps/gemini-proxy-clone
 	url = https://github.com/lehuygiang28/gemini-proxy.git
 	ignore = dirty
 
-[submodule "apps/well"]
-	path = apps/well
-	url = https://github.com/longtho638-jpg/Well.git
-	ignore = dirty
-
-[submodule "packages/cleo"]
-	path = packages/cleo
-	url = https://github.com/kryptobaseddev/cleo.git
-	ignore = dirty
 
 [submodule "apps/openclaw-worker/external/serena"]
 	path = apps/openclaw-worker/external/serena
 	url = https://github.com/oraios/serena.git
 	ignore = dirty
 
+
 [submodule "apps/starter-template"]
 	path = apps/starter-template
 	url = https://github.com/longtho638-jpg/agencyos-starter.git
 	ignore = dirty
 
-[submodule "apps/openclaw-worker/plans/260219-n8n-custom-mcp/research/repo-n8n-custom-mcp"]
-	path = apps/openclaw-worker/plans/260219-n8n-custom-mcp/research/repo-n8n-custom-mcp
-	url = https://github.com/duynghien/n8n-custom-mcp.git
-	ignore = dirty

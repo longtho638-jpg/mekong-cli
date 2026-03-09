@@ -27,11 +27,12 @@
  */
 
 import { UsageTrackerService } from '../metering/usage-tracker-service';
-import { UsageBillingAdapter } from '../billing/usage-billing-adapter';
+import { UsageBillingAdapter, SubscriptionItemMapping } from '../billing/usage-billing-adapter';
 import { StripeBillingClient, StripeUsageRecordInput } from '../billing/stripe-billing-client';
 import { OverageMeteringService } from '../billing/overage-metering-service';
 import { RaaSGatewayKVClient } from '../lib/raas-gateway-kv-client';
 import { logger } from '../utils/logger';
+import { PrismaClient } from '@prisma/client';
 
 /**
  * Emitter configuration

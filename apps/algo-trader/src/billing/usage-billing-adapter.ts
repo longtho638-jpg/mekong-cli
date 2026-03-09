@@ -85,6 +85,31 @@ export interface BillingSummary {
 }
 
 /**
+ * Subscription item mapping for Stripe billing
+ */
+export interface SubscriptionItemMapping {
+  licenseKey: string;
+  subscriptionId: string;
+  subscriptionItemId: string;
+  meterId?: string;
+  metric: 'api_calls' | 'compute_minutes' | 'ml_inferences';
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+/**
+ * Overage billing configuration per license
+ */
+export interface OverageBillingConfig {
+  licenseKey: string;
+  subscriptionItemId: string;
+  quotaLimit: number;
+  overagePricePerUnit: number;
+  overageEnabled: boolean;
+  metric: 'api_calls' | 'compute_minutes' | 'ml_inferences';
+}
+
+/**
  * Overage usage record for Stripe
  */
 export interface OverageStripeRecord {
@@ -158,9 +183,13 @@ export function calculateMlInferenceCost(inferences: number, tier: string = 'fre
 export class UsageBillingAdapter {
   private static instance: UsageBillingAdapter;
   private tracker: UsageTrackerService;
+  private subscriptionItemMap: Map<string, SubscriptionItemMapping>;
+  private overageConfigMap: Map<string, OverageBillingConfig>;
 
   private constructor() {
     this.tracker = UsageTrackerService.getInstance();
+    this.subscriptionItemMap = new Map();
+    this.overageConfigMap = new Map();
   }
 
   /**
@@ -178,6 +207,126 @@ export class UsageBillingAdapter {
    */
   static resetInstance(): void {
     UsageBillingAdapter.instance = new UsageBillingAdapter();
+  }
+
+  /**
+   * Register subscription item mapping for a license
+   */
+  registerSubscriptionItem(mapping: SubscriptionItemMapping): void {
+    this.subscriptionItemMap.set(mapping.licenseKey, mapping);
+    logger.info('[UsageBillingAdapter] Registered subscription item', {
+      licenseKey: mapping.licenseKey,
+      subscriptionItemId: mapping.subscriptionItemId,
+      metric: mapping.metric,
+    });
+  }
+
+  /**
+   * Get subscription item mapping for a license
+   */
+  getSubscriptionItem(licenseKey: string): SubscriptionItemMapping | null {
+    return this.subscriptionItemMap.get(licenseKey) || null;
+  }
+
+  /**
+   * Register overage billing configuration
+   */
+  registerOverageConfig(config: OverageBillingConfig): void {
+    this.overageConfigMap.set(config.licenseKey, config);
+    logger.info('[UsageBillingAdapter] Registered overage config', {
+      licenseKey: config.licenseKey,
+      quotaLimit: config.quotaLimit,
+      overagePricePerUnit: config.overagePricePerUnit,
+      overageEnabled: config.overageEnabled,
+    });
+  }
+
+  /**
+   * Get overage configuration for a license
+   */
+  getOverageConfig(licenseKey: string): OverageBillingConfig | null {
+    return this.overageConfigMap.get(licenseKey) || null;
+  }
+
+  /**
+   * Calculate overage units for a license
+   */
+  async calculateOverageUnits(licenseKey: string): Promise<number> {
+    const config = this.getOverageConfig(licenseKey);
+    if (!config || !config.overageEnabled) {
+      return 0;
+    }
+
+    const usage = await this.getUsageSummarySync(licenseKey);
+    const currentUsage = this.getCurrentUsageForMetric(usage, config.metric);
+
+    const overageUnits = Math.max(0, currentUsage - config.quotaLimit);
+    return overageUnits;
+  }
+
+  /**
+   * Generate overage billing records for Stripe
+   */
+  async generateOverageRecords(licenseKey: string): Promise<OverageStripeRecord[]> {
+    const config = this.getOverageConfig(licenseKey);
+    if (!config || !config.overageEnabled) {
+      return [];
+    }
+
+    const overageUnits = await this.calculateOverageUnits(licenseKey);
+    if (overageUnits <= 0) {
+      return [];
+    }
+
+    const record = this.toOverageStripeRecord(overageUnits, config.subscriptionItemId);
+    return record ? [record] : [];
+  }
+
+  /**
+   * Get all licenses with overage billing enabled
+   */
+  getOverageLicenses(): string[] {
+    const licenses: string[] = [];
+    for (const [key, config] of this.overageConfigMap.entries()) {
+      if (config.overageEnabled) {
+        licenses.push(key);
+      }
+    }
+    return licenses;
+  }
+
+  /**
+   * Helper to get current usage for a specific metric
+   */
+  private getCurrentUsageForMetric(
+    usage: UsageSummary,
+    metric: 'api_calls' | 'compute_minutes' | 'ml_inferences'
+  ): number {
+    switch (metric) {
+      case 'api_calls':
+        return usage.apiCalls;
+      case 'compute_minutes':
+        return Math.ceil(usage.computeMinutes);
+      case 'ml_inferences':
+        return usage.mlInferences;
+      default:
+        return 0;
+    }
+  }
+
+  /**
+   * Synchronous version of getUsageSummary for internal use
+   */
+  private async getUsageSummarySync(licenseKey: string): Promise<UsageSummary> {
+    const currentMonth = new Date().toISOString().slice(0, 7);
+    const aggregated = await this.tracker.getUsage(licenseKey, currentMonth);
+
+    return {
+      apiCalls: aggregated.byEventType['api_call'] || 0,
+      computeMinutes: aggregated.byEventType['compute_minute'] || 0,
+      mlInferences: aggregated.byEventType['ml_inference'] || 0,
+      period: currentMonth,
+    };
   }
 
   /**

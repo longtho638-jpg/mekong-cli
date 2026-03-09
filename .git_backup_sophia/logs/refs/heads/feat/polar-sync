@@ -1,4 +1,0 @@
-0000000000000000000000000000000000000000 aa181d2718ef64689702439b4a7150cf07adbbc8 Người hướng dẫn <longtho638@gmail.com> 1770316525 +0700	branch: Created from HEAD
-aa181d2718ef64689702439b4a7150cf07adbbc8 5e04cd283fac5a09d599aeae70ec6cbc3d4a3a51 Người hướng dẫn <longtho638@gmail.com> 1770334828 +0700	commit: feat(84tea): Phase 2 - Auth, Orders API, PWA, and Supabase integration
-5e04cd283fac5a09d599aeae70ec6cbc3d4a3a51 4fc99f67df2bfce524d1806cd1a499c438bb3039 Người hướng dẫn <longtho638@gmail.com> 1770340755 +0700	commit: feat(84tea): complete Phase 2 implementation - PWA, RLS, Auth UI
-4fc99f67df2bfce524d1806cd1a499c438bb3039 7012ac461bd378a9a555df10dc8efd1016ec57c9 Người hướng dẫn <longtho638@gmail.com> 1770341164 +0700	commit: feat(84tea): implement Loyalty Program (Phase 4)

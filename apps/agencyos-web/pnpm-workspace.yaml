@@ -1,7 +1,0 @@
-# Local workspace config for agencyos-web
-# Inherits from root pnpm-workspace.yaml
-packages:
-  - '.'
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver

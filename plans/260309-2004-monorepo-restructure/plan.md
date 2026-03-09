@@ -78,16 +78,16 @@ graph TB
 
 | # | Phase | File | Ưu tiên | Trạng thái |
 |---|-------|------|---------|-----------|
-| **0** | **[RaaS Unification — PUBLIC vs PRIVATE](phase-00-raas-unification.md)** | phase-00 | **SUPREME** | TODO |
-| **0A** | **[Tach Private Code → agencyos-sdk](phase-0a-extract-public.md)** | phase-0a | **P0** | TODO |
-| 0B | Prune stubs + legacy (chua tao) | phase-0b | P0 | TODO |
-| 0C | Package hoa RaaS (chua tao) | phase-0c | P1 | TODO |
-| 0D | WOW README + Ship (chua tao) | phase-0d | P2 | TODO |
-| 1 | [Dọn rác root + rogue files](phase-01-clean-root.md) | phase-01 | P0 (gộp vào 0B) | TODO |
-| 2 | [Cắt tỉa packages/ (xóa stubs)](phase-02-prune-packages.md) | phase-02 | P0 (gộp vào 0B) | TODO |
-| 3 | [Di dời root dirs vào đúng vị trí](phase-03-relocate-dirs.md) | phase-03 | P1 (gộp vào 0A) | TODO |
-| 4 | [Tách submodules ra external/](phase-04-organize-apps.md) | phase-04 | P1 (gộp vào 0A) | TODO |
-| 5 | [Chuẩn hóa build + workspace config](phase-05-standardize-build.md) | phase-05 | P2 (phase cuối) | TODO |
+| **0** | **[RaaS Unification — PUBLIC vs PRIVATE](phase-00-raas-unification.md)** | phase-00 | **SUPREME** | DONE |
+| **0A** | **[Tach Private Code → agencyos-sdk](phase-0a-extract-public.md)** | phase-0a | **P0** | DONE |
+| 0B | Prune stubs + legacy (83 packages xóa, 351 files) | phase-0b | P0 | DONE |
+| 0C | @mekong/raas SDK (license gate + Polar checkout) | phase-0c | P1 | DONE |
+| 0D | WOW README + push GitHub | phase-0d | P2 | DONE |
+| 1 | [Dọn rác root + rogue files](phase-01-clean-root.md) | phase-01 | P0 (gộp vào 0B) | DONE (gộp) |
+| 2 | [Cắt tỉa packages/ (xóa stubs)](phase-02-prune-packages.md) | phase-02 | P0 (gộp vào 0B) | DONE (gộp) |
+| 3 | [Di dời root dirs vào đúng vị trí](phase-03-relocate-dirs.md) | phase-03 | P1 (gộp vào 0A) | DONE (gộp) |
+| 4 | [Tách submodules ra external/](phase-04-organize-apps.md) | phase-04 | P1 (gộp vào 0A) | DONE (gộp) |
+| 5 | [Chuẩn hóa build + workspace config](phase-05-standardize-build.md) | phase-05 | P2 (phase cuối) | DONE |
 
 **CHÚ Ý:** Phase 0 (RaaS Unification) thay đổi toàn bộ chiến lược. Phase 1-4 được gộp vào sub-phases 0A/0B. Phase 5 chạy cuối.
 

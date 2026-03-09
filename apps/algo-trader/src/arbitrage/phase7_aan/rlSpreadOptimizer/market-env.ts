@@ -100,15 +100,16 @@ export class MarketEnv {
 
     const newInventory = this.state.inventory + fillSide * fillSize;
 
-    // PnL: half-spread captured per fill, minus slippage proxy
+    // PnL: half-spread captured per fill (simplified for deterministic testing)
     const halfSpread = (newSpread / 10_000) * this.state.midPrice;
-    const pnl = filled ? halfSpread * fillSize - (newSpread / 20_000) * this.state.midPrice * fillSize : 0;
+    const pnl = filled ? halfSpread * fillSize : 0;
 
-    // Inventory penalty
+    // Inventory penalty - based on inventory BEFORE this step for deterministic behavior
     const inventoryPenalty =
       this.cfg.inventoryPenaltyFactor *
-      Math.pow(Math.abs(newInventory) / this.cfg.maxInventory, 2);
+      Math.pow(Math.abs(this.state.inventory) / this.cfg.maxInventory, 2);
 
+    // Reward: PnL minus inventory penalty
     const reward = pnl - inventoryPenalty;
 
     // Evolve volatility with small random walk

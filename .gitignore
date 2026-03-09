@@ -299,6 +299,16 @@ configs/
 # Agent benchmarks (private testing results)
 .agent/
 
+# Additional internal dirs (pruned from public repo)
+.swarm/
+.taskmaster/
+.playwright-mcp/
+.claude-flow/
+.claude-skills/
+.agencyos/
+.git_backup_sophia/
+core/
+
 # Build/test artifacts (auto-generated)
 *.log
 *_output.txt
@@ -308,3 +318,8 @@ repomix-output.xml
 *.db
 usage_*.json
 poetry.lock.backup
+
+# Additional internal dirs
+.mekong/
+.workflow-migration-backup-*/
+packages/cleo/

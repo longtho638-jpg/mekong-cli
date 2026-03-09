@@ -3,6 +3,54 @@
  * Tests for payment_failed → KV suspension → API blocking flow
  */
 
+// Mock Prisma before any imports
+const mockPrisma = {
+  dunningState: {
+    upsert: jest.fn().mockResolvedValue({
+      tenantId: 'test',
+      status: 'GRACE_PERIOD',
+      failedPayments: 1,
+      createdAt: new Date(),
+      lastPaymentFailedAt: new Date(),
+    }),
+    update: jest.fn().mockResolvedValue({}),
+    findUnique: jest.fn().mockResolvedValue(null),
+  },
+  dunningEvent: {
+    create: jest.fn().mockResolvedValue({}),
+  },
+  $disconnect: jest.fn(),
+};
+
+jest.mock('@prisma/client', () => ({
+  PrismaClient: jest.fn(() => mockPrisma),
+  DunningStatus: {
+    ACTIVE: 'ACTIVE',
+    GRACE_PERIOD: 'GRACE_PERIOD',
+    SUSPENDED: 'SUSPENDED',
+    REVOKED: 'REVOKED',
+  },
+}));
+
+// Mock BillingNotificationService
+jest.mock('../../src/notifications/billing-notification-service', () => ({
+  BillingNotificationService: {
+    getInstance: jest.fn(() => ({
+      sendNotification: jest.fn().mockResolvedValue(undefined),
+    })),
+  },
+}));
+
+// Mock logger
+jest.mock('../../src/utils/logger', () => ({
+  logger: {
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: jest.fn(),
+    debug: jest.fn(),
+  },
+}));
+
 import { DunningStateMachine } from '../../src/billing/dunning-state-machine';
 import { raasKVClient } from '../../src/lib/raas-gateway-kv-client';
 
@@ -11,6 +59,10 @@ describe('Dunning Enforcement Integration', () => {
 
   beforeAll(() => {
     machine = DunningStateMachine.getInstance();
+  });
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('KV Suspension Flag Sync', () => {
@@ -120,7 +172,8 @@ describe('Dunning Enforcement Integration', () => {
 
     it('should return suspended: false when KV is not configured', async () => {
       // Create unconfigured client
-      const unconfiguredClient = new (await import('../../src/lib/raas-gateway-kv-client')).RaaSGatewayKVClient({
+      const { RaaSGatewayKVClient } = await import('../../src/lib/raas-gateway-kv-client');
+      const unconfiguredClient = new RaaSGatewayKVClient({
         apiToken: '',
         accountId: '',
         namespaceId: '',

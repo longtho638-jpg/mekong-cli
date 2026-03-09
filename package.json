@@ -1,6 +1,6 @@
 {
   "name": "mekong-cli",
-  "version": "2.1.33",
+  "version": "3.0.0",
   "private": true,
   "packageManager": "pnpm@9.15.0",
   "description": "RaaS Agency Operating System - Powered by Binh Phap & ClaudeKit DNA",
@@ -15,7 +15,6 @@
     "url": "https://github.com/longtho638-jpg/mekong-cli/issues"
   },
   "workspaces": [
-    "frontend",
     "packages/*",
     "packages/core/*",
     "packages/integrations/*",

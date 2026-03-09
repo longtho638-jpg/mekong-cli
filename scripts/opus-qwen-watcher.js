@@ -31,7 +31,7 @@ async function askQwen(paneOutput) {
     let taskInfo = "No task file found.";
     try { taskInfo = fs.readFileSync(TASK_FILE, 'utf-8'); } catch (e) { }
 
-    const systemPrompt = `You are a Grandmaster CTO AI. You are monitoring a sub-agent named Opus 4.6 running in Tmux.
+    const prompt = `You are a Grandmaster CTO AI. You are monitoring a sub-agent named Opus 4.6 running in Tmux.
 The overall mission is:
 ---
 ${taskInfo}
@@ -51,27 +51,25 @@ If it is not done (still running), output exactly "STILL_RUNNING"
 `;
 
     try {
-        const res = await fetch('https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions', {
+        const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_API_KEY}`, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${DASHSCOPE_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: 'qwen3-coder-plus', // or qwen2.5-coder-32b-instruct
-                messages: [{ role: 'system', content: systemPrompt }],
-                max_tokens: 500,
-                temperature: 0.1
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { temperature: 0.1, maxOutputTokens: 500 }
             })
         });
         const data = await res.json();
-        if (!data || !data.choices || !data.choices[0]) {
-            log('Qwen API Error: ' + JSON.stringify(data));
+
+        // Handle Gemini 404 or missing choices
+        if (!data || !data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+            log('Gemini API Error: ' + JSON.stringify(data));
             return "STILL_RUNNING";
         }
-        return data.choices[0].message.content.trim();
+        return data.candidates[0].content.parts[0].text.trim();
     } catch (e) {
-        log('Failed to contact Qwen API: ' + e.message);
+        log('Failed to contact Gemini API: ' + e.message);
         return "STILL_RUNNING";
     }
 }

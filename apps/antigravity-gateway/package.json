@@ -1,8 +1,0 @@
-{
-  "name": "@agencyos/antigravity-gateway",
-  "version": "0.1.0",
-  "description": "Antigravity gateway proxy config",
-  "author": "Binh Phap Venture Studio",
-  "license": "MIT",
-  "private": true
-}

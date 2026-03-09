@@ -1,3 +1,0 @@
-"""
-Legal Ops Core Module
-"""
