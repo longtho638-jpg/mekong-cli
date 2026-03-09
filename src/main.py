@@ -37,6 +37,7 @@ from src.commands.sync_commands import app as sync_app
 from src.cli.update_commands import app as update_app
 from src.cli.raas_auth_commands import app as raas_auth_app
 from src.commands.raas_validate import validate_license, license_status
+from src.cli.update_checker import check_for_updates_async, notify_update_available
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -466,13 +467,24 @@ def main(
     ),
 ) -> None:
     """Mekong CLI - Autonomous AI Agent Framework"""
+    import os
+
     # Set RAAS_DEBUG env var for audit logger
     if raas_debug:
-        import os
         os.environ["RAAS_DEBUG"] = "true"
 
     # Validate license at startup
     _validate_startup_license(ctx)
+
+    # Phase 6: Check for updates (non-blocking, opt-out)
+    if not os.getenv("MEKONG_NO_UPDATE_CHECK"):
+        try:
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.create_task(check_for_updates_async())
+        except Exception:
+            pass  # Fail silently
 
     if version_flag:
         version()
