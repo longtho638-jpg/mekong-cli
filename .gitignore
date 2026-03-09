@@ -298,3 +298,13 @@ configs/
 
 # Agent benchmarks (private testing results)
 .agent/
+
+# Build/test artifacts (auto-generated)
+*.log
+*_output.txt
+*_log*.txt
+coverage_*.txt
+repomix-output.xml
+*.db
+usage_*.json
+poetry.lock.backup

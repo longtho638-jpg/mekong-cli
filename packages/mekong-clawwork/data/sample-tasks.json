@@ -1,7 +1,0 @@
-[
-  { "id": "gdp-001", "sector": "Technology", "role": "Software Developer", "description": "Build a REST API endpoint for user authentication", "maxPayment": 250.00, "iterations": 15 },
-  { "id": "gdp-002", "sector": "Finance", "role": "Financial Analyst", "description": "Create a quarterly revenue forecast model", "maxPayment": 280.00, "iterations": 15 },
-  { "id": "gdp-003", "sector": "Healthcare", "role": "Data Analyst", "description": "Analyze patient readmission patterns", "maxPayment": 230.00, "iterations": 15 },
-  { "id": "gdp-004", "sector": "Legal", "role": "Contract Reviewer", "description": "Review and summarize key terms in vendor agreement", "maxPayment": 200.00, "iterations": 15 },
-  { "id": "gdp-005", "sector": "Operations", "role": "Process Engineer", "description": "Optimize warehouse picking route algorithm", "maxPayment": 300.00, "iterations": 15 }
-]
