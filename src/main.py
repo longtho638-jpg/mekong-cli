@@ -36,8 +36,10 @@ from src.commands.security_commands import app as security_commands_app
 from src.commands.sync_commands import app as sync_app
 from src.cli.update_commands import app as update_app
 from src.cli.raas_auth_commands import app as raas_auth_app
+from src.cli.diagnostic_commands import app as diagnostic_app
+from src.cli.usage_commands import app as usage_app
 from src.commands.raas_validate import validate_license, license_status
-from src.cli.update_checker import check_for_updates_async, notify_update_available
+from src.cli.update_checker import check_for_updates_async
 
 # Legacy command imports (not yet refactored)
 from src.commands.agi import app as agi_app
@@ -78,6 +80,8 @@ FREE_COMMANDS = {
     "raas-auth", "auth",  # RaaS auth is FREE (basic necessity)
     "validate-license", "license-status",  # License validation is FREE
     "check-phases", "complete-phase6",  # Phase completion commands are FREE
+    "diagnostic",  # Diagnostic checks are FREE (basic necessity)
+    "usage",  # Usage reporting is FREE (basic necessity)
 }
 
 
@@ -94,6 +98,7 @@ def _validate_startup_license(ctx: typer.Context) -> None:
 
     Free commands skip validation.
     Premium commands require valid license.
+    Critical updates block execution until installed.
     """
     command = _get_invoked_command(ctx)
 
@@ -104,6 +109,20 @@ def _validate_startup_license(ctx: typer.Context) -> None:
     # Check for --help flag
     if "--help" in sys.argv or "-h" in sys.argv:
         return
+
+    # CRITICAL: Check for blocking critical updates
+    from src.cli.update_checker import get_update_checker
+    checker = get_update_checker()
+
+    if checker.should_block_execution():
+        update_info = checker.get_critical_update_info()
+        if update_info:
+            console.print("[bold red]🚨 CRITICAL UPDATE REQUIRED[/bold red]")
+            console.print(f"Current version {update_info.current_version} has critical security issues.")
+            console.print(f"Please update to {update_info.latest_version} immediately.")
+            console.print("\n[yellow]Run: [cyan]mekong update install[/cyan][/yellow]\n")
+            console.print("[dim]Or use --skip-update-check to bypass (not recommended)[/dim]\n")
+            raise SystemExit(1)
 
     # Validate license for premium commands using RaaS Gateway
     from src.lib.raas_gate_validator import RaasGateValidator
@@ -176,6 +195,8 @@ def _register_legacy_commands() -> None:
     app.add_typer(update_app, name="update", help="🔄 CLI auto-update")
     app.add_typer(raas_auth_app, name="raas-auth", help="🔐 RaaS Gateway auth (login/logout/status)")
     app.add_typer(raas_auth_app, name="auth", help="🔐 RaaS Gateway auth (login/logout/status)")
+    app.add_typer(diagnostic_app, name="diagnostic", help="🔍 Diagnostic connectivity checks")
+    app.add_typer(usage_app, name="usage", help="📊 Usage metering and reporting")
 
     # Register validate commands directly (not via app to avoid nesting)
     app.command("validate-license")(validate_license)
