@@ -6,7 +6,6 @@ Supports auto-discovery from CLI --help, OpenAPI specs, and MCP servers.
 Enables the AGI to expand its own capabilities at runtime.
 """
 
-import json
 import logging
 import re
 import subprocess

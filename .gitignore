@@ -389,3 +389,4 @@ supabase/
 .ruffignore
 conftest.py
 .coveragerc
+.env*.local

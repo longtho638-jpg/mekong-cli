@@ -170,7 +170,7 @@ class TestExecutorStepTypes:
 
     def test_executor_supports_tool_type(self):
         from src.core.executor import RecipeExecutor
-        from src.core.parser import Recipe, RecipeStep
+        from src.core.parser import Recipe
         recipe = Recipe(name="test", description="test", steps=[])
         exe = RecipeExecutor(recipe)
         # Verify the method exists

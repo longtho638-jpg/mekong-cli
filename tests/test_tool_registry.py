@@ -5,7 +5,6 @@ import unittest
 
 from src.core.tool_registry import (
     Tool,
-    ToolParameter,
     ToolRegistry,
     ToolType,
 )

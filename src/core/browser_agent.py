@@ -6,8 +6,6 @@ Uses subprocess-based HTTP fetching with optional Playwright integration.
 Provides screenshot capture and LLM-powered vision analysis.
 """
 
-import hashlib
-import json
 import logging
 import re
 import subprocess

@@ -8,7 +8,8 @@ export interface CommandData {
   agents: string[]
 }
 
-import { COMMANDS_FOUNDER } from "./commands-founder"
+import { COMMANDS_FOUNDER_A } from "./commands-founder-a"
+import { COMMANDS_FOUNDER_B } from "./commands-founder-b"
 import { COMMANDS_BUSINESS_A } from "./commands-business-a"
 import { COMMANDS_BUSINESS_B } from "./commands-business-b"
 import { COMMANDS_PRODUCT } from "./commands-product"
@@ -20,7 +21,8 @@ import { COMMANDS_OPS_B } from "./commands-ops-b"
 import { COMMANDS_OPS_C } from "./commands-ops-c"
 
 export const COMMANDS: CommandData[] = [
-  ...COMMANDS_FOUNDER,
+  ...COMMANDS_FOUNDER_A,
+  ...COMMANDS_FOUNDER_B,
   ...COMMANDS_BUSINESS_A,
   ...COMMANDS_BUSINESS_B,
   ...COMMANDS_PRODUCT,
