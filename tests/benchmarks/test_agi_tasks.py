@@ -4,12 +4,16 @@ Public benchmark tests for validating AGI task success rate.
 Runs real tasks through mekong cook and validates outputs.
 
 Benchmark Tasks based on mekong-agencyos-roadmap.md SPRINT 2 - Task 2.1
+
+NOTE: These are integration tests that require LLM configuration.
+They are skipped in CI/CD environments.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+import os
 import subprocess
 import sys
 import tempfile
@@ -18,7 +22,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 logger = logging.getLogger(__name__)
+
+# Skip benchmarks in CI/CD - they require LLM configuration
+pytestmark = pytest.mark.skipif(
+    os.getenv("CI") == "true",
+    reason="Skip AGI benchmarks in CI/CD - requires LLM configuration",
+)
 
 # Root path for mekong CLI
 MEKONG_ROOT = Path(__file__).parent.parent.parent
