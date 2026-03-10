@@ -576,6 +576,41 @@ def plan_cmd(
         "complex": TaskComplexity.COMPLEX,
     }
 
+    # AGI v2: NLU classification to guide planning
+    try:
+        from src.core.nlu import IntentClassifier
+        nlu = IntentClassifier(llm_client=get_client())
+        intent = nlu.classify(goal)
+        console.print(
+            f"[dim]📡 NLU: {intent.intent.value} ({intent.confidence:.0%})"
+            + (f" | {intent.entities}" if intent.entities else "")
+            + f"[/dim]"
+        )
+    except Exception:
+        pass
+
+    # AGI v2: Suggest tools that could help
+    try:
+        from src.core.tool_registry import ToolRegistry
+        reg = ToolRegistry()
+        suggested = reg.suggest_tool(goal)
+        if suggested:
+            console.print(
+                f"[dim]🔧 Suggested tool: {suggested.name} — {suggested.description[:50]}[/dim]"
+            )
+    except Exception:
+        pass
+
+    # AGI v2: Strategy hint from reflection
+    try:
+        from src.core.reflection import ReflectionEngine
+        ref = ReflectionEngine()
+        hint = ref.get_strategy_suggestion(goal)
+        if hint and hint != "No prior data. Using default strategy.":
+            console.print(f"[dim]🪞 Strategy: {hint[:60]}[/dim]")
+    except Exception:
+        pass
+
     context = PlanningContext(
         goal=goal,
         complexity=complexity_map.get(complexity, TaskComplexity.MODERATE),
@@ -662,6 +697,28 @@ def debug_cmd(
 ) -> None:
     """Debug an issue - generates a fix plan (defaults to dry-run)"""
     goal = f"debug {issue}" if not issue.lower().startswith("debug") else issue
+
+    # AGI v2: Predict risks before debugging
+    try:
+        from src.core.world_model import WorldModel
+        wm = WorldModel()
+        prediction = wm.predict_side_effects(goal)
+        if prediction.risk_level == "high":
+            console.print(
+                f"[bold yellow]⚠️  Risk: {'; '.join(prediction.warnings[:2])}[/bold yellow]"
+            )
+    except Exception:
+        pass
+
+    # AGI v2: Check reflection for similar past bugs
+    try:
+        from src.core.reflection import ReflectionEngine
+        ref = ReflectionEngine()
+        hint = ref.get_strategy_suggestion(goal)
+        if hint and "No prior data" not in hint:
+            console.print(f"[dim]🪞 Prior debug insight: {hint[:60]}[/dim]")
+    except Exception:
+        pass
 
     if dry_run:
         from src.core.planner import RecipePlanner
@@ -1686,16 +1743,50 @@ def autonomous_predict(
 
 @app.command()
 def version() -> None:
-    """Show version info"""
+    """Show version info + AGI subsystem health"""
+    # Static version info
     console.print(
         Panel(
             "[bold green]Mekong CLI[/bold green] v2.0.0-agi\n"
             "[dim]RaaS Agency Operating System[/dim]\n"
             "[dim]Engine: Plan-Execute-Verify (Binh Pháp)[/dim]\n"
-            "[dim]AGI: NLU + Memory + DAG + Reflection + WorldModel + Tools + Browser + Collab + Evolution[/dim]\n"
             "[dim]DNA: ClaudeKit v2.9.1+[/dim]",
             title="Version",
             border_style="blue",
+        )
+    )
+
+    # AGI v2: Live subsystem health
+    subsystems = []
+    modules = [
+        ("NLU", "src.core.nlu", "IntentClassifier"),
+        ("Memory", "src.core.memory", "MemoryStore"),
+        ("Reflection", "src.core.reflection", "ReflectionEngine"),
+        ("WorldModel", "src.core.world_model", "WorldModel"),
+        ("ToolRegistry", "src.core.tool_registry", "ToolRegistry"),
+        ("BrowserAgent", "src.core.browser_agent", "BrowserAgent"),
+        ("Collaboration", "src.core.collaboration", "CollaborationProtocol"),
+        ("CodeEvolution", "src.core.code_evolution", "CodeEvolutionEngine"),
+        ("VectorMemory", "src.core.vector_memory_store", "VectorMemoryStore"),
+    ]
+    for name, mod, cls_name in modules:
+        try:
+            import importlib
+            m = importlib.import_module(mod)
+            getattr(m, cls_name)
+            subsystems.append(f"[green]✓[/green] {name}")
+        except Exception:
+            subsystems.append(f"[red]✗[/red] {name}")
+
+    healthy = sum(1 for s in subsystems if "✓" in s)
+    health_color = "green" if healthy == 9 else "yellow" if healthy >= 6 else "red"
+
+    console.print(
+        Panel(
+            f"[bold]AGI Subsystems:[/bold] [{health_color}]{healthy}/9 online[/{health_color}]\n"
+            + "  ".join(subsystems),
+            title="🧠 AGI v2 Health",
+            border_style="magenta",
         )
     )
 
