@@ -14,6 +14,7 @@ from .orchestrator import (
 from .parser import Recipe, RecipeParser, RecipeStep
 from .planner import PlanningContext, RecipePlanner, TaskComplexity, VerificationCriteria
 from .plugin_loader import PluginLoader
+from .plugin_registry import PluginManifest, PluginRegistry, PluginStatus, PluginType
 from .protocols import AgentProtocol, StreamingMixin
 from .providers import (
     GeminiProvider,
@@ -58,6 +59,10 @@ __all__ = [
     "PlanningContext",
     # Plugin System
     "PluginLoader",
+    "PluginManifest",
+    "PluginRegistry",
+    "PluginStatus",
+    "PluginType",
     "Recipe",
     "RecipeExecutor",
     "RecipeOrchestrator",
