@@ -6,6 +6,7 @@ Auto-generated recipes saved to recipes/auto/.
 
 from __future__ import annotations
 
+import logging
 import re
 import time
 from dataclasses import dataclass
@@ -14,6 +15,8 @@ from typing import Any
 
 from .event_bus import EventType, get_event_bus
 from .memory import MemoryEntry
+
+logger = logging.getLogger(__name__)
 
 RECIPE_TEMPLATE = """# {name}
 > {description}
@@ -168,7 +171,8 @@ class RecipeGenerator:
                 return f"### Step 1: Execute\n{goal}"
             response = self.llm_client.generate(prompt).strip()
             return response if response else f"### Step 1: Execute\n{goal}"
-        except Exception:
+        except Exception as e:
+            logger.debug("Recipe step generation failed, using fallback: %s", e)
             return f"### Step 1: Execute\n{goal}"
 
 

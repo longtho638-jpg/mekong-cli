@@ -12,6 +12,7 @@ Binh Phap Ch.4 軍形: Defense through safe, structured shell execution.
 
 from __future__ import annotations
 
+import logging
 import os
 import shlex
 import subprocess
@@ -21,6 +22,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -274,7 +277,8 @@ def retry_shell(
     for attempt in range(1, count + 1):
         try:
             return shell(command, **shell_kwargs)
-        except Exception:
+        except Exception as e:
+            logger.debug("Shell retry attempt %d/%d failed for command '%s': %s", attempt, count, command, e)
             if attempt < count:
                 time.sleep(current_delay)
                 current_delay *= backoff

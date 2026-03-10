@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 import uuid
 from dataclasses import dataclass
@@ -36,6 +37,8 @@ from cryptography.x509 import (
     DNSName,
     ObjectIdentifier,
 )
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -163,7 +166,8 @@ class DeviceCertificate:
                 ec.ECDSA(hashes.SHA256())
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.debug("Certificate signature verification failed: %s", e)
             return False
 
     @classmethod
@@ -254,7 +258,8 @@ class DeviceCertificate:
                         for elements in range(0, 48, 8)
                     ])
                     break
-            except Exception:
+            except Exception as e:
+                logger.debug("MAC address retrieval attempt failed: %s", e)
                 continue
 
         # Fallback to random UUID if MAC not available
@@ -392,7 +397,8 @@ class CertificateSigner:
                 ec.ECDSA(hashes.SHA256())
             )
             return True
-        except Exception:
+        except Exception as e:
+            logger.debug("CA certificate signature verification failed: %s", e)
             return False
 
 

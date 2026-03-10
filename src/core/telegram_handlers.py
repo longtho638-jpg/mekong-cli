@@ -155,7 +155,8 @@ async def sessions_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -
             "\n".join(lines),
             parse_mode="Markdown",
         )
-    except Exception:
+    except Exception as e:
+        logger.warning("Failed to send Telegram session list reply: %s", e)
         await update.message.reply_text("No CC CLI sessions active.")
 
 

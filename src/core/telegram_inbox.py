@@ -6,10 +6,13 @@ Task inbox for Telegram → Antigravity relay.
 from __future__ import annotations
 
 import json
+import logging
 import time
 import uuid
 from pathlib import Path
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 INBOX_PATH = Path(".mekong/inbox.json")
 
@@ -21,7 +24,8 @@ def _load_inbox() -> list[dict[str, Any]]:
     try:
         result = json.loads(INBOX_PATH.read_text())
         return list(result)
-    except Exception:
+    except Exception as e:
+        logger.debug("Failed to load inbox file: %s", e)
         return []
 
 

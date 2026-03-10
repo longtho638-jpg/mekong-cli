@@ -7,9 +7,12 @@ Example: "gemini:gemini-2.5-pro", "openai:gpt-4o", "proxy:gemini-3-pro-high"
 
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Protocol, runtime_checkable
+
+logger = logging.getLogger(__name__)
 
 
 @runtime_checkable
@@ -178,7 +181,8 @@ class ProviderRegistry:
             instance = config.factory()
             self._instances[provider_name] = instance
             return instance
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to instantiate provider '%s': %s", provider_name, e)
             return None
 
     def list_providers(self) -> list[str]:

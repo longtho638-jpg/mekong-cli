@@ -161,7 +161,8 @@ class TelemetryHooks:
         # Get machine fingerprint
         try:
             fingerprint = get_machine_fingerprint_hash()
-        except Exception:
+        except Exception as e:
+            logger.debug("Failed to get machine fingerprint: %s", e)
             fingerprint = None
 
         # Get API key (hashed)
@@ -300,7 +301,8 @@ class TelemetryHooks:
         try:
             with open(cache_path, "r") as f:
                 return json.load(f)
-        except Exception:
+        except Exception as e:
+            logger.debug("Failed to load cached telemetry events: %s", e)
             return []
 
     def flush_cached_events(self) -> int:
@@ -319,7 +321,8 @@ class TelemetryHooks:
                     success_count += 1
                 else:
                     remaining_events.append(event_dict)
-            except Exception:
+            except Exception as e:
+                logger.debug("Failed to flush cached telemetry event: %s", e)
                 remaining_events.append(event_dict)
 
         # Update cache file
@@ -407,7 +410,8 @@ class TelemetryHooks:
         try:
             from importlib.metadata import version
             return version("mekong-cli")
-        except Exception:
+        except Exception as e:
+            logger.debug("Failed to get CLI version from metadata: %s", e)
             return "0.2.0-dev"
 
 

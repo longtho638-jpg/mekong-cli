@@ -11,12 +11,15 @@ Features:
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional, Dict, Any, List
 
 from src.auth.secure_storage import get_secure_storage
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -132,7 +135,8 @@ class LicenseManager:
 
             return True
 
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to save license data: %s", e)
             return False
 
     def get_license(self) -> Optional[LicenseData]:
@@ -158,7 +162,8 @@ class LicenseManager:
             encrypted_key = data.get("license_key", "")
             try:
                 decrypted_key = self._storage.decrypt(encrypted_key)
-            except Exception:
+            except Exception as e:
+                logger.debug("License key decryption failed, using as-is: %s", e)
                 # Fallback: use as-is (might not be encrypted in old format)
                 decrypted_key = encrypted_key
 
@@ -166,7 +171,8 @@ class LicenseManager:
             self._cache = LicenseData.from_dict(data)
             return self._cache
 
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to load license data: %s", e)
             return None
 
     def is_valid(self) -> bool:
@@ -248,7 +254,8 @@ class LicenseManager:
                 self.license_path.unlink()
             self._cache = None
             return True
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to clear license: %s", e)
             return False
 
     def update_validation_timestamp(self) -> bool:

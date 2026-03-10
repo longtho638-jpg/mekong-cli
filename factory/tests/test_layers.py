@@ -70,7 +70,7 @@ def test_no_duplicate_commands_across_layers(layers_data: dict) -> None:
             else:
                 seen[cmd_lower] = layer_name
 
-    assert not duplicates, f"Duplicate commands found:\n" + "\n".join(duplicates)
+    assert not duplicates, "Duplicate commands found:\n" + "\n".join(duplicates)
 
 
 def test_cascades_to_references_valid_layers(layers_data: dict) -> None:

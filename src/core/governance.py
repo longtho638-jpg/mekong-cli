@@ -7,6 +7,7 @@ Maintains audit trail in .mekong/audit.yaml.
 
 from __future__ import annotations
 
+import logging
 import re
 import time
 from dataclasses import dataclass, field
@@ -16,6 +17,8 @@ from pathlib import Path
 import yaml  # type: ignore[import-untyped]
 
 from .event_bus import EventType, get_event_bus
+
+logger = logging.getLogger(__name__)
 
 
 class ActionClass(str, Enum):
@@ -144,7 +147,8 @@ class Governance:
                 )
                 for d in data
             ]
-        except Exception:
+        except Exception as e:
+            logger.debug("Failed to load audit trail: %s", e)
             self._audit = []
 
     def _save_audit(self) -> None:

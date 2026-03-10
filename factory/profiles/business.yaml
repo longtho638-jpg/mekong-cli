@@ -1,0 +1,29 @@
+# Vibe Coding Factory — Business Role Profile
+# Loaded by EntryPointRouter when user selects the business layer.
+
+profile:
+  name: business
+  display: "Business Lead / GTM"
+  layer: business
+  chapter: "作戰 — Waging War"
+  tagline: "Revenue engine — sales, marketing, finance, HR."
+
+  quick_start:
+    - command: sales
+      description: "Pipeline and deal tracking"
+    - command: marketing
+      description: "Campaign management"
+    - command: finance
+      description: "P&L, cash flow, invoices"
+
+  recommended_flow:
+    - sales
+    - pipeline
+    - crm
+    - invoice
+
+  persona:
+    focus: operational
+    time_horizon: monthly
+    primary_metric: MRR
+    risk_tolerance: medium

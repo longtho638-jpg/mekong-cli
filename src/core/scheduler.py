@@ -8,6 +8,7 @@ Persists jobs to .mekong/schedule.yaml and emits events to EventBus.
 from __future__ import annotations
 
 import asyncio
+import logging
 import time
 import uuid
 from collections.abc import Callable
@@ -17,6 +18,8 @@ from pathlib import Path
 from typing import Any
 
 from src.core.event_bus import EventType, get_event_bus
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -227,7 +230,8 @@ class Scheduler:
 
         try:
             raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        except Exception:
+        except Exception as e:
+            logger.debug("Failed to parse schedule YAML: %s", e)
             return
 
         for entry in raw.get("jobs") or []:

@@ -470,7 +470,8 @@ class CommandAuthorizer:
                 grace_period_remaining_hours=GRACE_PERIOD_NETWORK_ERROR,
             )
 
-        except Exception:
+        except Exception as e:
+            logger.warning("License validation network error, checking grace period: %s", e)
             # Network error - check grace period
             in_grace, remaining = self._check_grace_period(command="validate")
             if in_grace:

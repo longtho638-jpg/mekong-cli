@@ -42,7 +42,8 @@ class OllamaAdapter:
             )
             with urllib.request.urlopen(req, timeout=2) as resp:
                 return resp.status == 200
-        except Exception:
+        except Exception as e:
+            logger.debug("Ollama health check failed: %s", e)
             return False
 
     def list_models(self) -> list[str]:
@@ -56,7 +57,8 @@ class OllamaAdapter:
             with urllib.request.urlopen(req, timeout=5) as resp:
                 data = json.loads(resp.read())
                 return [m["name"] for m in data.get("models", [])]
-        except Exception:
+        except Exception as e:
+            logger.debug("Ollama list_models failed: %s", e)
             return []
 
     def get_vram_load(self) -> float:
@@ -75,7 +77,8 @@ class OllamaAdapter:
                 total_size = sum(m.get("size", 0) for m in models)
                 gpu_total = int(os.getenv("GPU_TOTAL_VRAM_GB", "8")) * 1_073_741_824
                 return min(total_size / gpu_total, 1.0) if gpu_total > 0 else 0.0
-        except Exception:
+        except Exception as e:
+            logger.debug("Ollama VRAM load check failed: %s", e)
             return 0.0
 
     async def generate(

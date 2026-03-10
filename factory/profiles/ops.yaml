@@ -1,0 +1,29 @@
+# Vibe Coding Factory — Ops Role Profile
+# Loaded by EntryPointRouter when user selects the ops layer.
+
+profile:
+  name: ops
+  display: "DevOps / Platform / SRE"
+  layer: ops
+  chapter: "九變 — Nine Variations"
+  tagline: "Monitor, maintain, recover — the foundation layer."
+
+  quick_start:
+    - command: health
+      description: "System health check"
+    - command: audit
+      description: "Security and compliance audit"
+    - command: status
+      description: "Service status overview"
+
+  recommended_flow:
+    - health
+    - audit
+    - security
+    - sync-all
+
+  persona:
+    focus: reliability
+    time_horizon: continuous
+    primary_metric: uptime
+    risk_tolerance: very_low

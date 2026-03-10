@@ -1,0 +1,29 @@
+# Vibe Coding Factory — Product Role Profile
+# Loaded by EntryPointRouter when user selects the product layer.
+
+profile:
+  name: product
+  display: "Product Manager / Designer"
+  layer: product
+  chapter: "謀攻 — Attack by Stratagem"
+  tagline: "Roadmap, sprints, personas — bridge between biz and eng."
+
+  quick_start:
+    - command: plan
+      description: "Implementation planning"
+    - command: brainstorm
+      description: "Ideation and discovery"
+    - command: sprint
+      description: "Sprint planning and tracking"
+
+  recommended_flow:
+    - brainstorm
+    - plan
+    - sprint
+    - roadmap
+
+  persona:
+    focus: discovery
+    time_horizon: sprint
+    primary_metric: feature_velocity
+    risk_tolerance: medium

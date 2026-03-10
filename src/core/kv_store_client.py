@@ -10,6 +10,7 @@ Features:
 
 from __future__ import annotations
 
+import logging
 import os
 import time
 from dataclasses import dataclass, field
@@ -18,6 +19,8 @@ from typing import Any, Optional
 
 from src.core.gateway_client import get_gateway_client, GatewayClient
 from src.core.raas_auth import get_auth_client
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -232,7 +235,8 @@ class KVStoreClient:
                 "last_sync": response.data.get("last_sync"),
                 "pending_events": response.data.get("pending_events", 0),
             }
-        except Exception:
+        except Exception as e:
+            logger.debug("KV store usage stats fetch failed: %s", e)
             return {
                 "cached_count": 0,
                 "last_sync": None,
@@ -260,7 +264,8 @@ class KVStoreClient:
             self._cache_time = 0.0
 
             return response.status_code == 200
-        except Exception:
+        except Exception as e:
+            logger.warning("KV store rate limit clear failed: %s", e)
             return False
 
 

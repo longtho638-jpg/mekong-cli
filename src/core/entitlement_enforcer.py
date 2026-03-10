@@ -11,6 +11,7 @@ Features:
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
@@ -19,6 +20,8 @@ from typing import Optional, Tuple
 from src.core.raas_auth import get_auth_client
 from src.core.kv_store_client import get_kv_client
 from src.lib.usage_meter import get_usage_summary
+
+logger = logging.getLogger(__name__)
 
 
 class EntitlementStatus(Enum):
@@ -189,7 +192,8 @@ class EntitlementEnforcer:
 
             return True
 
-        except Exception:
+        except Exception as e:
+            logger.warning("Entitlement check failed: %s", e)
             return False
 
 

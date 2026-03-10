@@ -6,6 +6,7 @@ Subscribes to EventBus *:critical events and routes to Telegram/Slack/email chan
 
 from __future__ import annotations
 
+import logging
 import os
 import time
 from collections import deque
@@ -14,6 +15,8 @@ from enum import Enum
 from typing import Any
 
 from .event_bus import EventBus, EventType, get_event_bus
+
+logger = logging.getLogger(__name__)
 
 
 class AlertSeverity(str, Enum):
@@ -199,7 +202,8 @@ class AlertRouter:
                 parse_mode="Markdown",
             )
             return f"telegram:{message_id}"
-        except Exception:
+        except Exception as e:
+            logger.warning("Failed to send Telegram alert '%s': %s", alert.title, e)
             return f"failed:{alert.title}"
 
     def get_stats(self) -> dict[str, Any]:

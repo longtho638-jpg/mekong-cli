@@ -5,6 +5,14 @@ triggers:
   founder_to_business:
     description: "Founder output mentions revenue, growth, or team ops → suggest Business layer"
     keywords:
+      - revenue target
+      - sales goal
+      - marketing budget
+      - hire
+      - recruit
+      - client acquisition
+      - MRR
+      - ARR
       - revenue
       - sales
       - marketing
@@ -18,51 +26,80 @@ triggers:
       - go-to-market
       - partnerships
       - pricing
-      - ARR
-      - MRR
+      - doanh thu
+      - muc tieu ban
+      - tuyen dung
+    suggest_commands:
+      - /sales
+      - /marketing
+      - /pipeline
+      - /leadgen
+      - /hr
 
   business_to_product:
     description: "Business output mentions features or product needs → suggest Product layer"
     keywords:
-      - features
+      - feature
       - product
       - MVP
       - launch
-      - roadmap
+      - release
       - user story
+      - requirement
+      - san pham
+      - tinh nang
+      - roadmap
       - backlog
       - scope
       - prototype
       - spec
-      - requirements
       - persona
       - feedback
       - sprint
+    suggest_commands:
+      - /plan
+      - /roadmap
+      - /sprint
+      - /scope
 
   product_to_engineering:
     description: "Product output mentions implementation or build → suggest Engineering layer"
     keywords:
       - implement
       - build
+      - create
+      - develop
       - code
       - API
       - database
-      - schema
-      - component
       - frontend
       - backend
+      - xay dung
+      - trien khai
+      - lap trinh
+      - schema
+      - component
       - endpoint
       - architecture
-      - develop
       - engineer
       - technical
+    suggest_commands:
+      - /cook
+      - /code
+      - /arch
+      - /api
 
   engineering_to_ops:
     description: "Engineering output mentions deployment or monitoring → suggest Ops layer"
     keywords:
       - deploy
       - ship
+      - release
       - monitor
+      - scale
+      - trien khai
+      - van hanh
+      - giam sat
       - production
       - CI/CD
       - health
@@ -72,5 +109,9 @@ triggers:
       - security
       - audit
       - infrastructure
-      - release
       - smoke test
+    suggest_commands:
+      - /deploy
+      - /ship
+      - /health
+      - /audit

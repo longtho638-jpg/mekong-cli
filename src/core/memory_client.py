@@ -52,7 +52,8 @@ class NeuralMemoryClient:
         try:
             resp = requests.get(f"{self.base_url}/health", timeout=1.0)
             self._available = resp.status_code == 200
-        except Exception:
+        except Exception as e:
+            logger.debug("NeuralMemory health check failed: %s", e)
             self._available = False
         self._health_checked_at = now
         return self._available

@@ -97,7 +97,7 @@ def _build_report(
 
     total = len(classified) + len(unclassified)
     pct = int(100 * len(classified) / total) if total else 0
-    lines.append(f"## Summary")
+    lines.append("## Summary")
     lines.append(f"  Total: {total}")
     lines.append(f"  Classified: {len(classified)} ({pct}%)")
     lines.append(f"  Unclassified: {len(unclassified)}")

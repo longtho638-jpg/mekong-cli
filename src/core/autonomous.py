@@ -157,7 +157,8 @@ class AutonomousEngine:
                 orch_result = self.orchestrator.run_from_goal(goal)
                 result.executed = True
                 result.result_status = orch_result.status.value
-            except Exception:
+            except Exception as e:
+                logger.warning("Orchestrator execution error for goal '%s': %s", goal, e)
                 result.executed = True
                 result.result_status = "error"
 

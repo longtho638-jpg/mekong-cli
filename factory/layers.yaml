@@ -24,6 +24,10 @@ layers:
       - branding
       - muc-tieu
       - bao-cao-tai-chinh
+      - cofounder
+      - raise
+      - credits
+      - launch
 
   business:
     chapter: "作戰 — Waging War"
@@ -95,7 +99,7 @@ layers:
       - bao-cao
 
   engineering:
-    chapter: "軍形 — Military Disposition"
+    chapter: "軍爭 — Military Contention"
     role: "Engineer / Tech Lead"
     description: "Code, build, test, deploy, review. The execution powerhouse."
     cascades_to: [ops]
@@ -152,7 +156,7 @@ layers:
       - watzup
 
   ops:
-    chapter: "兵勢 — Energy"
+    chapter: "九變 — Nine Variations"
     role: "DevOps / Platform"
     description: "Audit, health, security, sync, environment. The foundation layer."
     cascades_to: []
@@ -185,3 +189,5 @@ layers:
       - sync-rules
       - sync-tasks
       - win-check
+      - help
+      - raas

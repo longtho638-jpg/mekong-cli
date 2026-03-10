@@ -59,8 +59,11 @@ class CascadeEngine:
     for commands in the next layer down the pyramid.
     """
 
-    def __init__(self) -> None:
-        layers_data = _load_yaml(_FACTORY_DIR / "layers.yaml")
+    def __init__(self, layers_config: dict | None = None) -> None:
+        if layers_config is not None:
+            layers_data = layers_config
+        else:
+            layers_data = _load_yaml(_FACTORY_DIR / "layers.yaml")
         triggers_data = _load_yaml(_FACTORY_DIR / "cascade_triggers.yaml")
 
         self._layers: dict = layers_data.get("layers", {})
@@ -103,14 +106,16 @@ class CascadeEngine:
             if not matched:
                 continue
 
-            target_commands: list[str] = self._layers.get(target_layer, {}).get(
-                "commands", []
-            )
-            if not target_commands:
+            # Prefer suggest_commands from trigger config, fallback to layer commands
+            suggest_cmds: list[str] = trigger_cfg.get("suggest_commands", [])
+            if not suggest_cmds:
+                suggest_cmds = self._layers.get(target_layer, {}).get(
+                    "commands", []
+                )[:3]
+            if not suggest_cmds:
                 continue
 
-            # Suggest first 3 commands from target layer as entry points
-            for cmd in target_commands[:3]:
+            for cmd in suggest_cmds:
                 suggestions.append(
                     CascadeSuggestion(
                         command=cmd,

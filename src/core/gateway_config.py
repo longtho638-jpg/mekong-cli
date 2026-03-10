@@ -6,8 +6,11 @@ Falls back to hardcoded defaults when no config file exists.
 
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Default preset actions — the "Washing Machine" buttons
 DEFAULT_PRESETS: list[dict[str, str]] = [
@@ -76,7 +79,8 @@ def load_config(config_path: str | None = None) -> GatewayConfig:
 
     try:
         raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-    except Exception:
+    except Exception as e:
+        logger.debug("Failed to parse gateway config YAML: %s", e)
         return GatewayConfig()
 
     cfg = GatewayConfig()
