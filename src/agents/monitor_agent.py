@@ -5,7 +5,6 @@ Monitoring & health check agent for services and system resources.
 """
 
 import subprocess
-import shlex
 import platform
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass

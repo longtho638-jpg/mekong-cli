@@ -5,7 +5,6 @@ Network & API testing agent for connectivity and latency checks.
 """
 
 import subprocess
-import shlex
 import socket
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
