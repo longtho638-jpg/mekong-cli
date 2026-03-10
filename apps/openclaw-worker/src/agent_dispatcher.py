@@ -12,10 +12,10 @@ from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from .task_classifier import TaskClassifier, TaskProfile
-    from .model_selector import ModelSelector, ModelConfig, SystemState
-    from .cost_estimator import CostEstimator, CostEstimate
-    from .mcu_gate import MCUGate, LockResult
-    from .fallback_chain import FallbackChain, ExecutionResult
+    from .model_selector import ModelSelector, SystemState
+    from .cost_estimator import CostEstimator
+    from .mcu_gate import MCUGate
+    from .fallback_chain import FallbackChain
 
 
 @dataclass

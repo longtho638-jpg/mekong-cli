@@ -7,14 +7,13 @@ Test full route_and_execute flow:
 
 import asyncio
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.agent_dispatcher import AgentDispatcher, MissionResult, VerifyResult
-from src.task_classifier import TaskClassifier, TaskProfile
-from src.model_selector import ModelSelector, SystemState
+from src.agent_dispatcher import AgentDispatcher, VerifyResult
+from src.task_classifier import TaskClassifier
+from src.model_selector import ModelSelector
 from src.cost_estimator import CostEstimator
-from src.mcu_gate import MCUGate, LockResult
-from src.fallback_chain import FallbackChain, ExecutionResult
+from src.mcu_gate import MCUGate
+from src.fallback_chain import FallbackChain
 
 
 @pytest.fixture
@@ -150,7 +149,7 @@ class TestInsufficientMCU:
         )
 
         sse_queue = asyncio.Queue()
-        result = await dispatcher.route_and_execute(
+        await dispatcher.route_and_execute(
             goal="Do something",
             tenant_id="tenant_poor",
             mission_id="mission_poor",
@@ -220,7 +219,6 @@ class TestSelfHealRetry:
         )
 
         # Mock verify to fail first time, pass second time
-        original_verify = dispatcher._verify_output
         call_count = [0]
 
         def mock_verify(output, profile, goal):
@@ -374,7 +372,7 @@ class TestSSEStreaming:
         """Test SSE emits planning event at start."""
         sse_queue = asyncio.Queue()
 
-        result = await dispatcher.route_and_execute(
+        await dispatcher.route_and_execute(
             goal="Do task",
             tenant_id="tenant_abc",
             mission_id="mission_sse",
@@ -397,7 +395,7 @@ class TestSSEStreaming:
         """Test SSE emits completed event at end."""
         sse_queue = asyncio.Queue()
 
-        result = await dispatcher.route_and_execute(
+        await dispatcher.route_and_execute(
             goal="Do task",
             tenant_id="tenant_abc",
             mission_id="mission_sse2",
@@ -427,9 +425,6 @@ class TestMCUConfirmation:
     @pytest.mark.asyncio
     async def test_mcu_deducted_after_success(self, dispatcher: AgentDispatcher, mcu_gate: MCUGate):
         """Test MCU deducted after successful execution."""
-        initial_balance = mcu_gate.get_balance("tenant_abc")
-        initial_available = initial_balance["available"]
-
         result = await dispatcher.route_and_execute(
             goal="Quick task",
             tenant_id="tenant_abc",

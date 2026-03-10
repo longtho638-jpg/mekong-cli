@@ -1,6 +1,6 @@
 """Tests for webhook_schema.py - Pydantic webhook payloads."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 
 from src.core.webhook_schema import (
     WEBHOOK_EVENT_SCHEMAS,
@@ -92,8 +92,8 @@ class TestMissionStepStartedPayload:
         )
 
         assert payload.event_type == "mission.step.started"
-        payload.step_id == "step-001"
-        payload.step_number == 1
+        assert payload.step_id == "step-001"
+        assert payload.step_number == 1
         assert payload.agent_name == "fullstack-developer"
 
 

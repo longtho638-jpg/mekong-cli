@@ -10,7 +10,6 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.core.webhook_schema import (
-    BaseWebhookPayload,
     CreditsLowPayload,
     MissionCompletedPayload,
     MissionCreatedPayload,

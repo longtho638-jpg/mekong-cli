@@ -212,7 +212,7 @@ class TestMCURevenue:
             data_sensitivity="public",
             mcu_cost=3,
         )
-        estimate = estimator.estimate(profile)
+        estimator.estimate(profile)
         # Revenue = 0.045
 
     def test_complex_5_mcu_revenue(self, estimator: CostEstimator):

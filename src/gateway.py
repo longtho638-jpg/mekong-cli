@@ -20,15 +20,12 @@ Usage:
 from __future__ import annotations
 
 import asyncio
-import hashlib
-import hmac
 import json
 import logging
-import os
 from datetime import datetime, timezone
 from typing import AsyncGenerator, Optional
 
-from fastapi import FastAPI, HTTPException, Header, BackgroundTasks, Request
+from fastapi import FastAPI, HTTPException, Header, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field

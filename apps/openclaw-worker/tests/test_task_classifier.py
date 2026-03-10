@@ -11,7 +11,7 @@ Test comprehensive edge cases:
 
 import pytest
 
-from src.task_classifier import TaskClassifier, TaskProfile
+from src.task_classifier import TaskClassifier
 
 
 @pytest.fixture
