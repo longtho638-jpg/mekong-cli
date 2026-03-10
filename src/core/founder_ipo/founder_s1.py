@@ -70,7 +70,7 @@ def build_s1_framework(
                                 key_points=list(sec.key_points)))
 
     risk_factors = generate_risk_factors(
-        has_losses=arr < 50 or growth_pct > 100,
+        has_losses=arr < 50 or growth_pct > 100,  # arr in $M; <$50M = loss risk
         customer_concentration=customers < 100,
         ai_dependent=False,
         international=False,

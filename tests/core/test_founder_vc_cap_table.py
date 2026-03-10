@@ -45,6 +45,11 @@ def test_create_cap_table_no_pool():
     assert cap.total_shares == 1_000_000
 
 
+def test_create_cap_table_pool_pct_100_raises():
+    with pytest.raises(ValueError):
+        create_cap_table("Bad", [("F", 1_000_000)], option_pool_pct=100.0)
+
+
 def test_model_round_adds_investor():
     cap = _two_founder_cap()
     result = model_round(cap, "Seed", 1_000_000, 5_000_000)

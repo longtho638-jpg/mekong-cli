@@ -123,6 +123,8 @@ def create_cap_table(
         ))
 
     # Option pool as % of total (including pool itself)
+    if option_pool_pct >= 100:
+        raise ValueError("option_pool_pct must be less than 100")
     if option_pool_pct > 0:
         pool_shares = int(
             total_founder_shares * option_pool_pct / (100 - option_pool_pct)
