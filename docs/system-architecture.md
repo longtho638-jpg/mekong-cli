@@ -1,4 +1,4 @@
-# System Architecture: Mekong CLI v3.0.0
+# System Architecture: Mekong CLI v3.1.0 (OpenClaw v2026.3.8)
 
 ## 1. High-Level Overview
 
@@ -290,8 +290,34 @@ class AgentProtocol(Protocol):
 - `ShellAgent` — Shell command execution
 - `RecipeCrawler` — Recipe file discovery
 
-### 2.8 Plugin System (`src/core/plugin_loader.py`)
+### 2.8 Agent Registry & Plugin System
 
+**Agent Registry (`src/agents/__init__.py`):**
+Global registry with 10 built-in agents:
+
+| Agent | Key | Description |
+|-------|-----|-------------|
+| GitAgent | `git` | Git operations (commit, push, branch) |
+| FileAgent | `file` | File operations (read, write, delete) |
+| ShellAgent | `shell` | Shell command execution |
+| DatabaseAgent | `database`, `db` | Database operations |
+| LeadHunter | `lead` | Lead discovery & scraping |
+| ContentWriter | `content` | Content generation |
+| RecipeCrawler | `crawler` | Recipe file discovery |
+| WorkspaceAgent | `workspace`, `google` | Google Workspace integration |
+| MonitorAgent | `monitor` | System monitoring |
+| NetworkAgent | `network` | Network operations |
+
+**Registration Pattern:**
+```python
+# src/agents/__init__.py
+registry = AgentRegistry()
+registry.register("git", GitAgent)
+registry.register("file", FileAgent)
+# ... 10 agents total
+```
+
+**Plugin System (`src/core/plugin_loader.py`):**
 Discover and load custom agents/providers:
 
 **Discovery Methods:**
@@ -310,6 +336,13 @@ class MyAgent:
 def register(registry):
     registry.register("my-agent", MyAgent)
 ```
+
+**Plugin Validator (`src/core/plugin_validator.py`):**
+AST-based security scanning:
+
+- **Dangerous Imports:** Blocks `subprocess`, `os.system`, `eval`, `exec`, `__import__`, `pickle`, `marshal`
+- **Secret Detection:** Regex scan for hardcoded API keys, tokens, passwords
+- **Validation Result:** `PluginValidationResult(is_safe: bool, errors: List[str], warnings: List[str])`
 
 **Safety:** Plugin failures logged as warnings (never crash CLI)
 
