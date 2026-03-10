@@ -49,7 +49,7 @@ export default function FeaturesGrid() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="rounded-2xl border border-slate-800 bg-slate-900 p-6 hover:border-slate-700 transition-colors"
+              className="rounded-2xl glass-card p-6"
             >
               <div className="mb-3 text-3xl">{f.icon}</div>
               <h3 className="mb-2 font-semibold text-white">{f.title}</h3>

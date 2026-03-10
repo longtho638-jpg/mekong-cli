@@ -30,7 +30,7 @@ export default function HeroSection() {
       </div>
 
       {/* nav */}
-      <nav className="relative mx-auto mb-16 flex max-w-5xl items-center justify-between">
+      <nav className="relative mx-auto mb-16 flex max-w-5xl items-center justify-between rounded-2xl glass px-6 py-3">
         <span className="text-lg font-bold tracking-tight text-white">
           <span className="text-cyan-400">Agency</span>OS
         </span>
@@ -81,7 +81,7 @@ export default function HeroSection() {
         </div>
 
         {/* terminal */}
-        <div className="mx-auto max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 glow-blue overflow-hidden text-left">
+        <div className="mx-auto max-w-2xl rounded-2xl glass glow-blue overflow-hidden text-left">
           <div className="flex items-center gap-2 border-b border-slate-800 px-4 py-3">
             <span className="h-3 w-3 rounded-full bg-red-500/80" />
             <span className="h-3 w-3 rounded-full bg-yellow-500/80" />

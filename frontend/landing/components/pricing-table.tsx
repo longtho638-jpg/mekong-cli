@@ -71,10 +71,10 @@ export default function PricingTable() {
           {TIERS.map((tier) => (
             <div
               key={tier.name}
-              className={`relative flex flex-col rounded-2xl border p-7 transition-colors ${
+              className={`relative flex flex-col rounded-2xl p-7 ${
                 tier.highlight
-                  ? 'border-blue-500 bg-slate-900 glow-blue'
-                  : 'border-slate-800 bg-slate-900 hover:border-slate-700'
+                  ? 'glass-highlight'
+                  : 'glass-card'
               }`}
             >
               {tier.badge && (
