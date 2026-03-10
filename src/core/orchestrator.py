@@ -366,7 +366,8 @@ class RecipeOrchestrator:
         )
 
         # AGI v2: Auto-save successful recipes for reuse
-        if result.status == OrchestrationStatus.SUCCESS and recipe:
+        # Save when at least one step succeeded (not just full SUCCESS)
+        if result.completed_steps > 0 and recipe:
             self._auto_save_recipe(goal, recipe)
 
         # AGI v2: Tiered telemetry — persist to Tier 0 + Tier 1
@@ -923,26 +924,28 @@ class RecipeOrchestrator:
                 return
 
             # Generate markdown recipe
+            tags = getattr(recipe, "tags", []) or []
             lines = [
                 f"# {recipe.name}",
-                f"> Auto-generated recipe from successful execution",
-                f"",
-                f"## Description",
+                "> Auto-generated recipe from successful execution",
+                "",
+                "## Description",
                 f"{recipe.description}",
-                f"",
-                f"## Tags",
-                f"auto, {', '.join(recipe.tags) if recipe.tags else 'general'}",
-                f"",
-                f"## Steps",
+                "",
+                "## Tags",
+                f"auto, {', '.join(tags) if tags else 'general'}",
+                "",
+                "## Steps",
             ]
             for step in recipe.steps:
-                step_type = step.params.get("type", "shell") if step.params else "shell"
-                lines.append(f"")
+                step_params = step.params or {}
+                step_type = step_params.get("type", "shell")
+                lines.append("")
                 lines.append(f"### {step.order}. {step.title}")
                 lines.append(f"Type: {step_type}")
-                lines.append(f"```")
+                lines.append("```")
                 lines.append(step.description)
-                lines.append(f"```")
+                lines.append("```")
 
             recipe_path.write_text("\n".join(lines))
             self.console.print(

@@ -186,21 +186,26 @@ class TelemetryCollector:
         if self._trace is None:
             return None
 
-        self._trace.total_duration = round(time.time() - self._start_time, 3)
+        try:
+            self._trace.total_duration = round(time.time() - self._start_time, 3)
 
-        # Determine overall status for Langfuse
-        status = "error" if self._trace.errors else "success"
-        _facade_ref = _get_facade()
-        if _facade_ref is not None:
-            try:
-                _facade_ref.finish_trace(status=status)
-            except Exception as exc:
-                logger.warning("facade.finish_trace error: %s", exc)
+            # Determine overall status for Langfuse
+            status = "error" if self._trace.errors else "success"
+            _facade_ref = _get_facade()
+            if _facade_ref is not None:
+                try:
+                    _facade_ref.finish_trace(status=status)
+                except Exception:
+                    pass  # Langfuse is non-critical
 
-        # Write to disk (always — primary fallback path)
-        self._output_dir.mkdir(parents=True, exist_ok=True)
-        output_path = self._output_dir / "execution_trace.json"
-        output_path.write_text(json.dumps(asdict(self._trace), indent=2))
+            # Write to disk (always — primary fallback path)
+            self._output_dir.mkdir(parents=True, exist_ok=True)
+            output_path = self._output_dir / "execution_trace.json"
+            output_path.write_text(json.dumps(asdict(self._trace), indent=2))
+        except RecursionError:
+            pass  # Guard against ObservabilityFacade recursion
+        except Exception as exc:
+            logger.debug("finish_trace error: %s", exc)
 
         return self._trace
 
