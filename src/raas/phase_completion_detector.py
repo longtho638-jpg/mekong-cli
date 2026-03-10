@@ -129,7 +129,7 @@ class PhaseCompletionDetector:
 
                 # Check 2: License validation module loads
                 try:
-                    from src.lib.raas_gate_validator import RaasGateValidator
+                    from src.lib.raas_gate_validator import RaasGateValidator  # noqa: F401
                     validator = RaasGateValidator()
                     is_valid, error = validator.validate()
 
@@ -172,7 +172,7 @@ class PhaseCompletionDetector:
         try:
             # Check 1: License admin module loads
             try:
-                from src.commands import license_admin
+                from src.commands import license_admin  # noqa: F401
                 phase.details["admin_commands_loaded"] = True
             except ImportError:
                 phase.status = PhaseStatus.DEGRADED
@@ -181,7 +181,7 @@ class PhaseCompletionDetector:
 
             # Check 2: Dashboard module loads
             try:
-                from src.raas import dashboard
+                from src.raas import dashboard  # noqa: F401
                 phase.details["dashboard_loaded"] = True
             except ImportError:
                 phase.status = PhaseStatus.DEGRADED
@@ -190,7 +190,7 @@ class PhaseCompletionDetector:
 
             # Check 3: License CLI available
             try:
-                from src.raas import license_cli
+                from src.raas import license_cli  # noqa: F401
                 phase.details["license_cli_loaded"] = True
             except ImportError:
                 phase.details["license_cli_loaded"] = False
@@ -226,23 +226,21 @@ class PhaseCompletionDetector:
         try:
             # Check 1: RaaS billing module loads (handles payment-like functionality)
             try:
-                from src.api import raas_billing_middleware
+                from src.api import raas_billing_middleware  # noqa: F401
                 phase.details["billing_middleware_loaded"] = True
             except ImportError:
                 phase.details["billing_middleware_loaded"] = False
 
             # Check 2: Check for Polar/Stripe webhook handler
-            webhook_configured = False
             webhook_url = os.getenv("POLAR_WEBHOOK_URL") or os.getenv("STRIPE_WEBHOOK_URL")
             if webhook_url:
-                webhook_configured = True
                 phase.details["webhook_url_configured"] = True
             else:
                 phase.details["webhook_url_configured"] = False
 
             # Check 3: RaaS gateway available (handles payment routing)
             try:
-                from src.core import gateway_dashboard
+                from src.core import gateway_dashboard  # noqa: F401
                 phase.details["gateway_loaded"] = True
             except ImportError:
                 phase.details["gateway_loaded"] = False
@@ -282,7 +280,7 @@ class PhaseCompletionDetector:
         try:
             # Check 1: Usage meter module loads
             try:
-                from src.lib import usage_meter
+                from src.lib import usage_meter  # noqa: F401
                 phase.details["usage_meter_loaded"] = True
             except ImportError:
                 phase.status = PhaseStatus.DEGRADED
@@ -291,21 +289,21 @@ class PhaseCompletionDetector:
 
             # Check 2: Usage metering service available
             try:
-                from src.lib import usage_metering_service
+                from src.lib import usage_metering_service  # noqa: F401
                 phase.details["metering_service_loaded"] = True
             except ImportError:
                 phase.details["metering_service_loaded"] = False
 
             # Check 3: Usage tracker available
             try:
-                from src.usage import usage_tracker
+                from src.usage import usage_tracker  # noqa: F401
                 phase.details["usage_tracker_loaded"] = True
             except ImportError:
                 phase.details["usage_tracker_loaded"] = False
 
             # Check 4: Credit rate limiter available
             try:
-                from src.raas import credit_rate_limiter
+                from src.raas import credit_rate_limiter  # noqa: F401
                 phase.details["rate_limiter_loaded"] = True
             except ImportError:
                 phase.details["rate_limiter_loaded"] = False
@@ -352,7 +350,7 @@ class PhaseCompletionDetector:
         try:
             # Check 1: Dashboard service loads
             try:
-                from src.analytics import dashboard_service
+                from src.analytics import dashboard_service  # noqa: F401
                 phase.details["dashboard_service_loaded"] = True
             except ImportError:
                 phase.status = PhaseStatus.DEGRADED
@@ -361,7 +359,7 @@ class PhaseCompletionDetector:
 
             # Check 2: Analytics queries available
             try:
-                from src.db.queries import analytics_queries
+                from src.db.queries import analytics_queries  # noqa: F401
                 phase.details["analytics_queries_loaded"] = True
             except ImportError:
                 phase.details["analytics_queries_loaded"] = False
@@ -418,8 +416,8 @@ class PhaseCompletionDetector:
 
         try:
             # Import Phase 6 validator
-            from src.raas.final_phase_validator import get_validator as get_phase6_validator
-            from src.raas.completion_certificate import generate_certificate, save_certificate
+            from src.raas.final_phase_validator import get_validator as get_phase6_validator  # noqa: F401
+            from src.raas.completion_certificate import generate_certificate, save_certificate  # noqa: F401
 
             # Run terminal validation
             validator = get_phase6_validator()

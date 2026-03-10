@@ -188,7 +188,7 @@ class FinalPhaseValidator:
 
         # Check 1: Usage meter module available
         try:
-            from src.lib import usage_meter
+            from src.lib import usage_meter  # noqa: F401
             result.details["usage_meter_loaded"] = True
         except ImportError:
             result.details["usage_meter_loaded"] = False
@@ -196,7 +196,7 @@ class FinalPhaseValidator:
 
         # Check 2: Usage tracking functional
         try:
-            from src.usage import usage_tracker
+            from src.usage import usage_tracker  # noqa: F401
             result.details["usage_tracker_loaded"] = True
         except ImportError:
             result.details["usage_tracker_loaded"] = False
@@ -249,7 +249,7 @@ class FinalPhaseValidator:
 
         # Check 1: Billing middleware available
         try:
-            from src.api import raas_billing_middleware
+            from src.api import raas_billing_middleware  # noqa: F401
             result.details["billing_middleware_loaded"] = True
         except ImportError:
             result.details["billing_middleware_loaded"] = False
@@ -280,7 +280,7 @@ class FinalPhaseValidator:
 
         # Check 3: Overage calculation available
         try:
-            from src.raas import credit_rate_limiter
+            from src.raas import credit_rate_limiter  # noqa: F401
             result.details["credit_rate_limiter_loaded"] = True
         except ImportError:
             result.details["credit_rate_limiter_loaded"] = False
@@ -386,7 +386,7 @@ class FinalPhaseValidator:
 
         # Collect results
         results = [license_result, usage_result, billing_result, attestation_result]
-        passed_count = sum(1 for r in results if r.passed)
+        sum(1 for r in results if r.passed)
 
         # Determine if all critical validations passed
         # (license + attestation are critical, usage + billing are optional)

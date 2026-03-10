@@ -21,8 +21,8 @@ def _check_api_deps():
     """Check if API dependencies are available for API tests."""
     try:
         import stripe  # noqa
-        from fastapi.testclient import TestClient
-        from src.api.dashboard.app import app
+        from fastapi.testclient import TestClient  # noqa: F401
+        from src.api.dashboard.app import app  # noqa: F401
         return True
     except (ImportError, ModuleNotFoundError):
         return False
@@ -476,19 +476,19 @@ class TestDashboardLicenseHealthAPI:
     def test_get_license_health_route_defined(self):
         """Test GET /api/license-health route is defined (manual verification)."""
         # This test verifies the route exists - full integration requires special setup
-        from src.api.dashboard.app import app
+        from src.api.dashboard.app import app  # noqa: F401
         routes = [r.path for r in app.routes]
         assert '/api/license-health' in routes
 
     def test_get_renewal_prompts_route_defined(self):
         """Test GET /api/renewal-prompts route is defined."""
-        from src.api.dashboard.app import app
+        from src.api.dashboard.app import app  # noqa: F401
         routes = [r.path for r in app.routes]
         assert '/api/renewal-prompts' in routes
 
     def test_get_rate_limit_events_route_defined(self):
         """Test GET /api/rate-limit-events route is defined."""
-        from src.api.dashboard.app import app
+        from src.api.dashboard.app import app  # noqa: F401
         routes = [r.path for r in app.routes]
         assert '/api/rate-limit-events' in routes
 

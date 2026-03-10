@@ -545,7 +545,7 @@ class TestDashboardFilterFunctionality:
                 os.unlink(tmp_path)
 
 
-class AsyncMock(MagicMock):
+class AsyncMock(MagicMock):  # noqa: F811
     """Async mock helper for testing async methods."""
     async def __call__(self, *args, **kwargs):
         return super().__call__(*args, **kwargs)

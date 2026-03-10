@@ -66,7 +66,7 @@ class TestUsageQueue:
         """Test that SQLite fallback directory is created."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sqlite_path = Path(tmpdir) / "nested" / "usage_buffer.db"
-            queue = UsageQueue(sqlite_path=str(sqlite_path))
+            UsageQueue(sqlite_path=str(sqlite_path))
 
             assert sqlite_path.parent.exists()
             assert sqlite_path.parent.name == "nested"

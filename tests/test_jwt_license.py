@@ -308,7 +308,7 @@ class TestJWTOfflineMode:
             public_key_path=str(public_path),
         )
 
-        token = generator.generate_token(
+        generator.generate_token(
             tier="free",
             key_id="test-auto",
             email="auto@example.com",

@@ -698,7 +698,7 @@ class TestStructuredLogging:
         # Log a test message
         logger.info("rate_limit_event", extra={"tenant_id": "test-tenant"})
 
-        log_output = log_stream.getvalue()
+        log_stream.getvalue()
 
         logger.removeHandler(handler)
 

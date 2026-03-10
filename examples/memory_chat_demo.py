@@ -77,7 +77,7 @@ class MemoryChat:
                     parsed = json.loads(content) if content.startswith('{') else {}
                     if parsed.get('type') == 'chat_interaction':
                         past_topics.append(parsed.get('user_input', ''))
-                except:
+                except Exception:
                     continue
 
             if past_topics:

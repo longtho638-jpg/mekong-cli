@@ -120,7 +120,7 @@ class TestHealthEndpoint:
 
     def test_component_registration(self) -> None:
         """Test registering component health checks."""
-        app = create_health_app()
+        create_health_app()
 
         def mock_check():
             return ComponentStatus(status="healthy")
@@ -133,7 +133,7 @@ class TestHealthEndpoint:
 
     def test_component_unregistration(self) -> None:
         """Test unregistering component health checks."""
-        app = create_health_app()
+        create_health_app()
 
         def mock_check():
             return ComponentStatus(status="healthy")
@@ -745,7 +745,6 @@ class TestAlertRouter:
     def test_event_subscription(self, router: AlertRouter) -> None:
         """Test router subscribes to critical events."""
         #_router should have subscribed to health critical events
-        bus = router.event_bus
         # subscriptions = len(bus._subscribers)
         # assert subscriptions > 0
 
@@ -1161,7 +1160,7 @@ class TestEdgeCases:
                 source="test",
             )
             # Should return None when no config
-            result = router.route(alert)
+            router.route(alert)
             # Result should be None (will return unsent:no_config:*)
 
 
@@ -1171,7 +1170,7 @@ class TestConvenienceFunctions:
     def test_record_failure_convenience(self) -> None:
         """Test record_failure convenience function."""
         # Should not raise when called with global monitor
-        with tempfile.TemporaryDirectory() as tmpdir:
+        with tempfile.TemporaryDirectory():
             pass  # Handled by global monitor
 
     def test_get_all_singletons(self) -> None:

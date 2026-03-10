@@ -166,7 +166,7 @@ class TestUsageAnomalyDetector:
             detector.record_metric(AnomalyCategory.API_CALLS, "requests", float(value))
 
         # Moderate variation should not trigger anomaly
-        anomaly = detector.detect_anomaly(
+        detector.detect_anomaly(
             AnomalyCategory.API_CALLS,
             "requests",
             20.0,  # Within 3 sigma for this variance

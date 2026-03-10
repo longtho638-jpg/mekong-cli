@@ -4,7 +4,7 @@ Database Migrations
 SQL migration files for OAuth2 authentication schema.
 """
 
-import os
+import os  # noqa: F401
 from pathlib import Path
 
 MIGRATIONS_DIR = Path(__file__).parent

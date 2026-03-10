@@ -156,7 +156,7 @@ class TestTraceFunctions:
     def test_end_trace(self):
         """Test ending a trace."""
         start_trace(command="test")
-        trace_id_before = get_current_trace_id()
+        get_current_trace_id()
 
         end_trace()
 
@@ -187,7 +187,7 @@ class TestTraceMiddleware:
     def test_middleware_creates_span(self):
         """Test that middleware creates span."""
         # Start a trace first
-        context = start_trace(command="test")
+        start_trace(command="test")
 
         @trace_middleware
         def test_function(x: int) -> int:
@@ -218,7 +218,6 @@ class TestTraceIntegration:
         """Test complete trace lifecycle."""
         # Start trace
         context = start_trace(command="mekong.cook", tenant_id="tenant-1")
-        initial_trace_id = context.trace_id
 
         # Create spans
         with context.new_span("planner.execute") as plan_span:
