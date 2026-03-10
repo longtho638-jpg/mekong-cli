@@ -1,0 +1,10 @@
+# Cloudflare Pages configuration for agencyos.network landing
+name = "agencyos-landing"
+compatibility_date = "2024-09-25"
+pages_build_output_dir = "out"
+
+[build]
+command = "npx next build"
+
+# Custom domain configured via CF Dashboard:
+# agencyos.network → CNAME to agencyos-landing.pages.dev
