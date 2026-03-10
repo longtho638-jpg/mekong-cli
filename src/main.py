@@ -1142,6 +1142,46 @@ def memory_clear_cmd() -> None:
     console.print("[green]Memory cleared.[/green]")
 
 
+@memory_app.command(name="search")
+def memory_search(
+    query: str = typer.Argument(..., help="Search query for similar past goals"),
+    limit: int = typer.Option(5, "--limit", "-l", help="Number of results"),
+) -> None:
+    """🧠 Search vector memory for similar past goals."""
+    from src.core.vector_memory_store import VectorMemoryStore
+
+    vmem = VectorMemoryStore()
+    collections = vmem.list_collections()
+
+    if "goal_history" not in collections:
+        console.print("[yellow]No goal history yet. Run `mekong cook` first.[/yellow]")
+        return
+
+    vec = VectorMemoryStore.text_to_hash_vector(query)
+    results = vmem.search("goal_history", vec, top_k=limit)
+
+    if not results:
+        console.print(f"[yellow]No similar goals found for '{query}'[/yellow]")
+        return
+
+    table = Table(title=f"Similar Goals (query: '{query}')")
+    table.add_column("Goal", style="cyan")
+    table.add_column("Status")
+    table.add_column("Score", style="dim", justify="right")
+
+    for r in results:
+        payload = r.get("payload", {})
+        status = payload.get("status", "?")
+        status_style = "green" if status == "success" else "red"
+        table.add_row(
+            payload.get("goal", "?")[:50],
+            f"[{status_style}]{status}[/{status_style}]",
+            f"{r.get('score', 0):.0%}",
+        )
+
+    console.print(table)
+
+
 @telegram_app.command(name="start")
 def telegram_start() -> None:
     """Start Telegram bot in foreground (blocking)."""
@@ -1611,6 +1651,52 @@ def collab_stats() -> None:
             border_style="cyan",
         )
     )
+
+
+@collab_app.command(name="debate")
+def collab_debate(
+    topic: str = typer.Argument(..., help="Topic for multi-agent debate"),
+) -> None:
+    """🤝 Start a multi-agent debate on a topic."""
+    from src.core.collaboration import CollaborationProtocol
+
+    proto = CollaborationProtocol()
+    console.print(f"[bold cyan]Starting debate:[/bold cyan] {topic}\n")
+
+    try:
+        result = proto.start_debate(topic)
+        console.print(
+            Panel(
+                result[:500] if isinstance(result, str) else str(result)[:500],
+                title="🤝 Debate Result",
+                border_style="cyan",
+            )
+        )
+    except Exception as e:
+        console.print(f"[red]Debate failed: {e}[/red]")
+
+
+@collab_app.command(name="review")
+def collab_review(
+    task_id: str = typer.Argument(..., help="Task ID to review"),
+    passed: bool = typer.Option(True, "--pass/--fail", help="Review passed or failed"),
+    feedback: str = typer.Option("Looks good", "--feedback", "-f", help="Review feedback"),
+) -> None:
+    """🤝 Submit a code review for a task."""
+    from src.core.collaboration import CollaborationProtocol
+
+    proto = CollaborationProtocol()
+    try:
+        proto.submit_review(
+            reviewer="cli_user",
+            target=task_id,
+            approved=passed,
+            feedback=[feedback],
+        )
+        status = "[green]PASSED[/green]" if passed else "[red]FAILED[/red]"
+        console.print(f"Review submitted: {status} — {feedback}")
+    except Exception as e:
+        console.print(f"[red]Review failed: {e}[/red]")
 
 
 # === AGI v2: Code Evolution CLI Commands ===

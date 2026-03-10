@@ -853,10 +853,10 @@ class RecipeOrchestrator:
         if self._collaboration:
             try:
                 self._collaboration.submit_review(
-                    task_id=goal[:30],
                     reviewer="orchestrator",
-                    passed=status == "success",
-                    feedback=errors[0] if errors else "Completed successfully",
+                    target=goal[:30],
+                    approved=status == "success",
+                    feedback=[errors[0]] if errors else ["Completed successfully"],
                 )
             except Exception:
                 pass
