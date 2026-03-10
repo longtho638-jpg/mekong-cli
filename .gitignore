@@ -269,7 +269,6 @@ claudedocs/
 
 # Internal app directories
 backend/
-frontend/
 api/
 agents/
 !packages/**/agents/
