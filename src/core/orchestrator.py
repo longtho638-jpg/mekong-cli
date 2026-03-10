@@ -357,6 +357,21 @@ class RecipeOrchestrator:
             goal, result.status.value, duration_ms, world_before, result.errors,
         )
 
+        # AGI v2: Auto-save successful recipes for reuse
+        if result.status == OrchestrationStatus.SUCCESS and recipe:
+            self._auto_save_recipe(goal, recipe)
+
+        # AGI v2: Tiered telemetry — persist to Tier 0 + Tier 1
+        trace = self.telemetry.get_trace()
+        if trace:
+            try:
+                from .telemetry import TieredTelemetryStore
+                tiered = TieredTelemetryStore()
+                tiered.store_trace(trace)
+                tiered.summarize_to_tier1(trace)
+            except Exception:
+                pass
+
         return result
 
     def run_from_recipe(
@@ -578,6 +593,20 @@ class RecipeOrchestrator:
             self.console.print(
                 "[yellow]🔧 Attempting AI self-correction...[/yellow]"
             )
+
+            # AGI v2: Consult reflection for past failure patterns
+            reflection_hint = ""
+            if self._reflection:
+                try:
+                    reflection_hint = self._reflection.get_strategy_suggestion(
+                        f"fix error: {stderr[:100]}",
+                    )
+                    if reflection_hint and "No prior data" not in reflection_hint:
+                        self.console.print(
+                            f"[dim]🪞 Reflection hint: {reflection_hint[:50]}[/dim]"
+                        )
+                except Exception:
+                    pass
             if workflow_id:
                 self.history.append(ExecutionEvent.create(
                     EventKind.SELF_HEAL_ATTEMPTED, workflow_id, step.order,
@@ -860,6 +889,59 @@ class RecipeOrchestrator:
                 )
             except Exception:
                 pass
+
+    def _auto_save_recipe(
+        self, goal: str, recipe: Recipe,
+    ) -> None:
+        """
+        AGI v2: Auto-save a successful recipe for future reuse.
+
+        Saves to recipes/auto/ directory so it can be re-discovered by
+        the RecipeRegistry and matched by NLU for future similar goals.
+        """
+        import hashlib
+        from pathlib import Path
+
+        try:
+            auto_dir = Path("recipes/auto")
+            auto_dir.mkdir(parents=True, exist_ok=True)
+
+            # Generate a short hash-based filename
+            goal_hash = hashlib.md5(goal.encode()).hexdigest()[:8]
+            recipe_path = auto_dir / f"auto_{goal_hash}.md"
+
+            # Don't overwrite existing auto-recipes
+            if recipe_path.exists():
+                return
+
+            # Generate markdown recipe
+            lines = [
+                f"# {recipe.name}",
+                f"> Auto-generated recipe from successful execution",
+                f"",
+                f"## Description",
+                f"{recipe.description}",
+                f"",
+                f"## Tags",
+                f"auto, {', '.join(recipe.tags) if recipe.tags else 'general'}",
+                f"",
+                f"## Steps",
+            ]
+            for step in recipe.steps:
+                step_type = step.params.get("type", "shell") if step.params else "shell"
+                lines.append(f"")
+                lines.append(f"### {step.order}. {step.title}")
+                lines.append(f"Type: {step_type}")
+                lines.append(f"```")
+                lines.append(step.description)
+                lines.append(f"```")
+
+            recipe_path.write_text("\n".join(lines))
+            self.console.print(
+                f"[dim]💾 Auto-saved recipe: {recipe_path}[/dim]"
+            )
+        except Exception:
+            pass  # Non-critical feature
 
     def run_bmad_workflow(
         self, workflow_id: str, context: Optional[Dict[str, Any]] = None

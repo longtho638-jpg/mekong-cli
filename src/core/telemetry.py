@@ -41,6 +41,10 @@ def _get_facade() -> Optional[Any]:
         _facade = ObservabilityFacade.instance()
     except ImportError:
         logger.debug("mekong-observability not installed — Langfuse disabled")
+    except RecursionError:
+        logger.debug("ObservabilityFacade recursion detected — disabling Langfuse")
+    except Exception:
+        logger.debug("ObservabilityFacade init failed — disabling Langfuse")
     return _facade
 
 
