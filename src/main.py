@@ -551,6 +551,19 @@ def _show_agi_dashboard(goal: str, result: "OrchestrationResult") -> None:
         exec_modes.add(mode)
     panels.append(f"[bold]⚙️  Modes:[/bold] {', '.join(sorted(exec_modes))}")
 
+    # AGI v2: Real-time score
+    try:
+        from src.core.agi_score import AGIScoreEngine
+        engine = AGIScoreEngine()
+        report = engine.calculate()
+        grade_colors = {"S": "magenta", "A": "green", "B": "cyan", "C": "yellow", "D": "red", "F": "red"}
+        gc = grade_colors.get(report.grade, "white")
+        filled = int(report.total_score / 5)
+        bar = "█" * filled + "░" * (20 - filled)
+        panels.append(f"[bold]🏆 AGI Score:[/bold] [{gc}]{report.total_score:.0f}/100 ({report.grade})[/{gc}] {bar}")
+    except Exception:
+        pass
+
     console.print(
         Panel(
             "\n".join(panels),

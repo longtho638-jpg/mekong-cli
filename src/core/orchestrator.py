@@ -940,6 +940,11 @@ class RecipeOrchestrator:
             self.console.print(
                 f"[dim]💾 Auto-saved recipe: {recipe_path}[/dim]"
             )
+            # Emit event for reactive modules
+            from .event_bus import EventType, get_event_bus
+            get_event_bus().emit(EventType.RECIPE_AUTO_SAVED, {
+                "path": str(recipe_path), "goal": goal,
+            })
         except Exception:
             pass  # Non-critical feature
 
