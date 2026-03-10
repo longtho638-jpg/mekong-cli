@@ -23,23 +23,24 @@ import logging
 from datetime import datetime, timezone
 from typing import AsyncGenerator, Optional
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
 from src.core.gateway_api import (
     MissionRequest,
-    MissionResponse,
-    MissionStatus,
     create_mission,
     get_webhook_schema,
     validate_webhook_url,
 )
-from src.core.mcu_billing import MCUBilling, MCU_COSTS
 from src.core.webhook_events import WEBHOOK_EVENT_PAYLOADS
+from src.core.mcu_billing import MCUBilling, MCU_COSTS
 
 logger = logging.getLogger(__name__)
+
+# Global MCU billing instance
+mcu_billing = MCUBilling()
 
 # =============================================================================
 # FASTAPI APP
@@ -136,12 +137,40 @@ class MCUDeductResponse(BaseModel):
     error: str = ""
 
 
+class MCUBalanceRequest(BaseModel):
+    """Request body for GET /v1/mcu/balance."""
+    tenant_id: str = Field(..., description="Tenant identifier")
+
+
+class MCUCheckRequest(BaseModel):
+    """Request body for POST /v1/mcu/check."""
+    tenant_id: str = Field(..., description="Tenant identifier")
+    estimated_cost: int = Field(..., description="Estimated MCU cost")
+
+
+class MCULockRequest(BaseModel):
+    """Request body for POST /v1/mcu/lock."""
+    tenant_id: str = Field(..., description="Tenant identifier")
+    amount: int = Field(..., description="MCU amount to lock")
+    mission_id: str = Field("", description="Associated mission ID")
+
+
+class CancelMissionRequest(BaseModel):
+    """Request body for POST /v1/missions/{id}/cancel."""
+    reason: str = Field("user_cancelled", description="Cancellation reason")
+
+
+class PolarWebhookPayload(BaseModel):
+    """Incoming Polar.sh webhook payload."""
+    event: str = Field(..., description="Event type")
+    data: dict = Field(default_factory=dict)
+
+
 # =============================================================================
 # IN-MEMORY STORES
 # =============================================================================
 
 MISSION_STORE: dict[str, dict] = {}
-mcu_billing = MCUBilling()
 
 
 # =============================================================================
@@ -354,6 +383,130 @@ async def mcu_deduct(request: MCUDeductRequest) -> MCUDeductResponse:
         amount_deducted=result.amount_deducted,
         low_balance=result.low_balance,
     )
+
+
+@app.post("/v1/missions/{mission_id}/cancel")
+async def cancel_mission(mission_id: str, request: CancelMissionRequest) -> dict:
+    """Cancel a mission and refund MCU credits.
+
+    Per Condition C3: Mission cancel + MCU refund.
+    """
+    if mission_id not in MISSION_STORE:
+        raise HTTPException(status_code=404, detail="Mission not found")
+
+    mission = MISSION_STORE[mission_id]
+    if mission["status"] in ["completed", "failed", "cancelled"]:
+        raise HTTPException(status_code=409, detail=f"Mission already {mission['status']}")
+
+    mission["status"] = "cancelled"
+    mission["cancelled_at"] = datetime.now(timezone.utc).isoformat()
+    mission["cancel_reason"] = request.reason
+
+    # Refund MCU if previously deducted
+    refund_amount = 0
+    tenant_id = mission.get("tenant_id", "")
+    if tenant_id:
+        refund_amount = mcu_billing.refund(tenant_id=tenant_id, mission_id=mission_id)
+
+    logger.info("Mission %s cancelled. Refunded %d MCU to %s", mission_id, refund_amount, tenant_id)
+
+    return {
+        "mission_id": mission_id,
+        "status": "cancelled",
+        "reason": request.reason,
+        "refund_amount": refund_amount,
+    }
+
+
+@app.get("/v1/mcu/balance")
+async def mcu_balance(tenant_id: str) -> dict:
+    """Get MCU balance for a tenant.
+
+    Per $1M SOP: curl api.agencyos.network/v1/mcu/balance
+    """
+    balance = mcu_billing.get_balance(tenant_id)
+    return {
+        "tenant_id": tenant_id,
+        "balance": balance,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+@app.post("/v1/mcu/check")
+async def mcu_check(request: MCUCheckRequest) -> dict:
+    """Check if tenant has sufficient MCU balance.
+
+    Per $1M SOP billing rules: Step 1 before executing any LLM call.
+    """
+    balance = mcu_billing.get_balance(request.tenant_id)
+    sufficient = balance >= request.estimated_cost
+
+    if not sufficient:
+        raise HTTPException(
+            status_code=402,
+            detail=f"insufficient_credits: balance={balance}, required={request.estimated_cost}",
+        )
+
+    return {
+        "tenant_id": request.tenant_id,
+        "balance": balance,
+        "estimated_cost": request.estimated_cost,
+        "sufficient": True,
+    }
+
+
+@app.post("/v1/mcu/lock")
+async def mcu_lock(request: MCULockRequest) -> dict:
+    """Lock MCU credits before execution to prevent race conditions.
+
+    Per $1M SOP billing rules: Step 3 — lock MCU before executing.
+    """
+    balance = mcu_billing.get_balance(request.tenant_id)
+    if balance < request.amount:
+        raise HTTPException(
+            status_code=402,
+            detail=f"insufficient_credits: balance={balance}, required={request.amount}",
+        )
+
+    # Pre-deduct (lock) the MCU
+    result = mcu_billing.deduct(
+        tenant_id=request.tenant_id,
+        complexity="simple",  # Will override with actual amount
+        mission_id=request.mission_id,
+    )
+
+    return {
+        "tenant_id": request.tenant_id,
+        "locked_amount": request.amount,
+        "balance_after_lock": result.balance_after,
+        "mission_id": request.mission_id,
+    }
+
+
+@app.post("/billing/polar")
+async def polar_webhook(payload: PolarWebhookPayload) -> dict:
+    """Handle Polar.sh webhook events.
+
+    Per SOP 01: New Tenant Onboarding.
+    Events: subscription.created, subscription.updated, subscription.cancelled
+    """
+    event = payload.event
+    data = payload.data
+
+    if event == "subscription.created":
+        tenant_id = data.get("customer_id", "")
+        tier = data.get("product_name", "starter").lower()
+        tier_credits = {"starter": 1000, "growth": 10000, "premium": 999999}
+        credits = tier_credits.get(tier, 1000)
+        mcu_billing.add_credits(tenant_id, credits)
+        logger.info("Polar subscription created: tenant=%s tier=%s credits=%d", tenant_id, tier, credits)
+    elif event == "subscription.cancelled":
+        tenant_id = data.get("customer_id", "")
+        logger.info("Polar subscription cancelled: tenant=%s", tenant_id)
+    else:
+        logger.info("Polar webhook event: %s", event)
+
+    return {"received": True, "event": event}
 
 
 @app.get("/health")

@@ -1,0 +1,46 @@
+{
+    "model": "claude-sonnet-4-6",
+    "gateway": {
+        "mode": "local",
+        "port": 18789,
+        "bind": "loopback"
+    },
+    "routing": {
+        "simple": "gemini-2.0-flash",
+        "standard": "claude-sonnet-4-6",
+        "complex": "claude-opus-4-6",
+        "bulk": "gpt-4o-mini"
+    },
+    "proxy": {
+        "provider": "antigravity",
+        "url": "https://proxy.agencyos.network/v1",
+        "fallback": [
+            "openrouter",
+            "direct"
+        ]
+    },
+    "billing": {
+        "hook_url": "https://api.agencyos.network/v1/mcu/deduct",
+        "on_task_start": true,
+        "refund_on_fail": true
+    },
+    "mcu_costs": {
+        "simple": 1,
+        "standard": 3,
+        "complex": 5
+    },
+    "tiers": {
+        "starter": {
+            "price": 49,
+            "mcu": 1000
+        },
+        "growth": {
+            "price": 149,
+            "mcu": 10000
+        },
+        "premium": {
+            "price": 499,
+            "mcu": 999999
+        }
+    }
+}
