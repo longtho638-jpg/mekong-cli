@@ -870,4 +870,46 @@ function stopAutoCTO() {
 	}
 }
 
-module.exports = { startAutoCTO, stopAutoCTO, onProjectMissionFailed, onProjectMissionSuccess };
+// ─── JSON Mission Generation (v4 contracts) ───────────────────────────────────
+
+const USE_JSON_MISSIONS = process.env.MEKONG_JSON_MISSIONS !== 'false';
+
+/**
+ * Generate a v4 JSON mission contract file in the watch directory.
+ * Falls back to legacy .txt if USE_JSON_MISSIONS is false.
+ * @param {{ goal: string, command?: string, project?: string, layer?: string, severity?: string, verificationType?: string }} opts
+ * @returns {string} filename written to WATCH_DIR
+ */
+function generateJsonMission({ goal, command = null, project = null, layer = null, severity = 'MEDIUM', verificationType = null }) {
+	const ts = Date.now();
+	const safeProject = (project || 'generic').replace(/-/g, '_');
+
+	if (!USE_JSON_MISSIONS) {
+		// Legacy .txt fallback
+		const filename = `${severity}_mission_${safeProject}_${ts}.txt`;
+		fs.writeFileSync(path.join(config.WATCH_DIR, filename), goal);
+		log(`[JSON-MISSION] USE_JSON_MISSIONS=false — wrote legacy .txt: ${filename}`);
+		return filename;
+	}
+
+	const id = `mission_${safeProject}_${ts}`;
+	const contract = {
+		id,
+		command: command || 'cook',
+		goal,
+		project: project || null,
+		layer: layer || null,
+		timeout: null,
+		creditBudget: null,
+		requiresApproval: false,
+		verification: verificationType ? { criteria: [verificationType] } : null,
+		context: null,
+	};
+
+	const filename = `${severity}_${id}.json`;
+	fs.writeFileSync(path.join(config.WATCH_DIR, filename), JSON.stringify(contract, null, 2));
+	log(`[JSON-MISSION] Wrote v4 contract: ${filename}`);
+	return filename;
+}
+
+module.exports = { startAutoCTO, stopAutoCTO, onProjectMissionFailed, onProjectMissionSuccess, generateJsonMission };

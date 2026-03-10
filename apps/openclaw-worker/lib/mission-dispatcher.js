@@ -623,9 +623,108 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
 	return { success: false, result: 'max_retries_exhausted', elapsed: 0 };
 }
 
+/**
+ * Load a mission from a file — supports .txt (legacy) and .json (v4 contracts).
+ * @param {string} missionFile - Absolute path to the mission file
+ * @returns {{ id, command, goal, project, layer, timeout, creditBudget, requiresApproval, verification, context, _legacy }}
+ */
+function loadMission(missionFile) {
+	const ext = path.extname(missionFile).toLowerCase();
+	const raw = fs.readFileSync(missionFile, 'utf-8').trim();
+
+	if (ext === '.json') {
+		let parsed;
+		try {
+			parsed = JSON.parse(raw);
+		} catch (e) {
+			log(`WARN: loadMission failed to parse JSON ${missionFile}: ${e.message} — falling back to legacy`);
+			return { _legacy: true, goal: raw, id: path.basename(missionFile, '.json') };
+		}
+		return {
+			id: parsed.id || path.basename(missionFile, '.json'),
+			command: parsed.command || null,
+			goal: parsed.goal || parsed.description || raw,
+			project: parsed.project || null,
+			layer: parsed.layer || null,
+			timeout: parsed.timeout || null,
+			creditBudget: parsed.creditBudget || null,
+			requiresApproval: parsed.requiresApproval || false,
+			verification: parsed.verification || null,
+			context: parsed.context || null,
+			_legacy: false,
+		};
+	}
+
+	// .txt legacy format
+	return {
+		_legacy: true,
+		id: path.basename(missionFile, '.txt'),
+		goal: raw,
+		command: null,
+		project: null,
+		layer: null,
+		timeout: null,
+		creditBudget: null,
+		requiresApproval: false,
+		verification: null,
+		context: null,
+	};
+}
+
+/**
+ * Build a prompt from a structured mission object (v4 JSON contracts).
+ * For legacy missions, returns the raw goal via buildPrompt().
+ * @param {object} mission - Mission object from loadMission()
+ * @param {string} [projectDir] - Resolved project directory
+ * @returns {string} - Final prompt string for CC CLI
+ */
+function buildPromptFromMission(mission, projectDir = null) {
+	if (mission._legacy) {
+		return buildPrompt(mission.goal, projectDir);
+	}
+
+	// Load command contract if available
+	let contractHints = '';
+	let verificationBlock = '';
+
+	if (mission.command) {
+		const contractPath = path.join(
+			config.MEKONG_DIR,
+			'factory',
+			'contracts',
+			'commands',
+			`${mission.command}.json`,
+		);
+		try {
+			if (fs.existsSync(contractPath)) {
+				const contract = JSON.parse(fs.readFileSync(contractPath, 'utf-8'));
+				if (contract.agentHints) {
+					contractHints = `\n[AGENT HINTS: ${Array.isArray(contract.agentHints) ? contract.agentHints.join(', ') : contract.agentHints}]`;
+				}
+			}
+		} catch (e) {
+			log(`WARN: buildPromptFromMission could not load contract ${contractPath}: ${e.message}`);
+		}
+	}
+
+	if (mission.verification) {
+		const v = mission.verification;
+		const criteria = Array.isArray(v.criteria) ? v.criteria.join('; ') : v;
+		verificationBlock = `\n[VERIFICATION: ${criteria}]`;
+	}
+
+	const contextBlock = mission.context ? `\n[CONTEXT: ${JSON.stringify(mission.context)}]` : '';
+	const goal = mission.goal || '';
+	const fullGoal = `${goal}${contractHints}${verificationBlock}${contextBlock}`;
+
+	return buildPrompt(fullGoal, projectDir);
+}
+
 module.exports = {
 	executeTask,
 	buildPrompt,
+	buildPromptFromMission,
+	loadMission,
 	detectProjectDir,
 	classifyPriority,
 	isComplexRawMission,

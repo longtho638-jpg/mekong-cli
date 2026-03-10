@@ -19,7 +19,7 @@ const config = {
   THERMAL_LOG: process.env.TOM_HUM_THERMAL_LOG || path.join(process.env.HOME || '', 'tom_hum_thermal.log'),
   MISSION_FILE: '/tmp/tom_hum_next_mission.txt',
   DONE_FILE: '/tmp/tom_hum_mission_done',
-  TASK_PATTERN: /^(?:CRITICAL_|HIGH_|MEDIUM_|LOW_)?(?:mission_)?.+\.txt$/,
+  TASK_PATTERN: /^(?:CRITICAL_|HIGH_|MEDIUM_|LOW_)?(?:mission_)?.+\.(txt|json)$/,
   MISSION_TIMEOUT_MS: 60 * 60 * 1000,
   TIMEOUT_SIMPLE: 15 * 60 * 1000,     // 15 phút — 🌪️GIÓ
   TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 phút — 🌲RỪNG
