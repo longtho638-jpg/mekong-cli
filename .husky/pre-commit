@@ -9,7 +9,7 @@ if command -v ruff &> /dev/null; then
     STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' 2>/dev/null)
     if [ -n "$STAGED_PY" ]; then
         echo "   → Ruff lint (staged files only)..."
-        echo "$STAGED_PY" | grep -v 'apps/.*/\.claude/' | xargs ruff check --fix --quiet || {
+        echo "$STAGED_PY" | grep -v 'apps/.*/\.claude/' | grep -v '^\.claude/skills/' | grep -v '^\.claude-skills/' | grep -v '^\.agencyos/' | grep -v '^\.agent/' | xargs ruff check --fix --quiet || {
             echo "❌ Ruff lint failed. Fix errors before committing."
             exit 1
         }
