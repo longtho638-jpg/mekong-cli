@@ -28,8 +28,10 @@ const JULES_DIR = path.join(DATA_DIR, 'jules-sessions');
 if (!fs.existsSync(JULES_DIR)) fs.mkdirSync(JULES_DIR, { recursive: true });
 
 function log(msg) {
-    const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
-    try { fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [JULES] ${msg}\n`); } catch (e) { }
+	const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+	try {
+		fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [JULES] ${msg}\n`);
+	} catch (e) {}
 }
 
 // ═══════════════════════════════════════════════════
@@ -37,39 +39,45 @@ function log(msg) {
 // ═══════════════════════════════════════════════════
 
 function julesAPI(method, endpoint, body = null) {
-    return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('Jules API timeout')), 60000);
+	return new Promise((resolve, reject) => {
+		const timer = setTimeout(() => reject(new Error('Jules API timeout')), 60000);
 
-        const options = {
-            hostname: JULES_HOST,
-            path: `/v1alpha/${endpoint}`,
-            method,
-            headers: {
-                'X-Goog-Api-Key': JULES_API_KEY,
-                'Content-Type': 'application/json'
-            }
-        };
+		const options = {
+			hostname: JULES_HOST,
+			path: `/v1alpha/${endpoint}`,
+			method,
+			headers: {
+				'X-Goog-Api-Key': JULES_API_KEY,
+				'Content-Type': 'application/json',
+			},
+		};
 
-        const req = https.request(options, (res) => {
-            let data = '';
-            res.on('data', c => data += c);
-            res.on('end', () => {
-                clearTimeout(timer);
-                try {
-                    const r = JSON.parse(data);
-                    if (r.error) { reject(new Error(r.error.message || JSON.stringify(r.error))); return; }
-                    resolve(r);
-                } catch (e) {
-                    // Sometimes response is empty for success
-                    resolve(data ? JSON.parse(data) : { success: true });
-                }
-            });
-        });
+		const req = https.request(options, (res) => {
+			let data = '';
+			res.on('data', (c) => (data += c));
+			res.on('end', () => {
+				clearTimeout(timer);
+				try {
+					const r = JSON.parse(data);
+					if (r.error) {
+						reject(new Error(r.error.message || JSON.stringify(r.error)));
+						return;
+					}
+					resolve(r);
+				} catch (e) {
+					// Sometimes response is empty for success
+					resolve(data ? JSON.parse(data) : { success: true });
+				}
+			});
+		});
 
-        req.on('error', (e) => { clearTimeout(timer); reject(e); });
-        if (body) req.write(JSON.stringify(body));
-        req.end();
-    });
+		req.on('error', (e) => {
+			clearTimeout(timer);
+			reject(e);
+		});
+		if (body) req.write(JSON.stringify(body));
+		req.end();
+	});
 }
 
 // ═══════════════════════════════════════════════════
@@ -78,24 +86,24 @@ function julesAPI(method, endpoint, body = null) {
 
 // Map project names to Jules source IDs
 const REPO_MAP = {
-    'well': 'sources/github/longtho638-jpg/Well',
-    'mekong-cli': 'sources/github/longtho638-jpg/mekong-cli',
-    'openclaw-worker': 'sources/github/longtho638-jpg/openclaw-worker',
-    'apex-os': 'sources/github/longtho638-jpg/apex-os',
-    'sophia-ai-factory': 'sources/github/longtho638-jpg/sophia-ai-factory',
-    '84tea': 'sources/github/longtho638-jpg/84tea',
-    'mekong-landing': 'sources/github/longtho638-jpg/mekong-landing',
-    'vn30-quantum': 'sources/github/longtho638-jpg/vn30-quantum',
-    'agencyos-starter': 'sources/github/longtho638-jpg/agencyos-starter',
-    'mekong-docs': 'sources/github/longtho638-jpg/mekong-docs',
+	well: 'sources/github/longtho638-jpg/Well',
+	'mekong-cli': 'sources/github/longtho638-jpg/mekong-cli',
+	'openclaw-worker': 'sources/github/longtho638-jpg/openclaw-worker',
+	'apex-os': 'sources/github/longtho638-jpg/apex-os',
+	'sophia-ai-factory': 'sources/github/longtho638-jpg/sophia-ai-factory',
+	'84tea': 'sources/github/longtho638-jpg/84tea',
+	'mekong-landing': 'sources/github/longtho638-jpg/mekong-landing',
+	'vn30-quantum': 'sources/github/longtho638-jpg/vn30-quantum',
+	'agencyos-starter': 'sources/github/longtho638-jpg/agencyos-starter',
+	'mekong-docs': 'sources/github/longtho638-jpg/mekong-docs',
 };
 
 async function listSources() {
-    log('📋 Listing connected GitHub sources...');
-    const result = await julesAPI('GET', 'sources');
-    const sources = (result.sources || []).map(s => s.id);
-    log(`📋 Found ${sources.length} sources: ${sources.join(', ')}`);
-    return result.sources || [];
+	log('📋 Listing connected GitHub sources...');
+	const result = await julesAPI('GET', 'sources');
+	const sources = (result.sources || []).map((s) => s.id);
+	log(`📋 Found ${sources.length} sources: ${sources.join(', ')}`);
+	return result.sources || [];
 }
 
 // ═══════════════════════════════════════════════════
@@ -111,63 +119,67 @@ async function listSources() {
  * @param {object} options - { branch, autoCreatePR, requirePlanApproval, title }
  */
 async function createSession(project, prompt, options = {}) {
-    const {
-        branch = 'main',
-        autoCreatePR = true,
-        requirePlanApproval = false,
-        title = `[CTO-AGI] ${prompt.slice(0, 60)}`
-    } = options;
+	const { branch = 'main', autoCreatePR = true, requirePlanApproval = false, title = `[CTO-AGI] ${prompt.slice(0, 60)}` } = options;
 
-    const source = REPO_MAP[project.toLowerCase()] || `sources/github/longtho638-jpg/${project}`;
-    log(`🚀 CREATING SESSION: "${prompt.slice(0, 80)}..." on ${project} (branch: ${branch})`);
+	const source = REPO_MAP[project.toLowerCase()] || `sources/github/longtho638-jpg/${project}`;
+	log(`🚀 CREATING SESSION: "${prompt.slice(0, 80)}..." on ${project} (branch: ${branch})`);
 
-    const body = {
-        prompt,
-        sourceContext: {
-            source,
-            githubRepoContext: { startingBranch: branch }
-        },
-        title,
-        ...(autoCreatePR ? { automationMode: 'AUTO_CREATE_PR' } : {}),
-        ...(requirePlanApproval ? { requirePlanApproval: true } : {})
-    };
+	const body = {
+		prompt,
+		sourceContext: {
+			source,
+			githubRepoContext: { startingBranch: branch },
+		},
+		title,
+		...(autoCreatePR ? { automationMode: 'AUTO_CREATE_PR' } : {}),
+		...(requirePlanApproval ? { requirePlanApproval: true } : {}),
+	};
 
-    try {
-        const session = await julesAPI('POST', 'sessions', body);
-        log(`✅ SESSION CREATED: ${session.id} — "${title}"`);
+	try {
+		const session = await julesAPI('POST', 'sessions', body);
+		log(`✅ SESSION CREATED: ${session.id} — "${title}"`);
 
-        // Save session tracking
-        fs.writeFileSync(path.join(JULES_DIR, `session_${session.id}.json`), JSON.stringify({
-            ...session, project, createdAt: new Date().toISOString()
-        }, null, 2));
+		// Save session tracking
+		fs.writeFileSync(
+			path.join(JULES_DIR, `session_${session.id}.json`),
+			JSON.stringify(
+				{
+					...session,
+					project,
+					createdAt: new Date().toISOString(),
+				},
+				null,
+				2,
+			),
+		);
 
-        return session;
-    } catch (e) {
-        log(`❌ SESSION CREATE FAILED: ${e.message}`);
-        return null;
-    }
+		return session;
+	} catch (e) {
+		log(`❌ SESSION CREATE FAILED: ${e.message}`);
+		return null;
+	}
 }
 
 /**
  * Get session status.
  */
 async function getSession(sessionId) {
-    return julesAPI('GET', `sessions/${sessionId}`);
+	return julesAPI('GET', `sessions/${sessionId}`);
 }
 
 /**
  * List all sessions.
  */
 async function listSessions(pageSize = 10) {
-    return julesAPI('GET', `sessions?pageSize=${pageSize}`);
+	return julesAPI('GET', `sessions?pageSize=${pageSize}`);
 }
 
 /**
  * Approve a session's plan (if requirePlanApproval was true).
  */
 async function approvePlan(sessionId) {
-    log(`✅ APPROVING PLAN for session ${sessionId}`);
-    return julesAPI('POST', `sessions/${sessionId}:approvePlan`);
+	log(`✅ APPROVING PLAN for session ${sessionId}`);
+	return julesAPI('POST', `sessions/${sessionId}:approvePlan`);
 }
 
 // ═══════════════════════════════════════════════════
@@ -179,44 +191,44 @@ async function approvePlan(sessionId) {
  * CTO identifies what needs improvement, Jules executes it autonomously.
  */
 async function dispatchStrategicTask(project, task) {
-    log(`🧠 STRATEGIC DISPATCH to Jules: ${project} — "${task.slice(0, 60)}..."`);
+	log(`🧠 STRATEGIC DISPATCH to Jules: ${project} — "${task.slice(0, 60)}..."`);
 
-    const session = await createSession(project, task, {
-        autoCreatePR: true,
-        title: `[CTO-AGI] ${task.slice(0, 60)}`
-    });
+	const session = await createSession(project, task, {
+		autoCreatePR: true,
+		title: `[CTO-AGI] ${task.slice(0, 60)}`,
+	});
 
-    if (session) {
-        log(`🎯 Jules is working on: ${task.slice(0, 60)}... → PR will be auto-created`);
-    }
+	if (session) {
+		log(`🎯 Jules is working on: ${task.slice(0, 60)}... → PR will be auto-created`);
+	}
 
-    return session;
+	return session;
 }
 
 /**
  * Check all active Jules sessions and log their status.
  */
 async function checkActiveSessions() {
-    log('🔍 Checking active Jules sessions...');
-    try {
-        const result = await listSessions(10);
-        const sessions = result.sessions || [];
+	log('🔍 Checking active Jules sessions...');
+	try {
+		const result = await listSessions(10);
+		const sessions = result.sessions || [];
 
-        for (const s of sessions) {
-            const outputs = s.outputs || [];
-            const pr = outputs.find(o => o.pullRequest);
-            if (pr) {
-                log(`✅ SESSION ${s.id}: PR created → ${pr.pullRequest.url}`);
-            } else {
-                log(`⏳ SESSION ${s.id}: "${s.title}" — in progress`);
-            }
-        }
+		for (const s of sessions) {
+			const outputs = s.outputs || [];
+			const pr = outputs.find((o) => o.pullRequest);
+			if (pr) {
+				log(`✅ SESSION ${s.id}: PR created → ${pr.pullRequest.url}`);
+			} else {
+				log(`⏳ SESSION ${s.id}: "${s.title}" — in progress`);
+			}
+		}
 
-        return sessions;
-    } catch (e) {
-        log(`Session check failed: ${e.message}`);
-        return [];
-    }
+		return sessions;
+	} catch (e) {
+		log(`Session check failed: ${e.message}`);
+		return [];
+	}
 }
 
 // ═══════════════════════════════════════════════════
@@ -224,16 +236,23 @@ async function checkActiveSessions() {
 // ═══════════════════════════════════════════════════
 
 async function checkJulesStatus() {
-    try {
-        const result = await julesAPI('GET', 'sources');
-        return (result.sources || []).length > 0 ? 'ONLINE' : 'NO_REPOS';
-    } catch (e) {
-        return 'OFFLINE';
-    }
+	try {
+		const result = await julesAPI('GET', 'sources');
+		return (result.sources || []).length > 0 ? 'ONLINE' : 'NO_REPOS';
+	} catch (e) {
+		return 'OFFLINE';
+	}
 }
 
 module.exports = {
-    julesAPI, listSources, createSession, getSession,
-    listSessions, approvePlan, dispatchStrategicTask,
-    checkActiveSessions, checkJulesStatus, REPO_MAP
+	julesAPI,
+	listSources,
+	createSession,
+	getSession,
+	listSessions,
+	approvePlan,
+	dispatchStrategicTask,
+	checkActiveSessions,
+	checkJulesStatus,
+	REPO_MAP,
 };

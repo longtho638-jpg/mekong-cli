@@ -22,28 +22,38 @@ const POLL_MS = 500;
  * Read last API call timestamp from lock file
  */
 function getLastCallTime() {
-  try {
-    if (fs.existsSync(LOCK_FILE)) {
-      const content = fs.readFileSync(LOCK_FILE, 'utf8').trim();
-      const ts = parseInt(content, 10);
-      return isNaN(ts) ? 0 : ts;
-    }
-  } catch (e) { /* ignore read errors */ }
-  return 0;
+	try {
+		if (fs.existsSync(LOCK_FILE)) {
+			const content = fs.readFileSync(LOCK_FILE, 'utf8').trim();
+			const ts = parseInt(content, 10);
+			return isNaN(ts) ? 0 : ts;
+		}
+	} catch (e) {
+		/* ignore read errors */
+	}
+	return 0;
 }
 
 /**
  * Write current timestamp to lock file (atomic via rename)
  */
 function stampLock() {
-  const tmpFile = LOCK_FILE + '.tmp.' + process.pid;
-  try {
-    fs.writeFileSync(tmpFile, String(Date.now()));
-    fs.renameSync(tmpFile, LOCK_FILE);
-  } catch (e) {
-    try { fs.writeFileSync(LOCK_FILE, String(Date.now())); } catch (e2) { /* ignore */ }
-    try { fs.unlinkSync(tmpFile); } catch (e3) { /* ignore */ }
-  }
+	const tmpFile = LOCK_FILE + '.tmp.' + process.pid;
+	try {
+		fs.writeFileSync(tmpFile, String(Date.now()));
+		fs.renameSync(tmpFile, LOCK_FILE);
+	} catch (e) {
+		try {
+			fs.writeFileSync(LOCK_FILE, String(Date.now()));
+		} catch (e2) {
+			/* ignore */
+		}
+		try {
+			fs.unlinkSync(tmpFile);
+		} catch (e3) {
+			/* ignore */
+		}
+	}
 }
 
 /**
@@ -51,40 +61,44 @@ function stampLock() {
  * Returns true if acquired, false if timed out.
  */
 async function acquire() {
-  const startWait = Date.now();
+	const startWait = Date.now();
 
-  while (true) {
-    const lastCall = getLastCallTime();
-    const elapsed = Date.now() - lastCall;
+	while (true) {
+		const lastCall = getLastCallTime();
+		const elapsed = Date.now() - lastCall;
 
-    if (elapsed >= MIN_GAP_MS) {
-      stampLock();
-      return true;
-    }
+		if (elapsed >= MIN_GAP_MS) {
+			stampLock();
+			return true;
+		}
 
-    if (Date.now() - startWait > MAX_WAIT_MS) {
-      stampLock();
-      return false;
-    }
+		if (Date.now() - startWait > MAX_WAIT_MS) {
+			stampLock();
+			return false;
+		}
 
-    const waitMs = Math.min(MIN_GAP_MS - elapsed + 100, POLL_MS);
-    await new Promise(resolve => setTimeout(resolve, waitMs));
-  }
+		const waitMs = Math.min(MIN_GAP_MS - elapsed + 100, POLL_MS);
+		await new Promise((resolve) => setTimeout(resolve, waitMs));
+	}
 }
 
 /**
  * Check if gate is available without blocking
  */
 function isAvailable() {
-  const lastCall = getLastCallTime();
-  return (Date.now() - lastCall) >= MIN_GAP_MS;
+	const lastCall = getLastCallTime();
+	return Date.now() - lastCall >= MIN_GAP_MS;
 }
 
 /**
  * Reset the lock (for testing or manual override)
  */
 function reset() {
-  try { fs.unlinkSync(LOCK_FILE); } catch (e) { /* ignore */ }
+	try {
+		fs.unlinkSync(LOCK_FILE);
+	} catch (e) {
+		/* ignore */
+	}
 }
 
 module.exports = { acquire, isAvailable, reset, LOCK_FILE };

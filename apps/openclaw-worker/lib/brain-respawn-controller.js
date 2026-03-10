@@ -18,7 +18,7 @@ const { log } = require('./brain-logger');
  * Proxy handles conversation management. CC CLI compact wastes 11+ minutes.
  */
 async function compactIfNeeded() {
-  return;
+	return;
 }
 
 /**
@@ -30,8 +30,8 @@ async function compactIfNeeded() {
  * and human operator can manually restart.
  */
 async function respawnBrain(intent = 'EXECUTION', useContinue = true) {
-  log(`⚠️ RESPAWN DISABLED: respawnBrain(${intent}) called but blocked. Manual restart required if brain is dead.`);
-  return false;
+	log(`⚠️ RESPAWN DISABLED: respawnBrain(${intent}) called but blocked. Manual restart required if brain is dead.`);
+	return false;
 }
 
 module.exports = { respawnBrain, compactIfNeeded };

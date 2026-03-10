@@ -10,23 +10,17 @@
 
 'use strict';
 
-const {
-  HANDS,
-  ALL_HANDS,
-  getHandForIntent,
-  getHandByName,
-  matchRole,
-} = require('./hands/index');
+const { HANDS, ALL_HANDS, getHandForIntent, getHandByName, matchRole } = require('./hands/index');
 
 module.exports = {
-  // Backward compat: 3 HANDS gốc vẫn tồn tại
-  HANDS,
-  // Đầy đủ 105 roles
-  ALL_HANDS,
-  // Backward compat API: ánh xạ intent → PLANNER/CODER/REVIEWER
-  getHandForIntent,
-  // Mới: lookup theo tên chính xác
-  getHandByName,
-  // Mới: semantic matching task text → specialist role
-  matchRole,
+	// Backward compat: 3 HANDS gốc vẫn tồn tại
+	HANDS,
+	// Đầy đủ 105 roles
+	ALL_HANDS,
+	// Backward compat API: ánh xạ intent → PLANNER/CODER/REVIEWER
+	getHandForIntent,
+	// Mới: lookup theo tên chính xác
+	getHandByName,
+	// Mới: semantic matching task text → specialist role
+	matchRole,
 };

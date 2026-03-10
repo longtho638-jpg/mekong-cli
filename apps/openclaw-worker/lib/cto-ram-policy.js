@@ -18,21 +18,24 @@ const { execSync } = require('child_process');
  * @returns {number} free RAM in MB
  */
 function getFreeRamMB() {
-    try {
-        // `top -l 1 -s 0` is fast (no delay), PhysMem line: "PhysMem: 11G used (1894M wired), 4869M unused."
-        const out = execSync('top -l 1 -s 0 | grep PhysMem', {
-            encoding: 'utf-8', timeout: 5000
-        }).trim();
+	try {
+		// `top -l 1 -s 0` is fast (no delay), PhysMem line: "PhysMem: 11G used (1894M wired), 4869M unused."
+		const out = execSync('top -l 1 -s 0 | grep PhysMem', {
+			encoding: 'utf-8',
+			timeout: 5000,
+		}).trim();
 
-        // Parse "unused" figure — may be in GB or MB
-        const unusedMatch = out.match(/(\d+(?:\.\d+)?)(G|M)\s+unused/i);
-        if (unusedMatch) {
-            const val = parseFloat(unusedMatch[1]);
-            const unit = unusedMatch[2].toUpperCase();
-            return unit === 'G' ? Math.round(val * 1024) : Math.round(val);
-        }
-    } catch { /* parse failure → safe fallback */ }
-    return 8192; // safe fallback: assume 8GB free
+		// Parse "unused" figure — may be in GB or MB
+		const unusedMatch = out.match(/(\d+(?:\.\d+)?)(G|M)\s+unused/i);
+		if (unusedMatch) {
+			const val = parseFloat(unusedMatch[1]);
+			const unit = unusedMatch[2].toUpperCase();
+			return unit === 'G' ? Math.round(val * 1024) : Math.round(val);
+		}
+	} catch {
+		/* parse failure → safe fallback */
+	}
+	return 8192; // safe fallback: assume 8GB free
 }
 
 /**
@@ -40,24 +43,24 @@ function getFreeRamMB() {
  * @returns {{ maxWorkers: number, freeRamMB: number, emergency: boolean }}
  */
 function getRamPolicy() {
-    const freeRamMB = getFreeRamMB();
-    const freeRamGB = freeRamMB / 1024;
+	const freeRamMB = getFreeRamMB();
+	const freeRamGB = freeRamMB / 1024;
 
-    let maxWorkers;
-    let emergency = false;
+	let maxWorkers;
+	let emergency = false;
 
-    if (freeRamGB >= 4) {
-        maxWorkers = 3;
-    } else if (freeRamGB >= 2) {
-        maxWorkers = 2;
-    } else if (freeRamGB >= 1) {
-        maxWorkers = 1;
-    } else {
-        maxWorkers = 0;
-        emergency = true;
-    }
+	if (freeRamGB >= 4) {
+		maxWorkers = 3;
+	} else if (freeRamGB >= 2) {
+		maxWorkers = 2;
+	} else if (freeRamGB >= 1) {
+		maxWorkers = 1;
+	} else {
+		maxWorkers = 0;
+		emergency = true;
+	}
 
-    return { maxWorkers, freeRamMB, emergency };
+	return { maxWorkers, freeRamMB, emergency };
 }
 
 /**
@@ -70,22 +73,22 @@ function getRamPolicy() {
  * @returns {boolean} true if dispatch is allowed
  */
 function isDispatchAllowed(paneIdx, log) {
-    const { maxWorkers, freeRamMB, emergency } = getRamPolicy();
+	const { maxWorkers, freeRamMB, emergency } = getRamPolicy();
 
-    if (emergency) {
-        log(`RAM-POLICY: EMERGENCY (free=${freeRamMB}MB < 1GB) — blocking ALL dispatches`);
-        return false;
-    }
+	if (emergency) {
+		log(`RAM-POLICY: EMERGENCY (free=${freeRamMB}MB < 1GB) — blocking ALL dispatches`);
+		return false;
+	}
 
-    // Worker slot mapping: P1→slot1, P2→slot2, P3→slot3
-    // paneIdx 1 = slot 1, paneIdx 2 = slot 2, paneIdx 3 = slot 3
-    const slot = paneIdx; // 1-indexed, matches directly
-    if (slot > maxWorkers) {
-        log(`RAM-POLICY: free=${Math.round(freeRamMB)}MB → max ${maxWorkers} workers — P${paneIdx} (slot${slot}) BLOCKED`);
-        return false;
-    }
+	// Worker slot mapping: P1→slot1, P2→slot2, P3→slot3
+	// paneIdx 1 = slot 1, paneIdx 2 = slot 2, paneIdx 3 = slot 3
+	const slot = paneIdx; // 1-indexed, matches directly
+	if (slot > maxWorkers) {
+		log(`RAM-POLICY: free=${Math.round(freeRamMB)}MB → max ${maxWorkers} workers — P${paneIdx} (slot${slot}) BLOCKED`);
+		return false;
+	}
 
-    return true;
+	return true;
 }
 
 module.exports = { getFreeRamMB, getRamPolicy, isDispatchAllowed };

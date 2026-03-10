@@ -13,8 +13,8 @@ const { validateIntake } = require('./client-intake-schema');
 const MEKONG_DIR = path.resolve(__dirname, '..', '..', '..');
 
 function generateReadme(intake) {
-    const d = intake.data || intake;
-    return `# ${d.company.name} — ${d.project.name}
+	const d = intake.data || intake;
+	return `# ${d.company.name} — ${d.project.name}
 
 > ${d.project.goal}
 
@@ -35,11 +35,11 @@ function generateReadme(intake) {
 
 ## 🎯 Core Features
 
-${(d.features.core || []).map(f => `- ${f}`).join('\n')}
+${(d.features.core || []).map((f) => `- ${f}`).join('\n')}
 
-${(d.features.nice_to_have || []).length ? `## Nice to Have\n${d.features.nice_to_have.map(f => `- ${f}`).join('\n')}` : ''}
+${(d.features.nice_to_have || []).length ? `## Nice to Have\n${d.features.nice_to_have.map((f) => `- ${f}`).join('\n')}` : ''}
 
-${(d.features.integrations || []).length ? `## Integrations\n${d.features.integrations.map(f => `- ${f}`).join('\n')}` : ''}
+${(d.features.integrations || []).length ? `## Integrations\n${d.features.integrations.map((f) => `- ${f}`).join('\n')}` : ''}
 
 ## 🎨 Design
 
@@ -60,8 +60,8 @@ _Bootstrapped by AgencyOS RaaS AGI Engine_
 }
 
 function generateClaudeMd(intake) {
-    const d = intake.data || intake;
-    return `# CLAUDE.md — ${d.project.name}
+	const d = intake.data || intake;
+	return `# CLAUDE.md — ${d.project.name}
 
 ## Project Context
 - **Client**: ${d.company.name} (${d.company.industry})
@@ -71,7 +71,7 @@ function generateClaudeMd(intake) {
 - **Tech**: ${d.tech.framework} + ${d.tech.database} + ${d.tech.auth}
 
 ## Core Features to Implement
-${(d.features.core || []).map(f => `- [ ] ${f}`).join('\n')}
+${(d.features.core || []).map((f) => `- [ ] ${f}`).join('\n')}
 
 ## Design Guidelines
 - Style: ${d.design.style}
@@ -91,27 +91,27 @@ ${(d.features.core || []).map(f => `- [ ] ${f}`).join('\n')}
 }
 
 function generateEnvExample(intake) {
-    const d = intake.data || intake;
-    let env = `# Environment Variables for ${d.project.name}\n\n`;
-    env += `# App\nNEXT_PUBLIC_APP_NAME="${d.company.name}"\nNEXT_PUBLIC_APP_URL="https://${d.tech.domain || 'localhost:3000'}"\n\n`;
+	const d = intake.data || intake;
+	let env = `# Environment Variables for ${d.project.name}\n\n`;
+	env += `# App\nNEXT_PUBLIC_APP_NAME="${d.company.name}"\nNEXT_PUBLIC_APP_URL="https://${d.tech.domain || 'localhost:3000'}"\n\n`;
 
-    if (d.tech.database === 'supabase') {
-        env += `# Supabase\nNEXT_PUBLIC_SUPABASE_URL=\nNEXT_PUBLIC_SUPABASE_ANON_KEY=\nSUPABASE_SERVICE_ROLE_KEY=\n\n`;
-    }
-    if (d.features.integrations.includes('PayOS') || d.features.integrations.includes('payos')) {
-        env += `# PayOS\nPAYOS_CLIENT_ID=\nPAYOS_API_KEY=\nPAYOS_CHECKSUM_KEY=\n\n`;
-    }
-    if (d.features.integrations.includes('Stripe') || d.features.integrations.includes('stripe')) {
-        env += `# Stripe\nSTRIPE_SECRET_KEY=\nNEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\n\n`;
-    }
-    env += `# Analytics\nNEXT_PUBLIC_GA_ID=\n`;
-    return env;
+	if (d.tech.database === 'supabase') {
+		env += `# Supabase\nNEXT_PUBLIC_SUPABASE_URL=\nNEXT_PUBLIC_SUPABASE_ANON_KEY=\nSUPABASE_SERVICE_ROLE_KEY=\n\n`;
+	}
+	if (d.features.integrations.includes('PayOS') || d.features.integrations.includes('payos')) {
+		env += `# PayOS\nPAYOS_CLIENT_ID=\nPAYOS_API_KEY=\nPAYOS_CHECKSUM_KEY=\n\n`;
+	}
+	if (d.features.integrations.includes('Stripe') || d.features.integrations.includes('stripe')) {
+		env += `# Stripe\nSTRIPE_SECRET_KEY=\nNEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=\n\n`;
+	}
+	env += `# Analytics\nNEXT_PUBLIC_GA_ID=\n`;
+	return env;
 }
 
 function generateProjectBrief(intake) {
-    const d = intake.data || intake;
-    const date = new Date().toISOString().split('T')[0];
-    return `# 📋 Project Brief — ${d.project.name}
+	const d = intake.data || intake;
+	const date = new Date().toISOString().split('T')[0];
+	return `# 📋 Project Brief — ${d.project.name}
 
 **Created**: ${date}
 **Client**: ${d.company.name} (${d.company.contact.name} — ${d.company.contact.email})
@@ -121,7 +121,7 @@ function generateProjectBrief(intake) {
 **Tier**: ${d.commercial.tier}
 
 ## Problems to Solve
-${(d.project.problems || []).map(p => `- ${p}`).join('\n') || '- (To be defined)'}
+${(d.project.problems || []).map((p) => `- ${p}`).join('\n') || '- (To be defined)'}
 
 ## Success Criteria
 - [ ] All core features implemented
@@ -143,74 +143,85 @@ _AgencyOS Project Brief Standard v1.0_
  * @returns {{ success: boolean, projectDir: string, errors?: string[], files: string[] }}
  */
 function bootstrapProject(intakeData) {
-    // 1. Validate
-    const validation = validateIntake(intakeData);
-    if (!validation.valid) {
-        return { success: false, errors: validation.errors, projectDir: '', files: [] };
-    }
+	// 1. Validate
+	const validation = validateIntake(intakeData);
+	if (!validation.valid) {
+		return { success: false, errors: validation.errors, projectDir: '', files: [] };
+	}
 
-    const data = validation.data;
-    const projectName = data.project.name;
-    const projectDir = path.join(MEKONG_DIR, 'apps', projectName);
+	const data = validation.data;
+	const projectName = data.project.name;
+	const projectDir = path.join(MEKONG_DIR, 'apps', projectName);
 
-    // 2. Create project directory
-    if (fs.existsSync(projectDir)) {
-        return { success: false, errors: [`Project directory already exists: ${projectDir}`], projectDir, files: [] };
-    }
+	// 2. Create project directory
+	if (fs.existsSync(projectDir)) {
+		return { success: false, errors: [`Project directory already exists: ${projectDir}`], projectDir, files: [] };
+	}
 
-    const dirs = [
-        projectDir,
-        path.join(projectDir, 'src'),
-        path.join(projectDir, 'docs'),
-        path.join(projectDir, 'plans'),
-        path.join(projectDir, 'public'),
-        path.join(projectDir, '.github', 'workflows'),
-    ];
-    dirs.forEach(d => fs.mkdirSync(d, { recursive: true }));
+	const dirs = [
+		projectDir,
+		path.join(projectDir, 'src'),
+		path.join(projectDir, 'docs'),
+		path.join(projectDir, 'plans'),
+		path.join(projectDir, 'public'),
+		path.join(projectDir, '.github', 'workflows'),
+	];
+	dirs.forEach((d) => fs.mkdirSync(d, { recursive: true }));
 
-    // 3. Generate files
-    const files = [];
+	// 3. Generate files
+	const files = [];
 
-    const fileMap = {
-        'README.md': generateReadme(data),
-        'CLAUDE.md': generateClaudeMd(data),
-        '.env.example': generateEnvExample(data),
-        'docs/PROJECT_BRIEF.md': generateProjectBrief(data),
-        'intake.json': JSON.stringify(intakeData, null, 2),
-    };
+	const fileMap = {
+		'README.md': generateReadme(data),
+		'CLAUDE.md': generateClaudeMd(data),
+		'.env.example': generateEnvExample(data),
+		'docs/PROJECT_BRIEF.md': generateProjectBrief(data),
+		'intake.json': JSON.stringify(intakeData, null, 2),
+	};
 
-    for (const [fileName, content] of Object.entries(fileMap)) {
-        const filePath = path.join(projectDir, fileName);
-        fs.mkdirSync(path.dirname(filePath), { recursive: true });
-        fs.writeFileSync(filePath, content, 'utf-8');
-        files.push(filePath);
-    }
+	for (const [fileName, content] of Object.entries(fileMap)) {
+		const filePath = path.join(projectDir, fileName);
+		fs.mkdirSync(path.dirname(filePath), { recursive: true });
+		fs.writeFileSync(filePath, content, 'utf-8');
+		files.push(filePath);
+	}
 
-    // 4. Generate package.json
-    const pkgJson = {
-        name: projectName,
-        version: '0.1.0',
-        private: true,
-        scripts: {
-            dev: data.tech.framework === 'nextjs' ? 'next dev' : 'vite',
-            build: data.tech.framework === 'nextjs' ? 'next build' : 'vite build',
-            start: data.tech.framework === 'nextjs' ? 'next start' : 'vite preview',
-            test: 'echo "No tests yet" && exit 0',
-            lint: 'eslint . --ext .ts,.tsx',
-        },
-    };
-    const pkgPath = path.join(projectDir, 'package.json');
-    fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2), 'utf-8');
-    files.push(pkgPath);
+	// 4. Generate package.json
+	const pkgJson = {
+		name: projectName,
+		version: '0.1.0',
+		private: true,
+		scripts: {
+			dev: data.tech.framework === 'nextjs' ? 'next dev' : 'vite',
+			build: data.tech.framework === 'nextjs' ? 'next build' : 'vite build',
+			start: data.tech.framework === 'nextjs' ? 'next start' : 'vite preview',
+			test: 'echo "No tests yet" && exit 0',
+			lint: 'eslint . --ext .ts,.tsx',
+		},
+	};
+	const pkgPath = path.join(projectDir, 'package.json');
+	fs.writeFileSync(pkgPath, JSON.stringify(pkgJson, null, 2), 'utf-8');
+	files.push(pkgPath);
 
-    // 5. Generate tsconfig
-    const tsconfig = { compilerOptions: { target: 'es2017', lib: ['dom', 'es2017'], strict: true, esModuleInterop: true, jsx: 'react-jsx', moduleResolution: 'bundler', outDir: 'dist' }, include: ['src'] };
-    const tscPath = path.join(projectDir, 'tsconfig.json');
-    fs.writeFileSync(tscPath, JSON.stringify(tsconfig, null, 2), 'utf-8');
-    files.push(tscPath);
+	// 5. Generate tsconfig
+	const tsconfig = {
+		compilerOptions: {
+			target: 'es2017',
+			lib: ['dom', 'es2017'],
+			strict: true,
+			esModuleInterop: true,
+			jsx: 'react-jsx',
+			moduleResolution: 'bundler',
+			outDir: 'dist',
+		},
+		include: ['src'],
+	};
+	const tscPath = path.join(projectDir, 'tsconfig.json');
+	fs.writeFileSync(tscPath, JSON.stringify(tsconfig, null, 2), 'utf-8');
+	files.push(tscPath);
 
-    // 6. Generate CI workflow
-    const ciYml = `name: CI
+	// 6. Generate CI workflow
+	const ciYml = `name: CI
 on: [push, pull_request]
 jobs:
   build:
@@ -223,23 +234,25 @@ jobs:
       - run: npm run build
       - run: npm test
 `;
-    const ciPath = path.join(projectDir, '.github', 'workflows', 'ci.yml');
-    fs.writeFileSync(ciPath, ciYml, 'utf-8');
-    files.push(ciPath);
+	const ciPath = path.join(projectDir, '.github', 'workflows', 'ci.yml');
+	fs.writeFileSync(ciPath, ciYml, 'utf-8');
+	files.push(ciPath);
 
-    // 7. Create HIGH priority task for Vibe Factory
-    const taskContent = `/cook "NEW PROJECT: ${projectName} for ${data.company.name}. Goal: ${data.project.goal}. Tech: ${data.tech.framework}+${data.tech.database}. 1/ DEEP 10x PLAN architecture. 2/ COOK implement core features: ${data.features.core.slice(0, 3).join(', ')}. 3/ production-code-audit: lint-and-validate, security-review. npm audit fix. 4/ VERIFY GREEN GOLIVE. Commit."`;
-    const taskPath = path.join(__dirname, '..', 'tasks', `HIGH_${projectName}_bootstrap.txt`);
-    fs.writeFileSync(taskPath, taskContent, 'utf-8');
-    files.push(taskPath);
+	// 7. Create HIGH priority task for Vibe Factory
+	const taskContent = `/cook "NEW PROJECT: ${projectName} for ${data.company.name}. Goal: ${data.project.goal}. Tech: ${data.tech.framework}+${data.tech.database}. 1/ DEEP 10x PLAN architecture. 2/ COOK implement core features: ${data.features.core.slice(0, 3).join(', ')}. 3/ production-code-audit: lint-and-validate, security-review. npm audit fix. 4/ VERIFY GREEN GOLIVE. Commit."`;
+	const taskPath = path.join(__dirname, '..', 'tasks', `HIGH_${projectName}_bootstrap.txt`);
+	fs.writeFileSync(taskPath, taskContent, 'utf-8');
+	files.push(taskPath);
 
-    // 8. Git init
-    try {
-        execSync('git init', { cwd: projectDir, stdio: 'pipe' });
-        execSync('git add -A && git commit -m "feat: bootstrap from client intake"', { cwd: projectDir, stdio: 'pipe' });
-    } catch { /* ok if fails */ }
+	// 8. Git init
+	try {
+		execSync('git init', { cwd: projectDir, stdio: 'pipe' });
+		execSync('git add -A && git commit -m "feat: bootstrap from client intake"', { cwd: projectDir, stdio: 'pipe' });
+	} catch {
+		/* ok if fails */
+	}
 
-    return { success: true, projectDir, files, score: { total: 0, grade: 'F' } };
+	return { success: true, projectDir, files, score: { total: 0, grade: 'F' } };
 }
 
 module.exports = { bootstrapProject, generateReadme, generateClaudeMd, generateEnvExample, generateProjectBrief };

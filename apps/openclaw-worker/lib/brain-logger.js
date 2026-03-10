@@ -10,10 +10,16 @@ const fs = require('fs');
 const config = require('../config');
 
 function log(msg) {
-  const timestamp = new Date().toISOString().slice(11, 19);
-  const formatted = `[${timestamp}] [tom-hum] ${msg}\n`;
-  try { process.stderr.write(formatted); } catch (e) { /* EPIPE safe */ }
-  try { fs.appendFileSync(config.LOG_FILE, formatted); } catch (e) { }
+	const timestamp = new Date().toISOString().slice(11, 19);
+	const formatted = `[${timestamp}] [tom-hum] ${msg}\n`;
+	try {
+		process.stderr.write(formatted);
+	} catch (e) {
+		/* EPIPE safe */
+	}
+	try {
+		fs.appendFileSync(config.LOG_FILE, formatted);
+	} catch (e) {}
 }
 
 module.exports = { log };

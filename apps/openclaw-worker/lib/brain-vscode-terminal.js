@@ -24,91 +24,104 @@ let missionCount = 0;
 
 // --- Logging ---
 function log(msg) {
-    const timestamp = new Date().toISOString().slice(11, 19);
-    const formatted = `[${timestamp}] [tom-hum] ${msg}\n`;
-    process.stderr.write(formatted);
-    try { fs.appendFileSync(config.LOG_FILE, formatted); } catch (e) { }
+	const timestamp = new Date().toISOString().slice(11, 19);
+	const formatted = `[${timestamp}] [tom-hum] ${msg}\n`;
+	process.stderr.write(formatted);
+	try {
+		fs.appendFileSync(config.LOG_FILE, formatted);
+	} catch (e) {}
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+function sleep(ms) {
+	return new Promise((r) => setTimeout(r, ms));
+}
 
 // --- AppleScript helper ---
 function runAppleScriptFile(script) {
-    const tmpFile = '/tmp/tom_hum_applescript.scpt';
-    fs.writeFileSync(tmpFile, script);
-    try {
-        return execSync(`osascript ${tmpFile}`, { encoding: 'utf-8', timeout: 15000 }).trim();
-    } catch (e) {
-        log(`APPLESCRIPT ERROR: ${e.message}`);
-        return '';
-    } finally {
-        try { fs.unlinkSync(tmpFile); } catch (e) { }
-    }
+	const tmpFile = '/tmp/tom_hum_applescript.scpt';
+	fs.writeFileSync(tmpFile, script);
+	try {
+		return execSync(`osascript ${tmpFile}`, { encoding: 'utf-8', timeout: 15000 }).trim();
+	} catch (e) {
+		log(`APPLESCRIPT ERROR: ${e.message}`);
+		return '';
+	} finally {
+		try {
+			fs.unlinkSync(tmpFile);
+		} catch (e) {}
+	}
 }
 
 // --- CC CLI config ---
 function getProxyConfig() {
-    const proxyUrl = config.CLOUD_BRAIN_URL || 'http://127.0.0.1:20128';
-    const proxyPort = new URL(proxyUrl).port || '20128';
-    return {
-        proxyUrl,
-        configDir: `/Users/macbookprom1/.claude_antigravity_${proxyPort}`,
-    };
+	const proxyUrl = config.CLOUD_BRAIN_URL || 'http://127.0.0.1:20128';
+	const proxyPort = new URL(proxyUrl).port || '20128';
+	return {
+		proxyUrl,
+		configDir: `/Users/macbookprom1/.claude_antigravity_${proxyPort}`,
+	};
 }
 
 // --- Brain lifecycle ---
 
 function spawnBrain() {
-    log('BRAIN MODE: Antigravity Terminal — CC CLI in Terminal.app');
+	log('BRAIN MODE: Antigravity Terminal — CC CLI in Terminal.app');
 
-    const { proxyUrl, configDir } = getProxyConfig();
+	const { proxyUrl, configDir } = getProxyConfig();
 
-    // DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
-    const launcher = '/tmp/tom_hum_cc_launcher.sh';
-    fs.writeFileSync(launcher, [
-        '#!/bin/bash',
-        `unset CLAUDE_CONFIG_DIR`,
-        `cd "${config.MEKONG_DIR}"`,
-        'echo "🦞 TÔM HÙM Worker — CC CLI Interactive (DashScope Direct)"',
-        'echo "================================"',
-        `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`,
-    ].join('\n'), { mode: 0o755 });
+	// DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
+	const launcher = '/tmp/tom_hum_cc_launcher.sh';
+	fs.writeFileSync(
+		launcher,
+		[
+			'#!/bin/bash',
+			`unset CLAUDE_CONFIG_DIR`,
+			`cd "${config.MEKONG_DIR}"`,
+			'echo "🦞 TÔM HÙM Worker — CC CLI Interactive (DashScope Direct)"',
+			'echo "================================"',
+			`/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`,
+		].join('\n'),
+		{ mode: 0o755 },
+	);
 
-    // Open in Terminal.app via AppleScript (no Accessibility needed)
-    runAppleScriptFile(`
+	// Open in Terminal.app via AppleScript (no Accessibility needed)
+	runAppleScriptFile(`
 tell application "Terminal"
   activate
   do script "/tmp/tom_hum_cc_launcher.sh"
 end tell
 `);
 
-    log('BRAIN: CC CLI launched in Terminal.app');
-    log('TIP: Drag Terminal tab into Antigravity for integrated view');
+	log('BRAIN: CC CLI launched in Terminal.app');
+	log('TIP: Drag Terminal tab into Antigravity for integrated view');
 }
 
 function killBrain() {
-    log('BRAIN: Killing CC CLI...');
-    try {
-        const pid = execSync('pgrep -f "claude.*dangerously-skip-permissions" | head -1', {
-            encoding: 'utf-8', timeout: 3000
-        }).trim();
-        if (pid) execSync(`kill ${pid}`, { timeout: 3000 });
-    } catch (e) { }
+	log('BRAIN: Killing CC CLI...');
+	try {
+		const pid = execSync('pgrep -f "claude.*dangerously-skip-permissions" | head -1', {
+			encoding: 'utf-8',
+			timeout: 3000,
+		}).trim();
+		if (pid) execSync(`kill ${pid}`, { timeout: 3000 });
+	} catch (e) {}
 }
 
 function isBrainAlive() {
-    try {
-        execSync('pgrep -f "claude.*dangerously-skip-permissions"', { timeout: 3000 });
-        return true;
-    } catch (e) { return false; }
+	try {
+		execSync('pgrep -f "claude.*dangerously-skip-permissions"', { timeout: 3000 });
+		return true;
+	} catch (e) {
+		return false;
+	}
 }
 
 // --- Send prompt to CC CLI via Terminal.app `do script` ---
 function typeInTerminal(text) {
-    fs.writeFileSync('/tmp/tom_hum_paste.txt', text);
+	fs.writeFileSync('/tmp/tom_hum_paste.txt', text);
 
-    // Terminal.app `do script` — reliable, no permissions needed
-    const result = runAppleScriptFile(`
+	// Terminal.app `do script` — reliable, no permissions needed
+	const result = runAppleScriptFile(`
 set promptText to (read POSIX file "/tmp/tom_hum_paste.txt")
 
 tell application "Terminal"
@@ -134,140 +147,147 @@ tell application "Terminal"
   activate
 end tell
 `);
-    return true;
+	return true;
 }
 
 // --- Headless fallback ---
 function runHeadlessFallback(prompt, projectDir, timeoutMs) {
-    return new Promise((resolve) => {
-        const startTime = Date.now();
-        let resolved = false;
-        const { proxyUrl } = getProxyConfig();
+	return new Promise((resolve) => {
+		const startTime = Date.now();
+		let resolved = false;
+		const { proxyUrl } = getProxyConfig();
 
-        const args = ['-p', prompt, '--model', config.MODEL_NAME, '--dangerously-skip-permissions'];
-        log(`FALLBACK HEADLESS: claude -p [cwd=${projectDir}] [timeout=${Math.round(timeoutMs / 60000)}min]`);
+		const args = ['-p', prompt, '--model', config.MODEL_NAME, '--dangerously-skip-permissions'];
+		log(`FALLBACK HEADLESS: claude -p [cwd=${projectDir}] [timeout=${Math.round(timeoutMs / 60000)}min]`);
 
-        const child = spawn('claude', args, {
-            cwd: projectDir,
-            stdio: ['ignore', 'pipe', 'pipe'],
-            env: {
-                ...process.env,
-                ANTHROPIC_API_KEY: 'ollama',
-                ANTHROPIC_BASE_URL: proxyUrl,
-                CLAUDE_BASE_URL: proxyUrl,
-            },
-            timeout: timeoutMs,
-        });
+		const child = spawn('claude', args, {
+			cwd: projectDir,
+			stdio: ['ignore', 'pipe', 'pipe'],
+			env: {
+				...process.env,
+				ANTHROPIC_API_KEY: 'ollama',
+				ANTHROPIC_BASE_URL: proxyUrl,
+				CLAUDE_BASE_URL: proxyUrl,
+			},
+			timeout: timeoutMs,
+		});
 
-        child.stdout.on('data', (chunk) => {
-            const last = chunk.toString().trim().split('\n').pop();
-            if (last && last.length > 5) {
-                const line = last.length > 200 ? last.slice(0, 200) + '...' : last;
-                try { fs.appendFileSync(config.LOG_FILE, `[${new Date().toISOString().slice(11, 19)}] [headless] ${line}\n`); } catch (e) { }
-            }
-        });
+		child.stdout.on('data', (chunk) => {
+			const last = chunk.toString().trim().split('\n').pop();
+			if (last && last.length > 5) {
+				const line = last.length > 200 ? last.slice(0, 200) + '...' : last;
+				try {
+					fs.appendFileSync(config.LOG_FILE, `[${new Date().toISOString().slice(11, 19)}] [headless] ${line}\n`);
+				} catch (e) {}
+			}
+		});
 
-        const timer = setTimeout(() => {
-            if (resolved) return;
-            resolved = true;
-            try { child.kill('SIGTERM'); } catch (e) { }
-            resolve({ success: false, result: 'timeout', elapsed: Math.round((Date.now() - startTime) / 1000) });
-        }, timeoutMs);
+		const timer = setTimeout(() => {
+			if (resolved) return;
+			resolved = true;
+			try {
+				child.kill('SIGTERM');
+			} catch (e) {}
+			resolve({ success: false, result: 'timeout', elapsed: Math.round((Date.now() - startTime) / 1000) });
+		}, timeoutMs);
 
-        child.on('close', (code) => {
-            clearTimeout(timer);
-            if (resolved) return;
-            resolved = true;
-            const elapsed = Math.round((Date.now() - startTime) / 1000);
-            resolve({ success: code === 0, result: code === 0 ? 'done' : `exit_${code}`, elapsed });
-        });
+		child.on('close', (code) => {
+			clearTimeout(timer);
+			if (resolved) return;
+			resolved = true;
+			const elapsed = Math.round((Date.now() - startTime) / 1000);
+			resolve({ success: code === 0, result: code === 0 ? 'done' : `exit_${code}`, elapsed });
+		});
 
-        child.on('error', () => {
-            clearTimeout(timer);
-            if (resolved) return;
-            resolved = true;
-            resolve({ success: false, result: 'spawn_error', elapsed: 0 });
-        });
-    });
+		child.on('error', () => {
+			clearTimeout(timer);
+			if (resolved) return;
+			resolved = true;
+			resolve({ success: false, result: 'spawn_error', elapsed: 0 });
+		});
+	});
 }
 
 // --- Core: Run mission ---
 async function runMission(prompt, projectDir, timeoutMs) {
-    missionCount++;
-    const num = missionCount;
-    const startTime = Date.now();
+	missionCount++;
+	const num = missionCount;
+	const startTime = Date.now();
 
-    log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
-    log(`PROJECT: ${projectDir} | MODE: Antigravity Terminal`);
+	log(`MISSION #${num}: ${prompt.slice(0, 150)}...`);
+	log(`PROJECT: ${projectDir} | MODE: Antigravity Terminal`);
 
-    // If CC CLI not running, spawn it
-    if (!isBrainAlive()) {
-        log('CC CLI not running — spawning...');
-        spawnBrain();
-        await sleep(12000);
-        if (!isBrainAlive()) {
-            log('CC CLI failed to start — headless fallback');
-            return runHeadlessFallback(prompt, projectDir, timeoutMs);
-        }
-    }
+	// If CC CLI not running, spawn it
+	if (!isBrainAlive()) {
+		log('CC CLI not running — spawning...');
+		spawnBrain();
+		await sleep(12000);
+		if (!isBrainAlive()) {
+			log('CC CLI failed to start — headless fallback');
+			return runHeadlessFallback(prompt, projectDir, timeoutMs);
+		}
+	}
 
-    // Build prompt with context
-    let fullPrompt = prompt;
-    if (projectDir && projectDir !== config.MEKONG_DIR) {
-        fullPrompt = `CONTEXT: Target Project inside '${projectDir}'. At ROOT.\n${prompt}`;
-    }
+	// Build prompt with context
+	let fullPrompt = prompt;
+	if (projectDir && projectDir !== config.MEKONG_DIR) {
+		fullPrompt = `CONTEXT: Target Project inside '${projectDir}'. At ROOT.\n${prompt}`;
+	}
 
-    // Dispatch to Terminal.app
-    typeInTerminal(fullPrompt);
-    log(`DISPATCHED: Mission #${num} sent to Antigravity terminal`);
+	// Dispatch to Terminal.app
+	typeInTerminal(fullPrompt);
+	log(`DISPATCHED: Mission #${num} sent to Antigravity terminal`);
 
-    // Monitor CC CLI process state
-    const deadline = Date.now() + timeoutMs;
-    let wasBusy = false;
-    let idleCount = 0;
-    await sleep(8000);
+	// Monitor CC CLI process state
+	const deadline = Date.now() + timeoutMs;
+	let wasBusy = false;
+	let idleCount = 0;
+	await sleep(8000);
 
-    while (Date.now() < deadline) {
-        const alive = isBrainAlive();
-        const elapsedSec = Math.round((Date.now() - startTime) / 1000);
+	while (Date.now() < deadline) {
+		const alive = isBrainAlive();
+		const elapsedSec = Math.round((Date.now() - startTime) / 1000);
 
-        if (!alive && wasBusy) {
-            log(`COMPLETE: Mission #${num} — CC CLI ended (${elapsedSec}s)`);
-            return { success: true, result: 'done', elapsed: elapsedSec };
-        }
+		if (!alive && wasBusy) {
+			log(`COMPLETE: Mission #${num} — CC CLI ended (${elapsedSec}s)`);
+			return { success: true, result: 'done', elapsed: elapsedSec };
+		}
 
-        if (alive) {
-            try {
-                const cpu = parseFloat(execSync(
-                    'ps -p $(pgrep -f "claude.*dangerously-skip-permissions" | head -1) -o %cpu= 2>/dev/null',
-                    { encoding: 'utf-8', timeout: 3000 }
-                ).trim()) || 0;
+		if (alive) {
+			try {
+				const cpu =
+					parseFloat(
+						execSync('ps -p $(pgrep -f "claude.*dangerously-skip-permissions" | head -1) -o %cpu= 2>/dev/null', {
+							encoding: 'utf-8',
+							timeout: 3000,
+						}).trim(),
+					) || 0;
 
-                if (cpu > 5) {
-                    wasBusy = true;
-                    idleCount = 0;
-                    if (elapsedSec % 30 === 0) log(`BUSY: Mission #${num} (CPU:${cpu}%, ${elapsedSec}s)`);
-                } else if (wasBusy) {
-                    idleCount++;
-                    if (idleCount >= 6) {
-                        log(`COMPLETE: Mission #${num} — idle after processing (${elapsedSec}s)`);
-                        return { success: true, result: 'done', elapsed: elapsedSec };
-                    }
-                }
-            } catch (e) {
-                if (wasBusy) {
-                    log(`COMPLETE: Mission #${num} — process ended (${elapsedSec}s)`);
-                    return { success: true, result: 'done', elapsed: elapsedSec };
-                }
-            }
-        }
+				if (cpu > 5) {
+					wasBusy = true;
+					idleCount = 0;
+					if (elapsedSec % 30 === 0) log(`BUSY: Mission #${num} (CPU:${cpu}%, ${elapsedSec}s)`);
+				} else if (wasBusy) {
+					idleCount++;
+					if (idleCount >= 6) {
+						log(`COMPLETE: Mission #${num} — idle after processing (${elapsedSec}s)`);
+						return { success: true, result: 'done', elapsed: elapsedSec };
+					}
+				}
+			} catch (e) {
+				if (wasBusy) {
+					log(`COMPLETE: Mission #${num} — process ended (${elapsedSec}s)`);
+					return { success: true, result: 'done', elapsed: elapsedSec };
+				}
+			}
+		}
 
-        await sleep(5000);
-    }
+		await sleep(5000);
+	}
 
-    const elapsed = Math.round((Date.now() - startTime) / 1000);
-    log(`TIMEOUT: Mission #${num} (${Math.round(timeoutMs / 1000)}s)`);
-    return { success: false, result: 'timeout', elapsed };
+	const elapsed = Math.round((Date.now() - startTime) / 1000);
+	log(`TIMEOUT: Mission #${num} (${Math.round(timeoutMs / 1000)}s)`);
+	return { success: false, result: 'timeout', elapsed };
 }
 
 module.exports = { spawnBrain, killBrain, isBrainAlive, runMission, log };

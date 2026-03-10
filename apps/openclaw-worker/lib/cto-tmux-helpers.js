@@ -19,12 +19,11 @@ const CLAUDE_BIN = '/Users/macbookprom1/.local/bin/claude';
  * @returns {string}
  */
 function tmuxCapture(session, paneIdx, lines = 15) {
-    try {
-        return execSync(
-            `tmux capture-pane -t ${session}.${paneIdx} -p -S -${lines} 2>/dev/null`,
-            { encoding: 'utf-8', timeout: 5000 }
-        );
-    } catch { return ''; }
+	try {
+		return execSync(`tmux capture-pane -t ${session}.${paneIdx} -p -S -${lines} 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+	} catch {
+		return '';
+	}
 }
 
 /**
@@ -34,19 +33,20 @@ function tmuxCapture(session, paneIdx, lines = 15) {
  * @returns {{ project: string, dir: string }|null}
  */
 function detectRealProject(session, paneIdx) {
-    try {
-        const panePath = execSync(
-            `tmux display-message -t ${session}.${paneIdx} -p '#{pane_current_path}' 2>/dev/null`,
-            { encoding: 'utf-8', timeout: 3000 }
-        ).trim();
-        if (!panePath) return null;
+	try {
+		const panePath = execSync(`tmux display-message -t ${session}.${paneIdx} -p '#{pane_current_path}' 2>/dev/null`, {
+			encoding: 'utf-8',
+			timeout: 3000,
+		}).trim();
+		if (!panePath) return null;
 
-        const match = panePath.match(/\/apps\/([^\/]+)/);
-        if (match) return { project: match[1], dir: panePath };
-        if (panePath.endsWith('/mekong-cli') || panePath.includes('/mekong-cli/packages'))
-            return { project: 'mekong-cli', dir: panePath };
-        return { project: path.basename(panePath), dir: panePath };
-    } catch { return null; }
+		const match = panePath.match(/\/apps\/([^\/]+)/);
+		if (match) return { project: match[1], dir: panePath };
+		if (panePath.endsWith('/mekong-cli') || panePath.includes('/mekong-cli/packages')) return { project: 'mekong-cli', dir: panePath };
+		return { project: path.basename(panePath), dir: panePath };
+	} catch {
+		return null;
+	}
 }
 
 /**
@@ -61,16 +61,18 @@ function detectRealProject(session, paneIdx) {
  * @returns {boolean}
  */
 function respawnPane(session, paneIdx, dir, flags, isOpus, log) {
-    if (paneIdx === 0) {
-        log('P0: IRON GUARD — BLOCKED respawnPane (Chairman pane protected)');
-        return false;
-    }
-    const prefix = isOpus ? 'CLAUDE_CONFIG_DIR=~/.claude-opus ' : '';
-    const cmd = `${prefix}${CLAUDE_BIN} --dangerously-skip-permissions${flags ? ' ' + flags : ''}`;
-    try {
-        execSync(`tmux respawn-pane -k -t ${session}.${paneIdx} -c '${dir}' '${cmd}'`);
-        return true;
-    } catch { return false; }
+	if (paneIdx === 0) {
+		log('P0: IRON GUARD — BLOCKED respawnPane (Chairman pane protected)');
+		return false;
+	}
+	const prefix = isOpus ? 'CLAUDE_CONFIG_DIR=~/.claude-opus ' : '';
+	const cmd = `${prefix}${CLAUDE_BIN} --dangerously-skip-permissions${flags ? ' ' + flags : ''}`;
+	try {
+		execSync(`tmux respawn-pane -k -t ${session}.${paneIdx} -c '${dir}' '${cmd}'`);
+		return true;
+	} catch {
+		return false;
+	}
 }
 
 /**
@@ -83,24 +85,24 @@ function respawnPane(session, paneIdx, dir, flags, isOpus, log) {
  * @returns {boolean}
  */
 function tmuxSendBuffer(session, paneIdx, text, log) {
-    if (paneIdx === 0) {
-        log('P0: IRON GUARD — BLOCKED tmuxSendBuffer (Chairman pane protected)');
-        return false;
-    }
-    try {
-        execSync(`tmux send-keys -t ${session}.${paneIdx} C-u`);
-        execSync('sleep 0.2');
-        const escaped = text.replace(/'/g, "'\\''");
-        execSync(`tmux send-keys -l -t ${session}.${paneIdx} '${escaped}'`);
-        execSync('sleep 0.8');
-        execSync(`tmux send-keys -t ${session}.${paneIdx} Enter`);
-        execSync('sleep 0.5');
-        execSync(`tmux send-keys -t ${session}.${paneIdx} Enter`);
-        return true;
-    } catch (e) {
-        log(`P${paneIdx}: tmux send FAILED - ${e.message}`);
-        return false;
-    }
+	if (paneIdx === 0) {
+		log('P0: IRON GUARD — BLOCKED tmuxSendBuffer (Chairman pane protected)');
+		return false;
+	}
+	try {
+		execSync(`tmux send-keys -t ${session}.${paneIdx} C-u`);
+		execSync('sleep 0.2');
+		const escaped = text.replace(/'/g, "'\\''");
+		execSync(`tmux send-keys -l -t ${session}.${paneIdx} '${escaped}'`);
+		execSync('sleep 0.8');
+		execSync(`tmux send-keys -t ${session}.${paneIdx} Enter`);
+		execSync('sleep 0.5');
+		execSync(`tmux send-keys -t ${session}.${paneIdx} Enter`);
+		return true;
+	} catch (e) {
+		log(`P${paneIdx}: tmux send FAILED - ${e.message}`);
+		return false;
+	}
 }
 
 /**
@@ -111,8 +113,10 @@ function tmuxSendBuffer(session, paneIdx, text, log) {
  * @param {string} keys - e.g. 'Enter', 'Escape', '1'
  */
 function tmuxSendKeys(session, paneIdx, keys) {
-    if (paneIdx === 0) return;
-    try { execSync(`tmux send-keys -t ${session}.${paneIdx} ${keys}`); } catch { }
+	if (paneIdx === 0) return;
+	try {
+		execSync(`tmux send-keys -t ${session}.${paneIdx} ${keys}`);
+	} catch {}
 }
 
 module.exports = { tmuxCapture, detectRealProject, respawnPane, tmuxSendBuffer, tmuxSendKeys };

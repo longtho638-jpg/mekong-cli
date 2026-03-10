@@ -24,13 +24,13 @@ const { runMission } = require('./brain-mission-runner');
 const { isOverheating, getSystemMetrics, checkStuckIntervention } = require('./brain-system-monitor');
 
 module.exports = {
-  spawnBrain,
-  killBrain,
-  isBrainAlive,
-  runMission,
-  log,
-  isOverheating,
-  getSystemMetrics,
-  checkStuckIntervention,
-  capturePane,
+	spawnBrain,
+	killBrain,
+	isBrainAlive,
+	runMission,
+	log,
+	isOverheating,
+	getSystemMetrics,
+	checkStuckIntervention,
+	capturePane,
 };

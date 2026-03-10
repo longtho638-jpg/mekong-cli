@@ -21,57 +21,59 @@ const GOG = '/opt/homebrew/bin/gog';
 
 // Dual Ultra accounts
 const ACCOUNTS = {
-    billwill: process.env.GOG_ACCOUNT_1 || '',   // Set after OAuth
-    cashback: process.env.GOG_ACCOUNT_2 || ''     // Set after OAuth
+	billwill: process.env.GOG_ACCOUNT_1 || '', // Set after OAuth
+	cashback: process.env.GOG_ACCOUNT_2 || '', // Set after OAuth
 };
 
 if (!fs.existsSync(INTEL_DIR)) fs.mkdirSync(INTEL_DIR, { recursive: true });
 
 function log(msg) {
-    const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
-    try { fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [GOOGLE-ULTRA] ${msg}\n`); } catch (e) { }
+	const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+	try {
+		fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [GOOGLE-ULTRA] ${msg}\n`);
+	} catch (e) {}
 }
 
 /**
  * Get the first available authenticated account.
  */
 function getAccount() {
-    // Method 1: Parse gog auth status plain text output
-    try {
-        const status = execSync(`${GOG} auth status -p 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
-        const accountMatch = status.match(/^account\s+(.+@.+)$/m);
-        if (accountMatch) return accountMatch[1].trim();
-    } catch (e) { }
+	// Method 1: Parse gog auth status plain text output
+	try {
+		const status = execSync(`${GOG} auth status -p 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+		const accountMatch = status.match(/^account\s+(.+@.+)$/m);
+		if (accountMatch) return accountMatch[1].trim();
+	} catch (e) {}
 
-    // Method 2: Hardcoded accounts (known Ultra accounts)
-    const knownAccounts = ['billwill.mentor@gmail.com', 'cashback.mentoring@gmail.com'];
-    for (const acc of knownAccounts) {
-        try {
-            execSync(`${GOG} me -a "${acc}" --no-input 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
-            return acc;
-        } catch (e) { }
-    }
+	// Method 2: Hardcoded accounts (known Ultra accounts)
+	const knownAccounts = ['billwill.mentor@gmail.com', 'cashback.mentoring@gmail.com'];
+	for (const acc of knownAccounts) {
+		try {
+			execSync(`${GOG} me -a "${acc}" --no-input 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+			return acc;
+		} catch (e) {}
+	}
 
-    return null;
+	return null;
 }
 
 /**
  * Execute a gog command with JSON output.
  */
 function gog(command, account = null) {
-    const acc = account || getAccount();
-    if (!acc) {
-        log('ERROR: No authenticated account — run `gog login <email>` first');
-        return null;
-    }
-    try {
-        const cmd = `${GOG} ${command} -a "${acc}" --json --results-only 2>/dev/null`;
-        const result = execSync(cmd, { encoding: 'utf-8', timeout: 15000 });
-        return JSON.parse(result);
-    } catch (e) {
-        log(`GOG ERROR: ${e.message?.slice(0, 100)}`);
-        return null;
-    }
+	const acc = account || getAccount();
+	if (!acc) {
+		log('ERROR: No authenticated account — run `gog login <email>` first');
+		return null;
+	}
+	try {
+		const cmd = `${GOG} ${command} -a "${acc}" --json --results-only 2>/dev/null`;
+		const result = execSync(cmd, { encoding: 'utf-8', timeout: 15000 });
+		return JSON.parse(result);
+	} catch (e) {
+		log(`GOG ERROR: ${e.message?.slice(0, 100)}`);
+		return null;
+	}
 }
 
 // ═══════════════════════════════════════════════════
@@ -82,25 +84,28 @@ function gog(command, account = null) {
  * Search Google Drive for documents related to a query.
  */
 function searchDrive(query, maxResults = 5) {
-    log(`🔍 DRIVE SEARCH: "${query}"`);
-    const results = gog(`drive search "${query}" --limit ${maxResults}`);
-    if (!results) return [];
+	log(`🔍 DRIVE SEARCH: "${query}"`);
+	const results = gog(`drive search "${query}" --limit ${maxResults}`);
+	if (!results) return [];
 
-    const files = (Array.isArray(results) ? results : results.files || []).slice(0, maxResults);
-    log(`📂 Found ${files.length} files`);
-    return files.map(f => ({
-        id: f.id, name: f.name, mimeType: f.mimeType,
-        modifiedTime: f.modifiedTime, webViewLink: f.webViewLink
-    }));
+	const files = (Array.isArray(results) ? results : results.files || []).slice(0, maxResults);
+	log(`📂 Found ${files.length} files`);
+	return files.map((f) => ({
+		id: f.id,
+		name: f.name,
+		mimeType: f.mimeType,
+		modifiedTime: f.modifiedTime,
+		webViewLink: f.webViewLink,
+	}));
 }
 
 /**
  * Read a Google Doc's content.
  */
 function readDoc(fileId) {
-    log(`📄 READING DOC: ${fileId}`);
-    const result = gog(`docs export ${fileId} --format txt`);
-    return result;
+	log(`📄 READING DOC: ${fileId}`);
+	const result = gog(`docs export ${fileId} --format txt`);
+	return result;
 }
 
 // ═══════════════════════════════════════════════════
@@ -111,9 +116,9 @@ function readDoc(fileId) {
  * Read data from a Google Sheet.
  */
 function readSheet(sheetId, range = 'A1:Z100') {
-    log(`📊 READING SHEET: ${sheetId} [${range}]`);
-    const result = gog(`sheets get ${sheetId} --range "${range}"`);
-    return result;
+	log(`📊 READING SHEET: ${sheetId} [${range}]`);
+	const result = gog(`sheets get ${sheetId} --range "${range}"`);
+	return result;
 }
 
 // ═══════════════════════════════════════════════════
@@ -124,13 +129,13 @@ function readSheet(sheetId, range = 'A1:Z100') {
  * Search Gmail for relevant technical discussions.
  */
 function searchGmail(query, maxResults = 5) {
-    log(`📧 GMAIL SEARCH: "${query}"`);
-    const results = gog(`gmail search "${query}" --limit ${maxResults}`);
-    if (!results) return [];
+	log(`📧 GMAIL SEARCH: "${query}"`);
+	const results = gog(`gmail search "${query}" --limit ${maxResults}`);
+	if (!results) return [];
 
-    const messages = (Array.isArray(results) ? results : results.messages || []).slice(0, maxResults);
-    log(`📧 Found ${messages.length} emails`);
-    return messages;
+	const messages = (Array.isArray(results) ? results : results.messages || []).slice(0, maxResults);
+	log(`📧 Found ${messages.length} emails`);
+	return messages;
 }
 
 // ═══════════════════════════════════════════════════
@@ -141,9 +146,9 @@ function searchGmail(query, maxResults = 5) {
  * Get upcoming events (deadlines, meetings).
  */
 function getCalendarEvents(maxResults = 10) {
-    log(`📅 CALENDAR: Getting upcoming events`);
-    const results = gog(`calendar list --limit ${maxResults}`);
-    return results;
+	log(`📅 CALENDAR: Getting upcoming events`);
+	const results = gog(`calendar list --limit ${maxResults}`);
+	return results;
 }
 
 // ═══════════════════════════════════════════════════
@@ -155,48 +160,54 @@ function getCalendarEvents(maxResults = 10) {
  * Searches Drive, Gmail, and Calendar for relevant project intel.
  */
 async function gatherProjectIntel(projectName) {
-    log(`🧠 GATHERING INTEL for: ${projectName}`);
+	log(`🧠 GATHERING INTEL for: ${projectName}`);
 
-    const account = getAccount();
-    if (!account) {
-        log(`❌ No authenticated accounts — CTO cannot access Google ecosystem`);
-        return { error: 'No authenticated Google accounts', setupCmd: 'gog login <email>' };
-    }
+	const account = getAccount();
+	if (!account) {
+		log(`❌ No authenticated accounts — CTO cannot access Google ecosystem`);
+		return { error: 'No authenticated Google accounts', setupCmd: 'gog login <email>' };
+	}
 
-    const intel = {
-        project: projectName,
-        account,
-        timestamp: new Date().toISOString(),
-        drive: [],
-        emails: [],
-        calendar: [],
-    };
+	const intel = {
+		project: projectName,
+		account,
+		timestamp: new Date().toISOString(),
+		drive: [],
+		emails: [],
+		calendar: [],
+	};
 
-    // Search Drive for project docs
-    try {
-        intel.drive = searchDrive(`${projectName} specification design`, 5);
-    } catch (e) { log(`Drive search failed: ${e.message}`); }
+	// Search Drive for project docs
+	try {
+		intel.drive = searchDrive(`${projectName} specification design`, 5);
+	} catch (e) {
+		log(`Drive search failed: ${e.message}`);
+	}
 
-    // Search Gmail for project discussions
-    try {
-        intel.emails = searchGmail(`${projectName} bug fix deploy`, 3);
-    } catch (e) { log(`Gmail search failed: ${e.message}`); }
+	// Search Gmail for project discussions
+	try {
+		intel.emails = searchGmail(`${projectName} bug fix deploy`, 3);
+	} catch (e) {
+		log(`Gmail search failed: ${e.message}`);
+	}
 
-    // Get upcoming deadlines
-    try {
-        intel.calendar = getCalendarEvents(5);
-    } catch (e) { log(`Calendar failed: ${e.message}`); }
+	// Get upcoming deadlines
+	try {
+		intel.calendar = getCalendarEvents(5);
+	} catch (e) {
+		log(`Calendar failed: ${e.message}`);
+	}
 
-    // Save intel
-    const filename = `intel_${projectName}_${Date.now()}.json`;
-    try {
-        fs.writeFileSync(path.join(INTEL_DIR, filename), JSON.stringify(intel, null, 2));
-    } catch (e) { }
+	// Save intel
+	const filename = `intel_${projectName}_${Date.now()}.json`;
+	try {
+		fs.writeFileSync(path.join(INTEL_DIR, filename), JSON.stringify(intel, null, 2));
+	} catch (e) {}
 
-    const totalItems = (intel.drive?.length || 0) + (intel.emails?.length || 0) + (intel.calendar?.length || 0);
-    log(`✅ INTEL GATHERED: ${totalItems} items for ${projectName} → ${filename}`);
+	const totalItems = (intel.drive?.length || 0) + (intel.emails?.length || 0) + (intel.calendar?.length || 0);
+	log(`✅ INTEL GATHERED: ${totalItems} items for ${projectName} → ${filename}`);
 
-    return intel;
+	return intel;
 }
 
 // ═══════════════════════════════════════════════════
@@ -207,18 +218,18 @@ async function gatherProjectIntel(projectName) {
  * Create a Google Task for mission tracking.
  */
 function createTask(title, notes = '') {
-    log(`📋 CREATING TASK: "${title}"`);
-    const escaped = title.replace(/"/g, '\\"');
-    const notesEsc = notes.replace(/"/g, '\\"');
-    return gog(`tasks add "${escaped}" --notes "${notesEsc}"`);
+	log(`📋 CREATING TASK: "${title}"`);
+	const escaped = title.replace(/"/g, '\\"');
+	const notesEsc = notes.replace(/"/g, '\\"');
+	return gog(`tasks add "${escaped}" --notes "${notesEsc}"`);
 }
 
 /**
  * List current Google Tasks.
  */
 function listTasks(maxResults = 10) {
-    log(`📋 LISTING TASKS`);
-    return gog(`tasks list --limit ${maxResults}`);
+	log(`📋 LISTING TASKS`);
+	return gog(`tasks list --limit ${maxResults}`);
 }
 
 // ═══════════════════════════════════════════════════
@@ -229,39 +240,39 @@ function listTasks(maxResults = 10) {
  * Deep Drive search with multiple queries for comprehensive project intel.
  */
 function deepDriveSearch(projectName) {
-    const queries = [
-        `${projectName} specification`,
-        `${projectName} design architecture`,
-        `${projectName} bug report`,
-        `${projectName} roadmap plan`,
-        `${projectName} api documentation`
-    ];
+	const queries = [
+		`${projectName} specification`,
+		`${projectName} design architecture`,
+		`${projectName} bug report`,
+		`${projectName} roadmap plan`,
+		`${projectName} api documentation`,
+	];
 
-    const allFiles = [];
-    for (const q of queries) {
-        try {
-            const files = searchDrive(q, 3);
-            for (const f of files) {
-                if (!allFiles.some(existing => existing.id === f.id)) {
-                    allFiles.push(f);
-                }
-            }
-        } catch (e) { }
-        if (allFiles.length >= 10) break;
-    }
+	const allFiles = [];
+	for (const q of queries) {
+		try {
+			const files = searchDrive(q, 3);
+			for (const f of files) {
+				if (!allFiles.some((existing) => existing.id === f.id)) {
+					allFiles.push(f);
+				}
+			}
+		} catch (e) {}
+		if (allFiles.length >= 10) break;
+	}
 
-    log(`📂 DEEP SEARCH: Found ${allFiles.length} unique files for ${projectName}`);
-    return allFiles;
+	log(`📂 DEEP SEARCH: Found ${allFiles.length} unique files for ${projectName}`);
+	return allFiles;
 }
 
 /**
  * Upload a report/artifact to Google Drive.
  */
 function uploadToDrive(localPath, folderId = null) {
-    log(`📤 UPLOADING: ${path.basename(localPath)}`);
-    let cmd = `drive upload "${localPath}"`;
-    if (folderId) cmd += ` --parent "${folderId}"`;
-    return gog(cmd);
+	log(`📤 UPLOADING: ${path.basename(localPath)}`);
+	let cmd = `drive upload "${localPath}"`;
+	if (folderId) cmd += ` --parent "${folderId}"`;
+	return gog(cmd);
 }
 
 // ═══════════════════════════════════════════════════
@@ -277,69 +288,83 @@ const INTEL_INTERVAL = 10 * 60 * 1000; // 10 minutes
  * records insights to cross-session memory.
  */
 function startIntelLoop(projects = ['well']) {
-    if (intelLoopRef) return;
+	if (intelLoopRef) return;
 
-    log(`🔄 INTEL LOOP: Started (${INTEL_INTERVAL / 60000}min interval, projects: ${projects.join(', ')})`);
+	log(`🔄 INTEL LOOP: Started (${INTEL_INTERVAL / 60000}min interval, projects: ${projects.join(', ')})`);
 
-    intelLoopRef = setInterval(async () => {
-        const acc = getAccount();
-        if (!acc) return;
+	intelLoopRef = setInterval(async () => {
+		const acc = getAccount();
+		if (!acc) return;
 
-        for (const project of projects) {
-            try {
-                // Gather fresh intel
-                const intel = await gatherProjectIntel(project);
-                if (!intel || intel.error) continue;
+		for (const project of projects) {
+			try {
+				// Gather fresh intel
+				const intel = await gatherProjectIntel(project);
+				if (!intel || intel.error) continue;
 
-                // Record insights to cross-session memory
-                try {
-                    const { recordInsight } = require('./self-analyzer');
-                    const driveCount = (intel.drive || []).length;
-                    const emailCount = (intel.emails || []).length;
+				// Record insights to cross-session memory
+				try {
+					const { recordInsight } = require('./self-analyzer');
+					const driveCount = (intel.drive || []).length;
+					const emailCount = (intel.emails || []).length;
 
-                    if (driveCount > 0) {
-                        const fileNames = intel.drive.map(f => f.name).join(', ');
-                        recordInsight(project, `Drive has ${driveCount} docs: ${fileNames}`, 'documentation');
-                    }
-                    if (emailCount > 0) {
-                        recordInsight(project, `${emailCount} relevant email discussions found`, 'communication');
-                    }
-                } catch (e) { }
+					if (driveCount > 0) {
+						const fileNames = intel.drive.map((f) => f.name).join(', ');
+						recordInsight(project, `Drive has ${driveCount} docs: ${fileNames}`, 'documentation');
+					}
+					if (emailCount > 0) {
+						recordInsight(project, `${emailCount} relevant email discussions found`, 'communication');
+					}
+				} catch (e) {}
 
-                // Create/update Google Task for tracking
-                try {
-                    createTask(`[CTO] ${project} intel scan — ${new Date().toLocaleDateString()}`,
-                        `Drive: ${(intel.drive || []).length} files, Gmail: ${(intel.emails || []).length} emails, Calendar: ${(intel.calendar || []).length} events`);
-                } catch (e) { }
-
-            } catch (e) {
-                log(`INTEL LOOP ERROR [${project}]: ${e.message}`);
-            }
-        }
-    }, INTEL_INTERVAL);
+				// Create/update Google Task for tracking
+				try {
+					createTask(
+						`[CTO] ${project} intel scan — ${new Date().toLocaleDateString()}`,
+						`Drive: ${(intel.drive || []).length} files, Gmail: ${(intel.emails || []).length} emails, Calendar: ${(intel.calendar || []).length} events`,
+					);
+				} catch (e) {}
+			} catch (e) {
+				log(`INTEL LOOP ERROR [${project}]: ${e.message}`);
+			}
+		}
+	}, INTEL_INTERVAL);
 }
 
 function stopIntelLoop() {
-    if (intelLoopRef) { clearInterval(intelLoopRef); intelLoopRef = null; }
+	if (intelLoopRef) {
+		clearInterval(intelLoopRef);
+		intelLoopRef = null;
+	}
 }
 
 /**
  * Check auth status for both Ultra accounts.
  */
 function checkAuthStatus() {
-    try {
-        const result = execSync(`${GOG} auth status 2>&1`, { encoding: 'utf-8', timeout: 5000 });
-        log(`AUTH STATUS: ${result.trim().slice(0, 100)}`);
-        return result;
-    } catch (e) {
-        return 'No accounts authenticated';
-    }
+	try {
+		const result = execSync(`${GOG} auth status 2>&1`, { encoding: 'utf-8', timeout: 5000 });
+		log(`AUTH STATUS: ${result.trim().slice(0, 100)}`);
+		return result;
+	} catch (e) {
+		return 'No accounts authenticated';
+	}
 }
 
 module.exports = {
-    searchDrive, readDoc, readSheet, searchGmail,
-    getCalendarEvents, gatherProjectIntel, uploadToDrive,
-    checkAuthStatus, getAccount, gog,
-    createTask, listTasks, deepDriveSearch,
-    startIntelLoop, stopIntelLoop
+	searchDrive,
+	readDoc,
+	readSheet,
+	searchGmail,
+	getCalendarEvents,
+	gatherProjectIntel,
+	uploadToDrive,
+	checkAuthStatus,
+	getAccount,
+	gog,
+	createTask,
+	listTasks,
+	deepDriveSearch,
+	startIntelLoop,
+	stopIntelLoop,
 };

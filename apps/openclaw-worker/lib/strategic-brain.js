@@ -26,93 +26,95 @@ const COOLDOWN_MS = 30 * 60 * 1000; // 30 minutes — prevent rapid-fire loop (C
 // Ensure data dir exists
 const DATA_DIR = path.dirname(STRATEGIC_STATE_FILE);
 if (!fs.existsSync(DATA_DIR)) {
-  fs.mkdirSync(DATA_DIR, { recursive: true });
+	fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
 // --- State Management ---
 
 function loadStrategicState() {
-  try {
-    if (fs.existsSync(STRATEGIC_STATE_FILE)) {
-      return JSON.parse(fs.readFileSync(STRATEGIC_STATE_FILE, 'utf-8'));
-    }
-  } catch (e) { }
-  return {};
+	try {
+		if (fs.existsSync(STRATEGIC_STATE_FILE)) {
+			return JSON.parse(fs.readFileSync(STRATEGIC_STATE_FILE, 'utf-8'));
+		}
+	} catch (e) {}
+	return {};
 }
 
 function saveStrategicState(state) {
-  try {
-    fs.writeFileSync(STRATEGIC_STATE_FILE, JSON.stringify(state, null, 2));
-  } catch (e) {
-    log(`[STRATEGIC] Failed to save state: ${e.message}`);
-  }
+	try {
+		fs.writeFileSync(STRATEGIC_STATE_FILE, JSON.stringify(state, null, 2));
+	} catch (e) {
+		log(`[STRATEGIC] Failed to save state: ${e.message}`);
+	}
 }
 
 // --- Learning Insights Integration ---
 
 function getFailedTaskIds() {
-  try {
-    if (!fs.existsSync(INSIGHTS_FILE)) return [];
-    const insights = JSON.parse(fs.readFileSync(INSIGHTS_FILE, 'utf-8'));
-    // Extract task IDs that frequently fail from insights
-    const failureReasons = insights.stats?.failureReasons || [];
-    return failureReasons;
-  } catch (e) {
-    return [];
-  }
+	try {
+		if (!fs.existsSync(INSIGHTS_FILE)) return [];
+		const insights = JSON.parse(fs.readFileSync(INSIGHTS_FILE, 'utf-8'));
+		// Extract task IDs that frequently fail from insights
+		const failureReasons = insights.stats?.failureReasons || [];
+		return failureReasons;
+	} catch (e) {
+		return [];
+	}
 }
 
 // --- Task Selection (Weighted Random) ---
 
 async function selectStrategicTask(project, projectState, capabilityFilter = () => true) {
-  const tasks = config.BINH_PHAP_TASKS.filter(capabilityFilter);
-  const taskHistory = projectState.taskHistory || {};
-  const failedIds = getFailedTaskIds();
+	const tasks = config.BINH_PHAP_TASKS.filter(capabilityFilter);
+	const taskHistory = projectState.taskHistory || {};
+	const failedIds = getFailedTaskIds();
 
-  if (tasks.length === 0) return null;
+	if (tasks.length === 0) return null;
 
-  // Weight each task: lower count = higher weight, failed tasks get lower weight
-  // 🧠 LLM VISION: Try intelligent task selection first
-  try {
-    const { selectNextTask } = require('./llm-interpreter');
-    const llmPick = await selectNextTask(
-      projectState?.currentProject || project || 'well',
-      taskHistory,
-      tasks.map(t => ({ id: t.id, cmd: t.cmd, complexity: t.complexity }))
-    );
-    if (llmPick?.taskId) {
-      const found = tasks.find(t => t.id === llmPick.taskId);
-      if (found) return found;
-    }
-  } catch (e) {
-    // LLM failed — fall back to weighted random
-  }
+	// Weight each task: lower count = higher weight, failed tasks get lower weight
+	// 🧠 LLM VISION: Try intelligent task selection first
+	try {
+		const { selectNextTask } = require('./llm-interpreter');
+		const llmPick = await selectNextTask(
+			projectState?.currentProject || project || 'well',
+			taskHistory,
+			tasks.map((t) => ({ id: t.id, cmd: t.cmd, complexity: t.complexity })),
+		);
+		if (llmPick?.taskId) {
+			const found = tasks.find((t) => t.id === llmPick.taskId);
+			if (found) return found;
+		}
+	} catch (e) {
+		// LLM failed — fall back to weighted random
+	}
 
-  // 🧠 LEARNING: Apply adaptive adjustments from past mission outcomes
-  let adjustments = {};
-  try { adjustments = require('./learning-engine').getTaskAdjustments(); } catch (e) { }
+	// 🧠 LEARNING: Apply adaptive adjustments from past mission outcomes
+	let adjustments = {};
+	try {
+		adjustments = require('./learning-engine').getTaskAdjustments();
+	} catch (e) {}
 
-  // Fallback: Weighted random selection (augmented by learning)
-  const weighted = tasks.map(task => {
-    const runCount = taskHistory[task.id] || 0;
-    const isFailed = failedIds.includes(task.id);
-    let weight = Math.max(1, 10 - runCount);
-    if (isFailed) weight *= 0.3;
-    if (task.complexity === 'strategic') weight *= 0.5;
-    // Apply learning adjustment (0.1 - 2.0)
-    if (adjustments[task.id]) weight *= adjustments[task.id];
-    return { task, weight };
-  });
+	// Fallback: Weighted random selection (augmented by learning)
+	const weighted = tasks.map((task) => {
+		const runCount = taskHistory[task.id] || 0;
+		const isFailed = failedIds.includes(task.id);
+		let weight = Math.max(1, 10 - runCount);
+		if (isFailed) weight *= 0.3;
+		if (task.complexity === 'strategic') weight *= 0.5;
+		// Apply learning adjustment (0.1 - 2.0)
+		if (adjustments[task.id]) weight *= adjustments[task.id];
+		return { task, weight };
+	});
 
-  const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
-  let random = Math.random() * totalWeight;
+	const totalWeight = weighted.reduce((sum, w) => sum + w.weight, 0);
+	let random = Math.random() * totalWeight;
 
-  for (const { task, weight } of weighted) {
-    random -= weight;
-    if (random <= 0) return task;
-  }
+	for (const { task, weight } of weighted) {
+		random -= weight;
+		if (random <= 0) return task;
+	}
 
-  return tasks[0];
+	return tasks[0];
 }
 
 // --- Claude Engineer Workflow (injected into every mission) ---
@@ -141,9 +143,9 @@ CORE PRINCIPLES:
 // --- Mission Generation ---
 
 function generateStrategicMission(task, project) {
-  const timestamp = Date.now();
-  const filename = `HIGH_mission_strategic_${task.id}_${project}_${timestamp}.txt`;
-  const prompt = `COMPLEXITY: ${task.complexity || 'complex'}
+	const timestamp = Date.now();
+	const filename = `HIGH_mission_strategic_${task.id}_${project}_${timestamp}.txt`;
+	const prompt = `COMPLEXITY: ${task.complexity || 'complex'}
 PROJECT: ${project}
 
 AGI LEVEL 6 — STRATEGIC MISSION (Proactive Improvement)
@@ -160,7 +162,7 @@ Focus on measurable improvements. Report findings clearly.
 Respond in TIẾNG VIỆT." --auto
 `;
 
-  return { filename, prompt };
+	return { filename, prompt };
 }
 
 // --- Main Entry Point ---
@@ -175,65 +177,66 @@ Respond in TIẾNG VIỆT." --auto
  * @returns {boolean} true if a mission was dispatched
  */
 async function tryStrategicMission(state, project, projectDir) {
-  const strategicState = loadStrategicState();
-  const projectState = strategicState[project] || {
-    lastStrategicAt: null,
-    taskHistory: {},
-    totalStrategic: 0
-  };
+	const strategicState = loadStrategicState();
+	const projectState = strategicState[project] || {
+		lastStrategicAt: null,
+		taskHistory: {},
+		totalStrategic: 0,
+	};
 
-  // Cooldown gate: 30 min between strategic missions per project
-  if (projectState.lastStrategicAt) {
-    const elapsed = Date.now() - new Date(projectState.lastStrategicAt).getTime();
-    if (elapsed < COOLDOWN_MS) {
-      const remaining = Math.round((COOLDOWN_MS - elapsed) / 60000);
-      log(`[STRATEGIC] ${project} — cooldown active (${remaining}min remaining). Skipping.`);
-      return false;
-    }
-  }
+	// Cooldown gate: 30 min between strategic missions per project
+	if (projectState.lastStrategicAt) {
+		const elapsed = Date.now() - new Date(projectState.lastStrategicAt).getTime();
+		if (elapsed < COOLDOWN_MS) {
+			const remaining = Math.round((COOLDOWN_MS - elapsed) / 60000);
+			log(`[STRATEGIC] ${project} — cooldown active (${remaining}min remaining). Skipping.`);
+			return false;
+		}
+	}
 
-  // 🦞 FIX 2026-02-24: Check BOTH filesystem tasks AND active missions in queue
-  const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
-  if (tasks.length > 0 || !isQueueEmpty()) {
-    log(`[STRATEGIC] ${project} — queue busy (${tasks.length} files, queueEmpty=${isQueueEmpty()}). Skipping.`);
-    return false;
-  }
+	// 🦞 FIX 2026-02-24: Check BOTH filesystem tasks AND active missions in queue
+	const tasks = fs.readdirSync(config.WATCH_DIR).filter((f) => config.TASK_PATTERN.test(f));
+	if (tasks.length > 0 || !isQueueEmpty()) {
+		log(`[STRATEGIC] ${project} — queue busy (${tasks.length} files, queueEmpty=${isQueueEmpty()}). Skipping.`);
+		return false;
+	}
 
-  // Check project capabilities (e.g. skip test_suite if no test script)
-  const pkgPath = path.join(projectDir, 'package.json');
-  let projectScripts = {};
-  try {
-    if (fs.existsSync(pkgPath)) {
-      projectScripts = JSON.parse(fs.readFileSync(pkgPath, 'utf-8')).scripts || {};
-    }
-  } catch (e) { }
+	// Check project capabilities (e.g. skip test_suite if no test script)
+	const pkgPath = path.join(projectDir, 'package.json');
+	let projectScripts = {};
+	try {
+		if (fs.existsSync(pkgPath)) {
+			projectScripts = JSON.parse(fs.readFileSync(pkgPath, 'utf-8')).scripts || {};
+		}
+	} catch (e) {}
 
-  // Select best task for this project (filter by capability)
-  const capabilityFilter = (task) => {
-    if (task.id === 'test_suite' && !projectScripts.test) return false;
-    if (task.id === 'i18n_sync' && !fs.existsSync(path.join(projectDir, 'src/i18n')) && !fs.existsSync(path.join(projectDir, 'i18n'))) return false;
-    return true;
-  };
-  const selectedTask = await selectStrategicTask(project, projectState, capabilityFilter);
-  if (!selectedTask) {
-    log(`[STRATEGIC] ${project} — no applicable tasks for this project's capabilities. Skipping.`);
-    return false;
-  }
+	// Select best task for this project (filter by capability)
+	const capabilityFilter = (task) => {
+		if (task.id === 'test_suite' && !projectScripts.test) return false;
+		if (task.id === 'i18n_sync' && !fs.existsSync(path.join(projectDir, 'src/i18n')) && !fs.existsSync(path.join(projectDir, 'i18n')))
+			return false;
+		return true;
+	};
+	const selectedTask = await selectStrategicTask(project, projectState, capabilityFilter);
+	if (!selectedTask) {
+		log(`[STRATEGIC] ${project} — no applicable tasks for this project's capabilities. Skipping.`);
+		return false;
+	}
 
-  // 🧠 AGI Level 9: Every 5th mission, generate a CUSTOM mission via LLM
-  const useCustomMission = (projectState.totalStrategic + 1) % 5 === 0;
-  let filename, prompt;
+	// 🧠 AGI Level 9: Every 5th mission, generate a CUSTOM mission via LLM
+	const useCustomMission = (projectState.totalStrategic + 1) % 5 === 0;
+	let filename, prompt;
 
-  if (useCustomMission) {
-    try {
-      const { generateCustomMission } = require('./mission-generator');
-      const { getReport } = require('./learning-engine');
-      const learningReport = getReport();
-      const customTask = await generateCustomMission(projectDir, learningReport);
-      if (customTask?.cmd) {
-        const ts = Date.now();
-        filename = `HIGH_mission_custom_${project}_${ts}.txt`;
-        prompt = `COMPLEXITY: medium
+	if (useCustomMission) {
+		try {
+			const { generateCustomMission } = require('./mission-generator');
+			const { getReport } = require('./learning-engine');
+			const learningReport = getReport();
+			const customTask = await generateCustomMission(projectDir, learningReport);
+			if (customTask?.cmd) {
+				const ts = Date.now();
+				filename = `HIGH_mission_custom_${project}_${ts}.txt`;
+				prompt = `COMPLEXITY: medium
 PROJECT: ${project}
 
 AGI LEVEL 9 — CUSTOM MISSION (LLM-Generated)
@@ -249,29 +252,29 @@ Reason: ${customTask.reason || 'LLM-identified improvement'}
 Focus on measurable improvements. Max 5 files.
 Respond in TIẾNG VIỆT." --auto
 `;
-        log(`[STRATEGIC] 🧠 Level 9 — CUSTOM MISSION: "${customTask.cmd}" for ${project}`);
-      }
-    } catch (e) {
-      log(`[STRATEGIC] Custom mission gen failed: ${e.message}`);
-    }
-  }
+				log(`[STRATEGIC] 🧠 Level 9 — CUSTOM MISSION: "${customTask.cmd}" for ${project}`);
+			}
+		} catch (e) {
+			log(`[STRATEGIC] Custom mission gen failed: ${e.message}`);
+		}
+	}
 
-  // Fallback: use static task selection
-  if (!filename) {
-    ({ filename, prompt } = generateStrategicMission(selectedTask, project));
-  }
+	// Fallback: use static task selection
+	if (!filename) {
+		({ filename, prompt } = generateStrategicMission(selectedTask, project));
+	}
 
-  // 🌐 GOOGLE ULTRA: Gather ecosystem intel before dispatching
-  let googleIntel = '';
-  try {
-    const { gatherProjectIntel } = require('./google-ultra');
-    const intel = await gatherProjectIntel(project);
-    if (intel && !intel.error) {
-      const driveFiles = (intel.drive || []).map(f => `📄 ${f.name} (${f.mimeType})`).join(', ');
-      const emails = (intel.emails || []).length;
-      const events = (intel.calendar || []).length;
-      if (driveFiles || emails || events) {
-        googleIntel = `
+	// 🌐 GOOGLE ULTRA: Gather ecosystem intel before dispatching
+	let googleIntel = '';
+	try {
+		const { gatherProjectIntel } = require('./google-ultra');
+		const intel = await gatherProjectIntel(project);
+		if (intel && !intel.error) {
+			const driveFiles = (intel.drive || []).map((f) => `📄 ${f.name} (${f.mimeType})`).join(', ');
+			const emails = (intel.emails || []).length;
+			const events = (intel.calendar || []).length;
+			if (driveFiles || emails || events) {
+				googleIntel = `
 GOOGLE ULTRA INTEL (searched Drive/Gmail/Calendar):
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ${driveFiles ? `DRIVE: ${driveFiles}` : ''}
@@ -279,47 +282,49 @@ ${emails ? `GMAIL: ${emails} relevant discussions found` : ''}
 ${events ? `CALENDAR: ${events} upcoming events` : ''}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `;
-        log(`[STRATEGIC] [GOOGLE-ULTRA] Intel gathered: ${(intel.drive || []).length} drive files, ${emails} emails, ${events} events`);
-      }
-    }
-  } catch (e) {
-    log(`[STRATEGIC] Google Ultra intel failed: ${e.message}`);
-  }
+				log(`[STRATEGIC] [GOOGLE-ULTRA] Intel gathered: ${(intel.drive || []).length} drive files, ${emails} emails, ${events} events`);
+			}
+		}
+	} catch (e) {
+		log(`[STRATEGIC] Google Ultra intel failed: ${e.message}`);
+	}
 
-  // Inject Google intel into mission prompt
-  if (googleIntel) prompt = prompt + '\n' + googleIntel;
+	// Inject Google intel into mission prompt
+	if (googleIntel) prompt = prompt + '\n' + googleIntel;
 
-  // 🤖 JULES DISPATCH: Every 3rd mission goes to Jules for auto-PR on GitHub
-  const useJules = (projectState.totalStrategic + 1) % 3 === 0;
-  if (useJules) {
-    try {
-      const { dispatchStrategicTask } = require('./jules-agent');
-      const taskDesc = useCustomMission
-        ? prompt.match(/\/cook "([^"]+)/)?.[1] || 'Improve code quality'
-        : `${selectedTask.id}: Strategic improvement for ${project}`;
-      const session = await dispatchStrategicTask(project, taskDesc);
-      if (session) {
-        log(`[STRATEGIC] 🤖 JULES DISPATCHED: Session ${session.id} — "${taskDesc.slice(0, 60)}..." for ${project} (auto-PR)`);
-      }
-    } catch (e) {
-      log(`[STRATEGIC] Jules dispatch failed: ${e.message}`);
-    }
-  }
+	// 🤖 JULES DISPATCH: Every 3rd mission goes to Jules for auto-PR on GitHub
+	const useJules = (projectState.totalStrategic + 1) % 3 === 0;
+	if (useJules) {
+		try {
+			const { dispatchStrategicTask } = require('./jules-agent');
+			const taskDesc = useCustomMission
+				? prompt.match(/\/cook "([^"]+)/)?.[1] || 'Improve code quality'
+				: `${selectedTask.id}: Strategic improvement for ${project}`;
+			const session = await dispatchStrategicTask(project, taskDesc);
+			if (session) {
+				log(`[STRATEGIC] 🤖 JULES DISPATCHED: Session ${session.id} — "${taskDesc.slice(0, 60)}..." for ${project} (auto-PR)`);
+			}
+		} catch (e) {
+			log(`[STRATEGIC] Jules dispatch failed: ${e.message}`);
+		}
+	}
 
-  // 🦞 RE-ENABLED 2026-02-24: Deep 10x scanning for WellNexus zero-bug target
-  const missionPath = path.join(config.WATCH_DIR, filename);
-  fs.writeFileSync(missionPath, prompt);
+	// 🦞 RE-ENABLED 2026-02-24: Deep 10x scanning for WellNexus zero-bug target
+	const missionPath = path.join(config.WATCH_DIR, filename);
+	fs.writeFileSync(missionPath, prompt);
 
-  // Update strategic state
-  projectState.lastStrategicAt = new Date().toISOString();
-  projectState.taskHistory[selectedTask.id] = (projectState.taskHistory[selectedTask.id] || 0) + 1;
-  projectState.totalStrategic++;
-  strategicState[project] = projectState;
-  saveStrategicState(strategicState);
+	// Update strategic state
+	projectState.lastStrategicAt = new Date().toISOString();
+	projectState.taskHistory[selectedTask.id] = (projectState.taskHistory[selectedTask.id] || 0) + 1;
+	projectState.totalStrategic++;
+	strategicState[project] = projectState;
+	saveStrategicState(strategicState);
 
-  log(`[STRATEGIC] 🧠 Level ${useCustomMission ? '9' : '8'} — Dispatched: ${useCustomMission ? 'CUSTOM' : selectedTask.id} for ${project} (total: ${projectState.totalStrategic})${useJules ? ' [+JULES PR]' : ''}`);
+	log(
+		`[STRATEGIC] 🧠 Level ${useCustomMission ? '9' : '8'} — Dispatched: ${useCustomMission ? 'CUSTOM' : selectedTask.id} for ${project} (total: ${projectState.totalStrategic})${useJules ? ' [+JULES PR]' : ''}`,
+	);
 
-  return true;
+	return true;
 }
 
 module.exports = { tryStrategicMission };

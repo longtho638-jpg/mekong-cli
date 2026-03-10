@@ -18,9 +18,11 @@ const config = require('../config');
 // Safe logger
 let log = console.log;
 try {
-  const bpm = require('./brain-process-manager');
-  if (bpm.log) log = bpm.log;
-} catch (e) { /* fallback */ }
+	const bpm = require('./brain-process-manager');
+	if (bpm.log) log = bpm.log;
+} catch (e) {
+	/* fallback */
+}
 
 // ─── CONSTANTS ──────────────────────────────────────────────────
 
@@ -39,29 +41,30 @@ const _followupTimestamps = new Map();
  * @returns {Array<{file: string, content: string, mtime: number}>}
  */
 function findRecentReports(withinMs = 10 * 60 * 1000) {
-  try {
-    if (!fs.existsSync(REPORTS_DIR)) return [];
+	try {
+		if (!fs.existsSync(REPORTS_DIR)) return [];
 
-    const now = Date.now();
-    const files = fs.readdirSync(REPORTS_DIR)
-      .filter(f => f.endsWith('.md'))
-      .map(f => {
-        const fp = path.join(REPORTS_DIR, f);
-        const stat = fs.statSync(fp);
-        return { file: f, path: fp, mtime: stat.mtimeMs };
-      })
-      .filter(f => (now - f.mtime) < withinMs)
-      .sort((a, b) => b.mtime - a.mtime);
+		const now = Date.now();
+		const files = fs
+			.readdirSync(REPORTS_DIR)
+			.filter((f) => f.endsWith('.md'))
+			.map((f) => {
+				const fp = path.join(REPORTS_DIR, f);
+				const stat = fs.statSync(fp);
+				return { file: f, path: fp, mtime: stat.mtimeMs };
+			})
+			.filter((f) => now - f.mtime < withinMs)
+			.sort((a, b) => b.mtime - a.mtime);
 
-    return files.map(f => ({
-      file: f.file,
-      content: fs.readFileSync(f.path, 'utf-8'),
-      mtime: f.mtime,
-    }));
-  } catch (e) {
-    log(`[TRADING-PMH] Error reading reports: ${e.message}`);
-    return [];
-  }
+		return files.map((f) => ({
+			file: f.file,
+			content: fs.readFileSync(f.path, 'utf-8'),
+			mtime: f.mtime,
+		}));
+	} catch (e) {
+		log(`[TRADING-PMH] Error reading reports: ${e.message}`);
+		return [];
+	}
 }
 
 /**
@@ -70,8 +73,8 @@ function findRecentReports(withinMs = 10 * 60 * 1000) {
  * @returns {string|null} Role name (e.g., 'coo', 'cfo')
  */
 function extractTradingRole(taskContent) {
-  const match = (taskContent || '').match(/\/trading:([a-z-]+)/i);
-  return match ? match[1] : null;
+	const match = (taskContent || '').match(/\/trading:([a-z-]+)/i);
+	return match ? match[1] : null;
 }
 
 // ─── POST-MISSION DECISION ─────────────────────────────────────
@@ -84,63 +87,63 @@ function extractTradingRole(taskContent) {
  * @returns {{ action: string, reason: string, followUpDispatched: boolean }}
  */
 function handleTradingMissionCompletion(taskContent, missionSuccess) {
-  const role = extractTradingRole(taskContent);
-  if (!role) {
-    return { action: 'SKIP', reason: 'Not a trading mission', followUpDispatched: false };
-  }
+	const role = extractTradingRole(taskContent);
+	if (!role) {
+		return { action: 'SKIP', reason: 'Not a trading mission', followUpDispatched: false };
+	}
 
-  // Load decision engine
-  let engine;
-  try {
-    engine = require('./trading-company-decision-engine');
-  } catch (e) {
-    log(`[TRADING-PMH] Decision engine not found: ${e.message}`);
-    return { action: 'SKIP', reason: 'No decision engine', followUpDispatched: false };
-  }
+	// Load decision engine
+	let engine;
+	try {
+		engine = require('./trading-company-decision-engine');
+	} catch (e) {
+		log(`[TRADING-PMH] Decision engine not found: ${e.message}`);
+		return { action: 'SKIP', reason: 'No decision engine', followUpDispatched: false };
+	}
 
-  // If mission failed, escalate
-  if (!missionSuccess) {
-    log(`[TRADING-PMH] /trading:${role} FAILED — flagging for review`);
-    return { action: 'ESCALATE', reason: `Mission /trading:${role} failed`, followUpDispatched: false };
-  }
+	// If mission failed, escalate
+	if (!missionSuccess) {
+		log(`[TRADING-PMH] /trading:${role} FAILED — flagging for review`);
+		return { action: 'ESCALATE', reason: `Mission /trading:${role} failed`, followUpDispatched: false };
+	}
 
-  // Find recent reports to parse
-  const reports = findRecentReports(10 * 60 * 1000);
-  if (reports.length === 0) {
-    log(`[TRADING-PMH] /trading:${role} completed but no report found`);
-    return { action: 'CONTINUE', reason: 'No report to analyze', followUpDispatched: false };
-  }
+	// Find recent reports to parse
+	const reports = findRecentReports(10 * 60 * 1000);
+	if (reports.length === 0) {
+		log(`[TRADING-PMH] /trading:${role} completed but no report found`);
+		return { action: 'CONTINUE', reason: 'No report to analyze', followUpDispatched: false };
+	}
 
-  // Parse the most recent report
-  const latestReport = reports[0];
-  const metrics = engine.parseReport(latestReport.content);
-  const decision = engine.decide(metrics);
+	// Parse the most recent report
+	const latestReport = reports[0];
+	const metrics = engine.parseReport(latestReport.content);
+	const decision = engine.decide(metrics);
 
-  log(`[TRADING-PMH] /trading:${role} report → ${decision.action}: ${decision.reason}`);
+	log(`[TRADING-PMH] /trading:${role} report → ${decision.action}: ${decision.reason}`);
 
-  // Queue follow-up if needed
-  let followUpDispatched = false;
+	// Queue follow-up if needed
+	let followUpDispatched = false;
 
-  if (decision.action === 'AUTO_FIX' && decision.cmd) {
-    followUpDispatched = dispatchFollowUp(role, decision.cmd, 'MEDIUM');
-  } else if (decision.action === 'HALT' && decision.cmd) {
-    followUpDispatched = dispatchFollowUp(role, decision.cmd, 'CRITICAL');
-  } else if (decision.action === 'ESCALATE') {
-    // Log escalation — Chairman notification (future: Telegram integration)
-    log(`[TRADING-PMH] ⚠️ ESCALATE: ${decision.reason} — requires Chairman approval`);
-  }
+	if (decision.action === 'AUTO_FIX' && decision.cmd) {
+		followUpDispatched = dispatchFollowUp(role, decision.cmd, 'MEDIUM');
+	} else if (decision.action === 'HALT' && decision.cmd) {
+		followUpDispatched = dispatchFollowUp(role, decision.cmd, 'CRITICAL');
+	} else if (decision.action === 'ESCALATE') {
+		// Log escalation — Chairman notification (future: Telegram integration)
+		log(`[TRADING-PMH] ⚠️ ESCALATE: ${decision.reason} — requires Chairman approval`);
+	}
 
-  return {
-    action: decision.action,
-    reason: decision.reason,
-    followUpDispatched,
-    metrics: {
-      healthy: metrics.healthy,
-      red_flags: metrics.red_flags,
-      errors: metrics.errors,
-      drawdown: metrics.drawdown,
-    },
-  };
+	return {
+		action: decision.action,
+		reason: decision.reason,
+		followUpDispatched,
+		metrics: {
+			healthy: metrics.healthy,
+			red_flags: metrics.red_flags,
+			errors: metrics.errors,
+			drawdown: metrics.drawdown,
+		},
+	};
 }
 
 /**
@@ -151,36 +154,37 @@ function handleTradingMissionCompletion(taskContent, missionSuccess) {
  * @returns {boolean} Whether dispatched
  */
 function dispatchFollowUp(sourceRole, command, priority) {
-  // Cooldown check
-  const cooldownKey = `${sourceRole}:${command}`;
-  const lastDispatched = _followupTimestamps.get(cooldownKey) || 0;
-  if (Date.now() - lastDispatched < FOLLOWUP_COOLDOWN_MS) {
-    log(`[TRADING-PMH] Follow-up cooldown active for ${cooldownKey}`);
-    return false;
-  }
+	// Cooldown check
+	const cooldownKey = `${sourceRole}:${command}`;
+	const lastDispatched = _followupTimestamps.get(cooldownKey) || 0;
+	if (Date.now() - lastDispatched < FOLLOWUP_COOLDOWN_MS) {
+		log(`[TRADING-PMH] Follow-up cooldown active for ${cooldownKey}`);
+		return false;
+	}
 
-  const ts = Date.now();
-  const filename = `${priority}_mission_algo_trader_trading_followup_${sourceRole}_${ts}.txt`;
-  const content = `algo-trader: ${command}\n\n` +
-    `Trả lời bằng TIẾNG VIỆT. ` +
-    `Follow-up từ /trading:${sourceRole}. ` +
-    `CRITICAL: DO NOT run git commit, git push, or /check-and-commit.`;
+	const ts = Date.now();
+	const filename = `${priority}_mission_algo_trader_trading_followup_${sourceRole}_${ts}.txt`;
+	const content =
+		`algo-trader: ${command}\n\n` +
+		`Trả lời bằng TIẾNG VIỆT. ` +
+		`Follow-up từ /trading:${sourceRole}. ` +
+		`CRITICAL: DO NOT run git commit, git push, or /check-and-commit.`;
 
-  try {
-    fs.writeFileSync(path.join(config.WATCH_DIR, filename), content);
-    _followupTimestamps.set(cooldownKey, ts);
-    log(`[TRADING-PMH] Follow-up dispatched: ${command} → ${filename}`);
-    return true;
-  } catch (e) {
-    log(`[TRADING-PMH] Follow-up write failed: ${e.message}`);
-    return false;
-  }
+	try {
+		fs.writeFileSync(path.join(config.WATCH_DIR, filename), content);
+		_followupTimestamps.set(cooldownKey, ts);
+		log(`[TRADING-PMH] Follow-up dispatched: ${command} → ${filename}`);
+		return true;
+	} catch (e) {
+		log(`[TRADING-PMH] Follow-up write failed: ${e.message}`);
+		return false;
+	}
 }
 
 // ─── EXPORTS ────────────────────────────────────────────────────
 
 module.exports = {
-  handleTradingMissionCompletion,
-  findRecentReports,
-  extractTradingRole,
+	handleTradingMissionCompletion,
+	findRecentReports,
+	extractTradingRole,
 };

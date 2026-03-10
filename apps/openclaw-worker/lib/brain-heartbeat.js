@@ -18,41 +18,43 @@ const HEARTBEAT_MAX_AGE_MS = 90_000;
 let heartbeatInterval = null;
 
 function writeHeartbeat(pid) {
-  try {
-    fs.writeFileSync(HEARTBEAT_FILE, `${new Date().toISOString()}\n${pid || process.pid}\n`);
-  } catch (e) { /* non-critical */ }
+	try {
+		fs.writeFileSync(HEARTBEAT_FILE, `${new Date().toISOString()}\n${pid || process.pid}\n`);
+	} catch (e) {
+		/* non-critical */
+	}
 }
 
 function readHeartbeatAge() {
-  try {
-    const stat = fs.statSync(HEARTBEAT_FILE);
-    return Date.now() - stat.mtimeMs;
-  } catch (e) {
-    return Infinity;
-  }
+	try {
+		const stat = fs.statSync(HEARTBEAT_FILE);
+		return Date.now() - stat.mtimeMs;
+	} catch (e) {
+		return Infinity;
+	}
 }
 
 function startHeartbeat(pid) {
-  stopHeartbeat();
-  writeHeartbeat(pid);
-  heartbeatInterval = setInterval(() => writeHeartbeat(pid), HEARTBEAT_INTERVAL_MS);
+	stopHeartbeat();
+	writeHeartbeat(pid);
+	heartbeatInterval = setInterval(() => writeHeartbeat(pid), HEARTBEAT_INTERVAL_MS);
 }
 
 function stopHeartbeat() {
-  if (heartbeatInterval) {
-    clearInterval(heartbeatInterval);
-    heartbeatInterval = null;
-  }
+	if (heartbeatInterval) {
+		clearInterval(heartbeatInterval);
+		heartbeatInterval = null;
+	}
 }
 
 function isBrainHeartbeatStale() {
-  return readHeartbeatAge() > HEARTBEAT_MAX_AGE_MS;
+	return readHeartbeatAge() > HEARTBEAT_MAX_AGE_MS;
 }
 
 module.exports = {
-  startHeartbeat,
-  stopHeartbeat,
-  isBrainHeartbeatStale,
-  readHeartbeatAge,
-  HEARTBEAT_FILE,
+	startHeartbeat,
+	stopHeartbeat,
+	isBrainHeartbeatStale,
+	readHeartbeatAge,
+	HEARTBEAT_FILE,
 };

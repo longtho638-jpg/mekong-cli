@@ -24,9 +24,11 @@ const DEPS_FILE = path.join(process.env.HOME || '', '.openclaw', 'dependencies.j
  * @returns {object}
  */
 function readDeps() {
-    try {
-        return JSON.parse(fs.readFileSync(DEPS_FILE, 'utf-8'));
-    } catch { return {}; }
+	try {
+		return JSON.parse(fs.readFileSync(DEPS_FILE, 'utf-8'));
+	} catch {
+		return {};
+	}
 }
 
 /**
@@ -34,11 +36,13 @@ function readDeps() {
  * @param {object} deps
  */
 function writeDeps(deps) {
-    try {
-        const dir = path.dirname(DEPS_FILE);
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(DEPS_FILE, JSON.stringify(deps, null, 2));
-    } catch { /* write failure non-fatal */ }
+	try {
+		const dir = path.dirname(DEPS_FILE);
+		if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+		fs.writeFileSync(DEPS_FILE, JSON.stringify(deps, null, 2));
+	} catch {
+		/* write failure non-fatal */
+	}
 }
 
 /**
@@ -50,16 +54,16 @@ function writeDeps(deps) {
  * @returns {boolean}
  */
 function canDispatch(taskId, log) {
-    const deps = readDeps();
-    const entry = deps[taskId];
-    if (!entry || !entry.depends_on) return true;
+	const deps = readDeps();
+	const entry = deps[taskId];
+	if (!entry || !entry.depends_on) return true;
 
-    const blockerResolved = !deps[entry.depends_on];
-    if (!blockerResolved) {
-        log(`COORDINATOR: ${taskId} blocked by ${entry.depends_on} — skipping dispatch`);
-        return false;
-    }
-    return true;
+	const blockerResolved = !deps[entry.depends_on];
+	if (!blockerResolved) {
+		log(`COORDINATOR: ${taskId} blocked by ${entry.depends_on} — skipping dispatch`);
+		return false;
+	}
+	return true;
 }
 
 /**
@@ -68,21 +72,21 @@ function canDispatch(taskId, log) {
  * @param {Function} log
  */
 function markComplete(taskId, log) {
-    const deps = readDeps();
-    if (!deps[taskId]) return;
+	const deps = readDeps();
+	if (!deps[taskId]) return;
 
-    const { blocks = [] } = deps[taskId];
-    delete deps[taskId];
+	const { blocks = [] } = deps[taskId];
+	delete deps[taskId];
 
-    // Remove the completed task from any blocker references
-    for (const blockedId of blocks) {
-        if (deps[blockedId] && deps[blockedId].depends_on === taskId) {
-            deps[blockedId] = { ...deps[blockedId], depends_on: null };
-            log(`COORDINATOR: ${blockedId} unblocked (${taskId} completed)`);
-        }
-    }
+	// Remove the completed task from any blocker references
+	for (const blockedId of blocks) {
+		if (deps[blockedId] && deps[blockedId].depends_on === taskId) {
+			deps[blockedId] = { ...deps[blockedId], depends_on: null };
+			log(`COORDINATOR: ${blockedId} unblocked (${taskId} completed)`);
+		}
+	}
 
-    writeDeps(deps);
+	writeDeps(deps);
 }
 
 /**
@@ -92,9 +96,9 @@ function markComplete(taskId, log) {
  * @param {string[]} blocks
  */
 function registerDependency(taskId, dependsOn, blocks = []) {
-    const deps = readDeps();
-    deps[taskId] = { depends_on: dependsOn || null, blocks };
-    writeDeps(deps);
+	const deps = readDeps();
+	deps[taskId] = { depends_on: dependsOn || null, blocks };
+	writeDeps(deps);
 }
 
 module.exports = { canDispatch, markComplete, registerDependency, readDeps };
