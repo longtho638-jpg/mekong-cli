@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgencyOS — Your company. One terminal.</title>
+  <meta name="description" content="AgencyOS is the operating system for AI-native founders. From idea to IPO, in your CLI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <style>
+    * { font-family: 'JetBrains Mono', monospace; }
+    body { background: #0a0a0a; color: #e5e7eb; }
+    .glass-card {
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+    }
+    .glass-card-featured {
+      background: rgba(139,92,246,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139,92,246,0.4);
+      border-radius: 16px;
+    }
+    @keyframes typing {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    .cursor { animation: blink 1s step-end infinite; }
+    .terminal-line { animation: slideIn 0.4s ease forwards; opacity: 0; }
+    .tl-1 { animation-delay: 0.3s; }
+    .tl-2 { animation-delay: 0.9s; }
+    .tl-3 { animation-delay: 1.5s; }
+    .tl-4 { animation-delay: 2.1s; }
+    .tl-5 { animation-delay: 2.7s; }
+    .stage-btn { cursor: pointer; transition: all 0.2s; }
+    .stage-btn:hover, .stage-btn.active { background: rgba(34,197,94,0.15); border-color: #22c55e; color: #22c55e; }
+    .tab-content { display: none; }
+    .tab-radio:checked + label { color: #22c55e; border-bottom: 2px solid #22c55e; }
+    input[type=radio] { display: none; }
+    #tab-build:checked ~ .tabs-wrap #content-build,
+    #tab-fund:checked ~ .tabs-wrap #content-fund,
+    #tab-scale:checked ~ .tabs-wrap #content-scale,
+    #tab-protect:checked ~ .tabs-wrap #content-protect,
+    #tab-ipo:checked ~ .tabs-wrap #content-ipo { display: block; }
+    .glow-green { box-shadow: 0 0 40px rgba(34,197,94,0.15); }
+    .glow-purple { box-shadow: 0 0 40px rgba(139,92,246,0.2); }
+    pre[class*="language-"] { background: #111 !important; border-radius: 8px; font-size: 13px; }
+    .stage-detail { display: none; }
+    .stage-detail.visible { display: block; animation: slideIn 0.3s ease forwards; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- NAV -->
+  <nav class="border-b border-white/5 px-6 py-4 flex items-center justify-between sticky top-0 z-50" style="background:rgba(10,10,10,0.9);backdrop-filter:blur(12px)">
+    <span class="text-white font-semibold tracking-tight">agency<span style="color:#22c55e">OS</span></span>
+    <div class="hidden md:flex gap-6 text-sm text-gray-400">
+      <a href="#journey" class="hover:text-white transition-colors">Journey</a>
+      <a href="#how-it-works" class="hover:text-white transition-colors">How It Works</a>
+      <a href="#commands" class="hover:text-white transition-colors">Commands</a>
+      <a href="#pricing" class="hover:text-white transition-colors">Pricing</a>
+    </div>
+    <a href="https://github.com/longtho638-jpg/mekong-cli" target="_blank"
+       class="text-sm px-4 py-1.5 rounded-lg border border-white/10 text-gray-300 hover:text-white hover:border-white/30 transition-all">
+      GitHub
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="px-6 pt-24 pb-20 max-w-5xl mx-auto text-center">
+    <p class="text-xs tracking-widest uppercase mb-6" style="color:#22c55e">Mekong CLI v3.1.0 · AGI Score 97.6/100</p>
+    <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6">
+      Your company.<br/>One terminal.
+    </h1>
+    <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+      AgencyOS is the operating system for AI-native founders.<br/>
+      From idea to IPO, in your CLI.
+    </p>
+
+    <!-- Terminal animation -->
+    <div class="max-w-xl mx-auto mb-12 text-left glass-card glow-green p-5 rounded-2xl">
+      <div class="flex gap-1.5 mb-4">
+        <span class="w-3 h-3 rounded-full bg-red-500/70"></span>
+        <span class="w-3 h-3 rounded-full bg-yellow-500/70"></span>
+        <span class="w-3 h-3 rounded-full bg-green-500/70"></span>
+        <span class="ml-2 text-xs text-gray-500">agencyos ~ terminal</span>
+      </div>
+      <div class="text-sm space-y-2">
+        <div class="terminal-line tl-1"><span style="color:#22c55e">$</span> <span class="text-white">mekong cook "Launch my SaaS"</span></div>
+        <div class="terminal-line tl-2 text-gray-400">📋 Planning 5 steps...</div>
+        <div class="terminal-line tl-3 text-gray-400">⚡ Executing: scaffold · tests · deploy</div>
+        <div class="terminal-line tl-4 text-gray-400">✅ All checks passed. Build: GREEN</div>
+        <div class="terminal-line tl-5"><span style="color:#22c55e">✓</span> <span class="text-white">Done in 38s. Ship it.</span><span class="cursor ml-0.5 text-green-400">_</span></div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="#pricing"
+         class="px-6 py-3 rounded-xl font-semibold text-black transition-all hover:opacity-90"
+         style="background:#22c55e">
+        Start Free
+      </a>
+      <a href="https://github.com/longtho638-jpg/mekong-cli" target="_blank"
+         class="px-6 py-3 rounded-xl font-semibold border border-white/15 text-white hover:border-white/30 transition-all">
+        View Docs
+      </a>
+    </div>
+  </section>
+
+  <!-- SOCIAL PROOF BAR -->
+  <div class="border-y border-white/5 py-4 text-center text-sm text-gray-500 tracking-wide">
+    Built on Mekong CLI &nbsp;·&nbsp; AGI Score 97.6/100 &nbsp;·&nbsp; 55 commands &nbsp;·&nbsp; MIT License
+  </div>
+
+  <!-- THE JOURNEY -->
+  <section id="journey" class="px-6 py-20 max-w-5xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">The Founder Journey</h2>
+    <p class="text-gray-400 mb-10">Every stage. Every command. One terminal.</p>
+
+    <div class="flex flex-wrap gap-2 mb-6" id="stage-nav">
+      <button onclick="showStage('idea')" class="stage-btn active px-4 py-2 text-xs border border-white/15 rounded-lg text-gray-400">IDEA</button>
+      <button onclick="showStage('build')" class="stage-btn px-4 py-2 text-xs border border-white/15 rounded-lg text-gray-400">BUILD</button>
+      <button onclick="showStage('fund')" class="stage-btn px-4 py-2 text-xs border border-white/15 rounded-lg text-gray-400">FUND</button>
+      <button onclick="showStage('scale')" class="stage-btn px-4 py-2 text-xs border border-white/15 rounded-lg text-gray-400">SCALE</button>
+      <button onclick="showStage('ipo')" class="stage-btn px-4 py-2 text-xs border border-white/15 rounded-lg text-gray-400">IPO</button>
+    </div>
+
+    <div class="glass-card p-6 min-h-32">
+      <div id="stage-idea" class="stage-detail visible">
+        <p class="text-green-400 text-xs mb-2">STAGE 1 — IDEA</p>
+        <p class="text-gray-300 mb-3">Validate your idea before writing a single line of code.</p>
+        <code class="text-sm text-green-400">/founder validate --product "AI coding assistant for solo devs"</code><br/>
+        <code class="text-sm text-green-400">/founder brand --name "DevMate" --audience "indie hackers"</code>
+      </div>
+      <div id="stage-build" class="stage-detail">
+        <p class="text-green-400 text-xs mb-2">STAGE 2 — BUILD</p>
+        <p class="text-gray-300 mb-3">Ship fast. Plan, execute, verify — with automatic rollback.</p>
+        <code class="text-sm text-green-400">mekong cook "Add Stripe billing to my FastAPI app"</code><br/>
+        <code class="text-sm text-green-400">mekong fix "Auth tokens expire after 10 minutes"</code>
+      </div>
+      <div id="stage-fund" class="stage-detail">
+        <p class="text-green-400 text-xs mb-2">STAGE 3 — FUND</p>
+        <p class="text-gray-300 mb-3">Raise from VCs. Detect red flags. Model your cap table.</p>
+        <code class="text-sm text-green-400">/founder pitch --investor yc --rounds 10</code><br/>
+        <code class="text-sm text-green-400">/founder vc/term-sheet --file term.pdf</code><br/>
+        <code class="text-sm text-green-400">/founder vc/cap-table --raise 2m --pre-money 8m</code>
+      </div>
+      <div id="stage-scale" class="stage-detail">
+        <p class="text-green-400 text-xs mb-2">STAGE 4 — SCALE</p>
+        <p class="text-gray-300 mb-3">Hire agents. Track metrics. Run weekly CEO rhythm.</p>
+        <code class="text-sm text-green-400">/founder hire --role "Head of Growth"</code><br/>
+        <code class="text-sm text-green-400">/founder metrics --period Q1 --anomaly-detect</code><br/>
+        <code class="text-sm text-green-400">/founder grow --channel "product-led"</code>
+      </div>
+      <div id="stage-ipo" class="stage-detail">
+        <p class="text-green-400 text-xs mb-2">STAGE 5 — IPO</p>
+        <p class="text-gray-300 mb-3">From S-1 draft to bell ceremony. Public company ops included.</p>
+        <code class="text-sm text-green-400">/founder ipo/pre-ipo-prep --audit</code><br/>
+        <code class="text-sm text-green-400">/founder ipo/s1 --exchange nasdaq</code><br/>
+        <code class="text-sm text-green-400">/founder ipo/ipo-day --exchange nasdaq</code>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" class="px-6 py-20 max-w-5xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">How It Works</h2>
+    <p class="text-gray-400 mb-12">Three steps. Zero babysitting.</p>
+
+    <div class="grid md:grid-cols-3 gap-6 mb-12">
+      <div class="glass-card p-6">
+        <p class="text-xs text-gray-500 mb-2">01 — INSTALL</p>
+        <p class="text-white font-semibold mb-4">Get running in 60 seconds</p>
+        <pre><code class="language-bash">pip install mekong-cli</code></pre>
+      </div>
+      <div class="glass-card p-6">
+        <p class="text-xs text-gray-500 mb-2">02 — CONFIGURE</p>
+        <p class="text-white font-semibold mb-4">Connect any LLM provider</p>
+        <pre><code class="language-bash">export LLM_BASE_URL="..."
+export LLM_API_KEY="sk-..."</code></pre>
+      </div>
+      <div class="glass-card p-6">
+        <p class="text-xs text-gray-500 mb-2">03 — RUN</p>
+        <p class="text-white font-semibold mb-4">Describe your goal, ship it</p>
+        <pre><code class="language-bash">mekong cook "Build a SaaS"</code></pre>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="glass-card p-6">
+      <p class="text-xs text-gray-500 mb-4">ARCHITECTURE — Plan · Execute · Verify</p>
+      <pre class="text-xs text-gray-300 overflow-x-auto"><code>┌──────────────────────────────────────────────────────────────┐
+│                    AgencyOS (RaaS Layer)                      │
+│  Dashboard · /v1/missions · MCU Billing · Polar.sh Webhooks  │
+├──────────────────────────────────────────────────────────────┤
+│                   OpenClaw (Orchestrator)                     │
+├───────────┬───────────┬────────────┬─────────────────────────┤
+│  📋 PLAN   │  ⚡ EXEC   │  ✅ VERIFY  │      🤖 AGENTS          │
+│  planner  │  executor │  verifier  │  git·file·shell·lead    │
+├───────────┴───────────┴────────────┴─────────────────────────┤
+│                        LLM Router                             │
+│   Claude · Gemini · Qwen · Ollama · Antigravity Proxy:9191   │
+└──────────────────────────────────────────────────────────────┘</code></pre>
+    </div>
+  </section>
+
+  <!-- COMMAND SHOWCASE (CSS tabs) -->
+  <section id="commands" class="px-6 py-20 max-w-5xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">55 Commands</h2>
+    <p class="text-gray-400 mb-10">Every command your company needs. From build to bell.</p>
+
+    <input type="radio" name="tabs" id="tab-build" checked />
+    <input type="radio" name="tabs" id="tab-fund" />
+    <input type="radio" name="tabs" id="tab-scale" />
+    <input type="radio" name="tabs" id="tab-protect" />
+    <input type="radio" name="tabs" id="tab-ipo" />
+
+    <div class="tabs-wrap">
+      <div class="flex gap-1 border-b border-white/10 mb-6 overflow-x-auto">
+        <label for="tab-build" class="tab-radio px-4 py-2 text-sm text-gray-400 cursor-pointer border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap">Build</label>
+        <label for="tab-fund" class="tab-radio px-4 py-2 text-sm text-gray-400 cursor-pointer border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap">Fund</label>
+        <label for="tab-scale" class="tab-radio px-4 py-2 text-sm text-gray-400 cursor-pointer border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap">Scale</label>
+        <label for="tab-protect" class="tab-radio px-4 py-2 text-sm text-gray-400 cursor-pointer border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap">Protect</label>
+        <label for="tab-ipo" class="tab-radio px-4 py-2 text-sm text-gray-400 cursor-pointer border-b-2 border-transparent hover:text-white transition-colors whitespace-nowrap">IPO</label>
+      </div>
+
+      <div id="content-build" class="tab-content glass-card p-6">
+        <table class="w-full text-sm">
+          <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal">Description</th></tr></thead>
+          <tbody class="text-gray-300 space-y-2">
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">mekong cook</code></td><td>Full PEV pipeline — plan, execute, verify</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">mekong fix</code></td><td>Debug and fix bugs with auto-rollback</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">mekong plan</code></td><td>Create implementation plan (dry run)</td></tr>
+            <tr><td class="py-3 pr-6"><code class="text-green-400">mekong deploy</code></td><td>Deployment orchestration to any target</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="content-fund" class="tab-content glass-card p-6">
+        <table class="w-full text-sm">
+          <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal">Description</th></tr></thead>
+          <tbody class="text-gray-300">
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder pitch</code></td><td>Pitch deck practice with AI investor</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder vc/term-sheet</code></td><td>Term sheet red flag detection</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder vc/cap-table</code></td><td>Dilution modeling and exit waterfall</td></tr>
+            <tr><td class="py-3 pr-6"><code class="text-green-400">/founder vc/negotiate</code></td><td>BATNA tactics and counter-offer scripts</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="content-scale" class="tab-content glass-card p-6">
+        <table class="w-full text-sm">
+          <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal">Description</th></tr></thead>
+          <tbody class="text-gray-300">
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder metrics</code></td><td>KPI dashboard with anomaly detection</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder hire</code></td><td>Agentic recruiting and interview kits</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder grow</code></td><td>GTM playbook execution</td></tr>
+            <tr><td class="py-3 pr-6"><code class="text-green-400">/founder week</code></td><td>Weekly CEO rhythm and OKR tracking</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="content-protect" class="tab-content glass-card p-6">
+        <table class="w-full text-sm">
+          <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal">Description</th></tr></thead>
+          <tbody class="text-gray-300">
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder legal</code></td><td>Legal checklist and IP protection</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder secondary</code></td><td>Founder liquidity and tender mechanics</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/insider</code></td><td>Trading windows and 10b5-1 plans</td></tr>
+            <tr><td class="py-3 pr-6"><code class="text-green-400">mekong review</code></td><td>Security and quality code review</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="content-ipo" class="tab-content glass-card p-6">
+        <table class="w-full text-sm">
+          <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal">Description</th></tr></thead>
+          <tbody class="text-gray-300">
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/pre-ipo-prep</code></td><td>18-month IPO readiness audit</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/s1</code></td><td>S-1 prospectus framework</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/roadshow</code></td><td>2-week roadshow sprint</td></tr>
+            <tr class="border-b border-white/5"><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/ipo-day</code></td><td>IPO Day execution playbook</td></tr>
+            <tr><td class="py-3 pr-6"><code class="text-green-400">/founder ipo/public-co</code></td><td>Quarterly earnings and 10-K/10-Q rhythm</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="px-6 py-20 max-w-5xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">Pricing</h2>
+    <p class="text-gray-400 mb-12">MCU = Mission Credit Unit. One mission, one credit.</p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- Starter -->
+      <div class="glass-card p-6 flex flex-col">
+        <p class="text-xs text-gray-500 mb-3">STARTER</p>
+        <p class="text-3xl font-bold text-white mb-1">$29<span class="text-base font-normal text-gray-400">/mo</span></p>
+        <p class="text-sm text-gray-400 mb-6">For solo founders moving fast</p>
+        <ul class="text-sm text-gray-300 space-y-2 mb-8 flex-1">
+          <li class="flex gap-2"><span style="color:#22c55e">✓</span> 500 MCU / month</li>
+          <li class="flex gap-2"><span style="color:#22c55e">✓</span> 10 commands</li>
+          <li class="flex gap-2"><span style="color:#22c55e">✓</span> 1 project</li>
+          <li class="flex gap-2"><span style="color:#22c55e">✓</span> Community support</li>
+        </ul>
+        <!-- Replace # with POLAR_CHECKOUT_STARTER URL -->
+        <a href="#" class="block text-center py-2.5 rounded-xl border border-white/20 text-white text-sm hover:border-green-400 hover:text-green-400 transition-all">Get Started</a>
+      </div>
+
+      <!-- Growth (featured) -->
+      <div class="glass-card-featured p-6 flex flex-col glow-purple relative">
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 text-xs px-3 py-1 rounded-full font-semibold" style="background:#8B5CF6;color:white">POPULAR</span>
+        <p class="text-xs text-purple-400 mb-3">GROWTH</p>
+        <p class="text-3xl font-bold text-white mb-1">$99<span class="text-base font-normal text-gray-400">/mo</span></p>
+        <p class="text-sm text-gray-400 mb-6">For teams building toward Series A</p>
+        <ul class="text-sm text-gray-300 space-y-2 mb-8 flex-1">
+          <li class="flex gap-2"><span style="color:#8B5CF6">✓</span> 2,000 MCU / month</li>
+          <li class="flex gap-2"><span style="color:#8B5CF6">✓</span> All 55 commands</li>
+          <li class="flex gap-2"><span style="color:#8B5CF6">✓</span> 5 projects</li>
+          <li class="flex gap-2"><span style="color:#8B5CF6">✓</span> Priority support</li>
+        </ul>
+        <!-- Replace # with POLAR_CHECKOUT_GROWTH URL -->
+        <a href="#" class="block text-center py-2.5 rounded-xl font-semibold text-black text-sm transition-all hover:opacity-90" style="background:#8B5CF6">Start Growing</a>
+      </div>
+
+      <!-- Premium -->
+      <div class="glass-card p-6 flex flex-col">
+        <p class="text-xs text-gray-500 mb-3">PREMIUM</p>
+        <p class="text-3xl font-bold text-white mb-1">$299<span class="text-base font-normal text-gray-400">/mo</span></p>
+        <p class="text-sm text-gray-400 mb-6">For scaling companies and white-label</p>
+        <ul class="text-sm text-gray-300 space-y-2 mb-8 flex-1">
+          <li class="flex gap-2"><span style="color:#3B82F6">✓</span> Unlimited MCU</li>
+          <li class="flex gap-2"><span style="color:#3B82F6">✓</span> White-label rights</li>
+          <li class="flex gap-2"><span style="color:#3B82F6">✓</span> Unlimited projects</li>
+          <li class="flex gap-2"><span style="color:#3B82F6">✓</span> Dedicated support</li>
+        </ul>
+        <!-- Replace # with POLAR_CHECKOUT_PREMIUM URL -->
+        <a href="#" class="block text-center py-2.5 rounded-xl border border-blue-400/40 text-blue-400 text-sm hover:bg-blue-400/10 transition-all">Contact Sales</a>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-gray-600 mt-6">simple = 1 MCU &nbsp;·&nbsp; standard = 3 MCU &nbsp;·&nbsp; complex = 5 MCU</p>
+  </section>
+
+  <!-- FOUNDER OS -->
+  <section class="px-6 py-20 max-w-5xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-3">Founder OS</h2>
+    <p class="text-gray-400 mb-10">From angel round to IPO — in your terminal.</p>
+
+    <div class="glass-card p-6 mb-8">
+      <table class="w-full text-sm">
+        <thead><tr class="text-gray-500 text-xs border-b border-white/10"><th class="text-left pb-3 font-normal">Stage</th><th class="text-left pb-3 font-normal">Command</th><th class="text-left pb-3 font-normal hidden md:table-cell">What You Get</th></tr></thead>
+        <tbody class="text-gray-300">
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">SEED</td><td><code class="text-green-400">/founder raise</code></td><td class="hidden md:table-cell text-gray-400">Fundraising prep and investor materials</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">SERIES A</td><td><code class="text-green-400">/founder vc/term-sheet</code></td><td class="hidden md:table-cell text-gray-400">Red flag detection, clause analysis</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">GROWTH</td><td><code class="text-green-400">/founder vc/cap-table</code></td><td class="hidden md:table-cell text-gray-400">Dilution model, SAFE conversion, waterfall</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">SCALE</td><td><code class="text-green-400">/founder vc/negotiate</code></td><td class="hidden md:table-cell text-gray-400">BATNA, walk-away lines, counter scripts</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">PRE-IPO</td><td><code class="text-green-400">/founder ipo/pre-ipo-prep</code></td><td class="hidden md:table-cell text-gray-400">100-point readiness audit (18 months out)</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">S-1</td><td><code class="text-green-400">/founder ipo/s1</code></td><td class="hidden md:table-cell text-gray-400">Prospectus framework, risk factors, narrative</td></tr>
+          <tr class="border-b border-white/5"><td class="py-3 pr-4 text-xs text-gray-500">ROADSHOW</td><td><code class="text-green-400">/founder ipo/roadshow</code></td><td class="hidden md:table-cell text-gray-400">20-slide deck, Q&A bank, order book</td></tr>
+          <tr><td class="py-3 pr-4 text-xs text-gray-500">IPO DAY</td><td><code class="text-green-400">/founder ipo/ipo-day</code></td><td class="hidden md:table-cell text-gray-400">Pricing scenarios, T-minus timeline</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- OPEN SOURCE -->
+  <section class="px-6 py-20 max-w-5xl mx-auto text-center">
+    <div class="glass-card p-12">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Mekong CLI is MIT.</h2>
+      <p class="text-gray-400 mb-8 max-w-xl mx-auto">Fork it. Build on it. Sell it. We only ask that you contribute back when you find something broken.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="https://github.com/longtho638-jpg/mekong-cli" target="_blank"
+           class="px-6 py-3 rounded-xl border border-white/15 text-white text-sm hover:border-white/30 transition-all flex items-center gap-2">
+          View on GitHub
+        </a>
+        <img src="https://img.shields.io/github/stars/longtho638-jpg/mekong-cli?style=social" alt="GitHub Stars" class="h-6" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-white/5 px-6 py-10">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-sm text-gray-600">© 2026 Binh Phap Venture Studio. MIT License.</p>
+      <div class="flex gap-6 text-sm text-gray-500">
+        <a href="https://github.com/longtho638-jpg/mekong-cli" target="_blank" class="hover:text-white transition-colors">GitHub</a>
+        <a href="https://github.com/longtho638-jpg/mekong-cli#readme" target="_blank" class="hover:text-white transition-colors">Docs</a>
+        <a href="mailto:hello@agencyos.network" class="hover:text-white transition-colors">hello@agencyos.network</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function showStage(id) {
+      document.querySelectorAll('.stage-detail').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.stage-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById('stage-' + id).classList.add('visible');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>
