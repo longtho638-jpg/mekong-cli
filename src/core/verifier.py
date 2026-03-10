@@ -1,20 +1,23 @@
-"""
-Mekong CLI - Recipe Verifier
+"""Mekong CLI - Recipe Verifier.
 
 Validates execution results against success criteria.
 Implements the VERIFY phase of Plan-Execute-Verify pattern.
 """
 
-from typing import Dict, List, Any, Optional, Union
+from __future__ import annotations
+
+import re
+import subprocess
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-import re
-import subprocess
+from typing import Any
+
+from .command_sanitizer import CommandSanitizer
 
 
 class VerificationStatus(Enum):
-    """Verification result status"""
+    """Verification result status."""
 
     PASSED = "passed"
     FAILED = "failed"
@@ -24,39 +27,39 @@ class VerificationStatus(Enum):
 
 @dataclass
 class ExecutionResult:
-    """Result from executing a recipe step"""
+    """Result from executing a recipe step."""
 
     exit_code: int = 0
     stdout: str = ""
     stderr: str = ""
-    output_files: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    error: Optional[Exception] = None
+    output_files: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
+    error: Exception | None = None
 
 
 @dataclass
 class VerificationCheck:
-    """Individual verification check result"""
+    """Individual verification check result."""
 
     name: str
     status: VerificationStatus
     message: str
-    expected: Optional[Union[str, int, bool]] = None
-    actual: Optional[Union[str, int, bool]] = None
+    expected: str | int | bool | None = None
+    actual: str | int | bool | None = None
 
 
 @dataclass
 class VerificationReport:
-    """Complete verification report for a step"""
+    """Complete verification report for a step."""
 
     passed: bool
-    checks: List[VerificationCheck] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
+    checks: list[VerificationCheck] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
     @property
     def summary(self) -> str:
-        """Generate summary message"""
+        """Generate summary message."""
         total = len(self.checks)
         passed = sum(1 for c in self.checks if c.status == VerificationStatus.PASSED)
         failed = sum(1 for c in self.checks if c.status == VerificationStatus.FAILED)
@@ -66,26 +69,24 @@ class VerificationReport:
 
 
 class RecipeVerifier:
-    """
-    Validates execution results against verification criteria.
+    """Validates execution results against verification criteria.
 
     This is the VERIFY phase of the Plan-Execute-Verify pattern.
     """
 
     def __init__(self, strict_mode: bool = True) -> None:
-        """
-        Initialize verifier.
+        """Initialize verifier.
 
         Args:
             strict_mode: If True, warnings are treated as failures
+
         """
         self.strict_mode = strict_mode
 
     def verify_exit_code(
-        self, result: ExecutionResult, expected: int
+        self, result: ExecutionResult, expected: int,
     ) -> VerificationCheck:
-        """
-        Verify command exit code.
+        """Verify command exit code.
 
         Args:
             result: Execution result
@@ -93,6 +94,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationCheck result
+
         """
         if result.exit_code == expected:
             return VerificationCheck(
@@ -102,24 +104,23 @@ class RecipeVerifier:
                 expected=expected,
                 actual=result.exit_code,
             )
-        else:
-            return VerificationCheck(
-                name="exit_code",
-                status=VerificationStatus.FAILED,
-                message=f"Exit code mismatch: expected {expected}, got {result.exit_code}",
-                expected=expected,
-                actual=result.exit_code,
-            )
+        return VerificationCheck(
+            name="exit_code",
+            status=VerificationStatus.FAILED,
+            message=f"Exit code mismatch: expected {expected}, got {result.exit_code}",
+            expected=expected,
+            actual=result.exit_code,
+        )
 
     def verify_file_exists(self, filepath: str) -> VerificationCheck:
-        """
-        Verify file existence.
+        """Verify file existence.
 
         Args:
             filepath: Path to check
 
         Returns:
             VerificationCheck result
+
         """
         path = Path(filepath)
         if path.exists():
@@ -130,24 +131,23 @@ class RecipeVerifier:
                 expected=True,
                 actual=True,
             )
-        else:
-            return VerificationCheck(
-                name=f"file_exists:{filepath}",
-                status=VerificationStatus.FAILED,
-                message=f"File not found: {filepath}",
-                expected=True,
-                actual=False,
-            )
+        return VerificationCheck(
+            name=f"file_exists:{filepath}",
+            status=VerificationStatus.FAILED,
+            message=f"File not found: {filepath}",
+            expected=True,
+            actual=False,
+        )
 
     def verify_file_not_exists(self, filepath: str) -> VerificationCheck:
-        """
-        Verify file does not exist.
+        """Verify file does not exist.
 
         Args:
             filepath: Path to check
 
         Returns:
             VerificationCheck result
+
         """
         path = Path(filepath)
         if not path.exists():
@@ -158,20 +158,18 @@ class RecipeVerifier:
                 expected=False,
                 actual=False,
             )
-        else:
-            return VerificationCheck(
-                name=f"file_not_exists:{filepath}",
-                status=VerificationStatus.FAILED,
-                message=f"File exists but should not: {filepath}",
-                expected=False,
-                actual=True,
-            )
+        return VerificationCheck(
+            name=f"file_not_exists:{filepath}",
+            status=VerificationStatus.FAILED,
+            message=f"File exists but should not: {filepath}",
+            expected=False,
+            actual=True,
+        )
 
     def verify_output_contains(
-        self, result: ExecutionResult, pattern: str
+        self, result: ExecutionResult, pattern: str,
     ) -> VerificationCheck:
-        """
-        Verify output contains pattern.
+        """Verify output contains pattern.
 
         Args:
             result: Execution result
@@ -179,6 +177,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationCheck result
+
         """
         combined_output = result.stdout + "\n" + result.stderr
 
@@ -212,10 +211,9 @@ class RecipeVerifier:
         )
 
     def verify_output_not_contains(
-        self, result: ExecutionResult, pattern: str
+        self, result: ExecutionResult, pattern: str,
     ) -> VerificationCheck:
-        """
-        Verify output does NOT contain pattern.
+        """Verify output does NOT contain pattern.
 
         Args:
             result: Execution result
@@ -223,6 +221,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationCheck result
+
         """
         combined_output = result.stdout + "\n" + result.stderr
 
@@ -256,10 +255,9 @@ class RecipeVerifier:
         )
 
     def verify(
-        self, result: ExecutionResult, criteria: Dict[str, Any]
+        self, result: ExecutionResult, criteria: dict[str, Any],
     ) -> VerificationReport:
-        """
-        Run all verification checks against criteria.
+        """Run all verification checks against criteria.
 
         Args:
             result: Execution result to verify
@@ -267,6 +265,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationReport with all check results
+
         """
         report = VerificationReport(passed=True, checks=[])
 
@@ -324,10 +323,9 @@ class RecipeVerifier:
         return report
 
     def _run_custom_check(
-        self, check_spec: Union[str, Dict[str, str]], result: ExecutionResult
+        self, check_spec: str | dict[str, str], result: ExecutionResult,
     ) -> VerificationCheck:
-        """
-        Execute a custom verification check.
+        """Execute a custom verification check.
 
         Supports:
         - Shell command string: runs command, checks exit code 0
@@ -339,6 +337,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationCheck result
+
         """
         if isinstance(check_spec, str):
             command = check_spec
@@ -360,13 +359,28 @@ class RecipeVerifier:
                 message="Empty custom check command",
             )
 
+        # SECURITY: Sanitize command before execution
+        sanitizer = CommandSanitizer(strict_mode=True)
+        sanitization = sanitizer.sanitize(command)
+
+        if not sanitization.is_safe:
+            return VerificationCheck(
+                name=f"custom:{command[:40]}",
+                status=VerificationStatus.FAILED,
+                message=f"Command blocked for security: {sanitization.blocked_reason}",
+            )
+
+        # Use sanitized command
+        command = sanitization.sanitized_command
+
         try:
+            # SECURITY: Enforce timeout on custom checks to prevent hangs
             proc = subprocess.run(
                 command,
                 shell=True,
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=30,  # Hard timeout for security
             )
 
             if proc.returncode != 0:
@@ -398,7 +412,7 @@ class RecipeVerifier:
             return VerificationCheck(
                 name=f"custom:{command[:40]}",
                 status=VerificationStatus.FAILED,
-                message=f"Custom check timed out: {command[:60]}",
+                message=f"Custom check timed out after 30s: {command[:60]}",
             )
         except Exception as e:
             return VerificationCheck(
@@ -408,8 +422,7 @@ class RecipeVerifier:
             )
 
     def verify_quality_gates(self, result: ExecutionResult) -> VerificationReport:
-        """
-        Apply Binh Phap quality gates.
+        """Apply Binh Phap quality gates.
 
         Enforces:
         - 始計 (Tech Debt): 0 TODOs/FIXMEs
@@ -422,6 +435,7 @@ class RecipeVerifier:
 
         Returns:
             VerificationReport for quality gates
+
         """
         report = VerificationReport(passed=True, checks=[])
 
@@ -449,7 +463,7 @@ class RecipeVerifier:
 
         # Security check
         vuln_check = self.verify_output_not_contains(
-            result, r"vulnerabilit|critical|high severity"
+            result, r"vulnerabilit|critical|high severity",
         )
         vuln_check.name = "binh_phap:security"
         report.checks.append(vuln_check)
@@ -460,9 +474,9 @@ class RecipeVerifier:
 
 
 __all__ = [
-    "RecipeVerifier",
     "ExecutionResult",
-    "VerificationReport",
+    "RecipeVerifier",
     "VerificationCheck",
+    "VerificationReport",
     "VerificationStatus",
 ]

@@ -11,13 +11,12 @@ Usage:
     python database_migration_tool.py schema.sql --suggest-indexes
 """
 
-import os
 import sys
 import json
 import argparse
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 from dataclasses import dataclass, field, asdict
 
@@ -566,7 +565,7 @@ class DatabaseMigrationTool:
 
     def run(self, mode: str = 'analyze') -> Dict:
         """Execute the tool in specified mode."""
-        print(f"Database Migration Tool")
+        print("Database Migration Tool")
         print(f"Schema: {self.schema_path}")
         print("-" * 50)
 
@@ -598,28 +597,28 @@ class DatabaseMigrationTool:
         warnings = [i for i in issues if i.severity == 'warning']
         infos = [i for i in issues if i.severity == 'info']
 
-        print(f"\nAnalysis Results:")
+        print("\nAnalysis Results:")
         print(f"  Tables: {len(tables)}")
         print(f"  Errors: {len(errors)}")
         print(f"  Warnings: {len(warnings)}")
         print(f"  Suggestions: {len(infos)}")
 
         if errors:
-            print(f"\nERRORS:")
+            print("\nERRORS:")
             for issue in errors:
                 print(f"  [{issue.table}] {issue.message}")
                 if issue.suggestion:
                     print(f"    Suggestion: {issue.suggestion}")
 
         if warnings:
-            print(f"\nWARNINGS:")
+            print("\nWARNINGS:")
             for issue in warnings:
                 print(f"  [{issue.table}] {issue.message}")
                 if issue.suggestion:
                     print(f"    Suggestion: {issue.suggestion}")
 
         if self.verbose and infos:
-            print(f"\nSUGGESTIONS:")
+            print("\nSUGGESTIONS:")
             for issue in infos:
                 print(f"  [{issue.table}] {issue.message}")
                 if issue.suggestion:
@@ -650,7 +649,7 @@ class DatabaseMigrationTool:
         generator = MigrationGenerator(old_tables, new_tables)
         up_sql, down_sql = generator.generate()
 
-        print(f"\nComparing schemas:")
+        print("\nComparing schemas:")
         print(f"  Old: {self.schema_path}")
         print(f"  New: {self.compare_path}")
 
@@ -658,7 +657,7 @@ class DatabaseMigrationTool:
         added_tables = set(new_tables.keys()) - set(old_tables.keys())
         removed_tables = set(old_tables.keys()) - set(new_tables.keys())
 
-        print(f"\nChanges detected:")
+        print("\nChanges detected:")
         print(f"  Added tables: {len(added_tables)}")
         print(f"  Removed tables: {len(removed_tables)}")
 
@@ -677,13 +676,13 @@ class DatabaseMigrationTool:
                                 f"-- Generated: {datetime.now().isoformat()}\n\n"
                                 f"BEGIN;\n\n{down_sql}\n\nCOMMIT;\n")
 
-            print(f"\nGenerated files:")
+            print("\nGenerated files:")
             print(f"  Migration: {up_file}")
             print(f"  Rollback: {down_file}")
         else:
-            print(f"\n--- UP MIGRATION ---")
+            print("\n--- UP MIGRATION ---")
             print(up_sql)
-            print(f"\n--- DOWN MIGRATION ---")
+            print("\n--- DOWN MIGRATION ---")
             print(down_sql)
 
         return {
@@ -760,7 +759,7 @@ class DatabaseMigrationTool:
             output_file = self.output_dir / f"{timestamp}_add_indexes.sql"
 
             lines = [
-                f"-- Suggested indexes",
+                "-- Suggested indexes",
                 f"-- Generated: {datetime.now().isoformat()}",
                 "",
             ]

@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Agent Base Module
+"""Mekong CLI - Agent Base Module.
 
 Core logic inherited from ClaudeKit DNA.
 Pattern: Plan-Execute-Verify
@@ -7,12 +6,12 @@ Pattern: Plan-Execute-Verify
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Any, Union
 from enum import Enum
+from typing import Any, Union
 
 
 class TaskStatus(Enum):
-    """Task execution status"""
+    """Task execution status."""
 
     PENDING = "pending"
     RUNNING = "running"
@@ -23,29 +22,28 @@ class TaskStatus(Enum):
 
 @dataclass
 class Task:
-    """Single task unit"""
+    """Single task unit."""
 
     id: str
     description: str
-    input: Dict[str, Any]
+    input: dict[str, Any]
     status: TaskStatus = TaskStatus.PENDING
-    output: Optional[Union[str, dict, list]] = None
-    error: Optional[str] = None
+    output: Union[str, dict, list, None] = None
+    error: Union[str, None] = None
 
 
 @dataclass
 class Result:
-    """Task execution result"""
+    """Task execution result."""
 
     task_id: str
     success: bool
-    output: Optional[Union[str, dict, list]]
-    error: Optional[str] = None
+    output: Union[str, dict, list, None]
+    error: Union[str, None] = None
 
 
 class AgentBase(ABC):
-    """
-    Base class for all Mekong CLI agents.
+    """Base class for all Mekong CLI agents.
 
     Follows ClaudeKit's Plan-Execute-Verify pattern:
     1. Plan: Parse input → Task list
@@ -63,7 +61,7 @@ class AgentBase(ABC):
             m for m in ("plan", "execute")
             if m in abstract_methods
         ]
-        if unimplemented and not getattr(cls, "__abstractmethods__", None) == frozenset(unimplemented):
+        if unimplemented and getattr(cls, "__abstractmethods__", None) != frozenset(unimplemented):
             _warnings.warn(
                 f"{cls.__name__} does not implement: {unimplemented}. "
                 "Calls to these methods will raise NotImplementedError.",
@@ -76,40 +74,38 @@ class AgentBase(ABC):
         Args:
             name: Unique identifier for this agent.
             max_retries: Maximum retry attempts per task before marking as failed.
+
         """
         self.name = name
         self.max_retries = max_retries
-        self.tasks: List[Task] = []
+        self.tasks: list[Task] = []
 
     @abstractmethod
-    def plan(self, input_data: str) -> List[Task]:
-        """
-        Parse input into executable tasks.
+    def plan(self, input_data: str) -> list[Task]:
+        """Parse input into executable tasks.
 
         Args:
             input_data: Raw input (string, dict, etc.)
 
         Returns:
             List of Task objects to execute
+
         """
-        pass
 
     @abstractmethod
     def execute(self, task: Task) -> Result:
-        """
-        Execute a single task.
+        """Execute a single task.
 
         Args:
             task: Task to execute
 
         Returns:
             Result with output or error
+
         """
-        pass
 
     def verify(self, result: Result) -> bool:
-        """
-        Validate task result.
+        """Validate task result.
 
         Override for custom validation logic.
 
@@ -118,20 +114,21 @@ class AgentBase(ABC):
 
         Returns:
             True if valid, False to retry
+
         """
         return result.success
 
-    def run(self, input_data: str) -> List[Result]:
-        """
-        Main execution loop.
+    def run(self, input_data: str) -> list[Result]:
+        """Main execution loop.
 
         Args:
             input_data: Input to process
 
         Returns:
             List of results from all tasks
+
         """
-        results: List[Result] = []
+        results: list[Result] = []
 
         # Phase 1: Plan
         self.tasks = self.plan(input_data)
@@ -148,9 +145,8 @@ class AgentBase(ABC):
                     task.status = TaskStatus.SUCCESS
                     task.output = result.output
                     break
-                else:
-                    retries += 1
-                    task.status = TaskStatus.RETRY
+                retries += 1
+                task.status = TaskStatus.RETRY
 
             if task.status != TaskStatus.SUCCESS:
                 task.status = TaskStatus.FAILED
@@ -166,4 +162,4 @@ class AgentBase(ABC):
 
 
 # Export
-__all__ = ["AgentBase", "Task", "Result", "TaskStatus"]
+__all__ = ["AgentBase", "Result", "Task", "TaskStatus"]

@@ -1,16 +1,34 @@
 # Deployment Guide — Algo Trader v3.0.0
 
-## Quick Start (Docker Compose)
+## Zero-Config Quickstart (Recommended)
 
 ```bash
-# 1. Clone & configure
-cp .env.example .env
-# Edit .env with exchange API keys
+npm install
+npm run setup         # Interactive wizard — enter API keys, .env auto-generated
+npm run quickstart    # Demo backtest + status check + available commands
+```
 
-# 2. Start all services
-docker compose up -d
+No Docker required for backtest and dry-run modes.
 
-# 3. Verify
+## One-Click Shell Script
+
+```bash
+./scripts/one-click-setup-and-start.sh
+```
+
+Handles: prerequisites check → install → setup wizard → optional Docker.
+
+## Full Stack (Docker Compose)
+
+For live trading with RaaS API, database, and monitoring:
+
+```bash
+npm run setup                        # Configure .env first
+docker compose up -d                 # Start PostgreSQL, Redis, Prometheus, Grafana
+npx prisma generate && npx prisma migrate deploy
+npm run dev api:serve                # Start API on port 3000
+
+# Verify
 curl http://localhost:3000/health    # API health
 curl http://localhost:9090           # Prometheus UI
 open http://localhost:3001           # Grafana (admin/admin)

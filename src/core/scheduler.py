@@ -1,18 +1,20 @@
-"""
-Mekong CLI - Autonomous Scheduler
+"""Mekong CLI - Autonomous Scheduler.
 
 Background scheduler for recurring missions (Auto-Pilot).
 Supports interval (every X seconds) and daily (at HH:MM) job types.
 Persists jobs to .mekong/schedule.yaml and emits events to EventBus.
 """
 
+from __future__ import annotations
+
 import asyncio
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from src.core.event_bus import EventType, get_event_bus
 
@@ -36,18 +38,19 @@ class ScheduledJob:
 class Scheduler:
     """Autonomous scheduler for recurring Mekong missions."""
 
-    def __init__(self, config_path: Optional[str] = None) -> None:
+    def __init__(self, config_path: str | None = None) -> None:
         """Initialize Scheduler and load persisted jobs from disk.
 
         Args:
             config_path: Path to the YAML config file. Defaults to .mekong/schedule.yaml.
+
         """
-        self._jobs: Dict[str, ScheduledJob] = {}
+        self._jobs: dict[str, ScheduledJob] = {}
         self._config_path = config_path or str(
-            Path(".mekong") / "schedule.yaml"
+            Path(".mekong") / "schedule.yaml",
         )
         self._running = False
-        self._run_callback: Optional[Callable[[str], Dict[str, Any]]] = None
+        self._run_callback: Callable[[str], dict[str, Any]] | None = None
         self._load()
 
     def add_job(
@@ -88,15 +91,15 @@ class Scheduler:
             return True
         return False
 
-    def list_jobs(self) -> List[ScheduledJob]:
+    def list_jobs(self) -> list[ScheduledJob]:
         """Return all scheduled jobs."""
         return list(self._jobs.values())
 
-    def get_job(self, job_id: str) -> Optional[ScheduledJob]:
+    def get_job(self, job_id: str) -> ScheduledJob | None:
         """Get a job by ID."""
         return self._jobs.get(job_id)
 
-    def get_due_jobs(self) -> List[ScheduledJob]:
+    def get_due_jobs(self) -> list[ScheduledJob]:
         """Return jobs that are due to run now."""
         now = time.time()
         return [
@@ -117,7 +120,7 @@ class Scheduler:
 
         self._save()
 
-    def set_run_callback(self, callback: Callable[[str], Dict[str, Any]]) -> None:
+    def set_run_callback(self, callback: Callable[[str], dict[str, Any]]) -> None:
         """Set the function called to execute a goal."""
         self._run_callback = callback
 
@@ -131,9 +134,9 @@ class Scheduler:
         """Total number of registered jobs."""
         return len(self._jobs)
 
-    async def tick(self) -> List[Dict[str, Any]]:
+    async def tick(self) -> list[dict[str, Any]]:
         """Check for due jobs and execute them. Returns results."""
-        results: List[Dict[str, Any]] = []
+        results: list[dict[str, Any]] = []
         due = self.get_due_jobs()
         bus = get_event_bus()
 
@@ -145,7 +148,7 @@ class Scheduler:
                 "source": "scheduler",
             })
 
-            result: Dict[str, Any] = {"job_id": job.id, "status": "skipped"}
+            result: dict[str, Any] = {"job_id": job.id, "status": "skipped"}
             if self._run_callback:
                 try:
                     result = self._run_callback(job.goal)
@@ -204,7 +207,7 @@ class Scheduler:
             lines.append(f"    goal: {job.goal}\n")
             lines.append(f"    job_type: {job.job_type}\n")
             lines.append(f"    interval_seconds: {job.interval_seconds}\n")
-            lines.append(f"    daily_time: \"{job.daily_time}\"\n")
+            lines.append(f'    daily_time: "{job.daily_time}"\n')
             lines.append(f"    enabled: {str(job.enabled).lower()}\n")
             lines.append(f"    last_run: {job.last_run}\n")
             lines.append(f"    next_run: {job.next_run}\n")

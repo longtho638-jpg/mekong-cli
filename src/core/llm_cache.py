@@ -1,10 +1,11 @@
-"""
-Mekong CLI - LLM Response Cache
+"""Mekong CLI - LLM Response Cache.
 
 Portkey-inspired caching layer for LLM responses.
 Simple hash-based cache with TTL support and hit rate tracking.
 Reduces cost and latency for repeated or similar prompts.
 """
+
+from __future__ import annotations
 
 import hashlib
 import json
@@ -12,7 +13,7 @@ import logging
 import time
 from collections import OrderedDict
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class CacheEntry:
     key: str
     content: str
     model: str
-    usage: Dict[str, int] = field(default_factory=dict)
+    usage: dict[str, int] = field(default_factory=dict)
     created_at: float = 0.0
     ttl: int = 3600
     hit_count: int = 0
@@ -75,6 +76,7 @@ class LLMCache:
             max_entries: Maximum cache entries before LRU eviction
             default_ttl: Default time-to-live in seconds
             cost_per_hit: Estimated cost saved per cache hit (USD)
+
         """
         self._cache: OrderedDict[str, CacheEntry] = OrderedDict()
         self.max_entries = max_entries
@@ -84,7 +86,7 @@ class LLMCache:
 
     @staticmethod
     def _make_key(
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str = "",
         temperature: float = 0.7,
     ) -> str:
@@ -97,6 +99,7 @@ class LLMCache:
 
         Returns:
             SHA-256 hex digest as cache key
+
         """
         payload = json.dumps({
             "messages": messages,
@@ -107,10 +110,10 @@ class LLMCache:
 
     def get(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str = "",
         temperature: float = 0.7,
-    ) -> Optional[CacheEntry]:
+    ) -> CacheEntry | None:
         """Look up cached response for given request.
 
         Args:
@@ -120,6 +123,7 @@ class LLMCache:
 
         Returns:
             CacheEntry if hit and not expired, None otherwise
+
         """
         key = self._make_key(messages, model, temperature)
 
@@ -146,12 +150,12 @@ class LLMCache:
 
     def put(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         content: str,
         model: str = "",
         temperature: float = 0.7,
-        usage: Optional[Dict[str, int]] = None,
-        ttl: Optional[int] = None,
+        usage: dict[str, int] | None = None,
+        ttl: int | None = None,
     ) -> str:
         """Store LLM response in cache.
 
@@ -165,6 +169,7 @@ class LLMCache:
 
         Returns:
             Cache key for the stored entry
+
         """
         key = self._make_key(messages, model, temperature)
 
@@ -196,6 +201,7 @@ class LLMCache:
 
         Returns:
             True if entry was found and removed
+
         """
         if key in self._cache:
             del self._cache[key]
@@ -208,6 +214,7 @@ class LLMCache:
 
         Returns:
             Number of entries cleared
+
         """
         count = len(self._cache)
         self._cache.clear()
@@ -219,6 +226,7 @@ class LLMCache:
 
         Returns:
             Number of entries removed
+
         """
         expired_keys = [
             k for k, v in self._cache.items() if v.is_expired
@@ -228,11 +236,12 @@ class LLMCache:
         self.stats.total_entries = len(self._cache)
         return len(expired_keys)
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """Return cache performance summary.
 
         Returns:
             Dict with hit rate, counts, and cost savings
+
         """
         return {
             "hit_rate": round(self.stats.hit_rate, 1),
@@ -246,7 +255,7 @@ class LLMCache:
 
 
 __all__ = [
-    "LLMCache",
     "CacheEntry",
     "CacheStats",
+    "LLMCache",
 ]

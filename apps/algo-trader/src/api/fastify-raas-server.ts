@@ -5,6 +5,8 @@
  */
 
 import Fastify, { FastifyInstance } from 'fastify';
+import fastifyStatic from '@fastify/static';
+import * as path from 'path';
 import { TenantStrategyManager } from '../core/tenant-strategy-manager';
 import { StrategyMarketplace } from '../core/strategy-marketplace';
 import { TenantArbPositionTracker } from '../core/tenant-arbitrage-position-tracker';
@@ -25,7 +27,20 @@ import { buildPnlRoutes } from './routes/pnl-realtime-snapshot-history-routes';
 import { PnlSnapshotService, InMemoryPnlStore } from '../core/pnl-realtime-snapshot-service';
 import { PolarSubscriptionService } from '../billing/polar-subscription-service';
 import { PolarWebhookEventHandler } from '../billing/polar-webhook-event-handler';
+import { StripeWebhookHandler } from '../billing/stripe-webhook-handler';
 import { buildPolarBillingRoutes } from './routes/polar-billing-subscription-routes';
+import { buildStripeWebhookRoute } from './routes/webhooks/stripe-webhook';
+import { subscriptionRoutes } from './routes/subscription';
+import { licenseManagementRoutes } from './routes/license-management-routes';
+import { registerOverageRoutes } from './routes/overage-routes';
+import { analyticsRoutes } from './routes/analytics-routes';
+import { registerUsageEventsRoutes } from './routes/usage-events-routes';
+import { cacheStatsRoutes } from './routes/cache-stats-routes';
+import { registerUsageRoutes } from './routes/internal/usage-routes';
+import { buildPhase6Routes } from './routes/phase6-ghost-routes';
+import { usageTrackingPlugin } from './middleware/usage-tracking-middleware';
+import { IdempotencyStore, idempotencyMiddleware, createIdempotencyResponseHandler } from '../middleware/idempotency-middleware';
+import { hardLimitsPlugin } from './middleware/hard-limits-middleware';
 
 export interface RaasServerOptions {
   port?: number;
@@ -64,6 +79,14 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
   void server.register(errorHandlerPlugin);
   void server.register(corsPlugin);
 
+  // Idempotency middleware for webhooks
+  const idempotencyStore = new IdempotencyStore();
+  const idempotencyHook = idempotencyMiddleware(idempotencyStore);
+  const responseHandler = createIdempotencyResponseHandler(idempotencyStore);
+  
+  server.addHook('preHandler', idempotencyHook);
+  server.addHook('onSend', responseHandler);
+
   // Global Auth Middleware
   // Note: health routes should probably be excluded from auth if they are for external probes
   if (!opts.skipAuth) {
@@ -95,8 +118,70 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
 
   // Polar billing routes
   const subscriptionService = new PolarSubscriptionService();
-  const webhookHandler = new PolarWebhookEventHandler(subscriptionService);
-  void server.register(buildPolarBillingRoutes(subscriptionService, webhookHandler));
+  const polarWebhookHandler = new PolarWebhookEventHandler(subscriptionService);
+  void server.register(buildPolarBillingRoutes(subscriptionService, polarWebhookHandler));
+  void server.register(subscriptionRoutes);
+
+  // Stripe billing routes
+  const stripeWebhookHandler = new StripeWebhookHandler(subscriptionService);
+  void server.register(buildStripeWebhookRoute(stripeWebhookHandler));
+
+  // License management routes (admin only)
+  void server.register(licenseManagementRoutes);
+
+  // Overage billing routes
+  void server.register(registerOverageRoutes);
+
+  // Analytics routes (usage metrics)
+  void server.register(analyticsRoutes);
+
+  // Usage events routes (new - Phase 4)
+  void server.register(registerUsageEventsRoutes);
+
+  // Internal usage routes for billing sync
+  void server.register(registerUsageRoutes);
+
+  // Usage tracking middleware (auto-tracks API calls)
+  void server.register(usageTrackingPlugin);
+
+  // Cache stats routes (for dashboard monitoring)
+  void server.register(cacheStatsRoutes);
+
+  // Phase 6 Ghost Protocol routes (ENTERPRISE-only)
+  void server.register(buildPhase6Routes());
+
+  // Hard limits middleware (quota enforcement)
+  void server.register(hardLimitsPlugin);
+
+  // Dashboard static files (built by: cd dashboard && npm run build)
+  const dashboardDir = path.join(__dirname, '..', '..', 'dist', 'dashboard');
+  const fs = require('fs');
+  if (fs.existsSync(dashboardDir)) {
+    void server.register(fastifyStatic, {
+      root: dashboardDir,
+      prefix: '/dashboard/',
+      decorateReply: false,
+    });
+
+    // SPA fallback: redirect /dashboard/* to dashboard index.html
+    server.setNotFoundHandler((request, reply) => {
+      if (request.url.startsWith('/dashboard')) {
+        return reply.sendFile('index.html', dashboardDir);
+      }
+      return reply.code(404).send({ error: 'Not found' });
+    });
+  } else {
+    // If dashboard not built, return 404 for dashboard routes
+    server.setNotFoundHandler((request, reply) => {
+      if (request.url.startsWith('/dashboard')) {
+        return reply.code(404).send({
+          error: 'Dashboard not found',
+          message: 'Please build the dashboard first: cd dashboard && npm run build'
+        });
+      }
+      return reply.code(404).send({ error: 'Not found' });
+    });
+  }
 
   return server;
 }

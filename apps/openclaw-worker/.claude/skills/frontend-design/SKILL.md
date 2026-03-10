@@ -1,5 +1,5 @@
 ---
-name: frontend-design
+name: ck:frontend-design
 description: Create polished frontend interfaces from designs/screenshots/videos. Use for web components, 3D experiences, replicating UI designs, quick prototypes, immersive interfaces, avoiding AI slop.
 license: Complete terms in LICENSE.txt
 ---
@@ -20,11 +20,11 @@ Choose workflow based on input type:
 | Complex/award-quality | Full immersive | `./references/workflow-immersive.md` |
 | From scratch | Design Thinking below | - |
 
-**All workflows**: Activate `ui-ux-pro-max` skill FIRST for design intelligence.
+**All workflows**: Activate `ck:ui-ux-pro-max` skill FIRST for design intelligence.
 
 ## Screenshot/Video Replication (Quick Reference)
 
-1. **Analyze** with `ai-multimodal` skill - extract colors, fonts, spacing, effects
+1. **Analyze** with `ck:ai-multimodal` skill - extract colors, fonts, spacing, effects
 2. **Plan** with `ui-ux-designer` subagent - create phased implementation
 3. **Implement** - match source precisely
 4. **Verify** - compare to original
@@ -49,7 +49,7 @@ Before coding, commit to a BOLD aesthetic direction:
 - **Motion**: CSS-first, anime.js for complex (`./references/animejs.md`). Orchestrated page loads > scattered micro-interactions.
 - **Spatial**: Unexpected layouts. Asymmetry. Overlap. Negative space OR controlled density.
 - **Backgrounds**: Atmosphere over solid colors. Gradients, noise, patterns, shadows, grain.
-- **Assets**: Generate with `ai-multimodal`, process with `media-processing`
+- **Assets**: Generate with `ck:ai-multimodal`, process with `ck:media-processing`
 
 ## Asset & Analysis References
 

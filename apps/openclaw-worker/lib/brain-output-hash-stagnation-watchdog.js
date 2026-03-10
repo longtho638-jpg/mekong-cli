@@ -11,8 +11,9 @@
  *
  * 🔒 STRICT 1P1 ROUTING on restart:
  *   P0 = ~/mekong-cli
- *   P1 = ~/mekong-cli/apps/well
- *   P2 = ~/mekong-cli/apps/algo-trader
+ *   P1 = ~/mekong-cli/apps/algo-trader
+ *   P2 = ~/mekong-cli/apps/sophia-ai-factory
+ *   P3 = ~/mekong-cli/apps/well
  *
  * Exports: startOutputHashWatchdog, stopOutputHashWatchdog
  */
@@ -28,8 +29,9 @@ const STAGNATION_THRESHOLD = 3;  // 3x same hash = stagnation (3 min)
 // 🔒 STRICT 1P1 PROJECT DIRS
 const PANE_DIRS = {
   0: config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'),
-  1: path.join(config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'), 'apps', 'well'),
-  2: path.join(config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'), 'apps', 'algo-trader'),
+  1: path.join(config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'), 'apps', 'algo-trader'),
+  2: path.join(config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'), 'apps', 'sophia-ai-factory'),
+  3: path.join(config.MEKONG_DIR || path.join(process.env.HOME, 'mekong-cli'), 'apps', 'well'),
 };
 
 let hashHistory = [];
@@ -149,7 +151,7 @@ async function autoRestartCCCLI(paneIdx, target, useContinue = false) {
 
     // Step 2: cd to correct project dir and start claude
     const continueFlag = useContinue ? ' --continue' : '';
-    const cmd = `cd ${dir} && unset ANTHROPIC_BASE_URL && command claude --dangerously-skip-permissions${continueFlag}`;
+    const cmd = `cd ${dir} && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && command claude --dangerously-skip-permissions${continueFlag}`;
 
     log(`[WATCHDOG] P${paneIdx}: Restarting CC CLI in ${dir}${useContinue ? ' (with --continue)' : ''}`);
 

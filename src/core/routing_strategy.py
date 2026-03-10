@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Routing Strategy Engine
+"""Mekong CLI - Routing Strategy Engine.
 
 Portkey-inspired declarative routing for LLM provider selection.
 Supports fallback chains, load balancing, and conditional routing
@@ -10,7 +9,7 @@ import json
 import random
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, List, Optional
 
 
 class RoutingMode(Enum):
@@ -28,8 +27,8 @@ class RoutingTarget:
     provider: str
     model: str = ""
     weight: float = 1.0
-    override_params: Dict[str, Any] = field(default_factory=dict)
-    on_status_codes: List[int] = field(default_factory=list)
+    override_params: dict[str, Any] = field(default_factory=dict)
+    on_status_codes: list[int] = field(default_factory=list)
 
 
 @dataclass
@@ -37,7 +36,7 @@ class RetryConfig:
     """Retry configuration for routing."""
 
     attempts: int = 3
-    on_status_codes: List[int] = field(default_factory=lambda: [429, 500, 502, 503])
+    on_status_codes: list[int] = field(default_factory=lambda: [429, 500, 502, 503])
     backoff_base: float = 1.0
     backoff_max: float = 30.0
 
@@ -56,17 +55,17 @@ class RoutingStrategy:
     """Complete routing strategy with targets, retry, and cache config."""
 
     mode: RoutingMode
-    targets: List[RoutingTarget] = field(default_factory=list)
+    targets: list[RoutingTarget] = field(default_factory=list)
     retry: RetryConfig = field(default_factory=RetryConfig)
     cache: CacheConfig = field(default_factory=CacheConfig)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class StrategyParser:
     """Parses JSON/dict routing strategy configurations."""
 
     @staticmethod
-    def parse(config: Dict[str, Any]) -> RoutingStrategy:
+    def parse(config: dict[str, Any]) -> RoutingStrategy:
         """Parse a strategy config dict into RoutingStrategy.
 
         Args:
@@ -74,6 +73,7 @@ class StrategyParser:
 
         Returns:
             Parsed RoutingStrategy object
+
         """
         strategy_data = config.get("strategy", {})
         mode_str = strategy_data.get("mode", "fallback")
@@ -121,6 +121,7 @@ class StrategyParser:
 
         Returns:
             Parsed RoutingStrategy
+
         """
         with open(path) as f:
             config = json.load(f)
@@ -133,7 +134,7 @@ class RouteDecision:
 
     provider: str
     model: str
-    params: Dict[str, Any] = field(default_factory=dict)
+    params: dict[str, Any] = field(default_factory=dict)
     attempt: int = 0
 
 
@@ -153,9 +154,10 @@ class StrategyRouter:
 
         Args:
             strategy: Routing strategy to execute
+
         """
         self.strategy = strategy
-        self._target_health: Dict[str, float] = {}
+        self._target_health: dict[str, float] = {}
         self._last_lb_index = 0
 
     def route(
@@ -172,26 +174,29 @@ class StrategyRouter:
 
         Raises:
             RoutingError: If no viable targets available
+
         """
         excluded = set(exclude_providers or [])
 
         if self.strategy.mode == RoutingMode.SINGLE:
             return self._route_single(excluded)
-        elif self.strategy.mode == RoutingMode.FALLBACK:
+        if self.strategy.mode == RoutingMode.FALLBACK:
             return self._route_fallback(excluded)
-        elif self.strategy.mode == RoutingMode.LOADBALANCE:
+        if self.strategy.mode == RoutingMode.LOADBALANCE:
             return self._route_loadbalance(excluded)
-        else:
-            raise RoutingError(f"Unknown routing mode: {self.strategy.mode}")
+        msg = f"Unknown routing mode: {self.strategy.mode}"
+        raise RoutingError(msg)
 
     def _route_single(self, excluded: set) -> RouteDecision:
         """Route to single target."""
         if not self.strategy.targets:
-            raise RoutingError("No targets configured")
+            msg = "No targets configured"
+            raise RoutingError(msg)
 
         target = self.strategy.targets[0]
         if target.provider in excluded:
-            raise RoutingError(f"Single target {target.provider} excluded")
+            msg = f"Single target {target.provider} excluded"
+            raise RoutingError(msg)
 
         return RouteDecision(
             provider=target.provider,
@@ -210,7 +215,8 @@ class StrategyRouter:
                 params=target.override_params,
                 attempt=i,
             )
-        raise RoutingError("All fallback targets exhausted")
+        msg = "All fallback targets exhausted"
+        raise RoutingError(msg)
 
     def _route_loadbalance(self, excluded: set) -> RouteDecision:
         """Route using weighted random selection."""
@@ -219,7 +225,8 @@ class StrategyRouter:
             if t.provider not in excluded
         ]
         if not available:
-            raise RoutingError("No available targets for load balancing")
+            msg = "No available targets for load balancing"
+            raise RoutingError(msg)
 
         total_weight = sum(t.weight for t in available)
         if total_weight <= 0:
@@ -248,6 +255,7 @@ class StrategyRouter:
 
         Returns:
             True if should retry
+
         """
         return status_code in self.strategy.retry.on_status_codes
 
@@ -260,6 +268,7 @@ class StrategyRouter:
 
         Returns:
             True if should failover
+
         """
         if target.on_status_codes:
             return status_code in target.on_status_codes
@@ -273,6 +282,7 @@ class StrategyRouter:
 
         Returns:
             Delay in seconds
+
         """
         base = self.strategy.retry.backoff_base
         max_delay = self.strategy.retry.backoff_max
@@ -285,6 +295,7 @@ def create_default_strategy() -> RoutingStrategy:
 
     Returns:
         RoutingStrategy with vertex → proxy → openai fallback
+
     """
     return RoutingStrategy(
         mode=RoutingMode.FALLBACK,
@@ -309,14 +320,14 @@ def create_default_strategy() -> RoutingStrategy:
 
 
 __all__ = [
-    "RoutingMode",
-    "RoutingTarget",
-    "RetryConfig",
     "CacheConfig",
-    "RoutingStrategy",
-    "StrategyParser",
-    "StrategyRouter",
+    "RetryConfig",
     "RouteDecision",
     "RoutingError",
+    "RoutingMode",
+    "RoutingStrategy",
+    "RoutingTarget",
+    "StrategyParser",
+    "StrategyRouter",
     "create_default_strategy",
 ]

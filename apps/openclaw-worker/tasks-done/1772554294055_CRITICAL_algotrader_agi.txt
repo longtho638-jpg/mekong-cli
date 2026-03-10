@@ -1,0 +1,1 @@
+/bootstrap:auto:parallel /cook AGI-optimize algo-trader — deep scan all strategy modules, add risk management guards + circuit breakers, optimize backtesting engine, write comprehensive tests for all critical paths. Full autonomous hardening mission.

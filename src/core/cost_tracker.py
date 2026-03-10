@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Cost Tracker
+"""Mekong CLI - Cost Tracker.
 
 LiteLLM-inspired per-token cost tracking for LLM calls.
 Calculates cost from LLMResponse usage data using model pricing database.
@@ -8,18 +7,19 @@ Tracks cumulative spend per provider, model, and session.
 Pattern source: litellm/cost_calculator.py + model_prices_and_context_window.json
 """
 
+from __future__ import annotations
+
 import json
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from .event_bus import get_event_bus
 
-
 # Model pricing database (USD per token)
 # Mirrors litellm's model_prices_and_context_window.json schema
-MODEL_PRICES: Dict[str, Dict[str, float]] = {
+MODEL_PRICES: dict[str, dict[str, float]] = {
     "gemini-2.5-pro": {
         "input_cost_per_token": 1.25e-06,
         "output_cost_per_token": 10.0e-06,
@@ -99,31 +99,31 @@ class SpendSummary:
     total_input_tokens: int = 0
     total_output_tokens: int = 0
     total_calls: int = 0
-    by_model: Dict[str, float] = field(default_factory=dict)
-    by_provider: Dict[str, float] = field(default_factory=dict)
+    by_model: dict[str, float] = field(default_factory=dict)
+    by_provider: dict[str, float] = field(default_factory=dict)
 
 
 class CostTracker:
-    """
-    Tracks LLM call costs per session with persistence.
+    """Tracks LLM call costs per session with persistence.
 
     Inspired by litellm's completion_cost() + ProxyLogging spend tracking.
     """
 
-    def __init__(self, persist_path: Optional[str] = None) -> None:
+    def __init__(self, persist_path: str | None = None) -> None:
         """Initialize cost tracker.
 
         Args:
             persist_path: Path for spend log. Defaults to .mekong/spend.jsonl
+
         """
-        self._entries: List[CostEntry] = []
+        self._entries: list[CostEntry] = []
         self._persist_path = Path(persist_path) if persist_path else Path(".mekong/spend.jsonl")
         self._event_bus = get_event_bus()
 
     def completion_cost(
         self,
         model: str,
-        usage: Optional[Dict[str, int]] = None,
+        usage: dict[str, int] | None = None,
         provider: str = "",
     ) -> float:
         """Calculate cost for an LLM completion call.
@@ -141,6 +141,7 @@ class CostTracker:
 
         Returns:
             Total cost in USD
+
         """
         if not usage:
             return 0.0
@@ -195,7 +196,7 @@ class CostTracker:
         summary.total_cost_usd = round(summary.total_cost_usd, 6)
         return summary
 
-    def get_model_info(self, model: str) -> Dict[str, Any]:
+    def get_model_info(self, model: str) -> dict[str, Any]:
         """Get pricing and context window info for a model.
 
         Args:
@@ -203,6 +204,7 @@ class CostTracker:
 
         Returns:
             Dict with pricing and capabilities
+
         """
         clean = model.split("/")[-1] if "/" in model else model
         return MODEL_PRICES.get(clean, {})
@@ -227,7 +229,7 @@ class CostTracker:
 
 
 # Module-level singleton
-_default_tracker: Optional[CostTracker] = None
+_default_tracker: CostTracker | None = None
 
 
 def get_cost_tracker() -> CostTracker:
@@ -239,9 +241,9 @@ def get_cost_tracker() -> CostTracker:
 
 
 __all__ = [
-    "CostTracker",
-    "CostEntry",
-    "SpendSummary",
     "MODEL_PRICES",
+    "CostEntry",
+    "CostTracker",
+    "SpendSummary",
     "get_cost_tracker",
 ]

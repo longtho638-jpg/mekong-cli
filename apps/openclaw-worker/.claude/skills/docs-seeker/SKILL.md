@@ -1,7 +1,8 @@
 ---
-name: docs-seeker
+name: ck:docs-seeker
 description: Search library/framework documentation via llms.txt (context7.com). Use for API docs, GitHub repository analysis, technical documentation lookup, latest library features.
 version: 3.1.0
+argument-hint: "[library-name] [topic]"
 ---
 
 # Documentation Discovery via Scripts

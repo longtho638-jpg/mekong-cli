@@ -1,20 +1,22 @@
-"""
-Mekong CLI - LLM Provider Abstractions
+from __future__ import annotations
+
+"""Mekong CLI - LLM Provider Abstractions.
 
 Pluggable provider interface. Subclass LLMProvider to add new backends.
 Built-in: GeminiProvider, OpenAICompatibleProvider, OfflineProvider.
 """
 
-import json
-import logging
-import os
-import random
-import time
-import urllib.request
-import urllib.error
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from abc import ABC, abstractmethod  # noqa: E402
+from dataclasses import dataclass  # noqa: E402
+from typing import Any, Optional  # noqa: E402
+
+import json  # noqa: E402
+import logging  # noqa: E402
+import os  # noqa: E402
+import random  # noqa: E402
+import time  # noqa: E402
+import urllib.error  # noqa: E402
+import urllib.request  # noqa: E402
 
 logger = logging.getLogger(__name__)
 
@@ -25,8 +27,8 @@ class LLMResponse:
 
     content: str
     model: str = ""
-    usage: Optional[Dict[str, int]] = None
-    raw: Optional[Dict[str, Any]] = None
+    usage: Optional[dict[str, int]] = None
+    raw: Optional[dict[str, Any]] = None
 
     def __post_init__(self) -> None:
         if self.usage is None:
@@ -47,7 +49,7 @@ class LLMProvider(ABC):
     @abstractmethod
     def chat(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         max_tokens: int,
@@ -98,14 +100,15 @@ class GeminiProvider(LLMProvider):
 
     def chat(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         max_tokens: int,
         json_mode: bool,
     ) -> LLMResponse:
         if not self._client:
-            raise RuntimeError("GeminiProvider not available (SDK missing or no key)")
+            msg = "GeminiProvider not available (SDK missing or no key)"
+            raise RuntimeError(msg)
 
         # Remove GOOGLE_API_KEY at call time too
         os.environ.pop("GOOGLE_API_KEY", None)
@@ -116,7 +119,7 @@ class GeminiProvider(LLMProvider):
             self._client = genai.Client(api_key=self._api_key)
 
         system_instruction = None
-        prompt_parts: List[str] = []
+        prompt_parts: list[str] = []
 
         for m in messages:
             role = m.get("role", "")
@@ -130,9 +133,10 @@ class GeminiProvider(LLMProvider):
 
         if not prompt_text.strip():
             logger.warning("[GeminiProvider] Empty prompt")
-            raise ValueError("Empty prompt")
+            msg = "Empty prompt"
+            raise ValueError(msg)
 
-        config: Dict[str, Any] = {
+        config: dict[str, Any] = {
             "temperature": temperature,
             "max_output_tokens": max_tokens,
         }
@@ -145,7 +149,7 @@ class GeminiProvider(LLMProvider):
         for attempt in range(max_retries):
             try:
                 logger.debug(
-                    "[GeminiProvider] %s attempt %d/%d", model, attempt + 1, max_retries
+                    "[GeminiProvider] %s attempt %d/%d", model, attempt + 1, max_retries,
                 )
                 response = self._client.models.generate_content(
                     model=model,
@@ -176,7 +180,8 @@ class GeminiProvider(LLMProvider):
                     if attempt < max_retries - 1:
                         time.sleep(random.uniform(0, 2 ** attempt))
                         continue
-                    raise RuntimeError(f"Empty response after {max_retries} attempts")
+                    msg = f"Empty response after {max_retries} attempts"
+                    raise RuntimeError(msg)
 
                 tokens = 0
                 if response.usage_metadata:
@@ -204,10 +209,11 @@ class GeminiProvider(LLMProvider):
                     )
                     time.sleep(delay)
                     continue
-                logger.error("[GeminiProvider] Failed: %s", e)
+                logger.exception("[GeminiProvider] Failed: %s", e)
                 raise
 
-        raise RuntimeError("GeminiProvider: all retries exhausted")
+        msg = "GeminiProvider: all retries exhausted"
+        raise RuntimeError(msg)
 
 
 # ---------------------------------------------------------------------------
@@ -215,8 +221,7 @@ class GeminiProvider(LLMProvider):
 # ---------------------------------------------------------------------------
 
 class OpenAICompatibleProvider(LLMProvider):
-    """
-    OpenAI-compatible REST provider.
+    """OpenAI-compatible REST provider.
 
     Works with: OpenAI, Anthropic proxy, Ollama, vLLM, Antigravity Proxy,
     and any endpoint that implements /chat/completions.
@@ -246,17 +251,18 @@ class OpenAICompatibleProvider(LLMProvider):
 
     def chat(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         max_tokens: int,
         json_mode: bool,
     ) -> LLMResponse:
         if not self._base_url:
-            raise RuntimeError(f"{self.name}: no base_url configured")
+            msg = f"{self.name}: no base_url configured"
+            raise RuntimeError(msg)
 
         use_model = model or self._default_model
-        payload: Dict[str, Any] = {
+        payload: dict[str, Any] = {
             "model": use_model,
             "messages": messages,
             "temperature": temperature,
@@ -265,7 +271,7 @@ class OpenAICompatibleProvider(LLMProvider):
         if json_mode:
             payload["response_format"] = {"type": "json_object"}
 
-        headers: Dict[str, str] = {"Content-Type": "application/json"}
+        headers: dict[str, str] = {"Content-Type": "application/json"}
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
@@ -279,11 +285,13 @@ class OpenAICompatibleProvider(LLMProvider):
             with urllib.request.urlopen(req, timeout=self._timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
+            msg = f"{self.name} HTTP {e.code}: {e.reason}"
             raise RuntimeError(
-                f"{self.name} HTTP {e.code}: {e.reason}"
+                msg,
             ) from e
         except urllib.error.URLError as e:
-            raise RuntimeError(f"{self.name} connection error: {e}") from e
+            msg = f"{self.name} connection error: {e}"
+            raise RuntimeError(msg) from e
 
         content = data["choices"][0]["message"]["content"]
         usage = data.get("usage", {})
@@ -312,7 +320,7 @@ class OfflineProvider(LLMProvider):
 
     def chat(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         model: str,
         temperature: float,
         max_tokens: int,
@@ -329,9 +337,9 @@ class OfflineProvider(LLMProvider):
 
 
 __all__ = [
-    "LLMResponse",
-    "LLMProvider",
     "GeminiProvider",
-    "OpenAICompatibleProvider",
+    "LLMProvider",
+    "LLMResponse",
     "OfflineProvider",
+    "OpenAICompatibleProvider",
 ]

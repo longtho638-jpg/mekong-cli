@@ -1,11 +1,12 @@
-"""
-Mekong CLI - Auto Updater
+"""Mekong CLI - Auto Updater.
 
 Electron's autoUpdater (Squirrel) mapped to CLI self-update via pip.
 Checks GitHub Releases API for newer versions, downloads the release
 asset, and applies updates in-place. Supports rollback. Caches checks
 for 1 hour to avoid redundant API calls.
 """
+
+from __future__ import annotations
 
 import subprocess
 import sys
@@ -14,7 +15,6 @@ import time
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Tuple
 
 import requests  # type: ignore[import-untyped]
 
@@ -53,16 +53,17 @@ class AutoUpdater:
         current_version: Installed version string, e.g. "2.2.0".
         repo_url: GitHub API base, e.g. "https://api.github.com/repos/org/repo".
         channel: Release channel filter (STABLE, BETA, NIGHTLY).
+
     """
 
     def __init__(self, current_version: str, repo_url: str, channel: UpdateChannel = UpdateChannel.STABLE) -> None:
         self.current_version = current_version
         self.repo_url = repo_url.rstrip("/")
         self.channel = channel
-        self._cache: Optional[UpdateInfo] = None
+        self._cache: UpdateInfo | None = None
         self._cache_at: float = 0.0
 
-    def check_for_updates(self) -> Optional[UpdateInfo]:
+    def check_for_updates(self) -> UpdateInfo | None:
         """Query GitHub Releases API for a newer version; cached for 1 hour.
 
         Returns UpdateInfo if a newer version is available, else None.
@@ -135,7 +136,7 @@ class AutoUpdater:
         )
         return result.returncode == 0
 
-    def _parse_version(self, version_str: str) -> Tuple[int, ...]:
+    def _parse_version(self, version_str: str) -> tuple[int, ...]:
         """Parse semver string into comparable int tuple, e.g. "2.2.0" → (2, 2, 0)."""
         try:
             return tuple(int(p) for p in version_str.strip().split("."))
@@ -143,4 +144,4 @@ class AutoUpdater:
             return (0,)
 
 
-__all__ = ["UpdateChannel", "UpdateInfo", "AutoUpdater"]
+__all__ = ["AutoUpdater", "UpdateChannel", "UpdateInfo"]

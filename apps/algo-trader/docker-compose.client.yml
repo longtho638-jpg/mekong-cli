@@ -1,0 +1,170 @@
+# OpenClaw Trading Company — Client Self-Hosted Edition
+# 1-command deploy: docker compose -f docker-compose.client.yml up -d
+#
+# Profiles:
+#   default      → Cloud API only (2 vCPU, 2GB RAM)
+#   local-llm    → + Ollama local model (4 vCPU, 8GB RAM)
+#   monitoring   → + Prometheus + Grafana
+#   auto-update  → + Watchtower daily pulls
+
+services:
+  # ─── 🦞 OPENCLAW TRADING DAEMON ────────────────────
+  openclaw:
+    build: .
+    restart: unless-stopped
+    env_file: ./config/.env
+    environment:
+      DATABASE_URL: postgresql://openclaw:${DB_PASSWORD:-changeme}@postgres:5432/openclaw
+      REDIS_URL: redis://redis:6379
+      LLM_GATEWAY_URL: http://litellm:9191
+      NODE_ENV: production
+      HEALTH_PORT: "3000"
+      METRICS_ENABLED: "true"
+    volumes:
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      litellm:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r => { process.exit(r.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+    networks:
+      - trading-net
+
+  # ─── 📊 DASHBOARD ──────────────────────────────────
+  dashboard:
+    build: ./dashboard
+    restart: unless-stopped
+    ports:
+      - "${DASHBOARD_PORT:-8080}:8080"
+    environment:
+      API_URL: http://openclaw:3000
+    depends_on:
+      - openclaw
+    networks:
+      - trading-net
+
+  # ─── 🤖 LLM GATEWAY (LiteLLM) ─────────────────────
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9191:9191"
+    command: >
+      --config /app/config/litellm-config.yaml
+      --port 9191
+    volumes:
+      - ./config/litellm-open-source-gateway-config.yaml:/app/config/litellm-config.yaml:ro
+    env_file: ./config/.env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9191/health"]
+      interval: 30s
+      timeout: 5s
+    networks:
+      - trading-net
+
+  # ─── 🗄️ POSTGRES ────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: openclaw
+      POSTGRES_USER: openclaw
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openclaw"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - trading-net
+
+  # ─── 📡 REDIS ───────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redisdata:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+    networks:
+      - trading-net
+
+  # ─── 🔗 OLLAMA (Profile: local-llm) ────────────────
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    profiles: ["local-llm"]
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+    networks:
+      - trading-net
+
+  # ─── 📈 PROMETHEUS (Profile: monitoring) ────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    restart: unless-stopped
+    profiles: ["monitoring"]
+    ports:
+      - "127.0.0.1:9090:9090"
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - promdata:/prometheus
+    networks:
+      - trading-net
+
+  # ─── 📉 GRAFANA (Profile: monitoring) ───────────────
+  grafana:
+    image: grafana/grafana:10.4.0
+    restart: unless-stopped
+    profiles: ["monitoring"]
+    ports:
+      - "${GRAFANA_PORT:-3001}:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - grafanadata:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - trading-net
+
+  # ─── 🔄 WATCHTOWER (Profile: auto-update) ──────────
+  watchtower:
+    image: containrrr/watchtower
+    restart: unless-stopped
+    profiles: ["auto-update"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 86400 --cleanup
+
+volumes:
+  pgdata:
+  redisdata:
+  ollama-models:
+  promdata:
+  grafanadata:
+
+networks:
+  trading-net:
+    driver: bridge

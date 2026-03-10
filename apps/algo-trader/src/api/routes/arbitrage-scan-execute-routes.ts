@@ -16,6 +16,7 @@ import {
   type ArbExecuteResponse,
 } from '../schemas/arbitrage-request-response-schemas';
 import type { AuthRequest } from '../../auth/tenant-auth-middleware';
+import { leverageEnforcementPlugin } from '../middleware/leverage-enforcement-middleware';
 
 /** Simulate spread scan — returns mock spread data for each symbol/exchange pair. */
 function simulateScan(
@@ -50,6 +51,9 @@ export function buildArbScanExecuteRoutes(
   positionTracker: TenantArbPositionTracker
 ) {
   return async function arbScanExecuteRoutes(fastify: FastifyInstance): Promise<void> {
+
+    // Enforce leverage caps on all trade routes in this scope
+    await fastify.register(leverageEnforcementPlugin);
 
     // POST /api/v1/arb/scan — dry-run spread detection
     fastify.post('/api/v1/arb/scan', async (req: FastifyRequest, reply: FastifyReply) => {
@@ -103,7 +107,7 @@ export function buildArbScanExecuteRoutes(
         return reply.status(400).send({ error: 'validation_error', details: parsed.error.issues });
       }
 
-      const { symbol, buyExchange, sellExchange, amount } = parsed.data;
+      const { symbol, buyExchange, sellExchange, amount, leverage } = parsed.data;
 
       // Simulate execution prices (Phase 1 stub — real executor wired in Phase 3)
       const buyPrice = 30000 + Math.random() * 100;
@@ -130,6 +134,7 @@ export function buildArbScanExecuteRoutes(
         buyExchange: position.buyExchange,
         sellExchange: position.sellExchange,
         amount: position.amount,
+        leverage,
         buyPrice: position.buyPrice,
         sellPrice: position.sellPrice,
         netSpreadPct: position.netSpreadPct,

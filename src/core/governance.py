@@ -1,17 +1,17 @@
-"""
-Mekong CLI - Governance Layer
+"""Mekong CLI - Governance Layer.
 
 Safety governance for autonomous operations.
 Classifies actions as safe/review_required/forbidden.
 Maintains audit trail in .mekong/audit.yaml.
 """
 
+from __future__ import annotations
+
 import re
 import time
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import List, Optional
 
 import yaml  # type: ignore[import-untyped]
 
@@ -51,13 +51,13 @@ class AuditEntry:
 class Governance:
     """Safety governance layer for autonomous operations."""
 
-    FORBIDDEN_PATTERNS: List[str] = [
+    FORBIDDEN_PATTERNS: list[str] = [
         r"\brm\s+-rf\b", r"\bdrop\s+(database|table)\b",
         r"\bdelete\s+all\b", r"\bdestroy\b", r"\bformat\b",
         r"\btruncate\b",
     ]
 
-    REVIEW_PATTERNS: List[str] = [
+    REVIEW_PATTERNS: list[str] = [
         r"\bdeploy\b.*\bprod", r"\bpush\b.*\bmain\b",
         r"\bmodify\b.*\bconfig\b", r"\bupdate\b.*\bdns\b",
         r"\bmigrate\b",
@@ -65,11 +65,11 @@ class Governance:
 
     MAX_AUDIT: int = 1000
 
-    def __init__(self, audit_path: Optional[str] = None) -> None:
+    def __init__(self, audit_path: str | None = None) -> None:
         """Initialize governance layer."""
         self.audit_path = audit_path or ".mekong/audit.yaml"
         self._halted = False
-        self._audit: List[AuditEntry] = []
+        self._audit: list[AuditEntry] = []
         self._load_audit()
 
     def classify(self, goal: str) -> GovernanceDecision:
@@ -108,7 +108,7 @@ class Governance:
             self._audit = self._audit[-self.MAX_AUDIT:]
         self._save_audit()
 
-    def get_audit_trail(self, limit: int = 50) -> List[AuditEntry]:
+    def get_audit_trail(self, limit: int = 50) -> list[AuditEntry]:
         """Get recent audit entries."""
         return self._audit[-limit:]
 
@@ -166,7 +166,7 @@ class Governance:
 
 __all__ = [
     "ActionClass",
-    "GovernanceDecision",
     "AuditEntry",
     "Governance",
+    "GovernanceDecision",
 ]

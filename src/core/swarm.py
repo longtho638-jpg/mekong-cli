@@ -1,15 +1,16 @@
-"""
-Mekong CLI - Swarm Registry
+"""Mekong CLI - Swarm Registry.
 
 Multi-node orchestration for distributed Mekong gateways.
 Manages a registry of remote nodes with health checking.
 """
 
+from __future__ import annotations
+
 import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests  # type: ignore[import-untyped]
 
@@ -30,25 +31,26 @@ class SwarmNode:
 class SwarmRegistry:
     """Registry of Mekong gateway nodes forming a swarm."""
 
-    def __init__(self, config_path: Optional[str] = None) -> None:
+    def __init__(self, config_path: str | None = None) -> None:
         """Initialize SwarmRegistry and load persisted nodes from disk.
 
         Args:
             config_path: Path to the YAML config file. Defaults to .mekong/swarm.yaml.
+
         """
-        self._nodes: Dict[str, SwarmNode] = {}
+        self._nodes: dict[str, SwarmNode] = {}
         self._config_path = config_path or str(
-            Path(".mekong") / "swarm.yaml"
+            Path(".mekong") / "swarm.yaml",
         )
         self._load()
 
     def register_node(
-        self, name: str, host: str, port: int, token: str
+        self, name: str, host: str, port: int, token: str,
     ) -> SwarmNode:
         """Register a new node in the swarm."""
         node_id = uuid.uuid4().hex[:8]
         node = SwarmNode(
-            id=node_id, name=name, host=host, port=port, token=token
+            id=node_id, name=name, host=host, port=port, token=token,
         )
         self._nodes[node_id] = node
         self._save()
@@ -62,11 +64,11 @@ class SwarmRegistry:
             return True
         return False
 
-    def list_nodes(self) -> List[SwarmNode]:
+    def list_nodes(self) -> list[SwarmNode]:
         """Return all registered nodes."""
         return list(self._nodes.values())
 
-    def get_node(self, node_id: str) -> Optional[SwarmNode]:
+    def get_node(self, node_id: str) -> SwarmNode | None:
         """Get a node by ID."""
         return self._nodes.get(node_id)
 
@@ -84,17 +86,17 @@ class SwarmRegistry:
         node.last_heartbeat = time.time()
         return node.status
 
-    def check_all_health(self, timeout: float = 3.0) -> Dict[str, str]:
+    def check_all_health(self, timeout: float = 3.0) -> dict[str, str]:
         """Run health checks on all registered nodes."""
-        results: Dict[str, str] = {}
+        results: dict[str, str] = {}
         for node in self._nodes.values():
             results[node.id] = self.check_health(node, timeout)
         self._save()
         return results
 
     def dispatch_goal(
-        self, node_id: str, goal: str, timeout: float = 60.0
-    ) -> Dict[str, Any]:
+        self, node_id: str, goal: str, timeout: float = 60.0,
+    ) -> dict[str, Any]:
         """Send a goal to a remote node via POST /cmd."""
         node = self.get_node(node_id)
         if not node:
@@ -171,7 +173,7 @@ class SwarmDispatcher:
     """
 
     # Map step type keywords to agent class names
-    _AGENT_TYPE_MAP: Dict[str, str] = {
+    _AGENT_TYPE_MAP: dict[str, str] = {
         "git": "git",
         "file": "file",
         "shell": "shell",
@@ -179,14 +181,14 @@ class SwarmDispatcher:
 
     def __init__(self, registry: SwarmRegistry) -> None:
         self.registry = registry
-        self._local_agents: Dict[str, Any] = {}
+        self._local_agents: dict[str, Any] = {}
         self._init_local_agents()
 
     def _init_local_agents(self) -> None:
         """Lazy-load local agents to avoid circular imports."""
         try:
-            from src.agents.git_agent import GitAgent
             from src.agents.file_agent import FileAgent
+            from src.agents.git_agent import GitAgent
             from src.agents.shell_agent import ShellAgent
             self._local_agents = {
                 "git": GitAgent(),
@@ -196,7 +198,7 @@ class SwarmDispatcher:
         except ImportError:
             self._local_agents = {}
 
-    def get_healthy_nodes(self) -> List[SwarmNode]:
+    def get_healthy_nodes(self) -> list[SwarmNode]:
         """Return all nodes with status='healthy'."""
         return [n for n in self.registry.list_nodes() if n.status == "healthy"]
 
@@ -279,4 +281,4 @@ class SwarmDispatcher:
         return self._dispatch_local(step, agent_type)
 
 
-__all__ = ["SwarmNode", "SwarmRegistry", "SwarmDispatcher"]
+__all__ = ["SwarmDispatcher", "SwarmNode", "SwarmRegistry"]

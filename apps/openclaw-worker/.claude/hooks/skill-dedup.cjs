@@ -14,9 +14,11 @@
  * when multiple Claude Code sessions run in the same directory.
  */
 
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+// Crash wrapper
+try {
+  const fs = require('fs');
+  const path = require('path');
+  const os = require('os');
 
 // Directories to never shadow (internal infrastructure, not real skills)
 const SKIP_DIRS = new Set(['.shadowed', '.venv', 'node_modules', '__pycache__']);
@@ -209,46 +211,58 @@ function cleanupShadowedDir(paths) {
   }
 }
 
-// -- Main --------------------------------------------------------------------
+  // -- Main --------------------------------------------------------------------
 
-function main() {
-  try {
-    let payload = {};
+  function main() {
     try {
-      const input = fs.readFileSync('/dev/stdin', 'utf8').trim();
-      if (input) payload = JSON.parse(input);
-    } catch {
-      // No stdin or invalid JSON
+      let payload = {};
+      try {
+        const input = fs.readFileSync('/dev/stdin', 'utf8').trim();
+        if (input) payload = JSON.parse(input);
+      } catch {
+        // No stdin or invalid JSON
+      }
+
+      const paths = getDefaultPaths();
+      const event = payload.hook_event_name || '';
+
+      if (event === 'SessionEnd' || event === 'Stop') {
+        handleSessionEnd(paths);
+      } else {
+        handleSessionStart(paths);
+      }
+    } catch (err) {
+      process.stderr.write(`[skill-dedup] Error: ${err.message}\n`);
     }
 
-    const paths = getDefaultPaths();
-    const event = payload.hook_event_name || '';
-
-    if (event === 'SessionEnd' || event === 'Stop') {
-      handleSessionEnd(paths);
-    } else {
-      handleSessionStart(paths);
-    }
-  } catch (err) {
-    process.stderr.write(`[skill-dedup] Error: ${err.message}\n`);
+    process.exit(0);
   }
 
-  process.exit(0);
-}
+  // Export for testing
+  if (require.main === module) {
+    main();
+  }
 
-// Export for testing
-if (require.main === module) {
-  main();
+  module.exports = {
+    listSkillNames,
+    findOverlaps,
+    resolvePaths,
+    handleSessionStart,
+    handleSessionEnd,
+    doShadow,
+    restoreOrphanedSkills,
+    cleanupShadowedDir,
+    SKIP_DIRS
+  };
+} catch (e) {
+  // Minimal crash logging (zero deps — only Node builtins)
+  try {
+    const fs = require('fs');
+    const p = require('path');
+    const logDir = p.join(__dirname, '.logs');
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+    fs.appendFileSync(p.join(logDir, 'hook-log.jsonl'),
+      JSON.stringify({ ts: new Date().toISOString(), hook: p.basename(__filename, '.cjs'), status: 'crash', error: e.message }) + '\n');
+  } catch (_) {}
+  process.exit(0); // fail-open
 }
-
-module.exports = {
-  listSkillNames,
-  findOverlaps,
-  resolvePaths,
-  handleSessionStart,
-  handleSessionEnd,
-  doShadow,
-  restoreOrphanedSkills,
-  cleanupShadowedDir,
-  SKIP_DIRS
-};

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mekong CLI Dashboard</title>
+    <style>
+        :root {
+            --primary: #00aaff;
+            --secondary: #8B5CF6;
+            --accent: #EC4899;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --border: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .recent-missions {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .mission-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mission-item:last-child {
+            border-bottom: none;
+        }
+
+        .mission-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-success { background: var(--success); color: white; }
+        .status-error { background: var(--error); color: white; }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .action-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #0090cc;
+            transform: translateY(-2px);
+        }
+
+        .agents-list {
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .agent-item {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #334155;
+            border-radius: 5px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Mekong CLI Dashboard</h1>
+            <p>RaaS Agency Operating System</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div>Agents</div>
+                <div class="stat-value">4</div>
+                <div style="color: var(--success)">Healthy</div>
+            </div>
+            <div class="stat-card">
+                <div>Active Tasks</div>
+                <div class="stat-value">3</div>
+                <div>Running</div>
+            </div>
+            <div class="stat-card">
+                <div>Memory</div>
+                <div class="stat-value">85%</div>
+                <div>Utilization</div>
+            </div>
+            <div class="stat-card">
+                <div>Credits</div>
+                <div class="stat-value">1,250</div>
+                <div>Balance</div>
+            </div>
+        </div>
+
+        <div class="recent-missions">
+            <h2>🎯 Recent Missions</h2>
+
+            <div class="mission-item">
+                <div>
+                    <strong>#1245 - Build API</strong>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">Completed 2 minutes ago</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="mission-status status-success">SUCCESS</div>
+            </div>
+
+            <div class="mission-item">
+                <div>
+                    <strong>#1244 - Fix Bug</strong>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">Failed 5 minutes ago</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 60%; background: var(--error);"></div>
+                    </div>
+                </div>
+                <div class="mission-status status-error">FAILED</div>
+            </div>
+
+            <div class="mission-item">
+                <div>
+                    <strong>#1243 - Add Authentication</strong>
+                    <div style="font-size: 0.9rem; color: #94a3b8;">Completed 1 hour ago</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="mission-status status-success">SUCCESS</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="action-btn">🍳 Cook Mission</button>
+            <button class="action-btn">📋 Plan Goal</button>
+            <button class="action-btn">🧪 Run Tests</button>
+            <button class="action-btn">🔧 Config</button>
+            <button class="action-btn">📚 Docs</button>
+            <button class="action-btn">🚀 Deploy</button>
+        </div>
+
+        <div class="agents-list">
+            <h2>🤖 Available Agents</h2>
+            <div class="agent-item">GitAgent</div>
+            <div class="agent-item">FileAgent</div>
+            <div class="agent-item">ShellAgent</div>
+            <div class="agent-item">RecipeCrawler</div>
+            <div class="agent-item">LeadHunter</div>
+            <div class="agent-item">ContentWriter</div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive behavior to the dashboard
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                alert(`Executing action: ${action}\nThis would start a new mission in Mekong CLI`);
+            });
+        });
+
+        // Simulate live updates
+        setInterval(() => {
+            // In a real implementation, this would fetch live data
+            // For demo, we'll just add a little pulse effect to the stats
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.transform = 'scale(1.02)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1)';
+                }, 100);
+            });
+        }, 10000);
+    </script>
+</body>
+</html>

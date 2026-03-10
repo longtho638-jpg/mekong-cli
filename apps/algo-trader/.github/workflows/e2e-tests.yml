@@ -1,0 +1,270 @@
+name: E2E & Load Tests
+
+on:
+  push:
+    branches: [main, feature/*]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run load tests daily at 2 AM UTC
+    - cron: '0 2 * * *'
+
+env:
+  # Test configuration
+  TEST_GATEWAY_URL: http://localhost:8787
+  TEST_DASHBOARD_URL: http://localhost:3000
+  DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+  REDIS_URL: redis://localhost:6379
+
+  # Billing (optional - for webhook tests)
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+  TEST_STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+  POLAR_API_KEY: ${{ secrets.POLAR_API_KEY }}
+  TEST_POLAR_WEBHOOK_SECRET: ${{ secrets.POLAR_WEBHOOK_SECRET }}
+
+jobs:
+  # ============================================
+  # E2E Tests with Playwright
+  # ============================================
+  e2e-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1/3, 2/3, 3/3]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run database migrations
+        run: pnpm exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+
+      - name: Start RaaS Gateway (Cloudflare Worker)
+        run: |
+          pnpm run dev:worker &
+          sleep 10
+          # Verify gateway is running
+          curl -f http://localhost:8787/health || exit 1
+        continue-on-error: true
+
+      - name: Start Dashboard
+        run: |
+          pnpm run dashboard:dev &
+          sleep 15
+          # Verify dashboard is running
+          curl -f http://localhost:3000 || exit 1
+        continue-on-error: true
+
+      - name: Start API Server
+        run: |
+          pnpm run api:serve &
+          sleep 10
+          # Verify API is running
+          curl -f http://localhost:3000/health || exit 1
+        continue-on-error: true
+
+      - name: Run Playwright E2E tests
+        run: pnpm exec playwright test --shard=${{ matrix.shard }} --reporter=list,junit
+        env:
+          CI: 'true'
+          PLAYWRIGHT_CI: 'true'
+
+      - name: Upload Playwright report (on failure)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-shard-${{ matrix.shard }}
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Upload Playwright traces (on failure)
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-traces-shard-${{ matrix.shard }}
+          path: test-results/
+          retention-days: 7
+
+  # ============================================
+  # Load Tests with k6
+  # ============================================
+  load-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: e2e-tests
+
+    # Only run on main branch or scheduled runs
+    if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install k6
+        uses: grafana/setup-k6-action@v1
+        with:
+          k6-version: 'latest'
+
+      - name: Run database migrations
+        run: pnpm exec prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+
+      - name: Start RaaS Gateway
+        run: |
+          pnpm run dev:worker &
+          sleep 10
+          curl -f http://localhost:8787/health || exit 1
+        continue-on-error: true
+
+      - name: Start API Server
+        run: |
+          pnpm run api:serve &
+          sleep 10
+          curl -f http://localhost:3000/health || exit 1
+        continue-on-error: true
+
+      - name: Run k6 load test
+        run: pnpm exec k6 run tests/load/raas-gateway-load-test.js
+        env:
+          BASE_URL: http://localhost:8787
+          TENANT_ID: ci-load-test
+          API_KEY: mk_ci_test:ci-tenant:pro
+
+      - name: Upload k6 summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: k6-load-test-summary
+          path: load-test-summary.json
+          retention-days: 7
+
+      - name: Comment PR with load test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const summary = JSON.parse(fs.readFileSync('load-test-summary.json', 'utf8'));
+              const comment = `
+            ## k6 Load Test Results
+
+            ### Performance Metrics
+            - p50 Latency: ${summary.performance.p50_latency_ms}ms
+            - p95 Latency: ${summary.performance.p95_latency_ms}ms (target: <2000ms)
+            - p99 Latency: ${summary.performance.p99_latency_ms}ms
+
+            ### Thresholds
+            - p95 < 2s: ${summary.thresholds.p95_passed ? '✅ PASSED' : '❌ FAILED'}
+            - Error Rate < 5%: ${summary.thresholds.error_rate_passed ? '✅ PASSED' : '❌ FAILED'}
+            `;
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: comment
+              });
+            } catch (error) {
+              console.error('Failed to read k6 summary:', error);
+            }
+
+  # ============================================
+  # Combined Report Job
+  # ============================================
+  test-report:
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, load-tests]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Generate test report
+        run: |
+          echo "## Test Execution Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### E2E Tests" >> $GITHUB_STEP_SUMMARY
+
+          # Count Playwright test results
+          playwright_reports=$(find artifacts -name "playwright-results.json" | wc -l)
+          echo "- Playwright reports found: $playwright_reports" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Load Tests" >> $GITHUB_STEP_SUMMARY
+
+          # Check k6 summary
+          if [ -f "artifacts/k6-load-test-summary/load-test-summary.json" ]; then
+            cat artifacts/k6-load-test-summary/load-test-summary.json >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- k6 summary not available" >> $GITHUB_STEP_SUMMARY
+          fi

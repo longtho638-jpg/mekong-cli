@@ -1,0 +1,51 @@
+/bootstrap:auto:parallel /cook CRITICAL: Mekong CLI Public Distribution — Developer SOPs & Docs
+
+## APPROVED PLAN — Phase 1: Developer SOPs
+
+### Task 1: docs/getting-started.md
+5-minute quickstart guide:
+- Step 1: Install (pip install -e .)
+- Step 2: Config LLM (.env.example → .env)
+- Step 3: First task (mekong cook "hello world")
+- Step 4: Vibe coding (mekong vibe "build a todo app")
+- Step 5: Ship (mekong ship)
+Include copy-paste commands, expected output screenshots.
+
+### Task 2: docs/sdk-catalog.md
+Scan ALL packages/ directory, generate table:
+| Package | Industry | Capabilities | Quick Start |
+List every single package with real description from its package.json or README.
+
+### Task 3: docs/contributing-sops.md
+5 SOPs cho open-source contributors:
+- SOP-01: How to add a new SDK package
+- SOP-02: How to create a recipe.yaml for SDK
+- SOP-03: How to write a starter template
+- SOP-04: How to test locally (pip install -e ".[dev]" && pytest)
+- SOP-05: Revenue sharing registration
+
+### Task 4: docs/architecture.md
+System design diagram + explanation:
+- src/ = Python PEV engine
+- packages/ = 100+ TS/JS SDK packages
+- apps/ = Internal apps
+- templates/ = Starter projects
+Include mermaid diagram.
+
+### Task 5: GitHub setup
+- .github/ISSUE_TEMPLATE/bug_report.md
+- .github/ISSUE_TEMPLATE/feature_request.md
+- .github/ISSUE_TEMPLATE/new_sdk_proposal.md
+- .github/workflows/release.yml (auto PyPI publish on tag)
+
+### Task 6: README.md upgrade
+- Add "Why Mekong CLI?" section — SDK-powered vibe coding differentiator
+- Add collapsible "Available SDKs" table
+- Add badges (license, version, tests, Python version)
+- Add quickstart code block
+
+## CONSTRAINTS:
+- Docs PHẢI viết bằng tiếng ANH (public repo)
+- KHÔNG tạo file rỗng — mỗi file phải có nội dung thực
+- Scan actual packages/ để tạo catalog, KHÔNG bịa
+- Git commit: "docs: developer SOPs and public distribution setup"

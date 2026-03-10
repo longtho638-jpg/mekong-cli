@@ -119,7 +119,7 @@ class TestMemoryStoreBackwardCompat:
     def test_record_still_works(self):
         """MemoryStore.record() works without Qdrant."""
         from src.core.memory import MemoryStore, MemoryEntry
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             store = MemoryStore(os.path.join(tmp, "test_mem.yaml"))
             entry = MemoryEntry(goal="test goal", status="success")
             store.record(entry)
@@ -130,7 +130,7 @@ class TestMemoryStoreBackwardCompat:
     def test_query_still_works(self):
         """MemoryStore.query() substring search still functional."""
         from src.core.memory import MemoryStore, MemoryEntry
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             store = MemoryStore(os.path.join(tmp, "test_mem.yaml"))
             store.record(MemoryEntry(goal="deploy production", status="success"))
             store.record(MemoryEntry(goal="run tests", status="failed"))
@@ -140,7 +140,7 @@ class TestMemoryStoreBackwardCompat:
     def test_empty_query_returns_all(self):
         """MemoryStore.query('') returns all entries."""
         from src.core.memory import MemoryStore, MemoryEntry
-        with tempfile.TemporaryDirectory() as tmp:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
             store = MemoryStore(os.path.join(tmp, "test_mem.yaml"))
             store.record(MemoryEntry(goal="task one", status="success"))
             store.record(MemoryEntry(goal="task two", status="success"))

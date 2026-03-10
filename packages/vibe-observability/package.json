@@ -1,8 +1,0 @@
-{
-  "name": "@agencyos/vibe-observability",
-  "version": "0.1.0",
-  "description": "Observability SDK — structured logging, tracing, metrics, error tracking, health checks",
-  "main": "index.ts",
-  "types": "index.ts",
-  "license": "MIT"
-}

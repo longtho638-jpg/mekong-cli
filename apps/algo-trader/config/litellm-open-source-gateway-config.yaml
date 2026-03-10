@@ -1,0 +1,110 @@
+# LiteLLM Gateway Config — Drop-in thay thế Antigravity Proxy (Port 9191)
+# OpenClaw Tôm Hùm → localhost:9191 → LiteLLM → Local/GPU/Cloud LLM
+#
+# Usage:
+#   pip install litellm[proxy]
+#   litellm --config config/litellm-open-source-gateway-config.yaml --port 9191
+#
+# Created: 2026-03-03
+
+model_list:
+  # ─── TIER 1: LOCAL (Ollama — Free, Mac M1/M2/M4 Metal) ───
+  - model_name: "local-fast"
+    litellm_params:
+      model: "ollama/phi4:14b-q4_K_M"
+      api_base: "http://localhost:11434"
+      stream: true
+      max_tokens: 4096
+
+  - model_name: "local-coder"
+    litellm_params:
+      model: "ollama/qwen2.5-coder:7b-instruct-q4_K_M"
+      api_base: "http://localhost:11434"
+      stream: true
+      max_tokens: 8192
+
+  - model_name: "local-reasoning"
+    litellm_params:
+      model: "ollama/deepseek-r1:7b"
+      api_base: "http://localhost:11434"
+      stream: true
+      max_tokens: 8192
+
+  # ─── TIER 2: GPU SERVER (vLLM/SGLang — Cheap, Powerful) ───
+  - model_name: "gpu-coder"
+    litellm_params:
+      model: "openai/Qwen2.5-Coder-32B-Instruct"
+      api_base: "http://localhost:8081/v1"
+      api_key: "not-needed"
+      stream: true
+      max_tokens: 16384
+
+  - model_name: "gpu-reasoning"
+    litellm_params:
+      model: "openai/DeepSeek-R1-Distill-Qwen-32B"
+      api_base: "http://localhost:8081/v1"
+      api_key: "not-needed"
+      stream: true
+      max_tokens: 16384
+
+  # ─── TIER 3: CLOUD API FALLBACK (Existing accounts) ───
+  - model_name: "claude-sonnet"
+    litellm_params:
+      model: "anthropic/claude-sonnet-4-6-20250514"
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+      max_tokens: 8192
+
+  - model_name: "claude-opus"
+    litellm_params:
+      model: "anthropic/claude-opus-4-6"
+      api_key: "os.environ/ANTHROPIC_API_KEY"
+      max_tokens: 8192
+
+  - model_name: "gemini-flash"
+    litellm_params:
+      model: "gemini/gemini-3-flash"
+      api_key: "os.environ/GOOGLE_API_KEY"
+      max_tokens: 8192
+
+# ─── ROUTING: Remap existing model names → local models ───
+router_settings:
+  routing_strategy: "cost-based-routing"
+  model_group_alias:
+    # Khi Tôm Hùm gọi model cũ → redirect sang local/GPU
+    "claude-sonnet-4-6-20250514": "local-coder"
+    "claude-sonnet-4-5-20250514": "local-coder"
+    "claude-opus-4-6": "gpu-coder"
+    "claude-opus-4-5-20250514": "gpu-coder"
+    "gemini-3-flash": "local-fast"
+    "gemini-3-flash-preview": "local-fast"
+    "gemini-3-pro": "gpu-reasoning"
+    "gemini-3-pro-high": "gpu-reasoning"
+    "qwen3-coder-next": "local-coder"
+
+  # Fallback chain: local → GPU → cloud API
+  fallbacks:
+    - ["local-coder", "gpu-coder", "claude-sonnet"]
+    - ["local-fast", "local-coder", "gemini-flash"]
+    - ["gpu-coder", "claude-opus"]
+    - ["gpu-reasoning", "claude-opus"]
+
+  retry_policy:
+    max_retries: 2
+    retry_after_seconds: 1
+
+  # Timeout per tier
+  timeout: 120
+  stream_timeout: 300
+
+# ─── GENERAL SETTINGS ───
+general_settings:
+  master_key: "os.environ/LITELLM_MASTER_KEY"
+  database_url: null  # No DB needed for simple proxy
+  custom_auth: null
+
+litellm_settings:
+  drop_params: true  # Drop unsupported params instead of error
+  set_verbose: false
+  num_retries: 2
+  request_timeout: 120
+  telemetry: false    # Disable telemetry for privacy

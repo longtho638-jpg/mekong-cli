@@ -1,8 +1,16 @@
 {
   "sessions": [
     {
-      "id": 1772365259106,
-      "startedAt": "2026-03-01T11:40:59.106Z",
+      "id": 1772414191788,
+      "startedAt": "2026-03-02T01:16:31.788Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772414779512,
+      "startedAt": "2026-03-02T01:26:19.512Z",
       "missionsDispatched": 1,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
@@ -11,34 +19,8 @@
       ]
     },
     {
-      "id": 1772365555892,
-      "startedAt": "2026-03-01T11:45:55.892Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772365824182,
-      "startedAt": "2026-03-01T11:50:24.182Z",
-      "missionsDispatched": 2,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772366099609,
-      "startedAt": "2026-03-01T11:54:59.609Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772366371231,
-      "startedAt": "2026-03-01T11:59:31.231Z",
+      "id": 1772415084405,
+      "startedAt": "2026-03-02T01:31:24.405Z",
       "missionsDispatched": 1,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
@@ -47,34 +29,40 @@
       ]
     },
     {
-      "id": 1772366642435,
-      "startedAt": "2026-03-01T12:04:02.435Z",
+      "id": 1772415371151,
+      "startedAt": "2026-03-02T01:36:11.151Z",
       "missionsDispatched": 0,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": []
     },
     {
-      "id": 1772366645107,
-      "startedAt": "2026-03-01T12:04:05.107Z",
-      "missionsDispatched": 2,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772369798393,
-      "startedAt": "2026-03-01T12:56:38.393Z",
+      "id": 1772415555007,
+      "startedAt": "2026-03-02T01:39:15.007Z",
       "missionsDispatched": 0,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": []
     },
     {
-      "id": 1772370403635,
-      "startedAt": "2026-03-01T13:06:43.635Z",
+      "id": 1772416053143,
+      "startedAt": "2026-03-02T01:47:33.143Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772416461439,
+      "startedAt": "2026-03-02T01:54:21.439Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772416581200,
+      "startedAt": "2026-03-02T01:56:21.200Z",
       "missionsDispatched": 1,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
@@ -83,45 +71,344 @@
       ]
     },
     {
-      "id": 1772370441692,
-      "startedAt": "2026-03-01T13:07:21.692Z",
-      "missionsDispatched": 2,
-      "missionsSucceeded": 1,
-      "bugsFixed": 1,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772370998409,
-      "startedAt": "2026-03-01T13:16:38.409Z",
+      "id": 1772417101356,
+      "startedAt": "2026-03-02T02:05:01.356Z",
       "missionsDispatched": 0,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": []
     },
     {
-      "id": 1772371101630,
-      "startedAt": "2026-03-01T13:18:21.630Z",
-      "missionsDispatched": 3,
-      "missionsSucceeded": 1,
-      "bugsFixed": 1,
+      "id": 1772417186529,
+      "startedAt": "2026-03-02T02:06:26.529Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
       "lessonsLearned": [
-        "all_workers_busy",
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772417498507,
+      "startedAt": "2026-03-02T02:11:38.507Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772425138834,
+      "startedAt": "2026-03-02T04:18:58.834Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772425458892,
+      "startedAt": "2026-03-02T04:24:18.892Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772425636387,
+      "startedAt": "2026-03-02T04:27:16.387Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772425824232,
+      "startedAt": "2026-03-02T04:30:24.232Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772425913608,
+      "startedAt": "2026-03-02T04:31:53.608Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772426190258,
+      "startedAt": "2026-03-02T04:36:30.258Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772426465552,
+      "startedAt": "2026-03-02T04:41:05.552Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772426735053,
+      "startedAt": "2026-03-02T04:45:35.053Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772427008653,
+      "startedAt": "2026-03-02T04:50:08.653Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772427139712,
+      "startedAt": "2026-03-02T04:52:19.712Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772427311602,
+      "startedAt": "2026-03-02T04:55:11.602Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772427587819,
+      "startedAt": "2026-03-02T04:59:47.819Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772427794255,
+      "startedAt": "2026-03-02T05:03:14.255Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772427845569,
+      "startedAt": "2026-03-02T05:04:05.569Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772428147089,
+      "startedAt": "2026-03-02T05:09:07.089Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772428426339,
+      "startedAt": "2026-03-02T05:13:46.339Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772428478690,
+      "startedAt": "2026-03-02T05:14:38.690Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772428696022,
+      "startedAt": "2026-03-02T05:18:16.022Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772428956009,
+      "startedAt": "2026-03-02T05:22:36.009Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772429117775,
+      "startedAt": "2026-03-02T05:25:17.775Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772429241784,
+      "startedAt": "2026-03-02T05:27:21.784Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772429509131,
+      "startedAt": "2026-03-02T05:31:49.131Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772429805705,
+      "startedAt": "2026-03-02T05:36:45.705Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772430080503,
+      "startedAt": "2026-03-02T05:41:20.503Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
+        "max_retries_exhausted"
+      ]
+    },
+    {
+      "id": 1772430342128,
+      "startedAt": "2026-03-02T05:45:42.128Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772430650524,
+      "startedAt": "2026-03-02T05:50:50.524Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772430944167,
+      "startedAt": "2026-03-02T05:55:44.167Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431157863,
+      "startedAt": "2026-03-02T05:59:17.863Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431431908,
+      "startedAt": "2026-03-02T06:03:51.908Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431682220,
+      "startedAt": "2026-03-02T06:08:02.220Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431719502,
+      "startedAt": "2026-03-02T06:08:39.502Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431801708,
+      "startedAt": "2026-03-02T06:10:01.708Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431861324,
+      "startedAt": "2026-03-02T06:11:01.324Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431883645,
+      "startedAt": "2026-03-02T06:11:23.645Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772431960028,
+      "startedAt": "2026-03-02T06:12:40.028Z",
+      "missionsDispatched": 1,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": [
         "brain_died_fatal"
       ]
     },
     {
-      "id": 1772371605062,
-      "startedAt": "2026-03-01T13:26:45.062Z",
+      "id": 1772432232679,
+      "startedAt": "2026-03-02T06:17:12.679Z",
       "missionsDispatched": 0,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": []
     },
     {
-      "id": 1772371765349,
-      "startedAt": "2026-03-01T13:29:25.349Z",
+      "id": 1772432404060,
+      "startedAt": "2026-03-02T06:20:04.060Z",
+      "missionsDispatched": 0,
+      "missionsSucceeded": 0,
+      "bugsFixed": 0,
+      "lessonsLearned": []
+    },
+    {
+      "id": 1772432426822,
+      "startedAt": "2026-03-02T06:20:26.822Z",
       "missionsDispatched": 1,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
@@ -130,328 +417,20 @@
       ]
     },
     {
-      "id": 1772372249379,
-      "startedAt": "2026-03-01T13:37:29.379Z",
+      "id": 1772433070637,
+      "startedAt": "2026-03-02T06:31:10.637Z",
       "missionsDispatched": 1,
       "missionsSucceeded": 0,
       "bugsFixed": 0,
       "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772372630302,
-      "startedAt": "2026-03-01T13:43:50.302Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772372856936,
-      "startedAt": "2026-03-01T13:47:36.936Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772373307231,
-      "startedAt": "2026-03-01T13:55:07.231Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772373453634,
-      "startedAt": "2026-03-01T13:57:33.634Z",
-      "missionsDispatched": 2,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "brain_died_fatal",
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772374031794,
-      "startedAt": "2026-03-01T14:07:11.794Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772374117439,
-      "startedAt": "2026-03-01T14:08:37.439Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772374675919,
-      "startedAt": "2026-03-01T14:17:55.919Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772374768321,
-      "startedAt": "2026-03-01T14:19:28.321Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772375242611,
-      "startedAt": "2026-03-01T14:27:22.611Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772376127690,
-      "startedAt": "2026-03-01T14:42:07.690Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772376476602,
-      "startedAt": "2026-03-01T14:47:56.602Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772376709512,
-      "startedAt": "2026-03-01T14:51:49.512Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772377115766,
-      "startedAt": "2026-03-01T14:58:35.766Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772377281017,
-      "startedAt": "2026-03-01T15:01:21.017Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772377689039,
-      "startedAt": "2026-03-01T15:08:09.039Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772378099556,
-      "startedAt": "2026-03-01T15:14:59.556Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772378400149,
-      "startedAt": "2026-03-01T15:20:00.149Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772378651238,
-      "startedAt": "2026-03-01T15:24:11.238Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772378985185,
-      "startedAt": "2026-03-01T15:29:45.185Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772379298656,
-      "startedAt": "2026-03-01T15:34:58.656Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772379615005,
-      "startedAt": "2026-03-01T15:40:15.005Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772380151704,
-      "startedAt": "2026-03-01T15:49:11.704Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772380355857,
-      "startedAt": "2026-03-01T15:52:35.857Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772380621536,
-      "startedAt": "2026-03-01T15:57:01.536Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772380786635,
-      "startedAt": "2026-03-01T15:59:46.635Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772381413927,
-      "startedAt": "2026-03-01T16:10:13.927Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772381991352,
-      "startedAt": "2026-03-01T16:19:51.352Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772382002279,
-      "startedAt": "2026-03-01T16:20:02.279Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772382597836,
-      "startedAt": "2026-03-01T16:29:57.836Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772382702082,
-      "startedAt": "2026-03-01T16:31:42.082Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772383311635,
-      "startedAt": "2026-03-01T16:41:51.635Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772383809583,
-      "startedAt": "2026-03-01T16:50:09.583Z",
-      "missionsDispatched": 0,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": []
-    },
-    {
-      "id": 1772383908295,
-      "startedAt": "2026-03-01T16:51:48.295Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772384521608,
-      "startedAt": "2026-03-01T17:02:01.608Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
-      ]
-    },
-    {
-      "id": 1772385127115,
-      "startedAt": "2026-03-01T17:12:07.115Z",
-      "missionsDispatched": 1,
-      "missionsSucceeded": 0,
-      "bugsFixed": 0,
-      "lessonsLearned": [
-        "max_retries_exhausted"
+        "brain_died_fatal"
       ]
     }
   ],
   "knowledgeGraph": {
     "well": {
       "documentation": [
+        "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
         "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
         "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
         "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
@@ -659,8 +638,14 @@
       "insight": "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
       "category": "documentation",
       "recordedAt": "2026-03-01T12:45:31.812Z"
+    },
+    {
+      "project": "well",
+      "insight": "Drive has 5 docs: ML4T_full_clean.txt, ML4T_full_clean.txt, Business_Analytics_2nd_Global_Edition_by_James_R_Evans_Shared by WorldLine Technology.pdf, Advisor Agreement - Form (180521).doc, 8-Lean and agile project management how to make any project better, faster, and more cost effective - Terra Vanzant Stern PhD.pdf",
+      "category": "documentation",
+      "recordedAt": "2026-03-02T06:30:53.707Z"
     }
   ],
   "createdAt": "2026-02-24T18:28:23.656Z",
-  "updatedAt": "2026-03-01T17:14:38.143Z"
+  "updatedAt": "2026-03-10T03:34:48.041Z"
 }

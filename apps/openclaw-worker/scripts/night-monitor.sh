@@ -31,15 +31,8 @@ while true; do
     cd ~/mekong-cli/apps/openclaw-worker && TOM_HUM_BRAIN_MODE=tmux nohup node task-watcher.js >> ~/tom_hum_cto.log 2>&1 &
   fi
 
-  # Proxy check
-  if curl -s http://localhost:9191/health 2>/dev/null | grep -q '"status":"ok"'; then
-    echo "PROXY: ✅" >> "$LOG"
-  else
-    echo "PROXY: ❌ restarting..." >> "$LOG"
-    pkill -f "antigravity-claude-proxy" 2>/dev/null
-    sleep 2
-    cd /opt/homebrew/lib/node_modules/antigravity-claude-proxy && nohup node src/index.js > /tmp/proxy.log 2>&1 &
-  fi
+  # DashScope Direct — no local proxy needed
+  echo "API: DashScope Direct (no proxy)" >> "$LOG"
 
   for i in 0 1 2 3; do
     OUTPUT=$(tmux capture-pane -t "${SESSION}.$i" -p -S -10 2>/dev/null)
@@ -47,7 +40,7 @@ while true; do
     # 💀 Dead pane
     if echo "$OUTPUT" | grep -q "Pane is dead"; then
       echo "P$i: 💀 DEAD — respawning + inject task" >> "$LOG"
-      tmux respawn-pane -k -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset ANTHROPIC_BASE_URL && command claude --dangerously-skip-permissions"
+      tmux respawn-pane -k -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && command claude --dangerously-skip-permissions"
       sleep 8
       tmux send-keys -t "${SESSION}.$i" -l "${TASKS[$i]}"
       sleep 0.3
@@ -58,7 +51,7 @@ while true; do
     # 🔴 Bash prompt (CC CLI crashed)
     if echo "$OUTPUT" | tail -3 | grep -qE 'macbookprom1@.*%\s*$'; then
       echo "P$i: 🔴 CRASHED — restarting CC CLI + inject task" >> "$LOG"
-      tmux send-keys -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset ANTHROPIC_BASE_URL && command claude --dangerously-skip-permissions" Enter
+      tmux send-keys -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && command claude --dangerously-skip-permissions" Enter
       sleep 8
       tmux send-keys -t "${SESSION}.$i" -l "${TASKS[$i]}"
       sleep 0.3
@@ -71,7 +64,7 @@ while true; do
       PCT=$(echo "$OUTPUT" | grep -oE '[0-9]+% remaining' | grep -oE '[0-9]+')
       if [ "$PCT" -le 5 ] 2>/dev/null; then
         echo "P$i: 🟡 CONTEXT ${PCT}% — restarting fresh + inject" >> "$LOG"
-        tmux respawn-pane -k -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset ANTHROPIC_BASE_URL && command claude --dangerously-skip-permissions"
+        tmux respawn-pane -k -t "${SESSION}.$i" "cd ${DIRS[$i]} && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && command claude --dangerously-skip-permissions"
         sleep 8
         tmux send-keys -t "${SESSION}.$i" -l "${TASKS[$i]}"
         sleep 0.3
@@ -81,7 +74,7 @@ while true; do
     fi
 
     # 🔵 Pending action (git push, queued messages, Press up) — AUTO-ENTER
-    if echo "$OUTPUT" | grep -qE '❯ git (push|commit|add)|queued messages|Press up to edit'; then
+    if echo "$OUTPUT" | grep -qE '(›|❯)\s*(git (push|commit|add)|queued messages|Press up to edit)'; then
       echo "P$i: 🔵 PENDING ACTION — sending Enter" >> "$LOG"
       tmux send-keys -t "${SESSION}.$i" Escape
       sleep 0.3

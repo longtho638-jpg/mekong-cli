@@ -22,6 +22,29 @@ TIER_LIMITS: dict[str, dict[str, int]] = {
     "enterprise": {"daily": 0,   "monthly": 0},   # 0 = unlimited
 }
 
+
+@dataclass
+class OverageConfig:
+    """Per-tier overage billing configuration."""
+    allow_overage: bool
+    overage_rate_per_credit: float
+    warning_threshold_pct: int
+    max_overage_credits: int  # 0 = no cap for enterprise
+
+
+OVERAGE_TIERS: dict[str, OverageConfig] = {
+    "free":       OverageConfig(allow_overage=False, overage_rate_per_credit=0.0, warning_threshold_pct=80, max_overage_credits=0),
+    "starter":    OverageConfig(allow_overage=False, overage_rate_per_credit=0.0, warning_threshold_pct=80, max_overage_credits=0),
+    "growth":     OverageConfig(allow_overage=True,  overage_rate_per_credit=0.02, warning_threshold_pct=80, max_overage_credits=500),
+    "pro":        OverageConfig(allow_overage=True,  overage_rate_per_credit=0.01, warning_threshold_pct=80, max_overage_credits=2000),
+    "enterprise": OverageConfig(allow_overage=True,  overage_rate_per_credit=0.005, warning_threshold_pct=90, max_overage_credits=0),
+}
+
+
+def get_overage_config(tier: str) -> OverageConfig:
+    """Get overage config for tier. Defaults to free (no overage)."""
+    return OVERAGE_TIERS.get(tier.lower(), OVERAGE_TIERS["free"])
+
 _DDL = """
 CREATE TABLE IF NOT EXISTS rate_limit_events (
     id          TEXT PRIMARY KEY,
@@ -54,6 +77,8 @@ class RateLimitStatus:
     monthly_used: int
     monthly_limit: int
     retry_after_seconds: Optional[int] = field(default=None)
+    overage_used: int = 0
+    overage_charges_usd: float = 0.0
 
 
 class CreditRateLimiter:

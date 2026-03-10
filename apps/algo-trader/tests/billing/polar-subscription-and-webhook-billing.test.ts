@@ -117,7 +117,7 @@ describe('PolarWebhookEventHandler', () => {
     const payload: PolarWebhookPayload = {
       type: 'subscription.created',
       data: {
-        id: 'sub_123',
+        id: 'sub_unique_' + Date.now(),
         status: 'active',
         product_id: proProduct.polarProductId,
         metadata: { tenantId: 'tenant-abc' },
@@ -139,7 +139,7 @@ describe('PolarWebhookEventHandler', () => {
 
     const result = handler.handleEvent({
       type: 'subscription.canceled',
-      data: { id: 'sub_123', metadata: { tenantId: 'tenant-abc' } },
+      data: { id: 'sub_unique_' + Date.now(), metadata: { tenantId: 'tenant-abc' } },
     });
 
     expect(result.handled).toBe(true);
@@ -151,7 +151,7 @@ describe('PolarWebhookEventHandler', () => {
   test('ignores unknown event types', () => {
     const result = handler.handleEvent({
       type: 'order.created',
-      data: { id: 'ord_123' },
+      data: { id: 'ord_unique_' + Date.now() },
     });
     expect(result.handled).toBe(false);
     expect(result.action).toBe('ignored');
@@ -160,7 +160,7 @@ describe('PolarWebhookEventHandler', () => {
   test('ignores events without tenantId in metadata', () => {
     const result = handler.handleEvent({
       type: 'subscription.created',
-      data: { id: 'sub_123', product_id: 'prod_pro' },
+      data: { id: 'sub_unique_' + Date.now(), product_id: 'prod_pro' },
     });
     expect(result.handled).toBe(false);
     expect(result.action).toBe('ignored');
@@ -175,7 +175,7 @@ describe('PolarWebhookEventHandler', () => {
     const result = handler.handleEvent({
       type: 'subscription.updated',
       data: {
-        id: 'sub_123',
+        id: 'sub_unique_' + Date.now(),
         product_id: entProduct.polarProductId,
         metadata: { tenantId: 't1' },
         current_period_end: '2026-05-01',

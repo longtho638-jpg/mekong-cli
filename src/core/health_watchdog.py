@@ -1,15 +1,17 @@
-"""
-Mekong CLI - Health Watchdog Engine
+"""Mekong CLI - Health Watchdog Engine.
 
 Cascading quality gates with hysteresis, inspired by Netdata's health engine.
 Evaluates execution results against configurable thresholds with warning/critical
 severity levels and flap protection.
 """
 
+from __future__ import annotations
+
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from .event_bus import EventType, get_event_bus
 
@@ -65,7 +67,7 @@ class AlertState:
 class WatchdogReport:
     """Report from a watchdog evaluation cycle."""
 
-    alerts: List[AlertState] = field(default_factory=list)
+    alerts: list[AlertState] = field(default_factory=list)
     total_checks: int = 0
     warnings: int = 0
     criticals: int = 0
@@ -78,8 +80,7 @@ class WatchdogReport:
 
 
 class HealthWatchdog:
-    """
-    Cascading health watchdog engine.
+    """Cascading health watchdog engine.
 
     Inspired by Netdata's health engine: configurable thresholds,
     hysteresis for flap protection, and event bus integration.
@@ -87,8 +88,8 @@ class HealthWatchdog:
 
     def __init__(self) -> None:
         """Initialize watchdog with empty check registry."""
-        self._checks: Dict[str, HealthCheck] = {}
-        self._states: Dict[str, AlertState] = {}
+        self._checks: dict[str, HealthCheck] = {}
+        self._states: dict[str, AlertState] = {}
         self._event_bus = get_event_bus()
 
     def register(self, check: HealthCheck) -> None:
@@ -103,15 +104,15 @@ class HealthWatchdog:
         self._states.pop(name, None)
         return removed
 
-    def evaluate(self, context: Optional[Dict[str, Any]] = None) -> WatchdogReport:
-        """
-        Run all registered health checks and return report.
+    def evaluate(self, context: dict[str, Any] | None = None) -> WatchdogReport:
+        """Run all registered health checks and return report.
 
         Args:
             context: Optional context dict passed to check functions.
 
         Returns:
             WatchdogReport with alert states and summary.
+
         """
         report = WatchdogReport(total_checks=len(self._checks))
         ctx = context or {}
@@ -122,7 +123,9 @@ class HealthWatchdog:
 
             try:
                 value = check.check_fn(ctx)
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Check {name} failed: {e}")
                 value = 100.0  # Treat errors as critical
 
             new_severity = check.evaluate(value, previous)
@@ -149,11 +152,11 @@ class HealthWatchdog:
 
         return report
 
-    def get_state(self, name: str) -> Optional[AlertState]:
+    def get_state(self, name: str) -> AlertState | None:
         """Get current alert state for a check."""
         return self._states.get(name)
 
-    def list_checks(self) -> List[str]:
+    def list_checks(self) -> list[str]:
         """List all registered check names."""
         return list(self._checks.keys())
 
@@ -165,7 +168,7 @@ class HealthWatchdog:
 
 # Built-in quality gate checks (Binh Phap fronts)
 
-def check_success_rate(ctx: Dict[str, Any]) -> float:
+def check_success_rate(ctx: dict[str, Any]) -> float:
     """Check execution success rate (inverted: 100 = all failing)."""
     total = float(ctx.get("total_steps", 0))
     failed = float(ctx.get("failed_steps", 0))
@@ -174,7 +177,7 @@ def check_success_rate(ctx: Dict[str, Any]) -> float:
     return (failed / total) * 100.0
 
 
-def check_step_duration(ctx: Dict[str, Any]) -> float:
+def check_step_duration(ctx: dict[str, Any]) -> float:
     """Check if step duration exceeds budget (% of budget used)."""
     actual = float(ctx.get("duration_seconds", 0.0))
     budget = float(ctx.get("duration_budget", 60.0))
@@ -183,7 +186,7 @@ def check_step_duration(ctx: Dict[str, Any]) -> float:
     return min((actual / budget) * 100.0, 100.0)
 
 
-def check_error_count(ctx: Dict[str, Any]) -> float:
+def check_error_count(ctx: dict[str, Any]) -> float:
     """Check error count as percentage of max tolerable."""
     errors = float(ctx.get("error_count", 0))
     max_errors = float(ctx.get("max_errors", 5))

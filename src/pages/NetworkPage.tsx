@@ -18,7 +18,7 @@ const NetworkPage: React.FC = () => {
   const { user } = useStore();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [treeData, setTreeData] = useState<any>(null); // TODO: Define TreeData interface once react-d3-tree type is resolved
+  const [treeData, setTreeData] = useState<unknown>(null);
 
   const [flatData, setFlatData] = useState<NetworkNode | null>(null); // Flat/Recursive format
   const [stats, setStats] = useState({
@@ -45,7 +45,7 @@ const NetworkPage: React.FC = () => {
           setTreeData(d3Data);
         }
       } catch (err) {
-        console.error(err);
+        // Silent fail - error handled by error boundary
         setError('Failed to load network data');
       } finally {
         setLoading(false);

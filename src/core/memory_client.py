@@ -1,5 +1,4 @@
-"""
-Mekong CLI - NeuralMemory Client
+"""Mekong CLI - NeuralMemory Client
 Interacts with local NeuralMemory server (nmem serve) via HTTP.
 
 Also exposes get_memory_provider() factory that selects the active memory
@@ -9,11 +8,14 @@ backend based on the MEMORY_PROVIDER environment variable:
   - "yaml"   → None (caller uses MemoryStore directly)
 """
 
+from __future__ import annotations
+
 import logging
 import os
 import time
+from typing import Any
+
 import requests  # type: ignore[import-untyped]
-from typing import Any, Dict, Optional, Union
 
 logger = logging.getLogger(__name__)
 
@@ -32,12 +34,13 @@ class NeuralMemoryClient:
             brain_id: Brain identifier for multi-tenant memory isolation.
             timeout: HTTP request timeout in seconds.
             health_ttl: Seconds to cache the health check result before re-checking.
+
         """
         self.base_url = base_url
         self.brain_id = brain_id
         self.timeout = timeout
         self.health_ttl = health_ttl
-        self._available: Optional[bool] = None
+        self._available: bool | None = None
         self._health_checked_at = 0.0
 
     @property
@@ -59,7 +62,7 @@ class NeuralMemoryClient:
         self._available = None
         self._health_checked_at = 0.0
 
-    def add_memory(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def add_memory(self, content: str, metadata: dict[str, Any] | None = None) -> bool:
         """Encode a new memory."""
         if not self.is_available:
             return False
@@ -73,14 +76,13 @@ class NeuralMemoryClient:
             if resp.status_code == 200:
                 logger.info(f"Memory encoded: {content[:30]}...")
                 return True
-            else:
-                logger.warning(f"Failed to encode memory: {resp.text}")
-                return False
+            logger.warning(f"Failed to encode memory: {resp.text}")
+            return False
         except Exception as e:
-            logger.error(f"Error encoding memory: {e}")
+            logger.exception(f"Error encoding memory: {e}")
             return False
 
-    def add_memory_deduped(self, content: str, metadata: Optional[Dict[str, Any]] = None) -> bool:
+    def add_memory_deduped(self, content: str, metadata: dict[str, Any] | None = None) -> bool:
         """Add memory, boosting existing if similar content found."""
         if not self.is_available:
             return False
@@ -90,7 +92,7 @@ class NeuralMemoryClient:
             return True  # Don't add duplicate
         return self.add_memory(content, metadata)
 
-    def query_memory(self, query: str, depth: int = 1, decay_weight: float = 0.0) -> Optional[str]:
+    def query_memory(self, query: str, depth: int = 1, decay_weight: float = 0.0) -> str | None:
         """Query memory for context (spreading activation)."""
         if not self.is_available:
             return None
@@ -110,11 +112,10 @@ class NeuralMemoryClient:
                     logger.info(f"Memory recalled context ({len(context)} chars)")
                     return context
                 return None
-            else:
-                logger.warning(f"Failed to query memory: {resp.text}")
-                return None
+            logger.warning(f"Failed to query memory: {resp.text}")
+            return None
         except Exception as e:
-            logger.error(f"Error querying memory: {e}")
+            logger.exception(f"Error querying memory: {e}")
             return None
 
 
@@ -134,7 +135,7 @@ def get_memory_client() -> NeuralMemoryClient:
 # Provider factory
 # ---------------------------------------------------------------------------
 
-def get_memory_provider() -> Optional[Union[NeuralMemoryClient, Any]]:
+def get_memory_provider() -> NeuralMemoryClient | Any | None:
     """Return the active memory provider based on MEMORY_PROVIDER env var.
 
     Environment variable MEMORY_PROVIDER controls selection:
@@ -146,6 +147,7 @@ def get_memory_provider() -> Optional[Union[NeuralMemoryClient, Any]]:
 
     Returns:
         Active provider instance, or None for yaml-only mode.
+
     """
     provider_name = os.getenv("MEMORY_PROVIDER", "yaml").lower().strip()
 
@@ -158,7 +160,7 @@ def get_memory_provider() -> Optional[Union[NeuralMemoryClient, Any]]:
         except ImportError:
             logger.warning(
                 "MEMORY_PROVIDER=mem0 but packages.memory not installed. "
-                "Falling back to yaml."
+                "Falling back to yaml.",
             )
             return None
 

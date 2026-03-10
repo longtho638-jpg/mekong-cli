@@ -1,15 +1,16 @@
-"""
-Mekong CLI - NLP Commander (Tôm Hùm Brain)
+"""Mekong CLI - NLP Commander (Tôm Hùm Brain).
 
 Uses Gemini 2.5 Pro to parse free-form Vietnamese/English messages
 into structured ClaudeKit/Mekong CLI commands for CC CLI execution.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import time
-from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, TYPE_CHECKING
+from dataclasses import asdict, dataclass, field
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from src.core.llm_client import LLMClient
@@ -114,16 +115,16 @@ class StructuredTask:
     """Parsed NLP command → structured task for CC CLI."""
 
     intent: str = "implement"
-    project: Optional[str] = None
+    project: str | None = None
     summary: str = ""
     cc_cli_prompt: str = ""
-    claudekit_commands: List[str] = field(default_factory=list)
+    claudekit_commands: list[str] = field(default_factory=list)
     priority: str = "normal"
     needs_confirmation: bool = False
     raw_message: str = ""
-    parse_error: Optional[str] = None
+    parse_error: str | None = None
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert the structured task to a plain dictionary."""
         return asdict(self)
 
@@ -134,7 +135,7 @@ class NLPCommander:
     MEMORY_CONTEXT_MAX = 1000
 
     def __init__(self) -> None:
-        self._client: Optional["LLMClient"] = None
+        self._client: LLMClient | None = None
 
     def _get_client(self) -> "LLMClient":
         """Lazy-load LLM client."""
@@ -171,7 +172,7 @@ class NLPCommander:
             if not content or not content.strip():
                 logger.warning(
                     f"NLP: empty response from {client.mode}. "
-                    "Retrying with simplified prompt..."
+                    "Retrying with simplified prompt...",
                 )
                 simplified = (
                     f"Parse this into JSON with keys: intent, project, summary, "
@@ -198,8 +199,7 @@ class NLPCommander:
                 lines = content.split("\n")
                 if len(lines) > 1:
                     content = "\n".join(lines[1:])
-                if content.endswith("```"):
-                    content = content[:-3]
+                content = content.removesuffix("```")
                 content = content.strip()
 
             data = json.loads(content)
@@ -229,9 +229,9 @@ class NLPCommander:
             return task
 
         except Exception as e:
-            logger.error(f"NLP parse error: {e}")
+            logger.exception(f"NLP parse error: {e}")
             return self._fallback_parse(
-                message, error_detail=f"exception: {str(e)[:80]}"
+                message, error_detail=f"exception: {str(e)[:80]}",
             )
 
     def _fallback_parse(self, message: str, error_detail: str = "") -> StructuredTask:

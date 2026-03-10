@@ -1,19 +1,21 @@
 # Project Overview & PDR — Algo Trader v3.0.0
 
 ## Project Description
-Algo Trader là nền tảng **RaaS (Robot-as-a-Service)** giao dịch tự động, xây dựng trên Node.js + TypeScript. Hệ thống multi-tenant cho phép nhiều khách hàng sử dụng các chiến thuật trading thông qua API, với real-time price feeds, paper trading, và auto-execution.
+Algo Trader is a **RaaS (Robot-as-a-Service)** automated trading platform — Node.js + TypeScript, multi-tenant. Supports 10+ strategies, real-time WebSocket price feeds, ML models (GRU, Q-learning), stealth execution, and Fastify API gateway.
 
 ## Functional Requirements
 
 ### Core Trading
-- **Data Acquisition**: OHLCV qua CCXT + WebSocket real-time (Binance/OKX/Bybit)
-- **Strategy Execution**: 6+ chiến thuật (RSI+SMA, RSI Crossover, Bollinger, MACD, Statistical Arb, Cross-Exchange Arb)
-- **AGI Arbitrage**: Regime detection (Hurst exponent), Kelly sizing, self-tuning thresholds
+- **Data Acquisition**: OHLCV via CCXT + WebSocket real-time (Binance/OKX/Bybit)
+- **Strategy Execution**: 10+ strategies (RSI+SMA, Bollinger, MACD, Statistical Arb, Cross-Exchange Arb, Triangular Arb, Funding Rate Arb, AGI, GRU, Q-Learning)
+- **ML Trading**: GRU neural net (TensorFlow.js), tabular Q-learning RL strategy
+- **Stealth Execution**: Phantom Order Cloaking Engine, CLI fingerprint masking, anti-detection safety layer
 
 ### Arbitrage Pipeline
 - **WebSocket Price Feed**: Multi-exchange real-time, auto-reconnect, heartbeat monitoring
-- **Fee-Aware Spread Calculator**: Net spread = gross - fees - slippage, dynamic fee cache 5min TTL
+- **Fee-Aware Spread Calculator**: Net spread = gross - fees - slippage, 5min TTL cache
 - **Atomic Order Executor**: Promise.allSettled buy/sell, rollback on partial failure
+- **Live Exchange Manager**: Orchestrates pool + WS feeds + router + health monitor with auto-recovery
 
 ### RaaS Platform
 - **Multi-tenant API**: Fastify 5, JWT + API Key auth, tenant isolation
@@ -27,41 +29,42 @@ Algo Trader là nền tảng **RaaS (Robot-as-a-Service)** giao dịch tự đ�
 - **Redis Pub/Sub**: Real-time signal streaming per tenant
 
 ### Reporting & Monitoring
-- **CLI Dashboard**: Real-time terminal display (chalk)
+- **CLI Dashboard**: Real-time terminal display
 - **Trade History Exporter**: CSV/JSON export
-- **Paper Trading**: Virtual execution, P&L tracking
+- **Paper Trading**: Virtual execution, P&L tracking with real WS data
 
 ## Non-Functional Requirements
 - **Performance**: WebSocket tick-to-decision < 100ms, API 30k req/sec (Fastify)
 - **Reliability**: Auto-reconnect, circuit breaker, max daily loss protection
 - **Extensibility**: Interface-driven (`IStrategy`, `IDataProvider`, `IExchange`)
 - **Type Safety**: TypeScript strict mode, Zod validation, 0 `any` types
-- **Testing**: 868 tests, Jest 29, unit + integration + load/stress
+- **Testing**: 1216 tests, Jest 29, 102 suites, unit + integration + load/stress
 
 ## Technical Stack
 - TypeScript 5.9, Node.js 20, Fastify 5, CCXT 4.5
 - BullMQ 5, Redis (IoRedis), PostgreSQL (Prisma), Zod 4.3
-- Winston logging, Jest testing, Commander CLI
+- TensorFlow.js (GRU, Q-learning), Winston, Jest, Commander CLI
+- React 19, Vite 6, Tailwind CSS, Zustand 5 (dashboard)
+- Docker + docker-compose, Prometheus + Grafana
 
 ## Acceptance Criteria
-✅ **All Completed (Phase 4: Production Hardening)**
-- ✅ API server starts, authenticates tenants, enforces rate limits
-- ✅ Arbitrage scanner detects cross-exchange opportunities in real-time
-- ✅ Paper trading simulates execution without real capital
-- ✅ **868/868 tests passing** (100% pass rate)
+✅ **All Completed (Phases 1–17)**
+- ✅ **1216/1216 tests passing** (100% pass rate, 102 suites)
 - ✅ **0 TypeScript errors** (strict mode enabled)
 - ✅ **0 `any` types** (full type safety)
 - ✅ **0 console.log** (production clean)
 - ✅ **0 TODO/FIXME** (zero tech debt)
-- ✅ Tenant tier limits enforced (position count, per-symbol max)
+- ✅ API server starts, authenticates tenants, enforces rate limits
+- ✅ Arbitrage scanner detects cross-exchange opportunities in real-time
+- ✅ Paper trading simulates execution without real capital
+- ✅ Stealth layer masks bot fingerprints + cloaks orders
+- ✅ Live Exchange Manager orchestrates full exchange lifecycle
 
-## Phase 5.3 Status Summary
-**Completion: 100% ✅**
-- Phase 5.1: Core Intelligence (optimizer, trailing stop, VaR, correlation) ✅
-- Phase 5.2: Dashboard MVP (React 19, 5 pages, TradingView Charts) ✅
-- Phase 5.3: RaaS Bootstrap (Prisma, billing, marketplace, monitoring) ✅
-- 886 tests, 0 TS errors, 183 source files
-- Bootstrap Assessment Score: **94/100**
-- Next: Phase 5.4 (walk-forward, multi-region, mobile-responsive)
+## Current Status Summary
+**All Phases Complete ✅**
+- 232+ source files, 102 test suites, 1216 tests
+- 20+ src modules: core, strategies, arbitrage, ML, billing, API, execution, stealth, ui, pipeline
+- Latest: Phase 17 stealth modules (Phantom Order Cloaking, CLI fingerprint masking)
+- Live Exchange Manager: pool + WS feeds + router + health monitor (Phase 7.1)
 
-Updated: 2026-03-02
+Updated: 2026-03-03

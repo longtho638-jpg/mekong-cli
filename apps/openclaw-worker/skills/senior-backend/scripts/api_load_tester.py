@@ -11,21 +11,17 @@ Usage:
     python api_load_tester.py https://api.example.com/v1/users https://api.example.com/v2/users --compare
 """
 
-import os
 import sys
 import json
 import argparse
 import time
 import statistics
 import threading
-import queue
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field, asdict
-from typing import Dict, List, Optional, Tuple
-from datetime import datetime
+from typing import Dict, List, Optional
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
-from urllib.parse import urlparse
 import ssl
 
 
@@ -308,13 +304,13 @@ def print_results(results: LoadTestResults, verbose: bool = False):
     print(f"Duration: {results.duration_seconds:.1f}s")
     print(f"Concurrency: {results.concurrency}")
 
-    print(f"\nTHROUGHPUT:")
+    print("\nTHROUGHPUT:")
     print(f"  Total requests: {results.total_requests:,}")
     print(f"  Requests/sec: {results.requests_per_second:.1f}")
     print(f"  Successful: {results.successful_requests:,} ({results.success_rate():.1f}%)")
     print(f"  Failed: {results.failed_requests:,}")
 
-    print(f"\nLATENCY (ms):")
+    print("\nLATENCY (ms):")
     print(f"  Min: {results.latency_min:.1f}")
     print(f"  Avg: {results.latency_avg:.1f}")
     print(f"  P50: {results.latency_p50:.1f}")
@@ -325,35 +321,35 @@ def print_results(results: LoadTestResults, verbose: bool = False):
     print(f"  StdDev: {results.latency_stddev:.1f}")
 
     if results.errors_by_type:
-        print(f"\nERRORS:")
+        print("\nERRORS:")
         for error_type, count in sorted(results.errors_by_type.items(), key=lambda x: -x[1]):
             print(f"  {error_type}: {count}")
 
     if verbose:
-        print(f"\nTRANSFER:")
+        print("\nTRANSFER:")
         print(f"  Total bytes: {results.total_bytes_received:,}")
         print(f"  Throughput: {results.throughput_mbps:.2f} Mbps")
 
     # Recommendations
-    print(f"\nRECOMMENDATIONS:")
+    print("\nRECOMMENDATIONS:")
 
     if results.latency_p99 > 500:
         print(f"  Warning: P99 latency ({results.latency_p99:.0f}ms) exceeds 500ms")
-        print(f"    Consider: Connection pooling, query optimization, caching")
+        print("    Consider: Connection pooling, query optimization, caching")
 
     if results.latency_p95 > 200:
         print(f"  Warning: P95 latency ({results.latency_p95:.0f}ms) exceeds 200ms target")
 
     if results.success_rate() < 99.0:
         print(f"  Warning: Success rate ({results.success_rate():.1f}%) below 99%")
-        print(f"    Check server capacity and error logs")
+        print("    Check server capacity and error logs")
 
     if results.latency_stddev > results.latency_avg:
-        print(f"  Warning: High latency variance (stddev > avg)")
-        print(f"    Indicates inconsistent performance")
+        print("  Warning: High latency variance (stddev > avg)")
+        print("    Indicates inconsistent performance")
 
     if results.success_rate() >= 99.0 and results.latency_p95 <= 200:
-        print(f"  Performance looks good for this load level")
+        print("  Performance looks good for this load level")
 
     print("=" * 60)
 

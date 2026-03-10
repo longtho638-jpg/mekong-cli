@@ -1,0 +1,19 @@
+{
+  "daoBrain": {
+    "enabled": false,
+    "votingIntervalHours": 4,
+    "maxAgentInfluence": 0.05
+  },
+  "evolutionEngine": {
+    "enabled": false,
+    "populationSize": 1000,
+    "evolutionIntervalMinutes": 60,
+    "promotionRate": 0.01
+  },
+  "capitalFortress": {
+    "enabled": false,
+    "collapseThreshold": 0.99,
+    "coldStorageAddresses": ["0x...", "0x..."],
+    "emergencyWithdrawal": true
+  }
+}

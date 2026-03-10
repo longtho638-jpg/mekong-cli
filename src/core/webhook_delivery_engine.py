@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Webhook Delivery Engine
+"""Mekong CLI - Webhook Delivery Engine.
 
 Outbound webhook/callback delivery for Mekong orchestration events.
 Inspired by Cal.com's webhook system: HMAC-signed payloads, retry with
@@ -12,7 +11,7 @@ import json
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 import requests  # type: ignore[import-untyped]
 
@@ -35,7 +34,7 @@ class WebhookEndpoint:
 
     url: str
     secret: str
-    events: List[WebhookEvent]
+    events: list[WebhookEvent]
     active: bool = True
     created_at: float = field(default_factory=time.time)
 
@@ -46,13 +45,12 @@ class WebhookPayload:
 
     event: WebhookEvent
     timestamp: float
-    data: Dict[str, Any]
+    data: dict[str, Any]
     signature: str = ""
 
 
 class WebhookDeliveryEngine:
-    """
-    Delivers signed webhook payloads to registered endpoints.
+    """Delivers signed webhook payloads to registered endpoints.
 
     Supports HMAC-SHA256 payload signing and automatic retry
     with exponential backoff on delivery failure.
@@ -63,15 +61,16 @@ class WebhookDeliveryEngine:
 
         Args:
             timeout: HTTP request timeout in seconds.
+
         """
-        self._endpoints: Dict[str, WebhookEndpoint] = {}
+        self._endpoints: dict[str, WebhookEndpoint] = {}
         self._timeout = timeout
 
     def register(
         self,
         url: str,
         secret: str,
-        events: List[WebhookEvent],
+        events: list[WebhookEvent],
     ) -> WebhookEndpoint:
         """Register a new webhook endpoint.
 
@@ -82,6 +81,7 @@ class WebhookDeliveryEngine:
 
         Returns:
             The newly registered WebhookEndpoint.
+
         """
         endpoint = WebhookEndpoint(url=url, secret=secret, events=events)
         self._endpoints[url] = endpoint
@@ -92,10 +92,11 @@ class WebhookDeliveryEngine:
 
         Args:
             url: The URL of the endpoint to remove.
+
         """
         self._endpoints.pop(url, None)
 
-    def deliver(self, event: WebhookEvent, data: Dict[str, Any]) -> None:
+    def deliver(self, event: WebhookEvent, data: dict[str, Any]) -> None:
         """Deliver an event to all matching active endpoints.
 
         Filters endpoints by subscribed event types and delivers
@@ -104,6 +105,7 @@ class WebhookDeliveryEngine:
         Args:
             event: The event type being delivered.
             data: Arbitrary event data to include in the payload.
+
         """
         timestamp = time.time()
         for endpoint in list(self._endpoints.values()):
@@ -131,6 +133,7 @@ class WebhookDeliveryEngine:
 
         Returns:
             Hex-encoded HMAC-SHA256 digest prefixed with 'sha256='.
+
         """
         digest = hmac.new(
             secret.encode("utf-8"),
@@ -158,6 +161,7 @@ class WebhookDeliveryEngine:
 
         Returns:
             True if delivery succeeded, False if all retries exhausted.
+
         """
         headers = {
             "Content-Type": "application/json",
@@ -180,18 +184,19 @@ class WebhookDeliveryEngine:
                 time.sleep(2 ** attempt)
         return False
 
-    def list_endpoints(self) -> List[WebhookEndpoint]:
+    def list_endpoints(self) -> list[WebhookEndpoint]:
         """Return all registered webhook endpoints.
 
         Returns:
             List of all registered WebhookEndpoint instances.
+
         """
         return list(self._endpoints.values())
 
 
 __all__ = [
-    "WebhookEvent",
-    "WebhookEndpoint",
-    "WebhookPayload",
     "WebhookDeliveryEngine",
+    "WebhookEndpoint",
+    "WebhookEvent",
+    "WebhookPayload",
 ]

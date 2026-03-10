@@ -1,14 +1,14 @@
-"""
-Mekong CLI - Auto-Discovery Engine
+"""Mekong CLI - Auto-Discovery Engine.
 
 Detects project type and suggests matching recipes automatically.
 Inspired by Netdata's service auto-discovery: scans filesystem signals
 (package.json, pyproject.toml, Dockerfile, etc.) to route goals.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -27,13 +27,13 @@ class DiscoveredProject:
 
     project_type: str
     confidence: float
-    signals: List[str] = field(default_factory=list)
-    suggested_recipes: List[str] = field(default_factory=list)
+    signals: list[str] = field(default_factory=list)
+    suggested_recipes: list[str] = field(default_factory=list)
     root_dir: str = ""
 
 
 # Default signal registry (extensible)
-DEFAULT_SIGNALS: List[ProjectSignal] = [
+DEFAULT_SIGNALS: list[ProjectSignal] = [
     ProjectSignal("pyproject.toml", "python", 0.9, "Python project (Poetry/PEP 621)"),
     ProjectSignal("setup.py", "python", 0.8, "Python project (setuptools)"),
     ProjectSignal("requirements.txt", "python", 0.7, "Python project (pip)"),
@@ -52,7 +52,7 @@ DEFAULT_SIGNALS: List[ProjectSignal] = [
 ]
 
 # Recipe suggestions per project type
-RECIPE_MAP: Dict[str, List[str]] = {
+RECIPE_MAP: dict[str, list[str]] = {
     "python": ["lint-python", "test-pytest", "build-python"],
     "node": ["lint-eslint", "test-jest", "build-npm"],
     "typescript": ["lint-tsc", "test-jest", "build-tsc"],
@@ -68,8 +68,7 @@ RECIPE_MAP: Dict[str, List[str]] = {
 
 
 class AutoDiscovery:
-    """
-    Auto-discovers project type by scanning filesystem signals.
+    """Auto-discovers project type by scanning filesystem signals.
 
     Inspired by Netdata's auto-discovery: probes filesystem for known
     markers and suggests appropriate recipes/agents.
@@ -77,25 +76,25 @@ class AutoDiscovery:
 
     def __init__(
         self,
-        signals: Optional[List[ProjectSignal]] = None,
-        recipe_map: Optional[Dict[str, List[str]]] = None,
+        signals: list[ProjectSignal] | None = None,
+        recipe_map: dict[str, list[str]] | None = None,
     ) -> None:
         """Initialize with optional custom signals and recipe mapping."""
         self._signals = signals or DEFAULT_SIGNALS
         self._recipe_map = recipe_map or RECIPE_MAP
 
-    def discover(self, root_dir: Optional[str] = None) -> List[DiscoveredProject]:
-        """
-        Scan a directory for project type signals.
+    def discover(self, root_dir: str | None = None) -> list[DiscoveredProject]:
+        """Scan a directory for project type signals.
 
         Args:
             root_dir: Directory to scan. Defaults to current directory.
 
         Returns:
             List of discovered projects sorted by confidence (highest first).
+
         """
         scan_path = Path(root_dir) if root_dir else Path.cwd()
-        discoveries: Dict[str, DiscoveredProject] = {}
+        discoveries: dict[str, DiscoveredProject] = {}
 
         for signal in self._signals:
             # Support glob patterns in file_pattern
@@ -119,12 +118,10 @@ class AutoDiscovery:
                     # Boost confidence with multiple signals (max 0.99)
                     disc.confidence = min(disc.confidence + 0.05, 0.99)
 
-        results = sorted(discoveries.values(), key=lambda d: d.confidence, reverse=True)
-        return results
+        return sorted(discoveries.values(), key=lambda d: d.confidence, reverse=True)
 
-    def suggest_recipe(self, goal: str, root_dir: Optional[str] = None) -> Optional[str]:
-        """
-        Suggest best recipe for a goal based on project type.
+    def suggest_recipe(self, goal: str, root_dir: str | None = None) -> str | None:
+        """Suggest best recipe for a goal based on project type.
 
         Args:
             goal: User's goal string.
@@ -132,6 +129,7 @@ class AutoDiscovery:
 
         Returns:
             Recipe name or None if no match.
+
         """
         projects = self.discover(root_dir)
         if not projects:
@@ -153,16 +151,16 @@ class AutoDiscovery:
         """Add a custom signal to the discovery engine."""
         self._signals.append(signal)
 
-    def add_recipe_mapping(self, project_type: str, recipes: List[str]) -> None:
+    def add_recipe_mapping(self, project_type: str, recipes: list[str]) -> None:
         """Add recipe suggestions for a project type."""
         existing = self._recipe_map.get(project_type, [])
         self._recipe_map[project_type] = existing + recipes
 
 
 __all__ = [
+    "DEFAULT_SIGNALS",
+    "RECIPE_MAP",
     "AutoDiscovery",
     "DiscoveredProject",
     "ProjectSignal",
-    "DEFAULT_SIGNALS",
-    "RECIPE_MAP",
 ]

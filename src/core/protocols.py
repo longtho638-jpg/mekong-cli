@@ -1,22 +1,21 @@
-"""
-Mekong CLI - Agent Protocols
+"""Mekong CLI - Agent Protocols.
 
 Runtime-checkable Protocol for agents and StreamingMixin for async support.
 """
 
-from typing import AsyncIterator, List
+from collections.abc import AsyncIterator
+
 try:
     from typing import Protocol, runtime_checkable
 except ImportError:
     from typing_extensions import Protocol, runtime_checkable  # type: ignore
 
-from .agent_base import Task, Result
+from .agent_base import Result, Task
 
 
 @runtime_checkable
 class AgentProtocol(Protocol):
-    """
-    Runtime-checkable protocol for Mekong agents.
+    """Runtime-checkable protocol for Mekong agents.
 
     Defines the minimal interface every agent must expose:
     plan → execute → verify
@@ -24,7 +23,7 @@ class AgentProtocol(Protocol):
 
     name: str
 
-    def plan(self, input_data: str) -> List[Task]:
+    def plan(self, input_data: str) -> list[Task]:
         """Parse input into executable tasks."""
         ...
 
@@ -38,8 +37,7 @@ class AgentProtocol(Protocol):
 
 
 class StreamingMixin:
-    """
-    Mixin that adds async streaming to any AgentBase subclass.
+    """Mixin that adds async streaming to any AgentBase subclass.
 
     Provides a default implementation that wraps the synchronous
     execute() call. Override for true streaming behaviour.
@@ -50,8 +48,7 @@ class StreamingMixin:
     """
 
     async def execute_stream(self, task: Task) -> AsyncIterator[str]:
-        """
-        Stream task output token-by-token.
+        """Stream task output token-by-token.
 
         Default implementation executes synchronously and yields a
         single chunk.  Override in subclass for real streaming.
@@ -61,6 +58,7 @@ class StreamingMixin:
 
         Yields:
             str chunks of output
+
         """
         result: Result = self.execute(task)  # type: ignore[attr-defined]
         output = result.output

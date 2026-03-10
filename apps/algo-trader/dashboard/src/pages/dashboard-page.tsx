@@ -2,11 +2,14 @@
  * Main dashboard page: connection status, price ticker strip, positions table,
  * spread opportunity cards, and aggregate stats summary.
  */
+import { useState, useEffect } from 'react';
 import { useTradingStore } from '../stores/trading-store';
+import { useWebSocketPriceFeed } from '../hooks/use-websocket-price-feed';
 import { PriceTickerStrip } from '../components/price-ticker-strip';
 import { PositionsTableSortable } from '../components/positions-table-sortable';
 import { SpreadOpportunitiesCardGrid } from '../components/spread-opportunities-card-grid';
 import { EquityCurveChart } from '../components/equity-curve-pnl-chart';
+import { CacheStatus } from '../components/cache-status';
 
 function formatUsd(n: number): string {
   const abs = Math.abs(n);
@@ -17,10 +20,16 @@ function formatUsd(n: number): string {
 }
 
 function useNow(): string {
-  return new Date().toLocaleTimeString('en-US', { hour12: false });
+  const [now, setNow] = useState(() => new Date().toLocaleTimeString('en-US', { hour12: false }));
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date().toLocaleTimeString('en-US', { hour12: false })), 1000);
+    return () => clearInterval(id);
+  }, []);
+  return now;
 }
 
 export function DashboardPage() {
+  useWebSocketPriceFeed();
   const connected = useTradingStore((s) => s.connected);
   const positions = useTradingStore((s) => s.positions);
   const spreads = useTradingStore((s) => s.spreads);
@@ -41,6 +50,7 @@ export function DashboardPage() {
           <p className="text-muted text-xs mt-0.5">Real-time arbitrage monitor</p>
         </div>
         <div className="flex items-center gap-3">
+          <CacheStatus />
           <span className="text-muted text-xs">Updated {lastUpdate}</span>
           <div className={`
             flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold

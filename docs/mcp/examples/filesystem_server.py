@@ -2,7 +2,6 @@
 Example 2: File System Server
 Demonstrates error handling and logging.
 """
-import asyncio
 import os
 from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List

@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgencyOS — API Documentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            base:     '#0A0A0B',
+            surface:  '#141416',
+            elevated: '#1C1C1F',
+            border:   '#27272A',
+            accent:   '#6366F1',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    body { font-family: 'Inter', sans-serif; background: #0A0A0B; }
+
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #3F3F46; border-radius: 2px; }
+
+    /* syntax highlight token colors */
+    .tok-key      { color: #7DD3FC; } /* light-blue — JSON keys */
+    .tok-str      { color: #86EFAC; } /* green — strings */
+    .tok-num      { color: #FCA5A5; } /* red-300 — numbers */
+    .tok-bool     { color: #C4B5FD; } /* violet — booleans */
+    .tok-null     { color: #71717A; } /* zinc — null */
+    .tok-comment  { color: #52525B; font-style: italic; }
+    .tok-method   { color: #FCD34D; } /* amber — HTTP methods */
+    .tok-url      { color: #A5B4FC; } /* indigo-300 — URLs */
+    .tok-param    { color: #F9A8D4; } /* pink — params */
+    .tok-header   { color: #67E8F9; } /* cyan — headers */
+
+    /* sidebar nav */
+    .doc-nav-section { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #52525B; padding: 12px 16px 4px; }
+    .doc-nav-item { display: flex; align-items: center; padding: 5px 16px; font-size: 13px; color: #A1A1AA; cursor: pointer; transition: color 150ms, background 150ms; border-left: 2px solid transparent; }
+    .doc-nav-item:hover { color: #FAFAFA; background: rgba(255,255,255,0.04); }
+    .doc-nav-item.active { color: #6366F1; border-left-color: #6366F1; background: rgba(99,102,241,0.08); }
+    .doc-nav-item.indent { padding-left: 28px; font-size: 12px; }
+
+    /* method badges */
+    .method-get    { background: rgba(34,197,94,0.12);  color: #22C55E; border: 1px solid rgba(34,197,94,0.25);  }
+    .method-post   { background: rgba(99,102,241,0.12); color: #818CF8; border: 1px solid rgba(99,102,241,0.25); }
+    .method-delete { background: rgba(239,68,68,0.12);  color: #EF4444; border: 1px solid rgba(239,68,68,0.25);  }
+    .method-patch  { background: rgba(245,158,11,0.12); color: #F59E0B; border: 1px solid rgba(245,158,11,0.25); }
+
+    /* section anchors smooth scroll */
+    .doc-section { scroll-margin-top: 16px; }
+
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body class="text-zinc-100 antialiased flex h-screen overflow-hidden">
+
+  <!-- ─── LEFT SIDEBAR ─── -->
+  <aside class="w-56 flex-shrink-0 flex flex-col bg-surface border-r border-zinc-800 h-full overflow-y-auto">
+
+    <!-- Logo + back link -->
+    <div class="flex items-center gap-2.5 px-4 h-14 border-b border-zinc-800 flex-shrink-0">
+      <svg width="22" height="22" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+        <rect width="28" height="28" rx="6" fill="#6366F1"/>
+        <path d="M7 14l5 5 9-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <div class="text-xs font-semibold text-zinc-100">AgencyOS</div>
+        <div class="text-xs text-zinc-500">API Reference</div>
+      </div>
+    </div>
+
+    <!-- Version badge -->
+    <div class="px-4 py-3 border-b border-zinc-800">
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-zinc-500">Version</span>
+        <span class="text-xs font-mono bg-accent/15 text-accent border border-accent/25 px-2 py-0.5 rounded">v1.0</span>
+      </div>
+    </div>
+
+    <!-- Nav tree -->
+    <nav class="flex-1 py-2" aria-label="API Documentation sections">
+
+      <p class="doc-nav-section">Getting Started</p>
+      <a href="#overview" class="doc-nav-item active" role="link">Overview</a>
+      <a href="#quickstart" class="doc-nav-item" role="link">Quick Start</a>
+      <a href="#sdks" class="doc-nav-item" role="link">SDKs</a>
+
+      <p class="doc-nav-section">Authentication</p>
+      <a href="#auth" class="doc-nav-item" role="link">API Keys</a>
+      <a href="#auth-bearer" class="doc-nav-item indent" role="link">Bearer Token</a>
+      <a href="#auth-org" class="doc-nav-item indent" role="link">Org Scoping</a>
+
+      <p class="doc-nav-section">Tasks</p>
+      <a href="#tasks-create" class="doc-nav-item" role="link">Create Task</a>
+      <a href="#tasks-get" class="doc-nav-item indent" role="link">Get Task</a>
+      <a href="#tasks-list" class="doc-nav-item indent" role="link">List Tasks</a>
+      <a href="#tasks-cancel" class="doc-nav-item indent" role="link">Cancel Task</a>
+
+      <p class="doc-nav-section">Agents</p>
+      <a href="#agents-list" class="doc-nav-item" role="link">List Agents</a>
+      <a href="#agents-get" class="doc-nav-item indent" role="link">Get Agent</a>
+      <a href="#agents-spawn" class="doc-nav-item indent" role="link">Spawn Agent</a>
+
+      <p class="doc-nav-section">Webhooks</p>
+      <a href="#webhooks-create" class="doc-nav-item" role="link">Register</a>
+      <a href="#webhooks-events" class="doc-nav-item indent" role="link">Event Types</a>
+      <a href="#webhooks-verify" class="doc-nav-item indent" role="link">Signature Verification</a>
+
+      <p class="doc-nav-section">SDKs</p>
+      <a href="#sdk-node" class="doc-nav-item" role="link">Node.js / TypeScript</a>
+      <a href="#sdk-python" class="doc-nav-item" role="link">Python</a>
+      <a href="#sdk-cli" class="doc-nav-item" role="link">CLI</a>
+
+    </nav>
+  </aside>
+
+  <!-- ─── MAIN CONTENT ─── -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <!-- Top bar -->
+    <header class="flex items-center justify-between px-6 h-14 border-b border-zinc-800 flex-shrink-0 bg-base">
+      <!-- Search -->
+      <div class="relative flex-1 max-w-sm">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="search"
+          placeholder="Search API docs…"
+          class="w-full bg-surface border border-zinc-800 rounded-lg pl-8 pr-4 py-2 text-sm text-zinc-300 placeholder-zinc-600 focus:outline-none focus:border-accent/60 transition-colors duration-200"
+          aria-label="Search API documentation"
+        />
+        <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-600 font-mono border border-zinc-700 rounded px-1">/</kbd>
+      </div>
+      <div class="flex items-center gap-3 ml-4">
+        <a href="#" class="text-xs text-zinc-400 hover:text-zinc-100 transition-colors duration-200 cursor-pointer border border-zinc-700 hover:border-zinc-500 px-3 py-1.5 rounded-lg">Dashboard</a>
+        <a href="#" class="text-xs bg-accent hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg transition-colors duration-200 cursor-pointer font-medium">Get API Key</a>
+      </div>
+    </header>
+
+    <!-- Scrollable doc body -->
+    <main class="flex-1 overflow-y-auto" id="doc-content">
+      <div class="max-w-5xl mx-auto px-8 py-10 space-y-16">
+
+        <!-- ─ OVERVIEW ─ -->
+        <section id="overview" class="doc-section">
+          <div class="flex items-center gap-3 mb-2">
+            <h1 class="text-2xl font-bold text-zinc-100">API Reference</h1>
+            <span class="text-xs font-mono bg-green-500/10 border border-green-500/20 text-green-400 px-2 py-0.5 rounded">v1.0 — Stable</span>
+          </div>
+          <p class="text-zinc-400 leading-relaxed mb-6 max-w-2xl">
+            The AgencyOS REST API lets you create tasks, manage agents, and receive webhook events programmatically.
+            All requests must be authenticated using a Bearer token.
+          </p>
+
+          <!-- Base URL box -->
+          <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+              <span class="text-xs font-medium text-zinc-400 uppercase tracking-wider">Base URL</span>
+            </div>
+            <div class="px-4 py-3 font-mono text-sm">
+              <span class="tok-url">https://api.agencyos.ai/v1</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─ AUTHENTICATION ─ -->
+        <section id="auth" class="doc-section">
+          <h2 class="text-xl font-bold text-zinc-100 mb-1">Authentication</h2>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
+            Authenticate all API calls by including your API key in the
+            <code class="font-mono bg-elevated border border-zinc-800 px-1.5 py-0.5 rounded text-xs text-accent">Authorization</code> header.
+            Generate API keys from the <a href="#" class="text-accent underline underline-offset-2 cursor-pointer hover:text-indigo-400 transition-colors duration-200">Dashboard → API Keys</a>.
+          </p>
+
+          <!-- Request/Response side-by-side -->
+          <div class="grid lg:grid-cols-2 gap-4">
+
+            <!-- Request -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-zinc-400">Request</span>
+                </div>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy code">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code><span class="tok-method">GET</span> <span class="tok-url">/v1/tasks</span>
+
+<span class="tok-header">Authorization</span>: Bearer <span class="tok-str">ao_live_sk_••••••••••••••••</span>
+<span class="tok-header">Content-Type</span>: application/json
+<span class="tok-header">X-Org-ID</span>: <span class="tok-str">org_01HFYZ3K8M</span></code></pre>
+            </div>
+
+            <!-- Response -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-zinc-400">Response</span>
+                  <span class="text-xs font-mono bg-green-500/10 border border-green-500/20 text-green-400 px-1.5 py-0.5 rounded">200 OK</span>
+                </div>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy response">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code>{
+  <span class="tok-key">"data"</span>: [...],
+  <span class="tok-key">"meta"</span>: {
+    <span class="tok-key">"total"</span>: <span class="tok-num">47</span>,
+    <span class="tok-key">"page"</span>:  <span class="tok-num">1</span>,
+    <span class="tok-key">"limit"</span>: <span class="tok-num">20</span>
+  }
+}</code></pre>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ─ TASKS CREATE ─ -->
+        <section id="tasks-create" class="doc-section">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="method-post text-xs font-mono font-bold px-2.5 py-1 rounded">POST</span>
+            <code class="font-mono text-sm text-zinc-300">/v1/tasks</code>
+            <h2 class="text-base font-semibold text-zinc-100">Create Task</h2>
+          </div>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
+            Submit a new task for an agent to execute. Returns immediately with a task ID.
+            Poll <code class="font-mono bg-elevated border border-zinc-800 px-1 rounded text-xs">/v1/tasks/{id}</code> or use webhooks for status updates.
+          </p>
+
+          <div class="grid lg:grid-cols-2 gap-4">
+
+            <!-- Request body -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <span class="text-xs font-medium text-zinc-400">Request Body</span>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy code">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code>{
+  <span class="tok-key">"goal"</span>:   <span class="tok-str">"Audit codebase for TS issues"</span>,
+  <span class="tok-key">"agent"</span>:  <span class="tok-str">"tester"</span>,
+  <span class="tok-key">"mode"</span>:   <span class="tok-str">"auto"</span>,
+  <span class="tok-key">"notify"</span>: {
+    <span class="tok-key">"webhook"</span>: <span class="tok-str">"https://your.app/hook"</span>
+  },
+  <span class="tok-key">"meta"</span>: {
+    <span class="tok-key">"ref"</span>: <span class="tok-str">"sprint-42"</span>
+  }
+}</code></pre>
+            </div>
+
+            <!-- Response -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-zinc-400">Response</span>
+                  <span class="text-xs font-mono bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded">201 Created</span>
+                </div>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy response">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code>{
+  <span class="tok-key">"id"</span>:        <span class="tok-str">"task_01HK9Z"</span>,
+  <span class="tok-key">"status"</span>:    <span class="tok-str">"queued"</span>,
+  <span class="tok-key">"goal"</span>:      <span class="tok-str">"Audit codebase..."</span>,
+  <span class="tok-key">"agent"</span>:     <span class="tok-str">"tester"</span>,
+  <span class="tok-key">"mcu"</span>:       <span class="tok-null">null</span>,
+  <span class="tok-key">"created_at"</span>:<span class="tok-str">"2026-03-02T09:42:00Z"</span>
+}</code></pre>
+            </div>
+          </div>
+
+          <!-- Parameter table -->
+          <div class="mt-4 bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+            <div class="px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+              <span class="text-xs font-medium text-zinc-400">Body Parameters</span>
+            </div>
+            <table class="w-full text-sm" aria-label="Create Task body parameters">
+              <thead>
+                <tr class="border-b border-zinc-800 text-left">
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Param</th>
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Type</th>
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Required</th>
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Description</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-800">
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-pink-400">goal</td>
+                  <td class="px-4 py-3 text-xs text-zinc-500 font-mono">string</td>
+                  <td class="px-4 py-3"><span class="text-xs bg-red-500/10 border border-red-500/20 text-red-400 px-1.5 py-0.5 rounded">Required</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Plain-English description of the task to execute.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-pink-400">agent</td>
+                  <td class="px-4 py-3 text-xs text-zinc-500 font-mono">string</td>
+                  <td class="px-4 py-3"><span class="text-xs bg-zinc-700/50 border border-zinc-700 text-zinc-400 px-1.5 py-0.5 rounded">Optional</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Agent ID to use. Defaults to <code class="font-mono bg-elevated px-1 rounded">auto</code> (auto-select).</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-pink-400">mode</td>
+                  <td class="px-4 py-3 text-xs text-zinc-500 font-mono">string</td>
+                  <td class="px-4 py-3"><span class="text-xs bg-zinc-700/50 border border-zinc-700 text-zinc-400 px-1.5 py-0.5 rounded">Optional</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400"><code class="font-mono bg-elevated px-1 rounded">auto</code> | <code class="font-mono bg-elevated px-1 rounded">plan</code> | <code class="font-mono bg-elevated px-1 rounded">execute</code>. Default: <code class="font-mono bg-elevated px-1 rounded">auto</code>.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-pink-400">notify</td>
+                  <td class="px-4 py-3 text-xs text-zinc-500 font-mono">object</td>
+                  <td class="px-4 py-3"><span class="text-xs bg-zinc-700/50 border border-zinc-700 text-zinc-400 px-1.5 py-0.5 rounded">Optional</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Webhook URL to notify on task completion or failure.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ─ TASKS GET ─ -->
+        <section id="tasks-get" class="doc-section">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="method-get text-xs font-mono font-bold px-2.5 py-1 rounded">GET</span>
+            <code class="font-mono text-sm text-zinc-300">/v1/tasks/{id}</code>
+            <h2 class="text-base font-semibold text-zinc-100">Get Task</h2>
+          </div>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-4 max-w-2xl">
+            Retrieve the current status and result of a task by ID.
+          </p>
+          <div class="grid lg:grid-cols-2 gap-4">
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <span class="text-xs font-medium text-zinc-400">Request</span>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code><span class="tok-method">GET</span> <span class="tok-url">/v1/tasks/task_01HK9Z</span>
+
+<span class="tok-header">Authorization</span>: Bearer <span class="tok-str">ao_live_sk_••••</span></code></pre>
+            </div>
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <span class="text-xs font-medium text-zinc-400">Response</span>
+                <span class="text-xs font-mono bg-green-500/10 border border-green-500/20 text-green-400 px-1.5 py-0.5 rounded">200 OK</span>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code>{
+  <span class="tok-key">"id"</span>:          <span class="tok-str">"task_01HK9Z"</span>,
+  <span class="tok-key">"status"</span>:      <span class="tok-str">"done"</span>,
+  <span class="tok-key">"goal"</span>:        <span class="tok-str">"Audit codebase..."</span>,
+  <span class="tok-key">"mcu"</span>:         <span class="tok-num">42</span>,
+  <span class="tok-key">"duration_ms"</span>: <span class="tok-num">138240</span>,
+  <span class="tok-key">"result"</span>: {
+    <span class="tok-key">"summary"</span>: <span class="tok-str">"0 type errors found"</span>,
+    <span class="tok-key">"verified"</span>: <span class="tok-bool">true</span>
+  },
+  <span class="tok-key">"created_at"</span>:  <span class="tok-str">"2026-03-02T09:42:00Z"</span>,
+  <span class="tok-key">"completed_at"</span>:<span class="tok-str">"2026-03-02T09:44:18Z"</span>
+}</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─ WEBHOOKS ─ -->
+        <section id="webhooks-events" class="doc-section">
+          <h2 class="text-xl font-bold text-zinc-100 mb-1">Webhooks</h2>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
+            AgencyOS sends <code class="font-mono bg-elevated border border-zinc-800 px-1 rounded text-xs">POST</code> requests to your endpoint for async task events.
+            Verify authenticity using the <code class="font-mono bg-elevated border border-zinc-800 px-1 rounded text-xs">X-AgencyOS-Signature</code> header (HMAC-SHA256).
+          </p>
+
+          <!-- Event types grid -->
+          <div class="grid sm:grid-cols-2 gap-3 mb-6">
+            <div class="bg-surface border border-zinc-800 rounded-xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500" aria-hidden="true"></span>
+                <code class="font-mono text-xs text-green-400">task.completed</code>
+              </div>
+              <p class="text-xs text-zinc-500">Fired when a task finishes and passes all quality gates.</p>
+            </div>
+            <div class="bg-surface border border-zinc-800 rounded-xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500" aria-hidden="true"></span>
+                <code class="font-mono text-xs text-red-400">task.failed</code>
+              </div>
+              <p class="text-xs text-zinc-500">Fired when a task exhausts all self-healing retries.</p>
+            </div>
+            <div class="bg-surface border border-zinc-800 rounded-xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-500" aria-hidden="true"></span>
+                <code class="font-mono text-xs text-yellow-400">task.step_complete</code>
+              </div>
+              <p class="text-xs text-zinc-500">Fired after each verified step in a multi-step recipe.</p>
+            </div>
+            <div class="bg-surface border border-zinc-800 rounded-xl p-4">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-400" aria-hidden="true"></span>
+                <code class="font-mono text-xs text-indigo-400">agent.spawned</code>
+              </div>
+              <p class="text-xs text-zinc-500">Fired when a new agent instance is spawned for a task.</p>
+            </div>
+          </div>
+
+          <!-- Webhook payload example -->
+          <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium text-zinc-400">Webhook Payload</span>
+                <code class="text-xs font-mono text-green-400">task.completed</code>
+              </div>
+              <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy webhook payload">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                Copy
+              </button>
+            </div>
+            <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code>{
+  <span class="tok-key">"event"</span>:     <span class="tok-str">"task.completed"</span>,
+  <span class="tok-key">"timestamp"</span>: <span class="tok-str">"2026-03-02T09:44:18Z"</span>,
+  <span class="tok-key">"data"</span>: {
+    <span class="tok-key">"task_id"</span>:   <span class="tok-str">"task_01HK9Z"</span>,
+    <span class="tok-key">"mcu_used"</span>: <span class="tok-num">42</span>,
+    <span class="tok-key">"verified"</span>: <span class="tok-bool">true</span>,
+    <span class="tok-key">"result"</span>:   { <span class="tok-key">"summary"</span>: <span class="tok-str">"0 type errors"</span> }
+  },
+  <span class="tok-key">"org_id"</span>:    <span class="tok-str">"org_01HFYZ3K8M"</span>
+}</code></pre>
+          </div>
+        </section>
+
+        <!-- ─ SDKs ─ -->
+        <section id="sdk-node" class="doc-section">
+          <h2 class="text-xl font-bold text-zinc-100 mb-1">SDKs</h2>
+          <p class="text-zinc-400 text-sm leading-relaxed mb-6 max-w-2xl">
+            Official SDKs wrap the REST API with typed clients, retry logic, and webhook helpers.
+          </p>
+
+          <!-- Language tabs -->
+          <div class="flex items-center gap-1 mb-4 border-b border-zinc-800">
+            <button class="px-4 py-2 text-sm font-medium text-accent border-b-2 border-accent -mb-px transition-colors duration-200 cursor-pointer" aria-selected="true" role="tab">Node.js</button>
+            <button class="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-300 border-b-2 border-transparent -mb-px transition-colors duration-200 cursor-pointer" role="tab">Python</button>
+            <button class="px-4 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-300 border-b-2 border-transparent -mb-px transition-colors duration-200 cursor-pointer" role="tab">CLI</button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Install -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <span class="text-xs font-medium text-zinc-400">Install</span>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy install command">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono"><code><span class="tok-comment"># npm</span>
+npm install @agencyos/sdk
+
+<span class="tok-comment"># pnpm</span>
+pnpm add @agencyos/sdk</code></pre>
+            </div>
+
+            <!-- Usage -->
+            <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-elevated">
+                <span class="text-xs font-medium text-zinc-400">Usage — TypeScript</span>
+                <button class="text-xs text-zinc-500 hover:text-zinc-300 transition-colors duration-200 cursor-pointer flex items-center gap-1" aria-label="Copy TypeScript code">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  Copy
+                </button>
+              </div>
+              <pre class="p-4 text-xs font-mono leading-relaxed overflow-x-auto"><code><span class="tok-comment">// Initialize client</span>
+<span class="tok-header">import</span> { AgencyOS } from <span class="tok-str">'@agencyos/sdk'</span>;
+
+<span class="tok-header">const</span> client = <span class="tok-header">new</span> AgencyOS({
+  apiKey: process.env.<span class="tok-param">AGENCYOS_API_KEY</span>,
+  orgId:  process.env.<span class="tok-param">AGENCYOS_ORG_ID</span>,
+});
+
+<span class="tok-comment">// Create a task</span>
+<span class="tok-header">const</span> task = <span class="tok-header">await</span> client.tasks.create({
+  goal:  <span class="tok-str">"Audit codebase for TS issues"</span>,
+  agent: <span class="tok-str">"tester"</span>,
+});
+
+<span class="tok-comment">// Poll until done</span>
+<span class="tok-header">const</span> result = <span class="tok-header">await</span> client.tasks.wait(task.id);
+console.log(result.verified); <span class="tok-comment">// true</span></code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─ ERROR CODES ─ -->
+        <section id="errors" class="doc-section pb-16">
+          <h2 class="text-xl font-bold text-zinc-100 mb-4">Error Codes</h2>
+          <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden">
+            <table class="w-full text-sm" aria-label="API error codes">
+              <thead>
+                <tr class="border-b border-zinc-800 text-left">
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Code</th>
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">HTTP</th>
+                  <th class="px-4 py-2.5 text-xs font-medium text-zinc-500 uppercase tracking-wider">Description</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-zinc-800">
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-red-400">unauthorized</td>
+                  <td class="px-4 py-3"><span class="text-xs font-mono bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded">401</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Missing or invalid API key.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-red-400">forbidden</td>
+                  <td class="px-4 py-3"><span class="text-xs font-mono bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded">403</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Key lacks permission for this action.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-yellow-400">quota_exceeded</td>
+                  <td class="px-4 py-3"><span class="text-xs font-mono bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 px-2 py-0.5 rounded">429</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">MCU quota exhausted. Upgrade plan or wait for reset.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-red-400">task_not_found</td>
+                  <td class="px-4 py-3"><span class="text-xs font-mono bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded">404</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Task ID does not exist or belongs to another org.</td>
+                </tr>
+                <tr>
+                  <td class="px-4 py-3 font-mono text-xs text-red-400">internal_error</td>
+                  <td class="px-4 py-3"><span class="text-xs font-mono bg-red-500/10 border border-red-500/20 text-red-400 px-2 py-0.5 rounded">500</span></td>
+                  <td class="px-4 py-3 text-xs text-zinc-400">Unexpected server error. Check status.agencyos.ai.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

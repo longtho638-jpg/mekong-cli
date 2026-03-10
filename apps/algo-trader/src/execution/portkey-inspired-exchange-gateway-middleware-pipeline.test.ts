@@ -26,7 +26,7 @@ const baseCtx: Omit<GatewayContext, 'startTime'> = {
   metadata: {},
 };
 
-function makeOkHandler(data: any = { price: 100 }): (ctx: GatewayContext) => Promise<GatewayResponse> {
+function makeOkHandler(data: any = { price: 100 }): (ctx: GatewayContext) => Promise<GatewayResponse> { // eslint-disable-line @typescript-eslint/no-explicit-any -- test helper
   return async (ctx) => ({
     success: true,
     data,

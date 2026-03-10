@@ -1,5 +1,5 @@
 import { db } from '../client';
-import { Prisma, Side } from '@prisma/client';
+import { Side, Prisma } from '@prisma/client';
 
 export interface TradeCreateInput {
   tenantId: string;
@@ -15,7 +15,19 @@ export interface TradeCreateInput {
 
 export const tradeQueries = {
   async create(data: TradeCreateInput) {
-    return db.trade.create({ data: data as any });
+    return db.trade.create({
+      data: {
+        tenantId: data.tenantId,
+        strategyId: data.strategyId,
+        pair: data.pair,
+        side: data.side,
+        price: data.price,
+        amount: data.amount,
+        fee: data.fee ?? 0,
+        pnl: data.pnl ?? 0,
+        exchange: data.exchange,
+      },
+    });
   },
 
   async listByTenant(tenantId: string, limit = 100) {

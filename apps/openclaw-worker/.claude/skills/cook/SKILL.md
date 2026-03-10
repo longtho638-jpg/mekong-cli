@@ -1,7 +1,8 @@
 ---
-name: cook
-description: ALWAYS activate this skill before implementing EVERY feature, plan, or fix.
+name: ck:cook
+description: "ALWAYS activate this skill before implementing EVERY feature, plan, or fix."
 version: 2.1.1
+argument-hint: "[task|plan-path] [--interactive|--fast|--parallel|--auto|--no-test]"
 ---
 
 # Cook - Smart Feature Implementation
@@ -81,24 +82,28 @@ Human review required at these checkpoints (skipped with `--auto`):
 - **Testing:** 100% pass required (unless no-test mode)
 - **Code Review:** User approval OR auto-approve (score≥9.5, 0 critical)
 - **Finalize (MANDATORY - never skip):**
-  1. `project-manager` subagent → update plan/phase status to complete
+  1. `project-manager` subagent → run full plan sync-back (all completed tasks/steps across all `phase-XX-*.md`, not only current phase), then update `plan.md` status/progress
   2. `docs-manager` subagent → update `./docs` if changes warrant
-  3. `TaskUpdate` → mark all Claude Tasks complete
+  3. `TaskUpdate` → mark all Claude Tasks complete after sync-back verification
   4. Ask user if they want to commit via `git-manager` subagent
 
-## Required Subagents
+## Required Subagents (MANDATORY)
 
-| Phase | Subagent |
-|-------|----------|
-| Research | `researcher` (parallel, optional in fast) |
-| Scout | `scout` |
-| Plan | `planner` |
-| UI Work | `ui-ux-designer` |
-| Testing | `tester`, `debugger` |
-| Review | `code-reviewer` |
-| Finalize | `project-manager`, `docs-manager`, `git-manager` |
+| Phase | Subagent | Requirement |
+|-------|----------|-------------|
+| Research | `researcher` | Optional in fast/code |
+| Scout | `ck:scout` | Optional in code |
+| Plan | `planner` | Optional in code |
+| UI Work | `ui-ux-designer` | If frontend work |
+| Testing | `tester`, `debugger` | **MUST** spawn |
+| Review | `code-reviewer` | **MUST** spawn |
+| Finalize | `project-manager`, `docs-manager`, `git-manager` | **MUST** spawn all 3 |
 
-**CRITICAL:** Finalize step is NON-OPTIONAL in ALL modes. You MUST spawn all finalize subagents before completing.
+**CRITICAL ENFORCEMENT:**
+- Steps 4, 5, 6 **MUST** use Task tool to spawn subagents
+- DO NOT implement testing, review, or finalization yourself - DELEGATE
+- If workflow ends with 0 Task tool calls, it is INCOMPLETE
+- Pattern: `Task(subagent_type="[type]", prompt="[task]", description="[brief]")`
 
 ## References
 

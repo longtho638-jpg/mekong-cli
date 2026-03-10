@@ -1,58 +1,98 @@
-# 🏯 Agency OS - Makefile
-# ========================
-# "Không đánh mà thắng" - Win Without Fighting
+.PHONY: all install dev test lint format server clean stats help setup health build
 
-.PHONY: all demo server test install clean help
-
-# Default target
 all: help
 
-# Install dependencies
+# === Setup ===
+setup:
+	@bash scripts/setup-dev.sh
+
+setup-quick:
+	@bash scripts/setup-dev.sh --quick
+
+health:
+	@bash scripts/health-check.sh
+
+# === Python CLI ===
 install:
-	@echo "📦 Installing dependencies..."
-	pip install -r requirements.txt
-	@echo "✅ Done!"
+	pip install -e .
 
-# Run unified demo
-demo:
-	@echo "🎮 Running Agency OS Demo..."
-	python3 demo.py
+dev:
+	pip install -e ".[dev]"
 
-# Run FastAPI server
-server:
-	@echo "🚀 Starting Agency OS API Server..."
-	@echo "📖 Swagger docs: http://localhost:8000/docs"
-	python3 -m uvicorn backend.api.main:app --reload --port 8000
-
-# Run tests
 test:
-	@echo "🧪 Running Test Suite..."
-	pytest tests/
+	python3 -m pytest tests/ -v
 
-# Clean cache
+test-all: test
+	pnpm test
+
+lint:
+	python3 -m ruff check src/ tests/
+	python3 -m mypy src/ --ignore-missing-imports
+
+format:
+	python3 -m ruff format src/ tests/
+
+server:
+	python3 -m uvicorn src.core.gateway:app --reload --port 8000
+
+# === Node.js Monorepo ===
+build:
+	pnpm build
+
+dev-node:
+	pnpm dev
+
+lint-node:
+	pnpm lint
+
+# === Combined ===
+test-full: test
+	pnpm test
+
+lint-full: lint lint-node
+
+# === Cleanup ===
 clean:
-	@echo "🧹 Cleaning cache..."
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
-	@echo "✅ Clean!"
+	rm -rf .pytest_cache .mypy_cache .ruff_cache build dist *.egg-info
+	rm -rf .turbo node_modules/.cache
 
-# Show stats
+# === Info ===
 stats:
-	@echo "📊 Agency OS Stats:"
-	@echo "   Python files: $$(find . -name '*.py' | grep -v node_modules | wc -l)"
-	@echo "   Core Modules: $$(find core -maxdepth 1 -type d | wc -l)"
-	@git log --oneline | head -5
+	@echo "Python files: $$(find src -name '*.py' | wc -l | tr -d ' ')"
+	@echo "Test files: $$(find tests -name 'test_*.py' | wc -l | tr -d ' ')"
+	@echo "Lines of code: $$(find src -name '*.py' -exec cat {} + | wc -l | tr -d ' ')"
+	@echo "Node packages: $$(ls packages/ | wc -l | tr -d ' ')"
+	@echo "Node apps: $$(ls apps/ | wc -l | tr -d ' ')"
+	@echo "Version: $$(cat VERSION)"
 
-# Help
 help:
 	@echo ""
-	@echo "🏯 AGENCY OS - COMMANDS"
-	@echo "========================"
+	@echo "Mekong CLI v$$(cat VERSION) — Development Commands"
+	@echo "================================================="
 	@echo ""
-	@echo "  make install  - Install dependencies"
-	@echo "  make demo     - Run unified demo"
-	@echo "  make server   - Start API server (port 8000)"
-	@echo "  make test     - Run all tests"
-	@echo "  make clean    - Clean cache files"
-	@echo "  make stats    - Show project stats"
+	@echo "  Setup:"
+	@echo "    make setup        One-command dev setup"
+	@echo "    make setup-quick  Quick setup (skip optional)"
+	@echo "    make health       Check dev environment"
+	@echo ""
+	@echo "  Python CLI:"
+	@echo "    make install      Install package (editable)"
+	@echo "    make dev          Install with dev deps"
+	@echo "    make test         Run Python tests"
+	@echo "    make lint         Ruff + mypy"
+	@echo "    make format       Auto-format Python"
+	@echo "    make server       Start API gateway :8000"
+	@echo ""
+	@echo "  Node.js Monorepo:"
+	@echo "    make build        Build all packages (turbo)"
+	@echo "    make dev-node     Start all dev servers"
+	@echo "    make lint-node    Lint Node packages"
+	@echo ""
+	@echo "  Combined:"
+	@echo "    make test-full    Python + Node tests"
+	@echo "    make lint-full    Python + Node linting"
+	@echo "    make clean        Remove all build artifacts"
+	@echo "    make stats        Project statistics"
 	@echo ""

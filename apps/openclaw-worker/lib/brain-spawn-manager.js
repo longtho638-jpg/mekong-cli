@@ -55,13 +55,14 @@ function canRespawn() {
 // --- Claude command generator ---
 
 /**
- * 虛實 — Intent-Aware Command Generator (SINGLE SOURCE OF TRUTH).
- * PRO intent → Opus thật (direct Anthropic API, NO proxy).
- * API intent → Proxy (port 9191, model default by proxy).
+ * 虛實 — DashScope Direct Command Generator (SINGLE SOURCE OF TRUTH).
+ * Model mapping: settings.json env → DashScope Anthropic-compatible API.
+ * NO proxy. CC CLI reads ~/.claude/settings.json for ANTHROPIC_BASE_URL + model aliases.
  */
 function generateClaudeCommand(intent = 'API') {
-  // Binh Pháp: Triệt tiêu mọi proxy! Ép buộc dùng binary chuẩn
-  return `unset CLAUDE_CONFIG_DIR && unset ANTHROPIC_API_KEY && unset ANTHROPIC_BASE_URL` +
+  // DashScope Direct: giữ nguyên ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY từ settings.json
+  // CHỈ unset CLAUDE_CONFIG_DIR để tránh xung đột config giữa các pane
+  return `unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` +
     ` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
     ` && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`;
 }
@@ -89,14 +90,32 @@ function killBrain(sessionName = config.TMUX_SESSION) {
  * isBrainAlive — checks if CC CLI is running in the given tmux pane.
  * paneTarget = full tmux pane address (e.g. tom_hum:brain.0).
  */
-function isBrainAlive(paneTarget = TMUX_SESSION_PRO) {
+function isBrainAlive(paneTarget = `${config.TMUX_SESSION}:0.0`) {
   if (!isSessionAlive(config.TMUX_SESSION)) return false;
   try {
     const output = execSync(
       `tmux capture-pane -t ${paneTarget} -p 2>/dev/null`,
-      { encoding: 'utf-8', timeout: 3000 }
+      { encoding: 'utf-8', timeout: 8000 }
     );
-    return [/❯/, /Claude Code/i, /bypass permissions/i, /claude-/i, /✻/].some(p => p.test(output));
+    // Only check LAST 5 lines for crash — old buffer may have stale "Resume" text
+    const tail5 = output.split('\n').filter(l => l.trim()).slice(-5).join('\n');
+
+    // Crashed = shell prompt at bottom AND no CC CLI indicators
+    const hasCCCLI = [/❯/, /bypass permissions/i, /✻/, /Cooking|Brewing|Frosting|Moonwalking|Concocting|Sautéing|thinking|Hatching|Ebbing/i].some(p => p.test(tail5));
+    const hasShellOnly = /[$%]\s*$/.test(tail5) && !hasCCCLI;
+
+    if (hasShellOnly) {
+      const pIdx = paneTarget.split('.').pop();
+      log(`[🩺 RESPAWN][P${pIdx}] Shell prompt detected — auto-restarting CC CLI`);
+      try {
+        execSync(`tmux send-keys -t ${paneTarget} "claude --dangerously-skip-permissions --continue"`, { timeout: 8000 });
+        execSync(`tmux send-keys -t ${paneTarget} Enter`, { timeout: 3000 });
+      } catch (e) {
+        log(`[🩺 RESPAWN][P${pIdx}] restart failed: ${e.message}`);
+      }
+      return false;
+    }
+    return hasCCCLI;
   } catch (e) { return false; }
 }
 
@@ -116,35 +135,47 @@ function isShellPrompt(output) {
 // --- Worker routing ---
 
 /**
- * findIdleWorker — STRICT 1P1 Project Routing (Binh Phap Fix 2026-02-28):
- * Chairman Rule: "MỖI P 1 DỰ ÁN TỪ ĐẦU ĐẾN CUỐI"
- *   P0 ← mekong-cli ONLY
- *   P1 ← well ONLY
- *   P2 ← algo-trader (abitrade) ONLY
- * 
- * NO FALLBACK. NO OVERFLOW. NO EXCEPTIONS.
- * Unknown projects → REJECTED (-1)
+ * findIdleWorker — DYNAMIC PANE ROUTING (2026-03-09):
+ * Chairman Rule: "CTO phải nhìn đường dẫn thực tế, không fix cứng"
+ *
+ * Queries tmux for each pane's current working directory.
+ * Matches projectDir against live pane paths.
+ * If a pane is cd'ed into the requested project → route there.
+ * If no pane matches → REJECTED (-1).
+ *
+ * NO HARDCODED MAPPING. The CTO reads reality from tmux.
  */
 function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION', projectDir = '') {
   const projectName = projectDir ? require('path').basename(projectDir) : '';
 
-  // STRICT 1:1 Mapping — Chairman Decree
+  // Query tmux for live pane→project mapping
+  const { getActivePaneProjects } = require('./brain-tmux-controller');
+  const paneMap = getActivePaneProjects(sessionName);
+
+  // Find the pane that matches the requested project
   let targetPane = -1;
-  if (projectName === 'mekong-cli' || projectDir === config.MEKONG_DIR) {
-    targetPane = 0;
-  } else if (projectName === 'well' || projectName === '84tea') {
-    targetPane = 1;
-  } else if (projectName === 'algo-trader') {
-    targetPane = 2;
+  for (const [idxStr, info] of Object.entries(paneMap)) {
+    const idx = parseInt(idxStr, 10);
+    // Match by project name (basename) or full path
+    if (info.projectName === projectName || info.path === projectDir) {
+      targetPane = idx;
+      break;
+    }
+    // Also match if the pane path CONTAINS the project dir (e.g. monorepo sub-path)
+    if (projectDir && info.path.includes(projectDir)) {
+      targetPane = idx;
+      break;
+    }
   }
 
-  // Unknown project → REJECT (no fallback, no overflow)
+  // Unknown/unmatched project → REJECT (no fallback, no overflow)
   if (targetPane === -1) {
-    log(`DISPATCH: ❌ REJECTED unknown project="${projectName}" — only mekong-cli/algo-trader/well allowed`);
+    const discovered = Object.entries(paneMap).map(([k, v]) => `P${k}=${v.projectName}`).join(', ');
+    log(`DISPATCH: ❌ REJECTED project="${projectName}" — not found in live panes [${discovered}]`);
     return -1;
   }
 
-  // 🏭 2026-03-01 Vibe Coding Factory Lock
+  // 🏭 Vibe Coding Factory Lock check
   try {
     const factory = require('./factory-pipeline');
     if (factory.isPaneLocked(targetPane)) {
@@ -157,7 +188,7 @@ function findIdleWorker(sessionName = config.TMUX_SESSION, intent = 'EXECUTION',
 
   // Check if target pane is free
   if (!isWorkerBusy(targetPane)) {
-    log(`DISPATCH: → Worker P${targetPane} (strict 1:1) — project=${projectName}`);
+    log(`DISPATCH: → Worker P${targetPane} (dynamic routing) — project=${projectName}`);
     return targetPane;
   }
 
@@ -221,7 +252,7 @@ function parseContextUsage(output) {
  */
 function detectIdleWorkers(idleThresholdMs = 5 * 60 * 1000) {
   const idleWorkers = [];
-  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 2;
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 3;
 
   for (let idx = 0; idx < teamSize; idx++) {
     if (isWorkerBusy(idx)) continue; // Worker is busy, not idle
@@ -232,7 +263,7 @@ function detectIdleWorkers(idleThresholdMs = 5 * 60 * 1000) {
       if (fs.existsSync(lockPath)) continue; // Has lock = active
 
       // Check brain alive at this pane
-      const paneTarget = `${config.TMUX_SESSION}:brain.${idx}`;
+      const paneTarget = `${config.TMUX_SESSION}:0.${idx}`;
       if (!isBrainAlive(paneTarget)) continue; // Not alive = not idle, just dead
 
       // Calculate idle time from last lock removal (or process start)
@@ -257,10 +288,10 @@ function detectIdleWorkers(idleThresholdMs = 5 * 60 * 1000) {
  * @returns {{ workers: Array<{ idx: number, alive: boolean, busy: boolean, status: string }> }}
  */
 function getWorkerHealthSummary() {
-  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 2;
+  const teamSize = config.AGENT_TEAM_SIZE_DEFAULT || 3;
   const workers = [];
   for (let idx = 0; idx < teamSize; idx++) {
-    const paneTarget = `${config.TMUX_SESSION}:brain.${idx}`;
+    const paneTarget = `${config.TMUX_SESSION}:0.${idx}`;
     const alive = isBrainAlive(paneTarget);
     const busy = isWorkerBusy(idx);
     let status = 'unknown';

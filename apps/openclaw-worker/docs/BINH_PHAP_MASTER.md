@@ -7,7 +7,8 @@
 >
 > — Tôn Vũ (孫武), ~512 TCN, Thời Xuân Thu
 > Ánh xạ cho Doanh Trại Tôm Hùm (OpenClaw Swarm) | v4.0.0-DNA-FUSION | 2026-02-15
-> 🧬 DNA FUSION: Binh Pháp × ClaudeKit × BMAD-METHOD × Micro-Niche × Technical Co-Founder
+> 🧬 DNA FUSION: Binh Pháp × ClaudeKit × BMAD-METHOD × ROIaaS × Technical Co-Founder
+> 📜 CHIẾN LƯỢC TỐI THƯỢNG: [Hiến Pháp ROIaaS](file:///Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md) (R = ROI = RaaS)
 
 ---
 
@@ -543,6 +544,7 @@ Task passes Micro-Niche Filter? ✅
   → Can it ship in 1 mission (15-60min)?
   → Does it solve ONE clear pain?
   → Is the outcome measurable?
+  → Does it satisfy the [ROIaaS Dual-Stream Strategy](file:///Users/macbookprom1/mekong-cli/docs/HIEN_PHAP_ROIAAS.md)?
   → Would a user pay $5/mo for this?
 If NO to any → SPLIT into smaller tasks or REJECT
 ```
@@ -791,12 +793,26 @@ Missions được ủy thác cho các specialized "Hands" (từ `hands-registry.
 
 ---
 
+### 🔷 DNA #7: OPENCLAW V2026.3.2 INTELLIGENCE
+
+> **Ánh xạ:** Tinh hoa từ upstream v2026.3.2 release (Tháng 3/2026) vào Binh Pháp Tôm Hùm. Cập nhật không phá vỡ Kiến trúc lõi.
+
+| Tính năng Upstream | Binh Pháp Tôn Tử | Mapping Tôm Hùm CTO |
+|:---|:---|:---|
+| **Config Validate Gate** | 始計 Ch.1 — 多算勝 (Tính nhiều thắng) | Tự động validate `config.js` trước khi `checkAllPanes()`. Không cho phép cất quân nếu lỗi. |
+| **Secrets Fail-Fast** | 火攻 Ch.12 — Safety Gate (Mất nước không thể phục) | `process.exit(1)` ngay lập tức nếu thiếu `DASHSCOPE_API_KEY`. Tránh phá hủy Context. |
+| **Ollama Memory Fallback** | 九變 Ch.8 — Cửu Biến Adaptation | Khi DashScope/Proxy rớt, `llm-perception.js` lùi về local Ollama (qwen2) để giữ trí thông minh liên tục. |
+| **PDF Tool Analysis** | 用間 Ch.13 — Dụng Gián | Khai thác trinh sát tài liệu diện rộng. |
+
+---
+
 ## 📊 Tổng Kết Bộ Kinh Thư
 | Hệ Thống            | Số Lượng         | Nguồn                           | File                  |
 | :------------------ | :--------------- | :------------------------------ | :-------------------- |
 | 13 Chương           | 13               | Tôn Tử Binh Pháp gốc            | `BINH_PHAP_MASTER.md` |
 | 36 Kế               | 36 (6×6)         | Tam Thập Lục Kế (Nam Bắc Triều) | `36_KE.md`            |
 | DNA Fusion #6       | 12 Patterns      | OpenFang Agent OS (v0.1.0)       | `BINH_PHAP_MASTER.md` |
+| DNA Fusion #7       | 4 Features       | OpenClaw v2026.3.2               | `BINH_PHAP_MASTER.md` |
 | **TỔNG KIẾN THỨC**  | **212 concepts** |                                 |                       |
 
 ---

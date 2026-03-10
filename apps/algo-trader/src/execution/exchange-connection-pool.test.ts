@@ -1,75 +1,43 @@
-import { ExchangeConnectionPool } from './exchange-connection-pool';
+import { describe, test, expect, beforeEach } from '@jest/globals';
+import { ExchangeConnectionPool, ExchangeConfig } from './exchange-connection-pool';
+import { LicenseService } from '../lib/raas-gate';
 
 describe('ExchangeConnectionPool', () => {
-  let pool: ExchangeConnectionPool<{ id: string; created: number }>;
-
   beforeEach(() => {
-    pool = new ExchangeConnectionPool(
-      (id) => ({ id, created: Date.now() }),
-      { maxIdleMs: 100, maxAgeMs: 500, cleanupIntervalMs: 50 }
-    );
+    LicenseService.getInstance().reset();
+    ExchangeConnectionPool.getInstance().reset();
   });
 
-  afterEach(() => {
-    pool.destroy();
+  test('should connect to binance with FREE tier', async () => {
+    await LicenseService.getInstance().validate();
+    const pool = ExchangeConnectionPool.getInstance();
+    const config: ExchangeConfig = { id: 'binance', name: 'Binance' };
+    const conn = await pool.connect(config);
+    expect(conn.connected).toBe(true);
+    expect(conn.id).toBe('binance');
   });
 
-  it('creates new connection on first acquire', () => {
-    const client = pool.acquire('binance');
-    expect(client.id).toBe('binance');
+  test('should reject non-binance exchange with FREE tier', async () => {
+    await LicenseService.getInstance().validate();
+    const pool = ExchangeConnectionPool.getInstance();
+    const config: ExchangeConfig = { id: 'okx', name: 'OKX' };
+    await expect(pool.connect(config)).rejects.toThrow('requires PRO license');
   });
 
-  it('reuses existing connection on second acquire', () => {
-    const first = pool.acquire('binance');
-    const second = pool.acquire('binance');
-    expect(first).toBe(second);
+  test('should connect to multiple exchanges with PRO tier', async () => {
+    await LicenseService.getInstance().validate('raas-pro-test');
+    const pool = ExchangeConnectionPool.getInstance();
+    await pool.connect({ id: 'binance', name: 'Binance' });
+    await pool.connect({ id: 'okx', name: 'OKX' });
+    await pool.connect({ id: 'bybit', name: 'Bybit' });
+    expect(pool.getConnections().length).toBe(3);
   });
 
-  it('creates separate connections per exchange', () => {
-    const binance = pool.acquire('binance');
-    const okx = pool.acquire('okx');
-    expect(binance.id).toBe('binance');
-    expect(okx.id).toBe('okx');
-    expect(binance).not.toBe(okx);
-  });
-
-  it('releases connection', () => {
-    pool.acquire('binance');
-    pool.release('binance');
-    const stats = pool.stats();
-    expect(stats.size).toBe(0);
-  });
-
-  it('reports stats correctly', () => {
-    pool.acquire('binance');
-    pool.acquire('okx');
-    pool.acquire('binance'); // reuse
-    const stats = pool.stats();
-    expect(stats.size).toBe(2);
-    const binanceStats = stats.connections.find(c => c.id === 'binance');
-    expect(binanceStats?.uses).toBe(2);
-  });
-
-  it('evicts stale connections after maxAge', async () => {
-    pool.acquire('binance');
-    // Wait for maxAge (500ms) + cleanup interval (50ms)
-    await new Promise(r => setTimeout(r, 600));
-    const stats = pool.stats();
-    expect(stats.size).toBe(0);
-  });
-
-  it('replaces stale connection on acquire', async () => {
-    const first = pool.acquire('binance');
-    // Wait for maxAge
-    await new Promise(r => setTimeout(r, 550));
-    const second = pool.acquire('binance');
-    expect(second).not.toBe(first);
-  });
-
-  it('destroy clears pool', () => {
-    pool.acquire('binance');
-    pool.acquire('okx');
-    pool.destroy();
-    expect(pool.stats().size).toBe(0);
+  test('should return health check status', async () => {
+    await LicenseService.getInstance().validate('raas-pro-test');
+    const pool = ExchangeConnectionPool.getInstance();
+    await pool.connect({ id: 'binance', name: 'Binance' });
+    const health = pool.healthCheck();
+    expect(health.binance).toBe(true);
   });
 });

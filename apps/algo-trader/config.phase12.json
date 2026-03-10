@@ -1,0 +1,25 @@
+{
+  "autopoieticEngine": {
+    "enabled": false,
+    "evolutionIntervalDays": 30,
+    "llmModel": "codellama-13b",
+    "sandboxMemoryGb": 4,
+    "dryRun": true
+  },
+  "energyArbitrage": {
+    "enabled": false,
+    "energyMarkets": ["nordpool", "ercot"],
+    "cloudProviders": ["aws", "gcp"],
+    "miningPool": "stratum+tcp://pool.example.com:3333",
+    "stakingAddress": "0x0000000000000000000000000000000000000000",
+    "dryRun": true
+  },
+  "marketMorph": {
+    "enabled": false,
+    "dexFactory": "0x0000000000000000000000000000000000000000",
+    "initialLiquidityUsd": 10000,
+    "validatorKey": "./validator_keys",
+    "commissionBps": 5,
+    "dryRun": true
+  }
+}

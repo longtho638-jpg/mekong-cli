@@ -1,7 +1,8 @@
 ---
-name: research
-description: Research technical solutions, analyze architectures, gather requirements thoroughly. Use for technology evaluation, best practices research, solution design, scalability/security/maintainability analysis.
+name: ck:research
+description: "Research technical solutions, analyze architectures, gather requirements thoroughly. Use for technology evaluation, best practices research, solution design, scalability/security/maintainability analysis."
 license: MIT
+argument-hint: "[topic]"
 ---
 
 # Research
@@ -36,7 +37,7 @@ You will employ a multi-source research strategy:
    - **IMPORTANT:** You are allowed to perform at most **5 researches (max 5 tool calls)**, user might request less than this amount, **strictly respect it**, think carefully based on the task before performing each related research topic.
 
 2. **Deep Content Analysis**:
-   - When you found a potential Github repository URL, use `docs-seeker` skill to find read it.
+   - When you found a potential Github repository URL, use `ck:docs-seeker` skill to find read it.
    - Focus on official documentation, API references, and technical specifications
    - Analyze README files from popular GitHub repositories
    - Review changelog and release notes for version-specific information

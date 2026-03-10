@@ -40,20 +40,24 @@ export const onRequest = defineMiddleware((context, next) => {
 
   // A/B Testing Logic
   const allCookies: Record<string, string> = {};
-  // @ts-ignore
-  if (typeof cookies.getAll === 'function') {
-    // @ts-ignore
-    cookies.getAll().forEach(c => { allCookies[c.name] = c.value });
-  } else {
-    // Fallback for older Astro versions or if cookie object structure differs
-    const cookieHeader = request.headers.get('cookie') || '';
-    cookieHeader.split(';').forEach(c => {
-        const [key, value] = c.trim().split('=');
-        if (key && value) allCookies[key] = value;
-    });
-  }
+  let userAgent = '';
 
-  const userAgent = request.headers.get('user-agent') || '';
+  try {
+    // @ts-ignore
+    if (typeof cookies.getAll === 'function') {
+      // @ts-ignore
+      cookies.getAll().forEach(c => { allCookies[c.name] = c.value });
+    } else {
+      const cookieHeader = request.headers.get('cookie') || '';
+      cookieHeader.split(';').forEach(c => {
+          const [key, value] = c.trim().split('=');
+          if (key && value) allCookies[key] = value;
+      });
+    }
+    userAgent = request.headers.get('user-agent') || '';
+  } catch {
+    // Prerendered pages: request.headers không khả dụng, skip A/B logic
+  }
   const assignments = getExperimentAssignments(allCookies, userAgent);
 
   // Store in locals for components to access

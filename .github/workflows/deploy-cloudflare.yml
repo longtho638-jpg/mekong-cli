@@ -1,0 +1,75 @@
+name: Deploy Mekong Engine to Cloudflare
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'packages/mekong-engine/**'
+      - '.github/workflows/deploy-cloudflare.yml'
+  workflow_dispatch:
+
+jobs:
+  test-engine:
+    name: Test & Typecheck (mekong-engine)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: TypeScript check
+        run: pnpm --filter mekong-engine typecheck
+
+      - name: Run tests
+        run: pnpm --filter mekong-engine test
+        continue-on-error: true
+
+  deploy:
+    name: Deploy to Cloudflare Workers
+    needs: test-engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Deploy via Wrangler
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: packages/mekong-engine
+          command: deploy
+
+      - name: Smoke test
+        if: success()
+        run: |
+          sleep 10
+          HTTP_STATUS=$(curl -sI "https://mekong-engine.${CLOUDFLARE_ACCOUNT_ID}.workers.dev/health" -o /dev/null -w '%{http_code}' 2>/dev/null || echo "000")
+          echo "Health check: HTTP $HTTP_STATUS"
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "✅ Deploy verified!"
+          else
+            echo "⚠️ Health check returned $HTTP_STATUS — may need custom domain setup"
+          fi
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

@@ -405,7 +405,7 @@ function getEvolutionScore() {
     try { dlqCount = require('./task-queue').getQueueStats().dlqCount; } catch (e) { }
 
     let circuitState = 'CLOSED';
-    try { circuitState = require('./circuit-breaker').getState('proxy'); } catch (e) { }
+
 
     let successRate = 0;
     try {

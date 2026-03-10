@@ -1,1604 +1,1604 @@
 {
   "tasks": [
     {
-      "hash": "eedaa7f5abee",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
-      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ cal-com/cal",
-      "dispatchedAt": 1772347288331
-    },
-    {
-      "hash": "2cb32585f4dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
-      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from mem0ai/m",
-      "dispatchedAt": 1772347315066
-    },
-    {
-      "hash": "48835c38313d",
+      "hash": "3d22b94be62e",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Ch.1 始計 Kế Sách (Planning)",
-      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
-      "dispatchedAt": 1772347472732
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772915469613
     },
     {
-      "hash": "548462f096b3",
-      "project": "apex-os",
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772915483355
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772915559997
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772915649637
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772915660947
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772915741647
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772915945579
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772916040256
+    },
+    {
+      "hash": "04e32b81b0fa",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772916051942
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772916130452
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772916142434
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from upstash/q",
-      "dispatchedAt": 1772347657655
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772916150626
     },
     {
-      "hash": "6d70d5dac976",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ n8n-io",
-      "dispatchedAt": 1772347743052
-    },
-    {
-      "hash": "fb09864e3256",
+      "hash": "46aa7365052c",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from google/zx",
-      "dispatchedAt": 1772347770125
-    },
-    {
-      "hash": "d6a1b30cf439",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
-      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
-      "dispatchedAt": 1772347910978
-    },
-    {
-      "hash": "2fe07eaa5908",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
-      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ Berri",
-      "dispatchedAt": 1772348013195
-    },
-    {
-      "hash": "705d46291016",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN architecture & pattern from pulumi/pu",
-      "dispatchedAt": 1772348272959
-    },
-    {
-      "hash": "49aabd1c6d96",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
-      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from temporal-",
-      "dispatchedAt": 1772348542895
-    },
-    {
-      "hash": "23994a4bef01",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
-      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
-      "dispatchedAt": 1772348818060
-    },
-    {
-      "hash": "84d00f4e06c6",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
-      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from electron",
-      "dispatchedAt": 1772348844724
-    },
-    {
-      "hash": "3cde94df9c47",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
-      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ netdata/net",
-      "dispatchedAt": 1772349088588
-    },
-    {
-      "hash": "12185a51f757",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
-      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN architecture & pattern from formbric",
-      "dispatchedAt": 1772349115178
-    },
-    {
-      "hash": "84ee81998ff0",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
-      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
-      "dispatchedAt": 1772349358091
-    },
-    {
-      "hash": "bbd50166c1e3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.1 始計 Kế Sách (Planning)",
-      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/A2UI ",
-      "dispatchedAt": 1772349629526
-    },
-    {
-      "hash": "30e75980f883",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN architecture & pattern from trigger-d",
-      "dispatchedAt": 1772349899083
-    },
-    {
-      "hash": "9d962e91d8f7",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN architecture & pattern from langchain",
-      "dispatchedAt": 1772349925984
-    },
-    {
-      "hash": "3a8aa99e2a19",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/zx & ",
-      "dispatchedAt": 1772350168071
-    },
-    {
-      "hash": "00903235ebff",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
-      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
-      "dispatchedAt": 1772350194792
-    },
-    {
-      "hash": "84064cb38933",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
-      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN architecture & pattern from portkey-a",
-      "dispatchedAt": 1772350437556
-    },
-    {
-      "hash": "224cdfc502d2",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ railw",
-      "dispatchedAt": 1772350449856
-    },
-    {
-      "hash": "7c5d47e3dbae",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
-      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ tempor",
-      "dispatchedAt": 1772355925949
-    },
-    {
-      "hash": "a84cdb903917",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
-      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
-      "dispatchedAt": 1772355958789
-    },
-    {
-      "hash": "88124972444f",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
-      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN architecture & pattern from nicegui/",
-      "dispatchedAt": 1772355986091
-    },
-    {
-      "hash": "0d4c10536ff8",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
-      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN architecture & pattern from netdata/",
-      "dispatchedAt": 1772356121025
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772916153256
     },
     {
-      "hash": "05eb2e4211ad",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
-      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ cal-com/cal",
-      "dispatchedAt": 1772356192678
-    },
-    {
-      "hash": "1d9a15d6dca3",
-      "project": "algo-trader",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
-      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN architecture & pattern from qdrant/q",
-      "dispatchedAt": 1772356219521
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772916184634
     },
     {
-      "hash": "602d50d4f06d",
+      "hash": "3d22b94be62e",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Ch.1 始計 Kế Sách (Planning)",
-      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
-      "dispatchedAt": 1772356376674
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772916221592
     },
     {
-      "hash": "91b967d2acff",
+      "hash": "4e4160d71be0",
       "project": "well",
       "pane": 1,
-      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ upstash/qsta",
-      "dispatchedAt": 1772356409511
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772916233417
     },
     {
-      "hash": "396b5ea7e684",
-      "project": "algo-trader",
+      "hash": "758a6c24a7ba",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ n8n-i",
-      "dispatchedAt": 1772356436102
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu typescript (3→10",
+      "dispatchedAt": 1772916274318
     },
     {
-      "hash": "95ef77e2d364",
-      "project": "apex-os",
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772916311170
+    },
+    {
+      "hash": "024a2646bcc3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua phần khá",
+      "dispatchedAt": 1772916322481
+    },
+    {
+      "hash": "dc1221605e00",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu resources (5→10)",
+      "dispatchedAt": 1772916364142
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772916401864
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772916413348
+    },
+    {
+      "hash": "121ceff3eb9d",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu build (5→10), bỏ",
+      "dispatchedAt": 1772916454556
+    },
+    {
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN architecture & pattern from biomejs/b",
-      "dispatchedAt": 1772356467897
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772916461525
     },
     {
-      "hash": "f2df4a3a33ae",
-      "project": "apex-os",
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772916491620
+    },
+    {
+      "hash": "8f6971eef0ba",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu typescript (8→10), bỏ qua phầ",
+      "dispatchedAt": 1772916503384
+    },
+    {
+      "hash": "8683fd9e3471",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu tests (5→10), bỏ",
+      "dispatchedAt": 1772916545176
+    },
+    {
+      "hash": "a6174fba3695",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
-      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN architecture & pattern from vercel/ai",
-      "dispatchedAt": 1772356483247
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
+      "dispatchedAt": 1772916551645
     },
     {
-      "hash": "c5a2bf97cde9",
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772916582209
+    },
+    {
+      "hash": "7ecce0b36574",
       "project": "well",
       "pane": 1,
-      "chapter": "Ch.6 虛實 Hư Thực (Smart Routing)",
-      "preview": "/cook \"Binh Phap Ch.6 虛實: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ BerriAI/lite",
-      "dispatchedAt": 1772356642700
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772916593164
     },
     {
-      "hash": "70a72497b6b3",
-      "project": "algo-trader",
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772916672743
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772916684824
+    },
+    {
+      "hash": "a722d7bba98d",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Ch.7 軍爭 Quân Tranh (Execution)",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: 1/ DEEP 10x PLAN codebase algo-trader. 2/ Ánh xạ railw",
-      "dispatchedAt": 1772356670016
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu security (5→10),",
+      "dispatchedAt": 1772916695988
     },
     {
-      "hash": "b6a99172c318",
+      "hash": "4372f8097df0",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Ch.8 九變 Cửu Biến (Adaptation)",
-      "preview": "/cook \"Binh Phap Ch.8 九變: 1/ DEEP 10x PLAN architecture & pattern from inngest/i",
-      "dispatchedAt": 1772356714922
-    },
-    {
-      "hash": "a7dabf9a03fc",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.9 行軍 Hành Quân (Observability)",
-      "preview": "/cook \"Binh Phap Ch.9 行軍: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ grafana/graf",
-      "dispatchedAt": 1772356812806
-    },
-    {
-      "hash": "b9c08dc8f276",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.10 地形 Địa Hình (Architecture)",
-      "preview": "/cook \"Binh Phap Ch.10 地形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ electron/el",
-      "dispatchedAt": 1772356901585
-    },
-    {
-      "hash": "01862bbdbcf6",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.11 九地 Cửu Địa (Recovery)",
-      "preview": "/cook \"Binh Phap Ch.11 九地: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ netdata/net",
-      "dispatchedAt": 1772356991893
-    },
-    {
-      "hash": "a810f93b24a8",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.12 火攻 Hỏa Công (Disruption)",
-      "preview": "/cook \"Binh Phap Ch.12 火攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ cal-c",
-      "dispatchedAt": 1772357086381
-    },
-    {
-      "hash": "8fb90e4c4a4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.13 用間 Dụng Gián (Intelligence)",
-      "preview": "/cook \"Binh Phap Ch.13 用間: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ mem0a",
-      "dispatchedAt": 1772357176483
-    },
-    {
-      "hash": "e3f844e4e67e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.1 始計 Kế Sách (Planning)",
-      "preview": "/cook \"Binh Phap Ch.1 始計: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ google",
-      "dispatchedAt": 1772357266754
-    },
-    {
-      "hash": "3ced6d667164",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.2 作戰 Tác Chiến (Resources)",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ upstas",
-      "dispatchedAt": 1772357356633
-    },
-    {
-      "hash": "1e4fd79d72a7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Ch.3 謀攻 Mưu Công (Win W/O Fight)",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: 1/ DEEP 10x PLAN codebase mekong-cli. 2/ Ánh xạ n8n-io",
-      "dispatchedAt": 1772357450120
-    },
-    {
-      "hash": "b8a4cc8061a9",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.4 軍形 Quân Hình (CI/CD Gates)",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ google/zx & ",
-      "dispatchedAt": 1772357532585
-    },
-    {
-      "hash": "c72f1a16a09b",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Ch.5 兵勢 Binh Thế (Momentum)",
-      "preview": "/cook \"Binh Phap Ch.5 兵勢: 1/ DEEP 10x PLAN codebase well. 2/ Ánh xạ vercel/ai & ",
-      "dispatchedAt": 1772357621268
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772357685741
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772357874452
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772357960949
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358050941
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358140425
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358230604
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358320876
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358410803
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358499117
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358575942
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358655453
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772358687488
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358725854
-    },
-    {
-      "hash": "aa91a686d0af",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: ci_cd",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: Tạo .github/workflows/ci.yml với lint, type-check, tes",
-      "dispatchedAt": 1772358753147
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772358784196
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
+      "dispatchedAt": 1772916702644
     },
     {
-      "hash": "b055f4a83fa7",
+      "hash": "b455763714b8",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu ci_cd (6→10), bỏ",
+      "dispatchedAt": 1772916704204
+    },
+    {
+      "hash": "b408fc46d875",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772358996186
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772916765182
     },
     {
-      "hash": "13ac8fdfde03",
-      "project": "apex-os",
+      "hash": "04e32b81b0fa",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772916777334
+    },
+    {
+      "hash": "7b117d8ae377",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359026923
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu performance (5→10), bỏ",
+      "dispatchedAt": 1772916786751
     },
     {
-      "hash": "b055f4a83fa7",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772916791833
+    },
+    {
+      "hash": "78a807390d3f",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772359086086
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772916855329
     },
     {
-      "hash": "13ac8fdfde03",
+      "hash": "7ecce0b36574",
       "project": "well",
       "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359117609
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772916867603
     },
     {
-      "hash": "13ac8fdfde03",
-      "project": "apex-os",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772916878355
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359148953
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772916884957
     },
     {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772359177016
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359215740
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772359311378
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772359584282
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359620892
-    },
-    {
-      "hash": "aa91a686d0af",
-      "project": "algo-trader",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: ci_cd",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: Tạo .github/workflows/ci.yml với lint, type-check, tes",
-      "dispatchedAt": 1772359671830
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772916886524
     },
     {
-      "hash": "13ac8fdfde03",
-      "project": "apex-os",
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772916947528
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772916959913
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359703302
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772916969184
     },
     {
-      "hash": "13ac8fdfde03",
-      "project": "apex-os",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772916973377
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772917038701
+    },
+    {
+      "hash": "024a2646bcc3",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua phần khá",
+      "dispatchedAt": 1772917050398
+    },
+    {
+      "hash": "758a6c24a7ba",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu typescript (3→10",
+      "dispatchedAt": 1772917060954
+    },
+    {
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772917067630
+    },
+    {
+      "hash": "b7f68d91dc33",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359711710
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua p",
+      "dispatchedAt": 1772917070620
     },
     {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772359873768
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772359905853
-    },
-    {
-      "hash": "aa91a686d0af",
+      "hash": "e74d3e3e848b",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: ci_cd",
-      "preview": "/cook \"Binh Phap Ch.3 謀攻: Tạo .github/workflows/ci.yml với lint, type-check, tes",
-      "dispatchedAt": 1772359933611
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360143718
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772360178262
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360228478
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360243827
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360430221
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772360461986
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360499327
-    },
-    {
-      "hash": "59c2370a731f",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: Chạy npm update, npm audit fix, npm outdated và fix pa",
-      "dispatchedAt": 1772360701224
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772360732850
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772360761657
-    },
-    {
-      "hash": "13ac8fdfde03",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/cook \"Binh Phap Ch.7 軍爭: Đánh giá file lớn >200 dòng. Code split components, lo",
-      "dispatchedAt": 1772360969502
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772361006283
-    },
-    {
-      "hash": "88134c577b53",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: Fix npm run build errors. Sửa tất cả TypeScript/compil",
-      "dispatchedAt": 1772361034480
-    },
-    {
-      "hash": "59c2370a731f",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: Chạy npm update, npm audit fix, npm outdated và fix pa",
-      "dispatchedAt": 1772361278703
-    },
-    {
-      "hash": "88134c577b53",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: Fix npm run build errors. Sửa tất cả TypeScript/compil",
-      "dispatchedAt": 1772361306427
-    },
-    {
-      "hash": "59c2370a731f",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: Chạy npm update, npm audit fix, npm outdated và fix pa",
-      "dispatchedAt": 1772361370521
-    },
-    {
-      "hash": "88134c577b53",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: Fix npm run build errors. Sửa tất cả TypeScript/compil",
-      "dispatchedAt": 1772361469044
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu typescript (8→10), bỏ ",
+      "dispatchedAt": 1772917073918
     },
     {
-      "hash": "59c2370a731f",
+      "hash": "7ecce0b36574",
       "project": "well",
       "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: Chạy npm update, npm audit fix, npm outdated và fix pa",
-      "dispatchedAt": 1772361558565
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772917128868
     },
     {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772361640768
-    },
-    {
-      "hash": "88134c577b53",
-      "project": "algo-trader",
+      "hash": "dc1221605e00",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: Fix npm run build errors. Sửa tất cả TypeScript/compil",
-      "dispatchedAt": 1772361677809
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu resources (5→10)",
+      "dispatchedAt": 1772917157046
     },
     {
-      "hash": "59c2370a731f",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"Binh Phap Ch.2 作戰: Chạy npm update, npm audit fix, npm outdated và fix pa",
-      "dispatchedAt": 1772361815867
-    },
-    {
-      "hash": "88134c577b53",
+      "hash": "519b20312496",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"Binh Phap Ch.4 軍形: Fix npm run build errors. Sửa tất cả TypeScript/compil",
-      "dispatchedAt": 1772361914796
-    },
-    {
-      "hash": "b055f4a83fa7",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"Binh Phap Ch.9 地形: git add -A, git commit. Cleanup directory. Đảm bảo cle",
-      "dispatchedAt": 1772362000296
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772362068236
-    },
-    {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772362094441
-    },
-    {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772362153084
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772362268243
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772917164125
     },
     {
-      "hash": "a91c57b0f324",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
-      "dispatchedAt": 1772362333755
-    },
-    {
-      "hash": "4b6d445c1e4d",
+      "hash": "c6088ab46330",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772362423756
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772917193343
     },
     {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772917205654
+    },
+    {
+      "hash": "121ceff3eb9d",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772362603977
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu build (5→10), bỏ",
+      "dispatchedAt": 1772917248526
     },
     {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772362635254
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772917255510
     },
     {
-      "hash": "010f0b7d233b",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES mekong-cli: 1/ npm outdated — update critical deps. 2/ npm audi",
-      "dispatchedAt": 1772362706123
-    },
-    {
-      "hash": "dc4ad7472ad3",
+      "hash": "8f6971eef0ba",
       "project": "well",
       "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772362738502
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu typescript (8→10), bỏ qua phầ",
+      "dispatchedAt": 1772917282306
     },
     {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772917347182
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772917358795
+    },
+    {
+      "hash": "8683fd9e3471",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772362883558
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu tests (5→10), bỏ",
+      "dispatchedAt": 1772917370971
     },
     {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772362963214
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772362999918
-    },
-    {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772363153377
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772917374841
     },
     {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772363233995
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772363266053
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
+      "hash": "a6174fba3695",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772363438412
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu tests (5→10), bỏ qua p",
+      "dispatchedAt": 1772917377807
     },
     {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772363511388
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772363542994
-    },
-    {
-      "hash": "e800cb7686dd",
+      "hash": "519b20312496",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772363569439
-    },
-    {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772363726822
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772363758698
-    },
-    {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772363785004
-    },
-    {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772363997230
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772364029087
-    },
-    {
-      "hash": "a91c57b0f324",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
-      "dispatchedAt": 1772364055233
-    },
-    {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772364267455
-    },
-    {
-      "hash": "dc4ad7472ad3",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772364299603
-    },
-    {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772364325796
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772364357877
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772917381936
     },
     {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772364517410
-    },
-    {
-      "hash": "dc4ad7472ad3",
+      "hash": "c2e2dcb9bdce",
       "project": "well",
       "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772364549861
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772917451006
     },
     {
-      "hash": "e800cb7686dd",
+      "hash": "4372f8097df0",
       "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772364576303
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772364712631
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu security (5→10), bỏ qu",
+      "dispatchedAt": 1772917460995
     },
     {
-      "hash": "dc4ad7472ad3",
+      "hash": "04e32b81b0fa",
       "project": "well",
       "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit fix.",
-      "dispatchedAt": 1772364782163
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772917525719
     },
     {
-      "hash": "a91c57b0f324",
-      "project": "algo-trader",
+      "hash": "a722d7bba98d",
+      "project": "sophia-ai-factory",
       "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
-      "dispatchedAt": 1772364808971
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu security (5→10),",
+      "dispatchedAt": 1772917533486
     },
     {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772917859762
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772917949624
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772918039752
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772918129916
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772918219853
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772918309756
+    },
+    {
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772918399869
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772918700099
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772918789739
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772919090786
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772919210716
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772919299464
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772919390359
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772919480279
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772919570178
+    },
+    {
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772919659727
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772919750209
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772919840610
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772919930679
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772920020636
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772920110402
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772920200518
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772920290654
+    },
+    {
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772920380462
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772920470454
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772920560644
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772920650124
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772921046767
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772921136987
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772921226850
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772921316975
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772921407149
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772921497150
+    },
+    {
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772921587776
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772921676612
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772921767060
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772921856784
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772921946986
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772922036928
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772922126944
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772922216955
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772922307234
+    },
+    {
+      "hash": "1c91cdb03c89",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: typescript",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu typescript (8→10), bỏ q",
+      "dispatchedAt": 1772922397013
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772922487517
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772922576619
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772922667217
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772922756917
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772922846413
+    },
+    {
+      "hash": "dc1221605e00",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu resources (5→10)",
+      "dispatchedAt": 1772923871400
+    },
+    {
+      "hash": "121ceff3eb9d",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu build (5→10), bỏ",
+      "dispatchedAt": 1772923951210
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772924016805
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772925970168
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772926449342
+    },
+    {
+      "hash": "5ced90e51e42",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (sophia-ai-factory): Đánh thẳng điểm yếu performance (3→1",
+      "dispatchedAt": 1772926500042
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772926543456
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772926554668
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772927353622
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772927863297
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772927955687
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772928411702
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772928531468
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772928621744
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772928926073
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772929015857
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772929041371
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772929116393
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772929188759
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772929464314
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772929764326
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772929854493
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772929865215
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772929879601
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772929884384
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772929907917
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772364840087
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772930088999
     },
     {
-      "hash": "4b6d445c1e4d",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/cook \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m 'cho",
-      "dispatchedAt": 1772365056676
-    },
-    {
-      "hash": "010f0b7d233b",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/cook \"RESOURCES mekong-cli: 1/ npm outdated — update critical deps. 2/ npm audi",
-      "dispatchedAt": 1772365120092
-    },
-    {
-      "hash": "ae91b5b62183",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD well: 1/ npm run build — fix ALL errors. 2/ Add build script if mis",
-      "dispatchedAt": 1772365161936
-    },
-    {
-      "hash": "3a575745b033",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS apex-os: 1/ npm test — fix failing tests. 2/ Write 3+ unit tests fo",
-      "dispatchedAt": 1772365218058
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772930998477
     },
     {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772365241696
-    },
-    {
-      "hash": "7641791522ee",
+      "hash": "31e73c42f497",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD mekong-cli: 1/ npm run build — fix ALL errors. 2/ Add build script ",
-      "dispatchedAt": 1772365391197
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931059132
     },
     {
-      "hash": "515e05f39dfb",
-      "project": "well",
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
       "pane": 1,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS well: 1/ npm test — fix failing tests. 2/ Write 3+ unit tests for c",
-      "dispatchedAt": 1772365438192
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931073251
     },
     {
-      "hash": "ea37a1a324a6",
-      "project": "algo-trader",
+      "hash": "7ecce0b36574",
+      "project": "well",
       "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/cook \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example if .env ex",
-      "dispatchedAt": 1772365500282
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772931090533
     },
     {
-      "hash": "c0aebcdc889b",
-      "project": "algo-trader",
+      "hash": "4e4160d71be0",
+      "project": "well",
       "pane": 2,
-      "chapter": "Targeting: ci_cd",
-      "preview": "/cook \"CI/CD algo-trader: 1/ Create .github/workflows/ci.yml: lint + typecheck +",
-      "dispatchedAt": 1772365510266
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772931099487
     },
     {
-      "hash": "761f52d66d6a",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS mekong-cli: 1/ npm test — fix failing tests. 2/ Write 3+ unit tests",
-      "dispatchedAt": 1772365663266
-    },
-    {
-      "hash": "a91c57b0f324",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build script",
-      "dispatchedAt": 1772365758021
-    },
-    {
-      "hash": "90bda4f85cbc",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "Targeting: build",
-      "preview": "/cook \"BUILD apex-os: 1/ npm run build — fix ALL errors. 2/ Add build script if ",
-      "dispatchedAt": 1772365841852
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931106037
     },
     {
-      "hash": "e800cb7686dd",
-      "project": "algo-trader",
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772931155875
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
       "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/cook \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit test",
-      "dispatchedAt": 1772366014887
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931188903
     },
     {
-      "hash": "a0ffc660b4cc",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:parallel \"PERFORMANCE algo-trader: 1/ find src -name '*.ts' -o -name '*.ts",
-      "dispatchedAt": 1772366073096
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931254740
     },
     {
-      "hash": "3316081d0fec",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "Targeting: tests",
-      "preview": "/plan:parallel \"TESTS apex-os: 1/ npm test — fix failing tests. 2/ Write 3+ unit",
-      "dispatchedAt": 1772366154742
+      "chapter": "TIER1-LỬA-CÔNG: resources",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931314579
     },
     {
-      "hash": "8c1e2ae661cc",
-      "project": "algo-trader",
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931345253
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772931374485
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
       "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/plan:parallel \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example i",
-      "dispatchedAt": 1772366400402
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931386182
     },
     {
-      "hash": "eca420e2ba54",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:parallel \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commi",
-      "dispatchedAt": 1772366895367
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772366942668
-    },
-    {
-      "hash": "79113b878692",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES mekong-cli: 1/ npm outdated — update critical deps. 2/ npm",
-      "dispatchedAt": 1772367214161
-    },
-    {
-      "hash": "e4523d0c1d78",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES algo-trader: 1/ npm outdated — update critical deps. 2/ np",
-      "dispatchedAt": 1772367620230
-    },
-    {
-      "hash": "3c03636598ad",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m",
-      "dispatchedAt": 1772367655391
-    },
-    {
-      "hash": "3a7a80fc634c",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD mekong-cli: 1/ npm run build — fix ALL errors. 2/ Add build sc",
-      "dispatchedAt": 1772367744888
-    },
-    {
-      "hash": "780e4a3dac99",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:parallel \"PERFORMANCE apex-os: 1/ find src -name '*.ts' -o -name '*.tsx' |",
-      "dispatchedAt": 1772367745697
+      "chapter": "TIER1-LỬA-CÔNG: build",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931401504
     },
     {
-      "hash": "d8cada4fe1db",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE well: 1/ find src -name '*.ts' -o -name '*.tsx' | xargs ",
-      "dispatchedAt": 1772367775064
-    },
-    {
-      "hash": "a4cd7fe9d4e2",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION well: 1/ git add -A && git status. 2/ git commit -m 'chor",
-      "dispatchedAt": 1772367818084
-    },
-    {
-      "hash": "29a6936924aa",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit",
-      "dispatchedAt": 1772368091692
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772368315580
-    },
-    {
-      "hash": "ed59edb999b7",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE apex-os: 1/ find src -name '*.ts' -o -name '*.tsx' | xar",
-      "dispatchedAt": 1772368468453
+      "chapter": "TIER1-LỬA-CÔNG: tests",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931406329
     },
     {
-      "hash": "d8cada4fe1db",
-      "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: performance",
-      "preview": "/plan:hard \"PERFORMANCE well: 1/ find src -name '*.ts' -o -name '*.tsx' | xargs ",
-      "dispatchedAt": 1772368554397
-    },
-    {
-      "hash": "3c03636598ad",
+      "hash": "c6088ab46330",
       "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/ git commit -m",
-      "dispatchedAt": 1772369008233
-    },
-    {
-      "hash": "a4cd7fe9d4e2",
-      "project": "well",
       "pane": 1,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION well: 1/ git add -A && git status. 2/ git commit -m 'chor",
-      "dispatchedAt": 1772369124462
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931452832
     },
     {
-      "hash": "29a6936924aa",
+      "hash": "04e32b81b0fa",
       "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES well: 1/ npm outdated — update critical deps. 2/ npm audit",
-      "dispatchedAt": 1772369135285
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu security (5→10), bỏ qua phần ",
+      "dispatchedAt": 1772931470200
     },
     {
-      "hash": "2ab757258df1",
+      "hash": "09e799e361ba",
       "project": "well",
-      "pane": 1,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD well: 1/ npm run build — fix ALL errors. 2/ Add build script i",
-      "dispatchedAt": 1772369189295
-    },
-    {
-      "hash": "94b61d79d587",
-      "project": "algo-trader",
       "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/plan:hard \"PRODUCTION algo-trader: 1/ git add -A && git status. 2/ git commit -",
-      "dispatchedAt": 1772369231832
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu production (7→10), bỏ qua phầ",
+      "dispatchedAt": 1772931476284
     },
     {
-      "hash": "e4523d0c1d78",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: resources",
-      "preview": "/plan:hard \"RESOURCES algo-trader: 1/ npm outdated — update critical deps. 2/ np",
-      "dispatchedAt": 1772369242201
-    },
-    {
-      "hash": "9183c6d489e9",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: build",
-      "preview": "/plan:hard \"BUILD algo-trader: 1/ npm run build — fix ALL errors. 2/ Add build s",
-      "dispatchedAt": 1772369268433
-    },
-    {
-      "hash": "f0148009e9eb",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: tests",
-      "preview": "/plan:hard \"TESTS algo-trader: 1/ npm test — fix failing tests. 2/ Write 3+ unit",
-      "dispatchedAt": 1772369296038
-    },
-    {
-      "hash": "e7a42a2ab141",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: security",
-      "preview": "/plan:hard \"SECURITY algo-trader: 1/ npm audit fix. 2/ Create .env.example if .e",
-      "dispatchedAt": 1772369717154
-    },
-    {
-      "hash": "5337072c44a4",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: production",
-      "preview": "/bootstrap:auto:parallel \"PRODUCTION mekong-cli: 1/ git add -A && git status. 2/",
-      "dispatchedAt": 1772371160857
-    },
-    {
-      "hash": "ef3b638f3d03",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: resources",
-      "preview": "/bootstrap:auto:parallel \"RESOURCES mekong-cli: 1/ npm outdated — update critica",
-      "dispatchedAt": 1772371355478
-    },
-    {
-      "hash": "8159a62b0a06",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "Targeting: build",
-      "preview": "/bootstrap:auto:parallel \"BUILD mekong-cli: 1/ npm run build — fix ALL errors. 2",
-      "dispatchedAt": 1772371618729
-    },
-    {
-      "hash": "b8ca1a97da1a",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "Targeting: production",
-      "preview": "/bootstrap:auto:parallel \"PRODUCTION algo-trader: 1/ git add -A && git status. 2",
-      "dispatchedAt": 1772371629180
-    },
-    {
-      "hash": "475e6f8fe907",
-      "project": "well",
-      "pane": 1,
-      "chapter": "AGI RaaS full plan",
-      "preview": "/bootstrap:auto:parallel \"AGI RaaS well 100/100: 1/ PLANNING: Create docs/ARCHIT",
-      "dispatchedAt": 1772371712891
-    },
-    {
-      "hash": "7b0f5c7f28be",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "AGI RaaS full plan",
-      "preview": "/bootstrap:auto:parallel \"AGI RaaS algo-trader 100/100: 1/ PLANNING: docs/ARCHIT",
-      "dispatchedAt": 1772371723807
-    },
-    {
-      "hash": "25cd41985d9c",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "AGI RaaS full plan",
-      "preview": "/bootstrap:auto:parallel \"AGI RaaS apex-os 100/100: 1/ PLANNING: docs/ARCHITECTU",
-      "dispatchedAt": 1772372147827
+      "chapter": "TIER1-LỬA-CÔNG: security",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931484886
     },
     {
-      "hash": "7b0f5c7f28be",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "AGI RaaS full plan",
-      "preview": "/bootstrap:auto:parallel \"AGI RaaS algo-trader 100/100: 1/ PLANNING: docs/ARCHIT",
-      "dispatchedAt": 1772372414272
-    },
-    {
-      "hash": "3ead9e02ce8e",
+      "hash": "85cd83d9185d",
       "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/binh-phap implement \"mekong-cli: Nâng production từ 4→10. Scan → fix → verify. ",
-      "dispatchedAt": 1772373549864
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772931536197
     },
     {
-      "hash": "fad38468c6db",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: resources",
-      "preview": "/binh-phap implement \"mekong-cli: Nâng resources từ 5→10. Scan → fix → verify. n",
-      "dispatchedAt": 1772373818669
-    },
-    {
-      "hash": "a41f41559277",
-      "project": "algo-trader",
+      "hash": "024a2646bcc3",
+      "project": "well",
       "pane": 2,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/binh-phap implement \"algo-trader: Nâng production từ 4→10. Scan → fix → verify.",
-      "dispatchedAt": 1772373826602
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu ci_cd (8→10), bỏ qua phần khá",
+      "dispatchedAt": 1772931563140
     },
     {
-      "hash": "54835a78fb5f",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: build",
-      "preview": "/binh-phap implement \"mekong-cli: Nâng build từ 5→10. Scan → fix → verify. npm r",
-      "dispatchedAt": 1772374090187
-    },
-    {
-      "hash": "08588f700d2b",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-STRATEGIC: resources",
-      "preview": "/binh-phap implement \"algo-trader: Nâng resources từ 5→10. Scan → fix → verify. ",
-      "dispatchedAt": 1772374103520
-    },
-    {
-      "hash": "3ead9e02ce8e",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/binh-phap implement \"mekong-cli: Nâng production từ 4→10. Scan → fix → verify. ",
-      "dispatchedAt": 1772374362642
-    },
-    {
-      "hash": "780a146f2768",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-STRATEGIC: build",
-      "preview": "/binh-phap implement \"algo-trader: Nâng build từ 5→10. Scan → fix → verify. npm ",
-      "dispatchedAt": 1772374370734
-    },
-    {
-      "hash": "58934708a1f1",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: tests",
-      "preview": "/cook \"mekong-cli: Nâng tests từ 5→10. Scan codebase, fix issues, add tests/docs",
-      "dispatchedAt": 1772374397142
-    },
-    {
-      "hash": "54e84ca32c79",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-STRATEGIC: tests",
-      "preview": "/cook \"algo-trader: Nâng tests từ 5→10. Scan codebase, fix issues, add tests/doc",
-      "dispatchedAt": 1772374404804
-    },
-    {
-      "hash": "a48e5b262a07",
-      "project": "algo-trader",
-      "pane": 2,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/cook \"algo-trader: Nâng production từ 4→10. Scan codebase, fix issues, add test",
-      "dispatchedAt": 1772374653952
-    },
-    {
-      "hash": "192cf124f6c3",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: resources",
-      "preview": "/cook \"mekong-cli: Nâng resources từ 5→10. Scan codebase, fix issues, add tests/",
-      "dispatchedAt": 1772374919555
-    },
-    {
-      "hash": "989337b0c32c",
-      "project": "apex-os",
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
       "pane": 3,
-      "chapter": "TIER3-STRATEGIC: performance",
-      "preview": "/cook \"apex-os: Nâng performance từ 3→10. Scan codebase, fix issues, add tests/d",
-      "dispatchedAt": 1772374939750
+      "chapter": "TIER1-LỬA-CÔNG: ci_cd",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772931574129
     },
     {
-      "hash": "9ed19a06ae24",
+      "hash": "b408fc46d875",
       "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/cook \"mekong-cli: Nâng production từ 4→10. Scan codebase, fix issues, add tests",
-      "dispatchedAt": 1772376763432
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772931625731
     },
     {
-      "hash": "192cf124f6c3",
+      "hash": "31e73c42f497",
       "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: resources",
-      "preview": "/cook \"mekong-cli: Nâng resources từ 5→10. Scan codebase, fix issues, add tests/",
-      "dispatchedAt": 1772377212684
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772931962233
     },
     {
-      "hash": "9ed19a06ae24",
-      "project": "mekong-cli",
-      "pane": 0,
-      "chapter": "TIER3-STRATEGIC: production",
-      "preview": "/cook \"mekong-cli: Nâng production từ 4→10. Scan codebase, fix issues, add tests",
-      "dispatchedAt": 1772383674597
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772932156104
     },
     {
-      "hash": "192cf124f6c3",
+      "hash": "31e73c42f497",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "TIER3-STRATEGIC: resources",
-      "preview": "/cook \"mekong-cli: Nâng resources từ 5→10. Scan codebase, fix issues, add tests/",
-      "dispatchedAt": 1772383821068
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772932549418
     },
     {
-      "hash": "e6db4650b1e8",
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772932649700
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: performance",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932752027
+    },
+    {
+      "hash": "3d22b94be62e",
       "project": "mekong-cli",
       "pane": 0,
-      "chapter": "TIER3-STRATEGIC: build",
-      "preview": "/cook \"mekong-cli: Nâng build từ 5→10. Scan codebase, fix issues, add tests/docs",
-      "dispatchedAt": 1772384392672
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772932848811
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: typescript",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932857830
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772932940427
+    },
+    {
+      "hash": "4e4160d71be0",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu resources (5→10), bỏ qua phần",
+      "dispatchedAt": 1772932952668
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 3,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772932962242
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: resources",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772932967670
+    },
+    {
+      "hash": "85cd83d9185d",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu tests (5→10), bỏ qua ph",
+      "dispatchedAt": 1772933049252
+    },
+    {
+      "hash": "d2983cba2670",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu build (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772933063248
+    },
+    {
+      "hash": "e574b6fc48ce",
+      "project": "sophia-ai-factory",
+      "pane": 2,
+      "chapter": "TIER1-LỬA-CÔNG: build",
+      "preview": "/cook \"LỬA CÔNG BOOTSTRAP (sophia-ai-factory): Tái cấu trúc toàn diện. Setup vữn",
+      "dispatchedAt": 1772933107167
+    },
+    {
+      "hash": "b408fc46d875",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: security",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu security (5→10), bỏ qua",
+      "dispatchedAt": 1772933141802
+    },
+    {
+      "hash": "c2e2dcb9bdce",
+      "project": "well",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: tests",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu tests (5→10), bỏ qua phần khá",
+      "dispatchedAt": 1772933156641
+    },
+    {
+      "hash": "78a807390d3f",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: ci_cd",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu ci_cd (6→10), bỏ qua ph",
+      "dispatchedAt": 1772933263883
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772934137671
+    },
+    {
+      "hash": "3d22b94be62e",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu resources (5→10), bỏ qu",
+      "dispatchedAt": 1772934228108
+    },
+    {
+      "hash": "c6088ab46330",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu build (5→10), bỏ qua ph",
+      "dispatchedAt": 1772934527886
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772935037983
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772935997580
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772937618282
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772937917078
+    },
+    {
+      "hash": "9dc78a5a3628",
+      "project": "algo-trader",
+      "pane": 1,
+      "chapter": "TIER3-RỪNG-CHIẾN: build",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu build (5→10), bỏ qua p",
+      "dispatchedAt": 1772938009619
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772938367102
+    },
+    {
+      "hash": "31e73c42f497",
+      "project": "mekong-cli",
+      "pane": 0,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (mekong-cli): Đánh thẳng điểm yếu production (4→10), bỏ q",
+      "dispatchedAt": 1772987713967
+    },
+    {
+      "hash": "519b20312496",
+      "project": "algo-trader",
+      "pane": 3,
+      "chapter": "TIER3-RỪNG-CHIẾN: production",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu production (4→10), bỏ ",
+      "dispatchedAt": 1772987863806
+    },
+    {
+      "hash": "7ecce0b36574",
+      "project": "well",
+      "pane": 2,
+      "chapter": "TIER3-RỪNG-CHIẾN: performance",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (well): Đánh thẳng điểm yếu performance (3→10), bỏ qua ph",
+      "dispatchedAt": 1772987964218
+    },
+    {
+      "hash": "46aa7365052c",
+      "project": "algo-trader",
+      "pane": 3,
+      "chapter": "TIER3-RỪNG-CHIẾN: resources",
+      "preview": "/cook \"RỪNG CHIẾN LƯỢC (algo-trader): Đánh thẳng điểm yếu resources (5→10), bỏ q",
+      "dispatchedAt": 1772987969863
     }
   ],
   "chapterIndex": 5

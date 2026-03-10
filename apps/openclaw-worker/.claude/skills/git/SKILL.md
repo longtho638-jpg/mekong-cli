@@ -1,13 +1,27 @@
 ---
-name: git
-description: Git operations with conventional commits. Use for staging, committing, pushing, PRs, merges. Auto-splits commits by type/scope. Security scans for secrets.
+name: ck:git
+description: "Git operations with conventional commits. Use for staging, committing, pushing, PRs, merges. Auto-splits commits by type/scope. Security scans for secrets."
+argument-hint: "cm|cp|pr|merge [args]"
 version: 1.0.0
 ---
 
 # Git Operations
 
+## Default (No Arguments)
+
+If invoked without arguments, use `AskUserQuestion` to present available git operations:
+
+| Operation | Description |
+|-----------|-------------|
+| `cm` | Stage files & create commits |
+| `cp` | Stage files, create commits and push |
+| `pr` | Create Pull Request |
+| `merge` | Merge branches |
+
+Present as options via `AskUserQuestion` with header "Git Operation", question "What would you like to do?".
+
 Execute git workflows via `git-manager` subagent to isolate verbose output.
-Activate `context-engineering` skill.
+Activate `ck:context-engineering` skill.
 
 **IMPORTANT:**
 - Sacrifice grammar for the sake of concision.

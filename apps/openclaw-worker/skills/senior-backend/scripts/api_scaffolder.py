@@ -11,13 +11,12 @@ Usage:
     python api_scaffolder.py spec.yaml --types-only --output src/types/
 """
 
-import os
 import sys
 import json
 import argparse
 import re
 from pathlib import Path
-from typing import Dict, List, Optional, Any
+from typing import Dict, List
 from datetime import datetime
 
 
@@ -464,7 +463,7 @@ class APIScaffolder:
             "import { validate } from './validators';",
             "import * as schemas from './validators';",
             '',
-            f'const router = Router();',
+            'const router = Router();',
             '',
         ]
 
@@ -486,11 +485,11 @@ class APIScaffolder:
                 if '$ref' in schema:
                     schema_ref = schema['$ref'].split('/')[-1]
 
-            lines.append(f'/**')
+            lines.append('/**')
             if summary:
                 lines.append(f' * {summary}')
             lines.append(f' * {method.upper()} {op["path"]}')
-            lines.append(f' */')
+            lines.append(' */')
 
             middleware = ''
             if schema_ref:
@@ -522,7 +521,7 @@ class APIScaffolder:
             lines.append('});')
             lines.append('')
 
-        lines.append(f'export default router;')
+        lines.append('export default router;')
 
         route_file = self.output_dir / f'{tag_name}.routes.ts'
         route_file.write_text('\n'.join(lines))

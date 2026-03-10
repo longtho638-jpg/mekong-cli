@@ -2,12 +2,19 @@
  * BacktestEngine — Advanced backtesting framework.
  * Walk-forward analysis, equity curve tracking, Monte Carlo simulation.
  * Builds on BacktestRunner with portfolio-level and robustness features.
+ *
+ * PREMIUM FEATURES (require PRO/ENTERPRISE license):
+ * - Walk-forward analysis
+ * - Monte Carlo simulation
+ * - Advanced metrics (Sharpe, Sortino, Calmar)
+ * - Premium historical data access
  */
 
 import { IStrategy, SignalType } from '../interfaces/IStrategy';
 import { ICandle } from '../interfaces/ICandle';
 import { BacktestConfig } from './BacktestRunner';
 import { logger } from '../utils/logger';
+import { LicenseService, LicenseTier, LicenseError } from '../lib/raas-gate';
 import {
   EquityPoint,
   DetailedTrade,
@@ -37,21 +44,34 @@ export class BacktestEngine {
   private feeRate: number;
   private riskPercentage: number;
   private slippageBps: number;
+  private licenseService: LicenseService;
 
   constructor(config?: BacktestConfig) {
     this.feeRate = config?.feeRate ?? 0.001;
     this.riskPercentage = config?.riskPercentage ?? 2;
     this.slippageBps = config?.slippageBps ?? 5;
+    this.licenseService = LicenseService.getInstance();
   }
 
   /**
    * Run a detailed backtest with equity curve and advanced metrics.
+   * FREE TIER: Basic backtest only (no advanced metrics)
+   * PRO TIER: Full metrics including Sharpe, Sortino, Calmar
    */
   async runDetailed(
     strategy: IStrategy,
     candles: ICandle[],
     initialBalance = 10000
   ): Promise<EngineResult> {
+    // Gate premium data access
+    if (candles.length > 10000 && !this.licenseService.hasTier(LicenseTier.PRO)) {
+      throw new LicenseError(
+        'Premium historical data (>10k candles) requires PRO license',
+        LicenseTier.PRO,
+        'premium_data'
+      );
+    }
+
     let balance = initialBalance;
     let peakBalance = initialBalance;
     let maxDrawdown = 0;
@@ -112,6 +132,8 @@ export class BacktestEngine {
   /**
    * Walk-forward analysis: split data into train/test windows,
    * run backtest on each, measure out-of-sample robustness.
+   *
+   * PREMIUM FEATURE: Requires PRO license.
    */
   async walkForward(
     strategyFactory: () => IStrategy,
@@ -120,6 +142,9 @@ export class BacktestEngine {
     trainRatio = 0.7,
     initialBalance = 10000
   ): Promise<WalkForwardResult> {
+    // Gate premium feature
+    this.licenseService.requireTier(LicenseTier.PRO, 'walk_forward_analysis');
+
     const totalCandles = candles.length;
     const windowSize = Math.floor(totalCandles / windows);
 
@@ -178,8 +203,13 @@ export class BacktestEngine {
   /**
    * Monte Carlo simulation: shuffle trades to test strategy robustness.
    * Answers "would this strategy still work if trades happened in a different order?"
+   *
+   * PREMIUM FEATURE: Requires PRO license.
    */
   monteCarlo(trades: DetailedTrade[], initialBalance: number, simulations = 1000): MonteCarloResult {
+    // Gate premium feature
+    this.licenseService.requireTier(LicenseTier.PRO, 'monte_carlo_simulation');
+
     if (trades.length === 0) {
       return { medianReturn: 0, p5Return: 0, p95Return: 0, medianDrawdown: 0, p95Drawdown: 0, ruinProbability: 0 };
     }

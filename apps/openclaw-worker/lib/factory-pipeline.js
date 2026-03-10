@@ -1,17 +1,29 @@
 #!/usr/bin/env node
 /**
  * 🏭 VIBE CODING FACTORY — Pipeline Engine
- * 
+ *
  * Toyota Production System × Binh Pháp × ClaudeKit
- * 
+ *
+ * AGI L4 Enhancement (2026-03-03):
+ * - Dynamic stage routing (skip if confidence >90%)
+ * - Predictive failure detection
+ * - Learning integration with learning-engine
+ * - Adaptive maxAttempts based on stage difficulty
+ *
  * 5-step pipeline: SPEC → PLAN → BUILD → VERIFY → SHIP
  * Each stage maps to a Binh Pháp chapter and ClaudeKit command.
- * 
+ *
  * Binh Pháp mapping:
  *   SPEC/PLAN → Ch.1 始計 (Strategic Assessment)
  *   BUILD     → Ch.7 軍爭 (Speed Execution)
  *   VERIFY    → Ch.6 虛實 (Testing/Strengths)
  *   SHIP      → Ch.9 行軍 (Operations)
+ *
+ * Exports: STAGES, STAGE_CONFIG, createPipeline, getActivePipeline,
+ *          getAllActivePipelines, advanceStage, recordFailure,
+ *          getCurrentCommand, isPaneLocked, assignToPane, getFactoryStatus,
+ *          pausePipeline, resumePipeline,
+ *          AGI L4: predictSuccess, getOptimalStages, recordOutcome, getAdaptiveMaxAttempts
  */
 
 const fs = require('fs');
@@ -338,6 +350,203 @@ function resumePipeline(pipelineId) {
 }
 
 // ══════════════════════════════════════════════════
+// AGI L4: Adaptive Learning Functions
+// ══════════════════════════════════════════════════
+
+const LEARNING_STORE = path.join(
+    process.env.HOME || '/tmp',
+    '.config', 'openclaw', 'factory-learning.json'
+);
+
+// Stage difficulty weights (learned from historical data)
+const STAGE_DIFFICULTY = {
+    SPEC: { base: 0.3, learned: 0.3 },     // Low difficulty
+    PLAN: { base: 0.5, learned: 0.5 },     // Medium
+    BUILD: { base: 0.8, learned: 0.8 },    // High
+    VERIFY: { base: 0.6, learned: 0.6 },   // Medium-High
+    SHIP: { base: 0.2, learned: 0.2 },     // Low
+};
+
+/**
+ * Predict success probability for a pipeline
+ * Returns: { confidence: number, risk_factors: string[] }
+ */
+function predictSuccess(pipeline) {
+    const riskFactors = [];
+    let confidence = 0.85; // Base confidence
+
+    // Factor 1: Stage history
+    if (pipeline.stageHistory && pipeline.stageHistory.length > 0) {
+        const failedStages = pipeline.stageHistory.filter(s => !s.success).length;
+        if (failedStages > 0) {
+            confidence -= failedStages * 0.1;
+            riskFactors.push(`previous_failures:${failedStages}`);
+        }
+    }
+
+    // Factor 2: Current stage difficulty
+    const currentStage = pipeline.currentStage;
+    const difficulty = STAGE_DIFFICULTY[currentStage]?.learned || 0.5;
+    if (difficulty > 0.7) {
+        confidence -= 0.1;
+        riskFactors.push(`high_difficulty_stage:${currentStage}`);
+    }
+
+    // Factor 3: Attempt count
+    if (pipeline.attempts > 0) {
+        confidence -= pipeline.attempts * 0.05;
+        riskFactors.push(`retry_count:${pipeline.attempts}`);
+    }
+
+    // Factor 4: Project complexity (if available)
+    if (pipeline.spec?.complexity === 'complex') {
+        confidence -= 0.1;
+        riskFactors.push('complex_project');
+    }
+
+    // Factor 5: Time since creation (stale pipelines less likely to succeed)
+    const ageHours = (Date.now() - new Date(pipeline.createdAt).getTime()) / (1000 * 60 * 60);
+    if (ageHours > 24) {
+        confidence -= 0.1;
+        riskFactors.push('stale_pipeline');
+    }
+
+    return {
+        confidence: Math.max(0.1, Math.min(0.99, confidence)),
+        risk_factors: riskFactors,
+        recommendation: confidence >= 0.8 ? 'proceed' : confidence >= 0.5 ? 'caution' : 'review',
+    };
+}
+
+/**
+ * Get optimal stages for a project (skip stages if confidence high)
+ * Returns: string[] of stages to execute
+ */
+function getOptimalStages(project, complexity = 'standard', specConfidence = 0) {
+    const stages = [...STAGES];
+
+    // Skip SPEC if specConfidence > 90% (user provided clear spec)
+    if (specConfidence > 0.9) {
+        const specIdx = stages.indexOf('SPEC');
+        if (specIdx >= 0) stages.splice(specIdx, 1);
+    }
+
+    // Skip PLAN for simple projects with high confidence
+    if (complexity === 'simple' && specConfidence > 0.8) {
+        const planIdx = stages.indexOf('PLAN');
+        if (planIdx >= 0) stages.splice(planIdx, 1);
+    }
+
+    // Add extra VERIFY for complex projects
+    if (complexity === 'complex') {
+        // Insert additional verification after BUILD
+        const buildIdx = stages.indexOf('BUILD');
+        if (buildIdx >= 0) {
+            // Could add a 'REVIEW' stage here in future
+        }
+    }
+
+    return stages;
+}
+
+/**
+ * Record outcome for learning
+ * Updates stage difficulty weights based on actual performance
+ */
+function recordOutcome(pipelineId, success, metrics = {}) {
+    const data = loadPipelines();
+    const pipeline = data.pipelines[pipelineId];
+    if (!pipeline) return { recorded: false, reason: 'pipeline_not_found' };
+
+    // Load learning history
+    let learningData = { history: [], stageStats: {} };
+    try {
+        if (fs.existsSync(LEARNING_STORE)) {
+            learningData = JSON.parse(fs.readFileSync(LEARNING_STORE, 'utf-8'));
+        }
+    } catch (e) { /* fresh start */ }
+
+    // Record this outcome
+    learningData.history.push({
+        timestamp: Date.now(),
+        pipelineId,
+        project: pipeline.project,
+        stage: pipeline.currentStage,
+        success,
+        attempts: pipeline.attempts,
+        duration_ms: metrics.duration_ms,
+        complexity: pipeline.spec?.complexity || 'standard',
+    });
+
+    // Trim history
+    if (learningData.history.length > 1000) {
+        learningData.history = learningData.history.slice(-1000);
+    }
+
+    // Update stage statistics
+    const stage = pipeline.currentStage;
+    if (!learningData.stageStats[stage]) {
+        learningData.stageStats[stage] = {
+            total: 0,
+            success: 0,
+            avgAttempts: 0,
+            avgDuration_ms: 0,
+        };
+    }
+
+    const stats = learningData.stageStats[stage];
+    const oldAvg = stats.avgAttempts;
+    stats.total++;
+    if (success) stats.success++;
+    stats.avgAttempts = oldAvg + (pipeline.attempts - oldAvg) / stats.total;
+    stats.avgDuration_ms = metrics.duration_ms
+        ? stats.avgDuration_ms + (metrics.duration_ms - stats.avgDuration_ms) / stats.total
+        : stats.avgDuration_ms;
+
+    // Update learned difficulty based on success rate
+    const successRate = stats.success / stats.total;
+    STAGE_DIFFICULTY[stage].learned = 1 - successRate; // Higher failure = higher difficulty
+
+    // Save learning data
+    try {
+        const dir = path.dirname(LEARNING_STORE);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        fs.writeFileSync(LEARNING_STORE, JSON.stringify(learningData, null, 2));
+    } catch (e) {
+        return { recorded: false, error: e.message };
+    }
+
+    return { recorded: true, stageStats: stats };
+}
+
+/**
+ * Get adaptive maxAttempts based on stage difficulty
+ * Higher difficulty = more retry attempts allowed
+ */
+function getAdaptiveMaxAttempts(stage) {
+    const difficulty = STAGE_DIFFICULTY[stage]?.learned || 0.5;
+
+    // Map difficulty to maxAttempts (1-5 range)
+    if (difficulty < 0.3) return 2;      // Low difficulty: 2 attempts
+    if (difficulty < 0.5) return 3;      // Medium: 3 attempts
+    if (difficulty < 0.7) return 4;      // High: 4 attempts
+    return 5;                            // Very high: 5 attempts
+}
+
+/**
+ * Get stage difficulty stats for dashboard
+ */
+function getStageDifficultyStats() {
+    return {
+        stages: STAGES.map(stage => ({
+            stage,
+            difficulty: STAGE_DIFFICULTY[stage].learned,
+            maxAttempts: getAdaptiveMaxAttempts(stage),
+        })),
+    };
+}
+
+// ══════════════════════════════════════════════════
 // EXPORTS
 // ══════════════════════════════════════════════════
 
@@ -355,4 +564,10 @@ module.exports = {
     getFactoryStatus,
     pausePipeline,
     resumePipeline,
+    // AGI L4: Adaptive Factory Pipeline
+    predictSuccess,
+    getOptimalStages,
+    recordOutcome,
+    getAdaptiveMaxAttempts,
+    getStageDifficultyStats,
 };

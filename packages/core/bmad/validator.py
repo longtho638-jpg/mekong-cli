@@ -35,7 +35,7 @@ class WorkflowValidator:
         if workflow.prerequisites:
             for prereq in workflow.prerequisites:
                 if not prereq.strip():
-                    warnings.append(f"Empty prerequisite found")
+                    warnings.append("Empty prerequisite found")
 
         # Check required parameters have descriptions
         if workflow.parameters:

@@ -142,7 +142,7 @@ async function importCookies() {
 
   try {
     const browser = await getBrowser({
-      headless: args.headless !== 'false'
+      headless: args.headless
     });
 
     const page = await getPage(browser);

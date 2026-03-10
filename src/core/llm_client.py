@@ -1,5 +1,4 @@
-"""
-Mekong CLI - LLM Client
+"""Mekong CLI - LLM Client.
 
 Thin router over pluggable LLMProvider backends.
 Priority (auto-detected from env vars when no providers passed):
@@ -13,13 +12,16 @@ Circuit breaker: after 3 consecutive failures, provider cools down for 60s.
 Portkey-inspired: status-code based failover, hooks pipeline, LRU cache.
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import os
 import re
 import time
+import hashlib
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import requests  # type: ignore[import-untyped]
 
@@ -42,7 +44,7 @@ class ProviderHealth:
 
     failures: int = 0
     last_failure: float = 0.0
-    cooldown_secs: float = 60.0
+    cooldown_secs: float = 15.0  # Giảm từ 60 → 15s (nhanh recovery hơn)
 
     @property
     def is_healthy(self) -> bool:
@@ -60,8 +62,7 @@ class ProviderHealth:
 
 
 class LLMClient:
-    """
-    LLMClient — thin router over List[LLMProvider] with circuit-breaker failover.
+    """LLMClient — thin router over List[LLMProvider] with circuit-breaker failover.
 
     Usage:
         # Auto-detect from env vars (backward-compatible)
@@ -77,17 +78,16 @@ class LLMClient:
 
     def __init__(
         self,
-        proxy_url: Optional[str] = None,
-        api_key: Optional[str] = None,
-        gemini_key: Optional[str] = None,
+        proxy_url: str | None = None,
+        api_key: str | None = None,
+        gemini_key: str | None = None,
         model: str = "gemini-2.5-pro",
         timeout: int = 60,
         enable_cache: bool = True,
         enable_hooks: bool = True,
-        providers: Optional[List[LLMProvider]] = None,
+        providers: list[LLMProvider] | None = None,
     ) -> None:
-        """
-        Initialize LLMClient.
+        """Initialize LLMClient.
 
         Args:
             proxy_url: Proxy base URL. Falls back to ANTIGRAVITY_PROXY_URL / LLM_BASE_URL env var.
@@ -98,6 +98,7 @@ class LLMClient:
             enable_cache: Enable LRU response caching.
             enable_hooks: Enable hooks middleware pipeline.
             providers: Explicit provider list. If None, auto-detects from env vars.
+
         """
         self.model = model
         self.timeout = timeout
@@ -108,17 +109,20 @@ class LLMClient:
         self.gemini_key = gemini_key or os.getenv("GEMINI_API_KEY", "")
 
         # Portkey-inspired: hooks pipeline + LRU cache
-        self.hooks: Optional[HookPipeline] = create_default_pipeline() if enable_hooks else None
-        self.cache: Optional[LLMCache] = LLMCache() if enable_cache else None
+        self.hooks: HookPipeline | None = create_default_pipeline() if enable_hooks else None
+        self.cache: LLMCache | None = LLMCache() if enable_cache else None
+
+        # Request deduplication — in-flight requests
+        self._pending_requests: dict[str, LLMResponse | None] = {}  # Keyed by hash
 
         # Build provider list
         if providers is not None:
-            self.providers: List[LLMProvider] = providers
+            self.providers: list[LLMProvider] = providers
         else:
             self.providers = self._build_providers_from_env()
 
         # Circuit breaker health keyed by provider.name
-        self._provider_health: Dict[str, ProviderHealth] = {
+        self._provider_health: dict[str, ProviderHealth] = {
             p.name: ProviderHealth() for p in self.providers
         }
 
@@ -158,9 +162,9 @@ class LLMClient:
     # Provider builders
     # ------------------------------------------------------------------
 
-    def _build_providers_from_env(self) -> List[LLMProvider]:
+    def _build_providers_from_env(self) -> list[LLMProvider]:
         """Auto-detect providers from environment variables (priority order)."""
-        built: List[LLMProvider] = []
+        built: list[LLMProvider] = []
 
         gemini_key = self.gemini_key
         if gemini_key:
@@ -175,7 +179,7 @@ class LLMClient:
                     model=self.model,
                     provider_name="proxy",
                     timeout=self.timeout,
-                )
+                ),
             )
 
         openai_key = self.api_key
@@ -187,29 +191,29 @@ class LLMClient:
                     model=self.model,
                     provider_name="openai",
                     timeout=self.timeout,
-                )
+                ),
             )
 
         built.append(OfflineProvider())
         return built
 
     @staticmethod
-    def _build_providers_from_config(config_path: str) -> List[LLMProvider]:
+    def _build_providers_from_config(config_path: str) -> list[LLMProvider]:
         """Load providers from YAML config file."""
         try:
             import yaml  # type: ignore
         except ImportError:
-            logger.error("[LLMClient] PyYAML not installed — cannot load config")
+            logger.exception("[LLMClient] PyYAML not installed — cannot load config")
             return [OfflineProvider()]
 
         try:
-            with open(config_path, "r") as f:
+            with open(config_path) as f:
                 config = yaml.safe_load(f)
         except OSError as e:
-            logger.error("[LLMClient] Cannot read config %s: %s", config_path, e)
+            logger.exception("[LLMClient] Cannot read config %s: %s", config_path, e)
             return [OfflineProvider()]
 
-        built: List[LLMProvider] = []
+        built: list[LLMProvider] = []
         for entry in config.get("providers", []):
             ptype = entry.get("type", "")
             if ptype == "gemini":
@@ -233,7 +237,7 @@ class LLMClient:
                             model=model,
                             provider_name=pname,
                             timeout=timeout,
-                        )
+                        ),
                     )
             else:
                 logger.warning("[LLMClient] Unknown provider type in config: %s", ptype)
@@ -255,14 +259,13 @@ class LLMClient:
 
     def chat(
         self,
-        messages: List[Dict[str, str]],
-        model: Optional[str] = None,
+        messages: list[dict[str, str]],
+        model: str | None = None,
         temperature: float = 0.7,
         max_tokens: int = 2048,
         json_mode: bool = False,
     ) -> LLMResponse:
-        """
-        Send chat completion with runtime provider failover.
+        """Send chat completion with runtime provider failover.
         Portkey-inspired: hooks → cache → status-code failover.
         """
         use_model = model or self.model
@@ -360,7 +363,7 @@ class LLMClient:
         response = self.chat(messages, **kwargs)
         return response.content
 
-    def generate_json(self, prompt: str, **kwargs: Any) -> Dict[str, Any]:
+    def generate_json(self, prompt: str, **kwargs: Any) -> dict[str, Any]:
         """Generate and parse JSON response."""
         messages = [
             {"role": "system", "content": "You are a helpful assistant. Always respond with valid JSON."},
@@ -372,7 +375,7 @@ class LLMClient:
             return dict(json.loads(response.content))
         except json.JSONDecodeError:
             json_match = re.search(
-                r"```(?:json)?\s*\n(.*?)\n```", response.content, re.DOTALL
+                r"```(?:json)?\s*\n(.*?)\n```", response.content, re.DOTALL,
             )
             if json_match:
                 try:
@@ -385,7 +388,7 @@ class LLMClient:
     # Internal helpers
     # ------------------------------------------------------------------
 
-    def _get_healthy_providers(self) -> List[LLMProvider]:
+    def _get_healthy_providers(self) -> list[LLMProvider]:
         """Return providers in order, skipping circuit-broken ones."""
         available = [p for p in self.providers if p.is_available()]
         if not available:
@@ -398,8 +401,17 @@ class LLMClient:
         ]
         return healthy if healthy else available  # All unhealthy — try all
 
+    def _request_hash(self, messages: list[dict[str, str]], model: str, temperature: float) -> str:
+        """Generate hash for request deduplication."""
+        content = json.dumps({
+            "messages": messages,
+            "model": model,
+            "temperature": temperature,
+        }, sort_keys=True)
+        return hashlib.sha256(content.encode()).hexdigest()[:16]
+
     def _offline_response(
-        self, messages: List[Dict[str, str]], error: str = ""
+        self, messages: list[dict[str, str]], error: str = "",
     ) -> LLMResponse:
         """Generate offline placeholder response."""
         user_msg = "unknown"
@@ -419,7 +431,7 @@ class LLMClient:
 # Module-level convenience
 # ---------------------------------------------------------------------------
 
-_default_client: Optional[LLMClient] = None
+_default_client: LLMClient | None = None
 
 
 def get_client() -> LLMClient:

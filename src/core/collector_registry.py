@@ -1,16 +1,17 @@
-"""
-Mekong CLI - Collector Registry
+"""Mekong CLI - Collector Registry.
 
 Auto-discovers and registers agent collectors, inspired by Netdata's
 go.d.plugin modular collector pattern. Each collector implements
 Init/Check/Collect/Close interface mapped to Plan-Execute-Verify.
 """
 
+from __future__ import annotations
+
 import importlib
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Protocol, runtime_checkable
+from typing import Any, Protocol, runtime_checkable
 
 logger = logging.getLogger(__name__)
 
@@ -25,11 +26,11 @@ class CollectorSpec(Protocol):
         ...
 
     @property
-    def supported_tasks(self) -> List[str]:
+    def supported_tasks(self) -> list[str]:
         """List of task types this collector handles."""
         ...
 
-    def init(self, config: Dict[str, Any]) -> bool:
+    def init(self, config: dict[str, Any]) -> bool:
         """Initialize collector (PLAN phase). Returns True if ready."""
         ...
 
@@ -37,7 +38,7 @@ class CollectorSpec(Protocol):
         """Verify connectivity/availability (health check)."""
         ...
 
-    def collect(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def collect(self, task: dict[str, Any]) -> dict[str, Any]:
         """Execute collection task (EXECUTE phase). Returns results."""
         ...
 
@@ -48,23 +49,22 @@ class CollectorInfo:
 
     name: str
     module_path: str
-    supported_tasks: List[str] = field(default_factory=list)
+    supported_tasks: list[str] = field(default_factory=list)
     healthy: bool = False
-    load_error: Optional[str] = None
+    load_error: str | None = None
 
 
 @dataclass
 class DiscoveryResult:
     """Result of auto-discovery scan."""
 
-    found: List[CollectorInfo] = field(default_factory=list)
-    failed: List[CollectorInfo] = field(default_factory=list)
+    found: list[CollectorInfo] = field(default_factory=list)
+    failed: list[CollectorInfo] = field(default_factory=list)
     total_scanned: int = 0
 
 
 class CollectorRegistry:
-    """
-    Central registry for agent collectors with auto-discovery.
+    """Central registry for agent collectors with auto-discovery.
 
     Inspired by Netdata's plugin orchestrator: scans agent modules,
     validates interface compliance, and routes tasks to matching collectors.
@@ -72,8 +72,8 @@ class CollectorRegistry:
 
     def __init__(self) -> None:
         """Initialize empty registry."""
-        self._collectors: Dict[str, CollectorSpec] = {}
-        self._info: Dict[str, CollectorInfo] = {}
+        self._collectors: dict[str, CollectorSpec] = {}
+        self._info: dict[str, CollectorInfo] = {}
 
     def register(self, collector: CollectorSpec) -> None:
         """Register a collector instance."""
@@ -92,37 +92,38 @@ class CollectorRegistry:
         self._info.pop(name, None)
         return removed
 
-    def get(self, name: str) -> Optional[CollectorSpec]:
+    def get(self, name: str) -> CollectorSpec | None:
         """Get a registered collector by name."""
         return self._collectors.get(name)
 
-    def find_for_task(self, task_type: str) -> List[CollectorSpec]:
+    def find_for_task(self, task_type: str) -> list[CollectorSpec]:
         """Find all collectors that support a given task type."""
         return [
             c for c in self._collectors.values()
             if task_type in c.supported_tasks
         ]
 
-    def health_check(self) -> Dict[str, bool]:
+    def health_check(self) -> dict[str, bool]:
         """Run health checks on all registered collectors."""
-        results: Dict[str, bool] = {}
+        results: dict[str, bool] = {}
         for name, collector in self._collectors.items():
             try:
                 healthy = collector.check()
-            except Exception:
+            except Exception as e:
+                import logging
+                logging.debug(f"Health check failed for {name}: {e}")
                 healthy = False
             results[name] = healthy
             if name in self._info:
                 self._info[name].healthy = healthy
         return results
 
-    def list_collectors(self) -> List[CollectorInfo]:
+    def list_collectors(self) -> list[CollectorInfo]:
         """List all registered collectors with metadata."""
         return list(self._info.values())
 
-    def discover_agents(self, agents_dir: Optional[str] = None) -> DiscoveryResult:
-        """
-        Auto-discover agent modules from src/agents/ directory.
+    def discover_agents(self, agents_dir: str | None = None) -> DiscoveryResult:
+        """Auto-discover agent modules from src/agents/ directory.
 
         Scans Python files, imports them, and checks for CollectorSpec compliance.
 
@@ -131,6 +132,7 @@ class CollectorRegistry:
 
         Returns:
             DiscoveryResult with found and failed collectors.
+
         """
         result = DiscoveryResult()
         scan_dir = Path(agents_dir) if agents_dir else Path("src/agents")
@@ -182,7 +184,7 @@ def _has_collector_interface(cls: type) -> bool:
 
 
 # Singleton accessor
-_default_registry: Optional[CollectorRegistry] = None
+_default_registry: CollectorRegistry | None = None
 
 
 def get_collector_registry() -> CollectorRegistry:

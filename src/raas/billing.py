@@ -10,6 +10,7 @@ import hmac
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Request
 
@@ -43,7 +44,7 @@ class PolarWebhookHandler:
 
     def __init__(
         self,
-        credit_store: CreditStore | None = None,
+        credit_store: Optional[CreditStore] = None,
         db_path: Path = DB_PATH,
     ) -> None:
         """Initialize with an optional CreditStore and DB path."""
@@ -214,7 +215,7 @@ class PolarWebhookHandler:
 # Module-level handler instance (lazy singleton via dependency injection)
 # ---------------------------------------------------------------------------
 
-_handler: PolarWebhookHandler | None = None
+_handler: Optional[PolarWebhookHandler] = None
 
 
 def _get_handler() -> PolarWebhookHandler:

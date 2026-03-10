@@ -14,7 +14,7 @@ jest.mock('./SignalMesh', () => {
 
 describe('CollectorRegistry', () => {
     let registry: CollectorRegistry;
-    let mockSignalMesh: any;
+    let mockSignalMesh: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- jest mock
 
     beforeEach(() => {
         mockSignalMesh = new SignalMesh();

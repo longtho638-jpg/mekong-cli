@@ -1,0 +1,119 @@
+name: Nightly Billing Reconciliation
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+    inputs:
+      dry_run:
+        description: 'Run without saving results'
+        required: false
+        default: 'false'
+      audit_date:
+        description: 'Audit date (YYYY-MM-DD)'
+        required: false
+        type: string
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  reconcile:
+    name: Billing Reconciliation
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+          pip install stripe requests rich
+
+      - name: Validate environment
+        run: |
+          if [ -z "$DATABASE_URL" ]; then
+            echo "❌ DATABASE_URL is not set"
+            exit 1
+          fi
+          if [ -z "$STRIPE_SECRET_KEY" ]; then
+            echo "❌ STRIPE_SECRET_KEY is not set"
+            exit 1
+          fi
+          echo "✅ Environment validated"
+
+      - name: Run reconciliation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OPS_CHANNEL_ID: ${{ secrets.TELEGRAM_OPS_CHANNEL_ID }}
+          RECONCILIATION_WEBHOOK_URL: ${{ secrets.RECONCILIATION_WEBHOOK_URL }}
+        run: |
+          python3 -m src.jobs.nightly_reconciliation \
+            --verbose \
+            ${{ github.event.inputs.dry_run == 'true' && '--dry-run' || '' }} \
+            ${{ github.event.inputs.audit_date && format('--date {0}', github.event.inputs.audit_date) || '' }}
+
+      - name: Upload reconciliation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reconciliation-report-${{ github.run_id }}
+          path: |
+            plans/reports/reconciliation-*.md
+          retention-days: 30
+
+      - name: Notify on success
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OPS_CHANNEL_ID: ${{ secrets.TELEGRAM_OPS_CHANNEL_ID }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_OPS_CHANNEL_ID}" \
+            -d "text=✅ Nightly Reconciliation completed successfully" \
+            -d "parse_mode=Markdown" \
+            || true
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OPS_CHANNEL_ID: ${{ secrets.TELEGRAM_OPS_CHANNEL_ID }}
+          WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_OPS_CHANNEL_ID}" \
+            -d "text=🚨 Nightly Reconciliation FAILED
+
+          Run: ${WORKFLOW_URL}
+          Time: $(date -u '+%Y-%m-%d %H:%M UTC')" \
+            -d "parse_mode=Markdown" \
+            || true
+
+      - name: Notify on critical discrepancies
+        if: failure() && github.event_name == 'schedule'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_OPS_CHANNEL_ID: ${{ secrets.TELEGRAM_OPS_CHANNEL_ID }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_OPS_CHANNEL_ID}" \
+            -d "text=⚠ Critical discrepancies detected in nightly reconciliation
+
+          Exit code: 1
+          Action required: Review and resolve discrepancies" \
+            -d "parse_mode=Markdown" \
+            || true

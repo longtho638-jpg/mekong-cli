@@ -1,3 +1,0 @@
-"""
-Mekong CLI Package
-"""

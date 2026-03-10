@@ -1,17 +1,19 @@
-"""
-Mekong CLI - DAG Scheduler
+"""Mekong CLI - DAG Scheduler.
 
 Topological execution of recipe steps with dependency tracking.
 Steps without mutual dependencies run concurrently via ThreadPoolExecutor.
 Falls back to sequential when no dependencies defined.
 """
 
+from __future__ import annotations
+
 import logging
 import threading
 from collections import defaultdict
-from concurrent.futures import ThreadPoolExecutor, as_completed, Future
+from collections.abc import Callable
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +25,11 @@ class DAGStepResult:
     order: int
     success: bool
     result: Any = None
-    error: Optional[str] = None
+    error: str | None = None
 
 
 class DAGScheduler:
-    """
-    DAG-based scheduler for recipe steps.
+    """DAG-based scheduler for recipe steps.
 
     Identifies steps whose dependencies are satisfied and executes them
     concurrently using ThreadPoolExecutor (stdlib, no asyncio).
@@ -36,14 +37,15 @@ class DAGScheduler:
     Args:
         steps: List of recipe steps with .order and .dependencies
         max_workers: Thread pool size (default: 4)
+
     """
 
     def __init__(self, steps: list, max_workers: int = 4) -> None:
         self._steps = {s.order: s for s in steps}
         self._max_workers = max_workers
-        self._completed: Set[int] = set()
-        self._failed: Set[int] = set()
-        self._cancelled: Set[int] = set()
+        self._completed: set[int] = set()
+        self._failed: set[int] = set()
+        self._cancelled: set[int] = set()
         self._lock = threading.Lock()
 
     def get_ready_steps(self) -> list:
@@ -53,7 +55,7 @@ class DAGScheduler:
             for order, step in self._steps.items():
                 if order in self._completed or order in self._failed or order in self._cancelled:
                     continue
-                deps = getattr(step, 'dependencies', []) or []
+                deps = getattr(step, "dependencies", []) or []
                 if all(d in self._completed for d in deps):
                     ready.append(step)
         return ready
@@ -77,7 +79,7 @@ class DAGScheduler:
             for order, step in self._steps.items():
                 if order in self._cancelled:
                     continue
-                deps = getattr(step, 'dependencies', []) or []
+                deps = getattr(step, "dependencies", []) or []
                 if current in deps:
                     self._cancelled.add(order)
                     queue.append(order)
@@ -88,14 +90,14 @@ class DAGScheduler:
         return all_orders == (self._completed | self._failed | self._cancelled)
 
     @property
-    def cancelled_steps(self) -> Set[int]:
+    def cancelled_steps(self) -> set[int]:
         """Steps cancelled due to upstream failure."""
         return self._cancelled.copy()
 
     def has_dependencies(self) -> bool:
         """Check if any step has non-empty dependencies."""
         for step in self._steps.values():
-            deps = getattr(step, 'dependencies', []) or []
+            deps = getattr(step, "dependencies", []) or []
             if deps:
                 return True
         return False
@@ -103,10 +105,9 @@ class DAGScheduler:
     def execute_all(
         self,
         executor_fn: Callable,
-        on_complete: Optional[Callable] = None,
-    ) -> Dict[int, DAGStepResult]:
-        """
-        Execute all steps respecting DAG dependencies.
+        on_complete: Callable | None = None,
+    ) -> dict[int, DAGStepResult]:
+        """Execute all steps respecting DAG dependencies.
 
         Args:
             executor_fn: Callable(step) → result with .verification.passed
@@ -114,12 +115,13 @@ class DAGScheduler:
 
         Returns:
             Dict mapping step order → DAGStepResult
+
         """
-        results: Dict[int, DAGStepResult] = {}
-        in_flight: Set[int] = set()
+        results: dict[int, DAGStepResult] = {}
+        in_flight: set[int] = set()
 
         with ThreadPoolExecutor(max_workers=self._max_workers) as pool:
-            futures: Dict[Future, Any] = {}
+            futures: dict[Future, Any] = {}
 
             while not self.is_done():
                 ready = self.get_ready_steps()
@@ -139,8 +141,8 @@ class DAGScheduler:
                     try:
                         result = future.result()
                         passed = getattr(
-                            getattr(result, 'verification', None),
-                            'passed', False,
+                            getattr(result, "verification", None),
+                            "passed", False,
                         )
                         dag_result = DAGStepResult(
                             order=step.order,
@@ -148,7 +150,7 @@ class DAGScheduler:
                             result=result,
                         )
                     except Exception as e:
-                        logger.error("Step %d failed: %s", step.order, e)
+                        logger.exception("Step %d failed: %s", step.order, e)
                         dag_result = DAGStepResult(
                             order=step.order, success=False, error=str(e),
                         )
@@ -172,26 +174,26 @@ class DAGScheduler:
         return results
 
 
-def validate_dag(steps: list) -> Optional[str]:
-    """
-    Validate DAG has no circular dependencies.
+def validate_dag(steps: list) -> str | None:
+    """Validate DAG has no circular dependencies.
 
     Returns:
         Error message if circular, None if valid.
+
     """
-    adj: Dict[int, List[int]] = defaultdict(list)
+    adj: dict[int, list[int]] = defaultdict(list)
     orders = set()
 
     for step in steps:
         orders.add(step.order)
-        deps = getattr(step, 'dependencies', []) or []
+        deps = getattr(step, "dependencies", []) or []
         for dep in deps:
             adj[dep].append(step.order)
 
     # Kahn's algorithm for cycle detection
-    in_degree: Dict[int, int] = {o: 0 for o in orders}
+    in_degree: dict[int, int] = dict.fromkeys(orders, 0)
     for step in steps:
-        deps = getattr(step, 'dependencies', []) or []
+        deps = getattr(step, "dependencies", []) or []
         for dep in deps:
             if step.order in in_degree:
                 in_degree[step.order] += 1

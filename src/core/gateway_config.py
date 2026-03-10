@@ -1,35 +1,46 @@
-"""
-Mekong CLI - Gateway Configuration
+"""Mekong CLI - Gateway Configuration.
 
 Reads .mekong/gateway.yaml for persistent gateway configuration.
 Falls back to hardcoded defaults when no config file exists.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional
-
 
 # Default preset actions — the "Washing Machine" buttons
-DEFAULT_PRESETS: List[Dict[str, str]] = [
+DEFAULT_PRESETS: list[dict[str, str]] = [
     {"id": "deploy", "icon": "\U0001f680", "label": "Quick Deploy",
      "goal": "deploy all applications to production",
-     "label_vi": "Tri\u1ec3n Khai Nhanh"},
+     "label_vi": "Tri\u1ec3n Khai Nhanh",
+     "description": "Deploy all apps to production",
+     "color": "green"},
     {"id": "leads", "icon": "\U0001f50d", "label": "Audit Leads",
      "goal": "scan and audit all lead generation sources",
-     "label_vi": "Ki\u1ec3m Tra Leads"},
+     "label_vi": "Ki\u1ec3m Tra Leads",
+     "description": "Audit lead generation sources",
+     "color": "blue"},
     {"id": "content", "icon": "\U0001f4dd", "label": "Plan Content",
      "goal": "create a content plan for this week",
-     "label_vi": "L\u00ean K\u1ebf Ho\u1ea1ch N\u1ed9i Dung"},
+     "label_vi": "L\u00ean K\u1ebf Ho\u1ea1ch N\u1ed9i Dung",
+     "description": "Create weekly content plan",
+     "color": "orange"},
     {"id": "ask", "icon": "\U0001f4a1", "label": "Ask AI",
      "goal": "answer my question using AI analysis",
-     "label_vi": "H\u1ecfi AI"},
+     "label_vi": "H\u1ecfi AI",
+     "description": "Ask AI for analysis",
+     "color": "purple"},
     {"id": "review", "icon": "\U0001f9d0", "label": "Code Review",
      "goal": "review recent code changes for quality and security",
-     "label_vi": "Ki\u1ec3m Tra Code"},
+     "label_vi": "Ki\u1ec3m Tra Code",
+     "description": "Review code for quality and security",
+     "color": "yellow"},
     {"id": "status", "icon": "\U0001f4ca", "label": "System Status",
      "goal": "check system health and report status of all services",
-     "label_vi": "Tr\u1ea1ng Th\u00e1i H\u1ec7 Th\u1ed1ng"},
+     "label_vi": "Tr\u1ea1ng Th\u00e1i H\u1ec7 Th\u1ed1ng",
+     "description": "Check system health status",
+     "color": "red"},
 ]
 
 
@@ -37,16 +48,16 @@ DEFAULT_PRESETS: List[Dict[str, str]] = [
 class GatewayConfig:
     """Persistent gateway configuration."""
 
-    presets: List[Dict[str, str]] = field(
-        default_factory=lambda: list(DEFAULT_PRESETS)
+    presets: list[dict[str, str]] = field(
+        default_factory=lambda: list(DEFAULT_PRESETS),
     )
     host: str = "127.0.0.1"
     port: int = 8000
-    project_paths: List[str] = field(default_factory=lambda: ["apps"])
+    project_paths: list[str] = field(default_factory=lambda: ["apps"])
     tunnel_name: str = ""
 
 
-def load_config(config_path: Optional[str] = None) -> GatewayConfig:
+def load_config(config_path: str | None = None) -> GatewayConfig:
     """Load gateway config from YAML file, falling back to defaults.
 
     Tries to import PyYAML; if unavailable, returns defaults.
@@ -84,4 +95,4 @@ def load_config(config_path: Optional[str] = None) -> GatewayConfig:
     return cfg
 
 
-__all__ = ["GatewayConfig", "load_config", "DEFAULT_PRESETS"]
+__all__ = ["DEFAULT_PRESETS", "GatewayConfig", "load_config"]

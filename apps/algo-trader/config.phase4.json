@@ -1,0 +1,19 @@
+{
+  "polymarketSentinel": {
+    "enabled": false,
+    "newsSource": "mock",
+    "pollIntervalMs": 5000,
+    "signalThreshold": 0.7
+  },
+  "sybilMirage": {
+    "enabled": false,
+    "numWallets": 1000,
+    "txIntervalMs": 100,
+    "dumpThreshold": 0.8
+  },
+  "shadowLayering": {
+    "enabled": false,
+    "simulatedLatencyMs": 10,
+    "icebergSizes": [10, 50, 100]
+  }
+}

@@ -1,22 +1,25 @@
-"""
-Mekong CLI - Agent Process Lifecycle Manager
+"""Mekong CLI - Agent Process Lifecycle Manager.
 
 Electron's main process lifecycle mapped to CLI agent process management.
 Tracks spawn/kill/crash/restart with EventBus integration.
 Enforces M1 16GB concurrency cap (default: 5 simultaneous agents).
 """
 
+from __future__ import annotations
+
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 from .event_bus import EventBus, EventType, get_event_bus
 
 
 class ProcessState(str, Enum):
     """Agent lifecycle states: IDLE → SPAWNING → RUNNING → STOPPING → IDLE|CRASHED."""
+
     IDLE = "idle"
     SPAWNING = "spawning"
     RUNNING = "running"
@@ -27,12 +30,13 @@ class ProcessState(str, Enum):
 @dataclass
 class AgentProcess:
     """Metadata record for a managed agent process (agent_id, type, state, pid, metadata)."""
+
     agent_id: str
     agent_type: str
     state: ProcessState
-    pid: Optional[int] = None
+    pid: int | None = None
     started_at: float = field(default_factory=time.time)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 CrashCallback = Callable[[str], None]  # (agent_id) -> None
@@ -49,30 +53,34 @@ class ProcessManager:
         self,
         max_concurrent: int = 5,
         shutdown_timeout: float = 5.0,
-        event_bus: Optional[EventBus] = None,
+        event_bus: EventBus | None = None,
     ) -> None:
         """Args:
-            max_concurrent: Max simultaneous RUNNING agents (default 5 for M1 16GB).
-            shutdown_timeout: Seconds to wait for graceful shutdown.
-            event_bus: Falls back to shared singleton if None.
+        max_concurrent: Max simultaneous RUNNING agents (default 5 for M1 16GB).
+        shutdown_timeout: Seconds to wait for graceful shutdown.
+        event_bus: Falls back to shared singleton if None.
         """
-        self._processes: Dict[str, AgentProcess] = {}
-        self._crash_callbacks: Dict[str, List[CrashCallback]] = {}
-        self._spawn_configs: Dict[str, Dict[str, Any]] = {}
+        self._processes: dict[str, AgentProcess] = {}
+        self._crash_callbacks: dict[str, list[CrashCallback]] = {}
+        self._spawn_configs: dict[str, dict[str, Any]] = {}
         self.max_concurrent = max_concurrent
         self.shutdown_timeout = shutdown_timeout
         self._bus: EventBus = event_bus or get_event_bus()
 
-    def spawn(self, agent_type: str, config: Optional[Dict[str, Any]] = None) -> AgentProcess:
+    def spawn(self, agent_type: str, config: dict[str, Any] | None = None) -> AgentProcess:
         """Register and start a new agent. Returns AgentProcess in RUNNING state.
 
         Raises:
             RuntimeError: Concurrency cap already reached.
+
         """
         if self.running_count >= self.max_concurrent:
-            raise RuntimeError(
+            msg = (
                 f"Max concurrent agents reached ({self.max_concurrent}). "
                 "Kill an agent before spawning another."
+            )
+            raise RuntimeError(
+                msg,
             )
         agent_id = uuid.uuid4().hex[:12]
         cfg = config or {}
@@ -105,11 +113,11 @@ class ProcessManager:
         self._crash_callbacks.pop(agent_id, None)
         return True
 
-    def get_process(self, agent_id: str) -> Optional[AgentProcess]:
+    def get_process(self, agent_id: str) -> AgentProcess | None:
         """Return AgentProcess by ID, or None if not found."""
         return self._processes.get(agent_id)
 
-    def list_processes(self) -> List[AgentProcess]:
+    def list_processes(self) -> list[AgentProcess]:
         """Return all tracked agent processes (any state)."""
         return list(self._processes.values())
 
@@ -137,10 +145,12 @@ class ProcessManager:
 
         Raises:
             KeyError: agent_id was never registered.
+
         """
         process = self._processes.get(agent_id)
         if process is None:
-            raise KeyError(f"Unknown agent_id: {agent_id!r}")
+            msg = f"Unknown agent_id: {agent_id!r}"
+            raise KeyError(msg)
         agent_type = process.agent_type
         config = self._spawn_configs.get(agent_id, {})
         self.kill(agent_id)
@@ -157,7 +167,7 @@ class ProcessManager:
         return self.running_count < self.max_concurrent
 
 
-_default_manager: Optional[ProcessManager] = None
+_default_manager: ProcessManager | None = None
 
 
 def get_process_manager() -> ProcessManager:
@@ -169,9 +179,9 @@ def get_process_manager() -> ProcessManager:
 
 
 __all__ = [
-    "ProcessState",
     "AgentProcess",
-    "ProcessManager",
     "CrashCallback",
+    "ProcessManager",
+    "ProcessState",
     "get_process_manager",
 ]

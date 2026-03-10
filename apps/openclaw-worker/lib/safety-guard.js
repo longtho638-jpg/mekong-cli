@@ -4,7 +4,7 @@
  * TASK 6/22: CTO Brain Upgrade
  * 
  * Returns: SAFE | UNSAFE | NEEDS_CONFIRMATION
- * Uses Gemini Flash via Proxy for fast classification (<2s)
+ * Uses fast classification model (<2s)
  * Loads Safety Constitution from config/safety-constitution.txt
  */
 
@@ -126,11 +126,11 @@ async function checkSafety(content) {
     // Phase 2: Short/simple tasks — skip AI
     if (content.length < 300) return { status: 'SAFE', reason: 'short_task' };
 
-    // Phase 3: LLM classification via Proxy (Gemini Flash for speed)
+    // Phase 3: LLM classification via direct API
     try {
         const constitution = loadConstitution();
-        const PROXY_URL = `${config.CLOUD_BRAIN_URL}/v1/chat/completions`;
-        const model = config.FALLBACK_MODEL_NAME || 'gemini-3-flash';
+        const API_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
+        const model = 'qwen-plus';
 
         const payload = {
             model,
@@ -145,9 +145,12 @@ async function checkSafety(content) {
             temperature: 0,
         };
 
-        const response = await fetch(PROXY_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.DASHSCOPE_API_KEY || 'sk-sp-afce4429a10e41bb901d6012d7f525c8'}`
+            },
             body: JSON.stringify(payload),
             signal: AbortSignal.timeout(5000),
         });

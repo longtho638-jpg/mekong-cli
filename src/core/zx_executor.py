@@ -1,5 +1,4 @@
-"""
-Mekong CLI - ZX-Inspired Shell Executor
+"""Mekong CLI - ZX-Inspired Shell Executor.
 
 Enhanced shell execution inspired by google/zx patterns:
 - cd()/within() context-managed working directory
@@ -11,14 +10,17 @@ Enhanced shell execution inspired by google/zx patterns:
 Binh Phap Ch.4 軍形: Defense through safe, structured shell execution.
 """
 
+from __future__ import annotations
+
 import os
-import subprocess
 import shlex
+import subprocess
 import time
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Generator, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -46,7 +48,7 @@ class ProcessOutput:
         return self.exit_code != 0
 
     @property
-    def lines(self) -> List[str]:
+    def lines(self) -> list[str]:
         """Split stdout into lines, stripping trailing empty line."""
         text = self.stdout.rstrip("\n")
         return text.split("\n") if text else []
@@ -71,6 +73,7 @@ def quote(arg: str) -> str:
 
     Returns:
         Shell-safe quoted string.
+
     """
     return shlex.quote(arg)
 
@@ -90,10 +93,12 @@ def cd(directory: str) -> Generator[str, None, None]:
 
     Raises:
         FileNotFoundError: If directory does not exist.
+
     """
     target = Path(directory).resolve()
     if not target.is_dir():
-        raise FileNotFoundError(f"Directory not found: {directory}")
+        msg = f"Directory not found: {directory}"
+        raise FileNotFoundError(msg)
 
     previous = os.getcwd()
     try:
@@ -112,6 +117,7 @@ def within() -> Generator[None, None, None]:
 
     Yields:
         None — directory is automatically restored on exit.
+
     """
     saved = os.getcwd()
     try:
@@ -122,9 +128,9 @@ def within() -> Generator[None, None, None]:
 
 def shell(
     command: str,
-    cwd: Optional[str] = None,
+    cwd: str | None = None,
     timeout: int = 120,
-    env: Optional[dict] = None,
+    env: dict | None = None,
     quiet: bool = False,
     nothrow: bool = False,
 ) -> ProcessOutput:
@@ -147,6 +153,7 @@ def shell(
     Raises:
         subprocess.TimeoutExpired: If command exceeds timeout.
         RuntimeError: If command fails and nothrow=False.
+
     """
     merged_env = None
     if env:
@@ -176,8 +183,9 @@ def shell(
 
         if output.failed and not nothrow:
             err_detail = "" if quiet else f": {output.stderr.strip()[:200]}"
+            msg = f"Command failed (exit {output.exit_code}){err_detail}"
             raise RuntimeError(
-                f"Command failed (exit {output.exit_code}){err_detail}"
+                msg,
             )
 
         return output
@@ -199,7 +207,7 @@ def retry(
     count: int = 3,
     delay: float = 1.0,
     backoff: float = 2.0,
-    on_retry: Optional[Callable[[int, Exception], None]] = None,
+    on_retry: Callable[[int, Exception], None] | None = None,
 ) -> Callable:
     """Decorator for retrying functions with exponential backoff.
 
@@ -214,10 +222,11 @@ def retry(
 
     Returns:
         Decorator function that wraps the target callable.
+
     """
     def decorator(func: Callable) -> Callable:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
-            last_error: Optional[Exception] = None
+            last_error: Exception | None = None
             current_delay = delay
 
             for attempt in range(1, count + 1):
@@ -259,6 +268,7 @@ def retry_shell(
 
     Raises:
         RuntimeError: If all attempts fail (and nothrow=False).
+
     """
     current_delay = delay
 
@@ -274,7 +284,7 @@ def retry_shell(
     return shell(command, nothrow=True, **shell_kwargs)
 
 
-def pipe(*commands: str, cwd: Optional[str] = None, timeout: int = 120) -> ProcessOutput:
+def pipe(*commands: str, cwd: str | None = None, timeout: int = 120) -> ProcessOutput:
     """Execute multiple commands piped together.
 
     Chains commands using shell pipe (|) operator for
@@ -287,6 +297,7 @@ def pipe(*commands: str, cwd: Optional[str] = None, timeout: int = 120) -> Proce
 
     Returns:
         ProcessOutput from the final command in the pipeline.
+
     """
     pipeline = " | ".join(commands)
     return shell(pipeline, cwd=cwd, timeout=timeout, nothrow=True)
@@ -295,10 +306,10 @@ def pipe(*commands: str, cwd: Optional[str] = None, timeout: int = 120) -> Proce
 __all__ = [
     "ProcessOutput",
     "cd",
-    "within",
-    "shell",
+    "pipe",
     "quote",
     "retry",
     "retry_shell",
-    "pipe",
+    "shell",
+    "within",
 ]

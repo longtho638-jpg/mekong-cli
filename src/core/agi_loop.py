@@ -1,5 +1,4 @@
-"""
-Mekong CLI - AGI Infinite Loop (Tôm Hùm Self-Improvement Engine)
+"""Mekong CLI - AGI Infinite Loop (Tôm Hùm Self-Improvement Engine).
 
 Runs CC CLI in an infinite loop. Each cycle:
   1. ASSESS: Query NeuralMemory + Gemini for gaps/improvements
@@ -15,6 +14,8 @@ Usage:
   or via Telegram: /agi start
 """
 
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -22,7 +23,7 @@ import os
 import signal
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,7 @@ class AGILoop:
         self,
         cooldown: int = DEFAULT_COOLDOWN,
         telegram_notify: bool = True,
-        max_iterations: Optional[int] = None,
+        max_iterations: int | None = None,
     ) -> None:
         self.cooldown = cooldown
         self.telegram_notify = telegram_notify
@@ -101,9 +102,9 @@ class AGILoop:
         self._history = self._load_history()
         self.completed_improvements: list[str] = self._history.get("completed", [])
         self.start_time = time.time()
-        self.last_success_time: Optional[float] = None
+        self.last_success_time: float | None = None
 
-    def _load_history(self) -> Dict[str, Any]:
+    def _load_history(self) -> dict[str, Any]:
         """Load persistent improvement history from disk."""
         if HISTORY_PATH.exists():
             try:
@@ -137,7 +138,7 @@ class AGILoop:
             return int(self.cooldown)
         return int(min(self.cooldown * (2 ** self.consecutive_failures), 600))
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Return AGI loop metrics for Telegram and monitoring."""
         uptime = time.time() - self.start_time if self.start_time else 0
         total = len(self._history.get("details", []))
@@ -170,13 +171,13 @@ class AGILoop:
 
             if self.max_iterations and self.iteration > self.max_iterations:
                 logger.info(
-                    f"🏁 Reached max iterations ({self.max_iterations}). Stopping."
+                    f"🏁 Reached max iterations ({self.max_iterations}). Stopping.",
                 )
                 break
 
             if self.consecutive_failures >= self.MAX_CONSECUTIVE_FAILURES:
                 logger.warning(
-                    f"⚠️ {self.consecutive_failures} consecutive failures. Cooling down 5min..."
+                    f"⚠️ {self.consecutive_failures} consecutive failures. Cooling down 5min...",
                 )
                 await self._safe_sleep(300)
                 self.consecutive_failures = 0
@@ -228,7 +229,7 @@ class AGILoop:
                 self._save_history()
 
             except Exception as e:
-                logger.error(f"❌ Loop iteration #{self.iteration} failed: {e}")
+                logger.exception(f"❌ Loop iteration #{self.iteration} failed: {e}")
                 self.consecutive_failures += 1
                 await self._report_error(str(e))
 
@@ -240,7 +241,7 @@ class AGILoop:
 
         logger.info("🛑 AGI Loop stopped.")
 
-    async def _assess(self) -> Optional[Dict[str, Any]]:
+    async def _assess(self) -> dict[str, Any] | None:
         """Step 1: Query Gemini + NeuralMemory for next improvement."""
         logger.info("🧠 ASSESS: Analyzing codebase for improvements...")
 
@@ -252,7 +253,7 @@ class AGILoop:
             mem = get_memory_client()
             if mem.is_available:
                 ctx = mem.query_memory(
-                    "mekong-cli codebase improvements needed", depth=2
+                    "mekong-cli codebase improvements needed", depth=2,
                 )
                 if ctx:
                     memory_context = ctx
@@ -298,19 +299,18 @@ class AGILoop:
             if content.startswith("```"):
                 lines = content.split("\n")
                 content = "\n".join(lines[1:])
-                if content.endswith("```"):
-                    content = content[:-3]
+                content = content.removesuffix("```")
                 content = content.strip()
 
-            improvement: Dict[str, Any] = dict(json.loads(content))
+            improvement: dict[str, Any] = dict(json.loads(content))
             logger.info(f"🎯 Next improvement: {improvement.get('title', 'Unknown')}")
             return improvement
 
         except Exception as e:
-            logger.error(f"Assessment failed: {e}")
+            logger.exception(f"Assessment failed: {e}")
             return None
 
-    async def _execute(self, improvement: Dict[str, Any]) -> bool:
+    async def _execute(self, improvement: dict[str, Any]) -> bool:
         """Step 2: Spawn CC CLI to implement the improvement."""
         title = improvement.get("title", "Unknown")
         cc_prompt = improvement.get("cc_cli_prompt", "")
@@ -342,20 +342,19 @@ class AGILoop:
             if session.status.value == "completed":
                 logger.info(f"✅ CC CLI completed! Exit code: {session.exit_code}")
                 logger.info(
-                    f"  Output (last 5 lines):\n{chr(10).join(session.output_buffer[-5:])}"
+                    f"  Output (last 5 lines):\n{chr(10).join(session.output_buffer[-5:])}",
                 )
                 return True
-            else:
-                logger.warning(
-                    f"❌ CC CLI failed: {session.status.value} - {session.error}"
-                )
-                return False
-
-        except Exception as e:
-            logger.error(f"Execution failed: {e}")
+            logger.warning(
+                f"❌ CC CLI failed: {session.status.value} - {session.error}",
+            )
             return False
 
-    async def _memorize(self, improvement: Dict[str, Any], success: bool) -> None:
+        except Exception as e:
+            logger.exception(f"Execution failed: {e}")
+            return False
+
+    async def _memorize(self, improvement: dict[str, Any], success: bool) -> None:
         """Step 3: Encode result into NeuralMemory."""
         try:
             from src.core.memory_client import get_memory_client
@@ -387,7 +386,7 @@ class AGILoop:
         except Exception as e:
             logger.warning(f"Memorization failed: {e}")
 
-    async def _report(self, improvement: Dict[str, Any], success: bool) -> None:
+    async def _report(self, improvement: dict[str, Any], success: bool) -> None:
         """Step 4: Report to Telegram."""
         if not self.telegram_notify:
             return
@@ -457,7 +456,7 @@ class AGILoop:
         """Sleep that can be interrupted by shutdown."""
         try:
             await asyncio.wait_for(self._shutdown_event.wait(), timeout=seconds)
-        except asyncio.TimeoutError:
+        except TimeoutError:
             pass  # Normal: timeout means sleep completed
 
     def _handle_shutdown(self) -> None:
@@ -472,7 +471,7 @@ class AGILoop:
 
 
 # Module-level singleton
-_agi_loop: Optional[AGILoop] = None
+_agi_loop: AGILoop | None = None
 
 
 def get_agi_loop() -> AGILoop:

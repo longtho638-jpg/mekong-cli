@@ -1,17 +1,18 @@
-"""
-Mekong CLI - Hooks Middleware Pipeline
+"""Mekong CLI - Hooks Middleware Pipeline.
 
 Portkey-inspired pre/post-request hook system for LLM calls.
 Enables pluggable validation, transformation, and observability
 without modifying core LLM client logic.
 """
 
+from __future__ import annotations
+
 import logging
 import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -28,16 +29,16 @@ class HookPhase(Enum):
 class HookContext:
     """Data passed through the hook pipeline."""
 
-    messages: List[Dict[str, str]] = field(default_factory=list)
+    messages: list[dict[str, str]] = field(default_factory=list)
     model: str = ""
     provider: str = ""
     temperature: float = 0.7
     max_tokens: int = 2048
     response_content: str = ""
     response_model: str = ""
-    usage: Dict[str, int] = field(default_factory=dict)
-    error: Optional[Exception] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    usage: dict[str, int] = field(default_factory=dict)
+    error: Exception | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
     start_time: float = 0.0
 
 
@@ -46,7 +47,7 @@ class HookResult:
     """Result from a hook execution."""
 
     passed: bool = True
-    modified_context: Optional[HookContext] = None
+    modified_context: HookContext | None = None
     error_message: str = ""
     hook_name: str = ""
     duration_ms: float = 0.0
@@ -55,7 +56,7 @@ class HookResult:
 class Hook(ABC):
     """Base class for all hooks in the middleware pipeline."""
 
-    def __init__(self, name: str, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, name: str, config: dict[str, Any] | None = None) -> None:
         self.name = name
         self.config = config or {}
         self.enabled = True
@@ -69,6 +70,7 @@ class Hook(ABC):
 
         Returns:
             HookResult indicating pass/fail and any modifications
+
         """
         ...
 
@@ -81,7 +83,7 @@ class Hook(ABC):
 class InputValidationHook(Hook):
     """Validates input messages before sending to LLM."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         super().__init__("input_validation", config)
         self.max_message_length = self.config.get("max_message_length", 100_000)
         self.max_messages = self.config.get("max_messages", 100)
@@ -116,7 +118,7 @@ class InputValidationHook(Hook):
 class OutputValidationHook(Hook):
     """Validates LLM response content."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         super().__init__("output_validation", config)
         self.min_length = self.config.get("min_length", 1)
         self.max_length = self.config.get("max_length", 500_000)
@@ -145,7 +147,7 @@ class OutputValidationHook(Hook):
 class TokenCounterHook(Hook):
     """Tracks token usage per request for cost awareness."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         super().__init__("token_counter", config)
         self.max_input_tokens = self.config.get("max_input_tokens", 0)
         self.total_tokens_used = 0
@@ -165,7 +167,7 @@ class TokenCounterHook(Hook):
 class LatencyMonitorHook(Hook):
     """Records request latency for performance tracking."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         super().__init__("latency_monitor", config)
         self.warn_threshold_ms = self.config.get("warn_threshold_ms", 10_000)
 
@@ -180,7 +182,7 @@ class LatencyMonitorHook(Hook):
             if latency_ms > self.warn_threshold_ms:
                 logger.warning(
                     f"[Hook] High latency: {latency_ms:.0f}ms > {self.warn_threshold_ms}ms "
-                    f"(provider={ctx.provider}, model={ctx.model})"
+                    f"(provider={ctx.provider}, model={ctx.model})",
                 )
         return HookResult(passed=True, hook_name=self.name, modified_context=ctx)
 
@@ -188,7 +190,7 @@ class LatencyMonitorHook(Hook):
 class ErrorLoggerHook(Hook):
     """Logs errors with structured context for debugging."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         super().__init__("error_logger", config)
 
     @property
@@ -199,7 +201,7 @@ class ErrorLoggerHook(Hook):
         if ctx.error:
             logger.error(
                 f"[Hook] LLM error: provider={ctx.provider} model={ctx.model} "
-                f"error={ctx.error}"
+                f"error={ctx.error}",
             )
         return HookResult(passed=True, hook_name=self.name)
 
@@ -213,7 +215,7 @@ class HookPipeline:
     """
 
     def __init__(self) -> None:
-        self._hooks: Dict[HookPhase, List[Hook]] = {
+        self._hooks: dict[HookPhase, list[Hook]] = {
             HookPhase.PRE_REQUEST: [],
             HookPhase.POST_REQUEST: [],
             HookPhase.ON_ERROR: [],
@@ -224,10 +226,11 @@ class HookPipeline:
 
         Args:
             hook: Hook instance to register
+
         """
         self._hooks[hook.phase].append(hook)
 
-    def run_phase(self, phase: HookPhase, ctx: HookContext) -> List[HookResult]:
+    def run_phase(self, phase: HookPhase, ctx: HookContext) -> list[HookResult]:
         """Execute all hooks for a given phase.
 
         Args:
@@ -236,6 +239,7 @@ class HookPipeline:
 
         Returns:
             List of HookResults from each hook
+
         """
         results = []
         for hook in self._hooks[phase]:
@@ -261,11 +265,12 @@ class HookPipeline:
 
         return results
 
-    def list_hooks(self) -> Dict[str, List[str]]:
+    def list_hooks(self) -> dict[str, list[str]]:
         """List registered hooks by phase.
 
         Returns:
             Dict mapping phase name to list of hook names
+
         """
         return {
             phase.value: [h.name for h in hooks]
@@ -279,6 +284,7 @@ def create_default_pipeline() -> HookPipeline:
     Returns:
         HookPipeline with input validation, output validation,
         token counter, latency monitor, and error logger
+
     """
     pipeline = HookPipeline()
     pipeline.register(InputValidationHook())
@@ -290,15 +296,15 @@ def create_default_pipeline() -> HookPipeline:
 
 
 __all__ = [
+    "ErrorLoggerHook",
     "Hook",
     "HookContext",
     "HookPhase",
     "HookPipeline",
     "HookResult",
     "InputValidationHook",
+    "LatencyMonitorHook",
     "OutputValidationHook",
     "TokenCounterHook",
-    "LatencyMonitorHook",
-    "ErrorLoggerHook",
     "create_default_pipeline",
 ]

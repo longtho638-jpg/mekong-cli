@@ -1,21 +1,22 @@
-"""
-Mekong CLI - Crash Reporter
+"""Mekong CLI - Crash Reporter.
 
 Electron's crashReporter mapped to CLI crash capture + recovery.
 Captures exceptions, persists structured JSON crash reports, and
 suggests recovery actions via error pattern matching.
 """
 
+from __future__ import annotations
+
 import json
 import platform
 import sys
 import traceback
 import uuid
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class CrashSeverity(Enum):
@@ -37,13 +38,13 @@ class CrashReport:
     error_type: str
     error_message: str
     traceback_str: str
-    context: Dict[str, Any]
-    system_info: Dict[str, str]
+    context: dict[str, Any]
+    system_info: dict[str, str]
     recovery_attempted: bool = False
 
 
 # Maps exception type name → (severity, recovery suggestion)
-_ERROR_PATTERNS: Dict[str, tuple] = {
+_ERROR_PATTERNS: dict[str, tuple] = {
     "KeyboardInterrupt": (CrashSeverity.LOW, "User interrupted. Safe to restart with the same command."),
     "FileNotFoundError": (CrashSeverity.MEDIUM, "Required file missing. Check paths and re-run `mekong init`."),
     "PermissionError": (CrashSeverity.MEDIUM, "Insufficient permissions. Check file ownership or run with elevated privileges."),
@@ -58,7 +59,7 @@ _ERROR_PATTERNS: Dict[str, tuple] = {
 _DEFAULT = (CrashSeverity.CRITICAL, "Unknown error. Check .mekong/crashes/ and open a GitHub issue.")
 
 
-def _system_info() -> Dict[str, str]:
+def _system_info() -> dict[str, str]:
     """Collect current system metadata for diagnostic context."""
     return {
         "python_version": sys.version.split()[0],
@@ -78,8 +79,8 @@ class CrashReporter:
     def capture(
         self,
         exception: Exception,
-        context: Optional[Dict[str, Any]] = None,
-        severity: Optional[CrashSeverity] = None,
+        context: dict[str, Any] | None = None,
+        severity: CrashSeverity | None = None,
     ) -> CrashReport:
         """Capture an exception → CrashReport. Auto-detects severity from exception type."""
         error_type = type(exception).__name__
@@ -105,7 +106,7 @@ class CrashReporter:
         crash_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
         return crash_path
 
-    def list_crashes(self, directory: str = ".mekong/crashes", limit: int = 10) -> List[Path]:
+    def list_crashes(self, directory: str = ".mekong/crashes", limit: int = 10) -> list[Path]:
         """List recent crash JSON files newest-first. Returns up to `limit` paths."""
         crash_dir = Path(directory)
         if not crash_dir.exists():
@@ -119,4 +120,4 @@ class CrashReporter:
         return str(suggestion)
 
 
-__all__ = ["CrashSeverity", "CrashReport", "CrashReporter"]
+__all__ = ["CrashReport", "CrashReporter", "CrashSeverity"]

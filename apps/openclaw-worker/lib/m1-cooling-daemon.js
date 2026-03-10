@@ -27,11 +27,11 @@ function log(msg) {
 }
 
 const THERMAL_LOG = config.THERMAL_LOG || '/Users/macbookprom1/tom_hum_thermal.log';
-const OVERHEAT_LOAD = 80;    // 🦞 Max x20: 4 CC CLI agents = load 30-50 is NORMAL
-const OVERHEAT_RAM_MB = 30;   // Lower threshold — macOS aggressively caches, 30MB is the true floor
-const SAFE_LOAD = 50;        // Resume at 50 — 4 agents running is the baseline
+const OVERHEAT_LOAD = 120;   // 🦞 M1 8-core chịu được 100+; 4 CC CLI agents = load 60-90 NORMAL
+const OVERHEAT_RAM_MB = 30;  // Lower threshold — macOS aggressively caches, 30MB is the true floor
+const SAFE_LOAD = 80;        // Resume at 80 — 4 agents running + buffer
 const SAFE_RAM_MB = 100;     // Safe resume level
-const CRITICAL_LOAD = 120;    // Nuclear intervention — only at extreme load
+const CRITICAL_LOAD = 150;   // Nuclear intervention — only at extreme load (>150% 8-core)
 const PROPORTIONAL_DELAY_MS = 2000; // 2s per load point (v4: faster feedback)
 const COHERENCE_PENALTY_FACTOR = 1000; // 1s per subagent (v4: balanced)
 // 🧬 FIX #4: THERMAL THRESHOLD — Raise from 5 to 8 (M1 8-core can handle load 8)
@@ -198,8 +198,8 @@ function checkOverheatStatus() {
   const power = getPowerSource();
   // 🔒 Chairman Fix v2: velocity only triggers overheat IF load is also above SAFE threshold
   const velocityOverheat = velocity > VELOCITY_THRESHOLD && load1 > SAFE_LOAD;
-  // 🦞 Battery Safety: If on battery and load > 10, trigger overheating to protect cell health & prevent shutdown
-  const batteryRisk = power.source === 'BATTERY' && load1 > 10;
+  // 🦞 Battery Safety: If on battery and load > 25, trigger overheating to protect cell health
+  const batteryRisk = power.source === 'BATTERY' && load1 > 25;
 
   // 🦞 FIX 2026-02-26: Prevent false overheating stall when load is 0 but RAM is temporarily low
   const ramCritical = (freeMB >= 0 && freeMB < OVERHEAT_RAM_MB);
@@ -330,7 +330,7 @@ function stopCooling() {
 }
 
 // 🧊 DEEP COOLING: Load-gate for scanner operations (npm build/test/lint)
-const SCAN_SAFE_LOAD = 30; // Only allow scanning when load < 30
+const SCAN_SAFE_LOAD = 50; // Only allow scanning when load < 50 (balanced for M1)
 function isSafeToScan() {
   const load = getLoadAverage();
   if (load > SCAN_SAFE_LOAD) {

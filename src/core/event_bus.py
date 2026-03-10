@@ -1,16 +1,18 @@
-"""
-Mekong CLI - Event Bus
+"""Mekong CLI - Event Bus.
 
 In-process pub/sub event bus with streaming support for gateway events.
 Enables WebSocket subscribers, Telegram/webhook integrations, and
 real-time execution streaming (Netdata streaming pattern).
 """
 
+from __future__ import annotations
+
 import time
 from collections import deque
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Deque, Dict, List, Optional
+from typing import Any
 
 
 class EventType(str, Enum):
@@ -35,6 +37,34 @@ class EventType(str, Enum):
     HEALTH_CRITICAL = "health_critical"
     COLLECTOR_DISCOVERED = "collector_discovered"
     PROJECT_DISCOVERED = "project_discovered"
+    # License monitoring events (Phase 2)
+    LICENSE_VALIDATION_FAILED = "license:validation_failed"
+    LICENSE_CRITICAL = "license:critical"
+    LICENSE_GRACE_PERIOD_ACTIVE = "license:grace_period_active"
+    LICENSE_THRESHOLD_WARNING = "license:threshold_warning"
+    # Usage monitoring events (Phase 3)
+    USAGE_ANOMALY_DETECTED = "usage:anomaly_detected"
+    USAGE_API_CALL = "usage:api_call"
+    USAGE_AGENT_SPAWN = "usage:agent_spawn"
+    USAGE_MODEL_USAGE = "usage:model_usage"
+    USAGE_LLM_CALL = "usage:llm_call"
+    USAGE_TOKEN_USAGE = "usage:token_usage"
+    # Alert routing events (Phase 4)
+    ALERT_DEDUPLICATED = "alert:deduplicated"
+    ALERT_THROTTLED = "alert:throttled"
+    ALERT_SENT = "alert:sent"
+    # Auto-recovery events (Phase 5)
+    RECOVERY_STARTED = "recovery:started"
+    RECOVERY_ATTEMPTED = "recovery:attempted"
+    RECOVERY_SUCCESS = "recovery:success"
+    RECOVERY_FAILED = "recovery:failed"
+    # Billing events (Phase 6)
+    BILLING_RECORDED = "billing:recorded"
+    BILLING_OVERAGE = "billing:overage"
+    BILLING_PERIOD_CLOSED = "billing:period_closed"
+    BILLING_RECONCILIATION = "billing:reconciliation"
+    BILLING_BATCH_PROCESSED = "billing:batch_processed"
+    BILLING_IDEMPOTENCY_CONFLICT = "billing:idempotency_conflict"
 
 
 @dataclass
@@ -42,7 +72,7 @@ class Event:
     """A single event emitted by the orchestration engine."""
 
     type: EventType
-    data: Dict[str, Any] = field(default_factory=dict)
+    data: dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
 
@@ -55,21 +85,21 @@ class EventBus:
 
     def __init__(self) -> None:
         """Initialize EventBus with an empty subscriber registry."""
-        self._subscribers: Dict[EventType, List[Subscriber]] = {}
+        self._subscribers: dict[EventType, list[Subscriber]] = {}
 
     def subscribe(self, event_type: EventType, callback: Subscriber) -> None:
         """Register a callback for an event type."""
         self._subscribers.setdefault(event_type, []).append(callback)
 
     def unsubscribe(
-        self, event_type: EventType, callback: Subscriber
+        self, event_type: EventType, callback: Subscriber,
     ) -> None:
         """Remove a callback for an event type."""
         listeners = self._subscribers.get(event_type, [])
         if callback in listeners:
             listeners.remove(callback)
 
-    def emit(self, event_type: EventType, data: Optional[Dict[str, Any]] = None) -> Event:
+    def emit(self, event_type: EventType, data: dict[str, Any] | None = None) -> Event:
         """Emit an event to all subscribers of that type."""
         event = Event(type=event_type, data=data or {})
         for callback in self._subscribers.get(event_type, []):
@@ -90,8 +120,7 @@ class EventBus:
 
 
 class EventStream:
-    """
-    Buffered event stream for real-time consumers (WebSocket, SSE).
+    """Buffered event stream for real-time consumers (WebSocket, SSE).
 
     Inspired by Netdata's streaming protocol: buffers events for
     consumers that may read at different rates. Supports replay
@@ -100,7 +129,7 @@ class EventStream:
 
     def __init__(self, max_buffer: int = 1000) -> None:
         """Initialize stream with bounded buffer."""
-        self._buffer: Deque[Event] = deque(maxlen=max_buffer)
+        self._buffer: deque[Event] = deque(maxlen=max_buffer)
         self._cursor: int = 0
         self._total_emitted: int = 0
 
@@ -109,9 +138,8 @@ class EventStream:
         self._buffer.append(event)
         self._total_emitted += 1
 
-    def read(self, since_cursor: int = 0, limit: int = 100) -> List[Event]:
-        """
-        Read events from stream since a cursor position.
+    def read(self, since_cursor: int = 0, limit: int = 100) -> list[Event]:
+        """Read events from stream since a cursor position.
 
         Args:
             since_cursor: Read events after this position.
@@ -119,6 +147,7 @@ class EventStream:
 
         Returns:
             List of events after the cursor.
+
         """
         # Calculate offset into buffer
         buffer_start = self._total_emitted - len(self._buffer)
@@ -142,8 +171,7 @@ class EventStream:
 
 
 class StreamingEventBus(EventBus):
-    """
-    EventBus with integrated streaming support.
+    """EventBus with integrated streaming support.
 
     Extends EventBus with an EventStream that buffers all emitted events
     for real-time consumers (WebSocket, SSE, polling).
@@ -154,7 +182,7 @@ class StreamingEventBus(EventBus):
         super().__init__()
         self.stream = EventStream(max_buffer=max_buffer)
 
-    def emit(self, event_type: EventType, data: Optional[Dict[str, Any]] = None) -> Event:
+    def emit(self, event_type: EventType, data: dict[str, Any] | None = None) -> Event:
         """Emit event to subscribers AND push to stream buffer."""
         event = super().emit(event_type, data)
         self.stream.push(event)
@@ -162,7 +190,7 @@ class StreamingEventBus(EventBus):
 
 
 # Shared singleton instance for the gateway process
-_default_bus: Optional[EventBus] = None
+_default_bus: EventBus | None = None
 
 
 def get_event_bus() -> EventBus:
@@ -182,10 +210,10 @@ def get_streaming_bus(max_buffer: int = 1000) -> StreamingEventBus:
 
 
 __all__ = [
-    "EventType",
     "Event",
     "EventBus",
     "EventStream",
+    "EventType",
     "StreamingEventBus",
     "Subscriber",
     "get_event_bus",

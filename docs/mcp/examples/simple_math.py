@@ -2,7 +2,6 @@
 Example 1: Simple Math Server
 Demonstrates basic tool definition and handling.
 """
-import asyncio
 from antigravity.mcp.base import BaseMCPServer
 from typing import Any, Dict, List
 

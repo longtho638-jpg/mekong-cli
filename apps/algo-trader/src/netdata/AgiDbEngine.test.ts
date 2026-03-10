@@ -1,13 +1,11 @@
 import { AgiDbEngine } from './AgiDbEngine';
-import { TickStore } from './TickStore';
 import * as fs from 'fs-extra';
-import * as path from 'path';
 
 jest.mock('fs-extra');
 
 describe('AgiDbEngine', () => {
     let engine: AgiDbEngine;
-    let mockTickStore: any;
+    let mockTickStore: any; // eslint-disable-line @typescript-eslint/no-explicit-any -- jest mock
     const storagePath = './test-db';
 
     beforeEach(() => {

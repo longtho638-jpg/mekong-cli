@@ -152,7 +152,7 @@ class MissionStore:
         self,
         mission_id: str,
         status: MissionStatus,
-        error_msg: str | None = None,
+        error_msg: Optional[str] = None,
     ) -> None:
         """Update status; stamps started_at/completed_at on state transitions."""
         now = datetime.now(timezone.utc).isoformat()

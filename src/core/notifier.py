@@ -1,24 +1,25 @@
-"""
-Mekong CLI - Event Notifier
+"""Mekong CLI - Event Notifier.
 
 EventBus subscriber that pushes notifications to Telegram bot.
 Configurable via .mekong/notify.yaml.
 """
 
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any
 
 import yaml  # type: ignore[import-untyped]
 
-from .event_bus import EventBus, EventType, Event
+from .event_bus import Event, EventBus, EventType
 
 
 @dataclass
 class NotifyConfig:
     """Notification configuration."""
 
-    events: List[str] = field(default_factory=lambda: [
+    events: list[str] = field(default_factory=lambda: [
         "goal_completed", "job_started", "job_completed",
     ])
     enabled: bool = True
@@ -36,12 +37,12 @@ class Notifier:
         EventType.JOB_COMPLETED,
     ]
 
-    def __init__(self, bot: Optional[Any] = None) -> None:
-        """
-        Initialize notifier.
+    def __init__(self, bot: Any | None = None) -> None:
+        """Initialize notifier.
 
         Args:
             bot: Optional MekongBot instance for sending messages
+
         """
         self.bot = bot
         self.config = self._load_config()

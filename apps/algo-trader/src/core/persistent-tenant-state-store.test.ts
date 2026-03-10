@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { load, save, createAutoSaver } from './persistent-tenant-state-store';
+import { load, save, createAutoSaver, type AutoSaver } from './persistent-tenant-state-store';
 
 function tmpFile(suffix = '.json'): string {
   return path.join(os.tmpdir(), `algo-trader-test-${Date.now()}-${Math.random().toString(36).slice(2)}${suffix}`);
@@ -13,6 +13,7 @@ function tmpFile(suffix = '.json'): string {
 
 describe('persistent-tenant-state-store', () => {
   const files: string[] = [];
+  const autoSavers: AutoSaver[] = [];
 
   function tracked(suffix?: string): string {
     const f = tmpFile(suffix);
@@ -22,6 +23,14 @@ describe('persistent-tenant-state-store', () => {
   }
 
   afterEach(() => {
+    // Stop all auto-savers first to clear timers
+    autoSavers.forEach(s => s.stop());
+    autoSavers.length = 0;
+
+    // Clear all timers
+    jest.clearAllTimers();
+
+    // Cleanup files
     for (const f of files) {
       try { fs.unlinkSync(f); } catch { /* ignore */ }
     }
@@ -86,6 +95,7 @@ describe('persistent-tenant-state-store', () => {
       const f = tracked();
       const state = new Map<string, unknown>([['tenant-x', { tick: 0 }]]);
       const saver = createAutoSaver(f, () => state, 50);
+      autoSavers.push(saver); // Track for cleanup
 
       await new Promise((r) => setTimeout(r, 130));
       saver.stop();
@@ -104,6 +114,8 @@ describe('persistent-tenant-state-store', () => {
         () => { callCount++; return new Map(); },
         30,
       );
+      autoSavers.push(saver); // Track for cleanup
+
       await new Promise((r) => setTimeout(r, 50));
       saver.stop();
       const countAtStop = callCount;

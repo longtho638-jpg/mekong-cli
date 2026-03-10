@@ -1,11 +1,13 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
+const isCloudDeploy = process.env.CF_PAGES === '1' || process.env.VERCEL === '1';
+
 export default defineConfig({
   plugins: [react()],
-  base: '/dashboard/',
+  base: isCloudDeploy ? '/' : '/dashboard/',
   build: {
-    outDir: '../dist/dashboard',
+    outDir: isCloudDeploy ? 'dist' : '../dist/dashboard',
     emptyOutDir: true,
   },
   server: {

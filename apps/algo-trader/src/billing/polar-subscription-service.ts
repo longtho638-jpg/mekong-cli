@@ -66,7 +66,20 @@ export interface SubscriptionStatus {
 }
 
 export class PolarSubscriptionService {
+  private static instance: PolarSubscriptionService;
   private subscriptions = new Map<string, SubscriptionStatus>();
+
+  static getInstance(): PolarSubscriptionService {
+    if (!PolarSubscriptionService.instance) {
+      PolarSubscriptionService.instance = new PolarSubscriptionService();
+    }
+    return PolarSubscriptionService.instance;
+  }
+
+  /** Reset instance (for testing) */
+  static resetInstance(): void {
+    PolarSubscriptionService.instance = new PolarSubscriptionService();
+  }
 
   getProducts(): PolarProduct[] {
     return [...TIER_PRODUCTS];

@@ -17,7 +17,7 @@ MongoDB Atlas is fully-managed cloud database service with automated backups, mo
 
 ### Connection String Format
 ```
-mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>.mongodb.net/<DATABASE>?retryWrites=true&w=majority
+mongodb+srv://username:password@cluster.mongodb.net/database?retryWrites=true&w=majority
 ```
 
 ### Connect
@@ -159,7 +159,7 @@ const client = new MongoClient(uri, { autoEncryption: autoEncryptionOpts });
 ### Manual Backups
 ```bash
 # Export using mongodump
-mongodump --uri="mongodb+srv://<USER>:<PASS>@<CLUSTER>.mongodb.net/mydb" --out=/backup
+mongodump --uri="mongodb+srv://user:pass@cluster.mongodb.net/mydb" --out=/backup
 
 # Restore using mongorestore
 mongorestore --uri="mongodb+srv://..." /backup/mydb

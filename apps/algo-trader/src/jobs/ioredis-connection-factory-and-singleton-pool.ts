@@ -24,6 +24,7 @@ export interface IRedisClient {
   expire(key: string, seconds: number): Promise<number>;
   ttl(key: string): Promise<number>;
   del(...keys: string[]): Promise<number>;
+  keys(pattern: string): Promise<string[]>;
   publish(channel: string, message: string): Promise<number>;
   subscribe(channel: string): Promise<void>;
   on(event: string, listener: (...args: unknown[]) => void): this;

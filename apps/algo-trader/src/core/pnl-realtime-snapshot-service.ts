@@ -50,13 +50,11 @@ export class InMemoryPnlStore implements PnlStore {
     let results = this.records.filter(r => r.tenantId === tenantId);
     if (opts.from) results = results.filter(r => r.snapshotAt >= opts.from!);
     if (opts.to) results = results.filter(r => r.snapshotAt <= opts.to!);
-    // Sort descending by snapshotAt
     results = results.sort((a, b) => b.snapshotAt.getTime() - a.snapshotAt.getTime());
     const limit = opts.limit ?? 100;
     return results.slice(0, limit);
   }
 
-  /** Exposed for testing */
   _clear(): void { this.records = []; }
 }
 
@@ -91,7 +89,7 @@ export class PrismaBackedPnlStore implements PnlStore {
       orderBy: { snapshotAt: 'desc' },
       take: opts.limit ?? 100,
     });
-    return rows.map(r => ({
+    return rows.map((r) => ({
       id: r.id.toString(),
       tenantId: r.tenantId,
       totalPnl: Number(r.totalPnl),

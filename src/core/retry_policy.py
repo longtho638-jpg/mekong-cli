@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Retry Policy Engine
+"""Mekong CLI - Retry Policy Engine.
 
 Temporal-inspired configurable retry policies with exponential backoff,
 jitter, and non-retryable error classification.
@@ -8,11 +7,13 @@ Maps to Temporal's RetryPolicy: initial_interval, backoff_coefficient,
 max_interval, max_attempts, non_retryable_error_types.
 """
 
+from __future__ import annotations
+
 import random
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Callable, List, Optional
 
 
 class BackoffStrategy(str, Enum):
@@ -26,8 +27,7 @@ class BackoffStrategy(str, Enum):
 
 @dataclass
 class RetryPolicy:
-    """
-    Configurable retry policy inspired by Temporal's RetryPolicy.
+    """Configurable retry policy inspired by Temporal's RetryPolicy.
 
     Defaults mirror Temporal: exponential backoff, 1s initial, 100x max, unlimited attempts.
     """
@@ -37,8 +37,8 @@ class RetryPolicy:
     backoff_coefficient: float = 2.0
     max_interval_seconds: float = 60.0
     strategy: BackoffStrategy = BackoffStrategy.FULL_JITTER
-    non_retryable_errors: List[str] = field(default_factory=list)
-    non_retryable_exit_codes: List[int] = field(default_factory=lambda: [2])
+    non_retryable_errors: list[str] = field(default_factory=list)
+    non_retryable_exit_codes: list[int] = field(default_factory=lambda: [2])
 
     def compute_delay(self, attempt: int) -> float:
         """Calculate delay before next retry attempt.
@@ -48,6 +48,7 @@ class RetryPolicy:
 
         Returns:
             Delay in seconds before the next retry
+
         """
         base = min(
             self.initial_interval_seconds * (self.backoff_coefficient ** attempt),
@@ -56,11 +57,11 @@ class RetryPolicy:
 
         if self.strategy == BackoffStrategy.FIXED:
             return self.initial_interval_seconds
-        elif self.strategy == BackoffStrategy.EXPONENTIAL:
+        if self.strategy == BackoffStrategy.EXPONENTIAL:
             return base
-        elif self.strategy == BackoffStrategy.FULL_JITTER:
+        if self.strategy == BackoffStrategy.FULL_JITTER:
             return random.uniform(0, base)
-        elif self.strategy == BackoffStrategy.EQUAL_JITTER:
+        if self.strategy == BackoffStrategy.EQUAL_JITTER:
             half = base / 2
             return half + random.uniform(0, half)
         return base
@@ -74,14 +75,12 @@ class RetryPolicy:
 
         Returns:
             True if the error is eligible for retry
+
         """
         if exit_code in self.non_retryable_exit_codes:
             return False
         error_lower = error_msg.lower()
-        for pattern in self.non_retryable_errors:
-            if pattern.lower() in error_lower:
-                return False
-        return True
+        return all(pattern.lower() not in error_lower for pattern in self.non_retryable_errors)
 
     def should_retry(self, attempt: int, error_msg: str, exit_code: int = 1) -> bool:
         """Determine if a retry should be attempted.
@@ -93,6 +92,7 @@ class RetryPolicy:
 
         Returns:
             True if retry should proceed
+
         """
         if attempt >= self.max_attempts:
             return False
@@ -101,8 +101,8 @@ class RetryPolicy:
 
 def execute_with_retry(
     func: Callable[[], object],
-    policy: Optional[RetryPolicy] = None,
-    on_retry: Optional[Callable[[int, float, str], None]] = None,
+    policy: RetryPolicy | None = None,
+    on_retry: Callable[[int, float, str], None] | None = None,
 ) -> object:
     """Execute a callable with retry policy.
 
@@ -116,9 +116,10 @@ def execute_with_retry(
 
     Raises:
         Last exception if all retries exhausted
+
     """
     policy = policy or RetryPolicy()
-    last_error: Optional[Exception] = None
+    last_error: Exception | None = None
 
     for attempt in range(policy.max_attempts):
         try:
@@ -169,11 +170,11 @@ NO_RETRY = RetryPolicy(max_attempts=1)
 
 
 __all__ = [
-    "BackoffStrategy",
-    "RetryPolicy",
-    "execute_with_retry",
     "AGGRESSIVE_RETRY",
     "CONSERVATIVE_RETRY",
     "LLM_RETRY",
     "NO_RETRY",
+    "BackoffStrategy",
+    "RetryPolicy",
+    "execute_with_retry",
 ]

@@ -18,6 +18,30 @@ if (!fs.existsSync(DATA_DIR)) {
 }
 
 /**
+ * Classify mission task type from missionId or content.
+ * Maps to categories: build, test, fix, refactor, scan, deploy, docs, security, perf, i18n.
+ * @param {string} missionId
+ * @param {string} [project]
+ * @returns {string} task type category
+ */
+function classifyTaskType(missionId, project) {
+  const id = (missionId || '').toLowerCase();
+  if (/test|spec|vitest|jest/.test(id)) return 'test';
+  if (/fix|bug|patch|heal|recover/.test(id)) return 'fix';
+  if (/build|compile|gate|ci|cd/.test(id)) return 'build';
+  if (/refactor|clean|debt|console|todo/.test(id)) return 'refactor';
+  if (/scan|hunt|audit|score|recon/.test(id)) return 'scan';
+  if (/deploy|ship|push|release/.test(id)) return 'deploy';
+  if (/doc|readme|changelog/.test(id)) return 'docs';
+  if (/secur|auth|csp|xss|rls/.test(id)) return 'security';
+  if (/perf|speed|lighthouse|lcp/.test(id)) return 'perf';
+  if (/i18n|locale|translate/.test(id)) return 'i18n';
+  if (/trading|revenue|license/.test(id)) return 'revenue';
+  if (/evolve|learn|synth/.test(id)) return 'evolution';
+  return project || 'general';
+}
+
+/**
  * Record a completed mission (AGI Level 3 & 5)
  * @param {Object} data
  * @param {string} data.project
@@ -33,6 +57,7 @@ async function recordMission(data) {
       timestamp: new Date().toISOString(),
       project: data.project,
       missionId: data.missionId,
+      taskType: classifyTaskType(data.missionId, data.project),
       duration: data.duration,
       success: data.success,
       failureType: data.failureType,
@@ -147,7 +172,7 @@ function getMissionStats() {
     if (history.length === 0) return { successRate: 0, totalProcessed: 0, recentTaskTypes: [] };
     const recent = history.slice(-50);
     const successes = recent.filter(m => m.success).length;
-    const taskTypes = recent.map(m => m.project || 'unknown');
+    const taskTypes = recent.map(m => m.taskType || classifyTaskType(m.missionId, m.project));
     return {
       successRate: successes / recent.length,
       totalProcessed: history.length,
@@ -158,4 +183,4 @@ function getMissionStats() {
   }
 }
 
-module.exports = { recordMission, getStats, getHistory, countTokensBetween, getMissionStats };
+module.exports = { recordMission, getStats, getHistory, countTokensBetween, getMissionStats, classifyTaskType };

@@ -30,6 +30,23 @@ jest.mock('ioredis', () =>
 
 jest.mock('bullmq', () => ({ Worker: jest.fn(), Queue: jest.fn() }), { virtual: true });
 
+// Mock LicenseService to allow tests to pass
+jest.mock('../../../src/lib/raas-gate', () => ({
+  LicenseService: {
+    getInstance: jest.fn(() => ({
+      hasTier: jest.fn(() => true), // Allow all tests to pass
+      getTier: jest.fn(() => 'pro'),
+      requireFeature: jest.fn(),
+    })),
+  },
+  LicenseTier: {
+    FREE: 'free',
+    PRO: 'pro',
+    ENTERPRISE: 'enterprise',
+  },
+  LicenseError: class LicenseError extends Error {},
+}));
+
 // Mock BacktestRunner to avoid real data fetching
 const mockBacktestResults = [
   {

@@ -23,9 +23,12 @@ const { isOverheating, isSafeToScan } = require('./m1-cooling-daemon');
 const { tryStrategicMission } = require('./strategic-brain');
 const { scanRevenueHealth, generateRevenueMission } = require('./revenue-health-scanner');
 const { generateEconomicMission } = require('./clawwork-integration');
+const { dispatchDueTradingMissions } = require('./trading-cadence-scheduler');
+// Ship Pipeline — kiểm tra trạng thái trước khi sinh task mới
+const shipPipeline = require('./ship-pipeline');
 
 let intervalRef = null;
-let _questionLoopCount = 0; // 🧠 QUESTION loop detector (module-level to avoid 'state' TDZ)
+const _paneQuestionCounts = new Map(); // 🧠 Per-pane question loop tracking for P0-P9
 
 // 🔒 Mission dedup: prevent re-dispatching same error within 30min
 const _dispatchedMissions = new Map(); // key → timestamp
@@ -46,10 +49,10 @@ function markMissionDispatched(errorKey) {
 const SCAN_RESULT_FILE = path.join(__dirname, '..', '.cto-scan-state.json');
 const MAX_FIX_CYCLES = 3;
 const MAX_FIXES_PER_SCAN = 3;  // 🔒 Ch.6 虛實: focus force on fewer targets
-// 🔒 Ch.2 作戰: 日費千金 — Phase-aware intervals (v2: 九變 adaptive speed)
-const SCAN_INTERVAL_MS = 120000;   // 120s — increased from 45s to prevent CC CLI interrupt spam
-const FIX_INTERVAL_MS = 15000;    // 15s — fix/verify: phản xạ nhanh, dispatch liên tục
-const DEFAULT_INTERVAL_MS = 45000; // 45s — fallback
+// 🔒 Ch.2 作戰: Balanced speed — fast enough to detect idle, slow enough to not spam
+const SCAN_INTERVAL_MS = 60000;    // 60s — dispatch only when pane truly idle
+const FIX_INTERVAL_MS = 15000;     // 15s — fix/verify: phản xạ nhanh
+const DEFAULT_INTERVAL_MS = 60000; // 60s — match scan speed
 
 // --- BUG #11: Per-project consecutive failure tracking ---
 const projectFailureCount = new Map();
@@ -336,56 +339,173 @@ function startAutoCTO() {
         if (!isBrainAlive()) { log('AUTO-CTO DEBUG: isBrainAlive() failed'); scheduleNext(); return; }
         if (isOverheating()) { log('AUTO-CTO DEBUG: isOverheating() failed'); scheduleNext(); return; }
 
+        // 🦞🦞🦞 DISPATCH FIRST — NO LLM DELAY! Fast regex-only idle check
+        log(`🦞 DISPATCH-CHECK: ${fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f)).length} tasks in queue`);
+        // P0 = mekong-cli, P1 = algo-trader, P2 = sophia-ai-factory, P3 = well, P4 = Opus strategic
+        const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
+        if (tasks.length > 0) {
+          const sorted = tasks.sort((a, b) => {
+            const aCrit = a.startsWith('CRITICAL') ? 0 : 1;
+            const bCrit = b.startsWith('CRITICAL') ? 0 : 1;
+            if (aCrit !== bCrit) return aCrit - bCrit;
+            return fs.statSync(path.join(config.WATCH_DIR, a)).mtimeMs - fs.statSync(path.join(config.WATCH_DIR, b)).mtimeMs;
+          });
+
+          function getTargetPane(filename) {
+            const lower = filename.toLowerCase();
+            // P0: mekong-cli core (fallback to early projects or openclaw-worker)
+            if (/openclaw|brain|cto|factory/.test(lower)) return 0;
+            // P1: algo-trader
+            if (/algo.?trader|algotrader|trading/.test(lower)) return 1;
+            // P2: sophia-ai-factory / mekong-cli
+            if (/sophia|vibe|core|package|mekong-cli/.test(lower)) return 2;
+            // P3: well / apex-os
+            if (/well|wellnexus|84tea|apex/.test(lower)) return 3;
+            // P4: OPUS STRATEGIC LAYER - Must only receive high complexity / strategic tasks
+            if (/strategic|binh_phap|roiaas|architecture|10x|complex|opus/i.test(lower)) return 4;
+
+            // Fallback assignment based on file hash if no keywords match 
+            // Distribute specifically between 0, 1, 2, 3 (NEVER default to 4/Opus)
+            const hash = filename.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+            const safeIds = [0, 1, 2, 3];
+            return safeIds[hash % safeIds.length];
+          }
+
+          let dispatched = 0;
+          const dispatching = new Set();
+
+          for (const taskFile of sorted) {
+            const targetIdx = getTargetPane(taskFile);
+            if (dispatching.has(targetIdx)) continue;
+
+            const pane = `${config.TMUX_SESSION}:0.${targetIdx}`;
+            try {
+              const paneCheck = execSync(`tmux capture-pane -t ${pane} -p 2>/dev/null`, { encoding: 'utf-8', timeout: 8000 });
+              const pLines = paneCheck.split('\n').filter(l => l.trim());
+              const tail5 = pLines.slice(-5).join('\n');
+              const hasPrompt = /❯/.test(tail5);
+              const isBusy = /Cooking|Brewing|Frosting|Moonwalking|Concocting|Sautéing|Churning|Orbiting|thinking|Compacting|Ebbing|Hatching|queued messages|Press up to edit/i.test(tail5);
+              const isIdle = hasPrompt && !isBusy;
+
+              if (isIdle) {
+                const taskPath = path.join(config.WATCH_DIR, taskFile);
+                const taskContent = fs.readFileSync(taskPath, 'utf-8').trim();
+                const firstLine = taskContent.split('\n')[0].trim();
+                const command = firstLine.startsWith('/') ? firstLine : `/cook ${firstLine}`;
+
+                const MODEL_POOL = {
+                  0: 'qwen3.5-plus',              // P0: mekong-cli
+                  1: 'qwen3-coder-plus',          // P1: algo-trader
+                  2: 'qwen3.5-plus',              // P2: sophia-ai-factory
+                  3: 'qwen3.5-plus',              // P3: well
+                  4: 'claude-opus-4-6',           // P4: Opus strategic
+                };
+                const paneModel = MODEL_POOL[targetIdx] || MODEL_POOL[0];
+
+                log(`🦞 DISPATCHING: "${taskFile}" → P${targetIdx} [${paneModel}]`);
+                log(`🦞 COMMAND: ${command.slice(0, 100)}`);
+
+                // Model set in settings.json — skip /model to save API calls
+                execSync(`tmux send-keys -t ${pane} "${command.replace(/"/g, '\\"')}"`, { timeout: 8000 });
+                execSync(`tmux send-keys -t ${pane} Enter`, { timeout: 3000 });
+
+                const doneDir = path.join(config.WATCH_DIR, '..', 'tasks-done');
+                if (!fs.existsSync(doneDir)) fs.mkdirSync(doneDir, { recursive: true });
+                fs.renameSync(taskPath, path.join(doneDir, `${Date.now()}_${taskFile}`));
+                log(`🦞 DISPATCHED + ARCHIVED: ${taskFile} → P${targetIdx}`);
+                dispatched++;
+                dispatching.add(targetIdx);
+              }
+            } catch (dispatchErr) {
+              log(`AUTO-CTO DISPATCH P${targetIdx} ERROR: ${dispatchErr.message}`);
+            }
+          }
+
+          if (dispatched > 0) {
+            log(`🦞 DISPATCHED ${dispatched} task(s) — skipping LLM Vision this cycle`);
+            scheduleNext(); return;
+          }
+          log(`AUTO-CTO: ${tasks.length} tasks pending, all target panes busy — falling through to LLM Vision`);
+        }
+
         // 🧠 LLM VISION: 知己知彼 — Use gemini-3-flash to READ CC CLI output
-        // Replaces fragile regex patterns that caused "blind CTO" bugs
+        // Only runs when NO tasks were dispatched (all panes busy or queue empty)
+        // Expanded from 3 to 10 panes (P0-P9) for 10-model pool support
         let isApiBusy = false;
+        const TOTAL_PANES = 10; // P0-P9 for 10-model rotation
         try {
           const { interpretState, clearCache } = require('./llm-interpreter');
-          for (let pIdx = 0; pIdx < 2; pIdx++) {
+          for (let pIdx = 0; pIdx < TOTAL_PANES; pIdx++) {
             try {
               const paneOutput = require('child_process').execSync(
-                `tmux capture-pane -t tom_hum:brain.${pIdx} -p -S -30 2>/dev/null`,
+                `tmux capture-pane -t tom_hum:0.${pIdx} -p -S -50 2>/dev/null`,
                 { encoding: 'utf-8', timeout: 3000 }
               );
+
+              // 🩺 AUTO-RESPAWN: Only trigger if shell prompt in LAST 3 lines AND no CC CLI running
+              const lastLines = paneOutput.trim().split('\n').slice(-3).join(' ');
+              const hasCCCLI = /❯|bypass permissions|✻|Cooking|Brewing|Frosting|Moonwalking|Concocting|Sautéing|thinking|Hatching|Ebbing/i.test(lastLines);
+              const isShellPrompt = /[$%]\s*$/.test(lastLines) && !hasCCCLI;
+
+              if (isShellPrompt) {
+                log(`[🩺 RESPAWN][P${pIdx}] Shell-only detected — auto-restarting CC CLI`);
+                try {
+                  require('child_process').execSync(
+                    `tmux send-keys -t tom_hum:0.${pIdx} "unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE && claude --dangerously-skip-permissions --continue"`,
+                    { timeout: 8000 }
+                  );
+                  require('child_process').execSync(
+                    `tmux send-keys -t tom_hum:0.${pIdx} Enter`,
+                    { timeout: 3000 }
+                  );
+                } catch (e) { log(`[🩺 RESPAWN][P${pIdx}] restart failed: ${e.message}`); }
+                isApiBusy = true;
+                continue; // Skip LLM interpretation for this pane
+              }
+
               const llmResult = await interpretState(paneOutput);
 
-              if (pIdx === 1 && llmResult.state !== 'question') _questionLoopCount = 0;
+              // Reset question count for this pane if not in question state
+              if (llmResult.state !== 'question') {
+                _paneQuestionCounts.set(pIdx, 0);
+              }
 
               if (llmResult.state === 'busy') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI BUSY: ${llmResult.summary}`);
-                if (pIdx === 1) isApiBusy = true;
+                isApiBusy = true;
               } else if (llmResult.state === 'question') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI QUESTION: ${llmResult.summary}`);
-                if (pIdx === 1) _questionLoopCount++;
+                const currentCount = (_paneQuestionCounts.get(pIdx) || 0) + 1;
+                _paneQuestionCounts.set(pIdx, currentCount);
 
                 if (llmResult.confidence >= 0.8) {
-                  if (pIdx === 1 && _questionLoopCount >= 3) {
-                    log(`[LLM-VISION][P${pIdx}] LOOP BREAK: ${_questionLoopCount} questions — sending Escape`);
-                    try { require('child_process').execSync(`tmux send-keys -t tom_hum:brain.${pIdx} Escape`, { timeout: 2000 }); } catch (e) { }
-                    _questionLoopCount = 0;
+                  if (currentCount >= 3) {
+                    log(`[LLM-VISION][P${pIdx}] LOOP BREAK: ${currentCount} questions — sending Escape`);
+                    try { require('child_process').execSync(`tmux send-keys -t tom_hum:0.${pIdx} Escape`, { timeout: 2000 }); } catch (e) { }
+                    _paneQuestionCounts.set(pIdx, 0);
                   } else {
                     log(`[LLM-VISION][P${pIdx}] AUTO-APPROVE: Sending Enter`);
-                    try { require('child_process').execSync(`tmux send-keys -t tom_hum:brain.${pIdx} Enter`, { timeout: 2000 }); } catch (e) { }
+                    try { require('child_process').execSync(`tmux send-keys -t tom_hum:0.${pIdx} Enter`, { timeout: 2000 }); } catch (e) { }
                   }
                   clearCache();
                 }
-                if (pIdx === 1) isApiBusy = true;
+                isApiBusy = true;
               } else if (llmResult.state === 'error') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI ERROR: ${llmResult.summary}`);
-                if (pIdx === 1) isApiBusy = true;
+                isApiBusy = true;
               } else if (llmResult.state !== 'idle' && llmResult.state !== 'complete' && llmResult.state !== 'unknown') {
                 log(`[LLM-VISION][P${pIdx}] CC CLI state: ${llmResult.state}`);
-                if (pIdx === 1) isApiBusy = true;
-              } else if (llmResult.state === 'unknown' && pIdx === 1) {
-                const hasIdlePrompt = paneOutput.includes('❯') || paneOutput.trim().split('\n').slice(-5).some(l => /^>\s*$/.test(l.trim()));
+                isApiBusy = true;
+              } else if (llmResult.state === 'unknown') {
+                const hasIdlePrompt = paneOutput.includes('❯') || paneOutput.includes('%') || paneOutput.trim().split('\n').slice(-5).some(l => /^>\s*$/.test(l.trim()));
                 if (!hasIdlePrompt) {
-                  log(`[LLM-VISION][P1] FALLBACK: No idle prompt detected`);
+                  log(`[LLM-VISION][P${pIdx}] FALLBACK: No idle prompt detected`);
                   isApiBusy = true;
                 }
               }
             } catch (innerE) {
               log(`[LLM-VISION][P${pIdx}] Capture failed: ${innerE.message}`);
-              if (pIdx === 1) isApiBusy = true;
+              isApiBusy = true;
             }
           }
         } catch (e) {
@@ -393,19 +513,27 @@ function startAutoCTO() {
           isApiBusy = true;
         }
 
+        // Old dispatch block removed — now runs BEFORE LLM Vision (line 342)
+
         if (isApiBusy) {
           scheduleNext(); return;
         }
-
-        // Check if queue has pending tasks — don't flood
-        const tasks = fs.readdirSync(config.WATCH_DIR).filter(f => config.TASK_PATTERN.test(f));
-        if (tasks.length > 0) { log('AUTO-CTO DEBUG: filesystem tasks pending'); scheduleNext(); return; }
 
         if (!isQueueEmpty()) { log('AUTO-CTO DEBUG: memory queue pending'); scheduleNext(); return; }
 
         const state = loadState();
         currentPhase = state.phase;
-        const project = config.PROJECTS[state.currentProjectIdx];
+
+        // 🎯 DYNAMIC PROJECT DISCOVERY — read live tmux pane directories
+        const { getActivePaneProjects } = require('./brain-tmux-controller');
+        const paneMap = getActivePaneProjects(config.TMUX_SESSION);
+        const liveProjects = Object.values(paneMap).map(p => p.projectName);
+        if (liveProjects.length === 0) {
+          log('AUTO-CTO: No live panes discovered. Sleeping...');
+          scheduleNext(); return;
+        }
+        const projectIdx = state.currentProjectIdx % liveProjects.length;
+        const project = liveProjects[projectIdx];
         if (!project) {
           state.currentProjectIdx = 0;
           saveState(state);
@@ -462,6 +590,20 @@ function startAutoCTO() {
 }
 
 async function handleScan(state, project, projectDir) {
+  // --- Ship Pipeline Hook (九變): nếu pipeline chưa xong → ưu tiên task pipeline ---
+  const pipelineCmd = shipPipeline.getNextPhaseCommand(project);
+  if (pipelineCmd && !shipPipeline.isShipComplete(project)) {
+    const phaseName = shipPipeline.getPhaseName(
+      (shipPipeline.getPipelineStatus(project) || { currentPhase: 1 }).currentPhase
+    );
+    log(`AUTO-CTO [SHIP PIPELINE]: ${project} — phase ${phaseName} chưa hoàn thành, dispatch pipeline task`);
+    const filename = `HIGH_mission_${project.replace(/-/g, '_')}_pipeline_${phaseName.toLowerCase()}_${Date.now()}.txt`;
+    fs.writeFileSync(path.join(config.WATCH_DIR, filename), pipelineCmd);
+    // Advance phase sau khi dispatch (optimistic)
+    shipPipeline.advancePhase(project, 'PASS');
+    return;
+  }
+
   log(`AUTO-CTO [始計 SCAN]: Scanning ${project} (cycle ${state.cycle + 1}/${MAX_FIX_CYCLES})...`);
 
   const errors = scanProject(projectDir);
@@ -484,6 +626,16 @@ async function handleScan(state, project, projectDir) {
       advanceProject(state);
       return;
     }
+    // 🏢 TRADING COMPANY: algo-trader GREEN → check trading cadence schedule
+    if (project === 'algo-trader') {
+      const tradingDispatched = dispatchDueTradingMissions();
+      if (tradingDispatched > 0) {
+        log(`AUTO-CTO [🏢 TRADING COMPANY]: ${tradingDispatched} cadence mission(s) dispatched`);
+        advanceProject(state);
+        return;
+      }
+    }
+
     // 🚀 GREEN PATH: Open Source RaaS AGI — đích đến của mọi dự án
     // Khi project GREEN, đẩy hướng Open Source + RaaS AGI thay vì idle
     const RAAS_COOLDOWN_MS = 30 * 60 * 1000; // 30 phút giữa các lần dispatch cùng project
@@ -657,7 +809,15 @@ async function handleVerify(state, project, projectDir) {
 }
 
 function advanceProject(state) {
-  state.currentProjectIdx = (state.currentProjectIdx + 1) % config.PROJECTS.length;
+  // Dynamic: count live panes to wrap index properly
+  let totalProjects = config.PROJECTS.length;
+  try {
+    const { getActivePaneProjects } = require('./brain-tmux-controller');
+    const paneMap = getActivePaneProjects(config.TMUX_SESSION);
+    const liveCount = Object.keys(paneMap).length;
+    if (liveCount > 0) totalProjects = liveCount;
+  } catch (e) { /* fallback to config.PROJECTS.length */ }
+  state.currentProjectIdx = (state.currentProjectIdx + 1) % totalProjects;
   state.phase = 'scan';
   state.cycle = 0;
   state.errors = [];

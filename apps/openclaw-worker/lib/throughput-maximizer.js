@@ -32,7 +32,7 @@ function log(msg) {
 function maximizeNodeEngine() {
     // UV_THREADPOOL_SIZE: Default = 4 → Max = 128
     // Affects: DNS lookups, file system ops, crypto, compression
-    // More threads = more parallel I/O = faster proxy throughput
+    // More threads = more parallel I/O = faster throughput
     if (!process.env.UV_THREADPOOL_SIZE) {
         // Note: Must be set BEFORE any I/O — this is a startup-only config
         // Since we're called at boot, child processes inherit this
@@ -43,7 +43,7 @@ function maximizeNodeEngine() {
     // Max listeners — prevent EventEmitter warnings during parallel ops
     process.setMaxListeners(50);
 
-    // HTTP/HTTPS Agent — Connection pooling for proxy requests
+    // HTTP/HTTPS Agent — Connection pooling requests
     // Default: maxSockets = Infinity but keepAlive = false → new TCP per request!
     // Fix: keepAlive = true + maxSockets = 25 → reuse connections
     const agentConfig = {

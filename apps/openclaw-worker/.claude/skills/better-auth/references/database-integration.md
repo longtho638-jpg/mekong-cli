@@ -447,7 +447,7 @@ DATABASE_URL=:memory:
 ```env
 MONGODB_URI=mongodb://localhost:27017/dbname
 # Or Atlas
-MONGODB_URI=mongodb+srv://<USER>:<PASSWORD>@<CLUSTER>.mongodb.net/<DBNAME>
+MONGODB_URI=mongodb+srv://user:password@cluster.mongodb.net/dbname
 ```
 
 ## Performance Optimization

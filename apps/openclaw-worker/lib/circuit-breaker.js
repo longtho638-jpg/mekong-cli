@@ -1,4 +1,9 @@
 'use strict';
+/**
+ * Circuit Breaker — fault tolerance state machine (CLOSED/OPEN/HALF_OPEN).
+ * Prevents cascading failures by tracking consecutive errors per named breaker.
+ * Auto-resets after RESET_TIMEOUT_MS cooldown period.
+ */
 const { log } = require('./brain-logger');
 
 const FAILURE_THRESHOLD = 3;

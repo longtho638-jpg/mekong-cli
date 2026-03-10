@@ -1,14 +1,15 @@
-"""
-Mekong CLI - Self-Improvement Engine
+"""Mekong CLI - Self-Improvement Engine.
 
 Analyzes execution patterns, deprecates bad recipes, suggests new ones.
 Maintains evolution journal in .mekong/journal.yaml.
 """
 
+from __future__ import annotations
+
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import yaml  # type: ignore[import-untyped]
 
@@ -25,7 +26,7 @@ class JournalEntry:
     action: str = ""  # "generated" | "deprecated" | "suggestion"
     target: str = ""  # recipe name or goal
     reason: str = ""
-    data: Dict[str, Any] = field(default_factory=dict)
+    data: dict[str, Any] = field(default_factory=dict)
 
 
 class SelfImprover:
@@ -39,25 +40,25 @@ class SelfImprover:
         self,
         memory_store: MemoryStore,
         recipe_generator: RecipeGenerator,
-        journal_path: Optional[str] = None,
+        journal_path: str | None = None,
     ) -> None:
-        """
-        Initialize self-improver.
+        """Initialize self-improver.
 
         Args:
             memory_store: Memory store for execution history
             recipe_generator: Generator for creating new recipes
             journal_path: Path to journal file
+
         """
         self.memory = memory_store
         self.generator = recipe_generator
         self.journal_path = journal_path or ".mekong/journal.yaml"
-        self._journal: List[JournalEntry] = []
+        self._journal: list[JournalEntry] = []
         self._load_journal()
 
-    def analyze_and_improve(self) -> List[JournalEntry]:
+    def analyze_and_improve(self) -> list[JournalEntry]:
         """Run full self-improvement cycle."""
-        new_entries: List[JournalEntry] = []
+        new_entries: list[JournalEntry] = []
 
         # Step 1: Deprecate bad recipes
         deprecated = self.deprecate_bad_recipes()
@@ -74,7 +75,7 @@ class SelfImprover:
         for goal in suggestions:
             recipe = self.generator.from_successful_run(
                 next(e for e in self.memory.recent(100)
-                     if e.goal == goal and e.status == "success")
+                     if e.goal == goal and e.status == "success"),
             )
             if recipe.valid:
                 path = self.generator.save_recipe(recipe)
@@ -88,13 +89,13 @@ class SelfImprover:
 
         return new_entries
 
-    def deprecate_bad_recipes(self) -> List[str]:
+    def deprecate_bad_recipes(self) -> list[str]:
         """Find and deprecate recipes with low success rates."""
-        deprecated: List[str] = []
+        deprecated: list[str] = []
         entries = self.memory.recent(500)
 
         # Group by recipe_used
-        recipe_runs: Dict[str, List[str]] = {}
+        recipe_runs: dict[str, list[str]] = {}
         for e in entries:
             if e.recipe_used:
                 recipe_runs.setdefault(e.recipe_used, []).append(e.status)
@@ -116,10 +117,10 @@ class SelfImprover:
 
         return deprecated
 
-    def suggest_new_recipes(self) -> List[str]:
+    def suggest_new_recipes(self) -> list[str]:
         """Find successful goals that have no associated recipe."""
         entries = self.memory.recent(100)
-        suggestions: List[str] = []
+        suggestions: list[str] = []
 
         # Find goals that succeeded without a recipe
         seen_goals: set = set()
@@ -130,11 +131,11 @@ class SelfImprover:
 
         return suggestions[:5]  # Limit suggestions
 
-    def get_journal(self, limit: int = 20) -> List[JournalEntry]:
+    def get_journal(self, limit: int = 20) -> list[JournalEntry]:
         """Get recent journal entries."""
         return self._journal[-limit:]
 
-    def get_evolution_stats(self) -> Dict[str, Any]:
+    def get_evolution_stats(self) -> dict[str, Any]:
         """Get evolution statistics."""
         generated = sum(1 for e in self._journal if e.action == "generated")
         deprecated = sum(1 for e in self._journal if e.action == "deprecated")
@@ -191,6 +192,6 @@ class SelfImprover:
 
 
 __all__ = [
-    "SelfImprover",
     "JournalEntry",
+    "SelfImprover",
 ]

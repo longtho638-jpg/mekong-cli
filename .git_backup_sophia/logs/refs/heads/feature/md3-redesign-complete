@@ -1,5 +1,0 @@
-0000000000000000000000000000000000000000 c06684243a8af9b491431f3f0750c5d5157d6994 Người hướng dẫn <longtho638@gmail.com> 1770313554 +0700	branch: Created from HEAD
-c06684243a8af9b491431f3f0750c5d5157d6994 16b69e60e54e0645a159c5640314b8d8daad96a9 Người hướng dẫn <longtho638@gmail.com> 1770313590 +0700	commit: feat(84tea): complete MD3 comprehensive redesign (8 phases)
-16b69e60e54e0645a159c5640314b8d8daad96a9 d9b3756f279a86fa8471e2d605816ae683e93848 Người hướng dẫn <longtho638@gmail.com> 1770314662 +0700	commit: feat(84tea): add UI/UX audit report and MainLayout fix for franchise page
-d9b3756f279a86fa8471e2d605816ae683e93848 a22c2673422e1072ecf07c78f5e97c3e4931dceb Người hướng dẫn <longtho638@gmail.com> 1770314883 +0700	commit: ci(84tea): add GitHub Actions CI/CD pipeline
-a22c2673422e1072ecf07c78f5e97c3e4931dceb aa181d2718ef64689702439b4a7150cf07adbbc8 Người hướng dẫn <longtho638@gmail.com> 1770316413 +0700	commit: feat(automation): Polar API Product Sync - zero-manual setup

@@ -1,46 +1,46 @@
-"""
-Mekong CLI - Recipe Parser
+"""Mekong CLI - Recipe Parser.
 
 Reads Markdown recipe files and converts them to Task lists.
 """
 
+from __future__ import annotations
+
 import re
-from pathlib import Path
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+from pathlib import Path
+from typing import Any
 
 
 @dataclass
 class RecipeStep:
-    """Single step in a recipe"""
+    """Single step in a recipe."""
 
     order: int
     title: str
     description: str
-    agent: Optional[str] = None
-    params: Dict[str, Any] = field(default_factory=dict)
-    dependencies: List[int] = field(default_factory=list)
+    agent: str | None = None
+    params: dict[str, Any] = field(default_factory=dict)
+    dependencies: list[int] = field(default_factory=list)
 
 
 @dataclass
 class Recipe:
-    """Parsed recipe from Markdown file"""
+    """Parsed recipe from Markdown file."""
 
     name: str
     description: str
-    steps: List[RecipeStep] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    steps: list[RecipeStep] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
     display: str = ""
 
     @property
     def is_one_button(self) -> bool:
-        """Check if this recipe should appear as a one-button action"""
+        """Check if this recipe should appear as a one-button action."""
         return self.display == "one-button"
 
 
 class RecipeParser:
-    """
-    Parse Markdown recipe files into structured Recipe objects.
+    """Parse Markdown recipe files into structured Recipe objects.
 
     Recipe format:
     ---
@@ -66,8 +66,8 @@ class RecipeParser:
         self.header_pattern = re.compile(r"^##\s+Step\s+(\d+):\s*(.+)$", re.MULTILINE)
         self.frontmatter_pattern = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
 
-    def parse_frontmatter(self, content: str) -> Dict[str, str]:
-        """Extract YAML frontmatter"""
+    def parse_frontmatter(self, content: str) -> dict[str, str]:
+        """Extract YAML frontmatter."""
         match = self.frontmatter_pattern.match(content)
         if not match:
             return {}
@@ -80,8 +80,8 @@ class RecipeParser:
 
         return metadata
 
-    def parse_steps(self, content: str) -> List[RecipeStep]:
-        """Extract steps from recipe content"""
+    def parse_steps(self, content: str) -> list[RecipeStep]:
+        """Extract steps from recipe content."""
         steps = []
 
         # Split by step headers
@@ -103,17 +103,18 @@ class RecipeParser:
         return steps
 
     def parse(self, filepath: Path) -> Recipe:
-        """
-        Parse a recipe file.
+        """Parse a recipe file.
 
         Args:
             filepath: Path to the .md recipe file
 
         Returns:
             Parsed Recipe object
+
         """
         if not filepath.exists():
-            raise FileNotFoundError(f"Recipe not found: {filepath}")
+            msg = f"Recipe not found: {filepath}"
+            raise FileNotFoundError(msg)
 
         content = filepath.read_text(encoding="utf-8")
 
@@ -130,7 +131,7 @@ class RecipeParser:
         # Get description (content between title and first step)
         # We use [^\n]+ for title to avoid matching newlines even if DOTALL was used (though we control flags)
         desc_match = re.search(
-            r"^#\s+[^\n]+\n+(.*?)(?=^##|\Z)", clean_content, re.MULTILINE | re.DOTALL
+            r"^#\s+[^\n]+\n+(.*?)(?=^##|\Z)", clean_content, re.MULTILINE | re.DOTALL,
         )
         description = desc_match.group(1).strip() if desc_match else ""
 
@@ -146,7 +147,7 @@ class RecipeParser:
         )
 
     def parse_string(self, content: str, name: str = "inline") -> Recipe:
-        """Parse recipe from string content"""
+        """Parse recipe from string content."""
         metadata = self.parse_frontmatter(content)
         clean_content = self.frontmatter_pattern.sub("", content).strip()
         steps = self.parse_steps(clean_content)
@@ -161,4 +162,4 @@ class RecipeParser:
 
 
 # Export
-__all__ = ["RecipeParser", "Recipe", "RecipeStep"]
+__all__ = ["Recipe", "RecipeParser", "RecipeStep"]

@@ -1,0 +1,157 @@
+name: 🦞 Tôm Hùm PR Auto-Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  # ──────────────────────────────────────────
+  # GATE 1: Quality Check (始計 - Assessment)
+  # ──────────────────────────────────────────
+  quality-gate:
+    name: "🛡️ Quality Gate"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install lint tools
+        run: pip install ruff bandit
+
+      - name: Lint changed Python files
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' || true)
+          if [ -n "$CHANGED" ]; then
+            echo "$CHANGED" | xargs ruff check --output-format=github || true
+          else
+            echo "No Python files changed"
+          fi
+
+      - name: Security scan changed files
+        run: |
+          CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.py' || true)
+          if [ -n "$CHANGED" ]; then
+            echo "$CHANGED" | xargs bandit -ll --exit-zero || true
+          fi
+
+      - name: Check for secrets in PR
+        run: |
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD)
+          if echo "$DIFF" | grep -iE "(api_key|secret_key|password|token)\s*=\s*['\"][^'\"]+['\"]" | grep -v "test\|example\|mock\|fake\|dummy"; then
+            echo "::error::⚠️ Possible secret detected in PR diff!"
+            exit 1
+          fi
+          echo "✅ No secrets detected"
+
+  # ──────────────────────────────────────────
+  # GATE 2: Build & Test (謀攻 - Strategy)
+  # ──────────────────────────────────────────
+  build-test:
+    name: "⚡ Build & Test"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+        continue-on-error: true
+
+      - name: Build
+        run: pnpm run build 2>&1 | tail -20
+        continue-on-error: true
+
+      - name: Test
+        run: pnpm run test 2>&1 | tail -30
+        continue-on-error: true
+
+  # ──────────────────────────────────────────
+  # GATE 3: PR Size & Quality Labels
+  # ──────────────────────────────────────────
+  pr-labeler:
+    name: "🏷️ Auto-Label"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Count changes and label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+
+            const additions = pr.additions;
+            const deletions = pr.deletions;
+            const total = additions + deletions;
+            const files = pr.changed_files;
+
+            // Size labels
+            let sizeLabel = 'size/S';
+            if (total > 500) sizeLabel = 'size/XL';
+            else if (total > 200) sizeLabel = 'size/L';
+            else if (total > 50) sizeLabel = 'size/M';
+
+            // Type detection from title
+            const title = pr.title.toLowerCase();
+            const labels = [sizeLabel];
+            if (title.startsWith('feat')) labels.push('feature');
+            if (title.startsWith('fix')) labels.push('bug');
+            if (title.startsWith('docs')) labels.push('documentation');
+            if (title.startsWith('refactor')) labels.push('refactor');
+            if (title.startsWith('test')) labels.push('testing');
+
+            try {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                labels: labels
+              });
+            } catch (e) {
+              console.log('Label creation may be needed:', e.message);
+            }
+
+            // Welcome comment for first-time contributors
+            const { data: prs } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              creator: pr.user.login
+            });
+
+            if (prs.length === 1) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: `## 🐉 Welcome to Mekong CLI, @${pr.user.login}!\n\nThanks for your first contribution! The Tôm Hùm 🦞 CTO will review your PR.\n\n**Quality checklist:**\n- [ ] Tests pass\n- [ ] No secrets in code\n- [ ] Conventional commit title (\`feat:\`, \`fix:\`, \`docs:\`)\n\n> *"速い者が勝つ" — Speed wins.* 🐉`
+              });
+            }

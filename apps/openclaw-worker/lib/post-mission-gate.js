@@ -49,7 +49,7 @@ function runSafetyGate(projectDir, missionId) {
       cwd: projectDir, encoding: 'utf-8', timeout: 10000
     }).trim();
     const deletionMatch = diffStat.match(/(\d+)\s+deletion/);
-    const deletions = deletionMatch ? parseInt(deletionMatch[1]) : 0;
+    const deletions = deletionMatch ? parseInt(deletionMatch[1], 10) : 0;
 
     if (deletions > maxDeletions) {
       const msg = `SAFETY GATE TIER 2: ${deletions} deletions (max ${maxDeletions})`;

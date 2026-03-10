@@ -11,8 +11,9 @@ dotenv.config();
 
 export class ConfigLoader {
   private static config: IConfig;
+  private static validated = false;
 
-  static load(configPath: string = 'config/default.yaml'): IConfig {
+  static load(configPath: string = 'config/default.yaml', skipValidation = false): IConfig {
     if (this.config) return this.config;
 
     try {
@@ -25,12 +26,18 @@ export class ConfigLoader {
       if (apiKey) this.config.exchange.apiKey = apiKey;
       if (apiSecret) this.config.exchange.secret = apiSecret;
 
-      // Strict validation
-      if (!this.config.exchange.apiKey || this.config.exchange.apiKey === 'YOUR_API_KEY' || this.config.exchange.apiKey === '') {
-        throw new Error('STRICT VALIDATION FAILED: Exchange API Key is missing or default');
-      }
-      if (!this.config.exchange.secret || this.config.exchange.secret === 'YOUR_API_SECRET' || this.config.exchange.secret === '') {
-        throw new Error('STRICT VALIDATION FAILED: Exchange API Secret is missing or default');
+      // Validate API keys only for live trading (not for backtest)
+      if (!skipValidation && !this.validated) {
+        const isLiveTrading = process.env.ENABLE_LIVE_TRADING === 'true';
+        if (isLiveTrading) {
+          if (!this.config.exchange.apiKey || this.config.exchange.apiKey === 'YOUR_API_KEY' || this.config.exchange.apiKey === '') {
+            throw new Error('LIVE TRADING VALIDATION FAILED: Exchange API Key is missing or default. Set EXCHANGE_API_KEY in .env');
+          }
+          if (!this.config.exchange.secret || this.config.exchange.secret === 'YOUR_API_SECRET' || this.config.exchange.secret === '') {
+            throw new Error('LIVE TRADING VALIDATION FAILED: Exchange API Secret is missing or default. Set EXCHANGE_SECRET in .env');
+          }
+          this.validated = true;
+        }
       }
 
       return this.config;
@@ -40,10 +47,20 @@ export class ConfigLoader {
     }
   }
 
-  static get(): IConfig {
+  static get(skipValidation = false): IConfig {
     if (!this.config) {
-      return this.load();
+      return this.load(undefined, skipValidation);
     }
     return this.config;
+  }
+
+  static hasValidApiKeys(): boolean {
+    if (!this.config) return false;
+    return !!(
+      this.config.exchange.apiKey &&
+      this.config.exchange.secret &&
+      this.config.exchange.apiKey !== 'YOUR_API_KEY' &&
+      this.config.exchange.secret !== 'YOUR_API_SECRET'
+    );
   }
 }

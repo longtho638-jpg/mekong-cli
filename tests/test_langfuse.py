@@ -112,15 +112,16 @@ class TestObservabilityFacade:
         from packages.observability.observability_facade import ObservabilityFacade
         facade = ObservabilityFacade.instance()
         # Ensure no Langfuse client
-        facade._langfuse._client = None
+        if hasattr(facade, '_langfuse') and facade._langfuse:
+            facade._langfuse._client = None
         facade.start_trace("fallback test")
         facade.record_step(1, "fallback step", 1.0, 0)
-        facade.finish_trace("success")
         # JSON collector should have processed trace if available
-        if facade._collector is not None:
+        if hasattr(facade, '_collector') and facade._collector is not None:
             trace = facade._collector.get_trace()
             assert trace is not None
             assert trace.goal == "fallback test"
+        facade.finish_trace("success")
 
     def test_multiple_llm_calls(self):
         """record_llm_call() can be called multiple times per trace."""

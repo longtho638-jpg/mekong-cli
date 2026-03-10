@@ -1,8 +1,0 @@
-{
-  "name": "@agencyos/vibe-notifications",
-  "version": "0.1.0",
-  "description": "Notification hub SDK — multi-channel delivery (email/push/SMS/Telegram), templates, preferences",
-  "main": "index.ts",
-  "types": "index.ts",
-  "license": "MIT"
-}

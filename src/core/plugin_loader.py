@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Plugin Loader
+"""Mekong CLI - Plugin Loader.
 
 Discovers and loads community agents, providers, and hooks via:
 1. Python entry_points (pip install mekong-plugin-X)
@@ -8,12 +7,14 @@ Discovers and loads community agents, providers, and hooks via:
 Plugin failures are logged as warnings — never crash the CLI.
 """
 
+from __future__ import annotations
+
 import importlib
 import importlib.metadata
 import importlib.util
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -26,20 +27,20 @@ DEFAULT_PLUGIN_DIR = Path.home() / ".mekong" / "plugins"
 
 
 class PluginLoader:
-    """
-    Discovers and loads Mekong plugins from entry_points and local directories.
+    """Discovers and loads Mekong plugins from entry_points and local directories.
 
     Args:
         agent_registry: AgentRegistry instance for agent plugin registration
         providers: Optional list to append provider plugins to
+
     """
 
-    def __init__(self, agent_registry: Any = None, providers: Optional[list] = None) -> None:
+    def __init__(self, agent_registry: Any = None, providers: list | None = None) -> None:
         self._agent_registry = agent_registry
         self._providers = providers if providers is not None else []
-        self._loaded: List[Dict[str, str]] = []
+        self._loaded: list[dict[str, str]] = []
 
-    def discover_all(self, plugin_dir: Optional[Path] = None) -> None:
+    def discover_all(self, plugin_dir: Path | None = None) -> None:
         """Run all discovery methods. Safe — never raises."""
         self.discover_entrypoints()
         self.discover_local(plugin_dir)
@@ -77,9 +78,8 @@ class PluginLoader:
         except Exception as e:
             logger.debug("No %s entry points found: %s", group, e)
 
-    def discover_local(self, plugin_dir: Optional[Path] = None) -> None:
-        """
-        Load .py files from plugin directory.
+    def discover_local(self, plugin_dir: Path | None = None) -> None:
+        """Load .py files from plugin directory.
 
         Convention: each plugin module must have a register(registry) function.
         """
@@ -110,7 +110,7 @@ class PluginLoader:
             except Exception as e:
                 logger.warning("Failed to load local plugin '%s': %s", fpath.name, e)
 
-    def list_plugins(self) -> List[Dict[str, str]]:
+    def list_plugins(self) -> list[dict[str, str]]:
         """Return list of loaded plugins with metadata."""
         return list(self._loaded)
 
@@ -120,4 +120,4 @@ class PluginLoader:
         return len(self._loaded)
 
 
-__all__ = ["PluginLoader", "DEFAULT_PLUGIN_DIR"]
+__all__ = ["DEFAULT_PLUGIN_DIR", "PluginLoader"]

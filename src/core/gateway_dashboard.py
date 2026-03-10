@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Gateway Dashboard HTML Template
+"""Mekong CLI - Gateway Dashboard HTML Template.
 
 The "Washing Machine" UI served at GET /.
 Uses safe DOM methods (createElement, textContent) — no innerHTML.
@@ -185,7 +184,7 @@ function loadProjects(){
 fetch('/projects').then(function(r){return r.json()}).then(function(list){
 var sel=document.getElementById('project-select');
 list.forEach(function(p){var o=document.createElement('option');o.value=p.name;o.textContent=p.name;sel.appendChild(o)});
-}).catch(function(){})
+}).catch(function(err){console.error('[Dashboard] Failed to load projects:', err)})
 }
 
 /* --- Live log helpers --- */

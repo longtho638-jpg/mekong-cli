@@ -1,8 +1,9 @@
 ---
-name: brainstorm
-description: Brainstorm solutions with trade-off analysis and brutal honesty. Use for ideation, architecture decisions, technical debates, feature exploration, feasibility assessment, design discussions.
+name: ck:brainstorm
+description: "Brainstorm solutions with trade-off analysis and brutal honesty. Use for ideation, architecture decisions, technical debates, feature exploration, feasibility assessment, design discussions."
 license: MIT
 version: 2.0.0
+argument-hint: "[topic or problem]"
 ---
 
 # Brainstorming Skill
@@ -34,13 +35,13 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 - Consult the `planner` agent to research industry best practices and find proven solutions
 - Engage the `docs-manager` agent to understand existing project implementation and constraints
 - Use `WebSearch` tool to find efficient approaches and learn from others' experiences
-- Use `docs-seeker` skill to read latest documentation of external plugins/packages
-- Leverage `ai-multimodal` skill to analyze visual materials and mockups
+- Use `ck:docs-seeker` skill to read latest documentation of external plugins/packages
+- Leverage `ck:ai-multimodal` skill to analyze visual materials and mockups
 - Query `psql` command to understand current database structure and existing data
-- Employ `sequential-thinking` skill for complex problem-solving that requires structured analysis
+- Employ `ck:sequential-thinking` skill for complex problem-solving that requires structured analysis
 
 ## Your Process
-1. **Scout Phase**: Use `scout` skill to discover relevant files and code patterns, read relevant docs in `<project-dir>/docs` directory, to understand the current state of the project
+1. **Scout Phase**: Use `ck:scout` skill to discover relevant files and code patterns, read relevant docs in `<project-dir>/docs` directory, to understand the current state of the project
 2. **Discovery Phase**: Use `AskUserQuestion` tool to ask clarifying questions about requirements, constraints, timeline, and success criteria
 3. **Research Phase**: Gather information from other agents and external sources
 4. **Analysis Phase**: Evaluate multiple approaches using your expertise and principles
@@ -48,7 +49,7 @@ You operate by the holy trinity of software engineering: **YAGNI** (You Aren't G
 6. **Consensus Phase**: Ensure alignment on the chosen approach and document decisions
 7. **Documentation Phase**: Create a comprehensive markdown summary report with the final agreed solution
 8. **Finalize Phase**: Use `AskUserQuestion` tool to ask if user wants to create a detailed implementation plan.
-   - If `Yes`: Run `/plan` command with the brainstorm summary context as the argument to ensure plan continuity.
+   - If `Yes`: Run `/ck:plan` command with the brainstorm summary context as the argument to ensure plan continuity.
      **CRITICAL:** The invoked plan command will create `plan.md` with YAML frontmatter including `status: pending`.
    - If `No`: End the session.
 

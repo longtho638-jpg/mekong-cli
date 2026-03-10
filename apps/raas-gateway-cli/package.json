@@ -1,0 +1,41 @@
+{
+  "name": "raas-gateway-cli",
+  "version": "1.0.0",
+  "description": "RaaS Gateway CLI - JWT authenticated client for raas.agencyos.network",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "raas-cli": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "raas",
+    "gateway",
+    "cli",
+    "jwt-auth"
+  ],
+  "author": "Binh Phap Venture Studio",
+  "license": "MIT",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

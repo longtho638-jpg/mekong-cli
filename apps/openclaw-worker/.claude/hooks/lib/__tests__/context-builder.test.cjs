@@ -260,6 +260,24 @@ describe('context-builder.cjs', () => {
       assert.ok(lines.some(l => l.includes('Rules')), 'Should include Rules header');
     });
 
+    it('buildRulesSection uses absolute paths when provided (Issue #476)', () => {
+      const lines = contextBuilder.buildRulesSection({
+        plansPath: '/Users/test/project/plans',
+        docsPath: '/Users/test/project/docs'
+      });
+      const joined = lines.join('\n');
+      assert.ok(joined.includes('/Users/test/project/plans'), 'Should include absolute plans path');
+      assert.ok(joined.includes('/Users/test/project/docs'), 'Should include absolute docs path');
+      assert.ok(!joined.includes('Plans → "plans/"'), 'Should NOT use bare relative "plans/" when absolute path provided');
+    });
+
+    it('buildRulesSection falls back to relative when no paths provided (Issue #476)', () => {
+      const lines = contextBuilder.buildRulesSection({});
+      const joined = lines.join('\n');
+      assert.ok(joined.includes('"plans"'), 'Should fall back to relative plans');
+      assert.ok(joined.includes('"docs"'), 'Should fall back to relative docs');
+    });
+
     it('buildModularizationSection returns array with Modularization', () => {
       const lines = contextBuilder.buildModularizationSection();
       assert.ok(Array.isArray(lines), 'Should return array');

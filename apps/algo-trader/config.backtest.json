@@ -1,0 +1,39 @@
+{
+  "dataPaths": {
+    "binance": "data/binance-btcusdt-1m.csv",
+    "bybit": "data/bybit-btcusdt-1m.csv",
+    "ethereum": "data/eth-swaps-1h.csv",
+    "oracle": "data/chainlink-btc-prices.csv"
+  },
+  "dateRange": {
+    "start": "2024-01-01",
+    "end": "2024-12-31"
+  },
+  "phases": {
+    "cex-arbitrage": {
+      "enabled": true,
+      "sandwichThreshold": 0.001,
+      "jitterMeanMs": 50
+    },
+    "dex-arbitrage": {
+      "enabled": true,
+      "sandwichThreshold": 0.002,
+      "jitterMeanMs": 200
+    },
+    "oracle-arbitrage": {
+      "enabled": false,
+      "sandwichThreshold": 0.005
+    }
+  },
+  "fees": {
+    "binance": { "maker": 0.0001, "taker": 0.0004 },
+    "bybit": { "maker": 0.0001, "taker": 0.0006 },
+    "ethereum": { "fee": 0.003 },
+    "default": { "fee": 0.001 }
+  },
+  "initialCapital": 100000,
+  "riskFreeRate": 0.04,
+  "outputFormat": "html",
+  "latencyMs": 50,
+  "batchSize": 1000
+}

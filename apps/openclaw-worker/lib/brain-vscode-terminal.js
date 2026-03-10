@@ -63,17 +63,13 @@ function spawnBrain() {
 
     const { proxyUrl, configDir } = getProxyConfig();
 
-    // Create launcher script (Triệt tiêu mọi proxy)
+    // DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
     const launcher = '/tmp/tom_hum_cc_launcher.sh';
     fs.writeFileSync(launcher, [
         '#!/bin/bash',
-        `unset ANTHROPIC_API_KEY`,
-        `unset ANTHROPIC_BASE_URL`,
-        `unset CLAUDE_BASE_URL`,
         `unset CLAUDE_CONFIG_DIR`,
-        'unset ANTHROPIC_AUTH_TOKEN',
         `cd "${config.MEKONG_DIR}"`,
-        'echo "🦞 TÔM HÙM Worker — CC CLI Interactive"',
+        'echo "🦞 TÔM HÙM Worker — CC CLI Interactive (DashScope Direct)"',
         'echo "================================"',
         `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`,
     ].join('\n'), { mode: 0o755 });

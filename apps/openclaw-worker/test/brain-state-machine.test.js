@@ -30,39 +30,39 @@ const {
 describe('Brain State Machine', () => {
     describe('isBusy', () => {
         it('should detect "Photosynthesizing" as busy', () => {
-            expect(isBusy('❯\nPhotosynthesizing...')).toBe(true);
+            expect(isBusy('❯\nPhotosynthesizing...').isBusy).toBe(true);
         });
 
         it('should detect "Crunching" as busy', () => {
-            expect(isBusy('❯\nCrunching...')).toBe(true);
+            expect(isBusy('❯\nCrunching...').isBusy).toBe(true);
         });
 
         it('should detect "Sautéing" as busy', () => {
-            expect(isBusy('❯\nSautéing...')).toBe(true);
+            expect(isBusy('❯\nSautéing...').isBusy).toBe(true);
         });
 
         it('should detect spinner characters as busy', () => {
-            expect(isBusy('❯\n⠋ Processing...')).toBe(true);
+            expect(isBusy('❯\n⠋ Processing...').isBusy).toBe(true);
         });
 
         it('should detect "Running command" as busy', () => {
-            expect(isBusy('❯\nRunning command...')).toBe(true);
+            expect(isBusy('❯\nRunning command...').isBusy).toBe(true);
         });
 
         it('should NOT detect empty output as busy', () => {
-            expect(isBusy('')).toBe(false);
+            expect(isBusy('').isBusy).toBe(false);
         });
 
         it('should NOT detect bare prompt as busy', () => {
-            expect(isBusy('❯ ')).toBe(false);
+            expect(isBusy('❯ ').isBusy).toBe(false);
         });
 
         it('should detect "Cooking" as busy', () => {
-            expect(isBusy('❯\nCooking stuff...')).toBe(true);
+            expect(isBusy('❯\nCooking stuff...').isBusy).toBe(true);
         });
 
         it('should detect subagent activity', () => {
-            expect(isBusy('❯\n3 local agents running')).toBe(true);
+            expect(isBusy('❯\n3 local agents running').isBusy).toBe(true);
         });
     });
 

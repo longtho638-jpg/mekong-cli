@@ -77,8 +77,7 @@ async function generateCustomMission(projectDir, learningReport) {
 
     const { callLLM } = require('./llm-interpreter');
     // Note: callLLM might not be exported, use interpretState's internal approach
-    const http = require('http');
-    const PROXY_PORT = config.PROXY_PORT || 20128;
+
 
     const prompt = `You are a senior CTO analyzing a codebase to find the SINGLE most impactful improvement.
 
@@ -101,29 +100,29 @@ Generate ONE custom improvement mission. It should be:
 Return JSON: {"cmd": "description of what to do (max 80 chars)", "complexity": "medium", "reason": "why this is the most impactful improvement right now"}`;
 
     return new Promise((resolve) => {
-        const body = JSON.stringify({
-            model: 'gemini-3-flash',
-            max_tokens: 1024,
-            system: 'Return ONLY valid JSON. No explanation.',
-            messages: [{ role: 'user', content: prompt }]
-        });
+        const API_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
+        const apiKey = process.env.DASHSCOPE_API_KEY || 'sk-sp-afce4429a10e41bb901d6012d7f525c8';
 
-        const timer = setTimeout(() => { resolve(null); }, 15000);
-
-        const req = http.request({
-            hostname: '127.0.0.1', port: PROXY_PORT,
-            path: '/v1/messages', method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': 'ollama', 'anthropic-version': '2023-06-01' }
-        }, (res) => {
-            let data = '';
-            res.on('data', c => data += c);
-            res.on('end', () => {
-                clearTimeout(timer);
+        fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'qwen-plus',
+                messages: [
+                    { role: 'system', content: 'Return ONLY valid JSON. No explanation.' },
+                    { role: 'user', content: prompt }
+                ]
+            }),
+            signal: AbortSignal.timeout(15000)
+        })
+            .then(res => res.json())
+            .then(data => {
                 try {
-                    const r = JSON.parse(data);
-                    const textBlock = (r.content || []).find(c => c.type === 'text');
-                    const text = textBlock?.text || '';
-                    const jsonStr = text.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+                    const content = data?.choices?.[0]?.message?.content || '';
+                    const jsonStr = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
                     const result = JSON.parse(jsonStr);
                     if (result.cmd) {
                         log(`GENERATED: "${result.cmd}" — ${result.reason?.slice(0, 60)}`);
@@ -135,12 +134,11 @@ Return JSON: {"cmd": "description of what to do (max 80 chars)", "complexity": "
                     log(`Parse error: ${e.message}`);
                     resolve(null);
                 }
+            })
+            .catch(e => {
+                log(`Network/Timeout error: ${e.message}`);
+                resolve(null);
             });
-        });
-
-        req.on('error', () => { clearTimeout(timer); resolve(null); });
-        req.write(body);
-        req.end();
     });
 }
 
@@ -149,8 +147,7 @@ Return JSON: {"cmd": "description of what to do (max 80 chars)", "complexity": "
  * Sends raw build/lint/test output and gets nuanced analysis.
  */
 async function interpretScanOutput(rawOutput, projectName) {
-    const http = require('http');
-    const PROXY_PORT = config.PROXY_PORT || 20128;
+
 
     const prompt = `Analyze this build/lint/test output for project "${projectName}".
 Return JSON: {"build": "pass|fail", "lint": {"errors": 0, "warnings": 0}, "test": {"pass": 0, "fail": 0, "total": 0}, "nuancedIssues": ["description of subtle issues"], "coverageChange": "up|down|same|unknown"}
@@ -159,36 +156,33 @@ Output:
 ${rawOutput.slice(-2000)}`;
 
     return new Promise((resolve) => {
-        const body = JSON.stringify({
-            model: 'gemini-3-flash', max_tokens: 1024,
-            system: 'Return ONLY valid JSON.',
-            messages: [{ role: 'user', content: prompt }]
-        });
+        const API_URL = 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions';
+        const apiKey = process.env.DASHSCOPE_API_KEY || 'sk-sp-afce4429a10e41bb901d6012d7f525c8';
 
-        const timer = setTimeout(() => { resolve(null); }, 15000);
-
-        const req = http.request({
-            hostname: '127.0.0.1', port: PROXY_PORT,
-            path: '/v1/messages', method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': 'ollama', 'anthropic-version': '2023-06-01' }
-        }, (res) => {
-            let data = '';
-            res.on('data', c => data += c);
-            res.on('end', () => {
-                clearTimeout(timer);
+        fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: 'qwen-plus',
+                messages: [
+                    { role: 'system', content: 'Return ONLY valid JSON.' },
+                    { role: 'user', content: prompt }
+                ]
+            }),
+            signal: AbortSignal.timeout(15000)
+        })
+            .then(res => res.json())
+            .then(data => {
                 try {
-                    const r = JSON.parse(data);
-                    const textBlock = (r.content || []).find(c => c.type === 'text');
-                    const text = textBlock?.text || '';
-                    const jsonStr = text.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
+                    const content = data?.choices?.[0]?.message?.content || '';
+                    const jsonStr = content.replace(/```json?\n?/g, '').replace(/```/g, '').trim();
                     resolve(JSON.parse(jsonStr));
                 } catch (e) { resolve(null); }
-            });
-        });
-
-        req.on('error', () => { clearTimeout(timer); resolve(null); });
-        req.write(body);
-        req.end();
+            })
+            .catch(e => resolve(null));
     });
 }
 

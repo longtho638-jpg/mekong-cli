@@ -1,0 +1,34 @@
+name = "mekong-engine"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Replace with YOUR Cloudflare account ID (Dashboard → Overview → right sidebar)
+account_id = "YOUR_CLOUDFLARE_ACCOUNT_ID"
+
+[vars]
+ENVIRONMENT = "production"
+DEFAULT_LLM_MODEL = "@cf/meta/llama-3.1-8b-instruct"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "mekong-db"
+# Create D1: wrangler d1 create mekong-db → paste database_id here
+database_id = "YOUR_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+# Create KV: wrangler kv namespace create RATE_LIMIT_KV → paste id here
+id = "YOUR_KV_NAMESPACE_ID"
+
+[ai]
+binding = "AI"
+
+# R2 Bucket — enable R2 in dashboard first, then uncomment:
+# [[r2_buckets]]
+# binding = "RECIPES"
+# bucket_name = "mekong-recipes"
+
+# Secrets (set via: CLOUDFLARE_API_TOKEN=<new-token> npx wrangler secret put <NAME>)
+# LLM_API_KEY, SERVICE_TOKEN, POLAR_WEBHOOK_SECRET

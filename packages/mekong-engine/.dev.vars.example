@@ -1,0 +1,12 @@
+# Copy to .dev.vars and fill in values
+# cp .dev.vars.example .dev.vars
+
+# Required for BYOK encryption (any random string 32+ chars)
+SERVICE_TOKEN=your-random-secret-string-here
+
+# Optional: Polar.sh webhook signature validation
+POLAR_WEBHOOK_SECRET=
+
+# Optional: Global fallback LLM (used when tenant has no BYOK key)
+LLM_API_KEY=
+LLM_BASE_URL=https://api.openai.com/v1

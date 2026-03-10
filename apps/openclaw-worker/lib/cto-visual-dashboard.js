@@ -185,20 +185,7 @@ function writeDashboardLog(states) {
         if (stats.totalMissions > 0) {
             qualityMetrics = ` | Quality: ${stats.avgScore} ${stats.trend}`;
         }
-        // 🕰️ Level 9: Real-time Tokens from Adapter Log
-        try {
-            const proxyLog = '/tmp/proxy_20128.log';
-            if (fs.existsSync(proxyLog)) {
-                const lines = fs.readFileSync(proxyLog, 'utf-8').trim().split('\n');
-                const lastLines = lines.slice(-50); // Scan last 50 lines
-                // Regex: [12:30:45] ✅ 354tok (AG:gemini-3-pro) [200]
-                const tokenMatches = lastLines.map(l => l.match(/✅\s+(\d+)tok/)).filter(Boolean);
-                if (tokenMatches.length > 0) {
-                    const recentTokens = tokenMatches.slice(-3).map(m => m[1]).join(', ');
-                    metrics += ` | LiveTok: ${recentTokens}`;
-                }
-            }
-        } catch (e) { }
+
 
         const line = `[${ts}] [${active}/${total} active] ${statusLine}${metrics}${qualityMetrics}\n`;
 

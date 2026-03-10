@@ -13,16 +13,18 @@
  * - Throttled API calls (1 min for prompts, 5 mins for tool use)
  */
 
-const fs = require("fs");
-const path = require("path");
-const os = require("os");
-const { execSync } = require("child_process");
-const { isHookEnabled } = require('./lib/ck-config-utils.cjs');
+// Crash wrapper
+try {
+  const fs = require("fs");
+  const path = require("path");
+  const os = require("os");
+  const { execSync } = require("child_process");
+  const { isHookEnabled } = require('./lib/ck-config-utils.cjs');
 
-// Early exit if hook disabled in config
-if (!isHookEnabled('usage-context-awareness')) {
-  process.exit(0);
-}
+  // Early exit if hook disabled in config
+  if (!isHookEnabled('usage-context-awareness')) {
+    process.exit(0);
+  }
 
 // Cache configuration
 const USAGE_CACHE_FILE = path.join(os.tmpdir(), "ck-usage-limits-cache.json");
@@ -157,9 +159,21 @@ async function main() {
 
 	// Output result (no injection, just continue)
 	console.log(JSON.stringify(result));
-}
+  }
 
-main().catch(() => {
-	console.log(JSON.stringify({ continue: true }));
-	process.exit(0);
-});
+  main().catch(() => {
+    console.log(JSON.stringify({ continue: true }));
+    process.exit(0);
+  });
+} catch (e) {
+  // Minimal crash logging (zero deps — only Node builtins)
+  try {
+    const fs = require('fs');
+    const p = require('path');
+    const logDir = p.join(__dirname, '.logs');
+    if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+    fs.appendFileSync(p.join(logDir, 'hook-log.jsonl'),
+      JSON.stringify({ ts: new Date().toISOString(), hook: p.basename(__filename, '.cjs'), status: 'crash', error: e.message }) + '\n');
+  } catch (_) {}
+  process.exit(0); // fail-open
+}

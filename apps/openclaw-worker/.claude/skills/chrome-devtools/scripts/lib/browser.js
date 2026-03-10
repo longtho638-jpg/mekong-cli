@@ -19,6 +19,36 @@ let browserInstance = null;
 let pageInstance = null;
 
 /**
+ * Resolve headless mode based on explicit value or OS auto-detection.
+ * - Explicit 'true'/'false' or boolean always wins
+ * - CI environments (CI, GITHUB_ACTIONS, GITLAB_CI, JENKINS_URL) → headless
+ * - Linux → headless (servers/WSL typically have no display)
+ * - macOS/Windows → headed for better debugging
+ * @param {string|boolean|undefined} value - CLI arg value or boolean
+ * @returns {boolean} - true for headless, false for headed
+ */
+export function resolveHeadless(value) {
+  if (value === false || value === 'false') return false;
+  if (value === true || value === 'true') return true;
+
+  // Auto-detect: CI → headless
+  if (process.env.CI || process.env.GITHUB_ACTIONS || process.env.GITLAB_CI || process.env.JENKINS_URL) {
+    log('Auto-detected CI environment → headless');
+    return true;
+  }
+
+  // Linux → headless (includes WSL, remote servers)
+  if (process.platform === 'linux') {
+    log('Auto-detected Linux → headless');
+    return true;
+  }
+
+  // macOS/Windows → headed for debugging
+  log(`Auto-detected ${process.platform} → headed`);
+  return false;
+}
+
+/**
  * Get default Chrome profile path based on OS
  * @returns {string} - Path to Chrome's default user data directory
  */
@@ -223,21 +253,24 @@ export async function getBrowser(options = {}) {
     log(`Using default Chrome profile: ${userDataDir}`);
   }
 
+  // Destructure known properties — only pass Puppeteer-valid options to launch()
+  const { headless, args: extraArgs, viewport, useDefaultProfile, profile, browserUrl, wsEndpoint: _ws, userDataDir: _udd, ...restOptions } = options;
+
   // Launch new browser
   const launchOptions = {
-    headless: options.headless !== false,
+    headless: resolveHeadless(headless),
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
-      ...(options.args || [])
+      ...(extraArgs || [])
     ],
-    defaultViewport: options.viewport || {
+    defaultViewport: viewport || {
       width: 1920,
       height: 1080
     },
     ...(userDataDir && { userDataDir }),
-    ...options
+    ...restOptions
   };
 
   log('Launching new browser');

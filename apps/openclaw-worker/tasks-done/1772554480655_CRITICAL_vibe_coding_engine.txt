@@ -1,0 +1,86 @@
+/bootstrap:auto:parallel /cook CRITICAL: Mekong Vibe Coding Engine — THỨ DUY NHẤT TRÊN THẾ GIỚI
+
+## TẦM NHÌN (Chairman 100/100):
+Ngoài kia CHỤC NGÀN repo AI coding tools — tất cả GIỐNG NHAU:
+- ClaudeKit, Cursor, Aider, Continue, Cline... = "gõ prompt → 1 agent viết code"
+- Skill repos = files tĩnh, không runtime, không orchestration
+
+Mekong CLI KHÁC BIỆT DUY NHẤT vì có:
+1. 100+ Industry SDK Packages (vibe-fnb, vibe-fintech, vibe-healthcare...)
+2. Multi-agent orchestration (spawn N agents parallel)
+3. Credit billing system (RaaS monetization)
+
+=> KẾT HỢP 3 thứ này = VIBE CODING ENGINE: 
+"Dev mô tả ý tưởng → Engine tự chọn SDK → Spawn agents → Ra app hoàn chỉnh"
+
+## IMPLEMENTATION PLAN:
+
+### Phase 1: SDK Recipe System (`packages/vibe/src/recipes/`)
+Mỗi package cần 1 recipe file mô tả khả năng:
+
+```yaml
+# packages/vibe-fnb/recipe.yaml
+name: vibe-fnb
+industry: food-and-beverage
+capabilities:
+  - menu-management
+  - order-system
+  - table-reservation
+  - kitchen-display
+provides:
+  - MenuComponent
+  - OrderFlow
+  - KitchenDashboard
+requires: [vibe-ui, vibe-auth]
+starter_prompt: "Restaurant/cafe management system with menu, orders, and kitchen display"
+```
+
+Tạo recipe.yaml cho TOP 10 packages:
+- vibe-fnb, vibe-payment, vibe-auth, vibe-ui, vibe-ecommerce
+- vibe-pos, vibe-edge, vibe-observability, fintech-hub-sdk, healthcare-hub-sdk
+
+### Phase 2: Vibe Engine Core (`src/vibe_engine/`)
+```
+src/vibe_engine/
+├── intent_parser.py      # Parse "build me a POS" → {industry: fnb, features: [pos, payment]}
+├── recipe_matcher.py     # Match intent → relevant SDK recipes  
+├── task_graph.py         # Build dependency graph of tasks
+├── agent_spawner.py      # Spawn parallel agents with SDK context
+├── result_merger.py      # Merge N agent outputs → 1 project
+└── __init__.py
+```
+
+### Phase 3: CLI Commands
+```python
+# New commands in src/cli/main.py
+mekong vibe "mô tả ý tưởng"     # Intent → Match → Spawn → Build → Ship
+mekong init <industry>            # Scaffold from SDK template
+mekong compose <pkg1> <pkg2>     # Combine packages manually
+mekong catalog                    # List all available SDKs + capabilities
+```
+
+### Phase 4: Starter Templates (`templates/`)
+```
+templates/
+├── fnb-pos/           # POS system template
+├── fnb-ordering/      # Customer ordering app
+├── ecommerce-store/   # E-commerce storefront
+├── fintech-dashboard/ # Financial dashboard
+├── healthcare-portal/ # Patient portal
+└── template.yaml      # Template metadata schema
+```
+
+## DELIVERABLES:
+1. 10 recipe.yaml files (1 per top SDK)
+2. 5 Python files trong src/vibe_engine/
+3. CLI commands registered
+4. 3 starter templates (fnb-pos, ecommerce-store, fintech-dashboard)
+5. docs/vibe-coding.md documentation
+
+## NGUYÊN TẮC:
+- KHÔNG copy flow của Claude/Cursor (1 agent gõ code) — KHÁC BIỆT!
+- SDK context injection = mỗi agent biết package API, không viết code từ scratch
+- Multi-agent = nhanh gấp 5x so với single agent
+- Templates = dev ra app trong 5 phút, không phải 5 giờ
+
+CHỈ sửa TỐI ĐA 15 file. Git commit với message: "feat(vibe-engine): SDK-powered multi-agent vibe coding engine"

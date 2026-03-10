@@ -102,35 +102,7 @@ function recordMission({ project, prompt, elapsed, paneIdx, channel }) {
   return entry;
 }
 
-/**
- * Read proxy's usage-history.json for real request counts.
- * @returns {{ totalRequests: number, todayRequests: number, byModel: object }}
- */
-function readProxyUsage() {
-  try {
-    if (!fs.existsSync(USAGE_HISTORY)) return null;
-    const data = JSON.parse(fs.readFileSync(USAGE_HISTORY, 'utf-8'));
-    const today = new Date().toISOString().slice(0, 10);
-    let totalRequests = 0;
-    let todayRequests = 0;
-    const byModel = {};
 
-    for (const [hour, val] of Object.entries(data)) {
-      const count = val._total || 0;
-      totalRequests += count;
-      if (hour.startsWith(today)) todayRequests += count;
-      for (const provider of ['claude', 'gemini']) {
-        if (!val[provider]) continue;
-        for (const [model, n] of Object.entries(val[provider])) {
-          if (model.startsWith('_')) continue;
-          const key = `${provider}/${model}`;
-          byModel[key] = (byModel[key] || 0) + n;
-        }
-      }
-    }
-    return { totalRequests, todayRequests, byModel };
-  } catch (e) { return null; }
-}
 
 /**
  * Get comprehensive quota summary.
@@ -151,7 +123,6 @@ function getSummary() {
       estimatedTokens: hourMissions.reduce((s, m) => s + m.totalTokens, 0),
     },
     today: todayTotals,
-    proxyUsage: readProxyUsage(),
     channels: CHANNELS,
   };
 }
@@ -204,7 +175,6 @@ module.exports = {
   recordMission,
   getSummary,
   getChannelQuota,
-  readProxyUsage,
   isWithinBudget,
   CHANNELS,
 };

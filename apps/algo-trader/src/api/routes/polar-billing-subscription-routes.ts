@@ -47,21 +47,50 @@ export function buildPolarBillingRoutes(
       }
     });
 
-    /** POST /api/v1/billing/webhook — Polar webhook receiver */
-    fastify.post('/api/v1/billing/webhook', async (req, reply) => {
+    /** POST /api/v1/billing/webhook — Polar webhook receiver (rate limited) */
+    fastify.post('/api/v1/billing/webhook', {
+      config: {
+        rateLimit: {
+          max: 100,
+          timeWindow: '1 minute',
+        },
+      },
+    }, async (req, reply) => {
       const rawBody = JSON.stringify(req.body);
       const signature = (req.headers['x-polar-signature'] ?? req.headers['webhook-signature'] ?? '') as string;
+      const timestamp = new Date().toISOString();
+      const sourceIp = req.ip || 'unknown';
 
       if (!webhookHandler.verifySignature(rawBody, signature)) {
+        fastify.log.error({
+          event: 'webhook_signature_invalid',
+          timestamp,
+          sourceIp,
+          eventType: (req.body as any)?.type,
+        });
         return reply.status(401).send({ error: 'Invalid webhook signature' });
       }
 
       const parsed = PolarWebhookPayloadSchema.safeParse(req.body);
       if (!parsed.success) {
+        fastify.log.warn({
+          event: 'webhook_payload_invalid',
+          timestamp,
+          sourceIp,
+          errors: parsed.error.issues,
+        });
         return reply.status(400).send({ error: 'Invalid webhook payload' });
       }
 
       const result = webhookHandler.handleEvent(parsed.data);
+      fastify.log.info({
+        event: 'webhook_processed',
+        timestamp,
+        sourceIp,
+        eventType: parsed.data.type,
+        tenantId: result.tenantId,
+        action: result.action,
+      });
       return reply.status(200).send(result);
     });
 

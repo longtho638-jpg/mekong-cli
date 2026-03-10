@@ -1,20 +1,23 @@
-"""
-Mekong CLI - IPC Agent Message Bus
+"""Mekong CLI - IPC Agent Message Bus.
 
 Electron's ipcMain/ipcRenderer mapped to CLI agent communication.
 on/send = fire-and-forget pub/sub. handle/invoke = async request/response.
 """
 
+from __future__ import annotations
+
 import asyncio
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any
 
 
 class IPCChannel(str, Enum):
     """Named channels for inter-agent communication (mirrors Electron channel model)."""
+
     AGENT_REQUEST = "agent_request"
     AGENT_RESPONSE = "agent_response"
     ORCHESTRATOR_COMMAND = "orchestrator_command"
@@ -25,9 +28,10 @@ class IPCChannel(str, Enum):
 @dataclass
 class IPCMessage:
     """Typed message envelope with sender, payload, timestamp, and correlation_id."""
+
     channel: IPCChannel
     sender: str
-    payload: Dict[str, Any]
+    payload: dict[str, Any]
     timestamp: float = field(default_factory=time.time)
     correlation_id: str = field(default_factory=lambda: uuid.uuid4().hex)
 
@@ -41,13 +45,13 @@ class IPCBus:
 
     def __init__(self, invoke_timeout: float = 10.0) -> None:
         """Args:
-            invoke_timeout: Seconds before invoke() raises asyncio.TimeoutError.
+        invoke_timeout: Seconds before invoke() raises asyncio.TimeoutError.
         """
-        self._handlers: Dict[IPCChannel, List[IPCHandler]] = {}
-        self._invoke_handlers: Dict[IPCChannel, IPCInvokeHandler] = {}
+        self._handlers: dict[IPCChannel, list[IPCHandler]] = {}
+        self._invoke_handlers: dict[IPCChannel, IPCInvokeHandler] = {}
         self._invoke_timeout = invoke_timeout
 
-    def send(self, channel: IPCChannel, payload: Dict[str, Any], sender: str = "bus") -> IPCMessage:
+    def send(self, channel: IPCChannel, payload: dict[str, Any], sender: str = "bus") -> IPCMessage:
         """Fire-and-forget to all on() listeners. Returns the constructed IPCMessage."""
         message = IPCMessage(channel=channel, sender=sender, payload=payload)
         for handler in self._handlers.get(channel, []):
@@ -68,7 +72,7 @@ class IPCBus:
     async def invoke(
         self,
         channel: IPCChannel,
-        payload: Dict[str, Any],
+        payload: dict[str, Any],
         sender: str = "bus",
     ) -> Any:
         """Async request/response. Mirrors ipcRenderer.invoke.
@@ -76,13 +80,15 @@ class IPCBus:
         Raises:
             KeyError: No handle() registered for channel.
             asyncio.TimeoutError: Handler exceeded invoke_timeout.
+
         """
         if channel not in self._invoke_handlers:
-            raise KeyError(f"No handler registered for channel: {channel.value!r}")
+            msg = f"No handler registered for channel: {channel.value!r}"
+            raise KeyError(msg)
         message = IPCMessage(channel=channel, sender=sender, payload=payload)
         return await asyncio.wait_for(
             asyncio.get_event_loop().run_in_executor(
-                None, self._invoke_handlers[channel], message
+                None, self._invoke_handlers[channel], message,
             ),
             timeout=self._invoke_timeout,
         )
@@ -92,12 +98,12 @@ class IPCBus:
         self._invoke_handlers.pop(channel, None)
 
     @property
-    def registered_channels(self) -> List[IPCChannel]:
+    def registered_channels(self) -> list[IPCChannel]:
         """All channels with at least one on() or handle() registration."""
         return list(set(list(self._handlers) + list(self._invoke_handlers)))
 
 
-_default_bus: Optional[IPCBus] = None
+_default_bus: IPCBus | None = None
 
 
 def get_ipc_bus() -> IPCBus:
@@ -109,10 +115,10 @@ def get_ipc_bus() -> IPCBus:
 
 
 __all__ = [
-    "IPCChannel",
-    "IPCMessage",
     "IPCBus",
+    "IPCChannel",
     "IPCHandler",
     "IPCInvokeHandler",
+    "IPCMessage",
     "get_ipc_bus",
 ]

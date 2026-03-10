@@ -9,7 +9,6 @@
  */
 
 const { stdin, env } = require('process');
-const { execSync } = require('child_process');
 const os = require('os');
 const fs = require('fs');
 const path = require('path');
@@ -19,24 +18,10 @@ const { green, yellow, red, cyan, magenta, dim, coloredBar, RESET, shouldUseColo
 const { parseTranscript } = require('./hooks/lib/transcript-parser.cjs');
 const { countConfigs } = require('./hooks/lib/config-counter.cjs');
 const { loadConfig } = require('./hooks/lib/ck-config-utils.cjs');
+const { getGitInfo } = require('./hooks/lib/git-info-cache.cjs');
 
 // Buffer constant matching /context output (22.5% of 200k)
 const AUTOCOMPACT_BUFFER = 45000;
-
-/**
- * Safe command execution wrapper
- */
-function exec(cmd) {
-  try {
-    return execSync(cmd, {
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'ignore'],
-      windowsHide: true
-    }).trim();
-  } catch {
-    return '';
-  }
-}
 
 /**
  * Expand home directory to ~
@@ -57,9 +42,6 @@ function getTerminalWidth() {
     const parsed = parseInt(env.COLUMNS, 10);
     if (!isNaN(parsed) && parsed > 0) return parsed;
   }
-  // Subprocess fallback
-  const tputCols = exec('tput cols');
-  if (tputCols && /^\d+$/.test(tputCols)) return parseInt(tputCols, 10);
   return 120; // Safe default
 }
 
@@ -401,27 +383,14 @@ async function main() {
 
     const modelName = data.model?.display_name || 'Claude';
 
-    // Git detection
-    let gitBranch = '';
-    let gitUnstaged = 0;
-    let gitStaged = 0;
-    let gitAhead = 0;
-    let gitBehind = 0;
-    if (exec('git rev-parse --git-dir')) {
-      gitBranch = exec('git branch --show-current') || exec('git rev-parse --short HEAD');
-      const unstagedOutput = exec('git diff --name-only');
-      if (unstagedOutput) gitUnstaged = unstagedOutput.split('\n').filter(l => l.trim()).length;
-      // Staged files count
-      const stagedOutput = exec('git diff --cached --name-only');
-      if (stagedOutput) gitStaged = stagedOutput.split('\n').filter(l => l.trim()).length;
-      // Ahead/behind upstream
-      const aheadBehind = exec('git rev-list --left-right --count @{u}...HEAD 2>/dev/null');
-      if (aheadBehind) {
-        const parts = aheadBehind.split(/\s+/);
-        gitBehind = parseInt(parts[0], 10) || 0;
-        gitAhead = parseInt(parts[1], 10) || 0;
-      }
-    }
+    // Git detection using batched cache
+    const rawDir = data.workspace?.current_dir || data.cwd || process.cwd();
+    const gitInfo = getGitInfo(rawDir);
+    const gitBranch = gitInfo?.branch || '';
+    const gitUnstaged = gitInfo?.unstaged || 0;
+    const gitStaged = gitInfo?.staged || 0;
+    const gitAhead = gitInfo?.ahead || 0;
+    const gitBehind = gitInfo?.behind || 0;
 
     // Active plan detection - read from session temp file
     let activePlan = '';
@@ -515,7 +484,6 @@ async function main() {
     const linesRemoved = data.cost?.total_lines_removed || 0;
 
     // Config counts
-    const rawDir = data.workspace?.current_dir || data.cwd || process.cwd();
     const configs = countConfigs(rawDir);
 
     // Build render context

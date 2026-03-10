@@ -1,9 +1,10 @@
 ---
-name: context-engineering
+name: ck:context-engineering
 description: >-
   Check context usage limits, monitor time remaining, optimize token consumption, debug context failures.
   Use when asking about context percentage, rate limits, usage warnings, context optimization, agent architectures, memory systems.
 version: 1.0.0
+argument-hint: "[topic or question]"
 ---
 
 # Context Engineering

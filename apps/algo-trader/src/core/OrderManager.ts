@@ -72,4 +72,17 @@ export class OrderManager {
   getLastOrder(): IOrder | undefined {
     return this.orders[this.orders.length - 1];
   }
+
+  /**
+   * Add arbitrage trade (buy + sell order pair)
+   * Logs both legs as single atomic event
+   */
+  addArbTrade(buyOrder: IOrder, sellOrder: IOrder): void {
+    this.orders.push(buyOrder, sellOrder);
+    this.saveOrders();
+    logger.info(
+      `[OrderManager] Arb trade: BUY ${buyOrder.amount} @ ${buyOrder.price} on ${buyOrder.symbol} | ` +
+      `SELL ${sellOrder.amount} @ ${sellOrder.price}`
+    );
+  }
 }

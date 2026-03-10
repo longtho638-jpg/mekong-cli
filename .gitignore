@@ -85,6 +85,8 @@ Thumbs.db
 .anthropic/
 .opencode/
 .ag_proxies/
+.warp_config.json
+.tom_hum_state.json
 
 # Open Core - Private Business Strategy (Binh Pháp)
 plans/internal/
@@ -181,9 +183,11 @@ tasks/archive/
 **/wins.jsonl
 dataset/
 
-# 🛡️ SECURITY: Never commit API keys
+# 🛡️ SECURITY: Never commit API keys or local dev vars
 .env
 *.env
+.dev.vars
+**/.dev.vars
 scripts/.env
 token.txt
 RULES_*.md
@@ -194,11 +198,190 @@ RULES_*.md
 **/deployment-keys/
 .metadata_never_index
 
-# Debug scripts & temporary output
+# Debug scripts & temporary output (root level)
 debug_*.py
+check_*.py
+repro_*.py
+find_prints.py
+zip_*.py
+test_jose_debug.py
+test_plugins.py
+test_fetch.js
+test-*.mjs
+check-dist.mjs
+clean-settings.js
+demo.py
+demo_script.md
+test_input.jsonl
+factory-loop.sh
+restore_swarm.sh
+supervisor.py
+server.py
+main.py
+
+# Build & analysis output
 build_log*.txt
+build_full_log*.txt
 test_output.txt
 team_test_output.txt
 coverage_full.txt
 coverage_report.txt
+circular_deps.txt
+dead_code.txt
+src_dead_code.txt
+madge_output.txt
+ts_prune_output.txt
+tom_hum_vibe.log
+adapter.log
+
+# Private business docs (NOT public)
+dna/
+invoices/
+proposals/
+marketing/
+newsletter-saas/
+content/
+contracts/
+products/
+
+# Internal orchestration
+tom-hum/
+doanh-trai-tom-hum/
+tasks_paused/
+.tom_hum_state.json
+Users/
+
+# Private infrastructure
+infrastructure/
+terraform/
+k8s/
+docker/
+monitoring/
+ops/
+automation/
+external/
+external-proxy/
+vibe-cloud-brain-kit/
+claude_bridge/
+claudedocs/
+
+# Internal app directories
+backend/
+frontend/
+api/
+agents/
+!packages/**/agents/
+!apps/algo-trader/src/api/
+!apps/algo-trader/src/jobs/workers/
+!apps/algo-trader/tests/jobs/workers/
+cli/
+workers/
+mekong-docs/
+docs-portal/
+docsops/
+
+# Lock files
 *.mission-active-*.lock
+uv.lock
+
+# Misc internal
+apps/openclaw-worker/plans/
+scripts/m1-*.sh
+regions/
+data/
+projects/
+tmp/
+cc/
+bin/
+configs/
+\!apps/algo-trader/tests/jobs/workers/
+
+# Agent benchmarks (private testing results)
+.agent/
+
+# Additional internal dirs (pruned from public repo)
+.swarm/
+.taskmaster/
+.playwright-mcp/
+.claude-flow/
+.claude-skills/
+.agencyos/
+.git_backup_sophia/
+core/
+
+# Build/test artifacts (auto-generated)
+*.log
+*_output.txt
+*_log*.txt
+coverage_*.txt
+repomix-output.xml
+*.db
+usage_*.json
+poetry.lock.backup
+
+# Additional internal dirs
+.mekong/
+.workflow-migration-backup-*/
+packages/cleo/
+
+# Additional excluded apps
+apps/raas-demo/
+apps/tasks/
+apps/worker/
+
+# Second pass exclusions
+packages/billing/
+packages/vibe-bridge/
+packages/vibe-embedded-finance/
+packages/vibe-payos-billing-types/
+packages/vibe-stripe/
+packages/vibe-supabase/
+.cleo/
+.gemini/
+.env*
+!.env.example
+.tom_hum_state.json
+.warp_config.json
+.cursorrules
+.gitbook.yaml
+.mcp.json
+knowledge/
+apps/api/
+apps/developers/
+AGENTS.md
+
+# Internal scripts & runtime
+GEMINI.md
+README.vi.md
+deploy-*.sh
+restore_swarm.sh
+server.py
+start.sh
+supervisor.py
+tom-hum
+usage_*.json
+cc
+mekong.spec
+docker-compose.qdrant.yml
+i18next-scanner.config.js
+
+# Rogue dirs (third pass)
+antigravity/
+config/
+docker/
+lib/
+locales/
+mekong/
+templates/
+plans/
+tasks/
+
+# Fourth pass — internal tooling
+scripts/
+supabase/
+.claude/
+.geminiignore
+.repomixignore
+.ruffignore
+conftest.py
+.coveragerc

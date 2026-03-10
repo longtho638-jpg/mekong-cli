@@ -18,6 +18,8 @@ export const ArbExecuteRequestSchema = z.object({
   sellExchange: z.string().min(1),
   amount: z.number().positive(),
   maxSlippagePct: z.number().min(0).default(0.1),
+  /** Requested leverage multiplier (1x = spot, max 20x for enterprise) */
+  leverage: z.number().min(1).max(20).default(1),
 });
 
 export const ArbHistoryQuerySchema = z.object({
@@ -52,6 +54,7 @@ export interface ArbExecuteResponse {
   buyExchange: string;
   sellExchange: string;
   amount: number;
+  leverage: number;
   buyPrice: number;
   sellPrice: number;
   netSpreadPct: number;

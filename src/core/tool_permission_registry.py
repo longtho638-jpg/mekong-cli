@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Tool Permission Registry
+"""Mekong CLI - Tool Permission Registry.
 
 Claude-code inspired permission model: tools are classified by risk level
 and require explicit grants before execution. Integrates with Governance
@@ -11,10 +10,11 @@ Patterns from anthropics/claude-code:
 - Allowlist/blocklist per agent
 """
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Optional, Set
 
 logger = logging.getLogger(__name__)
 
@@ -44,8 +44,8 @@ class ToolSpec:
     name: str
     risk: ToolRisk
     description: str = ""
-    allowed_agents: Set[str] = field(default_factory=lambda: {"*"})
-    blocked_agents: Set[str] = field(default_factory=set)
+    allowed_agents: set[str] = field(default_factory=lambda: {"*"})
+    blocked_agents: set[str] = field(default_factory=set)
 
 
 class ToolPermissionRegistry:
@@ -53,7 +53,7 @@ class ToolPermissionRegistry:
 
     def __init__(self, mode: PermissionMode = PermissionMode.DEFAULT) -> None:
         self.mode = mode
-        self._tools: Dict[str, ToolSpec] = {}
+        self._tools: dict[str, ToolSpec] = {}
         self._register_defaults()
 
     def _register_defaults(self) -> None:
@@ -90,6 +90,7 @@ class ToolPermissionRegistry:
 
         Returns:
             True if permitted, False if blocked.
+
         """
         tool = self._tools.get(tool_name)
         if not tool:
@@ -117,17 +118,17 @@ class ToolPermissionRegistry:
         # DEFAULT mode: read_only and write auto-approved, execute+ needs review
         return tool.risk in (ToolRisk.READ_ONLY, ToolRisk.WRITE)
 
-    def get_allowed_tools(self, agent_name: str = "*") -> List[str]:
+    def get_allowed_tools(self, agent_name: str = "*") -> list[str]:
         """List all tools available to an agent under current mode."""
         return [
             name for name in self._tools
             if self.check_permission(name, agent_name)
         ]
 
-    def get_tool_spec(self, tool_name: str) -> Optional[ToolSpec]:
+    def get_tool_spec(self, tool_name: str) -> ToolSpec | None:
         """Get specification for a tool."""
         return self._tools.get(tool_name)
 
-    def list_all(self) -> List[ToolSpec]:
+    def list_all(self) -> list[ToolSpec]:
         """List all registered tools."""
         return list(self._tools.values())

@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Durable Step Store
+"""Mekong CLI - Durable Step Store.
 
 QStash-inspired context.run() pattern: persist step results to survive
 CLI crash/restart. On resume, skip completed steps and continue from
@@ -13,7 +12,7 @@ import logging
 import time
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +27,7 @@ class StepResult:
     exit_code: int
     stdout: str
     stderr: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
     completed_at: float
 
 
@@ -63,7 +62,7 @@ class DurableStepStore:
         )
         logger.debug(f"Saved step {step_index} for recipe {recipe_id}")
 
-    def load(self, recipe_id: str) -> List[StepResult]:
+    def load(self, recipe_id: str) -> list[StepResult]:
         """Load all completed step results for a recipe."""
         recipe_dir = self._recipe_dir(recipe_id)
         if not recipe_dir.exists():
@@ -108,7 +107,7 @@ class DurableStepStore:
             recipe_dir.rmdir()
             logger.info(f"Cleared step results for recipe {recipe_id}")
 
-    def list_incomplete(self) -> List[str]:
+    def list_incomplete(self) -> list[str]:
         """List all recipe IDs with incomplete step results."""
         if not self.store_dir.exists():
             return []

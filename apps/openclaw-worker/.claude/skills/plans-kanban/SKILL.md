@@ -1,6 +1,7 @@
 ---
-name: plans-kanban
+name: ck:plans-kanban
 description: View plans dashboard with progress tracking and timeline visualization. Use for kanban boards, plan status overview, phase progress, milestone tracking, project visibility.
+argument-hint: "[plans-dir]"
 ---
 
 # plans-kanban
@@ -57,7 +58,7 @@ node .claude/skills/plans-kanban/scripts/server.cjs --stop
 
 ## Slash Command
 
-Use `/kanban` for quick access:
+Use `/ck:kanban` for quick access:
 
 ```bash
 /kanban plans/           # View plans dashboard
@@ -118,8 +119,8 @@ assets/
 
 | Route | Description |
 |-------|-------------|
-| `/` or `/kanban` | Dashboard view |
-| `/kanban?dir=<path>` | Dashboard for specific directory |
+| `/` or `/ck:kanban` | Dashboard view |
+| `/ck:kanban?dir=<path>` | Dashboard for specific directory |
 | `/api/plans` | JSON API for plans data |
 | `/api/plans?dir=<path>` | JSON API for specific directory |
 | `/assets/*` | Static assets |

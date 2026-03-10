@@ -20,7 +20,7 @@ import { HealthManager } from '../netdata/HealthManager';
 import { BotConfig } from './bot-engine-config-and-state-types';
 import { BotTradeExecutor } from './bot-engine-trade-executor-and-position-manager';
 
-export { BotConfig };
+export type { BotConfig };
 
 export class BotEngine {
   private strategy: IStrategy;

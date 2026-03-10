@@ -1,0 +1,29 @@
+{
+  "polymorphicMatrix": {
+    "enabled": false,
+    "proxyProvider": "brightdata",
+    "proxyRotationRequests": 10,
+    "proxyRotationSec": 30,
+    "jitterMeanMs": 8,
+    "jitterStdMs": 3,
+    "orderSizeJitterPct": 0.5
+  },
+  "wsSharding": {
+    "enabled": false,
+    "numShards": 5,
+    "edgeProvider": "cloudflare",
+    "rebalanceIntervalSec": 60
+  },
+  "chameleon": {
+    "enabled": false,
+    "rlModel": "qlearning",
+    "noiseActions": ["cancel", "tinyOrder", "guiCheck", "doNothing"],
+    "detectionThreshold": 0.8,
+    "noiseIntervalMs": 60000
+  },
+  "leverage": {
+    "free": 1,
+    "pro": 10,
+    "enterprise": 20
+  }
+}

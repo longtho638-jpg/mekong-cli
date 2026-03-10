@@ -1,8 +1,0 @@
-{
-  "name": "@agencyos/vibe-newsletter",
-  "version": "0.1.0",
-  "description": "Newsletter & email campaign SDK — subscriber management, segmentation, template engine, analytics",
-  "main": "index.ts",
-  "types": "index.ts",
-  "license": "MIT"
-}

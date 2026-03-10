@@ -11,52 +11,42 @@ import {
   type WebVitals,
 } from "./index";
 
-// Mock sessionStorage
-const sessionStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
-
-Object.defineProperty(window, "sessionStorage", {
-  value: sessionStorageMock,
-});
-
 // Mock fetch
-global.fetch = vi.fn();
+(globalThis as any).fetch = vi.fn();
 
 // Mock navigator
-Object.defineProperty(window, "navigator", {
+Object.defineProperty(globalThis, "navigator", {
   value: {
     share: vi.fn(),
     clipboard: {
       writeText: vi.fn(),
     },
   },
+  writable: true,
 });
 
 // Mock performance
-Object.defineProperty(window, "performance", {
+Object.defineProperty(globalThis, "performance", {
   value: {
     getEntriesByType: vi.fn(),
   },
+  writable: true,
 });
 
 describe("VIBE Analytics", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    sessionStorageMock.getItem.mockReturnValue(null);
+    ((globalThis as any).sessionStorage.getItem as any).mockReturnValue(null);
   });
 
   describe("Session Management", () => {
     it("should generate new session ID if none exists", () => {
-      sessionStorageMock.getItem.mockReturnValue(null);
+      ((globalThis as any).sessionStorage.getItem as any).mockReturnValue(null);
 
       const sessionId = getSessionId();
 
       expect(sessionId).toMatch(/^vibe_\d+_[a-z0-9]+$/);
-      expect(sessionStorageMock.setItem).toHaveBeenCalledWith(
+      expect((globalThis as any).sessionStorage.setItem).toHaveBeenCalledWith(
         "vibe_session_id",
         sessionId,
       );
@@ -64,12 +54,12 @@ describe("VIBE Analytics", () => {
 
     it("should return existing session ID if available", () => {
       const existingId = "vibe_1234567890_abcdef";
-      sessionStorageMock.getItem.mockReturnValue(existingId);
+      ((globalThis as any).sessionStorage.getItem as any).mockReturnValue(existingId);
 
       const sessionId = getSessionId();
 
       expect(sessionId).toBe(existingId);
-      expect(sessionStorageMock.setItem).not.toHaveBeenCalled();
+      expect((globalThis as any).sessionStorage.setItem).not.toHaveBeenCalled();
     });
   });
 
@@ -89,8 +79,8 @@ describe("VIBE Analytics", () => {
 
       vibeTelemetry.track(event);
 
-      // Check that event was queued (we can't directly access queue, so we flush)
-      expect(true).toBe(true); // Event queued successfully
+      // Event queued successfully
+      expect(true).toBe(true);
     });
 
     it("should track events with user", () => {
@@ -104,12 +94,27 @@ describe("VIBE Analytics", () => {
 
       vibeTelemetry.track(event);
 
-      expect(true).toBe(true); // Event queued successfully
+      expect(true).toBe(true);
     });
 
-    it.skip("should set and use endpoint", () => {
-      // Skipping due to global state issues with singleton
-      expect(true).toBe(true);
+    it("should set and use endpoint", async () => {
+      const mockEndpoint = "https://api.example.com/telemetry";
+      vibeTelemetry.setEndpoint(mockEndpoint);
+
+      const event: VibeEvent = { type: "page_view", path: "/test", title: "Test" };
+      vibeTelemetry.track(event);
+
+      ((globalThis as any).fetch as any).mockResolvedValueOnce({ ok: true });
+
+      await vibeTelemetry.flush();
+
+      expect((globalThis as any).fetch).toHaveBeenCalledWith(
+        mockEndpoint,
+        expect.objectContaining({
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        })
+      );
     });
 
     it("should handle flush failure gracefully", () => {
@@ -118,11 +123,10 @@ describe("VIBE Analytics", () => {
       const event: VibeEvent = { type: "error", message: "Test error" };
       vibeTelemetry.track(event);
 
-      // Mock failed fetch
-      (global.fetch as any).mockRejectedValueOnce(new Error("Network error"));
+      ((globalThis as any).fetch as any).mockRejectedValueOnce(new Error("Network error"));
 
       return vibeTelemetry.flush().then(() => {
-        expect(global.fetch).toHaveBeenCalled();
+        expect((globalThis as any).fetch).toHaveBeenCalled();
       });
     });
   });
@@ -156,7 +160,6 @@ describe("VIBE Analytics", () => {
     it("should calculate compound growth correctly", () => {
       const metrics = calculateGrowthMetrics(10000, 120000, 0.15);
 
-      // Test the calculation works - actual values may vary
       expect(metrics.daysToTarget).toBeGreaterThanOrEqual(0);
       expect(metrics.currentGMV).toBe(10000);
       expect(metrics.targetARR).toBe(120000);
@@ -195,11 +198,11 @@ describe("VIBE Analytics", () => {
         url: "https://example.com",
       };
 
-      (navigator.share as any).mockResolvedValueOnce(undefined);
+      ((globalThis as any).navigator.share as any).mockResolvedValueOnce(undefined);
 
       const result = await shareContent(content);
 
-      expect(navigator.share).toHaveBeenCalledWith(content);
+      expect((globalThis as any).navigator.share).toHaveBeenCalledWith(content);
       expect(result).toBe("native");
     });
 
@@ -210,14 +213,14 @@ describe("VIBE Analytics", () => {
         url: "https://example.com",
       };
 
-      (navigator.share as any).mockRejectedValueOnce(
+      ((globalThis as any).navigator.share as any).mockRejectedValueOnce(
         new Error("Share cancelled"),
       );
-      (navigator.clipboard.writeText as any).mockResolvedValueOnce(undefined);
+      ((globalThis as any).navigator.clipboard.writeText as any).mockResolvedValueOnce(undefined);
 
       const result = await shareContent(content);
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      expect((globalThis as any).navigator.clipboard.writeText).toHaveBeenCalledWith(
         "Test\nhttps://example.com",
       );
       expect(result).toBe("copy");
@@ -230,14 +233,13 @@ describe("VIBE Analytics", () => {
         url: "https://example.com",
       };
 
-      // Remove native share
-      Object.defineProperty(navigator, "share", { value: undefined });
+      Object.defineProperty((globalThis as any).navigator, "share", { value: undefined });
 
-      (navigator.clipboard.writeText as any).mockResolvedValueOnce(undefined);
+      ((globalThis as any).navigator.clipboard.writeText as any).mockResolvedValueOnce(undefined);
 
       const result = await shareContent(content);
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      expect((globalThis as any).navigator.clipboard.writeText).toHaveBeenCalledWith(
         "Test\nhttps://example.com",
       );
       expect(result).toBe("copy");
@@ -251,7 +253,7 @@ describe("VIBE Analytics", () => {
         { name: "other-paint", startTime: 5678 },
       ];
 
-      (performance.getEntriesByType as any).mockImplementation((type: string) => {
+      ((globalThis as any).performance.getEntriesByType as any).mockImplementation((type: string) => {
         if (type === "paint") return mockPaintEntries;
         if (type === "navigation") return [];
         return [];
@@ -271,7 +273,7 @@ describe("VIBE Analytics", () => {
         loadEventEnd: 2500,
       };
 
-      (performance.getEntriesByType as any).mockImplementation((type: string) => {
+      ((globalThis as any).performance.getEntriesByType as any).mockImplementation((type: string) => {
         if (type === "paint") return [];
         if (type === "navigation") return [mockNavEntry];
         return [];
@@ -279,12 +281,12 @@ describe("VIBE Analytics", () => {
 
       const vitals = await collectWebVitals();
 
-      expect(vitals.ttfb).toBe(200); // 1200 - 1000
+      expect(vitals.ttfb).toBe(200);
       expect(vitals.fcp).toBeUndefined();
     });
 
     it("should handle missing performance APIs gracefully", async () => {
-      (performance.getEntriesByType as any).mockImplementation(() => {
+      ((globalThis as any).performance.getEntriesByType as any).mockImplementation(() => {
         throw new Error("API not supported");
       });
 
@@ -294,7 +296,7 @@ describe("VIBE Analytics", () => {
     });
 
     it("should handle empty metrics gracefully", async () => {
-      (performance.getEntriesByType as any).mockReturnValue([]);
+      ((globalThis as any).performance.getEntriesByType as any).mockReturnValue([]);
 
       const vitals = await collectWebVitals();
 

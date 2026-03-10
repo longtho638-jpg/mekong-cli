@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgencyOS — AI Agents That Deliver Results</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            base:     '#0A0A0B',
+            surface:  '#141416',
+            elevated: '#1C1C1F',
+            border:   '#27272A',
+            accent:   '#6366F1',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    html { background: #0A0A0B; }
+    body { font-family: 'Inter', sans-serif; }
+
+    /* terminal typing cursor */
+    .terminal-cursor::after {
+      content: '█';
+      animation: blink 1s step-end infinite;
+      color: #6366F1;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* gradient glow behind hero */
+    .hero-glow {
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.18) 0%, transparent 70%);
+    }
+
+    /* glass card */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    /* terminal text animation */
+    .typed-text { border-right: 2px solid #6366F1; }
+
+    @keyframes slideUp {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+    .animate-up { animation: slideUp 0.5s ease forwards; }
+    .delay-1    { animation-delay: 0.1s; opacity:0; }
+    .delay-2    { animation-delay: 0.2s; opacity:0; }
+    .delay-3    { animation-delay: 0.3s; opacity:0; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-up, .terminal-cursor::after { animation: none; }
+    }
+  </style>
+</head>
+<body class="bg-base text-zinc-100 antialiased">
+
+  <!-- ─── NAV ─── -->
+  <header class="fixed top-0 left-0 right-0 z-50 border-b border-zinc-800 bg-base/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-14">
+
+        <!-- Logo -->
+        <div class="flex items-center gap-2">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <rect width="28" height="28" rx="6" fill="#6366F1"/>
+            <path d="M7 14l5 5 9-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="font-semibold text-base text-zinc-100">AgencyOS</span>
+        </div>
+
+        <!-- Desktop nav links -->
+        <nav class="hidden md:flex items-center gap-6 text-sm text-zinc-400">
+          <a href="#features" class="hover:text-zinc-100 transition-colors duration-200 cursor-pointer">Features</a>
+          <a href="#how-it-works" class="hover:text-zinc-100 transition-colors duration-200 cursor-pointer">How It Works</a>
+          <a href="#pricing" class="hover:text-zinc-100 transition-colors duration-200 cursor-pointer">Pricing</a>
+          <a href="#" class="hover:text-zinc-100 transition-colors duration-200 cursor-pointer">Docs</a>
+        </nav>
+
+        <!-- CTA -->
+        <div class="flex items-center gap-3">
+          <a href="#" class="hidden sm:block text-sm text-zinc-400 hover:text-zinc-100 transition-colors duration-200 cursor-pointer">Sign in</a>
+          <a href="#" class="bg-accent hover:bg-indigo-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 cursor-pointer">Get Started</a>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ─── HERO ─── -->
+  <section class="relative pt-32 pb-24 overflow-hidden">
+    <div class="hero-glow absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Copy -->
+        <div>
+          <!-- Badge -->
+          <div class="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 text-accent text-xs font-medium px-3 py-1 rounded-full mb-6 animate-up">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" aria-hidden="true"></span>
+            RaaS — Results as a Service
+          </div>
+
+          <h1 class="text-5xl lg:text-6xl font-bold text-zinc-100 leading-tight mb-5 animate-up delay-1">
+            AI Agents That<br/>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+              Deliver Results
+            </span>
+          </h1>
+
+          <p class="text-lg text-zinc-400 leading-relaxed mb-8 max-w-md animate-up delay-2">
+            Pay per result, not per token. AgencyOS orchestrates AI agents to complete
+            real tasks — verified, self-healing, production-ready.
+          </p>
+
+          <div class="flex flex-wrap gap-3 animate-up delay-3">
+            <a href="#" class="bg-accent hover:bg-indigo-500 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/></svg>
+              Get Started Free
+            </a>
+            <a href="#" class="border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-zinc-100 font-medium px-6 py-3 rounded-lg transition-colors duration-200 cursor-pointer flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              View Docs
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex items-center gap-8 mt-12 pt-8 border-t border-zinc-800">
+            <div>
+              <div class="text-2xl font-bold text-zinc-100">500+</div>
+              <div class="text-xs text-zinc-500 mt-0.5">Agencies</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-zinc-100">2.4M</div>
+              <div class="text-xs text-zinc-500 mt-0.5">Tasks Completed</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-zinc-100">98.7%</div>
+              <div class="text-xs text-zinc-500 mt-0.5">Success Rate</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Terminal -->
+        <div class="hidden lg:block">
+          <div class="bg-surface border border-zinc-800 rounded-xl overflow-hidden shadow-2xl">
+            <!-- Terminal chrome -->
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-zinc-800 bg-elevated">
+              <div class="w-3 h-3 rounded-full bg-red-500/70" aria-hidden="true"></div>
+              <div class="w-3 h-3 rounded-full bg-yellow-500/70" aria-hidden="true"></div>
+              <div class="w-3 h-3 rounded-full bg-green-500/70" aria-hidden="true"></div>
+              <span class="ml-2 text-xs text-zinc-500 font-mono">mekong-cli — zsh</span>
+            </div>
+            <!-- Terminal body -->
+            <div class="p-5 font-mono text-sm space-y-2" style="min-height:260px;">
+              <div class="flex items-center gap-2">
+                <span class="text-accent">❯</span>
+                <span class="text-zinc-100">mekong cook <span class="text-amber-400">"build landing page"</span></span>
+              </div>
+              <div class="text-zinc-500 pl-4">Planning...</div>
+              <div class="pl-4">
+                <span class="text-accent">✓</span>
+                <span class="text-zinc-300"> Step 1 — Scaffold Next.js project</span>
+              </div>
+              <div class="pl-4">
+                <span class="text-accent">✓</span>
+                <span class="text-zinc-300"> Step 2 — Generate hero section</span>
+              </div>
+              <div class="pl-4">
+                <span class="text-accent">✓</span>
+                <span class="text-zinc-300"> Step 3 — Add Tailwind config</span>
+              </div>
+              <div class="pl-4 flex items-center gap-2">
+                <span class="text-yellow-400">●</span>
+                <span class="text-zinc-400"> Step 4 — Verifying output…</span>
+                <span class="inline-block w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" aria-hidden="true"></span>
+              </div>
+              <div class="mt-4 pt-4 border-t border-zinc-800 flex items-center gap-2">
+                <span class="text-accent">❯</span>
+                <span class="text-zinc-500 terminal-cursor">_</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── SOCIAL PROOF ─── -->
+  <section class="border-y border-zinc-800 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-center text-xs text-zinc-500 uppercase tracking-widest mb-8">Trusted by 500+ agencies worldwide</p>
+      <div class="flex flex-wrap justify-center items-center gap-10">
+        <!-- Logo placeholders -->
+        <div class="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity duration-200 cursor-pointer">
+          <div class="w-6 h-6 bg-zinc-500 rounded" aria-hidden="true"></div>
+          <span class="text-sm font-semibold text-zinc-400">Acme Corp</span>
+        </div>
+        <div class="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity duration-200 cursor-pointer">
+          <div class="w-6 h-6 bg-zinc-500 rounded" aria-hidden="true"></div>
+          <span class="text-sm font-semibold text-zinc-400">StudioX</span>
+        </div>
+        <div class="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity duration-200 cursor-pointer">
+          <div class="w-6 h-6 bg-zinc-500 rounded" aria-hidden="true"></div>
+          <span class="text-sm font-semibold text-zinc-400">FlowAgency</span>
+        </div>
+        <div class="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity duration-200 cursor-pointer">
+          <div class="w-6 h-6 bg-zinc-500 rounded" aria-hidden="true"></div>
+          <span class="text-sm font-semibold text-zinc-400">DevHouse</span>
+        </div>
+        <div class="flex items-center gap-2 opacity-40 hover:opacity-70 transition-opacity duration-200 cursor-pointer">
+          <div class="w-6 h-6 bg-zinc-500 rounded" aria-hidden="true"></div>
+          <span class="text-sm font-semibold text-zinc-400">BuildCo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── HOW IT WORKS ─── -->
+  <section id="how-it-works" class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-zinc-100 mb-4">How It Works</h2>
+        <p class="text-zinc-400 max-w-md mx-auto">Three steps from goal to verified result — no prompt engineering required.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 relative">
+        <!-- connecting line desktop -->
+        <div class="hidden md:block absolute top-10 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-zinc-700 to-transparent" aria-hidden="true"></div>
+
+        <!-- Step 1 -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/40 transition-colors duration-200 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center mb-5">
+            <span class="text-accent font-mono font-bold text-sm">01</span>
+          </div>
+          <h3 class="text-base font-semibold text-zinc-100 mb-2">Submit Goal</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">Describe what you need in plain English. AgencyOS decomposes it into an executable recipe.</p>
+          <div class="mt-4 font-mono text-xs bg-elevated border border-zinc-800 rounded-lg p-3 text-zinc-400">
+            <span class="text-accent">$</span> mekong cook <span class="text-amber-400">"audit codebase"</span>
+          </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/40 transition-colors duration-200 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center mb-5">
+            <span class="text-accent font-mono font-bold text-sm">02</span>
+          </div>
+          <h3 class="text-base font-semibold text-zinc-100 mb-2">Agent Executes</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">Multi-model agents run in parallel with self-healing loops. Failures are caught and corrected automatically.</p>
+          <div class="mt-4 space-y-1">
+            <div class="flex items-center gap-2 text-xs text-zinc-400">
+              <span class="text-green-500">✓</span> Plan decomposed — 7 steps
+            </div>
+            <div class="flex items-center gap-2 text-xs text-zinc-400">
+              <span class="text-green-500">✓</span> Executing step 4/7
+            </div>
+            <div class="flex items-center gap-2 text-xs text-zinc-500">
+              <span class="text-yellow-500">●</span> Quality gate check…
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/40 transition-colors duration-200 cursor-pointer">
+          <div class="w-10 h-10 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center mb-5">
+            <span class="text-accent font-mono font-bold text-sm">03</span>
+          </div>
+          <h3 class="text-base font-semibold text-zinc-100 mb-2">Verified Result</h3>
+          <p class="text-sm text-zinc-400 leading-relaxed">Every output passes quality gates before delivery. You pay only when the result is verified.</p>
+          <div class="mt-4 bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+            <div class="flex items-center gap-2 text-xs text-green-400 font-medium">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Task verified — 2m 34s
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── FEATURES GRID ─── -->
+  <section id="features" class="py-24 border-t border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-zinc-100 mb-4">Built for Production</h2>
+        <p class="text-zinc-400 max-w-md mx-auto">Everything a developer needs to ship AI-powered workflows — without the overhead.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+        <!-- Feature cards -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">Multi-Model Routing</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">Automatically routes tasks to the best model — GPT-4o, Claude, Gemini — based on cost and capability.</p>
+        </div>
+
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.18-4"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">Self-Healing Loops</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">Failed steps trigger automatic retry with AI-corrected instructions. No manual intervention required.</p>
+        </div>
+
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">Quality Gates</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">Built-in verification at every step. Six quality fronts: type safety, tests, security, performance, UX, docs.</p>
+        </div>
+
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A855F7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">MCP Native</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">First-class Model Context Protocol support. Connect any MCP server to extend agent capabilities instantly.</p>
+        </div>
+
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">CLI First</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">Everything accessible via <code class="font-mono bg-elevated px-1 rounded text-xs">mekong</code> CLI. Compose workflows in shell scripts. CI/CD friendly.</p>
+        </div>
+
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 hover:border-accent/30 transition-colors duration-200 cursor-pointer group">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center mb-4">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h3 class="text-sm font-semibold text-zinc-100 mb-2">Open Core</h3>
+          <p class="text-xs text-zinc-500 leading-relaxed">mekong-cli is open source. AgencyOS adds the commercial layer: billing, teams, monitoring, SLAs.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── PRICING ─── -->
+  <section id="pricing" class="py-24 border-t border-zinc-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-zinc-100 mb-4">Simple, Usage-Based Pricing</h2>
+        <p class="text-zinc-400 max-w-sm mx-auto">Pay for verified results. MCU (Mission Compute Unit) — 1 unit per completed task.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+
+        <!-- Free -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 flex flex-col">
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-zinc-400 mb-1">Free</h3>
+            <div class="flex items-end gap-1">
+              <span class="text-3xl font-bold text-zinc-100">$0</span>
+              <span class="text-zinc-500 text-sm mb-1">/mo</span>
+            </div>
+            <p class="text-xs text-zinc-500 mt-2">100 MCU / month included</p>
+          </div>
+          <ul class="space-y-2.5 mb-8 flex-1">
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              100 MCU / month
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Community support
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              CLI access
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-500 line-through">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#52525B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Team seats
+            </li>
+          </ul>
+          <a href="#" class="block text-center border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-zinc-100 text-sm font-medium py-2.5 rounded-lg transition-colors duration-200 cursor-pointer">
+            Start Free
+          </a>
+        </div>
+
+        <!-- Pro — highlighted -->
+        <div class="bg-surface border-2 border-accent rounded-xl p-6 flex flex-col relative">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+            <span class="bg-accent text-white text-xs font-medium px-3 py-1 rounded-full">Most Popular</span>
+          </div>
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-zinc-400 mb-1">Pro</h3>
+            <div class="flex items-end gap-1">
+              <span class="text-3xl font-bold text-zinc-100">$99</span>
+              <span class="text-zinc-500 text-sm mb-1">/mo</span>
+            </div>
+            <p class="text-xs text-zinc-500 mt-2">5,000 MCU / month included</p>
+          </div>
+          <ul class="space-y-2.5 mb-8 flex-1">
+            <li class="flex items-center gap-2 text-sm text-zinc-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              5,000 MCU / month
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Priority support (24h SLA)
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              5 team seats
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-300">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Webhook integrations
+            </li>
+          </ul>
+          <a href="#" class="block text-center bg-accent hover:bg-indigo-500 text-white text-sm font-medium py-2.5 rounded-lg transition-colors duration-200 cursor-pointer">
+            Start Pro Trial
+          </a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="bg-surface border border-zinc-800 rounded-xl p-6 flex flex-col">
+          <div class="mb-6">
+            <h3 class="text-sm font-medium text-zinc-400 mb-1">Enterprise</h3>
+            <div class="flex items-end gap-1">
+              <span class="text-3xl font-bold text-zinc-100">Custom</span>
+            </div>
+            <p class="text-xs text-zinc-500 mt-2">Unlimited MCU, custom SLAs</p>
+          </div>
+          <ul class="space-y-2.5 mb-8 flex-1">
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Unlimited MCU
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Dedicated support (4h SLA)
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              Unlimited seats
+            </li>
+            <li class="flex items-center gap-2 text-sm text-zinc-400">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+              On-prem deployment
+            </li>
+          </ul>
+          <a href="#" class="block text-center border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-zinc-100 text-sm font-medium py-2.5 rounded-lg transition-colors duration-200 cursor-pointer">
+            Contact Sales
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ─── CTA FOOTER ─── -->
+  <section class="py-24 border-t border-zinc-800">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold text-zinc-100 mb-4">
+        Start Building with<br/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">AgencyOS</span>
+      </h2>
+      <p class="text-zinc-400 mb-8">Free plan. No credit card required. Verified results from day one.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="#" class="bg-accent hover:bg-indigo-500 text-white font-medium px-8 py-3 rounded-lg transition-colors duration-200 cursor-pointer">
+          Get Started Free
+        </a>
+        <a href="#" class="border border-zinc-700 hover:border-zinc-500 text-zinc-300 hover:text-zinc-100 font-medium px-8 py-3 rounded-lg transition-colors duration-200 cursor-pointer">
+          Book a Demo
+        </a>
+      </div>
+      <p class="text-xs text-zinc-600 mt-8">
+        AgencyOS is built on open-source
+        <a href="#" class="underline underline-offset-2 hover:text-zinc-400 transition-colors duration-200 cursor-pointer">mekong-cli</a>.
+        Star us on GitHub.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-800 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2 text-sm text-zinc-500">
+        <svg width="18" height="18" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect width="28" height="28" rx="6" fill="#6366F1" opacity="0.5"/><path d="M7 14l5 5 9-9" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        AgencyOS © 2026
+      </div>
+      <div class="flex items-center gap-6 text-xs text-zinc-600">
+        <a href="#" class="hover:text-zinc-400 transition-colors duration-200 cursor-pointer">Privacy</a>
+        <a href="#" class="hover:text-zinc-400 transition-colors duration-200 cursor-pointer">Terms</a>
+        <a href="#" class="hover:text-zinc-400 transition-colors duration-200 cursor-pointer">Status</a>
+        <a href="#" class="hover:text-zinc-400 transition-colors duration-200 cursor-pointer">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

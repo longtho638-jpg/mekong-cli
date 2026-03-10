@@ -3,7 +3,10 @@
 # Copy toàn bộ cell này vào Colab → Bấm Play → Xong!
 # ═══════════════════════════════════════════════════════════════
 
-import subprocess, os, time, threading, urllib.request
+import os
+import time
+import threading
+import urllib.request
 
 # GPU Check
 print("🖥️ Kiểm tra GPU:")

@@ -4,7 +4,7 @@ Contains data-binding resolution, layout helpers, and the icon map.
 These are internal utilities; consumers should import from components.py.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from rich.console import RenderableType
 
@@ -13,11 +13,11 @@ from rich.console import RenderableType
 # Icon / emoji mapping
 # ---------------------------------------------------------------------------
 
-ICON_MAP: Dict[str, str] = {
+ICON_MAP: dict[str, str] = {
     "home": "🏠", "search": "🔍", "settings": "⚙️", "user": "👤",
-    "check": "✅", "error": "❌", "warning": "⚠️", "info": "ℹ️",
+    "check": "✅", "error": "❌", "warning": "⚠️", "info": "i",
     "star": "⭐", "heart": "❤️", "arrow_right": "→", "arrow_left": "←",
-    "plus": "➕", "minus": "➖", "edit": "✏️", "delete": "🗑️",
+    "plus": "+", "minus": "-", "edit": "✏️", "delete": "🗑️",
     "download": "⬇️", "upload": "⬆️", "refresh": "🔄", "link": "🔗",
     "lock": "🔒", "unlock": "🔓", "mail": "📧", "phone": "📞",
     "calendar": "📅", "clock": "🕐", "folder": "📁", "file": "📄",
@@ -29,7 +29,7 @@ ICON_MAP: Dict[str, str] = {
 # Data binding resolver
 # ---------------------------------------------------------------------------
 
-def _resolve_binding(value: Any, data_context: Dict[str, Any]) -> Any:
+def _resolve_binding(value: Any, data_context: dict[str, Any]) -> Any:
     """Resolve data bindings of the form '$data.key.subkey' from context.
 
     Args:
@@ -78,7 +78,7 @@ def _render_group(parts: list[RenderableType]) -> RenderableType:
     Returns:
         A single renderable that prints each item on its own line.
     """
-    return _Group(parts)
+    return _Group(parts)  # type: ignore[return-value]
 
 
 __all__ = ["ICON_MAP", "_resolve_binding", "_Group", "_render_group"]

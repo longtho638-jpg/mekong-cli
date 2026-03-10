@@ -1,14 +1,14 @@
 /**
- * Gemini AI Agentic Ecosystem — CTO Deep 100x Intelligence
- * AGI Level 10+: 「用間」Gemini Ultra via Antigravity Proxy
+ * Qwen AI Agentic Ecosystem — CTO Deep 100x Intelligence
+ * AGI Level 10+: 「用間」Qwen via DashScope (FREE)
  *
  * 📜 Binh Pháp Ch.13 用間: 「故用間有五：有因間、有內間、有反間、有死間、有生間」
  *    "There are five kinds of spies" — CTO uses ALL of them
  *
- * Routes through Antigravity Proxy (port 20128) for UNLIMITED Gemini access:
- * - 🔍 Search Grounding — DuckDuckGo/Google search → Gemini synthesis
- * - 💻 Code Analysis — Gemini analyzes code for bugs/improvements
- * - 🧠 Deep Research — multi-query web search + Gemini synthesis + citations
+ * Routes through DashScope OpenAI-compatible API for FREE Qwen access:
+ * - 🔍 Search Grounding — DuckDuckGo search → Qwen synthesis
+ * - 💻 Code Analysis — Qwen analyzes code for bugs/improvements
+ * - 🧠 Deep Research — multi-query web search + Qwen synthesis + citations
  * - 🏗️ Architecture Advisor — project analysis with web-grounded best practices
  */
 
@@ -26,16 +26,16 @@ if (!fs.existsSync(RESEARCH_DIR)) fs.mkdirSync(RESEARCH_DIR, { recursive: true }
 
 function log(msg) {
     const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
-    try { fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [GEMINI-AGI] ${msg}\n`); } catch (e) { }
+    try { fs.appendFileSync('/Users/macbookprom1/tom_hum_cto.log', `[${ts}] [tom-hum] [QWEN-AGI] ${msg}\n`); } catch (e) { }
 }
 
 // ═══════════════════════════════════════════════════
-// Core: Gemini via Antigravity Proxy (unlimited quota)
+// Core: Qwen via Antigravity Proxy (port 9191)
 // ═══════════════════════════════════════════════════
 
 function callGemini(prompt, options = {}) {
     const {
-        model = 'gemini-3-flash',
+        model = 'qwen-plus',
         system = 'You are a senior CTO AI agent. Be precise, actionable, and return structured data when asked.',
         maxTokens = 4096,
         timeout = 30000
@@ -45,16 +45,24 @@ function callGemini(prompt, options = {}) {
         const body = JSON.stringify({
             model,
             max_tokens: maxTokens,
-            system,
-            messages: [{ role: 'user', content: prompt }]
+            messages: [
+                { role: 'system', content: system },
+                { role: 'user', content: prompt }
+            ]
         });
 
-        const timer = setTimeout(() => reject(new Error('Gemini proxy timeout')), timeout);
+        const timer = setTimeout(() => reject(new Error('Qwen proxy timeout')), timeout);
+        const targetPort = config.LLM_PROXY_PORT || 9191;
 
         const req = http.request({
-            hostname: '127.0.0.1', port: PROXY_PORT,
-            path: '/v1/messages', method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-api-key': 'ollama', 'anthropic-version': '2023-06-01' }
+            hostname: '127.0.0.1',
+            port: targetPort,
+            path: '/v1/chat/completions',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(body)
+            }
         }, (res) => {
             let data = '';
             res.on('data', c => data += c);
@@ -63,7 +71,7 @@ function callGemini(prompt, options = {}) {
                 try {
                     const r = JSON.parse(data);
                     if (r.error) { reject(new Error(r.error.message || JSON.stringify(r.error))); return; }
-                    const text = (r.content || []).find(c => c.type === 'text')?.text || '';
+                    const text = r.choices?.[0]?.message?.content || '';
                     resolve({ text, raw: r });
                 } catch (e) { reject(e); }
             });

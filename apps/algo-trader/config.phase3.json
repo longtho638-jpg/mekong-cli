@@ -1,0 +1,5 @@
+{
+  "mevSandwich": { "enabled": false, "ethereumRpc": "wss://eth-mainnet.g.alchemy.com/v2/YOUR_KEY", "flashbotsRelay": "https://relay.flashbots.net", "solanaJitoUrl": "https://mainnet.block-engine.jito.wtf", "minProfitUsd": 10 },
+  "portfolioRebalancer": { "enabled": false, "intervalMs": 500, "exchanges": ["binance","bybit"], "maxSlippageBps": 5 },
+  "predatoryLiquidity": { "enabled": false, "pumpThreshold": 0.7, "dumpThreshold": 0.9, "makerSpreadBps": 2 }
+}

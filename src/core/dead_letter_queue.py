@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Dead Letter Queue
+"""Mekong CLI - Dead Letter Queue.
 
 QStash-inspired DLQ: failed missions move here after max retries exhausted.
 Provides traceable failure history and manual retry capability.
@@ -8,12 +7,14 @@ Storage: .mekong/dlq/{timestamp}_{recipe_id}.json
 CLI: mekong dlq list | mekong dlq retry <id>
 """
 
+from __future__ import annotations
+
 import json
 import logging
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ class DeadLetter:
     error: str
     attempts: int
     last_step_index: int
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: float = field(default_factory=time.time)
     retried: bool = False
 
@@ -48,7 +49,7 @@ class DeadLetterQueue:
         error: str,
         attempts: int,
         last_step_index: int = 0,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: dict[str, Any] | None = None,
     ) -> DeadLetter:
         """Add a failed mission to the DLQ."""
         self.dlq_dir.mkdir(parents=True, exist_ok=True)
@@ -74,7 +75,7 @@ class DeadLetterQueue:
         logger.warning(f"Mission {recipe_id} moved to DLQ after {attempts} attempts")
         return letter
 
-    def list_all(self) -> List[DeadLetter]:
+    def list_all(self) -> list[DeadLetter]:
         """List all entries in the dead letter queue."""
         if not self.dlq_dir.exists():
             return []
@@ -89,7 +90,7 @@ class DeadLetterQueue:
 
         return entries
 
-    def get(self, dlq_id: str) -> Optional[DeadLetter]:
+    def get(self, dlq_id: str) -> DeadLetter | None:
         """Get a specific DLQ entry by ID."""
         filepath = self.dlq_dir / f"{dlq_id}.json"
         if not filepath.exists():
@@ -111,7 +112,7 @@ class DeadLetterQueue:
             data = json.loads(filepath.read_text(encoding="utf-8"))
             data["retried"] = True
             filepath.write_text(
-                json.dumps(data, indent=2, default=str), encoding="utf-8"
+                json.dumps(data, indent=2, default=str), encoding="utf-8",
             )
             return True
         except (json.JSONDecodeError, TypeError):

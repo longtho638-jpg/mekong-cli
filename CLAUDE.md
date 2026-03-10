@@ -15,110 +15,11 @@
 
 ---
 
-## LOADING ORDER — CSS-Specificity Cascade
 
-> Like CSS specificity, deeper CLAUDE.md files override higher ones. Each level owns its domain.
+## LOADING ORDER — [compressed for speed]
 
-```
-PRIORITY (highest wins):
-┌────────────────────────────────────────────────────────────────┐
-│ 3. NESTED   apps/openclaw-worker/CLAUDE.md    ← Most specific │
-│             apps/sophia-ai-factory/CLAUDE.md   (lazy-loaded    │
-│             apps/raas-gateway/CLAUDE.md         only when CC   │
-│             apps/engine/CLAUDE.md               CLI works in   │
-│             apps/api/CLAUDE.md                  that dir)      │
-│             apps/worker/CLAUDE.md                              │
-│             tests/CLAUDE.md                                    │
-├────────────────────────────────────────────────────────────────┤
-│ 2. PROJECT  /CLAUDE.md (THIS FILE)            ← Constitution  │
-│             Team conventions, Binh Phap, Stakeholder Matrix    │
-│             Loaded when in mekong-cli project dir              │
-├────────────────────────────────────────────────────────────────┤
-│ 1. GLOBAL   ~/.claude/CLAUDE.md               ← Personal      │
-│             User preferences, always loaded                    │
-│             CC CLI supervision rules, ĐIỀU 1-46                │
-└────────────────────────────────────────────────────────────────┘
-```
 
-### Resolution Rules
-
-1. **Nested overrides Project** — `apps/sophia-ai-factory/CLAUDE.md` tech stack overrides root tech stack when CC CLI is in that directory
-2. **Project overrides Global** — Root CLAUDE.md Binh Phap rules take precedence over generic global preferences
-3. **Global is always present** — `~/.claude/CLAUDE.md` provides baseline (CC CLI supervision, proxy rules, commit conventions)
-4. **Lazy loading** — Nested files only load when CC CLI's working directory is within that app
-5. **No duplication** — Each level owns ONLY its domain. Don't repeat proxy rules in nested files (inherited from root)
-
-### Nested File Registry
-
-| File | Domain | Binh Phap Chapter |
-|------|--------|-------------------|
-| `apps/openclaw-worker/CLAUDE.md` | Tôm Hùm daemon, expect brain, task queue | 第九篇 行軍 |
-| `apps/raas-gateway/CLAUDE.md` | Cloud API gateway, Telegram webhooks | 第二篇 作戰 |
-| `apps/sophia-ai-factory/CLAUDE.md` | Video SaaS, payments, AI pipeline | 第五篇 兵勢 |
-| `apps/engine/CLAUDE.md` | Core Python engine, Plan-Execute-Verify | 第三篇 謀攻 |
-| `apps/api/CLAUDE.md` | Backend API service | 第四篇 軍形 |
-| `apps/worker/CLAUDE.md` | Background job processing | 第八篇 九變 |
-| `apps/84tea/CLAUDE.md` | Vietnamese tea franchise, MD3 brand guidelines | 第十一篇 九地 |
-| `apps/anima119/CLAUDE.md` | Fermented Oriental medicine e-commerce | 第十三篇 用間 |
-| `apps/apex-os/CLAUDE.md` | Trading platform, .ai/ agent structure | 第十二篇 火攻 |
-| `apps/agencyos-web/CLAUDE.md` | Dashboard & admin panel, system visibility | 第六篇 虛實 |
-| `apps/agencyos-landing/CLAUDE.md` | Marketing landing page, conversion | 第五篇 兵勢 |
-| `apps/sophia-proposal/CLAUDE.md` | Sales proposals, competitive pitches | 第七篇 軍爭 |
-| `apps/sophia-video-bot/CLAUDE.md` | Telegram content delivery bot | 第二篇 作戰 |
-| `apps/com-anh-duong-10x/CLAUDE.md` | Restaurant POS + customer app | 第一篇 始計 |
-| `packages/CLAUDE.md` | Shared SDK packages, dependency rules | 第三篇 謀攻 |
-| `tests/CLAUDE.md` | Test conventions, pytest patterns | 第十篇 地形 |
-
----
-
-## STAKEHOLDER MATRIX — TAM QUÂN (Three Forces)
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ANTIGRAVITY (Chairman)                        │
-│              Gemini Brain · Strategic Orchestrator               │
-│         ~/.gemini/antigravity/brain/ + knowledge/                │
-│    Decides WHAT to build · Delegates via Telegram/API            │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ Commands (Telegram / mission files)
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    TÔM HÙM (General / Đại Tướng)               │
-│          OpenClaw Daemon · Autonomous Task Dispatch              │
-│              apps/openclaw-worker/ (Node.js)                     │
-│    Watches tasks/ dir · Routes to projects · Manages brain       │
-│    Self-CTO: auto-generates Binh Phap quality missions           │
-└───────────────────────────┬─────────────────────────────────────┘
-                            │ File IPC (/tmp/tom_hum_next_mission.txt)
-                            ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    CC CLI (Soldier / Binh Sĩ)                   │
-│           Claude Code CLI · Execution Engine                     │
-│         claude --model claude-opus-4-6-thinking                  │
-│    Executes /cook, /plan, /fix · Stays alive via expect brain    │
-│    Uses Antigravity Proxy (port 9191) for LLM calls              │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Coordination Protocol
-
-| Flow | From | To | Channel | Pattern |
-|------|------|----|---------|---------|
-| Strategic Command | Antigravity | Tôm Hùm | Telegram webhook → `tasks/mission_*.txt` | Cloud Ra Lệnh |
-| Mission Dispatch | Tôm Hùm | CC CLI | File IPC → expect script → stdin injection | Local Thực Thi |
-| Execution Report | CC CLI | Tôm Hùm | Prompt return detection → `/tmp/tom_hum_mission_done` | Completion Signal |
-| Intelligence Sync | CC CLI | Antigravity | Git push → insights/ + plans/ | Knowledge Upload |
-| Self-CTO Loop | Tôm Hùm | Tôm Hùm | Auto-pilot generates next quality task when queue empty | Autonomous |
-
-### Authority Hierarchy (ĐIỀU 0)
-
-1. **Chairman (Antigravity)** — Strategic decisions, approval gates, mission prioritization
-2. **General (Tôm Hùm)** — Tactical coordination, queue management, brain lifecycle
-3. **Soldier (CC CLI)** — Task execution, code changes, verification
-
-**Rule:** Lower rank never overrides higher. CC CLI obeys Tôm Hùm. Tôm Hùm obeys Antigravity.
-
----
+## STAKEHOLDER MATRIX — [compressed for speed]
 
 ## 第一篇 始計 (Shi Ji) — FOUNDATION
 
@@ -152,25 +53,7 @@ mekong-cli/
 │   ├── file_agent.py         # File operations (find/read/tree/grep)
 │   ├── shell_agent.py        # Shell command execution
 │   ├── lead_hunter.py        # Lead discovery
-│   ├── content_writer.py     # Content generation
-│   └── recipe_crawler.py     # Recipe file discovery
-├── apps/openclaw-worker/     # 🦞 Tôm Hùm Autonomous Daemon
-│   ├── task-watcher.js       # Thin orchestrator (boot + shutdown)
-│   ├── config.js             # All constants, paths, env vars
-│   └── lib/                  # 5 Modular Brain Components
-│       ├── brain-process-manager.js  # Spawn/monitor/kill expect brain
-│       ├── mission-dispatcher.js     # Atomic file IPC, prompt building
-│       ├── task-queue.js             # File watching, queuing, archiving
-│       ├── auto-cto-pilot.js         # Binh Phap auto-task generation
-│       └── m1-cooling-daemon.js      # M1 thermal management
-├── apps/raas-gateway/        # Cloudflare Worker API Gateway
-├── scripts/
-│   └── tom-hum-persistent-dispatch.exp  # Expect brain (CC CLI controller)
-├── .claude/                  # ClaudeKit DNA
-│   ├── skills/               # 80+ specialized skills
-│   ├── commands/             # 50+ slash commands
-│   └── rules/                # Constitutional rules
-└── _bmad/                    # 169 BMAD workflows
+  ... (truncated for speed)
 ```
 
 ### Core Components
@@ -322,6 +205,60 @@ Tester Agent     → Verification (unit/integration)
 Reviewer Agent   → Code quality + security
 ```
 
+### 🦞 ĐIỀU 57 — Model Rotation Protocol (Max 20x Style)
+
+> **1 API key, 20 models, $0 cost — mỗi subagent dùng model khác → không rate limit.**
+> **BaseURL:** `https://coding-intl.dashscope.aliyuncs.com/v1`
+> 🎁 **Đăng ký DashScope:** [Alibaba Cloud Benefits (Referral)](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T) — Free credits + exclusive perks
+
+**Full Model Pool** (DashScope Bailian Coding Plan — all free):
+
+| # | Model ID | Context | Tier | Best For |
+|---|----------|---------|------|----------|
+| 0 | `qwen3.5-plus` | 1M | 🏆 Flagship | Main agent, complex planning |
+| 1 | `qwen3-coder-plus` | 1M | 💻 Coder | Code generation, refactoring |
+| 2 | `qwen3-coder-next` | 262K | 💻 Coder | Code generation v2 |
+| 3 | `qwen3-max-2026-01-23` | 262K | 🏆 Flagship | Deep reasoning, strategy |
+| 4 | `qwen3.5-flash` | 1M | ⚡ Fast | Quick research, summaries |
+| 5 | `qwen3-coder-480b-a35b-instruct` | 262K | 💻 Coder | Largest coder model |
+| 6 | `kimi-k2.5` | 262K | 🔍 Review | Code review, vision |
+| 7 | `MiniMax-M2.5` | 204K | 📝 Writer | Large output (131K tokens) |
+| 8 | `MiniMax-M2.5-highspeed` | 204K | ⚡ Fast | Fast large output |
+| 9 | `glm-5` | 202K | 🔍 Review | Fresh perspective review |
+| 10 | `glm-4.7` | 202K | 🔍 Review | Fast review, analysis |
+| 11 | `qwen-plus` | 131K | ⚡ Fast | Balanced speed/quality |
+| 12 | `qwen-max` | 32K | 🏆 Flagship | Best quality, short ctx |
+| 13 | `qwen3-32b` | 131K | 🧠 Open | Open-source, reasoning |
+| 14 | `qwen3-14b` | 131K | ⚡ Fast | Lightweight tasks |
+| 15 | `qwen3-235b-a22b` | 131K | 🧠 Open | MoE, massive params |
+| 16 | `qwen3-30b-a3b` | 131K | ⚡ Fast | MoE, efficient |
+| 17 | `qwq-plus` | 131K | 🧠 Reason | Chain-of-thought reasoning |
+| 18 | `qwen-vl-max` | 128K | 👁️ Vision | Image understanding |
+| 19 | `qwen-vl-plus` | 128K | 👁️ Vision | Fast image processing |
+
+**Round-Robin:** `Subagent #N → MODEL_POOL[N % 20]`
+
+**Role-Based Override (ưu tiên):**
+
+| Role | Preferred Models |
+|------|-----------------|
+| `planner` | qwen3.5-plus, qwen3-max, qwq-plus |
+| `fullstack-developer` | qwen3-coder-plus, qwen3-coder-next, qwen3-coder-480b |
+| `code-reviewer` | kimi-k2.5, glm-5, glm-4.7 |
+| `researcher` | MiniMax-M2.5, qwen3.5-flash, qwen-plus |
+| `tester` | glm-5, qwen3-14b, qwen3-32b |
+| `docs-manager` | MiniMax-M2.5-highspeed, qwen3.5-flash |
+| `ui-ux-designer` | qwen-vl-max, kimi-k2.5 (vision) |
+
+**Execution:** Khi spawn subagent via Task tool, prepend `/model <model-id>` trước instruction.
+
+**Pane Assignment (CTO Dispatch):**
+```
+P0 (mekong-cli):  qwen3.5-plus       (flagship)
+P1 (well):        qwen3-coder-plus   (coder)
+P2 (algo-trader): kimi-k2.5          (review+vision)
+```
+
 ### ClaudeKit DNA (Constitutional Backbone)
 
 | Component | Count | Location |
@@ -333,76 +270,22 @@ Reviewer Agent   → Code quality + security
 
 ### Skill Seekers — Skill Factory (MCP)
 
-Universal preprocessor that converts docs, GitHub repos, and PDFs into CC CLI skills.
-
-| Config | Value |
-|--------|-------|
-| Venv | `.skill-seekers-venv/` (Python 3.12) |
-| CLI | `.skill-seekers-venv/bin/skill-seekers` |
-| Version | 3.0.0 |
-| MCP | `.claude/mcp.json` → `skill-seeker` (stdio) |
-| Tools | 17 MCP tools (config, scrape, package, upload, split, sources) |
-
-Quick usage:
-```bash
-skill-seekers scrape --config configs/react.json   # Scrape docs → skill
-skill-seekers github --repo user/repo              # GitHub repo → skill
-skill-seekers install --config configs/X.json       # End-to-end pipeline
-```
+Skill Seekers v3.0 — MCP-based skill factory. CLI: `.skill-seekers-venv/bin/skill-seekers`. 17 MCP tools.
 
 ### CTO Framework — Technical Co-Founder Phases
 
 5-phase execution framework mapping skills to delivery stages:
 
-| Phase | Chapter | Key Skills | Actions |
-|-------|---------|------------|---------|
-| Discovery | 始計 | cellcog, deep-research, scout, research | Deep questioning, challenge assumptions, must-have vs add-later |
-| Planning | 謀攻 | planning, brainstorm, agent-builder | V1 proposal, plain language spec, complexity estimation |
-| Building | 軍爭 | cook, coding-agent, cc-godmode | Staged build, continuous testing, decision checkpoints |
-| Polish | 兵勢 | code-review, heimdall-security, web-testing | Edge cases, responsive, professional finish |
-| Handoff | 火攻 | devops, git, skill-seekers, docs-seeker | Deploy, documentation, V2 roadmap |
-
-Full skills registry: `docs/SKILLS_REGISTRY.md`
+5 phases: Discovery→Planning→Building→Polish→Handoff. See `docs/SKILLS_REGISTRY.md`.
 
 ### Mekong Agents
 
-| Agent | Operations |
-|-------|------------|
-| `GitAgent` | status, diff, log, commit, branch |
-| `FileAgent` | find, read, tree, stats, grep |
-| `ShellAgent` | Shell command execution |
-| `LeadHunter` | Company/CEO lead discovery |
-| `ContentWriter` | Content generation |
-| `RecipeCrawler` | Recipe file discovery |
-
-All agents inherit `AgentBase` → `plan()` → `execute()` → `verify()` flow.
+Agents: GitAgent, FileAgent, ShellAgent, LeadHunter, ContentWriter, RecipeCrawler. All inherit `AgentBase` → plan→execute→verify.
 
 ---
 
-## 第六篇 虛實 (Xu Shi) — OPEN CORE STRATEGY
 
-> *"Tỵ thực nhi kích hư"* — Strike the void, avoid the solid
-
-### Public vs Private
-
-```
-PUBLIC (Open Source):
-├── src/core/               # Plan-Execute-Verify engine
-├── src/agents/             # Modular agent system
-├── apps/openclaw-worker/   # Tôm Hùm daemon
-├── apps/raas-gateway/      # API gateway
-├── _bmad/                  # 169 workflows
-├── CLAUDE.md               # This constitution
-└── packages/               # Hub SDK structure
-
-PRIVATE (.gitignore):
-├── plans/internal/
-├── dna/pricing/
-├── .mekong/api-key
-└── apps/dashboard-internal/
-```
-
----
+## 第六篇 虛實 (Xu Shi) — [compressed for speed]
 
 ## 第七篇 軍爭 (Jun Zheng) — COMMAND PROTOCOL
 
@@ -488,36 +371,8 @@ LOOP until complete:
 
 ---
 
-## 第八篇 九變 (Jiu Bian) — ADAPTIVE WORKFLOWS
 
-> *"Tướng thông cửu biến chi lợi giả, tri dụng binh hĩ"* — The general who masters adaptations wins
-
-### BMAD Integration
-
-| Component | Count |
-|-----------|-------|
-| Workflows | 169 |
-| Agents | 9 (PM, Architect, Dev, QA, Analyst, SM, UX, BA, DevOps) |
-| Teams | 2 |
-
-Key BMAD workflows: `/product-brief` → `/create-prd` → `/create-architecture` → `/dev-story`
-
-### Workflow Selection Matrix
-
-| Scope | Flow |
-|-------|------|
-| Bug fix, small feature | `/scout` → `/plan` → `/code` → `/review` |
-| Complex feature | `/brainstorm` → `/plan:hard` → `/cook` → `/test` → `/review` |
-| Full product | BMAD planning → Agent Teams parallel execution |
-| Quality sweep | Tôm Hùm Auto-CTO (Binh Phap tasks across projects) |
-
-### Binh Pháp Module (`src/binh_phap/`)
-
-- `standards.py` — Quality standards engine
-- `anima_standards.py` — Animated standards
-- `immortal_loop.py` — Continuous improvement loop
-
----
+## 第八篇 九變 (Jiu Bian) — [compressed for speed]
 
 ## 第九篇 行軍 (Xing Jun) — TÔM HÙM TỰ TRỊ (ĐIỀU 54)
 
@@ -559,22 +414,7 @@ apps/openclaw-worker/
    → expect script reads file, injects into CC CLI stdin
    → Polls /tmp/tom_hum_mission_done for completion
 
-4. COMPLETION DETECTION
-   expect script detects ❯ prompt return (with debounce)
-   → Writes "done" to /tmp/tom_hum_mission_done
-   → task-queue.js moves mission file to tasks/processed/
-
-5. AUTO-CTO (Self-Generating Work)
-   When queue empty for 60 checks (5min):
-   → auto-cto-pilot.js picks next project from rotation
-   → Generates Binh Phap quality task (console_cleanup, type_safety, a11y, security, perf, i18n)
-   → Writes to tasks/mission_{project}_auto_{task_id}.txt
-   → Queue picks it up automatically
-
-6. CRASH RECOVERY
-   expect script outer loop auto-respawns CC CLI with --continue
-   → Rate-limited: max 5 respawns/hour
-   → Brain death → respawn on next mission
+  ... (truncated for speed)
 ```
 
 #### Project Routing
@@ -706,115 +546,74 @@ git push origin main
 
 ---
 
-## 第十三篇 用間 (Yong Jian) — INTELLIGENCE NETWORK
 
-> *"Minh quân hiền tướng, sở dĩ động nhi thắng nhân"* — The enlightened ruler and wise general conquer through foreknowledge
+## 第十三篇 用間 (Yong Jian) — [compressed for speed]
 
-### Knowledge Sources
 
-| Source | Path | Owner |
-|--------|------|-------|
-| Antigravity Brain | `~/.gemini/antigravity/brain/` | Chairman |
-| Antigravity Knowledge | `~/.gemini/antigravity/knowledge/` | Chairman |
-| BMAD Workflows | `_bmad/bmm/workflows/` | Shared |
-| ClaudeKit Skills | `.claude/skills/` | CC CLI |
-| ClaudeKit Commands | `.claude/commands/` | CC CLI |
-| Insights | `insights/accumulated.md` | Shared |
-| Plans | `plans/` | Shared |
-| Telemetry | `.mekong/telemetry/` | Engine |
-| Memory | `.mekong/memory.yaml` | Engine |
-
-### Memory Sync Protocol
-
-- Each session records insights to `insights/accumulated.md`
-- Telemetry traces captured in `execution_trace.json`
-- Memory entries recorded via `MemoryStore` for goal→recipe matching
-- claude-mem Chroma collection for cross-session retrieval
-
----
-
-## SUPREME COMMANDER PROTOCOL
-
-> T1 mekong-cli = Supreme Commander. Boot BEFORE every day.
-
-### Morning Boot Sequence
-
-1. **`/insight`** — Read `insights/accumulated.md`, analyze weaknesses
-2. **Self-Fix** — Fix config, plans, skills, dependencies
-3. **Sub-Project Scan** — Verify build all `apps/*`
-4. **`/cook`** — Execute remaining phases per sub-project
-5. **Daily Report** — Write to `insights/daily-report-YYYY-MM-DD.md`
-
-### Sub-Project Registry
-
-| Project | Path | Type |
-|---------|------|------|
-| agencyos-web | apps/agencyos-web | submodule |
-| sophia-ai-factory | apps/sophia-ai-factory | submodule |
-| 84tea | apps/84tea | submodule |
-| apex-os | apps/apex-os | submodule |
-| anima119 | apps/anima119 | submodule |
-| openclaw-worker | apps/openclaw-worker | local |
-| raas-gateway | apps/raas-gateway | local |
-
-### Standing Orders
-
-- **KHÔNG OFF** — Never stop the supreme commander session
-- **Submodule Git** — Must `cd` into submodule before `git commit`
-- **Insight Accumulation** — Every session adds to `insights/accumulated.md`
-- **Proxy Check** — If CC CLI loops → check proxy/model config immediately
-
----
+## SUPREME COMMANDER PROTOCOL — [compressed for speed]
 
 ## ĐIỀU INDEX (Quick Reference)
 
-| ĐIỀU | Title | Chapter |
-|------|-------|---------|
-| 0 | Authority Hierarchy | Stakeholder Matrix |
-| 47 | Task Delegation Command Mandate | 第七篇 |
-| 48 | Verification Before Reporting | 第十一篇 |
-| 49 | GREEN Production Rule | 第四篇 |
-| 50 | Mission Success = Top Priority | 第七篇 |
-| 51 | Antigravity Proxy Mandate | 第二篇 |
-| 52 | Error Recovery Protocol | 第二篇 |
-| 53 | M1 Resource Management | 第二篇 |
-| 54 | Tôm Hùm Tự Trị (Autonomous Dispatch) | 第九篇 |
-| 55 | Ngôn Ngữ — Tiếng Việt Bắt Buộc | Hiến Pháp |
-| **56** | **Antigravity Proxy Port 9191 — CẤM QUÊN** | **第二篇** |
-
-*ĐIỀU 1-46: Inherited from global `~/.claude/CLAUDE.md` rules (CC CLI supervision, i18n sync, production verification, skill activation, browser discipline, etc.)*
+Key ĐIỀU: 0(Authority), 47(Command Mandate), 48(Verify), 49(GREEN), 50(Mission), 51-53(Proxy/Recovery/M1), 54(Tôm Hùm), 55(Vietnamese), 56(DashScope).
 
 ---
 
 ---
 
-## ĐIỀU 56 — ANTIGRAVITY PROXY PORT 9191 (🔒 KHÓA CỨNG)
+## ĐIỀU 56 — DASHSCOPE CODING PLAN API (🔒 PRODUCTION)
 
-> **CẤM QUÊN. CẤM THAY ĐỔI PORT. MỌI AGENT PHẢI ĐỌC.**
+> Model: qwen3-coder-plus | Key: sk-sp-* ($50/mo) | TTFB: ~1s
+> 🎁 **Đăng ký Coding Plan:** [Alibaba Cloud Benefits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T)
 
 ```
-🔒 PROXY PORT = 9191 — LOCKED PERMANENTLY
-🔒 ANTHROPIC_BASE_URL = http://localhost:9191
-🔒 STARTUP: PORT=9191 antigravity-claude-proxy
-🔒 settings.json: "ANTHROPIC_BASE_URL": "http://localhost:9191"
-🔒 .zshrc: export ANTHROPIC_BASE_URL=http://localhost:9191
+🔒 ANTHROPIC_BASE_URL = https://coding-intl.dashscope.aliyuncs.com/apps/anthropic
+🔒 ANTHROPIC_MODEL = qwen3-coder-plus
+🔒 AUTOCOMPACT = 15%
 ```
-
-### Lý do khóa cứng (2026-02-17):
-- Port 8080 = default proxy nhưng bị conflict với nhiều service
-- Port 9191 = production port, đã verified stable
-- CC CLI settings.json PHẢI match port proxy
-- Nếu restart proxy PHẢI dùng `PORT=9191`
-- 5 lần ConnectionRefused debug mất 2 tiếng vì port sai
-
-### Troubleshooting ConnectionRefused:
-1. Check proxy alive: `curl http://localhost:9191/health`
-2. Check settings.json: `grep ANTHROPIC_BASE_URL ~/.claude/settings.json`
-3. Check .zshrc: `grep ANTHROPIC_BASE_URL ~/.zshrc`
-4. Restart proxy: `PORT=9191 nohup antigravity-claude-proxy &`
-5. Restart CC CLI AFTER proxy is alive
 
 ---
 
 _Genesis: 2026-02-06 | Hiến Pháp v2.2: 2026-02-17_
 _ClaudeKit DNA v2.9.1+ | Agent Teams + BMAD + Binh Pháp + Tôm Hùm v29.0_
+
+
+## 🔴 CẤM CI/CD POLLING LOOP (Added 2026-03-04)
+
+**TUYỆT ĐỐI CẤM chạy while loop poll CI/CD status!**
+
+Lý do: Vòng lặp `while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; gh run list...sleep 30; done` tốn ~12,500 tokens → context cháy 0% → crash.
+
+**LUẬT:**
+1. **CẤM** `while` loop poll `gh run list` hoặc bất kỳ CI/CD status check nào
+2. **CHỈ ĐƯỢC** check CI/CD status **MỘT LẦN** duy nhất: `gh run list -L1 --json status,conclusion`
+3. **SAU KHI** `git push`, báo cáo kết quả push và **DỪNG** — không poll
+4. **CẤM** `sleep` trong bất kỳ loop nào — mỗi giây sleep = tokens lãng phí
+
+```bash
+# ❌ CẤM (burns 12K+ tokens):
+MAX_ATTEMPTS=25; while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+  STATUS=$(gh run list -L 1 --json status,conclusion); sleep 30
+done
+
+# ✅ ĐÚNG (chỉ 1 lần):
+gh run list -L 1 --json status,conclusion -q ".[0]"
+# Báo cáo kết quả và tiếp tục task khác
+```
+
+
+
+## 📜 HIẾN PHÁP ROIaaS — DNA TỐI THƯỢNG (BẮT BUỘC MỌI PHIÊN)
+
+> **R = ROI = RaaS = ROIaaS** — Mọi dòng code phải quy đổi thành ROI.
+> Chi tiết: `docs/HIEN_PHAP_ROIAAS.md` | Chiến lược: `docs/BINH_PHAP_MASTER.md`
+
+**DUAL-STREAM BẮT BUỘC:** Mọi dự án PHẢI có 2 dòng doanh thu:
+1. **Engineering ROI (Dev Key):** `RAAS_LICENSE_KEY` gate premium CLI/agents/models
+2. **Operational ROI (User UI):** Subscription trên Web UI cho business users
+
+**HƯ-THỰC (Binh Pháp Ch.6):**
+- HƯ (Open): Source code, base patterns → Public GitHub, viral marketing
+- THỰC (Closed): AI Brain, prod keys, trained models → Gated, thu tiền
+
+**QUÂN LỆNH:** Mission nào không phục vụ ít nhất 1 dòng ROI → **REJECT**.
+

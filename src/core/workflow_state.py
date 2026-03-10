@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Workflow State Machine
+"""Mekong CLI - Workflow State Machine.
 
 Temporal-inspired deterministic state machine for workflow lifecycle.
 Tracks workflow status transitions with validation to prevent
@@ -10,7 +9,6 @@ States mirror Temporal: PENDING → RUNNING → COMPLETED/FAILED/CANCELLED.
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Dict, List, Set
 
 
 class WorkflowStatus(str, Enum):
@@ -39,7 +37,7 @@ class StepStatus(str, Enum):
 
 
 # Valid state transitions (from → set of valid destinations)
-_WORKFLOW_TRANSITIONS: Dict[WorkflowStatus, Set[WorkflowStatus]] = {
+_WORKFLOW_TRANSITIONS: dict[WorkflowStatus, set[WorkflowStatus]] = {
     WorkflowStatus.PENDING: {WorkflowStatus.RUNNING, WorkflowStatus.CANCELLED},
     WorkflowStatus.RUNNING: {
         WorkflowStatus.COMPLETED,
@@ -57,7 +55,7 @@ _WORKFLOW_TRANSITIONS: Dict[WorkflowStatus, Set[WorkflowStatus]] = {
     WorkflowStatus.ROLLED_BACK: set(),
 }
 
-_STEP_TRANSITIONS: Dict[StepStatus, Set[StepStatus]] = {
+_STEP_TRANSITIONS: dict[StepStatus, set[StepStatus]] = {
     StepStatus.SCHEDULED: {StepStatus.STARTED, StepStatus.SKIPPED},
     StepStatus.STARTED: {
         StepStatus.COMPLETED,
@@ -94,19 +92,20 @@ class StepState:
 
         Raises:
             InvalidTransitionError: If transition is not allowed
+
         """
         valid_targets = _STEP_TRANSITIONS.get(self.status, set())
         if new_status not in valid_targets:
+            msg = f"Step {self.order}: {self.status.value} → {new_status.value} not allowed"
             raise InvalidTransitionError(
-                f"Step {self.order}: {self.status.value} → {new_status.value} not allowed"
+                msg,
             )
         self.status = new_status
 
 
 @dataclass
 class WorkflowState:
-    """
-    Deterministic state machine for a workflow execution.
+    """Deterministic state machine for a workflow execution.
 
     Enforces valid state transitions for both workflow-level
     and step-level status changes.
@@ -114,7 +113,7 @@ class WorkflowState:
 
     workflow_id: str
     status: WorkflowStatus = WorkflowStatus.PENDING
-    steps: Dict[int, StepState] = field(default_factory=dict)
+    steps: dict[int, StepState] = field(default_factory=dict)
     current_step: int = 0
 
     def transition(self, new_status: WorkflowStatus) -> None:
@@ -125,11 +124,13 @@ class WorkflowState:
 
         Raises:
             InvalidTransitionError: If transition is not allowed
+
         """
         valid_targets = _WORKFLOW_TRANSITIONS.get(self.status, set())
         if new_status not in valid_targets:
+            msg = f"Workflow {self.workflow_id}: {self.status.value} → {new_status.value} not allowed"
             raise InvalidTransitionError(
-                f"Workflow {self.workflow_id}: {self.status.value} → {new_status.value} not allowed"
+                msg,
             )
         self.status = new_status
 
@@ -148,6 +149,7 @@ class WorkflowState:
         Raises:
             KeyError: If step not registered
             InvalidTransitionError: If transition not allowed
+
         """
         step = self.steps[step_order]
         step.transition(new_status)
@@ -156,14 +158,14 @@ class WorkflowState:
         elif new_status == StepStatus.RETRYING:
             step.attempt += 1
 
-    def get_completed_steps(self) -> List[int]:
+    def get_completed_steps(self) -> list[int]:
         """Return order numbers of all completed steps."""
         return [
             order for order, step in self.steps.items()
             if step.status == StepStatus.COMPLETED
         ]
 
-    def get_failed_steps(self) -> List[int]:
+    def get_failed_steps(self) -> list[int]:
         """Return order numbers of all failed steps."""
         return [
             order for order, step in self.steps.items()
@@ -189,9 +191,9 @@ class WorkflowState:
 
 
 __all__ = [
-    "WorkflowStatus",
+    "InvalidTransitionError",
+    "StepState",
     "StepStatus",
     "WorkflowState",
-    "StepState",
-    "InvalidTransitionError",
+    "WorkflowStatus",
 ]

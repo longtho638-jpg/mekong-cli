@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any
+from typing import Any, Optional
 
 from src.core.event_bus import Event, EventBus, EventType
 
@@ -127,7 +127,7 @@ class EventBusAdapter:
         Args:
             event: Incoming event from the bus.
         """
-        tenant_id: str | None = event.data.get("tenant_id")
+        tenant_id: Optional[str] = event.data.get("tenant_id")
         if not tenant_id:
             return
 
@@ -141,7 +141,7 @@ class EventBusAdapter:
 
 
 # Module-level singletons (lazy init in dashboard.py)
-_sse_manager: SSEManager | None = None
+_sse_manager: Optional[SSEManager] = None
 
 
 def get_sse_manager() -> SSEManager:

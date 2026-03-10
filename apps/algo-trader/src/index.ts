@@ -6,15 +6,30 @@ import { MockDataProvider } from './data/MockDataProvider';
 import { ExchangeClientBase as ExchangeClient } from '@agencyos/trading-core/exchanges';
 import { BacktestRunner, BacktestResult } from './backtest/BacktestRunner';
 import { BacktestEngine } from './backtest/BacktestEngine';
+import { LicenseError } from './lib/raas-gate';
+import { initLicenseValidation } from './lib/license-validator';
 import { registerArbCommands } from './cli/arb-cli-commands';
 import { registerSpreadDetectorCommand } from './cli/spread-detector-command';
 import { registerMarketplaceCommands } from './cli/strategy-marketplace-tenant-cli-commands';
+import { registerMLCommands } from './cli/ml-train-and-backtest-commands';
+import { registerDryRunCommand } from './cli/live-dry-run-simulation-command';
+import { registerAgiTradeCommand } from './cli/agi-trade-multi-exchange-golive-command';
+import { registerArbLiveCommand } from './cli/arb-live-cross-exchange-command';
+import { registerUnifiedArbCommand } from './cli/unified-agi-arbitrage-command';
+import { registerSetupCommand } from './cli/setup-wizard-command';
+import { registerQuickstartCommand } from './cli/quickstart-zero-config-command';
+import { registerTelegramBotCommand } from './cli/telegram-phone-trading-bot-command';
+import { registerAbiTradeCommands } from './cli/abi-trade-commands';
 import { logger } from './utils/logger';
 import { startRaasServer, stopRaasServer, setReady } from './api/fastify-raas-server';
 import * as dotenv from 'dotenv';
 
 // Load environment variables securely
 dotenv.config();
+
+// Initialize license validation (exit if invalid)
+const licenseResult = initLicenseValidation();
+logger.info(`📄 License status: ${licenseResult.valid ? 'VALID' : 'FREE TIER'}`);
 
 const program = new Command();
 
@@ -273,6 +288,28 @@ program
 registerArbCommands(program);
 registerSpreadDetectorCommand(program);
 registerMarketplaceCommands(program);
+registerMLCommands(program);
+registerDryRunCommand(program);
+registerAgiTradeCommand(program);
+registerArbLiveCommand(program);
+registerUnifiedArbCommand(program);
+registerSetupCommand(program);
+registerQuickstartCommand(program);
+registerTelegramBotCommand(program);
+registerAbiTradeCommands(program);
+
+// Register ML strategies in StrategyLoader (PRO feature - gracefully handle FREE tier)
+try {
+  StrategyLoader.registerMLStrategies();
+} catch (error) {
+  // LicenseError expected for FREE tier - ML strategies won't be registered
+  if (error instanceof LicenseError) {
+    logger.debug('ML strategies not registered: FREE tier (upgrade to PRO for ML features)');
+  } else {
+    // Re-throw unexpected errors
+    throw error;
+  }
+}
 
 // Global handlers for unhandled promise rejections and uncaught exceptions
 process.on('unhandledRejection', (reason: unknown) => {

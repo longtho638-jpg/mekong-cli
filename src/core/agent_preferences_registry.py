@@ -1,34 +1,35 @@
-"""
-Mekong CLI - Agent Preferences Registry
+"""Mekong CLI - Agent Preferences Registry.
 
 Electron's webPreferences pattern mapped to per-agent configuration.
 Stores, retrieves, and persists preferences for each agent type.
 """
 
+from __future__ import annotations
+
 import json
-from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, Optional
+from dataclasses import asdict, dataclass, field
+from typing import Any
 
 
 @dataclass
 class AgentPreferences:
     """Per-agent configuration modelled after Electron's webPreferences."""
 
-    sandbox_policy: Optional[str] = None  # Policy name or None for unrestricted
+    sandbox_policy: str | None = None  # Policy name or None for unrestricted
     max_retries: int = 3
     timeout_seconds: int = 300
     verbose: bool = False
     enable_telemetry: bool = True
     enable_memory: bool = True
-    model_override: Optional[str] = None
-    custom_env: Dict[str, str] = field(default_factory=dict)
+    model_override: str | None = None
+    custom_env: dict[str, str] = field(default_factory=dict)
 
 
 # ---------------------------------------------------------------------------
 # Default preferences keyed by agent type
 # ---------------------------------------------------------------------------
 
-_DEFAULTS: Dict[str, AgentPreferences] = {
+_DEFAULTS: dict[str, AgentPreferences] = {
     "git": AgentPreferences(
         sandbox_policy="GIT_OPS",
         max_retries=2,
@@ -53,8 +54,7 @@ _DEFAULT_PREFS = AgentPreferences()
 
 
 class PreferencesRegistry:
-    """
-    Central registry for per-agent preferences.
+    """Central registry for per-agent preferences.
 
     Inspired by Electron's webPreferences: each agent type gets isolated
     configuration controlling sandbox policy, retries, timeouts, and more.
@@ -62,7 +62,7 @@ class PreferencesRegistry:
 
     def __init__(self) -> None:
         """Initialize registry with built-in agent defaults."""
-        self._registry: Dict[str, AgentPreferences] = dict(_DEFAULTS)
+        self._registry: dict[str, AgentPreferences] = dict(_DEFAULTS)
 
     def register(self, agent_type: str, prefs: AgentPreferences) -> None:
         """Register preferences for an agent type.
@@ -72,6 +72,7 @@ class PreferencesRegistry:
         Args:
             agent_type: Unique agent identifier (e.g. 'git', 'file').
             prefs: AgentPreferences instance to associate with this type.
+
         """
         self._registry[agent_type] = prefs
 
@@ -85,6 +86,7 @@ class PreferencesRegistry:
 
         Returns:
             AgentPreferences for the given type, or defaults.
+
         """
         return self._registry.get(agent_type, _DEFAULT_PREFS)
 
@@ -96,6 +98,7 @@ class PreferencesRegistry:
         Args:
             agent_type: Agent identifier to update.
             **kwargs: Fields to update on the AgentPreferences dataclass.
+
         """
         current = self._registry.get(agent_type, AgentPreferences())
         for key, value in kwargs.items():
@@ -114,13 +117,14 @@ class PreferencesRegistry:
         Raises:
             FileNotFoundError: If the config file does not exist.
             json.JSONDecodeError: If the file contains invalid JSON.
+
         """
-        with open(filepath, "r", encoding="utf-8") as fh:
-            data: Dict[str, Dict[str, Any]] = json.load(fh)
+        with open(filepath, encoding="utf-8") as fh:
+            data: dict[str, dict[str, Any]] = json.load(fh)
 
         for agent_type, raw in data.items():
             # Only accept known fields to avoid surprises
-            known = {f for f in AgentPreferences.__dataclass_fields__}
+            known = set(AgentPreferences.__dataclass_fields__)
             filtered = {k: v for k, v in raw.items() if k in known}
             self._registry[agent_type] = AgentPreferences(**filtered)
 
@@ -129,6 +133,7 @@ class PreferencesRegistry:
 
         Args:
             filepath: Absolute or relative path to write the JSON config.
+
         """
         data = {
             agent_type: asdict(prefs)

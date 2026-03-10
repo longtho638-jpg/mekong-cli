@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAAS License Manager</title>
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-badge.active {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .status-badge.invalid {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid var(--error);
+        }
+
+        .status-badge.no-license {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid var(--warning);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            color: var(--text);
+            border-color: var(--text-muted);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .features-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: var(--bg);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .feature-item::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .tier-info {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .tier-stat {
+            text-align: center;
+        }
+
+        .tier-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .tier-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 RAAS License Manager</h1>
+            <p>Manage your RaaS license subscription</p>
+        </header>
+
+        <!-- Status Card -->
+        <div class="card">
+            <h2>
+                <span id="status-icon">📊</span>
+                Current Status
+            </h2>
+            <div id="status-container">
+                <div class="loading"></div>
+                <span style="margin-left: 0.5rem; color: var(--text-muted);">Loading...</span>
+            </div>
+            <div id="features-section" class="hidden">
+                <h3 style="margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1rem; color: var(--text-muted);">
+                    Enabled Features (<span id="feature-count">0</span>)
+                </h3>
+                <div id="features-list" class="features-list"></div>
+                <div class="tier-info">
+                    <div class="tier-stat">
+                        <div class="tier-stat-value" id="tier-display">FREE</div>
+                        <div class="tier-stat-label">Current Tier</div>
+                    </div>
+                    <div class="tier-stat">
+                        <div class="tier-stat-value" id="features-count-stat">0</div>
+                        <div class="tier-stat-label">Features</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activate Card -->
+        <div class="card">
+            <h2>
+                <span>🔑</span>
+                Activate License
+            </h2>
+            <div id="activate-alert" class="alert"></div>
+            <form id="activate-form">
+                <div class="form-group">
+                    <label for="license-key">License Key</label>
+                    <input
+                        type="text"
+                        id="license-key"
+                        name="license_key"
+                        placeholder="raas_pro_xxxxxxxxxxxxx"
+                        autocomplete="off"
+                        required
+                    />
+                    <p style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--text-muted);">
+                        Format: raas_pro_xxx or raas_ent_xxx or RPP-xxx or REP-xxx
+                    </p>
+                </div>
+                <div class="actions">
+                    <button type="submit" class="btn btn-primary" id="activate-btn">
+                        <span>Activate License</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="validate-btn">
+                        Validate First
+                    </button>
+                    <button type="button" class="btn btn-danger hidden" id="deactivate-btn">
+                        Deactivate
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Help Card -->
+        <div class="card">
+            <h2>
+                <span>💡</span>
+                Need a License?
+            </h2>
+            <p style="color: var(--text-muted); line-height: 1.6;">
+                Get your RaaS license key to unlock premium features including:
+                Premium Agents, Advanced Patterns, ML Models, Custom Workflows, and more.
+            </p>
+            <div class="actions">
+                <a href="https://raas.mekong.dev/pricing" target="_blank" class="btn btn-primary" style="text-decoration: none;">
+                    Get License
+                </a>
+                <a href="https://raas.mekong.dev/docs" target="_blank" class="btn btn-secondary" style="text-decoration: none;">
+                    Documentation
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>RAAS License Manager v1.0.0</p>
+            <p>
+                <a href="https://mekong-cli.dev">Mekong CLI</a> •
+                <a href="https://raas.mekong.dev">RaaS</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = '';
+
+        // State
+        let currentStatus = null;
+
+        // Elements
+        const statusContainer = document.getElementById('status-container');
+        const featuresSection = document.getElementById('features-section');
+        const featuresList = document.getElementById('features-list');
+        const featureCount = document.getElementById('feature-count');
+        const tierDisplay = document.getElementById('tier-display');
+        const featuresCountStat = document.getElementById('features-count-stat');
+        const activateAlert = document.getElementById('activate-alert');
+        const activateForm = document.getElementById('activate-form');
+        const activateBtn = document.getElementById('activate-btn');
+        const validateBtn = document.getElementById('validate-btn');
+        const deactivateBtn = document.getElementById('deactivate-btn');
+        const licenseKeyInput = document.getElementById('license-key');
+
+        // Load status on page load
+        async function loadStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/api/status`);
+                const data = await response.json();
+                currentStatus = data;
+                renderStatus(data);
+            } catch (error) {
+                statusContainer.innerHTML = `
+                    <span style="color: var(--error);">Failed to load status</span>
+                `;
+            }
+        }
+
+        // Render status
+        function renderStatus(data) {
+            const { valid, tier, status, no_license, features, feature_count } = data;
+
+            let badgeClass, statusText, icon;
+
+            if (status === 'active' || valid) {
+                badgeClass = 'active';
+                statusText = 'Active';
+                icon = '✅';
+            } else if (no_license || !valid) {
+                badgeClass = 'no-license';
+                statusText = 'No License';
+                icon = '⚠️';
+            } else {
+                badgeClass = 'invalid';
+                statusText = 'Invalid';
+                icon = '❌';
+            }
+
+            statusContainer.innerHTML = `
+                <span class="status-badge ${badgeClass}">
+                    <span class="status-dot"></span>
+                    ${icon} ${statusText}
+                </span>
+            `;
+
+            // Show features if valid
+            if (valid && features && features.length > 0) {
+                featuresSection.classList.remove('hidden');
+                featureCount.textContent = features.length;
+                featuresCountStat.textContent = features.length;
+                tierDisplay.textContent = tier.toUpperCase();
+
+                featuresList.innerHTML = features.map(f => `
+                    <div class="feature-item">${formatFeatureName(f)}</div>
+                `).join('');
+
+                deactivateBtn.classList.remove('hidden');
+                licenseKeyInput.value = '••••••••••••••••••••';
+                licenseKeyInput.disabled = true;
+            } else {
+                featuresSection.classList.add('hidden');
+                deactivateBtn.classList.add('hidden');
+                licenseKeyInput.value = '';
+                licenseKeyInput.disabled = false;
+            }
+        }
+
+        function formatFeatureName(name) {
+            return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            activateAlert.textContent = message;
+            activateAlert.className = `alert show ${type === 'success' ? 'alert-success' : 'alert-error'}`;
+            setTimeout(() => {
+                activateAlert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Activate license
+        async function activateLicense() {
+            const licenseKey = licenseKeyInput.value.trim();
+            if (!licenseKey) {
+                showAlert('Please enter a license key', 'error');
+                return;
+            }
+
+            activateBtn.disabled = true;
+            activateBtn.innerHTML = '<span class="loading"></span> Activating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/activate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_key: licenseKey }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert(`License activated! Tier: ${data.tier.toUpperCase()}`, 'success');
+                    loadStatus();
+                    activateForm.reset();
+                } else {
+                    showAlert(data.error || 'Activation failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<span>Activate License</span>';
+            }
+        }
+
+        // Validate license
+        async function validateLicense() {
+            const licenseKey = licenseKeyInput.value.trim();
+            if (!licenseKey) {
+                showAlert('Please enter a license key', 'error');
+                return;
+            }
+
+            validateBtn.disabled = true;
+            validateBtn.innerHTML = '<span class="loading"></span> Validating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/validate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_key: licenseKey }),
+                });
+
+                const data = await response.json();
+
+                if (data.valid) {
+                    showAlert(`Valid ${data.tier.toUpperCase()} license! ${data.feature_count} features enabled.`, 'success');
+                } else {
+                    showAlert(data.error || 'Invalid license', 'error');
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                validateBtn.disabled = false;
+                validateBtn.innerHTML = '<span>Validate First</span>';
+            }
+        }
+
+        // Deactivate license
+        async function deactivateLicense() {
+            if (!confirm('Are you sure you want to deactivate your license?')) {
+                return;
+            }
+
+            deactivateBtn.disabled = true;
+            deactivateBtn.textContent = 'Deactivating...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/deactivate`, {
+                    method: 'POST',
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showAlert('License deactivated', 'success');
+                    loadStatus();
+                }
+            } catch (error) {
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                deactivateBtn.disabled = false;
+                deactivateBtn.textContent = 'Deactivate';
+            }
+        }
+
+        // Event listeners
+        activateForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            activateLicense();
+        });
+
+        validateBtn.addEventListener('click', validateLicense);
+        deactivateBtn.addEventListener('click', deactivateLicense);
+
+        // Initial load
+        loadStatus();
+    </script>
+</body>
+</html>

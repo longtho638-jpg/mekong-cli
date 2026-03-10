@@ -152,8 +152,8 @@ describe('Mission Dispatcher', () => {
 
         it('should fallback to first PROJECTS entry for unknown content', () => {
             const dir = dispatcher.detectProjectDir('Do something random', 'random.txt');
-            // Should fallback to 'well' (first in PROJECTS array)
-            expect(dir).toContain('apps/well');
+            // PROJECTS[0] = 'mekong-cli' → routes['mekong-cli'] = '.' → returns MEKONG_DIR
+            expect(dir).toBe(require('../config').MEKONG_DIR);
         });
 
         it('should prioritize filename over content for routing', () => {

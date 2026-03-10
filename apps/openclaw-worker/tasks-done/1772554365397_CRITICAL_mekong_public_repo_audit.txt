@@ -1,0 +1,17 @@
+/bootstrap:auto:parallel /cook CRITICAL MISSION: Chuẩn bị mekong-cli thành public repo cho dev xài.
+
+## Yêu cầu:
+1. **Secrets Audit** — grep toàn bộ codebase tìm API keys, tokens, passwords bị hardcode. Kiểm tra .env files KHÔNG được commit. Verify .gitignore đầy đủ.
+2. **README.md** — Đảm bảo README rõ ràng: cách install, cách chạy, architecture overview, contributing guide.
+3. **LICENSE** — Verify có license file (MIT/Apache recommended).
+4. **CI/CD** — GitHub Actions workflow phải pass, tests phải green.
+5. **Code Quality** — Không có console.log debug, không có TODO critical, không có hardcoded localhost URLs.
+6. **Dependencies** — package.json clean, không có unused deps, lockfile consistent.
+7. **Documentation** — docs/ folder có đầy đủ: project-overview, system-architecture, code-standards.
+8. **.env.example** — Tất cả env vars phải có trong .env.example với mô tả rõ.
+
+## QUAN TRỌNG:
+- Đọc tmux output TRƯỚC khi gửi lệnh
+- Dùng LLM suy luận xem pane nào đang rảnh
+- CHỈ gửi lệnh vào pane IDLE, không interrupt pane đang chạy
+- Report kết quả audit chi tiết

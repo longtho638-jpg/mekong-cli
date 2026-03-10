@@ -1,0 +1,50 @@
+name: Dunning Daily - Grace Period Processor
+
+on:
+  schedule:
+    # Runs daily at 2:00 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Manual trigger for testing
+
+env:
+  NODE_VERSION: '20.x'
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+  RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+  TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+  TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  DUNNING_GRACE_PERIOD_DAYS: '7'
+
+jobs:
+  process-grace-period:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/algo-trader/package-lock.json
+
+      - name: Install dependencies
+        working-directory: apps/algo-trader
+        run: npm ci
+
+      - name: Run dunning grace period processor
+        working-directory: apps/algo-trader
+        run: npx ts-node src/jobs/dunning-grace-period-processor.ts
+
+      - name: Upload results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dunning-grace-period-results
+          path: apps/algo-trader/dunning-results.json
+          retention-days: 7

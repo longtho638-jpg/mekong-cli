@@ -1,6 +1,7 @@
 /** BullMQ Optimization Worker — grid search via BacktestOptimizer, ranked via StrategyPerformanceRanker. Concurrency: 1. */
 
 import { logger } from '../../utils/logger';
+import { LicenseError, LicenseTier, LicenseService } from '../../lib/raas-gate';
 import { BacktestOptimizer } from '../../backtest/BacktestOptimizer';
 import { StrategyPerformanceRanker } from '../../backtest/strategy-performance-ranker-multi-metric-sharpe-sortino-drawdown';
 import { StrategyLoader } from '../../core/StrategyLoader';
@@ -36,6 +37,18 @@ export async function processOptimizationJob(
   data: OptimizationJobData
 ): Promise<OptimizationJobResult> {
   const { tenantId, strategyName, pair, timeframe, days, initialBalance, paramRanges, metric } = data;
+
+  // Gate premium optimization feature behind PRO license
+  const licenseService = LicenseService.getInstance();
+  if (!licenseService.hasTier(LicenseTier.PRO)) {
+    const err = new LicenseError(
+      `Optimization requires PRO license. Current tier: ${licenseService.getTier()}`,
+      LicenseTier.PRO,
+      'advanced_optimization'
+    );
+    logger.warn(`[OptWorker] License check failed for tenant=${tenantId}: ${err.message}`);
+    throw err;
+  }
 
   // Validate strategy exists before launching grid search
   StrategyLoader.load(strategyName); // throws if unknown

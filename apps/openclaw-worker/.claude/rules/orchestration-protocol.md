@@ -34,3 +34,10 @@ Spawn multiple subagents simultaneously for independent tasks:
 - **Cross-platform Development**: iOS and Android specific implementations
 - **Careful Coordination**: Ensure no file conflicts or shared resource contention
 - **Merge Strategy**: Plan integration points before parallel execution begins
+
+---
+
+## Agent Teams (Optional)
+
+For multi-session parallel collaboration, activate the `/team` skill.
+Not part of the default orchestration workflow. See `.claude/skills/team/SKILL.md` for templates, decision criteria, and spawn instructions.

@@ -1,13 +1,15 @@
-"""
-Mekong CLI - Provider Registry
+"""Mekong CLI - Provider Registry.
 
 Maps Vercel AI SDK's createProviderRegistry() to Python.
 Manages multi-provider LLM routing with colon-separated model refs.
 Example: "gemini:gemini-2.5-pro", "openai:gpt-4o", "proxy:gemini-3-pro-high"
 """
 
-from typing import Callable, Dict, List, Optional, Protocol, runtime_checkable
+from __future__ import annotations
+
+from collections.abc import Callable
 from dataclasses import dataclass, field
+from typing import Protocol, runtime_checkable
 
 
 @runtime_checkable
@@ -23,11 +25,11 @@ class ProviderSpec(Protocol):
         ...
 
     @property
-    def supported_models(self) -> List[str]:
+    def supported_models(self) -> list[str]:
         """List of model IDs this provider serves."""
         ...
 
-    def get_capabilities(self, model_id: str) -> Dict[str, bool]:
+    def get_capabilities(self, model_id: str) -> dict[str, bool]:
         """Return model capabilities (tools, structured_output, streaming)."""
         ...
 
@@ -38,7 +40,7 @@ class ResolvedModel:
 
     provider_name: str
     model_id: str
-    capabilities: Dict[str, bool] = field(default_factory=dict)
+    capabilities: dict[str, bool] = field(default_factory=dict)
 
 
 @dataclass
@@ -48,12 +50,11 @@ class ProviderConfig:
     name: str
     factory: Callable[..., "ProviderSpec"]
     default_model: str = ""
-    aliases: Dict[str, str] = field(default_factory=dict)
+    aliases: dict[str, str] = field(default_factory=dict)
 
 
 class ProviderRegistry:
-    """
-    Central registry for LLM providers.
+    """Central registry for LLM providers.
 
     Maps Vercel AI SDK's createProviderRegistry() pattern.
     Supports colon-separated model refs: "provider:model-id"
@@ -61,8 +62,8 @@ class ProviderRegistry:
 
     def __init__(self) -> None:
         """Initialize empty registry."""
-        self._providers: Dict[str, ProviderConfig] = {}
-        self._instances: Dict[str, ProviderSpec] = {}
+        self._providers: dict[str, ProviderConfig] = {}
+        self._instances: dict[str, ProviderSpec] = {}
         self._default_provider: str = ""
 
     def register(
@@ -70,7 +71,7 @@ class ProviderRegistry:
         name: str,
         factory: Callable[..., "ProviderSpec"],
         default_model: str = "",
-        aliases: Optional[Dict[str, str]] = None,
+        aliases: dict[str, str] | None = None,
     ) -> None:
         """Register a provider with lazy initialization.
 
@@ -79,6 +80,7 @@ class ProviderRegistry:
             factory: Callable that creates provider instance
             default_model: Default model when only provider name given
             aliases: Model alias mappings (e.g., {"fast": "gemini-2.0-flash"})
+
         """
         self._providers[name] = ProviderConfig(
             name=name,
@@ -94,9 +96,11 @@ class ProviderRegistry:
 
         Args:
             provider_name: Name of registered provider
+
         """
         if provider_name not in self._providers:
-            raise ValueError(f"Provider not registered: {provider_name}")
+            msg = f"Provider not registered: {provider_name}"
+            raise ValueError(msg)
         self._default_provider = provider_name
 
     def resolve(self, model_ref: str) -> ResolvedModel:
@@ -113,6 +117,7 @@ class ProviderRegistry:
 
         Returns:
             ResolvedModel with provider_name, model_id, capabilities
+
         """
         if ":" in model_ref:
             parts = model_ref.split(":", 1)
@@ -122,9 +127,12 @@ class ProviderRegistry:
             model_id = model_ref
 
         if provider_name not in self._providers:
-            raise ValueError(
+            msg = (
                 f"Unknown provider '{provider_name}'. "
                 f"Registered: {list(self._providers.keys())}"
+            )
+            raise ValueError(
+                msg,
             )
 
         config = self._providers[provider_name]
@@ -149,7 +157,7 @@ class ProviderRegistry:
             capabilities=capabilities,
         )
 
-    def _get_instance(self, provider_name: str) -> Optional[ProviderSpec]:
+    def _get_instance(self, provider_name: str) -> ProviderSpec | None:
         """Lazy-initialize and cache provider instance.
 
         Args:
@@ -157,6 +165,7 @@ class ProviderRegistry:
 
         Returns:
             Provider instance or None if initialization fails
+
         """
         if provider_name in self._instances:
             return self._instances[provider_name]
@@ -172,11 +181,11 @@ class ProviderRegistry:
         except Exception:
             return None
 
-    def list_providers(self) -> List[str]:
+    def list_providers(self) -> list[str]:
         """Return names of all registered providers."""
         return list(self._providers.keys())
 
-    def list_models(self, provider_name: str) -> List[str]:
+    def list_models(self, provider_name: str) -> list[str]:
         """Return supported models for a provider.
 
         Args:
@@ -184,6 +193,7 @@ class ProviderRegistry:
 
         Returns:
             List of model IDs
+
         """
         instance = self._get_instance(provider_name)
         if instance:
@@ -202,7 +212,7 @@ class AntigravityProvider:
         return "proxy"
 
     @property
-    def supported_models(self) -> List[str]:
+    def supported_models(self) -> list[str]:
         return [
             "gemini-3-pro-high",
             "gemini-2.5-pro",
@@ -211,7 +221,7 @@ class AntigravityProvider:
             "claude-opus-4-6",
         ]
 
-    def get_capabilities(self, model_id: str) -> Dict[str, bool]:
+    def get_capabilities(self, model_id: str) -> dict[str, bool]:
         return {
             "tools": True,
             "structured_output": True,
@@ -228,14 +238,14 @@ class GeminiProvider:
         return "gemini"
 
     @property
-    def supported_models(self) -> List[str]:
+    def supported_models(self) -> list[str]:
         return [
             "gemini-2.5-pro",
             "gemini-2.0-flash",
             "gemini-3-pro-preview",
         ]
 
-    def get_capabilities(self, model_id: str) -> Dict[str, bool]:
+    def get_capabilities(self, model_id: str) -> dict[str, bool]:
         return {
             "tools": True,
             "structured_output": True,
@@ -252,10 +262,10 @@ class OpenAIProvider:
         return "openai"
 
     @property
-    def supported_models(self) -> List[str]:
+    def supported_models(self) -> list[str]:
         return ["gpt-4o", "gpt-4o-mini", "o1", "o3-mini"]
 
-    def get_capabilities(self, model_id: str) -> Dict[str, bool]:
+    def get_capabilities(self, model_id: str) -> dict[str, bool]:
         is_reasoning = model_id.startswith("o")
         return {
             "tools": not is_reasoning,
@@ -270,6 +280,7 @@ def create_default_registry() -> ProviderRegistry:
 
     Returns:
         ProviderRegistry with proxy, gemini, openai providers
+
     """
     registry = ProviderRegistry()
 
@@ -296,12 +307,12 @@ def create_default_registry() -> ProviderRegistry:
 
 
 __all__ = [
-    "ProviderRegistry",
-    "ProviderSpec",
-    "ProviderConfig",
-    "ResolvedModel",
     "AntigravityProvider",
     "GeminiProvider",
     "OpenAIProvider",
+    "ProviderConfig",
+    "ProviderRegistry",
+    "ProviderSpec",
+    "ResolvedModel",
     "create_default_registry",
 ]

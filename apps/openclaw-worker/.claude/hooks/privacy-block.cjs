@@ -14,25 +14,27 @@
  * Core logic extracted to lib/privacy-checker.cjs for OpenCode plugin reuse.
  */
 
-const path = require('path');
+(async () => {
+  try {
+    const path = require('path');
 
-// Import shared privacy checking logic
-const {
-  checkPrivacy,
-  isSafeFile,
-  isPrivacyBlockDisabled,
-  isPrivacySensitive,
-  hasApprovalPrefix,
-  stripApprovalPrefix,
-  extractPaths,
-  isSuspiciousPath
-} = require('./lib/privacy-checker.cjs');
-const { isHookEnabled } = require('./lib/ck-config-utils.cjs');
+    // Import shared privacy checking logic
+    const {
+      checkPrivacy,
+      isSafeFile,
+      isPrivacyBlockDisabled,
+      isPrivacySensitive,
+      hasApprovalPrefix,
+      stripApprovalPrefix,
+      extractPaths,
+      isSuspiciousPath
+    } = require('./lib/privacy-checker.cjs');
+    const { isHookEnabled } = require('./lib/ck-config-utils.cjs');
 
-// Early exit if hook disabled in config
-if (!isHookEnabled('privacy-block')) {
-  process.exit(0);
-}
+    // Early exit if hook disabled in config
+    if (!isHookEnabled('privacy-block')) {
+      process.exit(0);
+    }
 
 /**
  * Format block message with approval instructions and JSON marker for AskUserQuestion
@@ -133,19 +135,32 @@ async function main() {
   process.exit(0); // Allow
 }
 
-// Run main only when executed directly (not when required for testing)
-if (require.main === module) {
-  main().catch(() => process.exit(0));
-}
+    // Run main only when executed directly (not when required for testing)
+    if (require.main === module) {
+      main().catch(() => process.exit(0));
+    }
 
-// Export functions for unit testing
-if (typeof module !== 'undefined') {
-  module.exports = {
-    isSafeFile,
-    isPrivacyBlockDisabled,
-    isPrivacySensitive,
-    hasApprovalPrefix,
-    stripApprovalPrefix,
-    extractPaths,
-  };
-}
+    // Export functions for unit testing
+    if (typeof module !== 'undefined') {
+      module.exports = {
+        isSafeFile,
+        isPrivacyBlockDisabled,
+        isPrivacySensitive,
+        hasApprovalPrefix,
+        stripApprovalPrefix,
+        extractPaths,
+      };
+    }
+  } catch (e) {
+    // Minimal crash logging (zero deps — only Node builtins)
+    try {
+      const fs = require('fs');
+      const p = require('path');
+      const logDir = p.join(__dirname, '.logs');
+      if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+      fs.appendFileSync(p.join(logDir, 'hook-log.jsonl'),
+        JSON.stringify({ ts: new Date().toISOString(), hook: p.basename(__filename, '.cjs'), status: 'crash', error: e.message }) + '\n');
+    } catch (_) {}
+    process.exit(0); // fail-open
+  }
+})();

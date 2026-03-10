@@ -1,42 +1,43 @@
-"""
-Mekong CLI - Recipe Registry
+"""Mekong CLI - Recipe Registry.
 
 Manages discovery and metadata of available recipes.
 Also provides dynamic agent discovery from src/agents/ and plugins/.
 """
 
+from __future__ import annotations
+
 import importlib
 import inspect
-from pathlib import Path
-from typing import List, Dict, Optional, Type
 from dataclasses import dataclass
+from pathlib import Path
+
 from rich.console import Console
 
-from .parser import RecipeParser, Recipe
 from .agent_base import AgentBase
+from .parser import Recipe, RecipeParser
+
 
 @dataclass
 class RegistryIndex:
-    """Index entry for a recipe"""
+    """Index entry for a recipe."""
+
     name: str
     description: str
     path: Path
     author: str = "Unknown"
     version: str = "0.1.0"
-    tags: Optional[List[str]] = None
+    tags: list[str] | None = None
 
 class RecipeRegistry:
-    """
-    Manages the collection of available recipes.
-    """
+    """Manages the collection of available recipes."""
 
     def __init__(self, recipes_dir: Path = Path("recipes")) -> None:
         self.recipes_dir = recipes_dir
         self.parser = RecipeParser()
         self.console = Console()
 
-    def scan(self) -> List[RegistryIndex]:
-        """Scan recipes directory and return index of all valid recipes"""
+    def scan(self) -> list[RegistryIndex]:
+        """Scan recipes directory and return index of all valid recipes."""
         if not self.recipes_dir.exists():
             return []
 
@@ -57,7 +58,7 @@ class RecipeRegistry:
                     path=recipe_file,
                     author=meta.get("author", "Unknown"),
                     version=meta.get("version", "0.1.0"),
-                    tags=meta.get("tags", "").split(",") if meta.get("tags") else []
+                    tags=meta.get("tags", "").split(",") if meta.get("tags") else [],
                 )
                 index.append(entry)
             except (ValueError, KeyError, OSError):
@@ -66,8 +67,8 @@ class RecipeRegistry:
 
         return sorted(index, key=lambda x: x.name)
 
-    def search(self, query: str) -> List[RegistryIndex]:
-        """Search recipes by name, description or tags"""
+    def search(self, query: str) -> list[RegistryIndex]:
+        """Search recipes by name, description or tags."""
         all_recipes = self.scan()
         query = query.lower()
 
@@ -84,8 +85,8 @@ class RecipeRegistry:
 
         return results
 
-    def get_recipe(self, name: str) -> Optional[Recipe]:
-        """Get full parsed recipe by name or filename"""
+    def get_recipe(self, name: str) -> Recipe | None:
+        """Get full parsed recipe by name or filename."""
         # Try exact filename match first
         path = self.recipes_dir / name
         if path.exists():
@@ -105,10 +106,9 @@ class RecipeRegistry:
 
 
 def _scan_directory_for_agents(
-    directory: Path, package_prefix: str
-) -> Dict[str, Type[AgentBase]]:
-    """
-    Scan a directory for Python files containing AgentBase subclasses.
+    directory: Path, package_prefix: str,
+) -> dict[str, type[AgentBase]]:
+    """Scan a directory for Python files containing AgentBase subclasses.
 
     Args:
         directory: Directory to scan
@@ -116,8 +116,9 @@ def _scan_directory_for_agents(
 
     Returns:
         Dict mapping agent name to class
+
     """
-    agents: Dict[str, Type[AgentBase]] = {}
+    agents: dict[str, type[AgentBase]] = {}
 
     if not directory.exists() or not directory.is_dir():
         return agents
@@ -142,14 +143,14 @@ def _scan_directory_for_agents(
     return agents
 
 
-def load_agents_dynamic() -> Dict[str, Type[AgentBase]]:
-    """
-    Dynamically discover agent classes from src/agents/ and plugins/.
+def load_agents_dynamic() -> dict[str, type[AgentBase]]:
+    """Dynamically discover agent classes from src/agents/ and plugins/.
 
     Returns:
         Dict mapping lowercase agent name to class
+
     """
-    agents: Dict[str, Type[AgentBase]] = {}
+    agents: dict[str, type[AgentBase]] = {}
 
     # Scan built-in agents
     builtin_dir = Path(__file__).resolve().parent.parent / "agents"
@@ -169,15 +170,15 @@ def load_agents_dynamic() -> Dict[str, Type[AgentBase]]:
     return agents
 
 
-def get_agent(name: str) -> Optional[Type[AgentBase]]:
-    """
-    Look up an agent class by short name.
+def get_agent(name: str) -> type[AgentBase] | None:
+    """Look up an agent class by short name.
 
     Args:
         name: Agent short name (e.g. 'git', 'file', 'shell')
 
     Returns:
         Agent class or None if not found
+
     """
     registry = load_agents_dynamic()
     return registry.get(name.lower())

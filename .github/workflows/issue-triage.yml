@@ -1,0 +1,77 @@
+name: 🦞 Tôm Hùm Issue Triage
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  issues: write
+
+jobs:
+  triage:
+    name: "🔍 Auto-Triage"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title.toLowerCase();
+            const body = (issue.body || '').toLowerCase();
+
+            const labels = [];
+            let priority = '';
+
+            // Auto-detect type
+            if (title.includes('bug') || title.includes('error') || title.includes('crash') || title.includes('broken')) {
+              labels.push('bug');
+              priority = 'P1';
+            }
+            if (title.includes('feature') || title.includes('request') || title.includes('add') || title.includes('enhancement')) {
+              labels.push('enhancement');
+              priority = 'P2';
+            }
+            if (title.includes('docs') || title.includes('documentation') || title.includes('typo')) {
+              labels.push('documentation');
+              priority = 'P3';
+            }
+            if (title.includes('security') || title.includes('vulnerability') || title.includes('cve')) {
+              labels.push('security');
+              priority = 'P0';
+            }
+
+            // Auto-detect area
+            if (body.includes('agent') || body.includes('plugin')) labels.push('agents');
+            if (body.includes('raas') || body.includes('credit') || body.includes('billing')) labels.push('raas');
+            if (body.includes('pev') || body.includes('plan') || body.includes('verify')) labels.push('core');
+            if (body.includes('cli') || body.includes('command')) labels.push('cli');
+            if (body.includes('api') || body.includes('gateway')) labels.push('api');
+
+            // Add priority label
+            if (priority) labels.push(`priority/${priority}`);
+
+            // Apply labels
+            if (labels.length > 0) {
+              try {
+                await github.rest.issues.addLabels({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  labels: labels
+                });
+              } catch (e) {
+                console.log('Some labels may need to be created:', e.message);
+              }
+            }
+
+            // Auto-respond
+            const greeting = priority === 'P0'
+              ? `## 🚨 Security Issue Detected\n\nThis has been flagged as **${priority} — Critical**. The Tôm Hùm 🦞 CTO will prioritize this.\n\n> If this is a security vulnerability, please also email security@binhphap.io.`
+              : `## 🐉 Thanks for the report, @${issue.user.login}!\n\nThe Tôm Hùm 🦞 CTO has triaged this as **${priority || 'unclassified'}**.\n\n| Priority | Meaning | Response Time |\n|----------|---------|---------------|\n| P0 | Security/Critical | < 4 hours |\n| P1 | Bug | < 24 hours |\n| P2 | Feature | Next sprint |\n| P3 | Docs/Minor | Backlog |\n\n> *"知彼知己，百戰不殆" — Know yourself, know your enemy.* 🐉`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: greeting
+            });

@@ -147,6 +147,7 @@ apps/openclaw-worker/
 - Routes through Qwen Bridge (`scripts/qwen_bridge.py`)
 - Converts Anthropic Messages API → DashScope OpenAI Chat Completions API
 - Model: `qwen-coder-plus` (mapped to DashScope model by bridge)
+- 🎁 **Get DashScope API Key:** [Alibaba Cloud Benefits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T)
 - Start bridge: `scripts/start-qwen-bridge.sh`
 - Set via: `TOM_HUM_ENGINE=qwen node task-watcher.js`
 

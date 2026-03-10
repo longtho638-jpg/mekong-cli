@@ -1,7 +1,8 @@
 ---
-name: copywriting
+name: ck:copywriting
 description: Conversion copywriting formulas, headline templates, email copy patterns, landing page structures, CTA optimization, and writing style extraction. Activate for writing high-converting copy, crafting headlines, email campaigns, landing pages, or applying custom writing styles from assets/writing-styles/ directory.
 license: MIT
+argument-hint: "[copy-type] [context]"
 ---
 
 # Copywriting
@@ -62,7 +63,7 @@ CTAs: "Start [verb]ing" • "Get [benefit]" • "Yes, I want [benefit]"
 
 | Workflow | Purpose | Use When |
 |----------|---------|----------|
-| `references/workflow-cro.md` | CRO optimization (25 principles) | Conversion optimization requests |
+| `references/workflow-cro.md` | CRO optimization (25 principles) + plan creation workflow | Conversion optimization & CRO plan requests |
 | `references/workflow-enhance.md` | Copy enhancement | Improving existing copy |
 | `references/workflow-fast.md` | Quick copy generation | Simple, time-sensitive requests |
 | `references/workflow-good.md` | Quality copy with research | High-stakes content |

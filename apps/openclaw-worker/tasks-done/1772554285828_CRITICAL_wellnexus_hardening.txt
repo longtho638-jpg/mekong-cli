@@ -1,0 +1,1 @@
+/bootstrap:auto:parallel /cook Full WellNexus production hardening — fix all i18n raw keys, optimize Supabase queries with proper error handling, add error boundaries to all pages, verify signup trigger works e2e, run full test suite and fix failures. Ship production-ready.

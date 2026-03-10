@@ -79,13 +79,10 @@ function spawnBrain() {
     const proxyPort = new URL(proxyUrl).port || '20128';
     const configDir = `/Users/macbookprom1/.claude_antigravity_${proxyPort}`;
 
-    // Build the CC CLI command (Triệt tiêu mọi proxy)
+    // DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
     const envSetup = [
-        `unset ANTHROPIC_API_KEY`,
-        `unset ANTHROPIC_BASE_URL`,
-        `unset CLAUDE_BASE_URL`,
         `unset CLAUDE_CONFIG_DIR`,
-        `unset ANTHROPIC_AUTH_TOKEN`,
+        `unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`,
     ].join(' && ');
 
     const claudeCmd = `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`;

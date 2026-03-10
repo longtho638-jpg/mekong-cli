@@ -1694,5 +1694,13 @@
     "tokens": 0,
     "duration": 65,
     "model": "unknown"
+  },
+  {
+    "ts": "2026-03-01T19:43:02.760Z",
+    "mission": "/cook \"Trả lời TIẾNG VIỆT. Ưu tiên /cook và kiểm tra kỹ.\n\nTr",
+    "project": "mekong-cli",
+    "tokens": 0,
+    "duration": 64,
+    "model": "unknown"
   }
 ]

@@ -1,0 +1,732 @@
+{% extends "base.html" %}
+
+{% block title %}Mekong Analytics Dashboard - ROIaaS{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 pb-6 border-b border-gray-700">
+        <div>
+            <h1 class="text-3xl font-bold text-primary">🐉 Mekong Analytics Dashboard</h1>
+            <p class="text-gray-400 mt-1">RaaS Usage Tracking & Revenue Analytics</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-4 md:mt-0">
+            <!-- Filters Section -->
+            <div class="flex flex-wrap items-center gap-2 mr-4">
+                <!-- License Key Filter -->
+                <select id="licenseFilter" class="bg-card border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" title="Filter by License">
+                    <option value="">All Licenses</option>
+                    <!-- Populated by JS from /api/filters/licenses -->
+                </select>
+
+                <!-- Date Range Picker -->
+                <div class="flex items-center gap-2">
+                    <input type="date" id="startDate" class="bg-card border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    <span class="text-gray-500">-</span>
+                    <input type="date" id="endDate" class="bg-card border border-gray-600 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-primary" />
+                    <button onclick="applyFilters()" class="bg-primary hover:bg-primary/80 text-white px-4 py-2 rounded-lg text-sm transition">
+                        Apply
+                    </button>
+                </div>
+            </div>
+
+            <!-- Range Selector -->
+            <select id="rangeSelect" onchange="loadMetrics()" class="bg-card border border-gray-600 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-primary">
+                <option value="7">7 ngày</option>
+                <option value="30" selected>30 ngày</option>
+                <option value="90">90 ngày</option>
+            </select>
+
+            <!-- Export Buttons (Member+ only) -->
+            <button id="exportJsonBtn" onclick="exportData('json')" data-permission="export_data" class="role-hidden bg-secondary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                Export JSON
+            </button>
+            <button id="exportCsvBtn" onclick="exportData('csv')" data-permission="export_data" class="role-hidden bg-primary hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm transition">
+                Export CSV
+            </button>
+
+            <!-- Upgrade Prompt (Viewer only) -->
+            <div id="viewerUpgradePrompt" data-role="viewer" class="role-hidden hidden">
+                <span class="text-gray-400 text-sm ml-2">
+                    <svg class="w-4 h-4 inline text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Nâng cấp để export dữ liệu
+                </span>
+            </div>
+
+            <!-- Last Updated -->
+            <span class="text-gray-400 text-sm ml-2">
+                Last updated: <span id="lastUpdated" class="text-gray-300">-</span>
+            </span>
+
+            <!-- Refresh Indicator -->
+            <span id="refreshIndicator" class="text-xs text-gray-500">
+                Auto-refresh in <span id="countdown">30</span>s
+            </span>
+        </div>
+    </header>
+
+    <!-- Admin Notice (Admin+ only) -->
+    <div data-min-role="admin" class="role-hidden hidden mb-6">
+        <div class="bg-gradient-to-r from-purple-500/10 to-primary/10 border border-purple-500/30 rounded-xl p-4">
+            <div class="flex items-center gap-3">
+                <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <div>
+                    <h3 class="text-white font-semibold">Chế độ Quản trị viên</h3>
+                    <p class="text-gray-400 text-sm">Bạn có quyền truy cập đầy đủ vào tất cả tính năng và cài đặt hệ thống.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Total API Calls -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Total API Calls</h3>
+            <p class="metric-value text-primary" id="totalCalls">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="callsChange">-</p>
+        </div>
+
+        <!-- Active Licenses -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Active Licenses</h3>
+            <p class="metric-value text-secondary" id="activeLicenses">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="licensesChange">-</p>
+        </div>
+
+        <!-- Estimated Revenue -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Est. Revenue</h3>
+            <p class="metric-value text-purple-500" id="estRevenue">-</p>
+            <p class="text-gray-500 text-sm mt-1" id="revenueChange">-</p>
+        </div>
+
+        <!-- Avg Calls/Day -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h3 class="text-gray-400 text-sm font-medium mb-2">Avg Calls/Day</h3>
+            <p class="metric-value text-orange-500" id="avgCalls">-</p>
+            <p class="text-gray-500 text-sm mt-1">Past 30 days</p>
+        </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="bg-card rounded-xl p-6 border border-gray-700 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-bold">API Call Volume</h2>
+
+            <!-- Timeframe Buttons -->
+            <div class="flex gap-2">
+                <button onclick="setGranularity('day')" class="timeframe-btn px-3 py-1 text-sm rounded bg-primary text-white" data-granularity="day">
+                    Daily
+                </button>
+                <button onclick="setGranularity('week')" class="timeframe-btn px-3 py-1 text-sm rounded bg-gray-700 hover:bg-gray-600" data-granularity="week">
+                    Weekly
+                </button>
+                <button onclick="setGranularity('month')" class="timeframe-btn px-3 py-1 text-sm rounded bg-gray-700 hover:bg-gray-600" data-granularity="month">
+                    Monthly
+                </button>
+            </div>
+        </div>
+
+        <div id="apiCallsChart" class="chart-container"></div>
+    </div>
+
+    <!-- Tables Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Active Licenses by Tier -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <h2 class="text-xl font-bold mb-4">Active Licenses by Tier</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="licensesTable">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">Tier</th>
+                            <th class="pb-3 font-medium">Active</th>
+                            <th class="pb-3 font-medium">% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="licensesTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Top Endpoints -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700 lg:col-span-2">
+            <h2 class="text-xl font-bold mb-4">Top Endpoints</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full" id="endpointsTable">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">Endpoint</th>
+                            <th class="pb-3 font-medium">Calls</th>
+                            <th class="pb-3 font-medium">Avg Duration</th>
+                            <th class="pb-3 font-medium">% of Total</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="endpointsTableBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- License Health Section (NEW) -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">License Health</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <!-- License Status Cards -->
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Active Licenses</h3>
+                    <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-green-500" id="activeLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Currently active</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Suspended</h3>
+                    <svg class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-yellow-500" id="suspendedLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Temporarily suspended</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Revoked</h3>
+                    <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-red-500" id="revokedLicenseCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Permanently revoked</p>
+            </div>
+
+            <div class="bg-card rounded-xl p-6 border border-gray-700">
+                <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-gray-400 text-sm font-medium">Expiring Soon</h3>
+                    <svg class="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <p class="text-3xl font-bold text-orange-500" id="expiringSoonCount">-</p>
+                <p class="text-gray-500 text-sm mt-1">Within 7 days</p>
+            </div>
+        </div>
+
+        <!-- Renewal Prompts Table -->
+        <div class="bg-card rounded-xl p-6 border border-gray-700" id="renewalPromptsSection">
+            <h3 class="text-xl font-bold mb-4">Renewal Required</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-400 text-sm border-b border-gray-700">
+                            <th class="pb-3 font-medium">License</th>
+                            <th class="pb-3 font-medium">Organization</th>
+                            <th class="pb-3 font-medium">Tier</th>
+                            <th class="pb-3 font-medium">Status</th>
+                            <th class="pb-3 font-medium">Expires</th>
+                            <th class="pb-3 font-medium">Days</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm" id="renewalPromptsBody">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rate Limit Events Timeline -->
+    <div class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">Rate Limit Events (Last 24h)</h2>
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl font-bold text-blue-500" id="totalRateLimitEvents">-</span>
+                    <span class="text-gray-400 text-sm">events in last 24 hours</span>
+                </div>
+                <div class="flex gap-2">
+                    <span class="px-3 py-1 bg-green-500/10 text-green-400 text-sm rounded-full">
+                        Allowed: <span id="allowedCount">-</span>
+                    </span>
+                    <span class="px-3 py-1 bg-red-500/10 text-red-400 text-sm rounded-full">
+                        Limited: <span id="limitedCount">-</span>
+                    </span>
+                </div>
+            </div>
+            <div class="space-y-2 max-h-64 overflow-y-auto" id="rateLimitEventsTimeline">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Section (Admin+ only) -->
+    <div data-min-role="admin" class="role-hidden hidden mt-8">
+        <div class="bg-card rounded-xl p-6 border border-gray-700">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xl font-bold text-white">🔧 Admin Controls</h2>
+                <span class="text-xs text-primary bg-primary/10 px-2 py-1 rounded">Admin Only</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="/admin/users" class="p-4 bg-dark/50 rounded-lg border border-gray-700 hover:border-primary transition group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <div>
+                            <h3 class="text-white font-medium">Manage Users</h3>
+                            <p class="text-gray-500 text-sm">User roles & permissions</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/admin/licenses" class="p-4 bg-dark/50 rounded-lg border border-gray-700 hover:border-primary transition group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+                        </svg>
+                        <div>
+                            <h3 class="text-white font-medium">Manage Licenses</h3>
+                            <p class="text-gray-500 text-sm">API keys & quotas</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="/admin/settings" class="p-4 bg-dark/50 rounded-lg border border-gray-700 hover:border-primary transition group">
+                    <div class="flex items-center gap-3">
+                        <svg class="w-6 h-6 text-gray-400 group-hover:text-primary transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <div>
+                            <h3 class="text-white font-medium">System Settings</h3>
+                            <p class="text-gray-500 text-sm">Configuration & logs</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner Section (Owner only) -->
+    <div data-role="owner" class="role-hidden hidden mt-8">
+        <div class="bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl p-6 border border-yellow-500/30">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-xl font-bold text-white">👑 Owner Dashboard</h2>
+                    <p class="text-gray-400 text-sm">Full system access & billing management</p>
+                </div>
+                <div class="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 1.738 5.42a1 1 0 01-.285 1.05A3.989 3.989 0 0115 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.715-5.349L10 6.477V14h2a1 1 0 110 2H4a1 1 0 110-2h2V6.477L2.277 7.58 3.992 12.93a1 1 0 01-.285 1.05A3.989 3.989 0 011 15a3.989 3.989 0 01-2.667-1.019 1 1 0 01-.285-1.05l1.738-5.42-1.233-.616a1 1 0 01.894-1.79l1.599.8L5 4.323V3a1 1 0 011-1z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="/owner/billing" class="p-4 bg-dark/50 rounded-lg border border-yellow-500/30 hover:border-yellow-500 transition">
+                    <h3 class="text-white font-medium mb-1">💰 Billing & Revenue</h3>
+                    <p class="text-gray-500 text-sm">View revenue, invoices & payment history</p>
+                </a>
+                <a href="/owner/analytics" class="p-4 bg-dark/50 rounded-lg border border-yellow-500/30 hover:border-yellow-500 transition">
+                    <h3 class="text-white font-medium mb-1">📊 Advanced Analytics</h3>
+                    <p class="text-gray-500 text-sm">Deep dive into usage patterns & trends</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+/**
+ * Dashboard JavaScript — Real-time Analytics with Filters
+ */
+
+const API_BASE = '/api';
+let chart;
+let chartSeries;
+let currentGranularity = 'day';
+
+// Filter state
+let currentFilters = {
+    licenseKey: '',
+    startDate: '',
+    endDate: ''
+};
+
+// Initialize dashboard
+document.addEventListener('DOMContentLoaded', () => {
+    initChart();
+    loadLicenseFilters();
+    loadMetrics();
+    setupAutoRefresh();
+
+    // Set default date range
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - 30);
+    document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+    document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
+});
+
+// Initialize lightweight-charts
+function initChart() {
+    const chartContainer = document.getElementById('apiCallsChart');
+    chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: 400,
+        layout: {
+            background: { color: '#1e293b' },
+            textColor: '#f1f5f9',
+        },
+        grid: {
+            vertLines: { color: '#334155' },
+            horzLines: { color: '#334155' },
+        },
+        timeScale: {
+            timeVisible: true,
+            secondsVisible: false,
+        },
+    });
+
+    chartSeries = chart.addAreaSeries({
+        lineColor: '#22c55e',
+        topColor: '#22c55e40',
+        bottomColor: '#22c55e00',
+        lineWidth: 2,
+    });
+
+    // Handle resize
+    new ResizeObserver(() => {
+        chart.applyOptions({ width: chartContainer.clientWidth });
+    }).observe(chartContainer);
+}
+
+// Load metrics from API
+async function loadMetrics() {
+    const rangeDays = document.getElementById('rangeSelect').value;
+
+    // Build query params with filters
+    const params = new URLSearchParams({
+        range_days: rangeDays,
+        granularity: currentGranularity,
+    });
+
+    if (currentFilters.licenseKey) {
+        params.append('license_key', currentFilters.licenseKey);
+    }
+    if (currentFilters.startDate) {
+        params.append('start_date', currentFilters.startDate);
+    }
+    if (currentFilters.endDate) {
+        params.append('end_date', currentFilters.endDate);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE}/metrics?${params.toString()}`);
+        const result = await response.json();
+
+        if (result.success) {
+            updateDashboard(result.data);
+        }
+    } catch (error) {
+        console.error('Failed to load metrics:', error);
+    }
+}
+
+// Load license filters
+async function loadLicenseFilters() {
+    try {
+        const response = await fetch(`${API_BASE}/filters/licenses`);
+        const result = await response.json();
+
+        const select = document.getElementById('licenseFilter');
+        if (result.data && result.data.length > 0) {
+            result.data.forEach(lic => {
+                const option = document.createElement('option');
+                option.value = lic.key_id || lic.license_key;
+                option.textContent = `${lic.tier?.toUpperCase() || 'N/A'} - ${lic.email || lic.license_key}`;
+                select.appendChild(option);
+            });
+        }
+    } catch (error) {
+        console.error('Failed to load license filters:', error);
+    }
+}
+
+// Apply filters
+function applyFilters() {
+    currentFilters.licenseKey = document.getElementById('licenseFilter').value;
+    currentFilters.startDate = document.getElementById('startDate').value;
+    currentFilters.endDate = document.getElementById('endDate').value;
+    loadMetrics();
+}
+
+// Listen for license filter changes
+document.getElementById('licenseFilter').addEventListener('change', applyFilters);
+
+// Update dashboard UI
+function updateDashboard(data) {
+    // Calculate total API calls
+    const totalCalls = data.api_calls.reduce((sum, d) => sum + d.calls, 0);
+
+    // Update metric cards
+    document.getElementById('totalCalls').textContent = formatNumber(totalCalls);
+    document.getElementById('activeLicenses').textContent = formatNumber(data.active_licenses.total || 0);
+    document.getElementById('estRevenue').textContent = formatCurrency(data.revenue?.total || 0);
+    document.getElementById('avgCalls').textContent = formatNumber(Math.round(totalCalls / 30));
+
+    // Update chart
+    if (chartSeries) {
+        chartSeries.setData(
+            data.api_calls.map(d => ({
+                time: d.date,
+                value: d.calls,
+            }))
+        );
+    }
+
+    // Update tables
+    updateLicensesTable(data.tier_distribution);
+    updateEndpointsTable(data.top_endpoints);
+
+    // Update license health metrics (Phase 7)
+    updateLicenseHealth(data.license_health);
+    updateRenewalPrompts(data.renewal_prompts);
+    updateRateLimitEvents(data.rate_limit_events);
+
+    // Update timestamp
+    document.getElementById('lastUpdated').textContent = new Date(data.last_updated).toLocaleString('vi-VN');
+
+    // Reset countdown
+    countdownSeconds = 30;
+}
+
+// Update licenses table
+function updateLicensesTable(tierDist) {
+    const tbody = document.getElementById('licensesTableBody');
+    const tiers = tierDist || {};
+    const total = Object.values(tiers).reduce((sum, v) => sum + (typeof v === 'number' ? v : 0), 0);
+
+    if (total === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-gray-500 py-4">No license data available</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = Object.entries(tiers).map(([tier, count]) => {
+        const countNum = typeof count === 'number' ? count : 0;
+        const percentage = total > 0 ? ((countNum / total) * 100).toFixed(1) : 0;
+        return `
+            <tr class="border-b border-gray-800 hover:bg-gray-800">
+                <td class="py-3 font-medium text-primary">${tier.toUpperCase()}</td>
+                <td class="py-3">${formatNumber(countNum)}</td>
+                <td class="py-3 text-gray-400">-</td>
+                <td class="py-3 text-gray-400">${percentage}%</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update endpoints table
+function updateEndpointsTable(endpoints) {
+    const tbody = document.getElementById('endpointsTableBody');
+
+    if (!endpoints || endpoints.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-gray-500 py-4">No endpoint data available</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = endpoints.map(ep => `
+        <tr class="border-b border-gray-800 hover:bg-gray-800">
+            <td class="py-3 font-mono text-sm text-secondary">${ep.endpoint || ep.path || '-'}</td>
+            <td class="py-3">${formatNumber(ep.calls || 0)}</td>
+            <td class="py-3 text-gray-400">${ep.avg_duration || '-'}ms</td>
+            <td class="py-3 text-gray-400">${(ep.percentage || 0).toFixed(1)}%</td>
+        </tr>
+    `).join('');
+}
+
+// Update license health metrics (Phase 7)
+function updateLicenseHealth(licenseHealth) {
+    if (!licenseHealth) return;
+
+    const counts = licenseHealth.by_status || {};
+    document.getElementById('activeLicenseCount').textContent = formatNumber(counts.ACTIVE || 0);
+    document.getElementById('suspendedLicenseCount').textContent = formatNumber(counts.SUSPENDED || 0);
+    document.getElementById('revokedLicenseCount').textContent = formatNumber(counts.REVOKED || 0);
+    document.getElementById('expiringSoonCount').textContent = formatNumber(licenseHealth.expiring_soon_count || 0);
+}
+
+// Update renewal prompts table (Phase 7)
+function updateRenewalPrompts(prompts) {
+    const tbody = document.getElementById('renewalPromptsBody');
+    const section = document.getElementById('renewalPromptsSection');
+
+    if (!prompts || prompts.length === 0) {
+        section.classList.add('hidden');
+        return;
+    }
+
+    section.classList.remove('hidden');
+    tbody.innerHTML = prompts.slice(0, 10).map(license => {
+        const days = license.days_since_or_until_expiry || 0;
+        const isExpired = days < 0;
+        const statusClass = isExpired ? 'text-red-400' : 'text-orange-400';
+        const statusLabel = isExpired ? `Đã hết hạn ${Math.abs(days)} ngày` : `Còn ${days} ngày`;
+
+        return `
+            <tr class="border-b border-gray-800 hover:bg-gray-800">
+                <td class="py-3 font-mono text-sm text-secondary">${license.license_key?.substring(0, 20) || '-'}...</td>
+                <td class="py-3">${license.org_name || license.email || '-'}</td>
+                <td class="py-3">
+                    <span class="px-2 py-1 bg-primary/10 text-primary text-xs rounded uppercase">${license.tier || '-'}</span>
+                </td>
+                <td class="py-3">
+                    <span class="px-2 py-1 ${statusClass} bg-gray-700 text-xs rounded">${license.renewal_status || 'active'}</span>
+                </td>
+                <td class="py-3 text-gray-400">${license.expires_at ? new Date(license.expires_at).toLocaleDateString('vi-VN') : '-'}</td>
+                <td class="py-3 ${statusClass} font-medium">${statusLabel}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+// Update rate limit events timeline (Phase 7)
+function updateRateLimitEvents(events) {
+    const timeline = document.getElementById('rateLimitEventsTimeline');
+    const totalEl = document.getElementById('totalRateLimitEvents');
+    const allowedEl = document.getElementById('allowedCount');
+    const limitedEl = document.getElementById('limitedCount');
+
+    if (!events || events.length === 0) {
+        timeline.innerHTML = '<div class="text-gray-500 text-sm py-4">No rate limit events in last 24h</div>';
+        totalEl.textContent = '0';
+        allowedEl.textContent = '0';
+        limitedEl.textContent = '0';
+        return;
+    }
+
+    // Count by event type
+    let allowedCount = 0;
+    let limitedCount = 0;
+
+    events.forEach(event => {
+        if (event.event_type === 'rate_limited' || event.event_type === 'license_blocked') {
+            limitedCount++;
+        } else if (event.event_type === 'request_allowed' || event.event_type === 'override_applied') {
+            allowedCount++;
+        }
+    });
+
+    totalEl.textContent = formatNumber(events.length);
+    allowedEl.textContent = formatNumber(allowedCount);
+    limitedEl.textContent = formatNumber(limitedCount);
+
+    // Render timeline
+    timeline.innerHTML = events.slice(0, 20).map(event => {
+        const isLimited = event.event_type === 'rate_limited' || event.event_type === 'license_blocked';
+        const badgeClass = isLimited
+            ? 'bg-red-500/10 text-red-400 border-red-500/30'
+            : 'bg-green-500/10 text-green-400 border-green-500/30';
+        const eventTypeLabel = event.event_type.replace(/_/g, ' ').toUpperCase();
+        const time = event.created_at ? new Date(event.created_at).toLocaleTimeString('vi-VN') : '';
+
+        return `
+            <div class="flex items-center justify-between p-3 bg-dark/30 rounded-lg border border-gray-700">
+                <div class="flex items-center gap-3">
+                    <span class="px-2 py-1 text-xs rounded border ${badgeClass}">${eventTypeLabel}</span>
+                    <span class="text-sm text-gray-300">${event.tenant_id || '-'}</span>
+                    <span class="text-xs text-gray-500">(${event.tier || '-'})</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs text-gray-500 font-mono">${event.endpoint || '/'}</span>
+                    <span class="text-xs text-gray-400">${time}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Set granularity
+function setGranularity(granularity) {
+    currentGranularity = granularity;
+
+    // Update button styles
+    document.querySelectorAll('.timeframe-btn').forEach(btn => {
+        if (btn.dataset.granularity === granularity) {
+            btn.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+            btn.classList.add('bg-primary', 'text-white');
+        } else {
+            btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
+            btn.classList.remove('bg-primary', 'text-white');
+        }
+    });
+
+    loadMetrics();
+}
+
+// Export data
+async function exportData(format) {
+    const rangeDays = document.getElementById('rangeSelect').value;
+    const url = `${API_BASE}/export?format=${format}&range_days=${rangeDays}`;
+
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = `mekong-analytics-${new Date().toISOString().split('T')[0]}.${format}`;
+        a.click();
+
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+        console.error('Export failed:', error);
+        alert('Export failed: ' + error.message);
+    }
+}
+
+// Helper functions
+function formatNumber(num) {
+    return new Intl.NumberFormat('vi-VN').format(num);
+}
+
+function formatCurrency(num) {
+    return new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(num);
+}
+
+// Auto-refresh every 30 seconds
+let countdownSeconds = 30;
+
+function setupAutoRefresh() {
+    setInterval(() => {
+        countdownSeconds--;
+        document.getElementById('countdown').textContent = countdownSeconds;
+
+        if (countdownSeconds <= 0) {
+            loadMetrics();
+        }
+    }, 1000);
+}
+</script>
+{% endblock %}

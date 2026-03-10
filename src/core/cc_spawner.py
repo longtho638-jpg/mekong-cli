@@ -1,19 +1,19 @@
-"""
-Mekong CLI - CC CLI Spawner (Tôm Hùm Executor)
+"""Mekong CLI - CC CLI Spawner (Tôm Hùm Executor).
 
 Spawns Claude Code CLI sessions to execute coding goals autonomously.
 Used by: Telegram Bot, Supervisor, Gateway.
 """
 
+from __future__ import annotations
+
 import asyncio
 import os
-
 import time
 import uuid
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class SessionStatus(str, Enum):
@@ -34,11 +34,11 @@ class CCSession:
     goal: str = ""
     cwd: str = ""
     status: SessionStatus = SessionStatus.PENDING
-    pid: Optional[int] = None
-    output_buffer: List[str] = field(default_factory=list)
+    pid: int | None = None
+    output_buffer: list[str] = field(default_factory=list)
     start_time: float = 0.0
     end_time: float = 0.0
-    exit_code: Optional[int] = None
+    exit_code: int | None = None
     error: str = ""
 
     @property
@@ -57,7 +57,7 @@ class CCSession:
         """Last 10 lines of output."""
         return "\n".join(self.output_buffer[-10:])
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Serialize for API/Telegram responses."""
         return {
             "id": self.id,
@@ -71,8 +71,7 @@ class CCSession:
 
 
 class CCSpawner:
-    """
-    Spawns and manages Claude Code CLI sessions.
+    """Spawns and manages Claude Code CLI sessions.
 
     Usage:
         spawner = CCSpawner()
@@ -83,42 +82,43 @@ class CCSpawner:
     DEFAULT_CWD = str(Path.home() / "mekong-cli")
     DEFAULT_TIMEOUT = 600  # 10 minutes
 
-    def __init__(self, cwd: Optional[str] = None, timeout: int = DEFAULT_TIMEOUT) -> None:
+    def __init__(self, cwd: str | None = None, timeout: int = DEFAULT_TIMEOUT) -> None:
         """Initialize CCSpawner with working directory and timeout.
 
         Args:
             cwd: Working directory for CC CLI sessions. Defaults to ~/mekong-cli.
             timeout: Default timeout in seconds for each session.
+
         """
         self.cwd = cwd or self.DEFAULT_CWD
         self.timeout = timeout
-        self._sessions: Dict[str, CCSession] = {}
+        self._sessions: dict[str, CCSession] = {}
 
     @property
-    def active_sessions(self) -> List[CCSession]:
+    def active_sessions(self) -> list[CCSession]:
         """List sessions currently running."""
         return [s for s in self._sessions.values() if s.status == SessionStatus.RUNNING]
 
     @property
-    def all_sessions(self) -> List[CCSession]:
+    def all_sessions(self) -> list[CCSession]:
         """List all sessions."""
         return list(self._sessions.values())
 
     async def spawn(
         self,
         goal: str,
-        cwd: Optional[str] = None,
-        timeout: Optional[int] = None,
-        project: Optional[str] = None,
+        cwd: str | None = None,
+        timeout: int | None = None,
+        project: str | None = None,
     ) -> CCSession:
-        """
-        Spawn a new CC CLI session.
+        """Spawn a new CC CLI session.
 
         Args:
             goal: The coding goal to accomplish.
             cwd: Working directory. Defaults to mekong-cli root.
             timeout: Timeout in seconds. Defaults to 600.
             project: Optional project name under apps/ (e.g. 'agencyos-web').
+
         """
         session = CCSession(
             goal=goal,
@@ -164,11 +164,12 @@ class CCSpawner:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.STDOUT,
                 cwd=session.cwd,
+                limit=1024 * 1024,  # 1MB buffer limit for security
             )
 
             session.pid = process.pid
 
-            # Read output line by line
+            # Read output line by line with timeout protection
             async def read_output() -> None:
                 """Read stdout lines from the CC CLI process into the session buffer."""
                 if process.stdout is None:
@@ -184,12 +185,16 @@ class CCSpawner:
                         session.output_buffer = session.output_buffer[-300:]
 
             try:
+                # SECURITY: Enforce timeout to prevent hanging sessions
                 await asyncio.wait_for(read_output(), timeout=timeout)
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 session.status = SessionStatus.TIMEOUT
                 session.error = f"Timed out after {timeout}s"
-                process.kill()
-                await process.wait()
+                try:
+                    process.kill()
+                    await process.wait()
+                except ProcessLookupError:
+                    pass  # Process already dead
                 session.exit_code = -1
                 session.end_time = time.time()
                 return
@@ -214,7 +219,7 @@ class CCSpawner:
 
         session.end_time = time.time()
 
-    def get_session(self, session_id: str) -> Optional[CCSession]:
+    def get_session(self, session_id: str) -> CCSession | None:
         """Get a session by ID."""
         return self._sessions.get(session_id)
 
@@ -232,7 +237,7 @@ class CCSpawner:
 
 
 # Singleton instance
-_spawner: Optional[CCSpawner] = None
+_spawner: CCSpawner | None = None
 
 
 def get_spawner() -> CCSpawner:
@@ -244,8 +249,8 @@ def get_spawner() -> CCSpawner:
 
 
 __all__ = [
-    "CCSpawner",
     "CCSession",
+    "CCSpawner",
     "SessionStatus",
     "get_spawner",
 ]

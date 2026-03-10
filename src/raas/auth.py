@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from typing import Optional
 
 from fastapi import HTTPException, Request
 from pydantic import BaseModel
@@ -28,7 +29,7 @@ class TenantContext(BaseModel):
 
 
 @lru_cache(maxsize=256)
-def _cached_lookup(api_key: str) -> Tenant | None:
+def _cached_lookup(api_key: str) -> Optional[Tenant]:
     """LRU-cached wrapper around :meth:`TenantStore.get_by_api_key`.
 
     Caching avoids repeated SQLite round-trips for the same active key
@@ -62,7 +63,7 @@ def get_tenant_context(request: Request) -> TenantContext:
             or unknown API key.
         HTTPException 403: Key is valid but the tenant has been deactivated.
     """
-    auth_header: str | None = request.headers.get("Authorization")
+    auth_header: Optional[str] = request.headers.get("Authorization")
 
     if not auth_header or not auth_header.startswith("Bearer "):
         raise HTTPException(

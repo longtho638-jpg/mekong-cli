@@ -170,7 +170,7 @@ class VPN:
     
     def rotate(self, country: str = None) -> bool:
         """Rotate to a new server (new IP)."""
-        self._log(f"\n🔄 Rotating VPN...")
+        self._log("\n🔄 Rotating VPN...")
         self.disconnect()
         time.sleep(2)
         return self.connect(country=country)

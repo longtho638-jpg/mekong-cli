@@ -2,41 +2,42 @@
 
 Modular algorithmic trading bot with RSI+SMA strategy, backtesting, and multi-exchange support via CCXT.
 
-## Setup
+## Quickstart (3 commands)
 
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/your-repo/algo-trader.git
-    cd algo-trader
-    ```
-2.  **Install dependencies:**
+```bash
+npm install
+npm run setup         # Interactive wizard — enter API keys, everything auto-configures
+npm run quickstart    # Demo backtest + system status + next steps
+```
+
+Backtest works immediately without API keys. For live trading/arbitrage, enter your exchange keys during setup.
+
+## Alternative: One-Click Shell Script
+
+```bash
+./scripts/one-click-setup-and-start.sh
+```
+
+Handles prerequisites check, dependency install, setup wizard, and optional Docker infrastructure.
+
+## Manual Setup
+
+1.  **Install dependencies:**
     ```bash
     npm install
     ```
-3.  **Configure Environment Variables:**
-    Create a `.env` file by copying the example and filling in your details:
+2.  **Configure environment:**
     ```bash
     cp .env.example .env
-    # Open .env and add your exchange API keys and other configurations.
-    # Example .env.example content:
-    # EXCHANGE_ID=binance
-    # EXCHANGE_API_KEY=YOUR_API_KEY
-    # EXCHANGE_SECRET=YOUR_SECRET
-    # TRADING_PAIR=BTC/USDT
-    # TIMEFRAME=1h
-    # RSI_PERIOD=14
-    # SMA_SHORT=20
-    # SMA_LONG=50
-    # MAX_POSITION_SIZE=0.01
-    # STOP_LOSS_PCT=2.0
-    # TAKE_PROFIT_PCT=5.0
-    # MAX_DAILY_LOSS=100
-    # LOG_LEVEL=info
-    # LOG_FILE=algo-trader.log
-    # ENABLE_BACKTESTING=false
-    # ENABLE_LIVE_TRADING=false
+    # Edit .env — only API keys required, everything else has smart defaults
     ```
-    **IMPORTANT:** Never commit your `.env` file to version control.
+3.  **Run:**
+    ```bash
+    npm run dev backtest              # No API key needed
+    npm run dev arb:agi               # Needs 2+ exchange keys
+    ```
+
+**IMPORTANT:** Never commit your `.env` file to version control.
 
 ## Architecture Overview
 
@@ -129,6 +130,8 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 
 | Command | Description |
 |:--------|:------------|
+| `setup` | **Interactive setup wizard** — enter API keys, auto-configure .env |
+| `quickstart` | **Zero-config start** — setup + demo backtest + ready to trade |
 | `backtest` | Backtest with selected strategy |
 | `backtest:advanced` | Advanced backtest with equity curve, Sortino, Calmar |
 | `backtest:walk-forward` | Walk-forward analysis to detect overfitting |
@@ -141,6 +144,7 @@ npm start --strategy=RsiSmaStrategy --pair=BTC/USDT --timeframe=1h
 | `arb:auto` | **Unified auto-execution**: detect → score → validate → execute |
 | `arb:spread` | **Spread detector**: BTC/ETH cross-exchange scanner + auto-exec (Binance/OKX/Bybit) |
 | `arb:agi` | **AGI Arbitrage**: regime detection + Kelly sizing + self-tuning (recommended) |
+| `telegram:bot` | **Phone trading** — Telegram bot for remote control from phone |
 
 ### arb:spread (Cross-Exchange Spread Detector)
 

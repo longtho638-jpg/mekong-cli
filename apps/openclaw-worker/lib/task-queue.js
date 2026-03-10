@@ -1,3 +1,8 @@
+/**
+ * Task Queue — FIFO mission queue with Dead Letter Queue (DLQ) support.
+ * Watches tasks/ directory for mission files, dequeues in priority order,
+ * and routes failed missions to DLQ after max retries.
+ */
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
@@ -14,6 +19,8 @@ const { reflectOnMission } = require('./post-mortem-reflector');
 const { updateSessionStats } = require('./self-analyzer');
 const { recordEconomicCompletion } = require('./clawwork-integration');
 const { postMissionSummary } = require('./moltbook-integration');
+const { isTradingMission } = require('./trading-cadence-scheduler');
+const { handleTradingMissionCompletion } = require('./trading-post-mission-report-handler');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 // 🧬 FIX Bug #3: Priority sorting CRITICAL > HIGH > MEDIUM > LOW > (no prefix)
@@ -81,8 +88,14 @@ async function processQueue() {
     queue.sort((a, b) => getPriority(a) - getPriority(b));
 
     // 🥪 DUAL-STREAM FLYWHEEL: Allow 2 concurrent missions (P0 and P1)
-    if (activeCount >= 2 || queue.length === 0) return;
+    // 🔒 FIX Bug #13: Atomic increment to prevent race condition
+    if (incrementingActive || activeCount >= 2 || queue.length === 0) {
+      _processing = false;
+      return;
+    }
+    incrementingActive = true;
     activeCount++;
+    incrementingActive = false;
   } finally {
     _processing = false;
   }
@@ -231,6 +244,16 @@ async function processQueue() {
         content,
         resultCode: result ? (result.result || '') : ''  // 🧬 FIX: pass result code for accurate failure classification
       });
+
+      // 🏢 TRADING COMPANY: Post-mission report analysis → decision engine
+      if (isTradingMission(content)) {
+        try {
+          const tradingResult = handleTradingMissionCompletion(content, missionSuccess);
+          log(`[TRADING-PMH] /trading mission → ${tradingResult.action}: ${tradingResult.reason}${tradingResult.followUpDispatched ? ' [follow-up queued]' : ''}`);
+        } catch (e) {
+          log(`[TRADING-PMH] Error: ${e.message}`);
+        }
+      }
 
       // 🧠 OpenClaw-RL: Send reward signal for continuous learning
       sendRewardSignal({

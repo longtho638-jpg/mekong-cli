@@ -1,19 +1,19 @@
-"""
-Mekong CLI - Recipe Generator
+"""Mekong CLI - Recipe Generator.
 
 Generates recipes from successful execution history and goal patterns.
 Auto-generated recipes saved to recipes/auto/.
 """
 
+from __future__ import annotations
+
 import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 from .event_bus import EventType, get_event_bus
 from .memory import MemoryEntry
-
 
 RECIPE_TEMPLATE = """# {name}
 > {description}
@@ -44,12 +44,12 @@ class RecipeGenerator:
 
     AUTO_DIR: str = "recipes/auto"
 
-    def __init__(self, llm_client: Optional[Any] = None) -> None:
-        """
-        Initialize generator.
+    def __init__(self, llm_client: Any | None = None) -> None:
+        """Initialize generator.
 
         Args:
             llm_client: Optional LLM client for advanced recipe generation
+
         """
         self.llm_client = llm_client
 
@@ -74,7 +74,7 @@ class RecipeGenerator:
         )
 
     def from_goal_pattern(
-        self, goal: str, steps: Optional[List[str]] = None,
+        self, goal: str, steps: list[str] | None = None,
     ) -> GeneratedRecipe:
         """Generate a recipe from a goal pattern with optional steps."""
         name = self._slugify(goal)
@@ -102,9 +102,9 @@ class RecipeGenerator:
             name=name, content=content, source=source, valid=valid,
         )
 
-    def validate_recipe(self, recipe_md: str) -> Tuple[bool, List[str]]:
+    def validate_recipe(self, recipe_md: str) -> tuple[bool, list[str]]:
         """Validate recipe markdown by attempting to parse it."""
-        errors: List[str] = []
+        errors: list[str] = []
         try:
             from .parser import RecipeParser
             parser = RecipeParser()
@@ -137,13 +137,13 @@ class RecipeGenerator:
 
         return str(path)
 
-    def list_auto_recipes(self) -> List[Dict[str, str]]:
+    def list_auto_recipes(self) -> list[dict[str, str]]:
         """List all auto-generated recipes."""
         auto_dir = Path(self.AUTO_DIR)
         if not auto_dir.is_dir():
             return []
 
-        recipes: List[Dict[str, str]] = []
+        recipes: list[dict[str, str]] = []
         for f in sorted(auto_dir.glob("*.md")):
             recipes.append({"name": f.stem, "path": str(f)})
         return recipes
@@ -159,7 +159,7 @@ class RecipeGenerator:
     def _generate_via_llm(self, goal: str) -> str:
         """Use LLM to generate recipe steps."""
         prompt = (
-            f"Generate a recipe with numbered steps for this goal: \"{goal}\"\n"
+            f'Generate a recipe with numbered steps for this goal: "{goal}"\n'
             f"Format each step as: ### Step N: Title\nDescription\n"
             f"Keep it to 2-4 steps. Reply with ONLY the steps."
         )
@@ -173,7 +173,7 @@ class RecipeGenerator:
 
 
 __all__ = [
-    "RecipeGenerator",
-    "GeneratedRecipe",
     "RECIPE_TEMPLATE",
+    "GeneratedRecipe",
+    "RecipeGenerator",
 ]

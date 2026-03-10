@@ -11,8 +11,9 @@
     "baseUrl": ".",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
-    "noEmit": true
+    "noEmit": true,
+    "types": ["vitest/globals", "node"]
   },
-  "include": ["packages/**/*"],
+  "include": ["packages/**/*", "src/**/*"],
   "exclude": ["**/node_modules", "**/.next", "**/dist", "**/build", "apps/**/*"]
 }

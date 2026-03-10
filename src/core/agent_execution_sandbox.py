@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Agent Execution Sandbox
+"""Mekong CLI - Agent Execution Sandbox.
 
 Electron's contextIsolation + sandbox mapped to agent execution.
 Controls capabilities, validates commands/paths, enforces timeouts.
@@ -7,9 +6,10 @@ Controls capabilities, validates commands/paths, enforces timeouts.
 
 import fnmatch
 import signal
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import Any, Callable, List, Set
+from typing import Any
 
 
 class SandboxCapability(Enum):
@@ -28,11 +28,11 @@ class SandboxCapability(Enum):
 class SandboxPolicy:
     """Policy governing sandbox restrictions for an agent execution."""
 
-    allowed_capabilities: Set[SandboxCapability] = field(default_factory=set)
+    allowed_capabilities: set[SandboxCapability] = field(default_factory=set)
     max_execution_time: int = 300  # seconds
     max_memory_mb: int = 512
-    allowed_paths: List[str] = field(default_factory=list)
-    denied_commands: List[str] = field(default_factory=list)
+    allowed_paths: list[str] = field(default_factory=list)
+    denied_commands: list[str] = field(default_factory=list)
 
 
 class Sandbox:
@@ -67,7 +67,8 @@ class Sandbox:
         timeout = self.policy.max_execution_time
 
         def _handler(signum: int, frame: Any) -> None:
-            raise TimeoutError(f"Sandbox: execution exceeded {timeout}s")
+            msg = f"Sandbox: execution exceeded {timeout}s"
+            raise TimeoutError(msg)
 
         old = signal.signal(signal.SIGALRM, _handler)
         signal.alarm(timeout)
@@ -78,7 +79,7 @@ class Sandbox:
             signal.signal(signal.SIGALRM, old)
 
     @classmethod
-    def create_restricted(cls, capabilities: Set[SandboxCapability]) -> "Sandbox":
+    def create_restricted(cls, capabilities: set[SandboxCapability]) -> "Sandbox":
         """Return a Sandbox with minimal policy granting only the specified capabilities."""
         return cls(SandboxPolicy(
             allowed_capabilities=capabilities,
@@ -119,10 +120,10 @@ ADMIN_POLICY = SandboxPolicy(
 )
 
 __all__ = [
+    "ADMIN_POLICY",
+    "AGENT_POLICY",
+    "READONLY_POLICY",
+    "Sandbox",
     "SandboxCapability",
     "SandboxPolicy",
-    "Sandbox",
-    "READONLY_POLICY",
-    "AGENT_POLICY",
-    "ADMIN_POLICY",
 ]

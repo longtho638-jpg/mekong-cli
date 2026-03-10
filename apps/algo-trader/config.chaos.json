@@ -1,0 +1,34 @@
+{
+  "environment": {
+    "useDocker": false,
+    "images": {
+      "exchange-mock": "exchange-mock:latest",
+      "hardhat": "ethereumoptimism/hardhat:latest",
+      "phase1": "algo-trader-phase1:latest"
+    }
+  },
+  "scenarios": [
+    {
+      "name": "kill-phase3",
+      "failure": { "type": "process", "target": "phase3", "duration": 30 },
+      "expected": { "recoveryTimeSec": 10, "dataLoss": false }
+    },
+    {
+      "name": "network-latency",
+      "failure": { "type": "latency", "target": "exchange-mock", "delayMs": 500, "duration": 60 },
+      "expected": { "maxSlippageBps": 10 }
+    },
+    {
+      "name": "exchange-5xx",
+      "failure": { "type": "exchange-error", "target": "binance-mock", "statusCode": 503, "duration": 15 },
+      "expected": { "recoveryTimeSec": 5, "circuitBreakerTriggered": true }
+    },
+    {
+      "name": "packet-loss",
+      "failure": { "type": "packet-loss", "target": "exchange-mock", "lossPercent": 30, "duration": 20 },
+      "expected": { "recoveryTimeSec": 8, "dataLoss": false }
+    }
+  ],
+  "durationHours": 24,
+  "reportPath": "./chaos_report.html"
+}

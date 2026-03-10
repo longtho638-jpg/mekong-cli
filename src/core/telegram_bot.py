@@ -1,5 +1,4 @@
-"""
-Mekong CLI - Telegram Commander Bot (Tôm Hùm Edition)
+"""Mekong CLI - Telegram Commander Bot (Tôm Hùm Edition).
 
 Remote command center via Telegram → Antigravity relay.
 Commands received on Telegram are saved to inbox for Antigravity to pick up
@@ -18,13 +17,14 @@ Commands:
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import os
 import time
 import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING
 
 import yaml  # type: ignore[import-untyped]
 
@@ -42,7 +42,7 @@ class BotConfig:
     """Telegram bot configuration."""
 
     token: str = ""
-    chat_ids: List[int] = field(default_factory=list)
+    chat_ids: list[int] = field(default_factory=list)
     enabled: bool = True
 
 
@@ -79,7 +79,9 @@ def _load_inbox() -> list:
     try:
         result = json.loads(INBOX_PATH.read_text())
         return list(result)
-    except Exception:
+    except (json.JSONDecodeError, OSError) as e:
+        import logging
+        logging.error(f"Failed to load inbox: {e}")
         return []
 
 
@@ -89,7 +91,7 @@ def _save_inbox(tasks: list) -> None:
     INBOX_PATH.write_text(json.dumps(tasks, indent=2, ensure_ascii=False))
 
 
-def add_task(goal: str, project: Optional[str] = None, chat_id: int = 0) -> dict:
+def add_task(goal: str, project: str | None = None, chat_id: int = 0) -> dict:
     """Add a new task to the inbox."""
     task = {
         "id": uuid.uuid4().hex[:8],
@@ -128,16 +130,17 @@ class MekongBot:
 
     CONFIG_PATH = ".mekong/telegram.yaml"
 
-    def __init__(self, token: Optional[str] = None) -> None:
+    def __init__(self, token: str | None = None) -> None:
         """Initialize MekongBot with a Telegram bot token.
 
         Args:
             token: Telegram Bot API token. Falls back to MEKONG_TELEGRAM_TOKEN env var.
+
         """
         self.token = token or os.environ.get("MEKONG_TELEGRAM_TOKEN", "")
         self.config = self._load_config()
         self._running = False
-        self._application: Optional[Application] = None
+        self._application: Application | None = None
 
     async def start(self) -> None:
         """Start the Telegram bot polling loop."""
@@ -147,8 +150,8 @@ class MekongBot:
         try:
             from telegram.ext import (
                 ApplicationBuilder,
-                CommandHandler,
                 CallbackQueryHandler,
+                CommandHandler,
                 MessageHandler,
                 filters,
             )
@@ -177,7 +180,7 @@ class MekongBot:
 
         # NLP: catch ALL non-command text messages
         self._application.add_handler(
-            MessageHandler(filters.TEXT & ~filters.COMMAND, self.nlp_message_handler)
+            MessageHandler(filters.TEXT & ~filters.COMMAND, self.nlp_message_handler),
         )
 
         self._application.add_handler(CallbackQueryHandler(self._callback_handler))
@@ -195,8 +198,9 @@ class MekongBot:
                 await self._application.updater.stop()
                 await self._application.stop()
                 await self._application.shutdown()
-            except Exception:
-                pass
+            except Exception as e:
+                import logging
+                logging.error(f"Failed to stop application: {e}")
 
     def is_running(self) -> bool:
         """Whether the Telegram bot polling loop is currently active."""
@@ -231,7 +235,7 @@ class MekongBot:
             if task.parse_error:
                 await thinking_msg.edit_text(
                     f"⚠️ Không parse được: {task.parse_error}\n\n"
-                    f"Thử dùng /cook <goal> trực tiếp."
+                    f"Thử dùng /cook <goal> trực tiếp.",
                 )
                 return
 
@@ -271,7 +275,7 @@ class MekongBot:
 
         except Exception as e:
             await thinking_msg.edit_text(
-                f"❌ NLP error: {str(e)[:100]}\nThử /cook <goal> trực tiếp."
+                f"❌ NLP error: {str(e)[:100]}\nThử /cook <goal> trực tiếp.",
             )
 
     # ============================================================
@@ -346,7 +350,7 @@ class MekongBot:
 
         if not inbox:
             await update.message.reply_text(
-                "📭 Inbox trống.\nDùng /cook <goal> để gửi task."
+                "📭 Inbox trống.\nDùng /cook <goal> để gửi task.",
             )
             return
 
@@ -363,7 +367,7 @@ class MekongBot:
             lines.append(
                 f"{icon} `{t['id']}`{project_str}\n"
                 f"   {t['goal'][:50]}\n"
-                f"   {t.get('created_at_iso', '')}"
+                f"   {t.get('created_at_iso', '')}",
             )
 
         await update.message.reply_text(
@@ -381,7 +385,7 @@ class MekongBot:
 
             if not sessions:
                 await update.message.reply_text(
-                    "No CC CLI sessions.\nUse /cook <goal> to queue a task."
+                    "No CC CLI sessions.\nUse /cook <goal> to queue a task.",
                 )
                 return
 
@@ -398,14 +402,16 @@ class MekongBot:
                 lines.append(
                     f"{icon} `{s.id}` — {s.status.value}\n"
                     f"   Goal: {s.goal[:40]}\n"
-                    f"   Duration: {s.duration:.0f}s | Lines: {len(s.output_buffer)}"
+                    f"   Duration: {s.duration:.0f}s | Lines: {len(s.output_buffer)}",
                 )
 
             await update.message.reply_text(
                 "\n".join(lines),
                 parse_mode="Markdown",
             )
-        except Exception:
+        except Exception as e:
+            import logging
+            logging.error(f"Sessions handler error: {e}")
             await update.message.reply_text("No CC CLI sessions active.")
 
     # ============================================================
@@ -489,10 +495,10 @@ class MekongBot:
                 for d in details[-5:]:
                     icon = "✅" if d.get("success") else "❌"
                     lines.append(
-                        f"{icon} `{d.get('id', '?')}` — {d.get('title', '?')}"
+                        f"{icon} `{d.get('id', '?')}` — {d.get('title', '?')}",
                     )
                 await update.message.reply_text(
-                    "\n".join(lines), parse_mode="Markdown"
+                    "\n".join(lines), parse_mode="Markdown",
                 )
             except Exception as e:
                 await update.message.reply_text(f"❌ AGI history error: {e}")
@@ -517,7 +523,7 @@ class MekongBot:
 
         else:
             await update.message.reply_text(
-                "♾️ Usage: /agi <start|stop|status|history|config>"
+                "♾️ Usage: /agi <start|stop|status|history|config>",
             )
 
     # ============================================================
@@ -558,8 +564,9 @@ class MekongBot:
             active = len(spawner.active_sessions)
             total = len(spawner.all_sessions)
             cc_info = f"\n🤖 CC CLI: {active} active / {total} total"
-        except Exception:
-            pass
+        except Exception as e:
+            import logging
+            logging.debug(f"CC spawner not available: {e}")
 
         text = (
             f"🟢 *Tôm Hùm Status*\n"
@@ -649,16 +656,14 @@ class MekongBot:
         """Send a push notification to a specific chat."""
         if not self._application or not self._running:
             return
-        try:
+        with contextlib.suppress(Exception):
             await self._application.bot.send_message(
                 chat_id=chat_id,
                 text=message,
                 parse_mode="Markdown",
             )
-        except Exception:
-            pass
 
-    def _build_keyboard(self) -> Optional[InlineKeyboardMarkup]:
+    def _build_keyboard(self) -> InlineKeyboardMarkup | None:
         """Build inline keyboard for quick actions."""
         try:
             from telegram import InlineKeyboardButton, InlineKeyboardMarkup
@@ -679,8 +684,8 @@ class MekongBot:
 
     def _execute_goal(self, goal: str) -> OrchestrationResult:
         """Execute goal via orchestrator (runs in thread)."""
-        from src.core.orchestrator import RecipeOrchestrator
         from src.core.llm_client import get_client
+        from src.core.orchestrator import RecipeOrchestrator
 
         llm_client = get_client()
         orchestrator = RecipeOrchestrator(
@@ -688,7 +693,7 @@ class MekongBot:
         )
         return orchestrator.run_from_goal(goal)
 
-    def _format_result(self, result: Optional[OrchestrationResult]) -> str:
+    def _format_result(self, result: OrchestrationResult | None) -> str:
         """Format OrchestrationResult for Telegram message."""
         if result is None:
             return "❌ Execution failed — no result"
@@ -734,9 +739,9 @@ class MekongBot:
 
 
 __all__ = [
-    "MekongBot",
-    "BotConfig",
     "HELP_TEXT",
+    "BotConfig",
+    "MekongBot",
     "add_task",
     "get_pending_tasks",
     "mark_task",
