@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "npx wrangler pages dev out/",
+    "deploy": "npx wrangler pages deploy out/ --project-name agencyos-landing",
+    "deploy:prod": "npx wrangler pages deploy out/ --project-name agencyos-landing --branch main"
   },
   "dependencies": {
     "next": "^16.0.10",
@@ -14,12 +17,13 @@
     "react-dom": "^19.2.1"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@tailwindcss/postcss": "^4.1.18",
+    "postcss": "^8.0.0",
     "tailwindcss": "^4.1.18",
     "typescript": "^5.0.0",
-    "postcss": "^8.0.0"
+    "wrangler": "^4.71.0"
   }
 }
