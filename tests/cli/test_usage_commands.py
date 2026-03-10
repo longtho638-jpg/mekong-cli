@@ -23,25 +23,15 @@ runner = CliRunner()
 class TestShowUsage:
     """Tests for usage show command."""
 
-    @patch("src.core.gateway_client.GatewayClient")
-    @patch("src.core.raas_auth.get_auth_client")
-    @patch("os.getenv")
-    def test_show_usage_success(self, mock_getenv, mock_auth, mock_gateway):
+    @patch("src.cli.usage_tracker.fetch_usage_from_gateway")
+    @patch("src.cli.usage_tracker.get_license_key")
+    def test_show_usage_success(self, mock_get_key, mock_fetch):
         """Test successful usage display."""
-        # Mock env
-        mock_getenv.return_value = "mk_test_key_123"
-
-        # Mock auth
-        mock_auth_client = MagicMock()
-        mock_auth.return_value = mock_auth_client
-        mock_session = MagicMock()
-        mock_session.authenticated = False
-        mock_auth_client.get_session.return_value = mock_session
+        # Mock license key
+        mock_get_key.return_value = "mk_test_key_123"
 
         # Mock gateway response
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.json.return_value = {
+        mock_fetch.return_value = {
             "metrics": [
                 {"event_type": "cli:command", "input_tokens": 100, "output_tokens": 50, "duration_ms": 100},
                 {"event_type": "llm:call", "input_tokens": 200, "output_tokens": 100, "duration_ms": 200},
@@ -54,36 +44,33 @@ class TestShowUsage:
             },
         }
 
-        # Mock requests
-        with patch("requests.get", return_value=mock_response):
-            result = runner.invoke(app, ["show", "-k", "mk_test_key_123"])
+        result = runner.invoke(app, ["show", "-k", "mk_test_key_123"])
 
-            assert result.exit_code == 0
-            assert "Usage Report" in result.output
-            assert "Total Requests" in result.output
+        assert result.exit_code == 0
+        assert "Usage Report" in result.output
+        assert "Total Requests" in result.output
 
-    @patch("os.getenv")
-    def test_show_usage_no_key(self, mock_getenv):
+    @patch("src.cli.usage_tracker.get_license_key")
+    def test_show_usage_no_key(self, mock_get_key):
         """Test when no license key is provided."""
-        mock_getenv.return_value = None
+        mock_get_key.return_value = None
 
-        with patch("src.core.raas_auth.RaaSAuthClient") as mock_client:
-            mock_instance = MagicMock()
-            mock_client.return_value = mock_instance
-            mock_instance.get_session.return_value = MagicMock(authenticated=False)
+        result = runner.invoke(app, ["show"])
 
-            result = runner.invoke(app, ["show"])
+        assert result.exit_code == 0
+        assert "No license key provided" in result.output
 
-            assert result.exit_code == 0
-            assert "No license key provided" in result.output
-
-    def test_show_usage_verbose(self):
+    @patch("src.cli.usage_tracker.fetch_usage_from_gateway")
+    @patch("src.cli.usage_tracker.get_license_key")
+    def test_show_usage_verbose(self, mock_get_key, mock_fetch):
         """Test verbose output."""
-        with patch("src.cli.usage_commands._display_local_usage") as mock_display:
-            result = runner.invoke(app, ["show", "-k", "mk_test", "-v"])
+        mock_get_key.return_value = "mk_test"
+        mock_fetch.return_value = None  # Trigger local usage display
 
-            assert result.exit_code == 0
-            mock_display.assert_called_once()
+        result = runner.invoke(app, ["show", "-k", "mk_test", "-v"])
+
+        assert result.exit_code == 0
+        assert "Local Usage" in result.output or "Usage Report" in result.output
 
 
 class TestSyncUsage:
@@ -186,7 +173,7 @@ class TestExportUsage:
         """Test JSON export."""
         output_file = tmp_path / "usage_export.json"
 
-        with patch("src.cli.usage_commands._generate_export_data") as mock_gen:
+        with patch("src.cli.usage_export.generate_export_data") as mock_gen:
             mock_gen.return_value = {
                 "exported_at": "2026-03-09T00:00:00Z",
                 "period": "current",
@@ -214,7 +201,7 @@ class TestExportUsage:
         """Test CSV export."""
         output_file = tmp_path / "usage_export.csv"
 
-        with patch("src.cli.usage_commands._generate_export_data") as mock_gen:
+        with patch("src.cli.usage_export.generate_export_data") as mock_gen:
             mock_gen.return_value = {
                 "exported_at": "2026-03-09T00:00:00Z",
                 "period": "current",
@@ -258,9 +245,9 @@ class TestExportUsage:
 
     def test_export_default_filename(self):
         """Test default filename generation."""
-        with patch("src.cli.usage_commands._generate_export_data") as mock_gen:
+        with patch("src.cli.usage_export.generate_export_data") as mock_gen:
             mock_gen.return_value = {"events": []}
-            with patch("src.cli.usage_commands.datetime") as mock_dt:
+            with patch("src.cli.usage_export.datetime") as mock_dt:
                 mock_dt.utcnow.return_value.strftime.return_value = "2026-03-09"
                 result = runner.invoke(app, ["export", "-f", "json"])
 

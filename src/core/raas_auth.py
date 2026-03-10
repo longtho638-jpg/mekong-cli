@@ -347,7 +347,7 @@ class RaaSAuthClient:
                 "message": "No certificate found",
             }
 
-        from datetime import datetime, timezone
+        from datetime import datetime
         return {
             "has_certificate": True,
             "certificate_id": metadata.certificate_id,
@@ -410,7 +410,7 @@ class RaaSAuthClient:
         Returns:
             AuthResult with validation status
         """
-        from datetime import datetime, timezone
+        from datetime import datetime
 
         try:
             # Build headers with certificate auth if available
