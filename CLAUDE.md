@@ -552,9 +552,64 @@ git push origin main
 
 ## SUPREME COMMANDER PROTOCOL — [compressed for speed]
 
+## MCU BILLING RULES — 1M SOP Section 03 (ĐIỀU 58)
+
+> **Mission Credit Unit (MCU)** — Đơn vị thanh toán cho mỗi mission execution.
+
+### Pricing Tiers (Polar.sh)
+
+| Tier | Price | MCU Credits |
+|------|-------|-------------|
+| Starter | $49/mo | 50 MCU |
+| Growth | $149/mo | 200 MCU |
+| Premium | $499/mo | 1000 MCU |
+
+### MCU Cost Matrix
+
+| Complexity | MCU Cost | Example |
+|-----------|----------|---------|
+| `simple` | 1 MCU | File edit, git op, single command |
+| `standard` | 3 MCU | Feature with tests, multi-step |
+| `complex` | 5 MCU | Full-stack + deploy, multi-agent |
+
+### Billing Flow (SOP)
+
+```
+1. Tenant signs up → Polar webhook → POST /billing/polar
+2. MCU credited to tenant balance → mcu_billing.add_credits()
+3. Mission request → Check balance ≥ cost → Reject if insufficient (HTTP 402)
+4. Mission executes → Deduct MCU → POST /v1/mcu/deduct
+5. Balance < 10 MCU → low_balance=True → credits.low webhook fires
+6. Mission cancelled → Refund MCU → mcu_billing.refund()
+```
+
+### API Endpoints
+
+| Endpoint | Method | Purpose |
+|----------|--------|---------|
+| `/v1/mcu/deduct` | POST | Deduct MCU after mission |
+| `/billing/polar` | POST | Polar.sh webhook receiver |
+| `/v1/missions` | POST | Create mission (balance check) |
+
+### Enforcement Rules
+
+- **Zero balance** → HTTP 402 Payment Required on deduction
+- **Low balance** (< 10 MCU) → `low_balance: true` flag in response
+- **Invalid complexity** → HTTP 400 Bad Request
+- **Refund** → Only for cancelled missions, restores exact MCU amount
+- **No negative balance** — deduction fails if `balance < cost`
+
+### Test Coverage
+
+- `tests/test_mcu_billing.py` — 40 unit tests (MCUBilling engine)
+- `tests/test_gateway_mcu_deduct.py` — 10 integration tests (API endpoint)
+- `tests/e2e/test_1m_sop_flow.py` — 15 e2e tests (full billing flow)
+
+---
+
 ## ĐIỀU INDEX (Quick Reference)
 
-Key ĐIỀU: 0(Authority), 47(Command Mandate), 48(Verify), 49(GREEN), 50(Mission), 51-53(Proxy/Recovery/M1), 54(Tôm Hùm), 55(Vietnamese), 56(DashScope).
+Key ĐIỀU: 0(Authority), 47(Command Mandate), 48(Verify), 49(GREEN), 50(Mission), 51-53(Proxy/Recovery/M1), 54(Tôm Hùm), 55(Vietnamese), 56(DashScope), 58(MCU Billing).
 
 ---
 
