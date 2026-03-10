@@ -20,12 +20,15 @@ Usage:
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import hmac
 import json
 import logging
+import os
 from datetime import datetime, timezone
 from typing import AsyncGenerator, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
@@ -38,6 +41,7 @@ from src.core.gateway_api import (
 )
 from src.core.mcu_billing import MCUBilling, MCU_COSTS
 from src.core.webhook_events import WEBHOOK_EVENT_PAYLOADS
+from src.core.api_key_manager import validate_api_key
 
 logger = logging.getLogger(__name__)
 
@@ -148,12 +152,26 @@ mcu_billing = MCUBilling()
 # ENDPOINTS
 # =============================================================================
 
+def _validate_api_key(x_api_key: str = Header(None, alias="X-API-Key")) -> str:
+    """Validate X-API-Key header."""
+    if not x_api_key:
+        raise HTTPException(status_code=401, detail="Missing X-API-Key header")
+    result = validate_api_key(x_api_key)
+    if not result.valid:
+        raise HTTPException(status_code=401, detail=result.error or "Invalid API key")
+    return result.tenant_id or ""
+
+
 @app.post("/v1/missions", response_model=CreateMissionResponse)
-async def create_mission_endpoint(request: CreateMissionRequest) -> CreateMissionResponse:
+async def create_mission_endpoint(
+    request: CreateMissionRequest,
+    background_tasks: BackgroundTasks,
+) -> CreateMissionResponse:
     """Create a new mission from AgencyOS.
 
     AgencyOS calls this endpoint to submit a goal for Mekong CLI to execute.
     Returns mission_id and stream_url for real-time progress tracking.
+    Uses hybrid router for background execution.
 
     **Webhook:** If webhook_url provided, sends mission.created event.
     """
@@ -166,9 +184,10 @@ async def create_mission_endpoint(request: CreateMissionRequest) -> CreateMissio
     )
 
     response = create_mission(mission_request)
+    mission_id = response.mission_id
 
     # Store mission state
-    MISSION_STORE[response.mission_id] = {
+    MISSION_STORE[mission_id] = {
         "goal": request.goal,
         "tenant_id": request.tenant_id,
         "webhook_url": request.webhook_url,
@@ -178,19 +197,56 @@ async def create_mission_endpoint(request: CreateMissionRequest) -> CreateMissio
         "events": [],
     }
 
+    # Launch hybrid router as background task
+    background_tasks.add_task(
+        _run_hybrid_router,
+        mission_id=mission_id,
+        goal=request.goal,
+        tenant_id=request.tenant_id,
+    )
+
     logger.info(
-        "Mission %s created for tenant %s",
-        response.mission_id,
+        "Mission %s created for tenant %s (hybrid router queued)",
+        mission_id,
         request.tenant_id,
     )
 
     return CreateMissionResponse(
-        mission_id=response.mission_id,
+        mission_id=mission_id,
         status=response.status.value,
         created_at=response.created_at,
         estimated_steps=response.estimated_steps,
-        stream_url=response.stream_url or f"/v1/missions/{response.mission_id}/stream",
+        stream_url=response.stream_url or f"/v1/missions/{mission_id}/stream",
     )
+
+
+async def _run_hybrid_router(mission_id: str, goal: str, tenant_id: str) -> None:
+    """Background task: run hybrid LLM router for a mission."""
+    try:
+        from src.core.hybrid_router import route_and_execute
+
+        result = await route_and_execute(
+            goal=goal,
+            tenant_id=tenant_id,
+            mission_id=mission_id,
+        )
+
+        if mission_id in MISSION_STORE:
+            MISSION_STORE[mission_id]["status"] = "completed" if result.success else "failed"
+            MISSION_STORE[mission_id]["events"].append({
+                "event_type": "mission.completed" if result.success else "mission.failed",
+                "mission_id": mission_id,
+                "data": {
+                    "model_used": result.model_used,
+                    "mcu_charged": result.mcu_charged,
+                    "output_preview": result.output[:200] if result.output else "",
+                },
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            })
+    except Exception as e:
+        logger.error("Hybrid router failed for mission %s: %s", mission_id, e)
+        if mission_id in MISSION_STORE:
+            MISSION_STORE[mission_id]["status"] = "failed"
 
 
 @app.get("/v1/missions/{mission_id}", response_model=MissionStatusResponse)

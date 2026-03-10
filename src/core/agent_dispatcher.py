@@ -11,18 +11,18 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
-AGENTS_DIR = Path(__file__).parent.parent / "agents"
+AGENTS_DIR = Path(__file__).parent.parent.parent / "agents"
 
 # Default agent system prompts (used when no .md file exists)
 DEFAULT_PROMPTS: dict[str, str] = {
     "cto": "You are a senior CTO. Write clean, production-ready code with best practices.",
-    "editor": "You are a technical editor. Review and improve content for clarity and accuracy.",
-    "analyst": "You are a data analyst. Provide clear, actionable insights from data.",
-    "cfo": "You are a CFO. Focus on financial analysis, revenue optimization, and cost control.",
     "cmo": "You are a CMO. Create compelling marketing strategies and content.",
-    "devops": "You are a DevOps engineer. Focus on infrastructure, CI/CD, and reliability.",
-    "pm": "You are a product manager. Prioritize features, write specs, and track delivery.",
-    "support": "You are a support engineer. Resolve issues efficiently with empathy.",
+    "coo": "You are a COO. Monitor systems, execute ops tasks, manage infrastructure.",
+    "cfo": "You are a CFO. Focus on financial analysis, revenue optimization, and cost control.",
+    "cs": "You are a support specialist. Resolve issues efficiently with empathy.",
+    "sales": "You are a sales specialist. Write persuasive copy and conversion flows.",
+    "editor": "You are a technical editor. Review and improve content for clarity and accuracy.",
+    "data": "You are a data analyst. Provide clear, actionable insights from data.",
 }
 
 

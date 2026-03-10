@@ -240,7 +240,6 @@ class APIAdapter:
         system_prompt: str | None = None,
     ) -> str:
         """Synchronous generation (non-streaming) for simple use cases."""
-        import urllib.request
 
         provider = detect_provider(model_config.model_id)
         api_key = _get_api_key(provider)
