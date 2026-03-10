@@ -43,6 +43,10 @@ jobs:
       - name: Lint (Ruff)
         run: ruff check src/ tests/
 
+      - name: Format Check (Ruff)
+        run: ruff format --check src/ tests/
+        continue-on-error: true
+
       - name: Test (Pytest)
         run: pytest tests/ --ignore=tests/backend --ignore=tests/e2e --ignore=tests/integration --ignore=tests/unit -v --tb=short
         env:

@@ -1,135 +1,54 @@
 # Changelog
 
-## [Unreleased]
+All notable changes to Mekong CLI are documented here.
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) + [SemVer](https://semver.org/).
 
-### ✨ Features
-- feat: Complete Memory Architecture Implementation - 5-module persistent memory system
-  - Context-Aware Conversations with local backup (`src/core/context_manager.py`)
-  - Intelligent Prompt Caching with similarity matching (`src/core/prompt_cache.py`)
-  - Learning History Tracker with analytics dashboard (`src/core/learning_tracker.py`)
-  - Cross-Session Intelligence with persistent user profiles (`src/core/cross_session_intelligence.py`)
-  - Memory-Augmented Decision Making with historical context (`src/core/decision_maker.py`)
-  - Robust fallback mechanisms using local YAML/JSON when vector storage unavailable
-  - User session isolation with UUID-based scoping across all modules
-  - Integration with existing MemoryFacade system for seamless operation
+---
 
-## [2.1.0] - 2026-01-27
-
-### ✨ Features
-- feat: Mobile PWA Experience (Manifest, Service Worker, Offline Support)
-- feat: Mobile Bottom Navigation & Responsive UI (MD3)
-- feat: Push Notifications Infrastructure (FCM Backend + Frontend Hooks)
-- feat: Add to Home Screen Prompt & Offline Indicator
-
-## [2.0.0] - 2026-01-25
-
-### ✨ Features
-- feat: Execute 5 Binh Pháp Tasks - Full Validation Complete ([d7b67f5d])
-- feat: CC CLI vNext Complete - Technical Debt Eliminated ([0977d87a])
-- feat: PayPal SDK Complete Setup ([aa50e615])
-- feat: Complete PayPal Payment Flow - Binh Pháp Architecture ([d5e309b8])
-- feat: Add Next.js pricing page for dashboard app ([7b74019c])
-- feat: Factory Optimization Phase 3 - Partial (before system cleanup) ([127acd28])
-- feat: Brain & Muscle Protocol - CLAUDE.md + CLI_REFERENCE.md ([5e99c616])
-- feat: Finance Ops Legal Escalation Ladder Configuration ([5f7bb310])
-- feat: PayPal LIVE Mode + Technical Debt Cleanup Complete ([d2e012b2])
-- feat: PayPal Sandbox Mode - Safe Testing Configuration ([60dd6ba4])
-- feat: Payment Gateway Abstraction - PayPal Primary Ready ([30d0ee45])
-- feat: Payment Orchestrator - PayPal Primary + Polar Backup ([5f5a3af0])
-- feat: Tab 3+4 Complete - Migration + Billing Dashboard ([3f69f9e1])
-- feat: Add 6 Agent Prompt Lists for FastSaaS production pipeline ([4f99deb9])
-
-### 🐛 Bug Fixes
-- fix: Replace CSS variable syntax with semantic Tailwind classes (108 lint warnings) ([27220f05])
-
-### 📚 Documentation
-- docs: Binh Pháp Execution Plans - 13 Task Files ([165e53d1])
-- docs: Architecture Master Plan + Terminal Execution Plan ([470b4558])
-- docs: Add comprehensive ARCHITECTURE.md for business application ([feec7e70])
-- docs: Update TAX_STRATEGY_VN_2026.md với nguồn chính thống ([2722374f])
-- docs: Add TAX_STRATEGY_VN_2026.md - Vietnam Tax Optimization ([7f45f1db])
-- docs: Add FINANCE_OPS.md - Vietnam Financial Operations Guide ([ec1c6315])
-- docs: Add SCHEMA_SYNC.md - Cross-Agent Schema Documentation ([58387195])
-- docs: Add MISSION_CONTROL.md for 4-tab parallel agent orchestration ([e36f077f])
-- docs: Add CLI_REFERENCE.md for AI Agent self-documentation ([a49c8710])
-- docs: Add CHANGELOG.md for v2.0.0 official release ([c5816367])
-
-### 🔧 Other Changes
-- 🏯 CC CLI v2.0.0 - Complete 9-module command center ([68febf20])
-- 🚨 SECURITY: Remove .env.local from git tracking ([14457aff])
-- 🎉 RELEASE v2.0.0 - DEFCON 5 - AgencyOS Production Ready ([ade14408])
-
-All notable changes to AgencyOS will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [2.0.0] - 2026-01-25
-
-### 🚀 Major Release: Full Revenue Engine & AgencyOS Core Activated
-
-This is the biggest release in AgencyOS history, transforming the CLI into a complete command-center for one-person agencies.
+## [3.1.0] - 2026-03-10
 
 ### Added
-
-#### 9 CC CLI Modules
-
-- **cc revenue** - Revenue analytics, forecasting, pricing strategy
-- **cc agent** - Agent swarm orchestration, spawning, coordination
-- **cc devops** - Deployment automation, backup, infrastructure
-- **cc client** - Client management, CRM, invoicing
-- **cc release** - Version management, changelog, deployment
-- **cc analytics** - Dashboard, funnel analysis, cohort reports
-- **cc sales** - Sales pipeline, leads, CRM-lite
-- **cc content** - AI content generation, scheduling, publishing
-- **cc monitor** - System health, alerts, metrics
-
-#### Production Services
-
-- Cache Service with Redis + in-memory fallback
-- Backup Service with automated restore
-- Feature Flags for A/B testing
-- Audit Logging for compliance
-- Notification Service for alerts
-- Performance Middleware for metrics
-
-#### Architecture
-
-- Plugin system (`antigravity/plugins/`)
-- Circuit breaker pattern for resilience
-- Config caching for fast startup
-- Dynamic versioning from package.json
-
-#### Workflows
-
-- `/run upgrade-protocol` shortcut
-- Perfect Execution Profile (3 documents)
-- GitHub Actions CI/CD for CC CLI
+- Plugin Ecosystem: registry, validator, marketplace (`src/plugins/`)
+- Plugin Developer Guide (`docs/plugin-developer-guide.md`)
+- RaaS License Gate: `RAAS_LICENSE_KEY` for premium features
+- Persistent Memory Architecture: 5-module system (context, cache, tracker, cross-session, decision)
+- GitHub hygiene: CONTRIBUTING.md, CODEOWNERS, issue templates
+- CI hard gates: ruff format check, coverage enforcement
 
 ### Changed
-
-- CLI startup time reduced from ~500ms to <200ms
-- Unified `cc` entry point now discovers modules dynamically
-- Version synced from package.json (Single Source of Truth)
-
-### Fixed
-
-- Version drift between package.json and CLI
-- Missing modules in unified entry point
-
-### Stats
-
-- ~17,000+ lines added
-- 80+ files created
-- 16 commits
-- 187 tests passing
+- CLAUDE.md consolidated into single Hiến Pháp constitutional document
+- Model routing via DashScope Coding Plan (20-model pool, $0 cost)
 
 ---
 
-## [1.0.0] - Previous
+## [3.0.0] - 2026-01-25
 
-Initial release of AgencyOS.
+### Added
+- Plan-Execute-Verify (PEV) engine: `RecipePlanner`, `RecipeExecutor`, `RecipeVerifier`
+- RaaS (Revenue-as-a-Service) dual-stream architecture
+- 6 modular agents: GitAgent, FileAgent, ShellAgent, LeadHunter, ContentWriter, RecipeCrawler
+- Antigravity Proxy integration (port 9191, Anthropic-compatible)
+- Tôm Hùm autonomous dispatch (OpenClaw v22+)
+- FastAPI gateway + Cloudflare Workers edge layer
+
+### Changed
+- CLI rebuilt from scratch with Typer + Rich
+- All agents inherit `AgentBase` with plan/execute/verify flow
 
 ---
 
-**"Còn sống là còn nâng cấp!"** 🏯
+## [0.2.0] - 2025-11-01
+
+### Added
+- Initial CLI: `mekong cook`, `mekong plan`, `mekong run`, `mekong list`, `mekong search`
+- LLM client (`src/core/llm_client.py`) — OpenAI-compatible
+- Basic orchestrator with rollback logic
+- 62 unit tests (~2.5 min runtime)
+
+---
+
+## [0.1.0] - 2025-10-01
+
+### Added
+- Project bootstrap: Python + Typer skeleton
+- `mekong version` command

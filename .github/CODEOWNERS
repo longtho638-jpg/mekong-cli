@@ -1,0 +1,7 @@
+# Code Owners — auto-request review on PRs touching these paths
+
+* @longtho638-jpg
+src/core/ @longtho638-jpg
+src/agents/ @longtho638-jpg
+src/plugins/ @longtho638-jpg
+.github/workflows/ @longtho638-jpg
