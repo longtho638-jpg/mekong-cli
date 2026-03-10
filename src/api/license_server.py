@@ -16,7 +16,6 @@ import json
 from pathlib import Path
 
 from src.lib.license_generator import validate_license, get_tier_limits
-from src.lib.usage_meter import UsageMeter
 
 app = FastAPI(title="RaaS License API", version="2.0.0")
 security = HTTPBearer(auto_error=False)

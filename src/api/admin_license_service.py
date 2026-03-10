@@ -44,7 +44,6 @@ class AdminLicenseService:
         Returns:
             Dict with keys, license_ids, and metadata
         """
-        from src.lib.raas_gate_validator import get_validator
 
         generated_keys = []
         license_ids = []

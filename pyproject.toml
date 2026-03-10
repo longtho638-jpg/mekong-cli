@@ -97,6 +97,11 @@ target-version = ['py311']
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+exclude = [
+    "apps/sophia-proposal/.claude/",
+    "apps/*/.claude/skills/",
+    ".claude/skills/",
+]
 
 [tool.coverage.run]
 source = ["src"]

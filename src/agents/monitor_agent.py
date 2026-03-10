@@ -9,7 +9,7 @@ import platform
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 
-from src.core.agent_base import AgentBase, Task, Result, TaskStatus
+from src.core.agent_base import AgentBase, Task, Result
 
 
 @dataclass

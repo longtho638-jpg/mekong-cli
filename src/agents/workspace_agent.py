@@ -4,7 +4,7 @@ Google Workspace Agent - Official gws CLI integration.
 Provides native access to Drive, Gmail, Calendar, Sheets, Docs, Chat, Admin.
 """
 
-from typing import Any, Dict, List
+from typing import List
 
 import json
 import subprocess

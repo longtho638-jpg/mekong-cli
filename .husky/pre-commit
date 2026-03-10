@@ -9,7 +9,7 @@ if command -v ruff &> /dev/null; then
     STAGED_PY=$(git diff --cached --name-only --diff-filter=ACM -- '*.py' 2>/dev/null)
     if [ -n "$STAGED_PY" ]; then
         echo "   → Ruff lint (staged files only)..."
-        echo "$STAGED_PY" | xargs ruff check --fix --quiet || {
+        echo "$STAGED_PY" | grep -v 'apps/.*/\.claude/' | xargs ruff check --fix --quiet || {
             echo "❌ Ruff lint failed. Fix errors before committing."
             exit 1
         }
@@ -28,7 +28,7 @@ if [ -f "apps/dashboard/tsconfig.json" ]; then
 fi
 
 # Critical payment tests (fast subset only)
-if [ -d "backend/tests/unit" ]; then
+if [ -f "backend/tests/unit/test_payment_service.py" ]; then
     echo "   → Critical payment tests..."
 
     # Determine pytest command

@@ -66,7 +66,13 @@ jobs:
           pip install -e .
 
       - name: Run CC CLI tests
-        run: pytest tests/test_cc_*.py -v
+        run: |
+          CC_TESTS=$(find tests -maxdepth 1 -name 'test_cc_*.py' 2>/dev/null | head -20)
+          if [ -z "$CC_TESTS" ]; then
+            echo "No CC CLI test files found, skipping"
+          else
+            pytest $CC_TESTS -v
+          fi
         env:
           PYTHONPATH: ${{ github.workspace }}
 

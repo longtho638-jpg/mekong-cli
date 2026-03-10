@@ -24,8 +24,7 @@ from pathlib import Path
 from typing import Optional
 
 from src.config.logging_config import get_logger
-from src.lib.license_generator import generate_license, LicenseKeyGenerator
-from src.lib.usage_meter import UsageMeter
+from src.lib.license_generator import LicenseKeyGenerator
 
 router = APIRouter(prefix="/api/v1/polar", tags=["Polar.sh Webhooks"])
 
