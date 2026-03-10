@@ -40,13 +40,61 @@ def stop() -> None:
 
 @app.command()
 def status() -> None:
-    """Show AGI health, score, and mission stats."""
-    bridge = AGIBridge()
-    data = bridge.status()
-    if "error" in data:
-        console.print(f"[red]{data['error']}[/red]")
-        raise typer.Exit(code=1)
-    console.print_json(json.dumps(data, indent=2))
+    """🧠 Show AGI health, score, and 9-subsystem dashboard."""
+    from rich.panel import Panel
+    from rich.table import Table
+
+    from src.core.agi_score import AGIScoreEngine
+
+    engine = AGIScoreEngine()
+    report = engine.calculate()
+
+    # Grade color
+    grade_colors = {"S": "bold magenta", "A": "bold green", "B": "cyan", "C": "yellow", "D": "red", "F": "bold red"}
+    gc = grade_colors.get(report.grade, "white")
+
+    # Score bar (visual)
+    filled = int(report.total_score / 5)
+    bar = "█" * filled + "░" * (20 - filled)
+
+    console.print(
+        Panel(
+            f"[{gc}]Grade: {report.grade}[/{gc}]   "
+            f"[bold]Score: {report.total_score}/100[/bold]\n"
+            f"[cyan]{bar}[/cyan]\n\n"
+            f"[bold]Modules:[/bold]    {report.module_score:.0f}/45  "
+            f"[bold]Wiring:[/bold]  {report.wiring_score:.0f}/25  "
+            f"[bold]Runtime:[/bold] {report.runtime_score:.0f}/15  "
+            f"[bold]Improve:[/bold] {report.improvement_score:.0f}/15",
+            title="🧠 AGI v2 Score Dashboard",
+            border_style="magenta",
+        )
+    )
+
+    # Subsystem table
+    table = Table(title="9 AGI Subsystems", show_lines=False)
+    table.add_column("", width=3)
+    table.add_column("Module", style="bold")
+    table.add_column("Status")
+    table.add_column("Score", justify="right")
+
+    for sub in report.subsystems:
+        status_str = "[green]● online[/green]" if sub.available else "[red]○ offline[/red]"
+        table.add_row(sub.icon, sub.name, status_str, f"{sub.score:.0f}/5")
+
+    console.print(table)
+
+    # Details
+    if report.details:
+        details_parts = []
+        if "executions" in report.details:
+            details_parts.append(f"Executions: {report.details['executions']}")
+        if "success_rate" in report.details:
+            details_parts.append(f"Success: {report.details['success_rate']:.0f}%")
+        if "wired" in report.details:
+            details_parts.append(f"Wired: {len(report.details['wired'])}/10")
+        if details_parts:
+            console.print(f"\n[dim]{' │ '.join(details_parts)}[/dim]")
 
 
 @app.command()

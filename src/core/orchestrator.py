@@ -109,6 +109,62 @@ class RecipeOrchestrator:
         self.retry_policy = retry_policy or RetryPolicy()
         self.history = ExecutionHistory()
 
+        # AGI v2: Reflection Engine
+        self._reflection: Optional[Any] = None
+        try:
+            from .reflection import ReflectionEngine
+            self._reflection = ReflectionEngine(llm_client=llm_client)
+        except Exception:
+            pass
+
+        # AGI v2: World Model
+        self._world_model: Optional[Any] = None
+        try:
+            from .world_model import WorldModel
+            self._world_model = WorldModel(llm_client=llm_client)
+        except Exception:
+            pass
+
+        # AGI v2: Tool Registry
+        self._tool_registry: Optional[Any] = None
+        try:
+            from .tool_registry import ToolRegistry
+            self._tool_registry = ToolRegistry()
+        except Exception:
+            pass
+
+        # AGI v2: Collaboration Protocol (peer-review plans)
+        self._collaboration: Optional[Any] = None
+        try:
+            from .collaboration import CollaborationProtocol
+            self._collaboration = CollaborationProtocol(llm_client=llm_client)
+        except Exception:
+            pass
+
+        # AGI v2: Code Evolution Engine (post-execution analysis)
+        self._code_evolution: Optional[Any] = None
+        try:
+            from .code_evolution import CodeEvolutionEngine
+            self._code_evolution = CodeEvolutionEngine(llm_client=llm_client)
+        except Exception:
+            pass
+
+        # AGI v2: Vector Memory Store (semantic similarity search)
+        self._vector_memory: Optional[Any] = None
+        try:
+            from .vector_memory_store import VectorMemoryStore
+            self._vector_memory = VectorMemoryStore()
+        except Exception:
+            pass
+
+        # AGI v2: EventBus for reactive module communication
+        self._event_bus: Optional[Any] = None
+        try:
+            from .event_bus import get_event_bus
+            self._event_bus = get_event_bus()
+        except Exception:
+            pass
+
         # Swarm dispatcher (optional)
         if use_swarm:
             from .swarm import SwarmDispatcher, SwarmRegistry
@@ -157,6 +213,77 @@ class RecipeOrchestrator:
         # Start telemetry trace
         self.telemetry.start_trace(goal)
 
+        # AGI v2: Take world snapshot BEFORE execution
+        world_before = None
+        if self._world_model:
+            try:
+                world_before = self._world_model.snapshot()
+                self.console.print("[dim]🌍 World snapshot captured[/dim]")
+            except Exception:
+                pass
+
+        # AGI v2: Get strategy suggestion from reflection history
+        strategy_hint = ""
+        if self._reflection:
+            try:
+                strategy_hint = self._reflection.get_strategy_suggestion(goal)
+                if strategy_hint:
+                    self.console.print(f"[dim]🪞 Strategy hint: {strategy_hint[:60]}[/dim]")
+            except Exception:
+                pass
+
+        # AGI v2: Check if ToolRegistry has relevant tools
+        if self._tool_registry:
+            try:
+                suggested = self._tool_registry.suggest_tool(goal)
+                if suggested:
+                    self.console.print(
+                        f"[dim]🔧 Tool available: {suggested.name} — {suggested.description[:40]}[/dim]"
+                    )
+            except Exception:
+                pass
+
+        # AGI v2: Predict side effects before execution
+        if self._world_model:
+            try:
+                prediction = self._world_model.predict_side_effects(goal)
+                if prediction.risk_level == "high":
+                    self.console.print(
+                        f"[bold yellow]⚠️  High-risk action detected: "
+                        f"{'; '.join(prediction.warnings[:2])}[/bold yellow]"
+                    )
+            except Exception:
+                pass
+
+        # AGI v2: Search vector memory for similar past goals
+        if self._vector_memory:
+            try:
+                from .vector_memory_store import VectorMemoryStore
+                vec = VectorMemoryStore.text_to_hash_vector(goal)
+                results = self._vector_memory.search(
+                    "goal_history", vec, top_k=1,
+                )
+                if results and results[0].get("score", 0) > 0.85:
+                    prev = results[0].get("payload", {}).get("goal", "")
+                    self.console.print(
+                        f"[dim]🧠 Similar past goal: {prev[:50]} "
+                        f"({results[0]['score']:.0%} match)[/dim]"
+                    )
+            except Exception:
+                pass
+
+        # AGI v2: Collaboration — assign roles for goal
+        if self._collaboration:
+            try:
+                roles = self._collaboration.assign_roles(goal)
+                if roles:
+                    assigned = [f"{r['agent']}: {r['role']}" for r in roles[:2]]
+                    self.console.print(
+                        f"[dim]🤝 Agents assigned: {', '.join(assigned)}[/dim]"
+                    )
+            except Exception:
+                pass
+
         # NLU Phase (pre-planning) — classify intent and try direct recipe
         intent_result = self.nlu.classify(goal)
         if intent_result.confidence > 0.7 and intent_result.suggested_recipe:
@@ -177,14 +304,20 @@ class RecipeOrchestrator:
                         recipe, progress_callback=progress_callback,
                     )
                     self.telemetry.finish_trace()
+                    duration_ms = (time.time() - goal_start_time) * 1000
                     entry = MemoryEntry(
                         goal=goal,
                         status=result.status.value,
-                        duration_ms=(time.time() - goal_start_time) * 1000,
+                        duration_ms=duration_ms,
                         error_summary="; ".join(result.errors[:3]) if result.errors else "",
                         recipe_used=result.recipe.name if result.recipe else "",
                     )
                     self.memory.record(entry)
+
+                    # AGI v2: Post-execution reflection + world diff
+                    self._post_execution_agi(
+                        goal, result.status.value, duration_ms, world_before, result.errors,
+                    )
                     return result
                 except Exception:
                     pass  # Fall through to normal planning
@@ -217,14 +350,36 @@ class RecipeOrchestrator:
         self.telemetry.finish_trace()
 
         # Record to memory
+        duration_ms = (time.time() - goal_start_time) * 1000
         entry = MemoryEntry(
             goal=goal,
             status=result.status.value,
-            duration_ms=(time.time() - goal_start_time) * 1000,
+            duration_ms=duration_ms,
             error_summary="; ".join(result.errors[:3]) if result.errors else "",
             recipe_used=result.recipe.name if result.recipe else "",
         )
         self.memory.record(entry)
+
+        # AGI v2: Post-execution reflection + world diff
+        self._post_execution_agi(
+            goal, result.status.value, duration_ms, world_before, result.errors,
+        )
+
+        # AGI v2: Auto-save successful recipes for reuse
+        # Save when at least one step succeeded (not just full SUCCESS)
+        if result.completed_steps > 0 and recipe:
+            self._auto_save_recipe(goal, recipe)
+
+        # AGI v2: Tiered telemetry — persist to Tier 0 + Tier 1
+        trace = self.telemetry.get_trace()
+        if trace:
+            try:
+                from .telemetry import TieredTelemetryStore
+                tiered = TieredTelemetryStore()
+                tiered.store_trace(trace)
+                tiered.summarize_to_tier1(trace)
+            except Exception:
+                pass
 
         return result
 
@@ -447,6 +602,20 @@ class RecipeOrchestrator:
             self.console.print(
                 "[yellow]🔧 Attempting AI self-correction...[/yellow]"
             )
+
+            # AGI v2: Consult reflection for past failure patterns
+            reflection_hint = ""
+            if self._reflection:
+                try:
+                    reflection_hint = self._reflection.get_strategy_suggestion(
+                        f"fix error: {stderr[:100]}",
+                    )
+                    if reflection_hint and "No prior data" not in reflection_hint:
+                        self.console.print(
+                            f"[dim]🪞 Reflection hint: {reflection_hint[:50]}[/dim]"
+                        )
+                except Exception:
+                    pass
             if workflow_id:
                 self.history.append(ExecutionEvent.create(
                     EventKind.SELF_HEAL_ATTEMPTED, workflow_id, step.order,
@@ -636,6 +805,159 @@ class RecipeOrchestrator:
         }
         color = colors.get(status, "white")
         return f"[{color}]{status.value.upper()}[/{color}]"
+
+    def _post_execution_agi(
+        self,
+        goal: str,
+        status: str,
+        duration_ms: float,
+        world_before: Optional[Any],
+        errors: List[str],
+    ) -> None:
+        """
+        AGI v2: Post-execution pipeline — reflection + world diff +
+        code evolution + vector memory + collaboration review.
+
+        Called after every goal execution to learn and track changes.
+        """
+        # Reflection: learn from result
+        if self._reflection:
+            try:
+                reflection = self._reflection.reflect(
+                    goal=goal,
+                    status=status,
+                    duration_ms=duration_ms,
+                    error=errors[0] if errors else "",
+                )
+                if reflection.lesson_learned:
+                    self.console.print(
+                        f"\n[dim]🪞 Reflection: {reflection.lesson_learned[:80]}[/dim]"
+                    )
+                if reflection.strategy_change:
+                    self.console.print(
+                        f"[dim]🪞 Strategy change: {reflection.strategy_change[:60]}[/dim]"
+                    )
+            except Exception:
+                pass
+
+        # World diff: track environment changes
+        if self._world_model and world_before:
+            try:
+                world_after = self._world_model.snapshot()
+                world_diff = self._world_model.diff(world_before, world_after)
+                diff_summary = world_diff.summary()
+                if diff_summary and diff_summary != "No changes detected":
+                    self.console.print(f"\n[dim]🌍 World changes: {diff_summary[:100]}[/dim]")
+            except Exception:
+                pass
+
+        # Code Evolution: log improvement hint after execution
+        if self._code_evolution:
+            try:
+                journal = self._code_evolution.get_journal(limit=1)
+                stats = self._code_evolution.get_stats()
+                if stats.get("total_attempts", 0) > 0:
+                    self.console.print(
+                        f"[dim]🧬 Evolution: {stats['total_attempts']} attempts, "
+                        f"{stats.get('success_rate', 0):.0%} success rate[/dim]"
+                    )
+            except Exception:
+                pass
+
+        # Vector Memory: persist goal+result for future similarity search
+        if self._vector_memory:
+            try:
+                from .vector_memory_store import VectorMemoryStore
+                import hashlib
+
+                vec = VectorMemoryStore.text_to_hash_vector(goal)
+                goal_id = hashlib.md5(goal.encode()).hexdigest()[:12]
+                self._vector_memory.get_or_create_collection("goal_history")
+                self._vector_memory.upsert(
+                    collection="goal_history",
+                    id=goal_id,
+                    vector=vec,
+                    payload={
+                        "goal": goal,
+                        "status": status,
+                        "duration_ms": duration_ms,
+                        "errors": errors[:3] if errors else [],
+                    },
+                )
+            except Exception:
+                pass
+
+        # Collaboration: submit execution review
+        if self._collaboration:
+            try:
+                self._collaboration.submit_review(
+                    reviewer="orchestrator",
+                    target=goal[:30],
+                    approved=status == "success",
+                    feedback=[errors[0]] if errors else ["Completed successfully"],
+                )
+            except Exception:
+                pass
+
+    def _auto_save_recipe(
+        self, goal: str, recipe: Recipe,
+    ) -> None:
+        """
+        AGI v2: Auto-save a successful recipe for future reuse.
+
+        Saves to recipes/auto/ directory so it can be re-discovered by
+        the RecipeRegistry and matched by NLU for future similar goals.
+        """
+        import hashlib
+        from pathlib import Path
+
+        try:
+            auto_dir = Path("recipes/auto")
+            auto_dir.mkdir(parents=True, exist_ok=True)
+
+            # Generate a short hash-based filename
+            goal_hash = hashlib.md5(goal.encode()).hexdigest()[:8]
+            recipe_path = auto_dir / f"auto_{goal_hash}.md"
+
+            # Don't overwrite existing auto-recipes
+            if recipe_path.exists():
+                return
+
+            # Generate markdown recipe
+            tags = getattr(recipe, "tags", []) or []
+            lines = [
+                f"# {recipe.name}",
+                "> Auto-generated recipe from successful execution",
+                "",
+                "## Description",
+                f"{recipe.description}",
+                "",
+                "## Tags",
+                f"auto, {', '.join(tags) if tags else 'general'}",
+                "",
+                "## Steps",
+            ]
+            for step in recipe.steps:
+                step_params = step.params or {}
+                step_type = step_params.get("type", "shell")
+                lines.append("")
+                lines.append(f"### {step.order}. {step.title}")
+                lines.append(f"Type: {step_type}")
+                lines.append("```")
+                lines.append(step.description)
+                lines.append("```")
+
+            recipe_path.write_text("\n".join(lines))
+            self.console.print(
+                f"[dim]💾 Auto-saved recipe: {recipe_path}[/dim]"
+            )
+            # Emit event for reactive modules
+            from .event_bus import EventType, get_event_bus
+            get_event_bus().emit(EventType.RECIPE_AUTO_SAVED, {
+                "path": str(recipe_path), "goal": goal,
+            })
+        except Exception:
+            pass  # Non-critical feature
 
     def run_bmad_workflow(
         self, workflow_id: str, context: Optional[Dict[str, Any]] = None
