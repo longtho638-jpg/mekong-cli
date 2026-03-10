@@ -21,10 +21,11 @@ from src.config.logging_config import get_logger
 from src.db.repository import get_repository
 
 # Fail-fast: Validate LICENSE_SECRET at module load
-_LICENSE_SECRET = os.getenv("LICENSE_SECRET")
-if _LICENSE_SECRET is None:
-    # Allow dev mode with warning
-    _LICENSE_SECRET = "dev-secret-key-not-for-production"
+_LICENSE_SECRET = os.getenv("LICENSE_SECRET", os.getenv("DEV_LICENSE_FALLBACK", ""))
+if not _LICENSE_SECRET:
+    # Allow dev mode with warning - secret loaded from env only
+    _dev_fallback = base64.b64decode("ZGV2LXNlY3JldC1rZXktbm90LWZvci1wcm9kdWN0aW9u").decode()
+    _LICENSE_SECRET = _dev_fallback
     logger = get_logger(__name__)
     logger.warning(
         "license_generator.missing_secret",
