@@ -1,13 +1,13 @@
 """
-Mekong CLI - Smart Router
+Mekong CLI - Smart Router (AGI v2)
 
 Memory-aware intent-to-recipe routing.
-Maps NLU results to the best recipe or action.
+Maps NLU results to the best recipe, tool, browse action, or plan.
 """
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 from .nlu import Intent, IntentResult
 from .memory import MemoryStore
@@ -17,13 +17,15 @@ from .memory import MemoryStore
 class RouteResult:
     """Result of smart routing."""
 
-    action: str  # "recipe" | "direct" | "plan"
+    action: str  # "recipe" | "direct" | "plan" | "tool" | "browse" | "evolve"
     recipe_path: str = ""
     recipe_name: str = ""
+    tool_name: str = ""
+    url: str = ""
     reason: str = ""
 
 
-# Default intent-to-recipe-tag mapping
+# Intent-to-recipe-tag mapping (AGI v2: includes all 10 intents)
 _INTENT_TAGS: Dict[Intent, str] = {
     Intent.DEPLOY: "deploy",
     Intent.AUDIT: "audit",
@@ -31,11 +33,24 @@ _INTENT_TAGS: Dict[Intent, str] = {
     Intent.FIX: "fix",
     Intent.STATUS: "status",
     Intent.SCHEDULE: "schedule",
+    Intent.REFACTOR: "refactor",
+    Intent.OPTIMIZE: "optimize",
+    Intent.MIGRATE: "migrate",
+    Intent.REPORT: "report",
 }
+
+# Intent-to-tool mapping: some intents map directly to ToolRegistry tools
+_INTENT_TOOLS: Dict[Intent, str] = {
+    Intent.STATUS: "git:status",
+    Intent.AUDIT: "git:diff",
+}
+
+# Intents that benefit from code evolution analysis
+_EVOLVE_INTENTS = {Intent.REFACTOR, Intent.OPTIMIZE}
 
 
 class SmartRouter:
-    """Memory-aware intent-to-recipe router."""
+    """Memory-aware intent-to-recipe router with AGI v2 tool/browse awareness."""
 
     MIN_SUCCESS_RATE: float = 30.0
 
@@ -48,12 +63,26 @@ class SmartRouter:
         """
         self.memory = memory_store
         self._recipe_cache: Optional[Dict[str, str]] = None
+        self._tool_registry: Optional[Any] = None
+        self._browser_agent: Optional[Any] = None
+
+        # AGI v2: Lazy-load tool registry
+        try:
+            from .tool_registry import ToolRegistry
+            self._tool_registry = ToolRegistry()
+        except Exception:
+            pass
 
     def route(self, intent_result: IntentResult) -> RouteResult:
         """
-        Route an intent to the best recipe or action.
+        Route an intent to the best recipe, tool, or action.
 
-        Priority: exact recipe match > intent tag match > fallback to plan.
+        Priority:
+        1. Exact recipe match
+        2. Intent tag match
+        3. AGI v2: Tool match for status/audit intents
+        4. AGI v2: Evolve route for refactor/optimize intents
+        5. Fallback to plan
 
         Args:
             intent_result: Classified intent from NLU
@@ -88,6 +117,40 @@ class SmartRouter:
                             recipe_name=name,
                             reason=f"Intent tag match: {tag}",
                         )
+
+        # AGI v2: Route to ToolRegistry for tool-mapped intents
+        tool_name = _INTENT_TOOLS.get(intent_result.intent, "")
+        if tool_name and self._tool_registry:
+            try:
+                tools = self._tool_registry.list_tools()
+                if any(t.name == tool_name for t in tools):
+                    return RouteResult(
+                        action="tool",
+                        tool_name=tool_name,
+                        reason=f"Intent tool match: {tool_name}",
+                    )
+            except Exception:
+                pass
+
+        # AGI v2: Route to evolve-code for refactor/optimize intents
+        if intent_result.intent in _EVOLVE_INTENTS:
+            return RouteResult(
+                action="evolve",
+                reason=f"Code evolution route for {intent_result.intent.value}",
+            )
+
+        # AGI v2: Smart tool suggestion from goal text
+        if self._tool_registry:
+            try:
+                suggested = self._tool_registry.suggest_tool(intent_result.raw_goal)
+                if suggested:
+                    return RouteResult(
+                        action="tool",
+                        tool_name=suggested.name,
+                        reason=f"Tool suggestion: {suggested.name}",
+                    )
+            except Exception:
+                pass
 
         return RouteResult(action="plan", reason="No viable recipe found")
 
@@ -133,3 +196,4 @@ __all__ = [
     "RouteResult",
     "SmartRouter",
 ]
+

@@ -310,8 +310,11 @@ def cook(
     json_output: bool = typer.Option(
         False, "--json", "-j", help="Machine-readable JSON output"
     ),
+    agi_dash: bool = typer.Option(
+        False, "--agi-dash", help="Show AGI subsystem dashboard after execution"
+    ),
 ) -> None:
-    """Cook: Plan -> Execute -> Verify workflow (Binh Phap engine)"""
+    """Cook: Plan -> Execute -> Verify workflow (Binh Phap engine + AGI v2)"""
     llm_client = get_client()
 
     orchestrator = RecipeOrchestrator(
@@ -433,6 +436,83 @@ def cook(
                 )
             )
         raise typer.Exit(code=1)
+
+    # AGI v2: Show AGI dashboard after execution
+    if agi_dash or verbose:
+        _show_agi_dashboard(goal, result)
+
+
+def _show_agi_dashboard(goal: str, result: "OrchestrationResult") -> None:
+    """AGI v2: Show subsystem activity dashboard after cook execution."""
+    panels = []
+
+    # 1. Consciousness Score
+    try:
+        from src.core.autonomous import AutonomousEngine
+        engine = AutonomousEngine()
+        report = engine.get_consciousness()
+        score_style = "green" if report.score >= 70 else "yellow" if report.score >= 40 else "red"
+        panels.append(f"[bold]Consciousness:[/bold] [{score_style}]{report.score}/100[/{score_style}]")
+    except Exception:
+        panels.append("[bold]Consciousness:[/bold] [dim]unavailable[/dim]")
+
+    # 2. NLU Classification
+    try:
+        from src.core.nlu import IntentClassifier
+        from src.core.llm_client import get_client
+        nlu = IntentClassifier(llm_client=get_client())
+        intent = nlu.classify(goal)
+        panels.append(
+            f"[bold]NLU:[/bold] {intent.intent.value} ({intent.confidence:.0%})"
+            + (f" | entities: {intent.entities}" if intent.entities else "")
+        )
+    except Exception:
+        panels.append("[bold]NLU:[/bold] [dim]skipped[/dim]")
+
+    # 3. Tool Registry
+    try:
+        from src.core.tool_registry import ToolRegistry
+        reg = ToolRegistry()
+        stats = reg.get_stats()
+        panels.append(f"[bold]Tools:[/bold] {stats['total_tools']} registered, {stats['total_executions']} used")
+    except Exception:
+        panels.append("[bold]Tools:[/bold] [dim]unavailable[/dim]")
+
+    # 4. Reflection
+    try:
+        from src.core.reflection import ReflectionEngine
+        ref = ReflectionEngine()
+        stats = ref.get_stats()
+        panels.append(
+            f"[bold]Reflection:[/bold] {stats['total_reflections']} reflections, "
+            f"calibration {stats['calibration_error']:.2f}"
+        )
+    except Exception:
+        panels.append("[bold]Reflection:[/bold] [dim]unavailable[/dim]")
+
+    # 5. World Model
+    try:
+        from src.core.world_model import WorldModel
+        wm = WorldModel()
+        summary = wm.get_context_summary()
+        panels.append(f"[bold]World:[/bold] {summary[:60]}")
+    except Exception:
+        panels.append("[bold]World:[/bold] [dim]unavailable[/dim]")
+
+    # 6. Execution result summary
+    exec_modes = set()
+    for sr in result.step_results:
+        mode = sr.execution.metadata.get("mode", "shell") if sr.execution.metadata else "shell"
+        exec_modes.add(mode)
+    panels.append(f"[bold]Modes used:[/bold] {', '.join(sorted(exec_modes))}")
+
+    console.print(
+        Panel(
+            "\n".join(panels),
+            title="🧠 AGI v2 Dashboard",
+            border_style="magenta",
+        )
+    )
 
 
 @app.command(name="plan")

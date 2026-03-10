@@ -45,6 +45,10 @@ class RecipeExecutor:
             return self._execute_llm_step(step)
         elif step_type == "api":
             return self._execute_api_step(step)
+        elif step_type == "tool":
+            return self._execute_tool_step(step)
+        elif step_type == "browse":
+            return self._execute_browse_step(step)
         else:
             return self._execute_shell_step(step)
 
@@ -154,6 +158,129 @@ class RecipeExecutor:
                 stderr=str(e),
                 error=e,
                 metadata={"mode": "api", "url": url},
+            )
+
+    def _execute_tool_step(self, step: RecipeStep) -> ExecutionResult:
+        """Execute step via AGI v2 ToolRegistry."""
+        tool_name = step.params.get("tool_name", "") if step.params else ""
+        tool_args = step.params.get("tool_args", {}) if step.params else {}
+
+        if not tool_name:
+            # Try to infer tool from step description
+            tool_name = step.description.strip()
+
+        self.console.print(f"[cyan][🔧 Tool] Executing:[/cyan] {tool_name}")
+
+        try:
+            from src.core.tool_registry import ToolRegistry
+
+            registry = ToolRegistry()
+            result = registry.execute(tool_name, tool_args)
+
+            output = result.get("output", "")
+            success = result.get("success", False)
+            duration = result.get("duration_ms", 0)
+
+            status_color = "green" if success else "red"
+            self.console.print(
+                f"[{status_color}]Tool {'succeeded' if success else 'failed'} "
+                f"({duration:.0f}ms)[/{status_color}]"
+            )
+
+            if output:
+                self.console.print(
+                    Panel(
+                        str(output)[:1000],
+                        title=f"Tool: {tool_name}",
+                        border_style=status_color,
+                        expand=False,
+                    )
+                )
+
+            return ExecutionResult(
+                exit_code=0 if success else 1,
+                stdout=str(output),
+                stderr=result.get("error", ""),
+                metadata={
+                    "mode": "tool",
+                    "tool_name": tool_name,
+                    "duration_ms": duration,
+                },
+            )
+
+        except Exception as e:
+            self.console.print(f"[bold red]Tool Error:[/bold red] {str(e)}")
+            return ExecutionResult(
+                exit_code=1,
+                stdout="",
+                stderr=str(e),
+                error=e,
+                metadata={"mode": "tool", "tool_name": tool_name},
+            )
+
+    def _execute_browse_step(self, step: RecipeStep) -> ExecutionResult:
+        """Execute step via AGI v2 BrowserAgent."""
+        url = step.params.get("url", "") if step.params else ""
+        browse_action = step.params.get("action", "analyze") if step.params else "analyze"
+
+        if not url:
+            url = step.description.strip()
+
+        self.console.print(f"[cyan][🌐 Browse] {browse_action}:[/cyan] {url}")
+
+        try:
+            from src.core.browser_agent import BrowserAgent
+
+            agent = BrowserAgent()
+
+            if browse_action == "check":
+                result = agent.check_status(url)
+                status_color = "green" if result.success else "red"
+                output = f"HTTP {result.status_code} ({result.duration_ms:.0f}ms)"
+            elif browse_action == "links":
+                result = agent.get_links(url)
+                output = f"Found {len(result.links)} links:\n" + "\n".join(
+                    result.links[:10]
+                )
+            else:  # analyze
+                result = agent.analyze_page(url)
+                output = (
+                    f"Title: {result.title}\n"
+                    f"Status: {result.status_code}\n"
+                    f"Links: {len(result.links)}\n"
+                    f"Load Time: {result.load_time_ms:.0f}ms\n\n"
+                    f"{result.text_content[:500]}"
+                )
+                status_color = "green" if result.status_code < 400 else "red"
+
+            self.console.print(
+                Panel(
+                    output[:1000],
+                    title=f"Browse: {url[:60]}",
+                    border_style="cyan",
+                    expand=False,
+                )
+            )
+
+            return ExecutionResult(
+                exit_code=0 if result.success else 1,
+                stdout=output,
+                stderr="",
+                metadata={
+                    "mode": "browse",
+                    "url": url,
+                    "action": browse_action,
+                },
+            )
+
+        except Exception as e:
+            self.console.print(f"[bold red]Browse Error:[/bold red] {str(e)}")
+            return ExecutionResult(
+                exit_code=1,
+                stdout="",
+                stderr=str(e),
+                error=e,
+                metadata={"mode": "browse", "url": url},
             )
 
     def _execute_shell_step(self, step: RecipeStep) -> ExecutionResult:
