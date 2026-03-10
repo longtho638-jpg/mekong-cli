@@ -1,7 +1,7 @@
 """Mekong CLI v3.1 - Public Gateway API for AgencyOS.
 
 Clean API contract for AgencyOS to consume Mekong CLI engine.
-Endpoints: missions CRUD, SSE streaming, webhook testing.
+Endpoints: missions CRUD, SSE streaming, webhook testing, API key auth.
 
 Usage:
     from src.core.gateway_api import create_app
@@ -18,6 +18,40 @@ from enum import Enum
 from typing import Any, Literal, Optional
 
 logger = __import__("logging").getLogger(__name__)
+
+
+def validate_api_key_for_mission(api_key: str, tenant_id: str) -> tuple[bool, Optional[str]]:
+    """Validate API key for mission creation (Condition C3).
+
+    Args:
+        api_key: API key from request header (mk_xxx)
+        tenant_id: Tenant ID from request body
+
+    Returns:
+        (valid, error_message) tuple
+    """
+    if not api_key:
+        return False, "Missing API key (X-API-Key header required)"
+
+    try:
+        from src.core.api_key_manager import validate_api_key as validate_key
+        result = validate_key(api_key)
+
+        if not result.valid:
+            return False, f"Invalid API key: {result.error}"
+
+        # Check tenant ID matches
+        if result.tenant_id != tenant_id:
+            return False, f"API key tenant mismatch (expected {tenant_id})"
+
+        return True, None
+
+    except ImportError:
+        logger.warning("API key manager not available, skipping validation")
+        return True, None  # Fallback: allow if module not found
+    except Exception as e:
+        logger.error("API key validation error: %s", e)
+        return False, f"API key validation failed: {e}"
 
 
 class MissionStatus(str, Enum):
@@ -101,15 +135,25 @@ WEBHOOK_EVENTS = {
 }
 
 
-def create_mission(request: MissionRequest) -> MissionResponse:
+def create_mission(request: MissionRequest, api_key: Optional[str] = None) -> MissionResponse:
     """Create a new mission from AgencyOS request.
 
     Args:
         request: Mission request with goal and tenant info
+        api_key: Optional API key for authentication (Condition C3)
 
     Returns:
         MissionResponse with mission_id and stream URL
+
+    Raises:
+        ValueError: If API key validation fails
     """
+    # Validate API key if provided (Condition C3: API Bridge)
+    if api_key:
+        valid, error = validate_api_key_for_mission(api_key, request.tenant_id)
+        if not valid:
+            raise ValueError(error)
+
     mission_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
 
@@ -169,4 +213,5 @@ __all__ = [
     "create_mission",
     "get_webhook_schema",
     "validate_webhook_url",
+    "validate_api_key_for_mission",
 ]
