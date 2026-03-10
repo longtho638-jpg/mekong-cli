@@ -1,23 +1,23 @@
 const TIERS = [
   {
     name: 'Starter',
-    price: '$0',
+    price: '$49',
     period: '/mo',
-    desc: 'Perfect for solo developers exploring AI coding.',
-    cta: 'Start Free',
-    ctaHref: 'https://github.com/agencyos/mekong-cli',
+    desc: 'Perfect for solo developers shipping AI-powered code.',
+    cta: 'Get Starter',
+    ctaHref: '#',
     highlight: false,
     features: [
-      '100 MCU / month',
+      '1,000 MCU / month',
       'Core CLI commands',
       'Community plugins',
       'Plan-Execute-Verify engine',
-      'GitHub Issues support',
+      'Email support',
     ],
   },
   {
     name: 'Growth',
-    price: '$49',
+    price: '$149',
     period: '/mo',
     desc: 'For teams shipping production code at scale.',
     cta: 'Get Growth',
@@ -25,7 +25,7 @@ const TIERS = [
     highlight: true,
     badge: 'Most Popular',
     features: [
-      '5,000 MCU / month',
+      '10,000 MCU / month',
       'Premium AI agents',
       'RaaS license gating',
       'Priority support (24h)',
@@ -35,7 +35,7 @@ const TIERS = [
   },
   {
     name: 'Premium',
-    price: '$199',
+    price: '$499',
     period: '/mo',
     desc: 'Unlimited AGI power for serious engineering teams.',
     cta: 'Get Premium',
@@ -63,7 +63,7 @@ export default function PricingTable() {
             <span className="gradient-text">pricing</span>
           </h2>
           <p className="text-slate-400">
-            Start free. Scale as you ship. No hidden fees.
+            Scale as you ship. No hidden fees. Cancel anytime.
           </p>
         </div>
 
