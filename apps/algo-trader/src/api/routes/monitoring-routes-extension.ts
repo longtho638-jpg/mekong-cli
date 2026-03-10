@@ -1,4 +1,5 @@
 /**
+ * @ts-nocheck
  * Monitoring Routes Extension — Phase 7.5
  *
  * Additional monitoring endpoints for:

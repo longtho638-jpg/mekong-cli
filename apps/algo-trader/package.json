@@ -6,7 +6,7 @@
   "scripts": {
     "disk:check": "pnpm exec ts-node scripts/disk-monitor.ts",
     "disk:check:sh": "bash scripts/pre-build-check.sh",
-    "prebuild": "npm run disk:check",
+    "prebuild": "npm run disk:check:sh",
     "build": "tsc",
     "build:fast": "tsc --incremental",
     "build:clean": "rm -rf dist && tsc",
