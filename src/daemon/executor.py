@@ -6,6 +6,7 @@ Abstract enough to swap execution backends.
 """
 
 import logging
+import shlex
 import subprocess
 import time
 from dataclasses import dataclass
@@ -43,7 +44,7 @@ class MissionExecutor:
         start = time.time()
         try:
             proc = subprocess.run(
-                command, shell=True, capture_output=True, text=True,
+                shlex.split(command), capture_output=True, text=True,
                 cwd=self._cwd, timeout=t,
             )
             return MissionResult(

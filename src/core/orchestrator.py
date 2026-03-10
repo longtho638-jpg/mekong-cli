@@ -228,9 +228,9 @@ class RollbackHandler:
             self.console.print(f"  [yellow]↩ Rolling back step {step.order}...[/yellow]")
 
             try:
+                import shlex
                 proc = subprocess.run(
-                    rollback_cmd,
-                    shell=True,
+                    shlex.split(rollback_cmd),
                     capture_output=True,
                     text=True,
                     timeout=30,  # Security timeout

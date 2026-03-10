@@ -4,6 +4,7 @@ Executes recipes parsed from Markdown files.
 Returns ExecutionResult for orchestrator integration.
 """
 
+import shlex
 import subprocess
 import time
 
@@ -210,7 +211,7 @@ class RecipeExecutor:
 
             try:
                 process = subprocess.run(
-                    command, shell=True, check=True, text=True, capture_output=True,
+                    shlex.split(command), check=True, text=True, capture_output=True,
                 )
 
                 if process.stdout:

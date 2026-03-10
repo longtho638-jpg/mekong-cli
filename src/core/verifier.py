@@ -375,9 +375,9 @@ class RecipeVerifier:
 
         try:
             # SECURITY: Enforce timeout on custom checks to prevent hangs
+            import shlex
             proc = subprocess.run(
-                command,
-                shell=True,
+                shlex.split(command),
                 capture_output=True,
                 text=True,
                 timeout=30,  # Hard timeout for security

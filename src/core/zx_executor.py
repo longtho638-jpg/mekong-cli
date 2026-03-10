@@ -162,8 +162,7 @@ def shell(
     start = time.monotonic()
     try:
         proc = subprocess.run(
-            command,
-            shell=True,
+            shlex.split(command),
             cwd=cwd,
             capture_output=True,
             text=True,
