@@ -5,142 +5,179 @@
   </picture>
 </p>
 
-<h1 align="center">
-  Mekong CLI
-</h1>
+<h1 align="center">Mekong CLI</h1>
+
+<p align="center"><strong>The terminal OS for AI-native founders.</strong></p>
 
 <p align="center">
-  <strong>AGI Vibe Coding Factory — Plan, Execute & Verify autonomous engine.</strong>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/AGI_Score-benchmarked-green?style=flat-square" alt="AGI Score" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" alt="MIT" /></a>
+  <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.9+" />
+  <img src="https://img.shields.io/badge/v3.1.0-8B5CF6?style=flat-square" alt="v3.1.0" />
+  <img src="https://img.shields.io/badge/AGI_Score-97.6%2F100-22c55e?style=flat-square" alt="AGI Score 97.6/100" />
   <a href="https://github.com/longtho638-jpg/mekong-cli/actions"><img src="https://img.shields.io/github/actions/workflow/status/longtho638-jpg/mekong-cli/ci.yml?style=flat-square&label=CI" alt="CI" /></a>
-  <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python" />
-  <img src="https://img.shields.io/badge/LLM-Any_Provider-8B5CF6?style=flat-square" alt="LLM" />
-  <img src="https://img.shields.io/badge/v3.0.0-blue?style=flat-square" alt="Version" />
 </p>
 
 <p align="center">
   <a href="#quick-start">Quick Start</a> •
   <a href="#how-it-works">How It Works</a> •
-  <a href="#agents">Agents</a> •
-  <a href="#raas">RaaS</a> •
-  <a href="CONTRIBUTING.md">Contribute</a>
+  <a href="#commands">Commands</a> •
+  <a href="#agencyos-raas">AgencyOS</a> •
+  <a href="#roadmap">Roadmap</a>
 </p>
 
 ---
 
-## Why Mekong?
-
-Most AI tools generate code and hope it works. Mekong **plans**, **executes**, and **verifies** — then rolls back if anything breaks.
-
-```
-You: "Create a FastAPI service with JWT auth and tests"
-
-Mekong:
-  📋 PLAN     → LLM decomposes into 5 steps with dependency graph
-  ⚡ EXECUTE  → Runs each step (shell, code gen, API calls)
-  ✅ VERIFY   → Tests pass? Types clean? Builds green?
-  🏁 DONE     → All verified. Ship it.
-
-  ❌ FAILED?  → Auto-rollback → Retry with corrected approach.
-```
-
-**Zero babysitting. Zero hallucination tolerance.**
+Mekong CLI is an autonomous agent framework that plans, executes, and verifies — then rolls back if anything breaks. 55 commands. From `mekong cook` to `/founder ipo-day`. For founders who run their company from the terminal.
 
 ## Quick Start
 
 ```bash
-# 1. Install
-git clone https://github.com/longtho638-jpg/mekong-cli.git
-cd mekong-cli && pip install -e ".[dev]"
-
-# 2. Configure any OpenAI-compatible LLM
+pip install mekong-cli              # or: git clone + pip install -e ".[dev]"
 export LLM_BASE_URL="https://api.openai.com/v1"
 export LLM_API_KEY="sk-..."
-
-# 3. Go
-mekong cook "Create a Python calculator with tests"
+mekong cook "Build me a SaaS landing page"
 ```
 
-### Works with every LLM
+### Works with every LLM provider
 
 | Provider | Base URL | Cost |
 |----------|----------|------|
 | **OpenAI** | `https://api.openai.com/v1` | Pay-per-use |
 | **Google Gemini** | `https://generativelanguage.googleapis.com/v1beta/openai` | Free tier |
-| **DashScope (Qwen)** | `https://dashscope.aliyuncs.com/compatible-mode/v1` | [Free credits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T) |
-| **Ollama (Local)** | `http://localhost:11434/v1` | Free |
+| **DashScope (Qwen)** | `https://coding-intl.dashscope.aliyuncs.com/v1` | [Free credits →](https://www.alibabacloud.com/campaign/benefits?referral_code=A9245T) |
+| **Ollama (local)** | `http://localhost:11434/v1` | Free |
 | **Any proxy** | Your OpenAI-compatible endpoint | Custom |
+
+## The Journey
+
+```
+IDEA ─── BUILD ─── SEED ─── A ─── B ─── C ─── PRE-IPO ─── IPO ─── PUBLIC
+  │        │        │       │     │     │        │          │         │
+validate  cook    raise   pitch  grow  scale  pre-ipo    ipo-day  public-co
+brand     fix     credits  vc/*  hire         s1          insider  succession
+          plan                   legal        roadshow
+```
 
 ## How It Works
 
-### Plan → Execute → Verify (PEV)
-
 ```
-┌──────────────────────────────────────────────┐
-│              🎯 Your Goal                     │
-└──────────────┬───────────────────────────────┘
-               │
-    ┌──────────▼──────────┐
-    │  📋 PLAN             │  LLM decomposes goal into
-    │  RecipePlanner       │  ordered steps + dependencies
-    └──────────┬──────────┘
-               │
-    ┌──────────▼──────────┐
-    │  ⚡ EXECUTE          │  Runs shell, code gen, API
-    │  RecipeExecutor      │  calls — parallel where safe
-    └──────────┬──────────┘
-               │
-    ┌──────────▼──────────┐
-    │  ✅ VERIFY           │  Exit codes, tests, types,
-    │  RecipeVerifier      │  file checks, LLM assessment
-    └──────────┬──────────┘
-               │
-       ┌───────┴───────┐
-       │               │
-    ✅ Pass         ❌ Fail
-       │               │
-    🏁 Done        ⏪ Rollback → Retry
+┌─────────────────────────────────────────────────────────────┐
+│                    AgencyOS (RaaS Layer)                     │
+│  Dashboard · /v1/missions · MCU Billing · Polar.sh Webhooks │
+├─────────────────────────────────────────────────────────────┤
+│                   OpenClaw (Orchestrator)                    │
+├──────────┬──────────┬──────────┬──────────────────────────┤
+│  📋 PLAN  │  ⚡ EXEC  │  ✅ VERIFY │     🤖 AGENTS           │
+│ planner  │ executor │ verifier │  git·file·shell·db·lead  │
+├──────────┴──────────┴──────────┴──────────────────────────┤
+│                        LLM Router                           │
+│  Claude · Gemini · Qwen · Ollama · Antigravity Proxy:9191  │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 | Phase | Module | What It Does |
 |-------|--------|-------------|
-| **Plan** | `src/core/planner.py` | LLM decomposes goal into steps with dependency graph |
-| **Execute** | `src/core/executor.py` | Runs shell/code/API tasks, parallel where possible |
-| **Verify** | `src/core/verifier.py` | Validates results against success criteria |
+| **Plan** | `src/core/planner.py` | LLM decomposes goal into ordered steps with dependency graph |
+| **Execute** | `src/core/executor.py` | Runs shell/code/API tasks in parallel where safe |
+| **Verify** | `src/core/verifier.py` | Exit codes, tests, types, file checks, LLM assessment |
 | **Orchestrate** | `src/core/orchestrator.py` | Coordinates PEV loop, rollback, self-healing |
 
-## Agents
-
-All agents follow the same `plan() → execute() → verify()` pattern:
+## Quick Demo
 
 ```bash
-mekong agent git status              # Git operations
-mekong agent git commit "feat: ..."  # Smart commits
-mekong agent file find "*.py"        # File search & analysis
-mekong agent file tree src/          # Directory tree
-mekong agent shell "npm test"        # Safe shell execution
-mekong agent lead hunt               # Lead generation
-mekong agent content write           # SEO content
-mekong agent crawler scan            # Recipe discovery
+$ mekong cook "Add Stripe billing to my FastAPI app"
+$ /founder validate --product "AI coding assistant for solo devs"
+$ /founder pitch --investor yc --rounds 10
+$ /founder vc/term-sheet --file term.pdf
+$ /founder ipo-day --exchange nasdaq
 ```
 
-[Build your own agent →](CONTRIBUTING.md)
+## Commands
 
-## CLI
+### Core (13)
 
-```bash
-mekong cook  "Build a REST API"      # Full PEV pipeline
-mekong plan  "Add OAuth support"     # Plan only (dry run)
-mekong run   recipe.md               # Execute recipe file
-mekong agent <name> <command>        # Run agent directly
-mekong gateway --port 8000           # Start API server
-mekong list                          # List available recipes
-mekong search "deploy"               # Search recipes
-```
+| Command | Description |
+|---------|-------------|
+| `cook` | Full PEV pipeline — plan, execute, verify |
+| `fix` | Debug and fix bugs with auto-rollback |
+| `plan` | Create implementation plan (dry run) |
+| `review` | Code quality review |
+| `status` | System health check |
+| `help` | Command reference |
+| `deploy` | Deployment orchestration |
+| `launch` | Launch copy for PH, HN, Reddit |
+| `credits` | Find startup credits and programs |
+| `pricing` | Pricing strategy and tier modeling |
+| `raise` | Fundraising prep (tactical) |
+| `fundraise` | Fundraising playbook (strategic) |
+| `cofounder` | Co-founder strategy |
+
+### Company (6)
+
+| Command | Description |
+|---------|-------------|
+| `company/init` | Initialize agentic company (8 AI agents) |
+| `company/agent` | Manage agents — list, ask, train |
+| `company/billing` | MCU balance and billing |
+| `company/report` | Business intelligence reports |
+| `company/run` | Universal task runner |
+| `company/workflow` | Automated workflows |
+
+### Founder (9)
+
+| Command | Description |
+|---------|-------------|
+| `founder/validate` | Customer discovery and PMF |
+| `founder/brand` | Brand identity and positioning |
+| `founder/pitch` | Pitch deck practice with AI investor |
+| `founder/metrics` | KPI dashboard and anomaly detection |
+| `founder/hire` | Agentic recruiting and interview kits |
+| `founder/legal` | Legal checklist and IP protection |
+| `founder/week` | Weekly CEO rhythm |
+| `founder/grow` | GTM playbook execution |
+| `founder/secondary` | Founder liquidity mechanics |
+
+### VC (5)
+
+| Command | Description |
+|---------|-------------|
+| `founder/vc/bootstrap` | Path to $1M ARR without VC |
+| `founder/vc/cap-table` | Dilution modeling and exit waterfall |
+| `founder/vc/negotiate` | BATNA tactics and counter-offers |
+| `founder/vc/term-sheet` | Term sheet red flag detection |
+| `founder/vc-map` | VC landscape mapping |
+
+### IPO (7)
+
+| Command | Description |
+|---------|-------------|
+| `founder/ipo/pre-ipo-prep` | 18-month IPO readiness audit |
+| `founder/ipo/s1` | S-1 prospectus framework |
+| `founder/ipo/roadshow` | 2-week roadshow sprint |
+| `founder/ipo/ipo-day` | IPO Day execution playbook |
+| `founder/ipo/public-co` | Public company quarterly rhythm |
+| `founder/ipo/insider` | Insider compliance and IR |
+| `founder/ipo/succession` | Post-IPO: buybacks, M&A, CEO transition |
+
+### RaaS (5)
+
+| Command | Description |
+|---------|-------------|
+| `raas/billing` | Billing integration (Polar.sh) |
+| `raas/bootstrap` | Bootstrap RaaS service |
+| `raas/deploy` | Deploy RaaS to production |
+| `raas/mission` | Dispatch AGI mission |
+| `raas/status` | RaaS health check |
+
+### Bootstrap (3)
+
+| Command | Description |
+|---------|-------------|
+| `bootstrap/auto` | Auto bootstrap project |
+| `bootstrap/auto/fast` | Quick bootstrap |
+| `bootstrap/auto/parallel` | Parallel bootstrap |
+
+## CLI Flags
 
 | Flag | Effect |
 |------|--------|
@@ -149,12 +186,28 @@ mekong search "deploy"               # Search recipes
 | `--strict` | Fail on first verification error |
 | `--json / -j` | Machine-readable JSON output |
 
-## API
+## AgencyOS RaaS
 
-Start the gateway: `mekong gateway --port 8000`
+AgencyOS is the hosted platform built on Mekong CLI — a Revenue as a Service layer with MCU credit billing and multi-tenant orchestration.
+
+### Credit Tiers
+
+| Tier | Price | MCU Credits |
+|------|-------|-------------|
+| **Starter** | $29/mo | 500 MCU |
+| **Growth** | $99/mo | 2,000 MCU |
+| **Premium** | $299/mo | Unlimited MCU + white-label |
+
+| Complexity | MCU Cost | Example |
+|-----------|----------|---------|
+| `simple` | 1 MCU | File edit, git op, single command |
+| `standard` | 3 MCU | Feature with tests, multi-step |
+| `complex` | 5 MCU | Full-stack + deploy, multi-agent |
+
+### API
 
 ```
-POST   /v1/tasks              # Submit task (credits deducted)
+POST   /v1/tasks              # Submit task
 GET    /v1/tasks/{id}         # Task status
 GET    /v1/tasks/{id}/stream  # SSE real-time progress
 GET    /v1/agents             # List agents
@@ -164,83 +217,16 @@ GET    /health                # Health check
 POST   /billing/webhook       # Polar.sh webhook
 ```
 
-```bash
-curl -X POST http://localhost:8000/v1/tasks \
-  -H "Authorization: Bearer mk_your_key" \
-  -H "Content-Type: application/json" \
-  -d '{"goal": "Create a todo app with tests", "strict": false}'
-```
-
-## RaaS
-
-**Revenue as a Service** — Open Core model with built-in credit billing.
-
-| Tier | Credits | Agents |
-|------|---------|--------|
-| **Free** | 10/month | Core agents |
-| **Pro** | 200/month | All agents |
-| **Enterprise** | Custom | Custom + API |
-
-| Complexity | Credits | Example |
-|-----------|---------|---------|
-| Simple | 1 | File edit, git op |
-| Standard | 3 | Feature with tests |
-| Complex | 5 | Full-stack + deploy |
+### Python SDK
 
 ```python
 from src.raas.sdk import MekongClient
 
-client = MekongClient("https://api.mekong.io", "mk_your_key")
+client = MekongClient("https://api.agencyos.network", "mk_your_key")
 result = client.cook("Deploy a landing page")
 
 for event in client.stream_task(result.task_id):
     print(f"Step {event['step']}: {event['title']}")
-```
-
-### Premium Agents (License Required)
-
-| Agent | Description |
-|-------|-------------|
-| `auto-cto-pilot` | Autonomous daily task generation |
-| `opus-strategy` | Strategic planning with top-tier LLM |
-| `opus-parallel` | Multi-agent parallel orchestration |
-| `opus-review` | Security + quality code review |
-
-## Architecture
-
-```
-mekong-cli/
-├── src/                    # Core engine (Python)
-│   ├── core/               # PEV pipeline (planner, executor, verifier, orchestrator)
-│   ├── agents/             # Pluggable agent system (git, file, shell, lead, content)
-│   ├── raas/               # Credit billing + SDK
-│   ├── commands/           # CLI subcommands (monitor, etc.)
-│   └── db/                 # Database layer (asyncpg)
-├── apps/                   # Monorepo services
-│   ├── openclaw-worker/    # Autonomous CTO daemon (Node.js)
-│   ├── raas-gateway/       # Cloudflare Worker API
-│   ├── algo-trader/        # Trading engine (TypeScript)
-│   ├── well/               # Well platform
-│   └── ...                 # Other apps
-├── packages/               # Shared libraries (vibe-*, core, trading-core)
-├── frontend/               # Landing pages
-├── tests/                  # Python test suite (62 tests)
-├── recipes/                # Built-in task templates
-└── docs/                   # Documentation
-```
-
-## Development
-
-```bash
-# Python core
-pip install -e ".[dev]"
-python3 -m pytest              # Run 62 tests (~2.5min)
-
-# Node.js monorepo (apps & packages)
-pnpm install
-pnpm run build                 # Build all workspaces
-pnpm run test                  # Test all workspaces
-pnpm run lint                  # Lint all workspaces
 ```
 
 ## Mekong vs. Alternatives
@@ -249,15 +235,35 @@ pnpm run lint                  # Lint all workspaces
 |---------|--------|-------|--------|---------|
 | Plan → Execute → Verify | ✅ | ❌ | ❌ | ❌ |
 | Auto-rollback on failure | ✅ | ❌ | ❌ | ❌ |
-| Multiple agents | ✅ 17+ | ❌ | ❌ | ❌ |
+| 17+ specialized agents | ✅ | ❌ | ❌ | ❌ |
 | Any LLM provider | ✅ | ✅ | ❌ | ❌ |
 | Built-in billing/RaaS | ✅ | ❌ | ❌ | ❌ |
-| REST API + WebSocket | ✅ | ⚠️ | ❌ | ⚠️ |
+| Founder OS (idea → IPO) | ✅ | ❌ | ❌ | ❌ |
 | Self-hosted | ✅ | ✅ | ❌ | ❌ |
+
+## Development
+
+```bash
+# Python core
+pip install -e ".[dev]"
+python3 -m pytest              # 62 tests (~2.5 min)
+
+# Node.js monorepo
+pnpm install && pnpm run build
+```
+
+## Roadmap
+
+**v3.1.0 (current)** — 55 commands, Founder OS complete, AGI Score 97.6/100
+
+- [ ] v4.0: Web dashboard + Recipe marketplace
+- [ ] Plugin system (custom agents)
+- [ ] npm/PyPI public packages
+- [ ] Multi-tenant team mode
 
 ## Contributing
 
-Contributors **share in revenue** generated by AgencyOS usage of their code.
+Contributors share in revenue generated by AgencyOS usage of their code.
 
 - **Agent submissions** → 10% of credits used
 - **Recipe contributions** → 5% of credits used
@@ -265,100 +271,6 @@ Contributors **share in revenue** generated by AgencyOS usage of their code.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
-## Roadmap
-
-- [x] PEV Engine (Plan → Execute → Verify)
-- [x] Agent System (Git, File, Shell, Database, Lead, Content)
-- [x] Credit Billing (SQLite + Polar.sh)
-- [x] Multi-provider LLM support
-- [x] Python SDK (sync + async)
-- [x] FastAPI Gateway + WebSocket streaming
-- [ ] Web dashboard
-- [ ] Recipe marketplace
-- [ ] npm/PyPI packages
-- [ ] Plugin system
-
-## Founder OS — Goldman Sachs Playbook as Code
-
-Complete founder lifecycle from Idea to Post-IPO, encoded as 24 executable commands across 11 stages.
-
-### Why This is a Moat
-
-1. **Information Asymmetry** — Institutional knowledge (term sheets, cap tables, S-1 filings) packaged as code. First-time founders get Goldman-grade analysis.
-2. **Operating System, Not Tools** — Not a calculator or template. A complete decision engine that connects bootstrapping → fundraising → IPO → public company.
-3. **Compounds Over Time** — Each module feeds the next. Cap table feeds term sheet analysis feeds negotiation strategy feeds IPO readiness.
-
-### 11-Stage Lifecycle
-
-```
-Idea → Validate → Brand → Pitch → Bootstrap → Raise (VC) → Grow → Secondary → Pre-IPO → IPO → Post-IPO
-```
-
-### 24 Commands
-
-| Stage | Command | Description |
-|-------|---------|-------------|
-| 1. Validate | `/founder:validate` | Market validation, PMF signals, pivot criteria |
-| 2. Brand | `/founder:brand` | Brand DNA, positioning, naming, voice |
-| 3. Pitch | `/founder:pitch` | Pitch deck, elevator pitch, investor materials |
-| 4. Metrics | `/founder:metrics` | KPI dashboard, cohort analysis, benchmarks |
-| 5. Hire | `/founder:hire` | Role definition, JD generation, interview scorecards |
-| 6. Legal | `/founder:legal` | Entity structure, IP protection, compliance |
-| 7. Weekly | `/founder:week` | Weekly review, OKR tracking, team updates |
-| 8. Bootstrap | `/founder:vc:bootstrap` | Ramen profitability, alternative funding, raise readiness |
-| 9. Term Sheet | `/founder:vc:term-sheet` | Red flag detection, clause analysis, exit simulation |
-| 10. Cap Table | `/founder:vc:cap-table` | Dilution modeling, SAFE conversion, exit waterfall |
-| 11. Negotiate | `/founder:vc:negotiate` | BATNA assessment, counter scripts, walk-away lines |
-| 12. VC Map | `/founder:vc-map` | VC database, warm intro finder, outreach intel |
-| 13. Grow | `/founder:grow` | Growth strategy, channel optimization |
-| 14. Secondary | `/founder:secondary` | Secondary market, tender offers, tax optimization |
-| 15. Pre-IPO | `/founder:ipo:pre-ipo-prep` | IPO readiness audit (5 categories, 100 points) |
-| 16. S-1 | `/founder:ipo:s1` | S-1 prospectus framework, risk factors, narrative |
-| 17. Roadshow | `/founder:ipo:roadshow` | 20-slide deck, Q&A bank, order book analysis |
-| 18. IPO Day | `/founder:ipo:ipo-day` | Pricing scenarios, T-minus timeline, bell ceremony |
-| 19. Public Co | `/founder:ipo:public-co` | Quarterly earnings, guidance, 10-Q/10-K filing |
-| 20. Insider | `/founder:ipo:insider` | Trading windows, 10b5-1 plans, lockup strategy |
-| 21. Succession | `/founder:ipo:succession` | CEO transition, buyback modeling, M&A screening |
-| 22. Emergency | `/founder:emergency` | Crisis playbook, board communication |
-| 23. Scale | `/founder:scale` | Scaling operations, team growth |
-| 24. Budget | `/founder:budget` | Financial planning, runway management |
-
-### Architecture
-
-```
-src/core/
-├── founder_vc/           # VC Layer (Stage 8-12)
-│   ├── founder_vc_bootstrap.py
-│   ├── founder_vc_term_sheet.py
-│   ├── founder_vc_cap_table.py
-│   ├── founder_vc_negotiate.py
-│   └── founder_vc_map.py
-├── founder_ipo/          # IPO Layer (Stage 15-21)
-│   ├── founder_pre_ipo.py
-│   ├── founder_s1.py
-│   ├── founder_roadshow.py
-│   ├── founder_ipo_day.py
-│   ├── founder_public_co.py
-│   ├── founder_insider.py
-│   └── founder_succession.py
-├── founder_secondary.py  # Growth Layer (Stage 14)
-├── founder_validate.py   # Stage 1
-├── founder_brand.py      # Stage 2
-├── founder_pitch.py      # Stage 3
-├── founder_metrics.py    # Stage 4
-├── founder_hire.py       # Stage 5
-├── founder_legal.py      # Stage 6
-├── founder_week.py       # Stage 7
-└── founder_grow.py       # Stage 13
-```
-
-## License
-
-[MIT](LICENSE) — Use it, fork it, build on it.
-
 ---
 
-<p align="center">
-  <sub>Built with 🐉 by <a href="https://binhphap.io">Binh Phap Venture Studio</a></sub><br/>
-  <sub><em>"Speed is the essence of war." — Sun Tzu</em></sub>
-</p>
+[MIT License](LICENSE) · Built by [Binh Phap Venture Studio](https://binhphap.io) · [GitHub](https://github.com/longtho638-jpg/mekong-cli)
