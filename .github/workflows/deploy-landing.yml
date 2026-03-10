@@ -1,7 +1,7 @@
 name: Deploy Landing to Cloudflare Pages
 on:
   push:
-    branches: [main]
+    branches: [main, master]
     paths:
       - 'frontend/landing/**'
 

@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest pytest-asyncio anyio "httpx<0.28" pytest-cov
+          pip install "ruff>=0.9,<1.0" pytest pytest-asyncio anyio "httpx<0.28" pytest-cov
           pip install -e .
 
       - name: Verify CLI Entry Point
@@ -126,57 +126,24 @@ jobs:
           echo "✅ No hardcoded secrets found"
 
   # ------------------------------------------------------------------
-  # JOB 2: FRONTEND (Next.js / Monorepo)
+  # JOB 2: FRONTEND (Landing Page)
   # ------------------------------------------------------------------
   frontend:
-    name: Frontend (Monorepo)
+    name: Frontend (Landing)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
 
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
-
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          node-version: 22
 
       - name: Install dependencies
-        run: pnpm install
+        run: cd frontend/landing && npm ci
 
-      # Turbo handles cache internally if configured, but here we just run it
-      - name: Build (Docs)
-        run: pnpm turbo build --filter=mekong-docs
-        continue-on-error: true
-
-      - name: Lint (Turbo)
-        run: npx turbo run lint 2>/dev/null || echo "No lintable packages found"
-        continue-on-error: true
-
-      - name: Mekong Engine TypeScript Check
-        run: pnpm --filter mekong-engine typecheck 2>/dev/null || echo "mekong-engine not found"
-        continue-on-error: true
-
-      # - name: Test (Turbo)
-      #   run: pnpm test
+      - name: Build
+        run: cd frontend/landing && npm run build
