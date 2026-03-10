@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "chien-dich",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Chien Dich",
+    "name_en": "Chien Dich",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Chien Dich command",
+    "description_en": "Execute Chien Dich command"
   },
   "execution": {
     "agents": [

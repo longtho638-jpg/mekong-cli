@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "git-bisect",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "engineering",
+  "chapter": "軍爭 — Military Contention",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Git Bisect",
+    "name_en": "Git Bisect",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Git Bisect command",
+    "description_en": "Execute Git Bisect command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "engineering-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

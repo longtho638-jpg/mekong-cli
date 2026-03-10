@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "deploy-prod",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "engineering",
+  "chapter": "軍爭 — Military Contention",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Deploy Prod",
+    "name_en": "Deploy Prod",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Deploy Prod command",
+    "description_en": "Execute Deploy Prod command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "engineering-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

@@ -187,17 +187,30 @@ def main() -> int:
     cmd_layer_map = build_command_layer_map(layers)
     cmd_paths = collect_command_paths(COMMANDS_DIR)
 
-    generated = 0
-    skipped = 0
+    generated_ids: set[str] = set()
     for path in cmd_paths:
         cmd_id = cmd_id_from_path(path)
-        layer = cmd_layer_map.get(cmd_id.split("/")[-1], "ops")
+        stem = cmd_id.split("/")[-1]
+        layer = cmd_layer_map.get(stem, "ops")
         fm = parse_frontmatter(path)
         contract = build_contract(cmd_id, fm, layer, layers)
         out_path = CMD_CONTRACTS_DIR / f"{cmd_id.replace('/', '__')}.json"
         out_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2))
         logger.info("Generated %s → %s", cmd_id, out_path.name)
-        generated += 1
+        generated_ids.add(stem)
+
+    # Generate stub contracts for layer commands without .md files
+    stubs = 0
+    for layer_name, layer_data in layers.items():
+        for cmd in layer_data.get("commands", []):
+            if cmd in generated_ids:
+                continue
+            contract = build_contract(cmd, {}, layer_name, layers)
+            out_path = CMD_CONTRACTS_DIR / f"{cmd}.json"
+            out_path.write_text(json.dumps(contract, ensure_ascii=False, indent=2))
+            logger.info("Stub %s → %s", cmd, out_path.name)
+            generated_ids.add(cmd)
+            stubs += 1
 
     skills = generate_skills_registry()
     skills_path = CONTRACTS_DIR / "skills.registry.json"
@@ -209,7 +222,8 @@ def main() -> int:
     agents_path.write_text(json.dumps({"version": "1.0.0", "agents": agents}, ensure_ascii=False, indent=2))
     logger.info("Agents registry: %d agents → %s", len(agents), agents_path.name)
 
-    print(f"\nSummary: {generated} contracts generated, {skipped} skipped")
+    from_md = len(generated_ids) - stubs
+    print(f"\nSummary: {from_md} from .md + {stubs} stubs = {len(generated_ids)} total contracts")
     print(f"Skills: {len(skills)} | Agents: {len(agents)}")
     return 0
 

@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "lich-trinh",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Lich Trinh",
+    "name_en": "Lich Trinh",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Lich Trinh command",
+    "description_en": "Execute Lich Trinh command"
   },
   "execution": {
     "agents": [

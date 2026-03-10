@@ -5,6 +5,7 @@ Safe execution of arbitrary shell commands with timeout and sandbox restrictions
 """
 
 import subprocess
+import shlex
 from typing import List
 
 from ..core.agent_base import AgentBase, Task, Result
@@ -98,9 +99,9 @@ class ShellAgent(AgentBase):
             )
 
         try:
+            # Safe: use shlex.split instead of shell=True
             result = subprocess.run(
-                cmd_str,
-                shell=True,
+                shlex.split(cmd_str),
                 cwd=self.cwd,
                 capture_output=True,
                 text=True,

@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "install",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "ops",
+  "chapter": "九變 — Nine Variations",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Install",
+    "name_en": "Install",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Install command",
+    "description_en": "Execute Install command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "ops-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

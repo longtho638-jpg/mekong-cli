@@ -5,6 +5,7 @@ Network & API testing agent for connectivity and latency checks.
 """
 
 import subprocess
+import shlex
 import socket
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -150,10 +151,10 @@ class NetworkAgent(AgentBase):
                 error="No host found in query",
             )
 
-        # Use ping command (3 packets on macOS)
-        cmd = f"ping -c 3 -W 5000 '{host}' 2>&1"
+        # Use ping command (3 packets on macOS) - safe: no shell=True
+        cmd = ["ping", "-c", "3", "-W", "5000", host]
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
             output = proc.stdout
 
             # Parse ping results
@@ -206,10 +207,10 @@ class NetworkAgent(AgentBase):
 
         url = url_match.group(0).strip()
 
-        # Use curl for latency measurement
-        cmd = f"curl -s -o /dev/null -w '%{{http_code}} %{{time_total}} %{{time_connect}}' --max-time {self.timeout_secs} '{url}'"
+        # Use curl for latency measurement - safe: no shell=True
+        cmd = ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code} %{time_total} %{time_connect}", "--max-time", str(self.timeout_secs), url]
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=self.timeout_secs + 5)
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=self.timeout_secs + 5)
             parts = proc.stdout.strip().split()
 
             if len(parts) >= 3:
@@ -315,10 +316,16 @@ class NetworkAgent(AgentBase):
                 error="No domain found in query",
             )
 
-        # Use nslookup or dig
-        cmd = f"dig +short '{domain}' 2>&1 || nslookup '{domain}' 2>&1"
+        # Use dig (prefer) or nslookup - safe: no shell=True
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=10)
+            # Try dig first
+            cmd = ["dig", "+short", domain]
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+
+            # Fallback to nslookup if dig fails
+            if proc.returncode != 0 or not proc.stdout.strip():
+                cmd = ["nslookup", domain]
+                proc = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
 
             if proc.returncode == 0 and proc.stdout.strip():
                 # Extract IPs
@@ -361,10 +368,10 @@ class NetworkAgent(AgentBase):
                 error="No host found in query",
             )
 
-        # Use traceroute (macOS) or tracepath (Linux)
-        cmd = f"traceroute -m 10 -w 2000 '{host}' 2>&1"
+        # Use traceroute (macOS) - safe: no shell=True
+        cmd = ["traceroute", "-m", "10", "-w", "2000", host]
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=60)
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
 
             # Parse hops
             lines = proc.stdout.strip().split('\n')[1:]  # Skip header

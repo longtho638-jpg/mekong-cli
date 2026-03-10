@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "ads",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Ads",
+    "name_en": "Ads",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Ads command",
+    "description_en": "Execute Ads command"
   },
   "execution": {
     "agents": [

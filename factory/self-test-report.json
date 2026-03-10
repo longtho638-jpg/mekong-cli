@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-03-10T16:34:13.861472+00:00",
+  "score": 100,
+  "verdict": "HEALTHY",
+  "checks": [
+    {
+      "name": "schemas_exist",
+      "passed": true,
+      "details": "Both schemas present",
+      "errors": []
+    },
+    {
+      "name": "command_contracts",
+      "passed": true,
+      "details": "176 contracts checked, 0 errors",
+      "errors": []
+    },
+    {
+      "name": "contract_coverage",
+      "passed": true,
+      "details": "140/140 commands covered",
+      "errors": []
+    },
+    {
+      "name": "skills_registry",
+      "passed": true,
+      "details": "58 skills, 0 missing files",
+      "errors": []
+    },
+    {
+      "name": "agents_registry",
+      "passed": true,
+      "details": "14 agents, 0 missing files",
+      "errors": []
+    },
+    {
+      "name": "layers_consistency",
+      "passed": true,
+      "details": "5 layers, 140 commands, 0 errors",
+      "errors": []
+    },
+    {
+      "name": "pricing_and_approval",
+      "passed": true,
+      "details": "pricing + approval_rules checked",
+      "errors": []
+    }
+  ]
+}

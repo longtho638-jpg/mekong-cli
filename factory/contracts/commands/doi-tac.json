@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "doi-tac",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Doi Tac",
+    "name_en": "Doi Tac",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Doi Tac command",
+    "description_en": "Execute Doi Tac command"
   },
   "execution": {
     "agents": [

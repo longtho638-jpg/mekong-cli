@@ -5,6 +5,7 @@ Monitoring & health check agent for services and system resources.
 """
 
 import subprocess
+import shlex
 import platform
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -128,10 +129,10 @@ class MonitorAgent(AgentBase):
 
         url = url_match.group(0).strip()
 
-        # Use curl to check endpoint
-        cmd = f"curl -s -o /dev/null -w '%{{http_code}} %{{time_total}}' --max-time 10 '{url}'"
+        # Use curl to check endpoint (safe: no shell=True)
+        cmd = ["curl", "-s", "-o", "/dev/null", "-w", "%{http_code} %{time_total}", "--max-time", "10", url]
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=15)
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=15)
             parts = proc.stdout.strip().split()
 
             if len(parts) >= 2:
@@ -199,11 +200,11 @@ class MonitorAgent(AgentBase):
                 error=f"Invalid port: {port}",
             )
 
-        # Check port using nc (netcat) or lsof
-        cmd = f"nc -z localhost {port} 2>&1 || echo 'closed'"
+        # Check port using nc (netcat) - safe: no shell=True
+        cmd = ["nc", "-z", "localhost", str(port)]
         try:
-            proc = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=5)
-            is_open = "closed" not in proc.stdout.lower()
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
+            is_open = proc.returncode == 0
 
             return Result(
                 task_id=task.id,
@@ -228,9 +229,9 @@ class MonitorAgent(AgentBase):
         alerts: List[str] = []
 
         try:
-            # CPU usage (using top on macOS)
-            cpu_cmd = "top -l 1 | grep 'CPU usage' | head -1"
-            cpu_result = subprocess.run(cpu_cmd, shell=True, capture_output=True, text=True, timeout=5)
+            # CPU usage (top on macOS) - safe: no shell=True
+            cpu_cmd = ["top", "-l", "1"]
+            cpu_result = subprocess.run(cpu_cmd, capture_output=True, text=True, timeout=5)
             if cpu_result.returncode == 0:
                 import re
                 cpu_match = re.search(r'(\d+\.?\d*)%\s+user', cpu_result.stdout)
@@ -239,38 +240,41 @@ class MonitorAgent(AgentBase):
                     metrics["cpu_percent"] = cpu_percent
                     metrics["cpu_user"] = cpu_percent
                     if cpu_percent > self.thresholds["cpu_percent"]:
-                        alerts.append(f"CPU HIGH: {cpu_percent:.1f}% > {self.thresholds['cpu_percent']:.1f}%")
+                        alerts.append(f"CPU HIGH: {cpu_percent:.1f}%")
 
-            # Memory usage
-            mem_cmd = "vm_stat | awk '/Pages active/ {print $3}' | tr -d '.'"
-            mem_result = subprocess.run(mem_cmd, shell=True, capture_output=True, text=True, timeout=5)
+            # Memory usage - safe: no shell=True
+            mem_cmd = ["vm_stat"]
+            mem_result = subprocess.run(mem_cmd, capture_output=True, text=True, timeout=5)
             if mem_result.returncode == 0:
-                try:
-                    pages_active = int(mem_result.stdout.strip())
-                    page_size = 4096  # macOS default
-                    total_mem_cmd = "sysctl -n hw.memsize"
-                    total_result = subprocess.run(total_mem_cmd, shell=True, capture_output=True, text=True, timeout=5)
+                import re
+                pages_match = re.search(r'Pages active:\s+(\d+)', mem_result.stdout)
+                if pages_match:
+                    pages_active = int(pages_match.group(1))
+                    page_size = 4096
+                    total_mem_cmd = ["sysctl", "-n", "hw.memsize"]
+                    total_result = subprocess.run(total_mem_cmd, capture_output=True, text=True, timeout=5)
                     if total_result.returncode == 0:
                         total_bytes = int(total_result.stdout.strip())
                         used_bytes = pages_active * page_size
                         mem_percent = (used_bytes / total_bytes) * 100
                         metrics["memory_percent"] = mem_percent
                         if mem_percent > self.thresholds["memory_percent"]:
-                            alerts.append(f"MEMORY HIGH: {mem_percent:.1f}% > {self.thresholds['memory_percent']:.1f}%")
-                except (ValueError, IndexError):
-                    pass
+                            alerts.append(f"MEMORY HIGH: {mem_percent:.1f}%")
 
-            # Disk usage
-            disk_cmd = "df -h / | tail -1 | awk '{print $5}' | tr -d '%'"
-            disk_result = subprocess.run(disk_cmd, shell=True, capture_output=True, text=True, timeout=5)
+            # Disk usage - safe: no shell=True
+            disk_cmd = ["df", "-h", "/"]
+            disk_result = subprocess.run(disk_cmd, capture_output=True, text=True, timeout=5)
             if disk_result.returncode == 0:
-                try:
-                    disk_percent = float(disk_result.stdout.strip())
-                    metrics["disk_percent"] = disk_percent
-                    if disk_percent > self.thresholds["disk_percent"]:
-                        alerts.append(f"DISK HIGH: {disk_percent:.1f}% > {self.thresholds['disk_percent']:.1f}%")
-                except ValueError:
-                    pass
+                import re
+                disk_match = re.search(r'(\d+)%', disk_result.stdout)
+                if disk_match:
+                    try:
+                        disk_percent = float(disk_match.group(1))
+                        metrics["disk_percent"] = disk_percent
+                        if disk_percent > self.thresholds["disk_percent"]:
+                            alerts.append(f"DISK HIGH: {disk_percent:.1f}%")
+                    except ValueError:
+                        pass
 
             is_healthy = len(alerts) == 0
 
@@ -296,13 +300,17 @@ class MonitorAgent(AgentBase):
         """Run complete health check (HTTP + system)"""
         system_result = self._execute_system_resources(task)
 
+        # Get UTC timestamp - safe: no shell=True
+        timestamp_result = subprocess.run(["date", "-u", "+%Y-%m-%dT%H:%M:%SZ"], capture_output=True, text=True)
+        timestamp = timestamp_result.stdout.strip() if timestamp_result.returncode == 0 else "unknown"
+
         return Result(
             task_id=task.id,
             success=system_result.success,
             output={
                 "type": "full_health",
                 "system": system_result.output,
-                "timestamp": subprocess.run("date -u +%Y-%m-%dT%H:%M:%SZ", shell=True, capture_output=True, text=True).stdout.strip(),
+                "timestamp": timestamp,
             },
         )
 

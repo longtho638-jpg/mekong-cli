@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "invoice-gen",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Invoice Gen",
+    "name_en": "Invoice Gen",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Invoice Gen command",
+    "description_en": "Execute Invoice Gen command"
   },
   "execution": {
     "agents": [

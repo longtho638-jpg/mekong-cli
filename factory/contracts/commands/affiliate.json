@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "affiliate",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Affiliate",
+    "name_en": "Affiliate",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Affiliate command",
+    "description_en": "Execute Affiliate command"
   },
   "execution": {
     "agents": [

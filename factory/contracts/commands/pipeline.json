@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "pipeline",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Pipeline",
+    "name_en": "Pipeline",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Pipeline command",
+    "description_en": "Execute Pipeline command"
   },
   "execution": {
     "agents": [

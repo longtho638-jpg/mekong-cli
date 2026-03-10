@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "leadgen",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Leadgen",
+    "name_en": "Leadgen",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Leadgen command",
+    "description_en": "Execute Leadgen command"
   },
   "execution": {
     "agents": [

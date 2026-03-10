@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "crm",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Crm",
+    "name_en": "Crm",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Crm command",
+    "description_en": "Execute Crm command"
   },
   "execution": {
     "agents": [

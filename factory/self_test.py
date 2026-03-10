@@ -55,7 +55,7 @@ def check_schemas_exist() -> CheckResult:
     missing = [f for f in required if not (CONTRACTS_DIR / f).exists()]
     if missing:
         return CheckResult("schemas_exist", False, f"Missing schemas: {missing}", missing)
-    return CheckResult("schemas_exist", True, f"Both schemas present")
+    return CheckResult("schemas_exist", True, "Both schemas present")
 
 
 def check_command_contracts(layers: dict[str, Any]) -> CheckResult:
@@ -148,6 +148,27 @@ def check_layers_consistency(layers: dict[str, Any]) -> CheckResult:
     return CheckResult("layers_consistency", len(errors) == 0, detail, errors)
 
 
+def check_contract_coverage(layers: dict[str, Any]) -> CheckResult:
+    """Check that every command in layers.yaml has a matching contract."""
+    cmd_dir = CONTRACTS_DIR / "commands"
+    if not cmd_dir.exists():
+        return CheckResult("contract_coverage", False, "commands/ dir missing", ["missing"])
+
+    contract_stems = {p.stem.split("__")[-1] for p in cmd_dir.glob("*.json")}
+    missing: list[str] = []
+    total = 0
+    for layer_name, layer_data in layers.items():
+        for cmd in layer_data.get("commands", []):
+            total += 1
+            if cmd not in contract_stems:
+                missing.append(f"{layer_name}/{cmd}")
+
+    if missing:
+        detail = f"{total - len(missing)}/{total} covered, {len(missing)} missing"
+        return CheckResult("contract_coverage", False, detail, missing[:10])
+    return CheckResult("contract_coverage", True, f"{total}/{total} commands covered")
+
+
 def check_pricing_and_approval() -> CheckResult:
     errors: list[str] = []
     for fname in ["pricing.json", "approval_rules.json"]:
@@ -159,7 +180,7 @@ def check_pricing_and_approval() -> CheckResult:
             load_json(p)
         except json.JSONDecodeError as e:
             errors.append(f"{fname}: invalid JSON — {e}")
-    return CheckResult("pricing_and_approval", len(errors) == 0, f"pricing + approval_rules checked", errors)
+    return CheckResult("pricing_and_approval", len(errors) == 0, "pricing + approval_rules checked", errors)
 
 
 def compute_score(results: list[CheckResult]) -> int:
@@ -176,6 +197,7 @@ def main() -> int:
     results = [
         check_schemas_exist(),
         check_command_contracts(layers),
+        check_contract_coverage(layers),
         check_skills_registry(),
         check_agents_registry(),
         check_layers_consistency(layers),
@@ -183,7 +205,7 @@ def main() -> int:
     ]
 
     score = compute_score(results)
-    print(f"\nOpenClaw Factory Self-Test")
+    print("\nOpenClaw Factory Self-Test")
     print("=" * 40)
     for r in results:
         status = "PASS" if r.passed else "FAIL"

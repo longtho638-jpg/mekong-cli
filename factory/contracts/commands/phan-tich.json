@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "phan-tich",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Phan Tich",
+    "name_en": "Phan Tich",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Phan Tich command",
+    "description_en": "Execute Phan Tich command"
   },
   "execution": {
     "agents": [

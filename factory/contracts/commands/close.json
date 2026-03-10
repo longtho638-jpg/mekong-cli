@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "close",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Close",
+    "name_en": "Close",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Close command",
+    "description_en": "Execute Close command"
   },
   "execution": {
     "agents": [

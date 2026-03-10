@@ -4,65 +4,62 @@
   "layer": "founder",
   "chapter": "始計 — Initial Calculations",
   "display": {
-    "name_vi": "Kế hoạch kinh doanh hàng năm",
-    "name_en": "Annual Business Plan",
-    "icon": "📅",
-    "description_vi": "Tạo kế hoạch kinh doanh toàn diện cho năm: OKRs, dự báo tài chính, lộ trình chiến lược",
-    "description_en": "Full annual strategy: OKRs, financial forecast, team roadmap, growth targets"
+    "name_vi": "Annual",
+    "name_en": "Annual",
+    "icon": "",
+    "description_vi": "Execute Annual command",
+    "description_en": "Execute Annual command"
   },
   "execution": {
-    "agents": ["planner", "fullstack-developer", "researcher"],
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
     "hub": "founder-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
-    "credit_cost": 5,
-    "requires_approval": true
+    "credit_cost": 3,
+    "requires_approval": false
   },
   "input": {
     "type": "object",
-    "required": ["goal"],
+    "required": [
+      "goal"
+    ],
     "properties": {
       "goal": {
         "type": "string",
-        "description": "Annual business objective or focus area"
+        "description": "Natural language task description"
       },
       "project": {
         "type": "string",
-        "description": "Company/project identifier"
-      },
-      "year": {
-        "type": "integer",
-        "description": "Target year for the plan"
+        "description": "Target project path"
       }
     }
   },
   "output": {
     "type": "object",
     "properties": {
-      "summary": {"type": "string"},
-      "okrs": {"type": "array", "items": {"type": "string"}},
-      "financial_forecast": {"type": "object"},
-      "files_modified": {"type": "array", "items": {"type": "string"}},
-      "credits_used": {"type": "integer"}
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
     }
   },
   "cascade": {
-    "triggers": [
-      {
-        "pattern": "revenue|sales|growth",
-        "suggest": "sales",
-        "target_layer": "business"
-      },
-      {
-        "pattern": "roadmap|product|feature",
-        "suggest": "roadmap",
-        "target_layer": "product"
-      }
-    ]
+    "triggers": []
   },
   "validation": {
-    "output_must_contain": ["OKR", "forecast"],
-    "min_output_length": 500,
-    "max_credit_cost": 7
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
   }
 }

@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "standup",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "product",
+  "chapter": "謀攻 — Attack by Stratagem",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Standup",
+    "name_en": "Standup",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Standup command",
+    "description_en": "Execute Standup command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "product-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

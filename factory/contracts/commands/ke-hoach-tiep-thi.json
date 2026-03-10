@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "ke-hoach-tiep-thi",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Ke Hoach Tiep Thi",
+    "name_en": "Ke Hoach Tiep Thi",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Ke Hoach Tiep Thi command",
+    "description_en": "Execute Ke Hoach Tiep Thi command"
   },
   "execution": {
     "agents": [

@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "expense",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Expense",
+    "name_en": "Expense",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Expense command",
+    "description_en": "Execute Expense command"
   },
   "execution": {
     "agents": [

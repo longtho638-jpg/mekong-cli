@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "branding",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "founder",
+  "chapter": "始計 — Initial Calculations",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Branding",
+    "name_en": "Branding",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Branding command",
+    "description_en": "Execute Branding command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "founder-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

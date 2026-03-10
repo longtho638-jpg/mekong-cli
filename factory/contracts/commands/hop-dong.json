@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "hop-dong",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Hop Dong",
+    "name_en": "Hop Dong",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Hop Dong command",
+    "description_en": "Execute Hop Dong command"
   },
   "execution": {
     "agents": [

@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "docs-arch",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "engineering",
+  "chapter": "軍爭 — Military Contention",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Docs Arch",
+    "name_en": "Docs Arch",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Docs Arch command",
+    "description_en": "Execute Docs Arch command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "engineering-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "benchmark",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "ops",
+  "chapter": "九變 — Nine Variations",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Benchmark",
+    "name_en": "Benchmark",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Benchmark command",
+    "description_en": "Execute Benchmark command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "ops-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

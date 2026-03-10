@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "seo",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Seo",
+    "name_en": "Seo",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Seo command",
+    "description_en": "Execute Seo command"
   },
   "execution": {
     "agents": [

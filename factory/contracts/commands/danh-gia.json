@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "danh-gia",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Danh Gia",
+    "name_en": "Danh Gia",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Danh Gia command",
+    "description_en": "Execute Danh Gia command"
   },
   "execution": {
     "agents": [

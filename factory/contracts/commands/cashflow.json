@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "cashflow",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Cashflow",
+    "name_en": "Cashflow",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Cashflow command",
+    "description_en": "Execute Cashflow command"
   },
   "execution": {
     "agents": [

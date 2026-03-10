@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "demo",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "product",
+  "chapter": "謀攻 — Attack by Stratagem",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Demo",
+    "name_en": "Demo",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Demo command",
+    "description_en": "Execute Demo command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "product-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

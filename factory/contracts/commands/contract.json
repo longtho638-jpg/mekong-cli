@@ -1,14 +1,14 @@
 {
-  "id": "sales",
+  "id": "contract",
   "version": "1.0.0",
   "layer": "business",
   "chapter": "作戰 — Waging War",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Contract",
+    "name_en": "Contract",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Contract command",
+    "description_en": "Execute Contract command"
   },
   "execution": {
     "agents": [

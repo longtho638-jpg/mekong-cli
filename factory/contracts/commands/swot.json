@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "swot",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "founder",
+  "chapter": "始計 — Initial Calculations",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Swot",
+    "name_en": "Swot",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Swot command",
+    "description_en": "Execute Swot command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "founder-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

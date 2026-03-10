@@ -7,6 +7,7 @@ Provides native access to Drive, Gmail, Calendar, Sheets, Docs, Chat, Admin.
 from typing import List
 
 import json
+import shlex
 import subprocess
 
 from src.core.agent_base import AgentBase, Task, Result
@@ -73,9 +74,9 @@ class WorkspaceAgent(AgentBase):
             command = f"gws {command}"
 
         try:
+            # Safe: use shlex.split instead of shell=True
             result = subprocess.run(
-                command,
-                shell=True,
+                shlex.split(command),
                 capture_output=True,
                 text=True,
                 check=True,

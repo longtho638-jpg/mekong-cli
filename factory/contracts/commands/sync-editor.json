@@ -1,21 +1,21 @@
 {
-  "id": "sales",
+  "id": "sync-editor",
   "version": "1.0.0",
-  "layer": "business",
-  "chapter": "作戰 — Waging War",
+  "layer": "ops",
+  "chapter": "九變 — Nine Variations",
   "display": {
-    "name_vi": "Sales",
-    "name_en": "Sales",
+    "name_vi": "Sync Editor",
+    "name_en": "Sync Editor",
     "icon": "",
-    "description_vi": "Execute Sales command",
-    "description_en": "Execute Sales command"
+    "description_vi": "Execute Sync Editor command",
+    "description_en": "Execute Sync Editor command"
   },
   "execution": {
     "agents": [
       "planner",
       "fullstack-developer"
     ],
-    "hub": "business-hub",
+    "hub": "ops-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,
