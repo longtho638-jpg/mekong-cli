@@ -36,6 +36,7 @@ from src.core.gateway_api import (
     get_webhook_schema,
     validate_webhook_url,
 )
+from src.core.mcu_billing import MCUBilling, MCU_COSTS
 from src.core.webhook_events import WEBHOOK_EVENT_PAYLOADS
 
 logger = logging.getLogger(__name__)
@@ -116,11 +117,31 @@ class TestWebhookResponse(BaseModel):
     response_time_ms: Optional[float] = None
 
 
+class MCUDeductRequest(BaseModel):
+    """Request body for POST /v1/mcu/deduct."""
+
+    tenant_id: str = Field(..., description="Tenant identifier")
+    complexity: str = Field("simple", description="simple|standard|complex")
+    mission_id: str = Field("", description="Associated mission ID")
+
+
+class MCUDeductResponse(BaseModel):
+    """Response body for POST /v1/mcu/deduct."""
+
+    success: bool
+    balance_before: int
+    balance_after: int
+    amount_deducted: int
+    low_balance: bool = False
+    error: str = ""
+
+
 # =============================================================================
 # IN-MEMORY STORES
 # =============================================================================
 
 MISSION_STORE: dict[str, dict] = {}
+mcu_billing = MCUBilling()
 
 
 # =============================================================================
@@ -300,6 +321,36 @@ async def webhook_schema() -> dict:
         },
         "descriptions": get_webhook_schema(),
     }
+
+
+@app.post("/v1/mcu/deduct", response_model=MCUDeductResponse)
+async def mcu_deduct(request: MCUDeductRequest) -> MCUDeductResponse:
+    """Deduct MCU credits for a mission execution.
+
+    Complexity costs: simple=1 MCU, standard=3 MCU, complex=5 MCU.
+    """
+    if request.complexity not in MCU_COSTS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid complexity: {request.complexity}. Use: simple, standard, complex",
+        )
+
+    result = mcu_billing.deduct(
+        tenant_id=request.tenant_id,
+        complexity=request.complexity,
+        mission_id=request.mission_id,
+    )
+
+    if not result.success:
+        raise HTTPException(status_code=402, detail=result.error)
+
+    return MCUDeductResponse(
+        success=result.success,
+        balance_before=result.balance_before,
+        balance_after=result.balance_after,
+        amount_deducted=result.amount_deducted,
+        low_balance=result.low_balance,
+    )
 
 
 @app.get("/health")
