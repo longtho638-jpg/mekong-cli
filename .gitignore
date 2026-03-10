@@ -308,6 +308,8 @@ configs/
 .claude-skills/
 .agencyos/
 .git_backup_sophia/
+# core/ ignored but src/core/ is tracked (core Python engine)
+src/core/
 core/
 
 # Build/test artifacts (auto-generated)
