@@ -9,6 +9,7 @@ Modular implementation with internal submodules.
 from __future__ import annotations
 
 import asyncio
+import importlib
 import logging
 import subprocess
 import time
@@ -365,6 +366,21 @@ class RecipeOrchestrator:
         self._heartbeat_interval = 30  # seconds
         self._last_heartbeat: float | None = None
 
+        # AGI v2 module wiring
+        self._reflection = self._init_agi_module(
+            "src.core.reflection", "ReflectionEngine")
+        self._world_model = self._init_agi_module(
+            "src.core.world_model", "WorldModel")
+        self._tool_registry = self._init_agi_module(
+            "src.core.tool_registry", "ToolRegistry")
+        self._collaboration = self._init_agi_module(
+            "src.core.collaboration", "CollaborationProtocol")
+        self._code_evolution = self._init_agi_module(
+            "src.core.code_evolution", "CodeEvolutionEngine")
+        self._vector_memory = self._init_agi_module(
+            "src.core.vector_memory_store", "VectorMemoryStore")
+        self._event_bus = get_event_bus()
+
         if use_swarm:
             from .swarm import SwarmDispatcher, SwarmRegistry
 
@@ -388,6 +404,16 @@ class RecipeOrchestrator:
         # When all 5 phases become operational, trigger graceful shutdown
         detector = get_detector()
         detector.register_callback(shutdown_on_all_phases_operational)
+
+    @staticmethod
+    def _init_agi_module(mod_path: str, cls_name: str) -> Any:
+        """Safely initialize an AGI module, returning None on failure."""
+        try:
+            m = importlib.import_module(mod_path)
+            cls = getattr(m, cls_name)
+            return cls()
+        except Exception:
+            return None
 
     def _init_health_endpoint(self) -> None:
         """Initialize health endpoint with component checks."""
