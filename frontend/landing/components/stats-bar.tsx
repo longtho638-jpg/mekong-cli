@@ -1,9 +1,11 @@
-const STATS = [
-  { value: '167', label: 'Commands' },
-  { value: '464', label: 'AI Skills' },
-  { value: '105', label: 'Subagents' },
-  { value: '5', label: 'Tầng' },
-  { value: '1,412', label: 'Commits' },
+import { STATS } from '@/data/stats'
+
+const STAT_ITEMS = [
+  { value: STATS.commands.toString(), label: 'Commands' },
+  { value: STATS.skills.toString(), label: 'AI Skills' },
+  { value: STATS.agents.toString(), label: 'Agents' },
+  { value: STATS.layers.toString(), label: 'Tầng' },
+  { value: STATS.commits.toLocaleString(), label: 'Commits' },
 ]
 
 export default function StatsBar() {
@@ -12,7 +14,7 @@ export default function StatsBar() {
       <div className="mx-auto max-w-5xl">
         <div className="glass-card rounded-2xl px-6 py-8">
           <div className="grid grid-cols-2 gap-6 sm:grid-cols-5">
-            {STATS.map((stat, i) => (
+            {STAT_ITEMS.map((stat, i) => (
               <div key={i} className="text-center">
                 <div className="gradient-text text-4xl font-extrabold leading-none">
                   {stat.value}

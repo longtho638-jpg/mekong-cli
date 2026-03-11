@@ -1,7 +1,8 @@
 import SiteNav from '@/components/site-nav'
+import { STATS } from '@/data/stats'
 
 const HEADLINE = 'AGI Vibe Coding Factory'
-const SUB = 'Mekong CLI — 55 commands, Plan-Execute-Verify engine, Tôm Hùm autonomous CTO daemon.'
+const SUB = `Mekong CLI — ${STATS.commands} commands, Plan-Execute-Verify engine, Tôm Hùm autonomous CTO daemon.`
 
 export default function HeroSection() {
   return (
@@ -11,7 +12,7 @@ export default function HeroSection() {
         <div className="mx-auto max-w-3xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-800/40 bg-cyan-950/30 px-4 py-1.5 text-xs text-cyan-400">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
-            OpenClaw v2026.3 · 55 Commands · Live
+            OpenClaw v2026.3 · {STATS.commands} Commands · Live
           </div>
 
           <h1 className="mb-5 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
