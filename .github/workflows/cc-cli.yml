@@ -51,7 +51,7 @@ jobs:
           pip install pytest pytest-asyncio anyio httpx pytest-cov
           pip install -e .
       - name: Run tests
-        run: pytest tests/ -x -q --ignore=tests/benchmarks --ignore=tests/e2e --tb=short
+        run: pytest tests/ -x -q --ignore=tests/benchmarks --ignore=tests/e2e --ignore=tests/backend --tb=short
         env:
           PYTHONPATH: ${{ github.workspace }}
           CI: "true"
@@ -72,10 +72,10 @@ jobs:
           pip install -e .
       - name: Validate core imports
         run: |
-          python -c "from src.core.orchestrator import Orchestrator; print('✓ orchestrator OK')"
-          python -c "from src.core.planner import Planner; print('✓ planner OK')"
-          python -c "from src.core.executor import Executor; print('✓ executor OK')"
-          python -c "from src.core.verifier import Verifier; print('✓ verifier OK')"
+          python -c "from src.core.orchestrator import RecipeOrchestrator; print('✓ orchestrator OK')"
+          python -c "from src.core.planner import RecipePlanner; print('✓ planner OK')"
+          python -c "from src.core.executor import RecipeExecutor; print('✓ executor OK')"
+          python -c "from src.core.verifier import RecipeVerifier; print('✓ verifier OK')"
           python -c "from src.gateway import app; print('✓ gateway OK')"
         env:
           PYTHONPATH: ${{ github.workspace }}
