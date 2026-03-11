@@ -446,7 +446,7 @@ class RecipeOrchestrator:
                 from src.core.health_endpoint import ComponentStatus
                 try:
                     import os
-                    proxy_url = os.getenv("ANTHROPIC_BASE_URL", "http://localhost:9191")
+                    proxy_url = os.getenv("LLM_BASE_URL", os.getenv("ANTHROPIC_BASE_URL", ""))
                     return ComponentStatus(
                         status="healthy",
                         message=f"Proxy at {proxy_url}",

@@ -349,7 +349,7 @@ class UsageMeteringLogger:
     def __init__(self):
         self.endpoint = os.getenv(
             "RAAS_USAGE_ENDPOINT",
-            "http://localhost:9191/api/usage",
+            "https://api.agencyos.network/api/usage",
         )
         self.api_key = os.getenv("RAAS_API_KEY")
 

@@ -35,10 +35,9 @@ def init() -> None:
 
     # Required variables
     required_vars = {
-        "ANTHROPIC_BASE_URL": "http://localhost:9191",
-        "ANTHROPIC_MODEL": "gemini-3-pro-high",
-        "MEKONG_API_TOKEN": "",
-        "MEKONG_TELEGRAM_TOKEN": "",
+        "LLM_BASE_URL": "",
+        "LLM_API_KEY": "",
+        "LLM_MODEL": "",
     }
 
     # Load existing env
