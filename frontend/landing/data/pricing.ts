@@ -25,7 +25,7 @@ export const TIERS: PricingTier[] = [
     highlight: false,
     badge: undefined,
     features: [
-      '100 credits / tháng',
+      '200 credits / tháng',
       'Task đơn giản (1 credit)',
       'Core CLI commands',
       'Plan-Execute-Verify engine',

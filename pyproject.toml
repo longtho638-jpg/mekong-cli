@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "mekong-cli"
-version = "3.0.0"
-description = "AGI Vibe Coding Factory — Plan-Execute-Verify autonomous engine with pluggable providers, DAG execution, and community plugins"
+version = "5.0.0"
+description = "AI-operated business platform — 289 commands, universal LLM, 4-layer deploy"
 authors = ["Binh Phap Venture Studio <admin@binhphap.io>"]
 license = "MIT"
 homepage = "https://github.com/mekong-cli/mekong-cli"
