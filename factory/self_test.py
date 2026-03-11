@@ -115,9 +115,13 @@ def check_agents_registry() -> CheckResult:
     errors: list[str] = []
     agents = data.get("agents", [])
     for agent in agents:
-        ref = REPO_ROOT / agent.get("path", "")
+        agent_path = agent.get("path", "")
+        ref = REPO_ROOT / agent_path
+        # Skip paths under .claude/ — gitignored, only present locally
+        if agent_path.startswith(".claude/"):
+            continue
         if not ref.exists():
-            errors.append(f"agent '{agent.get('id')}': file not found at {agent.get('path')}")
+            errors.append(f"agent '{agent.get('id')}': file not found at {agent_path}")
 
     return CheckResult("agents_registry", len(errors) == 0, f"{len(agents)} agents, {len(errors)} missing files", errors)
 
