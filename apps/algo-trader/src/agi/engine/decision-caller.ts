@@ -45,7 +45,6 @@ export class DecisionCaller {
 
       return decision;
     } catch (error) {
-      console.error('DecisionCaller: LLM call failed:', error);
       // Return conservative HOLD decision on error
       return {
         sopId: sop.id,
@@ -59,10 +58,13 @@ export class DecisionCaller {
   }
 
   /**
-   * Build prompt from SOP and signal context
+   * Build prompt from SOP and signal context with proper escaping
    */
   private buildPrompt(sop: SOPDefinition, context: SignalContext): string {
-    const signalJson = JSON.stringify(context, null, 2);
+    // Escape signal data to prevent prompt injection
+    const signalJson = JSON.stringify(context, null, 2)
+      .replace(/\\/g, '\\\\')
+      .replace(/"""/g, '\\\\"');
 
     return DECISION_PROMPT
       .replace('{signal_data}', signalJson)
@@ -109,9 +111,6 @@ export class DecisionCaller {
         },
       };
     } catch (parseError) {
-      console.error('DecisionCaller: Parse error:', parseError);
-      console.error('Raw response:', response);
-
       // Fallback: return HOLD with low confidence
       return {
         sopId: sop.id,

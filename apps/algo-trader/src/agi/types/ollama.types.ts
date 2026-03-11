@@ -5,6 +5,7 @@ export interface OllamaConfig {
   model: string;
   timeout: number;
   maxRetries: number;
+  apiKey?: string;
 }
 
 export interface GenerateRequest {

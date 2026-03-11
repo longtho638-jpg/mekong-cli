@@ -5,6 +5,7 @@ const DEFAULT_CONFIG: OllamaConfig = {
   model: 'llama3.1:8b',
   timeout: 30000,
   maxRetries: 3,
+  apiKey: undefined,
 };
 
 export class OllamaClient {
@@ -28,9 +29,14 @@ export class OllamaClient {
       const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
       try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (this.config.apiKey) {
+          headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+        }
+
         const response = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(body),
           signal: controller.signal,
         });
@@ -63,9 +69,14 @@ export class OllamaClient {
       const timeoutId = setTimeout(() => controller.abort(), this.config.timeout);
 
       try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (this.config.apiKey) {
+          headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+        }
+
         const response = await fetch(url, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify(body),
           signal: controller.signal,
         });
@@ -92,8 +103,6 @@ export class OllamaClient {
         return await fn();
       } catch (error) {
         lastError = error as Error;
-        console.warn(`Ollama attempt ${attempt} failed: ${error}`);
-
         if (attempt < this.config.maxRetries) {
           const delay = Math.pow(2, attempt) * 1000; // Exponential backoff
           await new Promise(resolve => setTimeout(resolve, delay));

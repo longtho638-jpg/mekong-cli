@@ -4,27 +4,29 @@ import { ChatRequest, ChatMessage } from '../types/ollama.types';
 // Mock fetch globally
 global.fetch = jest.fn();
 
-const createMockResponse = (data: any, ok = true) => ({
-  ok,
-  status: ok ? 200 : 500,
-  statusText: ok ? 'OK' : 'Error',
-  json: async () => data,
-  text: async () => JSON.stringify(data),
-});
+const createMockResponse = (data: any, ok = true) => {
+  return {
+    ok,
+    status: ok ? 200 : 500,
+    statusText: ok ? 'OK' : 'Error',
+    json: async () => data,
+    text: async () => JSON.stringify(data),
+  } as unknown as Response;
+};
 
 describe('OllamaClient', () => {
   let client: OllamaClient;
   let mockFetch: jest.Mock;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    mockFetch = global.fetch as jest.Mock;
     client = new OllamaClient({
       baseURL: 'http://localhost:11434',
       model: 'test-model',
       timeout: 5000,
-      maxRetries: 2,
+      maxRetries: 3,
     });
-    mockFetch = global.fetch as jest.Mock;
   });
 
   describe('constructor', () => {
@@ -80,10 +82,13 @@ describe('OllamaClient', () => {
     });
 
     it('should handle API errors', async () => {
-      const errorResponse = { ok: false, status: 500, statusText: 'Error', json: async () => ({}) };
-      mockFetch.mockResolvedValueOnce(Promise.resolve(errorResponse as Response));
+      // Mock all retry attempts (default maxRetries=3)
+      mockFetch
+        .mockResolvedValueOnce(createMockResponse({}, false))
+        .mockResolvedValueOnce(createMockResponse({}, false))
+        .mockResolvedValueOnce(createMockResponse({}, false));
 
-      await expect(client.generate({ prompt: 'Test' })).rejects.toThrow('Ollama API error');
+      await expect(client.generate({ prompt: 'Test' })).rejects.toThrow('Ollama API error: 500 Error');
     });
   });
 
@@ -110,10 +115,13 @@ describe('OllamaClient', () => {
     });
 
     it('should handle chat API errors', async () => {
-      const errorResponse = { ok: false, status: 500, statusText: 'Error', json: async () => ({}) };
-      mockFetch.mockResolvedValueOnce(Promise.resolve(errorResponse as Response));
+      // Mock all retry attempts (default maxRetries=3)
+      mockFetch
+        .mockResolvedValueOnce(createMockResponse({}, false))
+        .mockResolvedValueOnce(createMockResponse({}, false))
+        .mockResolvedValueOnce(createMockResponse({}, false));
 
-      await expect(client.chat({ messages: mockMessages })).rejects.toThrow('Ollama API error');
+      await expect(client.chat({ messages: mockMessages })).rejects.toThrow('Ollama API error: 500 Error');
     });
   });
 
@@ -168,7 +176,7 @@ describe('OllamaClient', () => {
         .mockRejectedValueOnce(new Error('Persistent error'));
 
       await expect(client.generate({ prompt: 'test' })).rejects.toThrow();
-      expect(mockFetch).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
+      expect(mockFetch).toHaveBeenCalledTimes(3); // maxRetries=3 means 3 total attempts
     }, 15000);
   });
 });
