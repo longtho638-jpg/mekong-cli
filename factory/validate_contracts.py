@@ -78,9 +78,13 @@ def check_registry(path: Path, file_key: str) -> list[str]:
 
     entries = data.get(file_key, [])
     for entry in entries:
-        ref_path = REPO_ROOT / entry.get("path", "")
+        entry_path = entry.get("path", "")
+        # Skip external/symlinked skills (ClaudeKit managed, not in repo)
+        if entry_path.startswith(".claude/skills/") or entry_path.startswith("mekong/skills/"):
+            continue
+        ref_path = REPO_ROOT / entry_path
         if not ref_path.exists():
-            errors.append(f"{path.name}: referenced file not found: {entry.get('path')}")
+            errors.append(f"{path.name}: referenced file not found: {entry_path}")
     return errors
 
 

@@ -99,9 +99,13 @@ def check_skills_registry() -> CheckResult:
     errors: list[str] = []
     skills = data.get("skills", [])
     for skill in skills:
-        ref = REPO_ROOT / skill.get("path", "")
+        skill_path = skill.get("path", "")
+        # Skip external/symlinked skills (ClaudeKit managed, not in repo)
+        if skill_path.startswith(".claude/skills/") or skill_path.startswith("mekong/skills/"):
+            continue
+        ref = REPO_ROOT / skill_path
         if not ref.exists():
-            errors.append(f"skill '{skill.get('id')}': file not found at {skill.get('path')}")
+            errors.append(f"skill '{skill.get('id')}': file not found at {skill_path}")
 
     return CheckResult("skills_registry", len(errors) == 0, f"{len(skills)} skills, {len(errors)} missing files", errors)
 
