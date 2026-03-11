@@ -6,7 +6,7 @@ const NAV_LINKS = [
   { label: 'Founder', href: '/founder' },
   { label: 'Business', href: '/business' },
   { label: 'Product', href: '/product' },
-  { label: 'Dev', href: '/dev/quickstart' },
+  { label: 'Engineering', href: '/engineering' },
   { label: 'Ops', href: '/ops' },
   { label: 'Pricing', href: '/pricing' },
 ]
@@ -38,8 +38,8 @@ export default function SiteNav() {
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-xs font-black text-white shadow-lg shadow-cyan-500/20">
             M
           </span>
-          <span className="text-cyan-400">Agency</span>
-          <span>OS</span>
+          <span className="text-cyan-400">Mekong</span>
+          <span>CLI</span>
         </a>
 
         {/* Desktop nav */}

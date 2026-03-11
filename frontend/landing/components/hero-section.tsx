@@ -19,25 +19,28 @@ export default function HeroSection() {
           {/* Badge */}
           <div className="mb-6 inline-flex animate-fade-in-down items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-950/30 px-4 py-1.5 text-xs font-medium text-cyan-400 shadow-lg shadow-cyan-500/5 backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
-            Mekong CLI v5.0 &nbsp;·&nbsp; Open Source &nbsp;·&nbsp; MIT License
+            Mekong CLI v5.0 &nbsp;&middot;&nbsp; {STATS.recipes} DAG Recipes &nbsp;&middot;&nbsp; MIT License
           </div>
 
           {/* Headline */}
           <h1 className="animate-fade-in-up mb-6 text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            <span className="gradient-text">AI runs</span>
+            <span className="gradient-text">Run your entire company</span>
             <br />
-            <span className="text-white">your entire company</span>
+            <span className="text-white">from the terminal</span>
           </h1>
 
           {/* Sub-headline */}
           <p className="animate-fade-in-up delay-100 mx-auto mb-4 max-w-2xl text-lg leading-relaxed text-slate-400 sm:text-xl">
-            <span className="font-mono text-cyan-300">{STATS.commands} commands</span> across 5 business layers.
-            Plan &rarr; Execute &rarr; Verify — fully automated.
+            <span className="font-mono text-cyan-300">{STATS.commands} commands</span> &middot;{' '}
+            <span className="font-mono text-indigo-300">{STATS.superCommands} super workflows</span> &middot;{' '}
+            <span className="font-mono text-purple-300">{STATS.roles} roles</span> &middot;{' '}
+            <span className="font-mono text-emerald-300">{STATS.layers} business layers</span>.
+            Open source.
           </p>
 
           {/* Social proof line */}
           <p className="animate-fade-in-up delay-200 mb-10 text-sm text-slate-500">
-            Universal LLM &nbsp;&middot;&nbsp; {STATS.agents} AI agents &nbsp;&middot;&nbsp; {STATS.skills} skills &nbsp;&middot;&nbsp; {STATS.commits.toLocaleString()}+ commits
+            Universal LLM &nbsp;&middot;&nbsp; {STATS.agents} AI agents &nbsp;&middot;&nbsp; {STATS.skills} skills &nbsp;&middot;&nbsp; {STATS.hubs} domain hubs
           </p>
 
           {/* CTAs */}

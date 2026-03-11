@@ -67,7 +67,7 @@ export default function TermsPage() {
         </p>
 
         <p className="mt-8 text-xs text-slate-600">
-          © 2026 Binh Pháp Venture Studio. All rights reserved.
+          © 2026 Binh Phap Venture Studio. All rights reserved.
         </p>
       </article>
       <FooterSection />

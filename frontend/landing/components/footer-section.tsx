@@ -2,15 +2,15 @@ const LAYER_LINKS = [
   { label: '👑 Founder', href: '/founder' },
   { label: '🏢 Business', href: '/business' },
   { label: '📦 Product', href: '/product' },
-  { label: '⚙️ Dev', href: '/dev/quickstart' },
+  { label: '⚙️ Engineering', href: '/engineering' },
   { label: '🔧 Ops', href: '/ops' },
   { label: '💰 Pricing', href: '/pricing' },
 ]
 
 const EXTERNAL_LINKS = [
   { label: 'GitHub', href: 'https://github.com/longtho638-jpg/mekong-cli' },
-  { label: 'Docs', href: 'https://docs.agencyos.network' },
   { label: 'Discord', href: 'https://discord.gg/agencyos' },
+  { label: 'Quickstart', href: '/dev/quickstart' },
   { label: 'Terms', href: '/terms' },
   { label: 'Privacy', href: '/privacy' },
 ]
@@ -30,11 +30,11 @@ export default function FooterSection() {
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-xs font-black text-white shadow-lg shadow-cyan-500/20">
                 M
               </span>
-              <span className="text-cyan-400">Agency</span>OS
+              <span className="text-cyan-400">Mekong</span> CLI
             </a>
             <p className="mb-4 text-xs text-slate-500">
               AI-Operated Business Platform.<br />
-              289 commands. 5 layers. Open source.
+              319 commands. 89 super workflows. Open source.
             </p>
             <div className="flex items-center gap-3">
               <a
@@ -102,10 +102,10 @@ export default function FooterSection() {
         {/* Bottom bar */}
         <div className="border-t border-slate-800/60 pt-8 text-center">
           <p className="text-xs text-slate-600">
-            &copy; 2026 Binh Pháp Venture Studio. All rights reserved.
+            &copy; 2026 Binh Phap Venture Studio. All rights reserved.
           </p>
           <p className="mt-1 font-mono text-xs text-slate-700">
-            孫子兵法 &nbsp;·&nbsp; Plan → Execute → Verify &nbsp;·&nbsp; Built with Mekong CLI
+            Plan &rarr; Execute &rarr; Verify &nbsp;&middot;&nbsp; Built with Mekong CLI
           </p>
         </div>
       </div>

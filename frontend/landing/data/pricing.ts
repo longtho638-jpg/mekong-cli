@@ -1,6 +1,5 @@
 // Single source of truth for pricing tiers, FAQs, and credit tiers.
-// Pricing model: Starter $49 / Pro $149 / Enterprise $499 (MCU credits)
-// Free tier = CLI is open-source, use with own LLM key (BYOK). No $0 tier.
+// Free tier = open source CLI. Starter $49 / Pro $149 / Enterprise $499 (MCU credits).
 
 export interface PricingTier {
   name: string
@@ -16,19 +15,34 @@ export interface PricingTier {
 
 export const TIERS: PricingTier[] = [
   {
+    name: 'Free',
+    price: '$0',
+    period: '',
+    desc: 'Open source CLI with your own LLM key. No credits needed.',
+    cta: 'Get started',
+    ctaHref: 'https://github.com/longtho638-jpg/mekong-cli',
+    highlight: false,
+    badge: undefined,
+    features: [
+      'Full CLI — 319 commands',
+      'Bring your own LLM (any provider)',
+      'Community support',
+      'MIT License — fork freely',
+    ],
+  },
+  {
     name: 'Starter',
     price: '$49',
     period: '/month',
-    desc: 'For solo founders and developers getting started.',
-    cta: 'Start Starter',
+    desc: 'For solo founders running their first AI agency.',
+    cta: 'Start free trial',
     ctaHref: 'https://polar.sh/mekong-cli/checkout?product=starter',
     highlight: false,
     badge: undefined,
     features: [
       '200 credits / month',
-      'Simple tasks (1 credit)',
-      'Core CLI commands',
-      'Plan-Execute-Verify engine',
+      'All base commands',
+      '10 super commands',
       'Email support',
     ],
   },
@@ -36,18 +50,17 @@ export const TIERS: PricingTier[] = [
     name: 'Pro',
     price: '$149',
     period: '/month',
-    desc: 'For teams shipping production code at scale.',
+    desc: 'For teams shipping at scale with parallel AI agents.',
     cta: 'Start Pro',
     ctaHref: 'https://polar.sh/mekong-cli/checkout?product=pro',
     highlight: true,
     badge: 'Most popular',
     features: [
       '1,000 credits / month',
-      'All complexity levels (1-5 credits)',
-      'Tôm Hùm autonomous daemon',
-      'BYOK LLM — OpenRouter / Ollama / Direct API',
-      'Priority support (24h)',
-      'All skills included',
+      'All 89 super commands',
+      '85 DAG recipe workflows',
+      'Tom Hum autonomous daemon',
+      'Priority support',
     ],
   },
   {
@@ -55,17 +68,17 @@ export const TIERS: PricingTier[] = [
     price: '$499',
     period: '/month',
     desc: 'Unlimited AI power for serious engineering teams.',
-    cta: 'Contact Enterprise',
+    cta: 'Contact sales',
     ctaHref: 'https://polar.sh/mekong-cli/checkout?product=enterprise',
     highlight: false,
     badge: undefined,
     features: [
       'Unlimited credits',
       'Custom AI agents',
+      'White-label options',
       'SLA 99.9% uptime',
       'Dedicated onboarding',
-      'White-label options',
-      'Priority support 24/7',
+      '24/7 priority support',
     ],
   },
 ]
@@ -95,6 +108,10 @@ export const FAQS: FAQ[] = [
   {
     q: 'What happens when I run out of credits?',
     a: 'The API returns HTTP 402 (Payment Required). You can buy more credits or upgrade your plan anytime.',
+  },
+  {
+    q: 'Can I use it for free?',
+    a: 'Yes. The CLI is fully open source (MIT). Install it, bring your own LLM key, and run all 319 commands with no credits needed.',
   },
   {
     q: 'Can I cancel anytime?',

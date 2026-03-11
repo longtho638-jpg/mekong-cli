@@ -5,8 +5,8 @@ const LAYERS = [
     id: 'founder',
     href: '/founder',
     icon: '👑',
-    role: 'FOUNDER / CEO',
-    desc: 'Strategy, fundraising, OKRs, dashboard',
+    role: 'FOUNDER',
+    desc: '46 commands · 6 super workflows — fundraise, validate, launch, negotiate, IPO',
     width: 'max-w-xs',
     border: 'border-yellow-500/30 hover:border-yellow-400/50',
     glow: 'hover:shadow-yellow-500/10',
@@ -17,7 +17,7 @@ const LAYERS = [
     href: '/business',
     icon: '🏢',
     role: 'BUSINESS',
-    desc: 'Sales, marketing, finance, HR',
+    desc: '32 commands · 6 super workflows — revenue engine, campaigns, hiring, financial close',
     width: 'max-w-sm',
     border: 'border-blue-500/30 hover:border-blue-400/50',
     glow: 'hover:shadow-blue-500/10',
@@ -28,18 +28,18 @@ const LAYERS = [
     href: '/product',
     icon: '📦',
     role: 'PRODUCT',
-    desc: 'Product planning, sprints, roadmap',
+    desc: '17 commands · 5 super workflows — discovery, sprint planning, feature launch',
     width: 'max-w-md',
     border: 'border-purple-500/30 hover:border-purple-400/50',
     glow: 'hover:shadow-purple-500/10',
     badge: 'text-purple-400 bg-purple-400/10',
   },
   {
-    id: 'developer',
-    href: '/dev/quickstart',
+    id: 'engineering',
+    href: '/engineering',
     icon: '⚙️',
-    role: 'DEVELOPER',
-    desc: 'Code, test, deploy — get started in 5 minutes',
+    role: 'ENGINEERING',
+    desc: '47 commands · 4 super workflows — ship, refactor, incident response, new service',
     width: 'max-w-lg',
     border: 'border-cyan-500/30 hover:border-cyan-400/50',
     glow: 'hover:shadow-cyan-500/10',
@@ -50,7 +50,7 @@ const LAYERS = [
     href: '/ops',
     icon: '🔧',
     role: 'OPERATIONS',
-    desc: 'Monitor, audit, sync, recovery',
+    desc: '27 commands · 4 super workflows — health sweep, security audit, deployment',
     width: 'max-w-2xl',
     border: 'border-emerald-500/30 hover:border-emerald-400/50',
     glow: 'hover:shadow-emerald-500/10',
@@ -83,8 +83,8 @@ export default function PyramidHero() {
 
         {/* Stats row */}
         <p className="mx-auto mb-14 max-w-2xl text-base text-slate-400 sm:text-lg pyramid-fade-in">
-          <span className="font-mono font-semibold text-cyan-400">289 commands.</span>{' '}
-          <span className="font-mono font-semibold text-indigo-400">216 skills.</span>{' '}
+          <span className="font-mono font-semibold text-cyan-400">319 commands.</span>{' '}
+          <span className="font-mono font-semibold text-indigo-400">463 skills.</span>{' '}
           <span className="font-mono font-semibold text-purple-400">127 AI agents.</span>{' '}
           One unified system.
         </p>

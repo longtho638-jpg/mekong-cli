@@ -2,10 +2,9 @@ import HeroSection from '@/components/hero-section'
 import PyramidHero from '@/components/pyramid-hero'
 import StatsBar from '@/components/stats-bar'
 import CascadeDemo from '@/components/cascade-demo'
-import ComparisonSection from '@/components/comparison-section'
 import FeaturesGrid from '@/components/features-grid'
 import HowItWorks from '@/components/how-it-works'
-import SocialProof from '@/components/social-proof'
+import ComparisonSection from '@/components/comparison-section'
 import ServiceCards from '@/components/service-cards'
 import QuickstartSection from '@/components/quickstart-section'
 import PricingTable from '@/components/pricing-table'
@@ -18,10 +17,9 @@ export default function HomePage() {
       <PyramidHero />
       <StatsBar />
       <CascadeDemo />
-      <ComparisonSection />
       <FeaturesGrid />
       <HowItWorks />
-      <SocialProof />
+      <ComparisonSection />
       <ServiceCards />
       <QuickstartSection />
       <PricingTable />

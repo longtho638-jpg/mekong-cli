@@ -2,32 +2,32 @@ const ROWS = [
   {
     role: 'Founder',
     roleIcon: '👑',
-    single: 'Spreadsheet silo',
-    mekong: '/annual → auto cascade',
+    single: 'Spreadsheet + Notion',
+    mekong: '/founder:raise → 8 agents parallel, investor kit in 45 min',
   },
   {
     role: 'Sales',
     roleIcon: '🏢',
-    single: 'Standalone CRM',
-    mekong: '/sales → linked to OKR',
+    single: 'CRM + email tool',
+    mekong: '/sales:pipeline-build → ICP + leads + CRM in one command',
   },
   {
     role: 'Product',
     roleIcon: '📦',
-    single: 'Jira / Linear',
-    mekong: '/sprint → from founder goal',
+    single: 'Jira + Figma',
+    mekong: '/product:discovery → persona + competitor + scope in 30 min',
   },
   {
-    role: 'Dev',
+    role: 'Engineering',
     roleIcon: '⚙️',
-    single: 'Code without context',
-    mekong: '/cook → knows which goal it serves',
+    single: 'IDE + CI/CD',
+    mekong: '/engineering:ship → code + test + review + deploy in 35 min',
   },
   {
     role: 'Ops',
     roleIcon: '🔧',
-    single: 'Separate monitoring',
-    mekong: '/health → full lineage trace',
+    single: 'Datadog + PagerDuty',
+    mekong: '/ops:health-sweep → 4 parallel health checks in 15 min',
   },
 ]
 
@@ -48,7 +48,7 @@ export default function ComparisonSection() {
             <span className="gradient-text">connected</span>
           </h2>
           <p className="text-slate-400">
-            Separate tools mean no shared context. Mekong CLI threads a single goal through every layer.
+            Separate tools mean no shared context. Mekong CLI runs DAG workflows with parallel AI agents.
           </p>
         </div>
 
@@ -56,7 +56,7 @@ export default function ComparisonSection() {
         <div className="overflow-hidden rounded-2xl border border-slate-800/60">
           {/* Header row */}
           <div className="grid grid-cols-3 border-b border-slate-800 bg-slate-900/80 px-6 py-3.5">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Layer</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Role</span>
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Separate tools</span>
             <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400">Mekong CLI</span>
           </div>
@@ -85,7 +85,7 @@ export default function ComparisonSection() {
         </div>
 
         <p className="mt-5 text-center text-xs text-slate-600">
-          All commands share full context — never lose sight of the goal.
+          Super commands orchestrate DAG workflows — parallel agents, shared context, verified output.
         </p>
 
       </div>

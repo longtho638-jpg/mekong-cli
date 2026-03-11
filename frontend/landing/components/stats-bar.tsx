@@ -1,11 +1,11 @@
 import { STATS } from '@/data/stats'
 
 const STAT_ITEMS = [
-  { value: STATS.commands.toString(), label: 'Commands', suffix: '+' },
+  { value: STATS.commands.toString(), label: 'Commands', suffix: '' },
+  { value: STATS.superCommands.toString(), label: 'Super Workflows', suffix: '' },
   { value: STATS.skills.toString(), label: 'AI Skills', suffix: '' },
   { value: STATS.agents.toString(), label: 'Agents', suffix: '' },
-  { value: STATS.layers.toString(), label: 'Business Layers', suffix: '' },
-  { value: STATS.commits.toLocaleString(), label: 'Commits', suffix: '+' },
+  { value: STATS.recipes.toString(), label: 'DAG Recipes', suffix: '' },
 ]
 
 export default function StatsBar() {

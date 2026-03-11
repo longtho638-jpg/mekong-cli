@@ -41,7 +41,7 @@ export default function LayerPageHero({
 
         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-900 px-4 py-1.5 text-xs text-slate-400">
           <span className={`h-1.5 w-1.5 animate-pulse rounded-full ${textColor}`} />
-          AgencyOS — 5-Layer Pyramid
+          Mekong CLI — 5-Layer Pyramid
         </div>
 
         <div className="mb-4 text-6xl">{icon}</div>

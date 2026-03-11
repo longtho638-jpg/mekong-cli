@@ -4,20 +4,18 @@ import { useState } from 'react'
 
 const TERMINAL_LINES = [
   { text: '$ pip install mekong-cli', color: 'text-slate-400' },
-  { text: '$ export LLM_API_KEY=sk-...', color: 'text-slate-400' },
+  { text: '$ export LLM_BASE_URL=https://openrouter.ai/api/v1', color: 'text-slate-400' },
+  { text: '$ export LLM_API_KEY=sk-or-v1-yourkey', color: 'text-slate-400' },
+  { text: '$ export LLM_MODEL=anthropic/claude-sonnet-4', color: 'text-slate-400' },
   { text: '', color: '' },
-  { text: '$ mekong cook "Create a landing page for a café"', color: 'text-cyan-300' },
+  { text: '$ mekong founder:validate-sprint "AI-operated business platform"', color: 'text-cyan-300' },
   { text: '', color: '' },
-  { text: '  💡 LLM: openrouter/claude-sonnet-4-6', color: 'text-slate-500' },
-  { text: '  🎯 Goal: Landing page for a café', color: 'text-white' },
-  { text: '  📋 Plan:', color: 'text-slate-300' },
-  { text: '    1. Research café landing best practices', color: 'text-slate-400' },
-  { text: '    2. Generate responsive HTML/CSS', color: 'text-slate-400' },
-  { text: '    3. Deploy to Cloudflare Pages', color: 'text-slate-400' },
-  { text: '  ⚡ Executing...', color: 'text-yellow-400' },
+  { text: '  ⚡ Loading recipe: recipes/founder/validate.json', color: 'text-slate-500' },
+  { text: '  ⚡ Group 1 (parallel): /validate + /tam + /swot', color: 'text-yellow-400' },
+  { text: '  ⚡ Group 2 (parallel): /unit-economics + /moat-audit', color: 'text-yellow-400' },
   { text: '', color: '' },
-  { text: '  ✅ Done: https://cafe-landing.pages.dev', color: 'text-emerald-400' },
-  { text: '  💳 MCU: -3  (balance: 197)', color: 'text-purple-400' },
+  { text: '  ✅ Done: reports/validation/VALIDATION-VERDICT.md', color: 'text-emerald-400' },
+  { text: '  💳 Credits: -20 (balance: 180)', color: 'text-purple-400' },
 ]
 
 const INSTALL_CMD = 'pip install mekong-cli'
@@ -46,7 +44,7 @@ export default function QuickstartSection() {
             <span className="gradient-text">30 seconds</span>
           </h2>
           <p className="text-slate-400">
-            Install, set your LLM key, start building. No complex configuration.
+            Install, set your LLM key, run a super command. No complex configuration.
           </p>
         </div>
 

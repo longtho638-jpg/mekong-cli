@@ -1,6 +1,6 @@
 import { TIERS } from '@/data/pricing'
 
-const TIER_ICONS = ['🚀', '⚡', '🏢']
+const TIER_ICONS = ['🆓', '🚀', '⚡', '🏢']
 
 export default function PricingTable() {
   return (
@@ -13,16 +13,16 @@ export default function PricingTable() {
             Simple pricing
           </p>
           <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
-            Credit pricing,{' '}
-            <span className="gradient-text">no hidden fees</span>
+            Free forever,{' '}
+            <span className="gradient-text">pay when you scale</span>
           </h2>
           <p className="text-slate-400">
-            Pay per result. Cancel anytime. Charged only after successful delivery.
+            Open source CLI is free. Credits unlock managed super commands.
           </p>
         </div>
 
         {/* Cards */}
-        <div className="grid gap-6 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((tier, idx) => (
             <div
               key={tier.name}
@@ -54,7 +54,7 @@ export default function PricingTable() {
                 <p className="mb-4 text-sm text-slate-400">{tier.desc}</p>
 
                 <div className="flex items-end gap-1">
-                  <span className={`text-5xl font-extrabold tracking-tight ${tier.highlight ? 'gradient-text' : 'text-white'}`}>
+                  <span className={`text-4xl font-extrabold tracking-tight ${tier.highlight ? 'gradient-text' : 'text-white'}`}>
                     {tier.price}
                   </span>
                   {tier.period && (
