@@ -8,10 +8,10 @@ export default function SocialProof() {
 
         {/* Header */}
         <div className="mb-12 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-cyan-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--md-primary)]">
             Trusted by builders
           </p>
-          <h2 className="text-3xl font-bold text-white sm:text-4xl">
+          <h2 className="text-3xl font-bold text-[var(--md-on-surface)] sm:text-4xl">
             <span className="gradient-text">{STATS.commands}+ commands</span>{' '}
             powering solo founders &amp; teams
           </h2>
@@ -22,17 +22,17 @@ export default function SocialProof() {
           {TESTIMONIALS.map((t) => (
             <div
               key={t.name}
-              className="group relative flex flex-col rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6 transition-all duration-300 hover:border-slate-700 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
+              className="group relative flex flex-col rounded-xl border border-[var(--md-outline-variant)] bg-[var(--md-surface-container-low)] p-6 transition-all duration-300 hover:border-[var(--md-outline)] hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
             >
               {/* Quote mark */}
-              <div className="mb-3 text-3xl font-serif leading-none text-slate-700 select-none">&ldquo;</div>
+              <div className="mb-3 text-3xl font-serif leading-none text-[var(--md-outline)] select-none">&ldquo;</div>
 
-              <p className="mb-5 flex-1 text-sm leading-relaxed text-slate-300">
+              <p className="mb-5 flex-1 text-sm leading-relaxed text-[var(--md-on-surface)]">
                 {t.quote}
               </p>
 
               {/* Divider */}
-              <div className="mb-4 h-px bg-slate-800/60" />
+              <div className="mb-4 h-px bg-[var(--md-outline-variant)]" />
 
               {/* Author */}
               <div className="flex items-center gap-3">
@@ -40,15 +40,15 @@ export default function SocialProof() {
                   {t.initials}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{t.name}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-sm font-semibold text-[var(--md-on-surface)]">{t.name}</p>
+                  <p className="text-xs text-[var(--md-on-surface-variant)]">
                     {t.role}, {t.company}
                   </p>
                 </div>
               </div>
 
               {/* Hover accent */}
-              <div className="absolute inset-x-0 bottom-0 h-px rounded-b-2xl bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+              <div className="absolute inset-x-0 bottom-0 h-px rounded-b-xl bg-gradient-to-r from-transparent via-[var(--md-primary)]/30 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             </div>
           ))}
         </div>

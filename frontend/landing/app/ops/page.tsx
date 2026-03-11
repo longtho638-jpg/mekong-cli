@@ -41,7 +41,7 @@ const TERMINAL_LINES = [
 
 export default function OpsPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <LayerPageHero
         icon={opsLayer.icon}
@@ -54,23 +54,23 @@ export default function OpsPage() {
       {/* Terminal demo */}
       <section className="px-6 pb-12">
         <div className="mx-auto max-w-5xl">
-          <div className="glass rounded-2xl p-6">
+          <div className="glass rounded-xl p-6">
             <div className="mb-3 flex items-center gap-2">
               <span className="h-3 w-3 rounded-full bg-red-500/70" />
               <span className="h-3 w-3 rounded-full bg-yellow-500/70" />
               <span className="h-3 w-3 rounded-full bg-green-500/70" />
-              <span className="ml-2 font-mono text-xs text-slate-500">
+              <span className="ml-2 font-mono text-xs text-[var(--md-on-surface-variant)]">
                 mekong — ops
               </span>
             </div>
             <div className="space-y-1 font-mono text-sm">
               {TERMINAL_LINES.map((line, i) => (
                 <div key={i} className="flex gap-3">
-                  <span className="text-slate-600">{line.prompt}</span>
+                  <span className="text-[var(--md-outline)]">{line.prompt}</span>
                   {line.cmd ? (
-                    <span className="text-white">{line.cmd}</span>
+                    <span className="text-[var(--md-on-surface)]">{line.cmd}</span>
                   ) : (
-                    <span className="text-green-400">{line.output}</span>
+                    <span className="text-emerald-400">{line.output}</span>
                   )}
                 </div>
               ))}
@@ -98,8 +98,8 @@ export default function OpsPage() {
               <div key={group.title}>
                 <div className="mb-4 flex items-center gap-3">
                   <span className="text-2xl">{group.icon}</span>
-                  <h2 className="text-lg font-bold text-white">{group.title}</h2>
-                  <span className="rounded-full border border-slate-700 bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                  <h2 className="text-lg font-bold text-[var(--md-on-surface)]">{group.title}</h2>
+                  <span className="rounded-full border border-[var(--md-outline-variant)] bg-[var(--md-surface-container)] px-2 py-0.5 text-xs text-[var(--md-on-surface-variant)]">
                     {cmds.length} commands
                   </span>
                 </div>

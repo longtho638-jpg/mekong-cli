@@ -10,7 +10,7 @@ const founderCommands = COMMANDS.filter((c) => c.layer === 'founder')
 
 export default function FounderPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <LayerPageHero
         icon={founderLayer.icon}
@@ -23,7 +23,7 @@ export default function FounderPage() {
       {/* Commands grid */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-6 text-xl font-bold text-white">
+          <h2 className="mb-6 text-xl font-bold text-[var(--md-on-surface)]">
             All Founder Commands
           </h2>
           <CommandGrid commands={founderCommands} columns={3} />
@@ -33,12 +33,12 @@ export default function FounderPage() {
       {/* Cascade section */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
-          <div className="glass-highlight rounded-2xl p-8">
-            <h2 className="mb-3 text-xl font-bold text-white">
+          <div className="glass-highlight rounded-xl p-8">
+            <h2 className="mb-3 text-xl font-bold text-[var(--md-on-surface)]">
               Cascade Intelligence
             </h2>
-            <p className="mb-6 text-slate-400">
-              When you run <code className="font-mono text-cyan-300">/annual</code>, AI cascades across the entire company — no manual delegation needed.
+            <p className="mb-6 text-[var(--md-on-surface-variant)]">
+              When you run <code className="font-mono text-[var(--md-primary)]">/annual</code>, AI cascades across the entire company — no manual delegation needed.
             </p>
             <div className="flex flex-wrap items-center gap-3 font-mono text-sm">
               {['👑 /annual', '→', '🏢 Business', '→', '📦 Product', '→', '⚙️ Engineering', '→', '🔧 Ops'].map(
@@ -47,8 +47,8 @@ export default function FounderPage() {
                     key={i}
                     className={
                       item === '→'
-                        ? 'text-slate-500'
-                        : 'rounded-lg border border-cyan-800/50 bg-cyan-950/30 px-3 py-1.5 text-cyan-300'
+                        ? 'text-[var(--md-on-surface-variant)]'
+                        : 'rounded-lg border border-[var(--md-primary-container)] bg-[var(--md-primary-container)] px-3 py-1.5 text-[var(--md-primary)]'
                     }
                   >
                     {item}

@@ -12,7 +12,7 @@ import FooterSection from '@/components/footer-section'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <HeroSection />
       <PyramidHero />
       <StatsBar />

@@ -17,22 +17,22 @@ const EXTERNAL_LINKS = [
 
 export default function FooterSection() {
   return (
-    <footer className="relative border-t border-slate-800/60 px-6 py-16">
+    <footer className="relative border-t border-[var(--md-outline-variant)] px-6 py-16">
       {/* Top gradient line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-700/60 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--md-outline)] to-transparent" />
 
       <div className="mx-auto max-w-5xl">
         <div className="mb-10 grid gap-10 sm:grid-cols-3">
 
           {/* Brand */}
           <div>
-            <a href="/" className="mb-3 inline-flex items-center gap-2 text-lg font-bold text-white transition-opacity hover:opacity-80">
+            <a href="/" className="mb-3 inline-flex items-center gap-2 text-lg font-bold text-[var(--md-on-surface)] transition-opacity hover:opacity-80">
               <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-xs font-black text-white shadow-lg shadow-cyan-500/20">
                 M
               </span>
-              <span className="text-cyan-400">Mekong</span> CLI
+              <span className="text-[var(--md-primary)]">Mekong</span> CLI
             </a>
-            <p className="mb-4 text-xs text-slate-500">
+            <p className="mb-4 text-xs text-[var(--md-on-surface-variant)]">
               AI-Operated Business Platform.<br />
               319 commands. 89 super workflows. Open source.
             </p>
@@ -41,7 +41,7 @@ export default function FooterSection() {
                 href="https://github.com/longtho638-jpg/mekong-cli"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-slate-500 transition-colors hover:border-slate-600 hover:text-slate-300"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--md-outline-variant)] bg-[var(--md-surface-container-low)] text-[var(--md-on-surface-variant)] transition-colors hover:border-[var(--md-outline)] hover:text-[var(--md-on-surface)]"
                 aria-label="GitHub"
               >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -52,7 +52,7 @@ export default function FooterSection() {
                 href="https://discord.gg/agencyos"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-800 bg-slate-900 text-slate-500 transition-colors hover:border-slate-600 hover:text-slate-300"
+                className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--md-outline-variant)] bg-[var(--md-surface-container-low)] text-[var(--md-on-surface-variant)] transition-colors hover:border-[var(--md-outline)] hover:text-[var(--md-on-surface)]"
                 aria-label="Discord"
               >
                 <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -64,7 +64,7 @@ export default function FooterSection() {
 
           {/* Layers */}
           <nav>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--md-on-surface-variant)]">
               Layers
             </p>
             <div className="flex flex-col gap-2">
@@ -72,7 +72,7 @@ export default function FooterSection() {
                 <a
                   key={l.href}
                   href={l.href}
-                  className="text-sm text-slate-500 transition-colors hover:text-slate-300"
+                  className="text-sm text-[var(--md-on-surface-variant)] transition-colors hover:text-[var(--md-on-surface)]"
                 >
                   {l.label}
                 </a>
@@ -82,7 +82,7 @@ export default function FooterSection() {
 
           {/* Links */}
           <nav>
-            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-[var(--md-on-surface-variant)]">
               Resources
             </p>
             <div className="flex flex-col gap-2">
@@ -90,7 +90,7 @@ export default function FooterSection() {
                 <a
                   key={l.label}
                   href={l.href}
-                  className="text-sm text-slate-500 transition-colors hover:text-slate-300"
+                  className="text-sm text-[var(--md-on-surface-variant)] transition-colors hover:text-[var(--md-on-surface)]"
                 >
                   {l.label}
                 </a>
@@ -100,11 +100,11 @@ export default function FooterSection() {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-slate-800/60 pt-8 text-center">
-          <p className="text-xs text-slate-600">
+        <div className="border-t border-[var(--md-outline-variant)] pt-8 text-center">
+          <p className="text-xs text-[var(--md-on-surface-variant)]">
             &copy; 2026 Binh Phap Venture Studio. All rights reserved.
           </p>
-          <p className="mt-1 font-mono text-xs text-slate-700">
+          <p className="mt-1 font-mono text-xs text-[var(--md-outline)]">
             Plan &rarr; Execute &rarr; Verify &nbsp;&middot;&nbsp; Built with Mekong CLI
           </p>
         </div>

@@ -3,17 +3,17 @@ import { TIERS, CREDIT_TIERS, FAQS } from '@/data/pricing'
 
 export default function PricingPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
 
       {/* Hero */}
       <section className="px-6 pb-8 pt-12 text-center">
         <div className="mx-auto max-w-2xl">
-          <h1 className="mb-4 text-4xl font-extrabold text-white sm:text-5xl">
+          <h1 className="mb-4 text-4xl font-extrabold text-[var(--md-on-surface)] sm:text-5xl">
             Pricing —{' '}
             <span className="gradient-text">pay per credit, no hidden fees</span>
           </h1>
-          <p className="text-lg text-slate-400">
+          <p className="text-lg text-[var(--md-on-surface-variant)]">
             Scale when you need to. Cancel anytime. No long-term commitment.
           </p>
         </div>
@@ -26,7 +26,7 @@ export default function PricingPage() {
             {TIERS.map((tier) => (
               <div
                 key={tier.name}
-                className={`relative flex flex-col rounded-2xl p-7 ${
+                className={`relative flex flex-col rounded-xl p-7 ${
                   tier.highlight ? 'glass-highlight' : 'glass-card'
                 }`}
               >
@@ -37,18 +37,18 @@ export default function PricingPage() {
                 )}
 
                 <div className="mb-5">
-                  <h2 className="mb-1 text-lg font-bold text-white">{tier.name}</h2>
+                  <h2 className="mb-1 text-lg font-bold text-[var(--md-on-surface)]">{tier.name}</h2>
                   <div className="mb-2 flex items-end gap-1">
-                    <span className="text-4xl font-extrabold text-white">{tier.price}</span>
-                    <span className="mb-1 text-slate-400">{tier.period}</span>
+                    <span className="text-4xl font-extrabold text-[var(--md-on-surface)]">{tier.price}</span>
+                    <span className="mb-1 text-[var(--md-on-surface-variant)]">{tier.period}</span>
                   </div>
-                  <p className="text-sm text-slate-400">{tier.desc}</p>
+                  <p className="text-sm text-[var(--md-on-surface-variant)]">{tier.desc}</p>
                 </div>
 
                 <ul className="mb-7 flex-1 space-y-3">
                   {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                      <span className="mt-0.5 text-cyan-400">✓</span>
+                    <li key={f} className="flex items-start gap-2 text-sm text-[var(--md-on-surface)]">
+                      <span className="mt-0.5 text-[var(--md-primary)]">✓</span>
                       {f}
                     </li>
                   ))}
@@ -59,7 +59,7 @@ export default function PricingPage() {
                   className={`block rounded-xl py-3 text-center font-semibold transition-opacity hover:opacity-90 ${
                     tier.highlight
                       ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white'
-                      : 'border border-slate-700 text-slate-300 hover:border-slate-500 hover:text-white'
+                      : 'border border-[var(--md-outline)] text-[var(--md-on-surface-variant)] hover:border-[var(--md-outline-variant)] hover:text-[var(--md-on-surface)]'
                   }`}
                 >
                   {tier.cta}
@@ -68,7 +68,7 @@ export default function PricingPage() {
             ))}
           </div>
 
-          <p className="mt-6 text-center text-xs text-slate-600">
+          <p className="mt-6 text-center text-xs text-[var(--md-on-surface-variant)]">
             Priced in USD. Cancel anytime.
           </p>
         </div>
@@ -77,20 +77,20 @@ export default function PricingPage() {
       {/* Credit explanation */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-3xl">
-          <div className="glass-card rounded-2xl p-8">
-            <h2 className="mb-6 text-xl font-bold text-white">How credits work</h2>
+          <div className="glass-card rounded-xl p-8">
+            <h2 className="mb-6 text-xl font-bold text-[var(--md-on-surface)]">How credits work</h2>
             <div className="space-y-4">
               {CREDIT_TIERS.map((ct) => (
                 <div key={ct.complexity} className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-6">
                   <span className={`shrink-0 font-semibold ${ct.color} text-sm w-44`}>
                     {ct.complexity}
                   </span>
-                  <span className="font-mono text-xs text-slate-400">{ct.commands}</span>
+                  <span className="font-mono text-xs text-[var(--md-on-surface-variant)]">{ct.commands}</span>
                 </div>
               ))}
             </div>
-            <p className="mt-6 text-xs text-slate-500">
-              Free commands (0 credit): <span className="font-mono text-slate-400">/status, /help, /founder/ARCHITECTURE, /raas</span>
+            <p className="mt-6 text-xs text-[var(--md-on-surface-variant)]">
+              Free commands (0 credit): <span className="font-mono text-[var(--md-on-surface)]">/status, /help, /founder/ARCHITECTURE, /raas</span>
             </p>
           </div>
         </div>
@@ -99,14 +99,14 @@ export default function PricingPage() {
       {/* FAQ */}
       <section className="px-6 pb-20">
         <div className="mx-auto max-w-3xl">
-          <h2 className="mb-8 text-center text-2xl font-bold text-white">
+          <h2 className="mb-8 text-center text-2xl font-bold text-[var(--md-on-surface)]">
             Frequently asked questions
           </h2>
           <div className="space-y-4">
             {FAQS.map((faq) => (
               <div key={faq.q} className="glass-card rounded-xl p-6">
-                <h3 className="mb-2 font-semibold text-white">{faq.q}</h3>
-                <p className="text-sm text-slate-400">{faq.a}</p>
+                <h3 className="mb-2 font-semibold text-[var(--md-on-surface)]">{faq.q}</h3>
+                <p className="text-sm text-[var(--md-on-surface-variant)]">{faq.a}</p>
               </div>
             ))}
           </div>

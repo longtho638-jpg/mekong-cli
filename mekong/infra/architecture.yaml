@@ -1,11 +1,11 @@
-# Mekong CLI — 4-Layer Deploy Architecture
+# Mekong CLI — 3-Layer Deploy Architecture (Cloudflare-only)
 # User chọn layers phù hợp quy mô. Không bắt buộc dùng tất cả.
 
 layers:
   frontend:
     platform: "cloudflare-pages"
-    purpose: "Static HTML, landing pages, docs"
-    cost: "Free"
+    purpose: "Static HTML, landing pages, docs, Next.js export"
+    cost: "$0"
     template: "mekong/infra/templates/cf-pages/"
     when: "Mọi dự án đều cần"
     deploy: "git push → auto build"
@@ -14,29 +14,21 @@ layers:
   edge-api:
     platform: "cloudflare-workers"
     purpose: "Serverless API, webhooks, rate limiting, KV cache"
-    cost: "Free (100K req/day)"
+    cost: "$0"
     template: "mekong/infra/templates/cf-workers/"
     when: "Cần API nhẹ, webhooks, hoặc middleware"
     deploy: "wrangler deploy"
     limits: "100K req/day free, 10ms CPU/req"
 
-  app:
-    platform: "vercel OR cloudflare-pages-ssr"
-    purpose: "Next.js SSR/ISR, dashboards, admin panels"
-    cost: "Free (Vercel hobby) or CF Pages"
-    template: "mekong/infra/templates/vercel-app/"
-    when: "Cần SSR, real-time data, auth"
-    deploy: "git push → auto deploy"
-    limits: "Vercel: 100GB bandwidth/month free"
-
   backend:
-    platform: "fly-io"
-    purpose: "Python FastAPI, database, LLM gateway, daemon"
-    cost: "Free (3 shared VMs)"
-    template: "mekong/infra/templates/fly-backend/"
-    when: "Cần persistent storage, background jobs, heavy compute"
-    deploy: "fly deploy"
-    limits: "3 VMs, 256MB RAM each, 3GB volume free"
+    platform: "cloudflare-workers"
+    purpose: "Heavy API, D1 database, KV storage, R2 files, Queues"
+    cost: "$0"
+    template: "mekong/infra/templates/cf-workers/"
+    when: "Cần persistent storage, background jobs, LLM gateway"
+    deploy: "wrangler deploy"
+    notes: "Use Workers + D1 + KV + R2 for everything"
+    limits: "D1: 5GB free, R2: 10GB free, KV: 100K writes/day"
 
 scales:
   solo:
@@ -49,19 +41,15 @@ scales:
     layers: ["frontend", "edge-api"]
     estimated_cost: "$0/month"
 
-  growth:
-    description: "Product-market fit, 5-20 người"
-    layers: ["frontend", "edge-api", "app"]
-    estimated_cost: "$0-20/month"
-
   scale:
-    description: "Scaling, 20+ người, revenue"
-    layers: ["frontend", "edge-api", "app", "backend"]
-    estimated_cost: "$20-100/month"
+    description: "Scaling, 5+ người, revenue"
+    layers: ["frontend", "edge-api", "backend"]
+    estimated_cost: "$0/month"
 
 benefits:
-  - "Không 1 điểm chết — 1 provider down, các cái khác vẫn chạy"
-  - "Free tier x4 — mỗi provider 1 free tier riêng"
-  - "Đúng tool đúng việc — CF cho static/edge, Fly cho backend nặng"
+  - "100% Cloudflare — single platform, zero complexity"
+  - "Free tier — all 3 layers on CF free plan"
+  - "Global edge — deploy to 300+ locations automatically"
   - "Scale độc lập — chỉ scale cái cần thiết"
-  - "Deploy từ CLI — không cần dashboard"
+  - "Deploy từ CLI — wrangler deploy or git push"
+  - "D1+KV+R2+Queues — full backend stack on Workers"

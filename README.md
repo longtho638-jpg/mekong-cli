@@ -74,19 +74,18 @@ export OLLAMA_BASE_URL=http://localhost:11434/v1
 # Any OpenAI-compatible endpoint works.
 ```
 
-## Deploy (4-layer, pick what you need)
+## Deploy (3-layer, Cloudflare-only)
 
 | Layer | Platform | Cost | When |
 |-------|----------|------|------|
 | Frontend | Cloudflare Pages | $0 | Every project |
 | Edge API | Cloudflare Workers | $0 | Need API/webhooks |
-| App | Vercel / CF Pages SSR | $0 | Need SSR/dashboard |
-| Backend | Fly.io | $0-20 | Need DB/daemon |
+| Backend | CF Workers + D1 + KV + R2 | $0 | Need DB/storage/daemon |
 
 ```bash
 # Scaffold by scale:
 bash mekong/infra/scaffold.sh myproject startup  # frontend + API
-bash mekong/infra/scaffold.sh myproject scale     # all 4 layers
+bash mekong/infra/scaffold.sh myproject scale     # all 3 layers
 ```
 
 ## Commands (Top 10)

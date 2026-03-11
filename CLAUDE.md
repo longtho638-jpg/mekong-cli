@@ -14,7 +14,7 @@
 | `.claude/commands/` | 176 command definitions (.md) |
 | `mekong/agents/` | Agent definitions |
 | `mekong/adapters/` | LLM provider configs |
-| `mekong/infra/` | 4-layer deploy templates |
+| `mekong/infra/` | 3-layer deploy templates (CF-only) |
 | `mekong/daemon/` | Tôm Hùm autonomous dispatch |
 | `factory/contracts/` | 176 JSON machine contracts |
 | `mekong/` | Adapters, infra, daemon (NOT skills/commands) |
@@ -136,21 +136,20 @@ Never commit: `.env`, API keys, `node_modules`, `__pycache__`, `.pyc`
 
 ---
 
-## DEPLOY — 4-Layer Infrastructure
+## DEPLOY — 3-Layer Infrastructure (Cloudflare-only)
 
 | Layer | Platform | Cost |
 |-------|----------|------|
 | Frontend | Cloudflare Pages | $0 |
 | Edge API | Cloudflare Workers | $0 |
-| App | Vercel / CF Pages SSR | $0 |
-| Backend | Fly.io | $0-20 |
+| Backend | Cloudflare Workers + D1 + KV + R2 | $0 |
 
 ```bash
 bash mekong/infra/scaffold.sh myproject startup  # frontend + API
-bash mekong/infra/scaffold.sh myproject scale     # all 4 layers
+bash mekong/infra/scaffold.sh myproject scale     # all 3 layers
 ```
 
-Deploy via `git push` only. BANNED: `vercel --prod`, `vercel deploy`.
+Deploy: CF Pages (frontend via `git push`) + CF Workers (backend via `wrangler deploy`). No other platforms.
 
 ---
 

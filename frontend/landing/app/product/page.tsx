@@ -12,7 +12,7 @@ const FLOW_STEPS = ['plan', 'brainstorm', 'scope', 'sprint', 'roadmap']
 
 export default function ProductPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <LayerPageHero
         icon={productLayer.icon}
@@ -25,18 +25,18 @@ export default function ProductPage() {
       {/* Planning flow */}
       <section className="px-6 pb-12">
         <div className="mx-auto max-w-5xl">
-          <div className="glass rounded-2xl p-6">
-            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-slate-400">
+          <div className="glass rounded-xl p-6">
+            <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-[var(--md-on-surface-variant)]">
               Planning Flow
             </h2>
             <div className="flex flex-wrap items-center gap-3 font-mono text-sm">
               {FLOW_STEPS.map((step, i) => (
                 <span key={step} className="flex items-center gap-3">
-                  <span className="rounded-lg border border-purple-800/50 bg-purple-950/30 px-3 py-1.5 text-purple-300">
+                  <span className="rounded-lg border border-[var(--md-secondary-container)] bg-[var(--md-secondary-container)] px-3 py-1.5 text-[var(--md-secondary)]">
                     /{step}
                   </span>
                   {i < FLOW_STEPS.length - 1 && (
-                    <span className="text-slate-500">→</span>
+                    <span className="text-[var(--md-on-surface-variant)]">→</span>
                   )}
                 </span>
               ))}
@@ -48,7 +48,7 @@ export default function ProductPage() {
       {/* Commands grid */}
       <section className="px-6 pb-16">
         <div className="mx-auto max-w-5xl">
-          <h2 className="mb-6 text-xl font-bold text-white">
+          <h2 className="mb-6 text-xl font-bold text-[var(--md-on-surface)]">
             All Product Commands
           </h2>
           <CommandGrid commands={productCommands} columns={3} />

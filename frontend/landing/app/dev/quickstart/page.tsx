@@ -55,96 +55,96 @@ Select provider:
 
 export default function QuickstartPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <div className="px-4 pb-16 pt-8 sm:px-6">
         <div className="mx-auto max-w-3xl">
-        {/* Back nav */}
-        <Link
-          href="/"
-          className="mb-8 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-400 transition-colors"
-        >
-          ← Home
-        </Link>
+          {/* Back nav */}
+          <Link
+            href="/"
+            className="mb-8 inline-flex items-center gap-2 text-sm text-[var(--md-on-surface-variant)] hover:text-[var(--md-primary)] transition-colors"
+          >
+            ← Home
+          </Link>
 
-        {/* Hero */}
-        <div className="mb-12 text-center">
-          <div className="mb-4 text-4xl">⚙️</div>
-          <h1 className="mb-3 text-3xl font-bold sm:text-4xl">
-            <span className="gradient-text">Developer Quickstart</span>
-          </h1>
-          <p className="text-lg text-slate-400">Setup in 5 minutes</p>
-        </div>
+          {/* Hero */}
+          <div className="mb-12 text-center">
+            <div className="mb-4 text-4xl">⚙️</div>
+            <h1 className="mb-3 text-3xl font-bold sm:text-4xl">
+              <span className="gradient-text">Developer Quickstart</span>
+            </h1>
+            <p className="text-lg text-[var(--md-on-surface-variant)]">Setup in 5 minutes</p>
+          </div>
 
-        {/* Steps */}
-        <div className="space-y-4">
-          {STEPS.map((step) => (
-            <div key={step.num} className="glass-card rounded-xl p-6">
-              {/* Step header */}
-              <div className="mb-4 flex items-start gap-4">
-                <span className="glass-highlight flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-cyan-400">
-                  {step.num}
-                </span>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-lg font-semibold text-slate-100">
-                      {step.title}
-                    </h2>
-                    <span className="text-xs text-slate-500">
-                      {step.num}/5
-                    </span>
+          {/* Steps */}
+          <div className="space-y-4">
+            {STEPS.map((step) => (
+              <div key={step.num} className="glass-card rounded-xl p-6">
+                {/* Step header */}
+                <div className="mb-4 flex items-start gap-4">
+                  <span className="glass-highlight flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold text-[var(--md-primary)]">
+                    {step.num}
+                  </span>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <h2 className="text-lg font-semibold text-[var(--md-on-surface)]">
+                        {step.title}
+                      </h2>
+                      <span className="text-xs text-[var(--md-on-surface-variant)]">
+                        {step.num}/5
+                      </span>
+                    </div>
+                    <p className="mt-1 text-sm text-[var(--md-on-surface-variant)]">{step.desc}</p>
                   </div>
-                  <p className="mt-1 text-sm text-slate-400">{step.desc}</p>
                 </div>
+
+                {/* Terminal block */}
+                {step.code && (
+                  <div className="terminal-block">
+                    <pre className="overflow-x-auto font-mono text-xs text-[var(--md-primary)] sm:text-sm whitespace-pre-wrap break-words">
+                      {step.code}
+                    </pre>
+                  </div>
+                )}
+
+                {/* Copy hint */}
+                {step.copyText && (
+                  <p className="mt-3 text-xs text-[var(--md-on-surface-variant)]">
+                    Copy:{' '}
+                    <code className="rounded bg-[var(--md-surface-container)] px-2 py-0.5 text-[var(--md-primary)]">
+                      {step.copyText}
+                    </code>
+                  </p>
+                )}
+
+                {/* CTA for last step */}
+                {step.isLast && (
+                  <Link
+                    href="/dev/commands"
+                    className="glass-highlight mt-2 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-[var(--md-primary)] transition-all hover:text-[var(--md-on-primary-container)]"
+                  >
+                    Explore 319 Commands →
+                  </Link>
+                )}
               </div>
+            ))}
+          </div>
 
-              {/* Terminal block */}
-              {step.code && (
-                <div className="glass rounded-lg p-4">
-                  <pre className="overflow-x-auto font-mono text-xs text-cyan-400 sm:text-sm whitespace-pre-wrap break-words">
-                    {step.code}
-                  </pre>
-                </div>
-              )}
-
-              {/* Copy hint */}
-              {step.copyText && (
-                <p className="mt-3 text-xs text-slate-500">
-                  Copy:{' '}
-                  <code className="rounded bg-slate-800 px-2 py-0.5 text-cyan-300">
-                    {step.copyText}
-                  </code>
-                </p>
-              )}
-
-              {/* CTA for last step */}
-              {step.isLast && (
-                <Link
-                  href="/dev/commands"
-                  className="glass-highlight mt-2 inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-cyan-400 transition-all hover:text-cyan-300"
-                >
-                  Explore 319 Commands →
-                </Link>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* Footer nav */}
-        <div className="mt-10 flex flex-wrap gap-4 justify-center">
-          <Link
-            href="/dev/commands"
-            className="glass-card rounded-lg px-5 py-2.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
-          >
-            Command Explorer →
-          </Link>
-          <Link
-            href="/dev/architecture"
-            className="glass-card rounded-lg px-5 py-2.5 text-sm text-slate-300 hover:text-cyan-400 transition-colors"
-          >
-            Architecture →
-          </Link>
-        </div>
+          {/* Footer nav */}
+          <div className="mt-10 flex flex-wrap gap-4 justify-center">
+            <Link
+              href="/dev/commands"
+              className="glass-card rounded-lg px-5 py-2.5 text-sm text-[var(--md-on-surface-variant)] hover:text-[var(--md-primary)] transition-colors"
+            >
+              Command Explorer →
+            </Link>
+            <Link
+              href="/dev/architecture"
+              className="glass-card rounded-lg px-5 py-2.5 text-sm text-[var(--md-on-surface-variant)] hover:text-[var(--md-primary)] transition-colors"
+            >
+              Architecture →
+            </Link>
+          </div>
         </div>
       </div>
     </main>

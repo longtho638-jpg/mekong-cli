@@ -8,11 +8,11 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <article className="prose prose-invert prose-slate mx-auto max-w-3xl px-6 py-16">
-        <h1 className="text-3xl font-bold text-white">Privacy Policy</h1>
-        <p className="text-sm text-slate-500">Last updated: March 2026</p>
+        <h1 className="text-3xl font-bold text-[var(--md-on-surface)]">Privacy Policy</h1>
+        <p className="text-sm text-[var(--md-on-surface-variant)]">Last updated: March 2026</p>
 
         <h2>1. Data We Collect</h2>
         <p>
@@ -64,12 +64,12 @@ export default function PrivacyPage() {
         <h2>7. Contact</h2>
         <p>
           Privacy questions? Contact us at{' '}
-          <a href="mailto:privacy@agencyos.network" className="text-cyan-400 hover:text-cyan-300">
+          <a href="mailto:privacy@agencyos.network" className="text-[var(--md-primary)] hover:text-[var(--md-on-primary-container)]">
             privacy@agencyos.network
           </a>
         </p>
 
-        <p className="mt-8 text-xs text-slate-600">
+        <p className="mt-8 text-xs text-[var(--md-on-surface-variant)]">
           © 2026 Binh Phap Venture Studio. All rights reserved.
         </p>
       </article>

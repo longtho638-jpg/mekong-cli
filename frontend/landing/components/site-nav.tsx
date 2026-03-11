@@ -25,7 +25,7 @@ export default function SiteNav() {
     <header
       className={`sticky top-0 z-50 px-4 py-3 transition-all duration-300 ${
         scrolled
-          ? 'bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/60'
+          ? 'bg-[var(--md-surface)]/90 backdrop-blur-xl border-b border-[var(--md-outline-variant)]'
           : 'bg-transparent'
       }`}
     >
@@ -33,12 +33,12 @@ export default function SiteNav() {
         {/* Logo */}
         <a
           href="/"
-          className="flex items-center gap-2 text-lg font-bold tracking-tight text-white transition-opacity hover:opacity-80"
+          className="flex items-center gap-2 text-lg font-bold tracking-tight text-[var(--md-on-surface)] transition-opacity hover:opacity-80"
         >
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 text-xs font-black text-white shadow-lg shadow-cyan-500/20">
             M
           </span>
-          <span className="text-cyan-400">Mekong</span>
+          <span className="text-[var(--md-primary)]">Mekong</span>
           <span>CLI</span>
         </a>
 
@@ -48,7 +48,7 @@ export default function SiteNav() {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm text-slate-400 transition-colors hover:bg-slate-800/60 hover:text-white"
+              className="rounded-lg px-3 py-2 text-sm text-[var(--md-on-surface-variant)] transition-colors hover:bg-[var(--md-surface-container)] hover:text-[var(--md-on-surface)]"
             >
               {link.label}
             </a>
@@ -61,7 +61,7 @@ export default function SiteNav() {
             href="https://github.com/longtho638-jpg/mekong-cli"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-slate-400 transition-colors hover:text-white"
+            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm text-[var(--md-on-surface-variant)] transition-colors hover:text-[var(--md-on-surface)]"
             aria-label="GitHub"
           >
             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -71,7 +71,7 @@ export default function SiteNav() {
           </a>
           <a
             href="#quickstart"
-            className="rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30 hover:opacity-90"
+            className="rounded-lg bg-[var(--md-primary)] px-4 py-2 text-sm font-semibold text-[var(--md-on-primary)] shadow-lg transition-all hover:opacity-90"
           >
             Get started
           </a>
@@ -79,7 +79,7 @@ export default function SiteNav() {
 
         {/* Mobile toggle */}
         <button
-          className="flex items-center rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-800 hover:text-white md:hidden"
+          className="flex items-center rounded-lg p-2 text-[var(--md-on-surface-variant)] transition-colors hover:bg-[var(--md-surface-container)] hover:text-[var(--md-on-surface)] md:hidden"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
         >
@@ -97,22 +97,22 @@ export default function SiteNav() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="mx-auto mt-2 max-w-6xl overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/95 p-4 backdrop-blur-xl md:hidden">
+        <div className="mx-auto mt-2 max-w-6xl overflow-hidden rounded-xl border border-[var(--md-outline-variant)] bg-[var(--md-surface-container-low)] p-4 backdrop-blur-xl md:hidden">
           <div className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-lg px-4 py-2.5 text-sm text-slate-300 transition-colors hover:bg-slate-800 hover:text-white"
+                className="rounded-lg px-4 py-2.5 text-sm text-[var(--md-on-surface-variant)] transition-colors hover:bg-[var(--md-surface-container)] hover:text-[var(--md-on-surface)]"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </a>
             ))}
-            <div className="mt-2 border-t border-slate-800 pt-2">
+            <div className="mt-2 border-t border-[var(--md-outline-variant)] pt-2">
               <a
                 href="#quickstart"
-                className="block rounded-lg bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
+                className="block rounded-lg bg-[var(--md-primary)] px-4 py-2.5 text-center text-sm font-semibold text-[var(--md-on-primary)]"
                 onClick={() => setMobileOpen(false)}
               >
                 Get started free

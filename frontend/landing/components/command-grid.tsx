@@ -13,14 +13,14 @@ interface CommandGridProps {
 function CreditBadge({ cost }: { cost: number }) {
   if (cost === 0) {
     return (
-      <span className="rounded-full border border-slate-700 bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+      <span className="rounded-full border border-[var(--md-outline-variant)] bg-[var(--md-surface-container)] px-2 py-0.5 text-xs text-[var(--md-on-surface-variant)]">
         free
       </span>
     )
   }
   const dots = Math.min(cost, 5)
   return (
-    <span className="rounded-full border border-cyan-900 bg-cyan-950/50 px-2 py-0.5 font-mono text-xs text-cyan-400">
+    <span className="rounded-full border border-[var(--md-primary-container)] bg-[var(--md-primary-container)] px-2 py-0.5 font-mono text-xs text-[var(--md-primary)]">
       {'●'.repeat(dots)}
     </span>
   )
@@ -42,12 +42,12 @@ export default function CommandGrid({ commands, columns = 3 }: CommandGridProps)
           className="glass-card flex flex-col gap-1.5 rounded-xl p-4"
         >
           <div className="flex items-start justify-between gap-2">
-            <code className="font-mono text-sm font-semibold text-cyan-300">
+            <code className="font-mono text-sm font-semibold text-[var(--md-primary)]">
               /{cmd.id}
             </code>
             <CreditBadge cost={cmd.creditCost} />
           </div>
-          <p className="text-xs leading-relaxed text-slate-400 line-clamp-2">
+          <p className="text-xs leading-relaxed text-[var(--md-on-surface-variant)] line-clamp-2">
             {cmd.description}
           </p>
         </div>

@@ -3,45 +3,45 @@ const STEPS = [
     role: '👑 CEO',
     cmd: '$ mekong founder:raise "Series A for AI platform"',
     out: 'Spawning 3 parallel agents...',
-    color: 'text-yellow-400',
-    border: 'border-yellow-500/25',
-    bg: 'bg-yellow-500/5',
-    dot: 'bg-yellow-400',
+    color: 'text-[var(--md-tertiary)]',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
+    dot: 'bg-[var(--md-tertiary)]',
   },
   {
     role: '💼 COO',
     cmd: '$ mekong business:revenue-engine "Hit $250K ARR"',
     out: '7 commands in DAG pipeline...',
     color: 'text-blue-400',
-    border: 'border-blue-500/25',
-    bg: 'bg-blue-500/5',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
     dot: 'bg-blue-400',
   },
   {
     role: '📊 Sales',
     cmd: '$ mekong sales:pipeline-build "Enterprise segment"',
     out: 'Research || Build || Operationalize',
-    color: 'text-purple-400',
-    border: 'border-purple-500/25',
-    bg: 'bg-purple-500/5',
-    dot: 'bg-purple-400',
+    color: 'text-[var(--md-secondary)]',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
+    dot: 'bg-[var(--md-secondary)]',
   },
   {
     role: '⚙️ CTO',
     cmd: '$ mekong engineering:ship "Payment integration"',
     out: 'Code → Test → Review → Deploy ✓',
-    color: 'text-cyan-400',
-    border: 'border-cyan-500/25',
-    bg: 'bg-cyan-500/5',
-    dot: 'bg-cyan-400',
+    color: 'text-[var(--md-primary)]',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
+    dot: 'bg-[var(--md-primary)]',
   },
   {
     role: '🔧 Ops',
     cmd: '$ mekong ops:health-sweep',
     out: '4 parallel checks → All systems green ✓',
     color: 'text-emerald-400',
-    border: 'border-emerald-500/25',
-    bg: 'bg-emerald-500/5',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
     dot: 'bg-emerald-400',
   },
 ]
@@ -53,14 +53,14 @@ export default function CascadeDemo() {
 
         {/* Header */}
         <div className="mb-14 text-center">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-cyan-400">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-[var(--md-primary)]">
             Super command cascade
           </p>
-          <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-bold text-[var(--md-on-surface)] sm:text-4xl">
             One command triggers{' '}
             <span className="gradient-text">parallel AI agents</span>
           </h2>
-          <p className="text-slate-400">
+          <p className="text-[var(--md-on-surface-variant)]">
             Super commands orchestrate DAG recipe workflows — parallel groups execute simultaneously.
           </p>
         </div>
@@ -71,7 +71,7 @@ export default function CascadeDemo() {
             <div key={i} className="flex w-full flex-col items-center">
               {/* Card */}
               <div
-                className={`w-full rounded-2xl border p-5 ${step.border} ${step.bg} cascade-step backdrop-blur-sm`}
+                className={`w-full rounded-xl border p-5 ${step.border} ${step.bg} cascade-step`}
                 style={{ animationDelay: `${i * 200}ms` }}
               >
                 {/* Terminal header */}
@@ -90,7 +90,7 @@ export default function CascadeDemo() {
                 </div>
 
                 {/* Command */}
-                <div className="mb-2 font-mono text-sm text-slate-300">
+                <div className="mb-2 font-mono text-sm text-[var(--md-on-surface)]">
                   {step.cmd}
                 </div>
 
@@ -104,8 +104,8 @@ export default function CascadeDemo() {
               {/* Connector arrow */}
               {i < STEPS.length - 1 && (
                 <div className="flex h-8 flex-col items-center justify-center gap-0.5">
-                  <div className="h-4 w-px bg-gradient-to-b from-slate-700 to-slate-800" />
-                  <svg className="h-3 w-3 text-slate-600" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="h-4 w-px bg-gradient-to-b from-[var(--md-outline-variant)] to-[var(--md-surface-container)]" />
+                  <svg className="h-3 w-3 text-[var(--md-on-surface-variant)]" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 16l-6-6h12z" />
                   </svg>
                 </div>

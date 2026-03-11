@@ -33,7 +33,7 @@ const DEPARTMENTS = [
 
 export default function BusinessPage() {
   return (
-    <main className="min-h-screen bg-slate-950">
+    <main className="min-h-screen bg-[var(--md-surface)]">
       <SiteNav />
       <LayerPageHero
         icon={businessLayer.icon}
@@ -48,7 +48,6 @@ export default function BusinessPage() {
         <div className="mx-auto max-w-5xl space-y-10">
           {DEPARTMENTS.map((dept) => {
             const cmds = allBiz.filter((c) => dept.ids.includes(c.id))
-            // fallback: if id not in COMMANDS yet, show stub
             const display = dept.ids.map((id) => {
               const found = cmds.find((c) => c.id === id)
               return (
@@ -65,8 +64,8 @@ export default function BusinessPage() {
               <div key={dept.title}>
                 <div className="mb-4 flex items-center gap-3">
                   <span className="text-2xl">{dept.icon}</span>
-                  <h2 className="text-lg font-bold text-white">{dept.title}</h2>
-                  <span className="rounded-full border border-slate-700 bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                  <h2 className="text-lg font-bold text-[var(--md-on-surface)]">{dept.title}</h2>
+                  <span className="rounded-full border border-[var(--md-outline-variant)] bg-[var(--md-surface-container)] px-2 py-0.5 text-xs text-[var(--md-on-surface-variant)]">
                     {display.length} commands
                   </span>
                 </div>
