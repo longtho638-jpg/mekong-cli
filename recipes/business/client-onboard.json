@@ -1,0 +1,33 @@
+{
+  "id": "business-client-onboard",
+  "name": "Client Onboarding",
+  "description": "New client setup — contract, project setup, kickoff deck, schedule. 4 commands, ~15 min.",
+  "trigger": "/business:client-onboard",
+  "output_dir": "reports/onboarding",
+  "estimated_credits": 12,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "legal",
+        "name": "Contract & Agreement",
+        "mode": "parallel",
+        "commands": [
+          { "id": "agreement", "args": "--output reports/onboarding/agreement-draft.md" },
+          { "id": "client", "args": "--output reports/onboarding/client-profile.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "kickoff",
+        "name": "Project Kickoff",
+        "mode": "sequential",
+        "commands": [
+          { "id": "project-management", "args": "--output reports/onboarding/project-setup.md" },
+          { "id": "schedule", "args": "--output reports/onboarding/kickoff-schedule.md" }
+        ],
+        "depends_on": ["legal"]
+      }
+    ]
+  }
+}

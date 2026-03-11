@@ -1,0 +1,42 @@
+{
+  "id": "product-launch-feature",
+  "name": "Feature Launch Pipeline",
+  "description": "Spec → build → test → ship → announce. 5 commands, ~40 min.",
+  "trigger": "/product:launch-feature",
+  "output_dir": "reports/feature-launch",
+  "estimated_credits": 22,
+  "estimated_minutes": 40,
+  "dag": {
+    "groups": [
+      {
+        "id": "spec",
+        "name": "Specification",
+        "mode": "sequential",
+        "commands": [
+          { "id": "scope", "args": "--output reports/feature-launch/feature-spec.md" },
+          { "id": "proposal", "args": "--output reports/feature-launch/technical-proposal.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "build",
+        "name": "Build & Test",
+        "mode": "sequential",
+        "commands": [
+          { "id": "cook", "args": "--output reports/feature-launch/implementation.md" },
+          { "id": "test", "args": "--output reports/feature-launch/test-results.md" }
+        ],
+        "depends_on": ["spec"]
+      },
+      {
+        "id": "ship",
+        "name": "Ship & Announce",
+        "mode": "sequential",
+        "commands": [
+          { "id": "handoff", "args": "--output reports/feature-launch/release-notes.md" }
+        ],
+        "depends_on": ["build"]
+      }
+    ]
+  }
+}

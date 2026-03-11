@@ -1,0 +1,33 @@
+{
+  "id": "product-sprint-plan",
+  "name": "Sprint Planning",
+  "description": "Backlog grooming → sprint scope → task breakdown → assignments. 4 commands, ~20 min.",
+  "trigger": "/product:sprint-plan",
+  "output_dir": "reports/sprint",
+  "estimated_credits": 14,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "groom",
+        "name": "Backlog Grooming",
+        "mode": "parallel",
+        "commands": [
+          { "id": "feedback", "args": "--output reports/sprint/user-feedback-summary.md" },
+          { "id": "roadmap", "args": "--output reports/sprint/roadmap-alignment.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Sprint Definition",
+        "mode": "sequential",
+        "commands": [
+          { "id": "sprint", "args": "--output reports/sprint/sprint-backlog.md" },
+          { "id": "estimate", "args": "--output reports/sprint/story-points.md" }
+        ],
+        "depends_on": ["groom"]
+      }
+    ]
+  }
+}

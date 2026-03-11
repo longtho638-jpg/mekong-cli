@@ -1,0 +1,33 @@
+{
+  "id": "product-competitive-intel",
+  "name": "Competitive Intelligence",
+  "description": "Market scan + competitor deep dive + positioning strategy. 4 commands, ~25 min.",
+  "trigger": "/product:competitive-intel",
+  "output_dir": "reports/competitive-intel",
+  "estimated_credits": 18,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "scan",
+        "name": "Market Scan",
+        "mode": "parallel",
+        "commands": [
+          { "id": "competitor", "args": "--output reports/competitive-intel/competitor-profiles.md" },
+          { "id": "market-analysis", "args": "--output reports/competitive-intel/market-trends.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "position",
+        "name": "Positioning",
+        "mode": "sequential",
+        "commands": [
+          { "id": "pricing", "args": "--output reports/competitive-intel/pricing-analysis.md" },
+          { "id": "swot", "args": "--output reports/competitive-intel/positioning-strategy.md" }
+        ],
+        "depends_on": ["scan"]
+      }
+    ]
+  }
+}

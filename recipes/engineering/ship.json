@@ -1,0 +1,43 @@
+{
+  "id": "engineering-ship",
+  "name": "Ship Pipeline",
+  "description": "Code → test → review → deploy. Full CI/CD in one command. 6 commands, ~35 min.",
+  "trigger": "/engineering:ship",
+  "output_dir": "reports/ship",
+  "estimated_credits": 22,
+  "estimated_minutes": 35,
+  "dag": {
+    "groups": [
+      {
+        "id": "implement",
+        "name": "Implement",
+        "mode": "sequential",
+        "commands": [
+          { "id": "cook", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "quality",
+        "name": "Quality Gates",
+        "mode": "parallel",
+        "commands": [
+          { "id": "test", "args": "--all" },
+          { "id": "lint", "args": "" },
+          { "id": "typecheck", "args": "" }
+        ],
+        "depends_on": ["implement"]
+      },
+      {
+        "id": "review-deploy",
+        "name": "Review & Deploy",
+        "mode": "sequential",
+        "commands": [
+          { "id": "review", "args": "" },
+          { "id": "deploy-staging", "args": "" }
+        ],
+        "depends_on": ["quality"]
+      }
+    ]
+  }
+}

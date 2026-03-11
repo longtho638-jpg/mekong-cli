@@ -1,0 +1,43 @@
+{
+  "id": "engineering-new-service",
+  "name": "New Service Bootstrap",
+  "description": "Scaffold → implement → test → deploy. New microservice from zero. 6 commands, ~45 min.",
+  "trigger": "/engineering:new-service",
+  "output_dir": "reports/new-service",
+  "estimated_credits": 28,
+  "estimated_minutes": 45,
+  "dag": {
+    "groups": [
+      {
+        "id": "design",
+        "name": "Architecture & Design",
+        "mode": "sequential",
+        "commands": [
+          { "id": "arch", "args": "$ARGUMENTS --output reports/new-service/architecture.md" },
+          { "id": "schema", "args": "--output reports/new-service/data-model.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "build",
+        "name": "Implement",
+        "mode": "sequential",
+        "commands": [
+          { "id": "cook", "args": "--output reports/new-service/implementation.md" },
+          { "id": "api", "args": "--output reports/new-service/api-spec.md" }
+        ],
+        "depends_on": ["design"]
+      },
+      {
+        "id": "ship",
+        "name": "Test & Deploy",
+        "mode": "sequential",
+        "commands": [
+          { "id": "test", "args": "--all" },
+          { "id": "deploy-staging", "args": "" }
+        ],
+        "depends_on": ["build"]
+      }
+    ]
+  }
+}

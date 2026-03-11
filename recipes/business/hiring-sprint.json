@@ -1,0 +1,33 @@
+{
+  "id": "business-hiring-sprint",
+  "name": "Hiring Sprint",
+  "description": "End-to-end recruiting — JD, sourcing, interview kit, comp benchmarking. 4 commands, ~20 min.",
+  "trigger": "/business:hiring-sprint",
+  "output_dir": "reports/hiring",
+  "estimated_credits": 15,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "prepare",
+        "name": "Job Preparation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "hr-management", "args": "--output reports/hiring/job-description.md" },
+          { "id": "budget", "args": "--output reports/hiring/comp-benchmark.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "source",
+        "name": "Sourcing & Screening",
+        "mode": "sequential",
+        "commands": [
+          { "id": "leadgen", "args": "--context hiring --output reports/hiring/candidate-sourcing.md" },
+          { "id": "schedule", "args": "--output reports/hiring/interview-schedule.md" }
+        ],
+        "depends_on": ["prepare"]
+      }
+    ]
+  }
+}

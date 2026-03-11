@@ -6,8 +6,26 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 NODE_ENV = "production"
 
+# R2 bucket for artifact storage
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "algo-trader-artifacts"
+
+# KV namespace for build cache
+[[kv_namespaces]]
+binding = "BUILD_CACHE"
+id = "95df9f174767429ea6e4d2e8c63c982a"
+
 [env.staging]
 name = "algo-trader-staging"
 
 [env.staging.vars]
 NODE_ENV = "staging"
+
+[[env.staging.r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "algo-trader-artifacts-staging"
+
+[[env.staging.kv_namespaces]]
+binding = "BUILD_CACHE"
+id = "95df9f174767429ea6e4d2e8c63c982a"

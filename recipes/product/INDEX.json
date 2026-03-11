@@ -1,0 +1,11 @@
+{
+  "name": "Product Workflows",
+  "description": "CPO super commands for discovery, sprints, launches, and competitive intelligence",
+  "recipes": [
+    { "id": "product-discovery", "file": "discovery.json", "stage": "discover" },
+    { "id": "product-sprint-plan", "file": "sprint-plan.json", "stage": "plan" },
+    { "id": "product-launch-feature", "file": "launch-feature.json", "stage": "ship" },
+    { "id": "product-competitive-intel", "file": "competitive-intel.json", "stage": "intel" },
+    { "id": "product-retrospective", "file": "retrospective.json", "stage": "improve" }
+  ]
+}

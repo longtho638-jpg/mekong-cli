@@ -1,0 +1,41 @@
+{
+  "id": "engineering-incident",
+  "name": "Incident Response",
+  "description": "Detect → debug → fix → test → postmortem. Structured incident handling. 4 commands, ~25 min.",
+  "trigger": "/engineering:incident",
+  "output_dir": "reports/incident",
+  "estimated_credits": 15,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "diagnose",
+        "name": "Diagnose",
+        "mode": "sequential",
+        "commands": [
+          { "id": "debug", "args": "$ARGUMENTS --output reports/incident/diagnosis.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "resolve",
+        "name": "Fix & Verify",
+        "mode": "sequential",
+        "commands": [
+          { "id": "fix", "args": "--output reports/incident/fix-applied.md" },
+          { "id": "test", "args": "--all" }
+        ],
+        "depends_on": ["diagnose"]
+      },
+      {
+        "id": "learn",
+        "name": "Postmortem",
+        "mode": "sequential",
+        "commands": [
+          { "id": "journal", "args": "--output reports/incident/postmortem.md" }
+        ],
+        "depends_on": ["resolve"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": "engineering-refactor",
+  "name": "Refactor Pipeline",
+  "description": "Audit → plan → refactor → test → verify. Safe large-scale refactoring. 5 commands, ~40 min.",
+  "trigger": "/engineering:refactor",
+  "output_dir": "reports/refactor",
+  "estimated_credits": 20,
+  "estimated_minutes": 40,
+  "dag": {
+    "groups": [
+      {
+        "id": "analyze",
+        "name": "Analyze & Plan",
+        "mode": "parallel",
+        "commands": [
+          { "id": "audit", "args": "--output reports/refactor/code-audit.md" },
+          { "id": "coverage", "args": "--output reports/refactor/test-coverage.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "execute",
+        "name": "Refactor",
+        "mode": "sequential",
+        "commands": [
+          { "id": "refactor", "args": "$ARGUMENTS" },
+          { "id": "test", "args": "--all" }
+        ],
+        "depends_on": ["analyze"]
+      },
+      {
+        "id": "verify",
+        "name": "Verify",
+        "mode": "sequential",
+        "commands": [
+          { "id": "review", "args": "" }
+        ],
+        "depends_on": ["execute"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Business Workflows",
+  "description": "COO/CRO super commands for revenue, operations, and team management",
+  "recipes": [
+    { "id": "business-revenue-engine", "file": "revenue-engine.json", "stage": "revenue" },
+    { "id": "business-quarterly-review", "file": "quarterly-review.json", "stage": "review" },
+    { "id": "business-hiring-sprint", "file": "hiring-sprint.json", "stage": "team" },
+    { "id": "business-campaign-launch", "file": "campaign-launch.json", "stage": "marketing" },
+    { "id": "business-financial-close", "file": "financial-close.json", "stage": "finance" },
+    { "id": "business-client-onboard", "file": "client-onboard.json", "stage": "clients" }
+  ]
+}

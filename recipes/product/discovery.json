@@ -1,0 +1,38 @@
+{
+  "id": "product-discovery",
+  "name": "Product Discovery Sprint",
+  "description": "Problem → persona → solution → validation. 5 commands, ~30 min.",
+  "trigger": "/product:discovery",
+  "output_dir": "reports/discovery",
+  "estimated_credits": 20,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "understand",
+        "name": "Understand Problem Space",
+        "mode": "parallel",
+        "commands": [
+          { "id": "persona", "args": "--output reports/discovery/user-personas.md" },
+          { "id": "competitor", "args": "--output reports/discovery/competitive-analysis.md" },
+          { "id": "brainstorm", "args": "--output reports/discovery/opportunity-map.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "define",
+        "name": "Define Solution",
+        "mode": "sequential",
+        "commands": [
+          { "id": "scope", "args": "--output reports/discovery/solution-scope.md" },
+          { "id": "estimate", "args": "--output reports/discovery/effort-estimate.md" }
+        ],
+        "depends_on": ["understand"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/discovery/DISCOVERY-BRIEF.md"
+    }
+  }
+}

@@ -30,7 +30,7 @@ export const LAYERS: LayerData[] = [
     description: "Sales, marketing, finance, HR, client ops. Revenue engine layer.",
     icon: "🏢",
     // prettier-ignore
-    commands: ["ads","affiliate","cashflow","campaign","client","close","content","contract","crm","performance-review","partnerships","email","expense","finance","agreement","hr","invoice","invoice-gen","marketing-plan","customer-research","leadgen","schedule","marketing","budget","hr-management","market-analysis","pipeline","revenue","sales","seo","social","tax"],
+    commands: ["ads","affiliate","cashflow","campaign","client","close","content","contract","crm","performance-review","partnerships","email","expense","finance","agreement","hr","invoice","invoice-gen","marketing-plan","customer-research","leadgen","schedule","marketing","budget","hr-management","market-analysis","pipeline","revenue","sales","seo","social","tax","business-revenue-engine","business-quarterly-review","business-hiring-sprint","business-campaign-launch","business-financial-close","business-client-onboard"],
     cascadesTo: ["product"],
     entryPrompt: "Business layer. Sales, marketing, finance, or HR?",
     color: "blue-400",
@@ -42,7 +42,7 @@ export const LAYERS: LayerData[] = [
     description: "Roadmap, sprints, personas, proposals, demos. Bridge between biz and eng.",
     icon: "📦",
     // prettier-ignore
-    commands: ["general-report","brainstorm","competitor","demo","project-management","estimate","feedback","handoff","persona","plan","proposal","retrospective","roadmap","scope","sprint","standup"],
+    commands: ["general-report","brainstorm","competitor","demo","project-management","estimate","feedback","handoff","persona","plan","proposal","retrospective","roadmap","scope","sprint","standup","product-discovery","product-sprint-plan","product-launch-feature","product-competitive-intel","product-retrospective"],
     cascadesTo: ["engineering"],
     entryPrompt: "Product layer. Roadmap, sprint, scope, or brainstorm?",
     color: "purple-400",
@@ -54,7 +54,7 @@ export const LAYERS: LayerData[] = [
     description: "Code, build, test, deploy, review. The execution powerhouse.",
     icon: "⚙️",
     // prettier-ignore
-    commands: ["api","arch","code","component","cook","coverage","debug","deploy","deploy-prod","deploy-staging","docs","docs-api","docs-arch","docs-changelog","docs-deploy","docs-onboard","docs-readme","e2e-test","fix","format","git","git-bisect","git-branch","git-cherry","git-merge","git-rebase","git-squash","git-stash","git-tag","integration-test","journal","kanban","lint","migrate","optimize","pr","refactor","review","schema","seed","ship","test","typecheck","unit-test","vibe-code","vibe-cook","watzup"],
+    commands: ["api","arch","code","component","cook","coverage","debug","deploy","deploy-prod","deploy-staging","docs","docs-api","docs-arch","docs-changelog","docs-deploy","docs-onboard","docs-readme","e2e-test","fix","format","git","git-bisect","git-branch","git-cherry","git-merge","git-rebase","git-squash","git-stash","git-tag","integration-test","journal","kanban","lint","migrate","optimize","pr","refactor","review","schema","seed","ship","test","typecheck","unit-test","vibe-code","vibe-cook","watzup","engineering-ship","engineering-refactor","engineering-incident","engineering-new-service"],
     cascadesTo: ["ops"],
     entryPrompt: "Engineering layer. Cook, fix, test, review, or deploy?",
     color: "green-400",
@@ -66,7 +66,7 @@ export const LAYERS: LayerData[] = [
     description: "Audit, health, security, sync, environment. The foundation layer.",
     icon: "🔧",
     // prettier-ignore
-    commands: ["audit","benchmark","bootstrap-auto","bootstrap-auto-fast","bootstrap-auto-parallel","clean","company-agent","company-billing","company-init","company-report","company-run","company-workflow","env","health","help","init","install","raas","raas-billing","raas-bootstrap","raas-bootstrap-auto","raas-bootstrap-auto-parallel","raas-bootstrap-parallel","raas-deploy","raas-mission","raas-status","report","rollback","security","setup-mcp","smoke","status","sync-agent","sync-all","sync-providers","sync-artifacts","sync-browser","sync-editor","sync-mcp","sync-rules","sync-tasks","update","use-mcp","win-check"],
+    commands: ["audit","benchmark","bootstrap-auto","bootstrap-auto-fast","bootstrap-auto-parallel","clean","company-agent","company-billing","company-init","company-report","company-run","company-workflow","env","health","help","init","install","raas","raas-billing","raas-bootstrap","raas-bootstrap-auto","raas-bootstrap-auto-parallel","raas-bootstrap-parallel","raas-deploy","raas-mission","raas-status","report","rollback","security","setup-mcp","smoke","status","sync-agent","sync-all","sync-providers","sync-artifacts","sync-browser","sync-editor","sync-mcp","sync-rules","sync-tasks","update","use-mcp","win-check","ops-health-sweep","ops-security-audit","ops-sync-all","ops-disaster-recovery"],
     cascadesTo: [],
     entryPrompt: "Ops layer. Audit, health check, security, or sync?",
     color: "orange-400",

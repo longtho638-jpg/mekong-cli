@@ -19,6 +19,7 @@ import { COMMANDS_ENGINEERING_C } from "./commands-engineering-c"
 import { COMMANDS_OPS_A } from "./commands-ops-a"
 import { COMMANDS_OPS_B } from "./commands-ops-b"
 import { COMMANDS_OPS_C } from "./commands-ops-c"
+import { COMMANDS_SUPER } from "./commands-super"
 
 export const COMMANDS: CommandData[] = [
   ...COMMANDS_FOUNDER_A,
@@ -32,4 +33,5 @@ export const COMMANDS: CommandData[] = [
   ...COMMANDS_OPS_A,
   ...COMMANDS_OPS_B,
   ...COMMANDS_OPS_C,
+  ...COMMANDS_SUPER,
 ]

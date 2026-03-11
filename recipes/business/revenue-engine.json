@@ -1,0 +1,48 @@
+{
+  "id": "business-revenue-engine",
+  "name": "Revenue Engine Setup",
+  "description": "Build complete revenue pipeline — leads, CRM, sales, invoicing, analytics. 7 commands, ~40 min.",
+  "trigger": "/business:revenue-engine",
+  "output_dir": "reports/revenue-engine",
+  "estimated_credits": 28,
+  "estimated_minutes": 40,
+  "dag": {
+    "groups": [
+      {
+        "id": "research",
+        "name": "Market & Pipeline Research",
+        "mode": "parallel",
+        "commands": [
+          { "id": "market-analysis", "args": "--output reports/revenue-engine/market-analysis.md" },
+          { "id": "customer-research", "args": "--output reports/revenue-engine/customer-segments.md" },
+          { "id": "competitor", "args": "--output reports/revenue-engine/competitive-landscape.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "build-pipeline",
+        "name": "Build Sales Pipeline",
+        "mode": "parallel",
+        "commands": [
+          { "id": "pipeline", "args": "--output reports/revenue-engine/pipeline-design.md" },
+          { "id": "leadgen", "args": "--output reports/revenue-engine/lead-gen-strategy.md" }
+        ],
+        "depends_on": ["research"]
+      },
+      {
+        "id": "operationalize",
+        "name": "Operationalize",
+        "mode": "sequential",
+        "commands": [
+          { "id": "crm", "args": "--output reports/revenue-engine/crm-setup.md" },
+          { "id": "sales", "args": "--output reports/revenue-engine/sales-playbook.md" }
+        ],
+        "depends_on": ["build-pipeline"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/revenue-engine/REVENUE-ENGINE-SUMMARY.md"
+    }
+  }
+}

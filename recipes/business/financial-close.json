@@ -1,0 +1,34 @@
+{
+  "id": "business-financial-close",
+  "name": "Financial Close",
+  "description": "Monthly/quarterly close — reconcile, report, forecast, tax prep. 5 commands, ~25 min.",
+  "trigger": "/business:financial-close",
+  "output_dir": "reports/financial-close",
+  "estimated_credits": 18,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "reconcile",
+        "name": "Reconciliation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "revenue", "args": "--output reports/financial-close/revenue-reconciliation.md" },
+          { "id": "expense", "args": "--output reports/financial-close/expense-reconciliation.md" },
+          { "id": "invoice", "args": "--output reports/financial-close/ar-aging.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "report",
+        "name": "Financial Statements",
+        "mode": "sequential",
+        "commands": [
+          { "id": "financial-report", "args": "--output reports/financial-close/financial-statements.md" },
+          { "id": "tax", "args": "--output reports/financial-close/tax-prep.md" }
+        ],
+        "depends_on": ["reconcile"]
+      }
+    ]
+  }
+}

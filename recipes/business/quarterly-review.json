@@ -1,0 +1,47 @@
+{
+  "id": "business-quarterly-review",
+  "name": "Quarterly Business Review",
+  "description": "QBR across all departments — revenue, expenses, KPIs, team, forecast. 6 commands, ~30 min.",
+  "trigger": "/business:quarterly-review",
+  "output_dir": "reports/qbr",
+  "estimated_credits": 22,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "financials",
+        "name": "Financial Snapshot",
+        "mode": "parallel",
+        "commands": [
+          { "id": "revenue", "args": "--output reports/qbr/revenue-report.md" },
+          { "id": "cashflow", "args": "--output reports/qbr/cashflow-analysis.md" },
+          { "id": "expense", "args": "--output reports/qbr/expense-breakdown.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "performance",
+        "name": "Performance Review",
+        "mode": "parallel",
+        "commands": [
+          { "id": "performance-review", "args": "--output reports/qbr/team-performance.md" },
+          { "id": "pipeline", "args": "--output reports/qbr/pipeline-health.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "forward",
+        "name": "Forward Planning",
+        "mode": "sequential",
+        "commands": [
+          { "id": "forecast", "args": "--output reports/qbr/next-quarter-forecast.md" }
+        ],
+        "depends_on": ["financials", "performance"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/qbr/QBR-DECK.md"
+    }
+  }
+}

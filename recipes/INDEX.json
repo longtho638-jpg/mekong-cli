@@ -80,7 +80,7 @@
       "category": "devops"
     }
   ],
-  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder"],
+  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder", "business", "product", "engineering", "ops"],
   "founder": {
     "name": "VC Studio Workflows",
     "description": "Founder super commands — parallel pipelines for each investment stage",
@@ -91,6 +91,49 @@
       "founder/weekly.json",
       "founder/negotiate.json",
       "founder/ipo.json"
+    ]
+  },
+  "business": {
+    "name": "Business Workflows",
+    "description": "COO/CRO super commands for revenue, operations, and team management",
+    "recipes": [
+      "business/revenue-engine.json",
+      "business/quarterly-review.json",
+      "business/hiring-sprint.json",
+      "business/campaign-launch.json",
+      "business/financial-close.json",
+      "business/client-onboard.json"
+    ]
+  },
+  "product": {
+    "name": "Product Workflows",
+    "description": "CPO super commands for discovery, sprints, launches, and competitive intelligence",
+    "recipes": [
+      "product/discovery.json",
+      "product/sprint-plan.json",
+      "product/launch-feature.json",
+      "product/competitive-intel.json",
+      "product/retrospective.json"
+    ]
+  },
+  "engineering": {
+    "name": "Engineering Workflows",
+    "description": "CTO super commands for shipping, refactoring, incidents, and new services",
+    "recipes": [
+      "engineering/ship.json",
+      "engineering/refactor.json",
+      "engineering/incident.json",
+      "engineering/new-service.json"
+    ]
+  },
+  "ops": {
+    "name": "Ops Workflows",
+    "description": "VP Ops super commands for health monitoring, security, sync, and disaster recovery",
+    "recipes": [
+      "ops/health-sweep.json",
+      "ops/security-audit.json",
+      "ops/sync-all.json",
+      "ops/disaster-recovery.json"
     ]
   }
 }

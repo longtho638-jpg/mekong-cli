@@ -1,0 +1,32 @@
+{
+  "id": "product-retrospective",
+  "name": "Sprint Retrospective",
+  "description": "Review sprint → gather feedback → improvement plan → next sprint prep. 3 commands, ~15 min.",
+  "trigger": "/product:retrospective",
+  "output_dir": "reports/retro",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "review",
+        "name": "Review Performance",
+        "mode": "parallel",
+        "commands": [
+          { "id": "retrospective", "args": "--output reports/retro/retrospective.md" },
+          { "id": "feedback", "args": "--output reports/retro/team-feedback.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "improve",
+        "name": "Improvement Plan",
+        "mode": "sequential",
+        "commands": [
+          { "id": "standup", "args": "--output reports/retro/action-items.md" }
+        ],
+        "depends_on": ["review"]
+      }
+    ]
+  }
+}

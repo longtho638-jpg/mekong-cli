@@ -1,0 +1,43 @@
+{
+  "id": "business-campaign-launch",
+  "name": "Campaign Launch",
+  "description": "Multi-channel marketing campaign — content, ads, email, social, SEO. 6 commands, ~35 min.",
+  "trigger": "/business:campaign-launch",
+  "output_dir": "reports/campaign",
+  "estimated_credits": 22,
+  "estimated_minutes": 35,
+  "dag": {
+    "groups": [
+      {
+        "id": "strategy",
+        "name": "Campaign Strategy",
+        "mode": "parallel",
+        "commands": [
+          { "id": "marketing-plan", "args": "--output reports/campaign/strategy.md" },
+          { "id": "market-analysis", "args": "--output reports/campaign/audience-analysis.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "create",
+        "name": "Content Creation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "content", "args": "--output reports/campaign/content-calendar.md" },
+          { "id": "seo", "args": "--output reports/campaign/seo-strategy.md" },
+          { "id": "email", "args": "--output reports/campaign/email-sequences.md" }
+        ],
+        "depends_on": ["strategy"]
+      },
+      {
+        "id": "launch",
+        "name": "Launch & Track",
+        "mode": "sequential",
+        "commands": [
+          { "id": "ads", "args": "--output reports/campaign/ad-creatives.md" }
+        ],
+        "depends_on": ["create"]
+      }
+    ]
+  }
+}

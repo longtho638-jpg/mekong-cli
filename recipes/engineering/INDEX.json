@@ -1,0 +1,10 @@
+{
+  "name": "Engineering Workflows",
+  "description": "CTO super commands for shipping, refactoring, incidents, and new services",
+  "recipes": [
+    { "id": "engineering-ship", "file": "ship.json", "stage": "ship" },
+    { "id": "engineering-refactor", "file": "refactor.json", "stage": "maintain" },
+    { "id": "engineering-incident", "file": "incident.json", "stage": "respond" },
+    { "id": "engineering-new-service", "file": "new-service.json", "stage": "build" }
+  ]
+}

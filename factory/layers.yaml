@@ -105,6 +105,12 @@ layers:
       - schedule
       - market-analysis
       - performance-review
+      - business-revenue-engine
+      - business-quarterly-review
+      - business-hiring-sprint
+      - business-campaign-launch
+      - business-financial-close
+      - business-client-onboard
 
   product:
     chapter: "謀攻 — Attack by Stratagem"
@@ -132,6 +138,11 @@ layers:
       - handoff
       - project-management
       - general-report
+      - product-discovery
+      - product-sprint-plan
+      - product-launch-feature
+      - product-competitive-intel
+      - product-retrospective
 
   engineering:
     chapter: "軍爭 — Military Contention"
@@ -189,6 +200,10 @@ layers:
       - kanban
       - journal
       - watzup
+      - engineering-ship
+      - engineering-refactor
+      - engineering-incident
+      - engineering-new-service
 
   ops:
     chapter: "九變 — Nine Variations"
@@ -226,3 +241,7 @@ layers:
       - win-check
       - help
       - raas
+      - ops-health-sweep
+      - ops-security-audit
+      - ops-sync-all
+      - ops-disaster-recovery
