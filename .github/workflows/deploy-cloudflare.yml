@@ -16,12 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: cd packages/mekong-engine && npm install
+        run: cd packages/mekong-engine && pnpm install --no-frozen-lockfile
 
       - name: TypeScript check
         run: cd packages/mekong-engine && npx tsc --noEmit
@@ -40,12 +42,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
-        run: cd packages/mekong-engine && npm install
+        run: cd packages/mekong-engine && pnpm install --no-frozen-lockfile
 
       - name: Deploy via Wrangler
         uses: cloudflare/wrangler-action@v3
