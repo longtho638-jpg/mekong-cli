@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "echo 'Python CLI — no web build needed'",
+  "outputDirectory": "public",
+  "framework": null,
+  "ignoreCommand": "exit 0"
+}
