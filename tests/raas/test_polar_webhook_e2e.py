@@ -15,14 +15,13 @@ from __future__ import annotations
 import hashlib
 import hmac
 import json
-import os
 from pathlib import Path
 
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from src.raas.billing import PolarWebhookHandler, polar_webhook
+from src.raas.billing import PolarWebhookHandler
 from src.raas.credits import CreditStore
 
 
