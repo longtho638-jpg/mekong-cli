@@ -29,7 +29,7 @@ export const COMMANDS_BUSINESS_A: CommandData[] = [
     agents: ["planner", "data-analyst"],
   },
   {
-    id: "chien-dich",
+    id: "campaign",
     layer: "business",
     displayName: "Campaign",
     description: "Marketing campaign — plan, execute, measure campaign performance",
@@ -83,7 +83,7 @@ export const COMMANDS_BUSINESS_A: CommandData[] = [
     agents: ["planner", "data-analyst"],
   },
   {
-    id: "danh-gia",
+    id: "performance-review",
     layer: "business",
     displayName: "Evaluation",
     description: "Performance evaluation — quality assessment, team review",
@@ -92,7 +92,7 @@ export const COMMANDS_BUSINESS_A: CommandData[] = [
     agents: ["planner", "researcher"],
   },
   {
-    id: "doi-tac",
+    id: "partnerships",
     layer: "business",
     displayName: "Partners",
     description: "Partner management — strategic partnerships, collaboration tracking",
@@ -128,7 +128,7 @@ export const COMMANDS_BUSINESS_A: CommandData[] = [
     agents: ["planner", "data-analyst"],
   },
   {
-    id: "hop-dong",
+    id: "agreement",
     layer: "business",
     displayName: "Contract Lifecycle",
     description: "Contract lifecycle — drafting, review, signing, archival",

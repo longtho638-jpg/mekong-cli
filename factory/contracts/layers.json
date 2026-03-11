@@ -20,8 +20,8 @@
         "portfolio",
         "tier-pricing",
         "branding",
-        "muc-tieu",
-        "bao-cao-tai-chinh",
+        "goals",
+        "financial-report",
         "cofounder",
         "raise",
         "credits",
@@ -58,16 +58,16 @@
         "seo",
         "content",
         "affiliate",
-        "nhan-su",
-        "khach-hang",
-        "doi-tac",
-        "hop-dong",
-        "chien-dich",
-        "ke-hoach-tiep-thi",
-        "ngan-sach",
-        "lich-trinh",
-        "phan-tich",
-        "danh-gia"
+        "hr-management",
+        "customer-research",
+        "partnerships",
+        "agreement",
+        "campaign",
+        "marketing-plan",
+        "budget",
+        "schedule",
+        "market-analysis",
+        "performance-review"
       ]
     },
     "product": {
@@ -93,8 +93,8 @@
         "retrospective",
         "standup",
         "handoff",
-        "du-an",
-        "bao-cao"
+        "project-management",
+        "general-report"
       ]
     },
     "engineering": {

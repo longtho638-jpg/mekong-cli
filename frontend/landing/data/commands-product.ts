@@ -2,7 +2,7 @@ import type { CommandData } from "./commands"
 
 export const COMMANDS_PRODUCT: CommandData[] = [
   {
-    id: "bao-cao",
+    id: "general-report",
     layer: "product",
     displayName: "Report",
     description: "Progress report — status summary, results, deliverables",
@@ -38,7 +38,7 @@ export const COMMANDS_PRODUCT: CommandData[] = [
     agents: ["planner"],
   },
   {
-    id: "du-an",
+    id: "project-management",
     layer: "product",
     displayName: "Project",
     description: "Project management — timeline, milestones, resource tracking",

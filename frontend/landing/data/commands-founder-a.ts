@@ -11,7 +11,7 @@ export const COMMANDS_FOUNDER_A: CommandData[] = [
     agents: ["planner", "researcher"],
   },
   {
-    id: "bao-cao-tai-chinh",
+    id: "financial-report",
     layer: "founder",
     displayName: "Financial Report",
     description: "Financial report — revenue summary, expenses, profit analysis",
@@ -92,7 +92,7 @@ export const COMMANDS_FOUNDER_A: CommandData[] = [
     agents: ["copywriter", "researcher"],
   },
   {
-    id: "muc-tieu",
+    id: "goals",
     layer: "founder",
     displayName: "Business Goals",
     description: "Business goals — set objectives, track progress, measure outcomes",

@@ -20,7 +20,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["planner"],
   },
   {
-    id: "ke-hoach-tiep-thi",
+    id: "marketing-plan",
     layer: "business",
     displayName: "Marketing Plan",
     description: "Marketing plan — comprehensive strategy, channels, budget allocation",
@@ -29,7 +29,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["researcher", "copywriter", "planner"],
   },
   {
-    id: "khach-hang",
+    id: "customer-research",
     layer: "business",
     displayName: "Customer",
     description: "Customer relations — relationship management, support, retention",
@@ -47,7 +47,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["scout", "researcher"],
   },
   {
-    id: "lich-trinh",
+    id: "schedule",
     layer: "business",
     displayName: "Schedule",
     description: "Schedule management — tasks, events, deadlines, calendar sync",
@@ -65,7 +65,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["researcher", "copywriter", "planner"],
   },
   {
-    id: "ngan-sach",
+    id: "budget",
     layer: "business",
     displayName: "Budget",
     description: "Budget management — planning, allocation, variance tracking",
@@ -74,7 +74,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["planner", "data-analyst"],
   },
   {
-    id: "nhan-su",
+    id: "hr-management",
     layer: "business",
     displayName: "Team",
     description: "Team management — hiring, evaluation, workforce planning",
@@ -83,7 +83,7 @@ export const COMMANDS_BUSINESS_B: CommandData[] = [
     agents: ["planner", "researcher"],
   },
   {
-    id: "phan-tich",
+    id: "market-analysis",
     layer: "business",
     displayName: "Analytics",
     description: "Business analytics — data analysis, insights, trend detection",

@@ -18,7 +18,7 @@ export const LAYERS: LayerData[] = [
     description: "Strategic vision, fundraising, OKRs, financial goals. The apex of the pyramid.",
     icon: "👑",
     // prettier-ignore
-    commands: ["annual","bao-cao-tai-chinh","branding","cofounder","credits","forecast","fundraise","goal-dashboard","kpi","launch","muc-tieu","okr","portfolio","pricing","quarterly","raise","swot","tier-pricing","founder-brand","founder-grow","founder-hire","founder-legal","founder-metrics","founder-pitch","founder-secondary","founder-validate","founder-vc-map","founder-week","founder-vc-bootstrap","founder-vc-cap-table","founder-vc-negotiate","founder-vc-term-sheet","founder-ipo-pre-ipo-prep","founder-ipo-s1","founder-ipo-roadshow","founder-ipo-ipo-day","founder-ipo-public-co","founder-ipo-insider","founder-ipo-succession"],
+    commands: ["annual","financial-report","branding","cofounder","credits","forecast","fundraise","goal-dashboard","kpi","launch","goals","okr","portfolio","pricing","quarterly","raise","swot","tier-pricing","founder-brand","founder-grow","founder-hire","founder-legal","founder-metrics","founder-pitch","founder-secondary","founder-validate","founder-vc-map","founder-week","founder-vc-bootstrap","founder-vc-cap-table","founder-vc-negotiate","founder-vc-term-sheet","founder-ipo-pre-ipo-prep","founder-ipo-s1","founder-ipo-roadshow","founder-ipo-ipo-day","founder-ipo-public-co","founder-ipo-insider","founder-ipo-succession"],
     cascadesTo: ["business"],
     entryPrompt: "You're the founder. Strategy, finance, or goals today?",
     color: "yellow-400",
@@ -30,7 +30,7 @@ export const LAYERS: LayerData[] = [
     description: "Sales, marketing, finance, HR, client ops. Revenue engine layer.",
     icon: "🏢",
     // prettier-ignore
-    commands: ["ads","affiliate","cashflow","chien-dich","client","close","content","contract","crm","danh-gia","doi-tac","email","expense","finance","hop-dong","hr","invoice","invoice-gen","ke-hoach-tiep-thi","khach-hang","leadgen","lich-trinh","marketing","ngan-sach","nhan-su","phan-tich","pipeline","revenue","sales","seo","social","tax"],
+    commands: ["ads","affiliate","cashflow","campaign","client","close","content","contract","crm","performance-review","partnerships","email","expense","finance","agreement","hr","invoice","invoice-gen","marketing-plan","customer-research","leadgen","schedule","marketing","budget","hr-management","market-analysis","pipeline","revenue","sales","seo","social","tax"],
     cascadesTo: ["product"],
     entryPrompt: "Business layer. Sales, marketing, finance, or HR?",
     color: "blue-400",
@@ -42,7 +42,7 @@ export const LAYERS: LayerData[] = [
     description: "Roadmap, sprints, personas, proposals, demos. Bridge between biz and eng.",
     icon: "📦",
     // prettier-ignore
-    commands: ["bao-cao","brainstorm","competitor","demo","du-an","estimate","feedback","handoff","persona","plan","proposal","retrospective","roadmap","scope","sprint","standup"],
+    commands: ["general-report","brainstorm","competitor","demo","project-management","estimate","feedback","handoff","persona","plan","proposal","retrospective","roadmap","scope","sprint","standup"],
     cascadesTo: ["engineering"],
     entryPrompt: "Product layer. Roadmap, sprint, scope, or brainstorm?",
     color: "purple-400",
