@@ -1,8 +1,8 @@
 {
   "id": "git/merge",
   "version": "1.0.0",
-  "layer": "ops",
-  "chapter": "九變 — Nine Variations",
+  "layer": "engineering",
+  "chapter": "軍爭 — Military Contention",
   "display": {
     "name_vi": "Merge",
     "name_en": "Merge",
@@ -15,7 +15,7 @@
       "planner",
       "fullstack-developer"
     ],
-    "hub": "ops-hub",
+    "hub": "engineering-hub",
     "complexity": "standard",
     "timeout_ms": 120000,
     "credit_cost": 3,

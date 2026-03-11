@@ -507,7 +507,7 @@ Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}
                 },
             )
             # Attach dependencies as attribute for DAGScheduler
-            step.dependencies = step_deps  # type: ignore[attr-defined]
+            step.dependencies = step_deps
             steps.append(step)
 
         # Step 3: Validate DAG (no circular deps)
@@ -518,7 +518,7 @@ Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}
             if dag_error:
                 logger.warning("[PLANNER] %s — falling back to sequential", dag_error)
                 for step in steps:
-                    step.dependencies = []  # type: ignore[attr-defined]
+                    step.dependencies = []
                     step.params["dependencies"] = []
                 has_deps = False
 
@@ -613,7 +613,7 @@ Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}
                     ).__dict__,
                 },
             )
-            step.dependencies = step.params["dependencies"]  # type: ignore[attr-defined]
+            step.dependencies = step.params["dependencies"]
             kept_steps.append(step)
 
         recipe.steps = sorted(kept_steps, key=lambda s: s.order)

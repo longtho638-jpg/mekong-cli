@@ -1,8 +1,8 @@
 {
   "id": "founder/brand",
   "version": "1.0.0",
-  "layer": "ops",
-  "chapter": "九變 — Nine Variations",
+  "layer": "founder",
+  "chapter": "始計 — Initial Calculations",
   "display": {
     "name_vi": "Brand",
     "name_en": "Brand",
@@ -15,7 +15,7 @@
       "planner",
       "fullstack-developer"
     ],
-    "hub": "ops-hub",
+    "hub": "founder-hub",
     "complexity": "simple",
     "timeout_ms": 30000,
     "credit_cost": 1,

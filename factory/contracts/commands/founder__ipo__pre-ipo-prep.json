@@ -1,8 +1,8 @@
 {
   "id": "founder/ipo/pre-ipo-prep",
   "version": "1.0.0",
-  "layer": "ops",
-  "chapter": "九變 — Nine Variations",
+  "layer": "founder",
+  "chapter": "始計 — Initial Calculations",
   "display": {
     "name_vi": "Pre Ipo Prep",
     "name_en": "Pre Ipo Prep",
@@ -15,7 +15,7 @@
       "planner",
       "fullstack-developer"
     ],
-    "hub": "ops-hub",
+    "hub": "founder-hub",
     "complexity": "complex",
     "timeout_ms": 300000,
     "credit_cost": 5,

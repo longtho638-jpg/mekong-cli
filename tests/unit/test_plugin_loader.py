@@ -183,11 +183,11 @@ class TestPluginLoaderLocal(unittest.TestCase):
         """Should load .py files with register() function."""
         with TemporaryDirectory() as tmpdir:
             plugin_dir = Path(tmpdir)
-            # Create a valid plugin file
-            plugin_file = plugin_dir / "test_plugin.py"
+            # Create a valid plugin file (not test_ prefix — those are skipped)
+            plugin_file = plugin_dir / "my_plugin.py"
             plugin_file.write_text("""
 def register(registry):
-    registry.register("test_plugin", object)
+    registry.register("my_plugin", object)
 """)
 
             mock_registry = MagicMock()
@@ -195,7 +195,7 @@ def register(registry):
             loader.discover_local(plugin_dir=plugin_dir)
 
             self.assertEqual(loader.plugin_count, 1)
-            mock_registry.register.assert_called_with("test_plugin", object)
+            mock_registry.register.assert_called_with("my_plugin", object)
 
     def test_discover_local_skips_underscore_files(self):
         """Should skip files starting with underscore."""
@@ -205,6 +205,24 @@ def register(registry):
             (plugin_dir / "_private.py").write_text("def register(r): pass")
             (plugin_dir / "_internal.py").write_text("def register(r): pass")
             # Create valid file
+            (plugin_dir / "valid_plugin.py").write_text(
+                "def register(registry): registry.register('valid', object)"
+            )
+
+            mock_registry = MagicMock()
+            loader = PluginLoader(agent_registry=mock_registry)
+            loader.discover_local(plugin_dir=plugin_dir)
+
+            self.assertEqual(loader.plugin_count, 1)
+            loaded = loader.list_plugins()[0]
+            self.assertEqual(loaded["name"], "valid_plugin")
+
+    def test_discover_local_skips_test_prefixed_files(self):
+        """Should skip files starting with test_ to avoid loading test fixtures."""
+        with TemporaryDirectory() as tmpdir:
+            plugin_dir = Path(tmpdir)
+            (plugin_dir / "test_malicious.py").write_text("def register(r): pass")
+            (plugin_dir / "test_safe.py").write_text("def register(r): pass")
             (plugin_dir / "valid_plugin.py").write_text(
                 "def register(registry): registry.register('valid', object)"
             )
@@ -275,8 +293,8 @@ class TestPluginLoaderListPlugins(unittest.TestCase):
         """Should return list of dicts with plugin metadata."""
         with TemporaryDirectory() as tmpdir:
             plugin_dir = Path(tmpdir)
-            (plugin_dir / "test_plugin.py").write_text(
-                "def register(registry): registry.register('test', object)"
+            (plugin_dir / "my_plugin.py").write_text(
+                "def register(registry): registry.register('my_plugin', object)"
             )
 
             mock_registry = MagicMock()
@@ -286,7 +304,7 @@ class TestPluginLoaderListPlugins(unittest.TestCase):
             plugins = loader.list_plugins()
             self.assertEqual(len(plugins), 1)
             plugin = plugins[0]
-            self.assertEqual(plugin["name"], "test_plugin")
+            self.assertEqual(plugin["name"], "my_plugin")
             self.assertEqual(plugin["source"], "local")
             self.assertEqual(plugin["type"], "agent")
 

@@ -191,7 +191,9 @@ def main() -> int:
     for path in cmd_paths:
         cmd_id = cmd_id_from_path(path)
         stem = cmd_id.split("/")[-1]
-        layer = cmd_layer_map.get(stem, "ops")
+        # Try full hyphenated path first (e.g., "founder-brand"), then stem only
+        flat_id = cmd_id.replace("/", "-")
+        layer = cmd_layer_map.get(flat_id) or cmd_layer_map.get(stem, "ops")
         fm = parse_frontmatter(path)
         contract = build_contract(cmd_id, fm, layer, layers)
         out_path = CMD_CONTRACTS_DIR / f"{cmd_id.replace('/', '__')}.json"

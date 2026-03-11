@@ -162,7 +162,12 @@ def check_contract_coverage(layers: dict[str, Any]) -> CheckResult:
     if not cmd_dir.exists():
         return CheckResult("contract_coverage", False, "commands/ dir missing", ["missing"])
 
-    contract_stems = {p.stem.split("__")[-1] for p in cmd_dir.glob("*.json")}
+    # Match both flat names (cook.json) and path-based names (founder__brand.json)
+    contract_stems: set[str] = set()
+    for p in cmd_dir.glob("*.json"):
+        contract_stems.add(p.stem)                          # e.g., "cook" or "founder-brand"
+        contract_stems.add(p.stem.replace("__", "-"))       # e.g., "founder-brand" from "founder__brand"
+        contract_stems.add(p.stem.split("__")[-1])          # e.g., "brand" from "founder__brand"
     missing: list[str] = []
     total = 0
     for layer_name, layer_data in layers.items():

@@ -17,7 +17,6 @@ try:
     import psutil
 except ImportError:
     psutil = None
-    print("⚠️  psutil not found. Install with: pip install psutil")
 
 app = typer.Typer()
 console = Console()

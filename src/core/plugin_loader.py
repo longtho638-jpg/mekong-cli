@@ -88,7 +88,7 @@ class PluginLoader:
             return
 
         for fpath in sorted(pdir.glob("*.py")):
-            if fpath.name.startswith("_"):
+            if fpath.name.startswith("_") or fpath.name.startswith("test_"):
                 continue
             try:
                 spec = importlib.util.spec_from_file_location(fpath.stem, fpath)
