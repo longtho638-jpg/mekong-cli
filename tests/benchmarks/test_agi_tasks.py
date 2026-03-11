@@ -30,11 +30,13 @@ logger = logging.getLogger(__name__)
 # These are integration tests that call mekong cook via subprocess
 _has_llm = any(
     os.getenv(k)
-    for k in ("OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY")
+    for k in ("LLM_API_KEY", "OPENROUTER_API_KEY", "ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GOOGLE_API_KEY", "GEMINI_API_KEY")
 )
+# Also require explicit opt-in via RUN_BENCHMARKS=1
+_run_benchmarks = os.getenv("RUN_BENCHMARKS") == "1"
 pytestmark = pytest.mark.skipif(
-    os.getenv("CI") == "true" or not _has_llm,
-    reason="Skip AGI benchmarks in CI/CD or without LLM key - requires LLM configuration",
+    os.getenv("CI") == "true" or not _has_llm or not _run_benchmarks,
+    reason="Skip AGI benchmarks — set RUN_BENCHMARKS=1 with LLM key to run",
 )
 
 # Root path for mekong CLI

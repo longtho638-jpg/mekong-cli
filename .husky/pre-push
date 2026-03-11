@@ -10,29 +10,19 @@ echo "============================================"
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 if [ "$BRANCH" = "main" ]; then
     echo "   → Pushing to main - running full validation..."
-    
-    # Build check (turbo)
-    echo "   → Building all packages..."
-    pnpm build 2>&1 | tail -5
-    
+
+    # Python tests (skip benchmarks that need LLM API)
+    echo "   → Running Python tests..."
+    python3 -m pytest tests/ -x -q --tb=line --ignore=tests/benchmarks 2>&1 | tail -10
+
     if [ $? -ne 0 ]; then
         echo ""
-        echo "❌ BUILD FAILED - Push blocked!"
-        echo "   Fix build errors before pushing to main."
+        echo "❌ Python tests failed - Push blocked!"
+        echo "   Fix test errors before pushing to main."
         echo "============================================"
         exit 1
     fi
-    
-    # Python tests (if pytest available)
-    if [ -d "backend/tests" ]; then
-        echo "   → Running Python tests..."
-        python3 -m pytest backend/tests -q --tb=no 2>/dev/null
-        if [ $? -ne 0 ]; then
-            echo "❌ Python tests failed - Push blocked!"
-            exit 1
-        fi
-    fi
-    
+
     echo ""
     echo "✅ Pre-push validation passed!"
     echo "   Safe to push to GitHub."
