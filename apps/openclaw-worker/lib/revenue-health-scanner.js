@@ -1,13 +1,13 @@
 /**
- * Revenue Health Scanner — 第二篇 作戰: Quản lý tài nguyên chiến tranh
+ * Revenue Health Scanner — 第二篇 作戰: Managing war resources
  *
- * Tích hợp vào Auto-CTO loop để:
- *   1. Kiểm tra RaaS credit system health
+ * Integrated into Auto-CTO loop to:
+ *   1. Check RaaS credit system health
  *   2. Monitor billing webhook status
- *   3. Phát hiện revenue bottlenecks
- *   4. Tự tạo optimization missions
+ *   3. Detect revenue bottlenecks
+ *   4. Auto-create optimization missions
  *
- * Cooldown: 60 phút — không spam scan
+ * Cooldown: 60 minutes — no scan spam
  */
 
 const fs = require('fs');
@@ -17,7 +17,7 @@ const config = require('../config');
 
 const RAAS_DB_PATH = path.join(process.env.HOME || '/tmp', '.mekong/raas/tenants.db');
 const REVENUE_STATE_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/revenue-health.json');
-const COOLDOWN_MS = 60 * 60 * 1000; // 60 phút
+const COOLDOWN_MS = 60 * 60 * 1000; // 60 minutes
 
 // --- State ---
 
@@ -38,7 +38,7 @@ function saveRevenueState(state) {
 		if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 		fs.writeFileSync(REVENUE_STATE_FILE, JSON.stringify(state, null, 2));
 	} catch (e) {
-		log(`[REVENUE] Lỗi lưu state: ${e.message}`);
+		log(`[REVENUE] Error saving state: ${e.message}`);
 	}
 }
 
@@ -49,17 +49,17 @@ function checkRaaSModules() {
 	const raasDir = path.join(config.MEKONG_DIR, 'src/raas');
 
 	if (!fs.existsSync(raasDir)) {
-		issues.push({ severity: 'critical', module: 'raas', message: 'src/raas/ không tồn tại' });
+		issues.push({ severity: 'critical', module: 'raas', message: 'src/raas/ does not exist' });
 		return issues;
 	}
 
-	// Kiểm tra các module bắt buộc
+	// Check required modules
 	const requiredModules = ['auth.py', 'billing.py', 'credits.py', 'missions.py', 'tenant.py', 'dashboard.py', 'registry.py', 'sse.py'];
 
 	for (const mod of requiredModules) {
 		const modPath = path.join(raasDir, mod);
 		if (!fs.existsSync(modPath)) {
-			issues.push({ severity: 'critical', module: mod, message: `Module ${mod} thiếu` });
+			issues.push({ severity: 'critical', module: mod, message: `Module ${mod} missing` });
 		}
 	}
 
@@ -71,18 +71,18 @@ function checkGateway() {
 	const gwPath = path.join(config.MEKONG_DIR, 'apps/raas-gateway/index.js');
 
 	if (!fs.existsSync(gwPath)) {
-		issues.push({ severity: 'high', module: 'gateway', message: 'raas-gateway/index.js thiếu' });
+		issues.push({ severity: 'high', module: 'gateway', message: 'raas-gateway/index.js missing' });
 		return issues;
 	}
 
 	const content = fs.readFileSync(gwPath, 'utf-8');
 
-	// Kiểm tra security patterns
+	// Check security patterns
 	if (!content.includes('X-Telegram-Bot-Api-Secret-Token')) {
-		issues.push({ severity: 'high', module: 'gateway', message: 'Thiếu Telegram webhook security' });
+		issues.push({ severity: 'high', module: 'gateway', message: 'Missing Telegram webhook security' });
 	}
 	if (!/sql.{0,10}injection/i.test(content)) {
-		issues.push({ severity: 'medium', module: 'gateway', message: 'Thiếu SQL injection protection' });
+		issues.push({ severity: 'medium', module: 'gateway', message: 'Missing SQL injection protection' });
 	}
 
 	return issues;
@@ -93,17 +93,17 @@ function checkDashboard() {
 	const webDir = path.join(config.MEKONG_DIR, 'apps/agencyos-web');
 
 	if (!fs.existsSync(webDir)) {
-		issues.push({ severity: 'medium', module: 'dashboard', message: 'agencyos-web không tồn tại' });
+		issues.push({ severity: 'medium', module: 'dashboard', message: 'agencyos-web does not exist' });
 		return issues;
 	}
 
-	// Kiểm tra revenue routes
+	// Check revenue routes
 	const revDir = path.join(webDir, 'app/dashboard/revenue');
 	if (!fs.existsSync(revDir)) {
 		issues.push({
 			severity: 'medium',
 			module: 'dashboard',
-			message: 'Thiếu revenue dashboard routes (app/dashboard/revenue/)',
+			message: 'Missing revenue dashboard routes (app/dashboard/revenue/)',
 		});
 	}
 
@@ -113,22 +113,22 @@ function checkDashboard() {
 // --- Main Scanner ---
 
 /**
- * Scan toàn bộ revenue pipeline health.
- * Trả về { healthy: boolean, issues: Array, metrics: Object }
+ * Scan full revenue pipeline health.
+ * Returns { healthy: boolean, issues: Array, metrics: Object }
  */
 function scanRevenueHealth() {
 	const state = loadRevenueState();
 
 	// Cooldown check
 	if (Date.now() - state.lastScan < COOLDOWN_MS) {
-		return null; // Chưa đến lúc scan
+		return null; // Not time to scan yet
 	}
 
-	log('[REVENUE 作戰]: Bắt đầu scan revenue health...');
+	log('[REVENUE 作戰]: Starting revenue health scan...');
 
 	const issues = [...checkRaaSModules(), ...checkGateway(), ...checkDashboard()];
 
-	// Đếm actual module count
+	// Count actual module count
 	const raasDir = path.join(config.MEKONG_DIR, 'src/raas');
 	let actualModuleCount = 0;
 	try {
@@ -153,7 +153,7 @@ function scanRevenueHealth() {
 		metrics,
 	};
 
-	// Lưu state
+	// Save state
 	state.lastScan = Date.now();
 	state.issues = issues;
 	state.metrics = metrics;
@@ -162,7 +162,7 @@ function scanRevenueHealth() {
 	if (issues.length === 0) {
 		log('[REVENUE 作戰]: Pipeline healthy ✅');
 	} else {
-		log(`[REVENUE 作戰]: ${issues.length} vấn đề phát hiện (${metrics.criticalCount} critical)`);
+		log(`[REVENUE 作戰]: ${issues.length} issues detected (${metrics.criticalCount} critical)`);
 		for (const i of issues.slice(0, 3)) {
 			log(`  [${i.severity.toUpperCase()}] ${i.module}: ${i.message}`);
 		}
@@ -172,11 +172,11 @@ function scanRevenueHealth() {
 }
 
 /**
- * Tạo fix mission cho revenue issues.
- * Gọi từ auto-cto-pilot khi revenue scan phát hiện vấn đề.
+ * Create a fix mission for revenue issues.
+ * Called from auto-cto-pilot when revenue scan detects a problem.
  */
 function generateRevenueMission(issue) {
-	const prompt = `/cook "Trả lời bằng TIẾNG VIỆT. Fix revenue pipeline: ${issue.message} trong module ${issue.module}. Verify bằng python3 -m pytest tests/test_raas_integration.py sau khi sửa." --auto`;
+	const prompt = `/cook "Fix revenue pipeline: ${issue.message} in module ${issue.module}. Verify with python3 -m pytest tests/test_raas_integration.py after fixing." --auto`;
 	const filename = `HIGH_mission_revenue_fix_${issue.module}_${Date.now()}.txt`;
 	return { prompt, filename };
 }

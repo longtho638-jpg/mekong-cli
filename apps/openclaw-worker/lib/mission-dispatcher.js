@@ -190,14 +190,14 @@ function isComplexRawMission(text) {
 
 /**
  * Detect if task should be split into multiple /cook commands.
- * Heuristic: >100 chars AND has separators ("; ", " và ", " and ", multiple sentences)
+ * Heuristic: >100 chars AND has separators ("; ", " and ", " and ", multiple sentences)
  * @param {string} text - Sanitized task text
  * @returns {boolean}
  */
 function shouldChainCooks(text) {
 	if (text.length < 100) return false;
 	const hasMultipleSentences = (text.match(/\.\s+[A-Z]/g) || []).length > 1;
-	const hasSeparators = /;\s+|và\s+|and\s+/i.test(text);
+	const hasSeparators = /;\s+|va\s+|and\s+/i.test(text);
 	return hasMultipleSentences || hasSeparators;
 }
 
@@ -207,8 +207,8 @@ function shouldChainCooks(text) {
  * @returns {string[]} - Array of subtasks
  */
 function splitTaskIntoSubtasks(text) {
-	// Try splitting by: "; ", " và ", " and ", ". " (sentences)
-	let subtasks = text.split(/;\s+|và\s+|and\s+|\.\s+(?=[A-Z])/i);
+	// Try splitting by: "; ", " and ", " and ", ". " (sentences)
+	let subtasks = text.split(/;\s+|va\s+|and\s+|\.\s+(?=[A-Z])/i);
 
 	// Filter out empty/short subtasks
 	subtasks = subtasks.filter((s) => s.trim().length > 10);
@@ -226,7 +226,7 @@ function splitTaskIntoSubtasks(text) {
 
 /**
  * Build prompt from raw task content.
- * Rule 13: Command Obsession + Hàn Băng Quyết v4 Adaptive Scaling + Multi-Cook Chaining
+ * Rule 13: Command Obsession + Han Bang Quyet v4 Adaptive Scaling + Multi-Cook Chaining
  */
 // --- Prompt Sanitization (v2026.2.27: Lean Stealth) ---
 
@@ -272,15 +272,15 @@ function buildPrompt(taskContent, projectDir = null) {
 		.replace(/\s+/g, ' ')
 		.trim();
 	const lowerSafe = safe.toLowerCase();
-	const isDeepTask = lowerSafe.includes('deep 10x') || lowerSafe.includes('deep scan') || lowerSafe.includes('ánh xạ');
+	const isDeepTask = lowerSafe.includes('deep 10x') || lowerSafe.includes('deep scan') || lowerSafe.includes('map');
 
 	// 🧬 CLAUDEKIT DNA v2026.2.27: Aggressive Agental Execution (Rule 13)
 	const isPro = isProAvailable();
 
 	// 🛡️ CHAIRMAN MANDATE: Pro is for THINKING (PLAN) only.
-	const STRATEGIC_STOP = 'CHỈ RESEARCH VÀ LẬP PLAN (plan.md). TUYỆT ĐỐI KHÔNG FIX/COOK. Xong plan hãy dừng lại. ';
-	const mandatePrefix = `Trả lời bằng TIẾNG VIỆT. WORKFLOW: THINK DEEP -> PLAN FIRST. ${STRATEGIC_STOP}`;
-	const FILE_LIMIT = 'Sửa < 5 file mỗi mission.';
+	const STRATEGIC_STOP = 'RESEARCH AND PLAN ONLY (plan.md). ABSOLUTELY DO NOT FIX/COOK. Stop after plan is done. ';
+	const mandatePrefix = `WORKFLOW: THINK DEEP -> PLAN FIRST. ${STRATEGIC_STOP}`;
+	const FILE_LIMIT = 'Fix < 5 files per mission.';
 	const VI_PREFIX = '';
 
 	// Routing variables (kept lean — no prompt injection, just for command selection)
@@ -299,7 +299,7 @@ function buildPrompt(taskContent, projectDir = null) {
 		const isPlanCmd = cmd.startsWith('/plan') || cmd === '/bootstrap';
 
 		// Minimal mandate for cooking to reduce noise
-		const finalMandate = isPlanCmd ? mandatePrefix : 'Trả lời TIẾNG VIỆT. Ưu tiên /cook và kiểm tra kỹ. ';
+		const finalMandate = isPlanCmd ? mandatePrefix : 'Prioritize /cook and verify thoroughly. ';
 
 		const payload = escapedText ? `\n\n${escapedText} ${FILE_LIMIT}` : '';
 		return `${cmd} "${finalMandate.trim()}${payload}" ${flags}`.trim();
@@ -361,18 +361,18 @@ function buildPrompt(taskContent, projectDir = null) {
 	const intent = detectIntent(safe);
 	const routingLog = (msg) => log(`[HYBRID ROUTING] ${isPro ? '' : '⚠️ FALLBACK: '}${msg}`);
 
-	// 🐉 105-HANDS ROLE INJECTION: Gắn context chuyên gia vào task (chỉ khi không có explicit command)
+	// 🐉 105-HANDS ROLE INJECTION: Attach specialist context to task (only when no explicit command)
 	let roleInjectedText = safe;
 	if (matchRole) {
 		try {
 			const { role, score, fallback } = matchRole(safe, intent);
 			if (!fallback && role && role.systemPrompt) {
 				log(`🐉 [HANDS MATCH] ${role.displayName} (score:${score})`);
-				// Prepend role context vào task text để CC CLI hiểu ngữ cảnh chuyên gia
-				roleInjectedText = `[ROLE: ${role.displayName}] ${role.systemPrompt} | Nhiệm vụ: ${safe}`;
+				// Prepend role context to task text so CC CLI understands specialist context
+				roleInjectedText = `[ROLE: ${role.displayName}] ${role.systemPrompt} | Task: ${safe}`;
 			}
 		} catch (e) {
-			// Không để lỗi hands-registry phá vỡ routing chính
+			// Do not let hands-registry errors break main routing
 			log(`WARN: hands matchRole error: ${e.message}`);
 		}
 	}
@@ -400,7 +400,7 @@ function buildPrompt(taskContent, projectDir = null) {
 		routingLog(`Multi - bug detected -> Routing to 9Router(/cook --parallel)`);
 		return formatCmd(
 			'/cook',
-			roleInjectedText + (isHanBangMode ? ' [HÀN BĂNG MODE: Minimal agents]' : ' PHẢI dùng đa luồng 10+ subagents.'),
+			roleInjectedText + (isHanBangMode ? ' [HAN BANG MODE: Minimal agents]' : ' MUST use 10+ parallel subagents.'),
 			isHanBangMode ? '--auto' : '--parallel --auto',
 		);
 	}
@@ -442,7 +442,7 @@ function buildPrompt(taskContent, projectDir = null) {
 	routingLog(`Default Planning fallback -> Routing to ${isPro ? 'Claude Pro (/plan:hard)' : '9Router API (/plan:hard)'}`);
 	return formatCmd(
 		'/plan:hard',
-		roleInjectedText + (isHanBangMode ? ' [HÀN BĂNG MODE: Minimal agents]' : ''),
+		roleInjectedText + (isHanBangMode ? ' [HAN BANG MODE: Minimal agents]' : ''),
 		isHanBangMode ? '' : '--parallel',
 	);
 }
@@ -518,7 +518,7 @@ async function executeTask(taskContent, taskFile, timeoutMs, complexity) {
 	let intent = detectIntent(taskContent);
 	const isPro = isProAvailable();
 
-	if ((lowerContent.includes('deep 10x') || lowerContent.includes('deep scan') || lowerContent.includes('ánh xạ')) && isPro) {
+	if ((lowerContent.includes('deep 10x') || lowerContent.includes('deep scan') || lowerContent.includes('map')) && isPro) {
 		intent = 'PLAN';
 	}
 	// 🦞 PROJECT ROUTING: AGI/openclaw tasks → P0 (PRO intent)

@@ -1,7 +1,7 @@
 /**
- * Quân Luật Enforcer — Runtime enforcement cho Doanh Trại Tôm Hùm
+ * Quan Luat Enforcer — Runtime enforcement for the Tôm Hùm barracks
  *
- * Áp dụng 9 ĐIỀU Quân Lệnh vào runtime:
+ * Applies 9 Rules of Military Order at runtime:
  * - Signal Protocol standardization
  * - Territory guard (daemon overlap prevention)
  * - Token budget validation
@@ -17,15 +17,15 @@ const path = require('path');
 const config = require('../config');
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 1: PHỤC TÙNG CHỈ HUY — Chain of Command
+// Rule 1: OBEY THE COMMANDER — Chain of Command
 // ═══════════════════════════════════════════════════════════════
 
 const CHAIN_OF_COMMAND = {
-	CHU_SOAI: 'antigravity', // 👑 Chủ Soái
-	QUAN_SU: 'brain-process-manager', // 🧠 Quân Sư
-	TUONG: ['pane_0', 'pane_1'], // ⚔️ Tướng (CC CLI Panes)
+	CHU_SOAI: 'antigravity', // 👑 Supreme Commander
+	QUAN_SU: 'brain-process-manager', // 🧠 Chief Strategist
+	TUONG: ['pane_0', 'pane_1'], // ⚔️ Generals (CC CLI Panes)
 	QUAN: [
-		// 🐾 Quân (Daemons)
+		// 🐾 Soldiers (Daemons)
 		'hunter',
 		'builder',
 		'dispatcher',
@@ -41,7 +41,7 @@ const CHAIN_OF_COMMAND = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 2: BẨM BÁO MINH BẠCH — Signal Protocol
+// Rule 2: TRANSPARENT REPORTING — Signal Protocol
 // ═══════════════════════════════════════════════════════════════
 
 const SIGNAL_TYPES = {
@@ -61,7 +61,7 @@ const SIGNAL_TYPES = {
 const PRIORITY_LEVELS = ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'];
 
 /**
- * Tạo pheromone signal chuẩn theo Quân Luật Điều 2
+ * Create a standard pheromone signal per Rule 2 of Military Order
  */
 function createSignal(from, to, type, payload, priority = 'MEDIUM') {
 	if (!CHAIN_OF_COMMAND.QUAN.includes(from.replace('agent_', ''))) {
@@ -85,7 +85,7 @@ function createSignal(from, to, type, payload, priority = 'MEDIUM') {
 		rank: RANKS[from.replace('agent_', '')] || 'UNKNOWN',
 	};
 
-	// Ghi vào signal log (Điều 8: Liên Lạc Không Đứt)
+	// Write to signal log (Rule 8: Unbroken Communications)
 	try {
 		const logLine = `[${new Date().toISOString().slice(11, 19)}] [${signal.rank}] [${signal.from}] → [${signal.to}] ${signal.type} (${signal.priority}): ${JSON.stringify(signal.payload).slice(0, 200)}\n`;
 		const signalLog = path.join(process.env.HOME || '/tmp', 'tom_hum_signals.log');
@@ -98,7 +98,7 @@ function createSignal(from, to, type, payload, priority = 'MEDIUM') {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 3: LÃNH THỔ PHÂN MINH — Territory
+// Rule 3: CLEAR TERRITORIAL BOUNDARIES — Territory
 // ═══════════════════════════════════════════════════════════════
 
 const TERRITORIES = {
@@ -116,8 +116,8 @@ const TERRITORIES = {
 };
 
 /**
- * Kiểm tra daemon có xâm phạm lãnh thổ daemon khác không
- * Điều 3: CẤM XÂM PHẠM lãnh thổ daemon khác
+ * Check whether a daemon is violating another daemon's territory
+ * Rule 3: FORBIDDEN to encroach on another daemon's territory
  */
 function checkTerritory(daemonName, action) {
 	const territory = TERRITORIES[daemonName];
@@ -133,36 +133,36 @@ function checkTerritory(daemonName, action) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 4: LƯƠNG THỰC TIẾT KIỆM — Token Budget
+// Rule 4: CONSERVE SUPPLIES — Token Budget
 // ═══════════════════════════════════════════════════════════════
 
 const TOKEN_BUDGETS = {
 	FREE: {
 		models: ['gemini-2.5-flash', 'moonshotai/kimi-k2.5'],
 		maxTokensPerCall: 2000,
-		tier: 'QUAN', // Quân sĩ
+		tier: 'QUAN', // Soldiers
 	},
 	PREMIUM: {
 		models: ['claude-sonnet-4-5', 'claude-opus-4-6'],
 		maxTokensPerCall: 200000,
-		tier: 'TUONG', // Tướng lĩnh
+		tier: 'TUONG', // Generals
 	},
 	SUPREME: {
 		models: ['gemini-2.5-pro', 'claude-opus-4-6-thinking'],
 		maxTokensPerCall: 500000,
-		tier: 'CHU_SOAI', // Chủ Soái
+		tier: 'CHU_SOAI', // Supreme Commander
 	},
 };
 
 /**
- * Validate model đúng cấp bậc (Điều 4)
- * Daemon (QUÂN) chỉ được dùng FREE models
+ * Validate model is the correct tier (Rule 4)
+ * Daemon (QUAN/soldiers) may only use FREE models
  */
 function validateModelTier(daemonName, model) {
 	const isQuan = CHAIN_OF_COMMAND.QUAN.includes(daemonName);
 	if (isQuan) {
 		if (!TOKEN_BUDGETS.FREE.models.includes(model)) {
-			logQuanLuat(daemonName, `🚫 TOKEN BUDGET VIOLATION: "${model}" is PREMIUM/SUPREME — Quân sĩ chỉ được dùng FREE models`);
+			logQuanLuat(daemonName, `🚫 TOKEN BUDGET VIOLATION: "${model}" is PREMIUM/SUPREME — soldiers may only use FREE models`);
 			return false;
 		}
 	}
@@ -170,7 +170,7 @@ function validateModelTier(daemonName, model) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 5: DOANH TRẠI SẠCH SẼ — Clean Camp
+// Rule 5: CLEAN BARRACKS — Clean Camp
 // ═══════════════════════════════════════════════════════════════
 
 const QUEUE_LIMITS = {
@@ -180,7 +180,7 @@ const QUEUE_LIMITS = {
 };
 
 /**
- * Check queue discipline trước khi tạo mission mới
+ * Check queue discipline before creating a new mission
  */
 function checkQueueDiscipline(daemonName) {
 	try {
@@ -190,7 +190,7 @@ function checkQueueDiscipline(daemonName) {
 		const pending = fs.readdirSync(tasksDir).filter((f) => f.endsWith('.txt') && f.includes(daemonName));
 
 		if (pending.length >= QUEUE_LIMITS.maxQueueSize) {
-			logQuanLuat(daemonName, `🛑 QUEUE FULL: ${pending.length}/${QUEUE_LIMITS.maxQueueSize} — Chờ queue giải phóng`);
+			logQuanLuat(daemonName, `🛑 QUEUE FULL: ${pending.length}/${QUEUE_LIMITS.maxQueueSize} — Waiting for queue to clear`);
 			return false;
 		}
 
@@ -209,7 +209,7 @@ function checkQueueDiscipline(daemonName) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 6 + 9: CANH GÁC + HÀNH QUÂN — Health & Cadence
+// Rule 6 + 9: GUARD DUTY + MARCH CADENCE — Health & Cadence
 // ═══════════════════════════════════════════════════════════════
 
 const THERMAL_THRESHOLDS = {
@@ -219,7 +219,7 @@ const THERMAL_THRESHOLDS = {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// ĐIỀU 8: LIÊN LẠC KHÔNG ĐỨT — Logging
+// Rule 8: UNBROKEN COMMUNICATIONS — Logging
 // ═══════════════════════════════════════════════════════════════
 
 const RANKS = {
@@ -237,7 +237,7 @@ const RANKS = {
 };
 
 /**
- * Log chuẩn Quân Luật: [TIMESTAMP] [RANK] [DAEMON] message
+ * Standard Military Order log: [TIMESTAMP] [RANK] [DAEMON] message
  */
 function logQuanLuat(daemonName, message) {
 	const rank = RANKS[daemonName] || 'UNKNOWN';
@@ -248,20 +248,20 @@ function logQuanLuat(daemonName, message) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// NGŨ SỰ Assessment — Pre-mission strategic check
+// NGU SU Assessment — Pre-mission strategic check
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Ngũ Sự evaluation trước mỗi mission (始計 Chapter)
- * Đạo-Thiên-Địa-Tướng-Pháp
+ * Ngu Su (Five Factors) evaluation before each mission (始計 Chapter)
+ * Dao-Thien-Dia-Tuong-Phap
  */
 function assessNguSu(mission) {
 	const assessment = {
-		dao: true, // ĐẠO: Team alignment (Constitution compliant?)
-		thien: true, // THIÊN: Timing good? (thermal OK? quota available?)
-		dia: true, // ĐỊA: Environment ready? (staging? CI green?)
-		tuong: true, // TƯỚNG: Right model/agent for task?
-		phap: true, // PHÁP: System ready? (panes alive? queue space?)
+		dao: true, // DAO: Team alignment (Constitution compliant?)
+		thien: true, // THIEN: Timing good? (thermal OK? quota available?)
+		dia: true, // DIA: Environment ready? (staging? CI green?)
+		tuong: true, // TUONG: Right model/agent for task?
+		phap: true, // PHAP: System ready? (panes alive? queue space?)
 		score: 0,
 		recommend: 'PROCEED',
 	};
@@ -298,15 +298,15 @@ function assessNguSu(mission) {
 // ═══════════════════════════════════════════════════════════════
 
 /**
- * Khởi động daemon theo chuẩn Quân Luật
+ * Boot daemon following Military Order standards
  * Validates identity, logs boot, returns daemon info
- * @param {string} daemonName - Tên daemon (e.g. 'hunter')
+ * @param {string} daemonName - Daemon name (e.g. 'hunter')
  * @returns {{ rank: string, territory: object, ok: boolean }} Boot result
  */
 function bootDaemon(daemonName) {
 	// Validate daemon exists in Chain of Command
 	if (!CHAIN_OF_COMMAND.QUAN.includes(daemonName)) {
-		console.error(`[QUAN_LUAT] ❌ BOOT REJECTED: "${daemonName}" không thuộc Quân Đội`);
+		console.error(`[QUAN_LUAT] ❌ BOOT REJECTED: "${daemonName}" not part of the Army`);
 		return { rank: 'UNKNOWN', territory: null, ok: false };
 	}
 
@@ -315,7 +315,7 @@ function bootDaemon(daemonName) {
 
 	logQuanLuat(
 		daemonName,
-		`🏯 BOOT — ${rank} nhập doanh trại | Territory: ${territory.domain} | Actions: [${territory.actions.join(', ')}]`,
+		`🏯 BOOT — ${rank} entered barracks | Territory: ${territory.domain} | Actions: [${territory.actions.join(', ')}]`,
 	);
 
 	return { rank, territory, ok: true };

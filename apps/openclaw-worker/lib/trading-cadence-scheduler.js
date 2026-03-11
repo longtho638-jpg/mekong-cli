@@ -194,10 +194,9 @@ function buildTradingMissionFile(mission) {
 
 	const content =
 		`algo-trader: ${command}\n\n` +
-		`Trả lời bằng TIẾNG VIỆT. ` +
-		`Chạy trading command: ${command}. ` +
+		`Run trading command: ${command}. ` +
 		`Cadence: ${cadenceId} | Timeout: ${timeoutTier} | Tier: ${tier}. ` +
-		`Lưu report vào plans/reports/. ` +
+		`Save report to plans/reports/. ` +
 		`CRITICAL: DO NOT run git commit, git push, or /check-and-commit.`;
 
 	return { filename, content };

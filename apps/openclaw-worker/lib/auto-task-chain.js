@@ -1,12 +1,12 @@
 /**
- * 🦞 AUTO TASK CHAIN — Tự tạo task kế tiếp sau mỗi mission xong
+ * 🦞 AUTO TASK CHAIN — Auto-generate next task after each mission completes
  *
- * Khi CTO xong 1 task, module này scan:
- * 1. plans/ folders có phase files chưa implement
- * 2. knowledge/DUAL_AGI_TRACKER.md có ❓ items
- * 3. Tạo task file mới trong tasks/ folder
+ * When CTO finishes a task, this module scans:
+ * 1. plans/ folders for unimplemented phase files
+ * 2. knowledge/DUAL_AGI_TRACKER.md for ❓ items
+ * 3. Creates new task files in the tasks/ folder
  *
- * → CTO KHÔNG BAO GIỜ hết việc
+ * → CTO never runs out of work
  */
 
 const fs = require('fs');
@@ -97,7 +97,7 @@ function generateTaskFromPhase(phase) {
 	}
 
 	const taskContent = `Working Dir: ${phase.workingDir}
-Đọc ${phase.planDir}/${phase.phaseFile} rồi implement theo plan. ${phase.title}. Test kết quả trước khi xong.`;
+Read ${phase.planDir}/${phase.phaseFile} then implement according to plan. ${phase.title}. Test results before finishing.`;
 
 	fs.writeFileSync(taskPath, taskContent);
 	log(`[CHAIN] 🔗 AUTO-GENERATED: ${taskFileName} (from ${phase.planDir}/${phase.phaseFile})`);
@@ -150,28 +150,27 @@ function chainNextTask() {
 		const trackerExists = fs.existsSync(trackerPath);
 
 		const taskContent = `Working Dir: ${MEKONG_DIR}
-[CTO STRATEGIC PLANNING — 始計 Kế Sách]
+[CTO STRATEGIC PLANNING — 始計]
 
-Bạn là CTO Tôm Hùm. Queue task trống. Nhiệm vụ: TỰ TẠO task mới.
+You are CTO Tôm Hùm. Task queue is empty. Mission: CREATE new tasks autonomously.
 
-BƯỚC 1: Đọc tình hình
-- Đọc ${trackerExists ? 'knowledge/DUAL_AGI_TRACKER.md' : 'packages/docs/MASTER_PRD.md'} 
-- Đọc git log -10 để biết gần đây làm gì
-- Đọc plans/ folder xem có roadmap nào
+STEP 1: Read current status
+- Read ${trackerExists ? 'knowledge/DUAL_AGI_TRACKER.md' : 'packages/docs/MASTER_PRD.md'}
+- Read git log -10 to see recent work
+- Read plans/ folder for any roadmaps
 
-BƯỚC 2: Đánh giá (始計 — Thất Kế)
-- Module nào ❓ chưa audit?
-- Module nào ⏳ đang thiếu?
-- Test nào đang fail?
+STEP 2: Assess (始計 — Seven Considerations)
+- Which modules ❓ are not yet audited?
+- Which modules ⏳ are incomplete?
+- Which tests are failing?
 
-BƯỚC 3: Tạo 3-5 task files
-- Viết vào ${TASKS_DIR}/HIGH_mission_*.txt hoặc MEDIUM_mission_*.txt
-- Mỗi file chứa 1 task cụ thể, ngắn gọn (dưới 200 chars)
-- Priority: HIGH cho blocker, MEDIUM cho feature, LOW cho polish
-- Format: "Working Dir: /path\\nMô tả task cụ thể"
+STEP 3: Create 3-5 task files
+- Write to ${TASKS_DIR}/HIGH_mission_*.txt or MEDIUM_mission_*.txt
+- Each file contains 1 specific, concise task (under 200 chars)
+- Priority: HIGH for blockers, MEDIUM for features, LOW for polish
+- Format: "Working Dir: /path\\nSpecific task description"
 
-KHÔNG ĐƯỢC tạo quá 5 task. KHÔNG ĐƯỢC tạo task trùng với processed/ folder.
-Trả lời TIẾNG VIỆT.`;
+DO NOT create more than 5 tasks. DO NOT create tasks that duplicate the processed/ folder.`;
 
 		fs.writeFileSync(taskPath, taskContent);
 

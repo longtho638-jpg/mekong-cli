@@ -132,15 +132,15 @@ def format_human_summary(result: Any) -> HumanSummary:
     if result.status.value == "success":
         return HumanSummary(
             en="Mission accomplished! All steps completed successfully.",
-            vi="Hoàn thành nhiệm vụ! Tất cả các bước đã hoàn tất."
+            vi="Mission accomplished! All steps completed successfully."
         )
     elif result.status.value == "partial":
         return HumanSummary(
             en=f"Partial completion: {result.completed_steps}/{result.total_steps} steps done.",
-            vi=f"Hoàn thành một phần: {result.completed_steps}/{result.total_steps} bước."
+            vi=f"Partial completion: {result.completed_steps}/{result.total_steps} steps done."
         )
     else:
         return HumanSummary(
             en="Mission failed. Check errors above.",
-            vi="Nhiệm vụ thất bại. Xem lỗi ở trên."
+            vi="Mission failed. Check errors above."
         )

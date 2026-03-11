@@ -152,7 +152,7 @@ async function generateHunterMission(project, projectDir) {
 TIMEOUT: 20
 PROJECT: ${project}
 
-/cook "HUNTER AGENT: ${selectedPattern} cleanup. Trả lời bằng TIẾNG VIỆT.
+/cook "HUNTER AGENT: ${selectedPattern} cleanup.
 Found ${targetIssues.length} issues of type ${selectedPattern}.
 Target Verified by Gemini Flash: ${targetFile}.
 Task:

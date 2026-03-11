@@ -2,7 +2,7 @@
 /**
  * 🏭 VIBE CODING FACTORY — Pipeline Engine
  *
- * Toyota Production System × Binh Pháp × ClaudeKit
+ * Toyota Production System × Binh Phap × ClaudeKit
  *
  * AGI L4 Enhancement (2026-03-03):
  * - Dynamic stage routing (skip if confidence >90%)
@@ -11,9 +11,9 @@
  * - Adaptive maxAttempts based on stage difficulty
  *
  * 5-step pipeline: SPEC → PLAN → BUILD → VERIFY → SHIP
- * Each stage maps to a Binh Pháp chapter and ClaudeKit command.
+ * Each stage maps to a Binh Phap chapter and ClaudeKit command.
  *
- * Binh Pháp mapping:
+ * Binh Phap mapping:
  *   SPEC/PLAN → Ch.1 始計 (Strategic Assessment)
  *   BUILD     → Ch.7 軍爭 (Speed Execution)
  *   VERIFY    → Ch.6 虛實 (Testing/Strengths)
@@ -37,28 +37,28 @@ const STAGES = ['SPEC', 'PLAN', 'BUILD', 'VERIFY', 'SHIP'];
 
 const STAGE_CONFIG = {
 	SPEC: {
-		binh_phap: { chapter: 1, name: '始計', title: 'Kế Hoạch — Strategic Assessment' },
+		binh_phap: { chapter: 1, name: '始計', title: 'Ke Hoach — Strategic Assessment' },
 		toyota: 'Poka-yoke — Define constraints before building',
 		gate: 'spec_file_exists',
 		command: (project) => `/plan:hard "${project} — write spec with acceptance criteria, constraints, edge cases"`,
 		description: 'Write clear spec: goal, acceptance criteria, constraints, out-of-scope',
 	},
 	PLAN: {
-		binh_phap: { chapter: 1, name: '始計', title: 'Kế Hoạch — Strategic Assessment' },
+		binh_phap: { chapter: 1, name: '始計', title: 'Ke Hoach — Strategic Assessment' },
 		toyota: 'Kanban — Pull system, plan before build',
 		gate: 'plan_file_exists',
 		command: (project) => `/plan "${project} — create implementation plan from spec, list files to create/modify, dependencies, test plan"`,
 		description: 'Agent reads spec + codebase, creates detailed plan. Human review checkpoint.',
 	},
 	BUILD: {
-		binh_phap: { chapter: 7, name: '軍爭', title: 'Quân Tranh — Speed Execution' },
+		binh_phap: { chapter: 7, name: '軍爭', title: 'Quan Tranh — Speed Execution' },
 		toyota: 'Heijunka — Balance load across parallel agents',
 		gate: 'build_passes',
 		command: (project) => `/cook "${project} — implement the approved plan, run type-check after each file" --auto`,
 		description: 'Builder agents execute plan with worktree isolation. Jidoka: stop on error.',
 	},
 	VERIFY: {
-		binh_phap: { chapter: 6, name: '虛實', title: 'Hư Thực — Testing/Strengths' },
+		binh_phap: { chapter: 6, name: '虛實', title: 'Hu Thuc — Testing/Strengths' },
 		toyota: 'Kaizen — Adversarial QA loop, critic review',
 		gate: 'all_tests_pass',
 		command: (project) =>
@@ -66,7 +66,7 @@ const STAGE_CONFIG = {
 		description: 'Full verification: tests + lint + type-check + critic agent. Gate: 8+/10 score.',
 	},
 	SHIP: {
-		binh_phap: { chapter: 9, name: '行軍', title: 'Hành Quân — Operations' },
+		binh_phap: { chapter: 9, name: '行軍', title: 'Hanh Quan — Operations' },
 		toyota: 'Just-in-Time — Ship when quality gates pass',
 		gate: 'ci_green',
 		command: (project) => `/check-and-commit`,

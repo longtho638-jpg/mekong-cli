@@ -1,13 +1,13 @@
 /**
  * 🐉 Hands Index — 105 Specialist Roles Registry
  *
- * Xuất HANDS map (3 roles gốc backward-compat) + ALL_HANDS (105 roles) +
+ * Exports HANDS map (3 legacy backward-compat roles) + ALL_HANDS (105 roles) +
  * getHandForIntent() + getHandByName() + matchRole()
  */
 
 'use strict';
 
-// --- Load tất cả categories ---
+// --- Load all categories ---
 const frontendRoles    = require('./categories/frontend');
 const backendRoles     = require('./categories/backend');
 const devopsRoles      = require('./categories/devops');
@@ -21,7 +21,7 @@ const generalRoles     = require('./categories/general');
 
 const { matchRole: _matchRole } = require('./role-matcher');
 
-// --- Gộp tất cả 105 roles thành mảng phẳng ---
+// --- Merge all 105 roles into flat array ---
 const ALL_ROLES_ARRAY = [
   ...frontendRoles,
   ...backendRoles,
@@ -41,46 +41,46 @@ for (const role of ALL_ROLES_ARRAY) {
   ALL_HANDS[role.name] = role;
 }
 
-// --- Backward-compat: 3 HANDS gốc (PLANNER, CODER, REVIEWER) ---
-// Giữ nguyên cấu trúc cũ để không phá vỡ mission-dispatcher
+// --- Backward-compat: 3 original HANDS (PLANNER, CODER, REVIEWER) ---
+// Keep old structure to avoid breaking mission-dispatcher
 const HANDS = {
   PLANNER: {
     name: 'PLANNER',
-    displayName: 'Planner Hand (Quân Sư)',
-    // Trường instructions giữ nguyên để backward compat
-    instructions: '🔥 BẠN LÀ PLANNER HAND (QUÂN SƯ). Tập trung vào Architecture, Specification, và BMM Strategic Planning. KHÔNG được implement code cẩu thả. LUÔN LUÔN dùng /plan:hard hoặc /plan:parallel. KHI GẶP MENU/CÂU HỎI TƯƠNG TÁC TỪ COMMANDS HOẶC CẦN RA QUYẾT ĐỊNH: TUYỆT ĐỐI KHÔNG ĐƯỢC DỪNG LẠI HỎI USER. PHẢI TỰ ĐỌC /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md THAM CHIẾU VÀ TỰ QUYẾT ĐỊNH ĐÁP ÁN/HÀNH ĐỘNG.',
-    systemPrompt: 'BẠN LÀ PLANNER HAND (QUÂN SƯ). Tập trung Architecture, Strategic Planning. Dùng /plan:hard hoặc /plan:parallel.',
+    displayName: 'Planner Hand (Chief Strategist)',
+    // Keep instructions field for backward compat
+    instructions: '🔥 YOU ARE PLANNER HAND (CHIEF STRATEGIST). Focus on Architecture, Specification, and Strategic Planning. DO NOT implement code carelessly. ALWAYS use /plan:hard or /plan:parallel. WHEN ENCOUNTERING INTERACTIVE MENUS/QUESTIONS FROM COMMANDS OR NEEDING TO MAKE DECISIONS: NEVER STOP AND ASK USER. MUST READ /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md FOR REFERENCE AND DECIDE ANSWER/ACTION YOURSELF.',
+    systemPrompt: 'YOU ARE PLANNER HAND (CHIEF STRATEGIST). Focus on Architecture, Strategic Planning. Use /plan:hard or /plan:parallel.',
     defaultCommand: '/plan:hard',
     keywords: ['plan', 'architect', 'design', 'strategy', 'research', 'analyze'],
   },
   CODER: {
     name: 'CODER',
-    displayName: 'Coder Hand (Tiên Phong)',
-    instructions: '🔥 BẠN LÀ CODER HAND (TIÊN PHONG). Tập trung vào Atomic Implementation, Bug Fixing, và Performance. Kế thừa plan từ Quân Sư. LUÔN LUÔN dùng /cook --fast hoặc /cook --parallel. KHI GẶP MENU/CÂU HỎI TƯƠNG TÁC TỪ COMMANDS HOẶC CẦN RA QUYẾT ĐỊNH: TUYỆT ĐỐI KHÔNG ĐƯỢC DỪNG LẠI HỎI USER. PHẢI TỰ ĐỌC /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md THAM CHIẾU VÀ TỰ QUYẾT ĐỊNH ĐÁP ÁN/HÀNH ĐỘNG.',
-    systemPrompt: 'BẠN LÀ CODER HAND (TIÊN PHONG). Tập trung Atomic Implementation, Bug Fixing. Dùng /cook --fast hoặc /cook --parallel.',
+    displayName: 'Coder Hand (Vanguard)',
+    instructions: '🔥 YOU ARE CODER HAND (VANGUARD). Focus on Atomic Implementation, Bug Fixing, and Performance. Inherit plan from Chief Strategist. ALWAYS use /cook --fast or /cook --parallel. WHEN ENCOUNTERING INTERACTIVE MENUS/QUESTIONS FROM COMMANDS OR NEEDING TO MAKE DECISIONS: NEVER STOP AND ASK USER. MUST READ /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md FOR REFERENCE AND DECIDE ANSWER/ACTION YOURSELF.',
+    systemPrompt: 'YOU ARE CODER HAND (VANGUARD). Focus on Atomic Implementation, Bug Fixing. Use /cook --fast or /cook --parallel.',
     defaultCommand: '/cook --fast',
     keywords: ['implement', 'build', 'fix', 'code', 'develop', 'create'],
   },
   REVIEWER: {
     name: 'REVIEWER',
-    displayName: 'Reviewer Hand (Ngự Sử)',
-    instructions: '🔥 BẠN LÀ REVIEWER HAND (NGỰ SỬ). Tập trung vào Security Audit, QA Gate, và Binh Pháp Certification. KHÔNG được cho qua nếu thiếu test hoặc vi phạm code style. KHI GẶP MENU/CÂU HỎI TƯƠNG TÁC TỪ COMMANDS HOẶC CẦN RA QUYẾT ĐỊNH: TUYỆT ĐỐI KHÔNG ĐƯỢC DỪNG LẠI HỎI USER. PHẢI TỰ ĐỌC /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md THAM CHIẾU VÀ TỰ QUYẾT ĐỊNH ĐÁP ÁN/HÀNH ĐỘNG.',
-    systemPrompt: 'BẠN LÀ REVIEWER HAND (NGỰ SỬ). Tập trung Security Audit, QA Gate. Dùng /review --parallel.',
+    displayName: 'Reviewer Hand (Inspector)',
+    instructions: '🔥 YOU ARE REVIEWER HAND (INSPECTOR). Focus on Security Audit, QA Gate, and Binh Pháp Certification. DO NOT pass if tests are missing or code style is violated. WHEN ENCOUNTERING INTERACTIVE MENUS/QUESTIONS FROM COMMANDS OR NEEDING TO MAKE DECISIONS: NEVER STOP AND ASK USER. MUST READ /Users/macbookprom1/mekong-cli/apps/openclaw-worker/BINH_PHAP_MASTER.md FOR REFERENCE AND DECIDE ANSWER/ACTION YOURSELF.',
+    systemPrompt: 'YOU ARE REVIEWER HAND (INSPECTOR). Focus on Security Audit, QA Gate. Use /review --parallel.',
     defaultCommand: '/review',
     keywords: ['review', 'audit', 'check', 'test', 'verify', 'security'],
   },
 };
 
-// Thêm 3 HANDS gốc vào ALL_HANDS để lookup đầy đủ
+// Add 3 original HANDS to ALL_HANDS for full lookup
 ALL_HANDS['PLANNER']  = HANDS.PLANNER;
 ALL_HANDS['CODER']    = HANDS.CODER;
 ALL_HANDS['REVIEWER'] = HANDS.REVIEWER;
 
-// Fallback role khi không có match đủ điểm
+// Fallback role when no match scores high enough
 const FALLBACK_ROLE = ALL_HANDS['FULL_STACK_GENERALIST'];
 
 /**
- * Backward-compat: ánh xạ intent → 1 trong 3 HANDS gốc
+ * Backward-compat: map intent → 1 of 3 original HANDS
  * @param {string} intent
  * @returns {Object} HANDS.PLANNER | HANDS.CODER | HANDS.REVIEWER
  */
@@ -91,8 +91,8 @@ function getHandForIntent(intent) {
 }
 
 /**
- * Lookup role theo tên chính xác
- * @param {string} name - Tên role (vd: 'REACT_ARCHITECT')
+ * Lookup role by exact name
+ * @param {string} name - Role name (e.g. 'REACT_ARCHITECT')
  * @returns {Object|null}
  */
 function getHandByName(name) {
@@ -100,9 +100,9 @@ function getHandByName(name) {
 }
 
 /**
- * Semantic matching: tìm role phù hợp nhất từ 105 specialists
- * @param {string} taskText - Nội dung task
- * @param {string} [intent='COOK'] - Intent đã detect
+ * Semantic matching: find best matching role from 105 specialists
+ * @param {string} taskText - Task content
+ * @param {string} [intent='COOK'] - Detected intent
  * @returns {{ role: Object, score: number, fallback: boolean }}
  */
 function matchRole(taskText, intent) {

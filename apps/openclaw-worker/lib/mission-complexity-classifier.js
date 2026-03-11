@@ -3,17 +3,17 @@
  *
  * ALL levels use /cook ClaudeKit command to ensure proper workflow activation.
  *
- * SIMPLE  → /cook "task"                        (single agent, 15 phút)
- * MEDIUM  → /cook "task" --auto                  (sub-agents, 30 phút)
- * COMPLEX → /cook with Agent Team instructions   (4+ parallel Task subagents, 45 phút)
+ * SIMPLE  → /cook "task"                        (single agent, 15 min)
+ * MEDIUM  → /cook "task" --auto                  (sub-agents, 30 min)
+ * COMPLEX → /cook with Agent Team instructions   (4+ parallel Task subagents, 45 min)
  */
 
 const config = require('../config');
 const fs = require('fs');
 const path = require('path');
 
-const VI_PREFIX = 'Trả lời bằng TIẾNG VIỆT. ';
-const FILE_LIMIT = 'Chỉ sửa TỐI ĐA 5 file mỗi mission. Nếu cần sửa nhiều hơn, báo cáo danh sách còn lại.';
+const VI_PREFIX = '';
+const FILE_LIMIT = 'Fix at most 5 files per mission. If more are needed, report the remaining list.';
 const NO_GIT = 'CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations.';
 
 const HISTORY_FILE = path.join(config.MEKONG_DIR, 'apps/openclaw-worker/data/mission-history.json');
@@ -33,13 +33,13 @@ function adjustTimeout(project, baseTimeout) {
 			const projectMissions = history.filter((m) => m.project === project).slice(-10);
 
 			if (projectMissions.length > 0) {
-				// Logic: Nếu thường xuyên timeout (thất bại và chạy > 90% timeout) -> +20%
+				// Logic: If frequently timing out (failure and runs > 90% timeout) -> +20%
 				const timeouts = projectMissions.filter((m) => !m.success && m.durationMs > adjusted * 0.9).length;
 				if (timeouts >= 3) {
 					adjusted = Math.floor(adjusted * 1.2);
 				}
 
-				// Logic: Nếu luôn chạy nhanh (thành công và < 30% timeout) -> -20%
+				// Logic: If always runs fast (success and < 30% timeout) -> -20%
 				const fastRuns = projectMissions.filter((m) => m.success && m.durationMs < adjusted * 0.3).length;
 				if (fastRuns >= 5) {
 					adjusted = Math.floor(adjusted * 0.8);
@@ -113,7 +113,7 @@ function classifyContentTimeout(text) {
  * Each subagent gets EXPLICIT scope → no overlap, no duplicate work.
  *
  * BINH_PHAP 奇正相生: 1 CC CLI = CHÍNH (main) + KỲ (subagents)
- * When /cook finishes → ALL subagents complete synchronously → "xong là xong hẳn"
+ * When /cook finishes → ALL subagents complete synchronously → "done means fully done"
  *
  * @param {string} taskId - Task identifier for role lookup
  * @param {string} taskDescription - Raw task description for context
@@ -205,16 +205,16 @@ function buildDecomposedPrompt(task, taskId) {
 function detectIntent(text) {
 	const lower = text.toLowerCase();
 
-	if (lower.includes('research') || lower.includes('tìm hiểu') || lower.includes('khảo sát')) return 'RESEARCH';
+	if (lower.includes('research') || lower.includes('research') || lower.includes('investigate')) return 'RESEARCH';
 
 	// MULTI_FIX: 2+ bug/error keywords → parallel fix mode (check BEFORE single FIX)
-	const bugWords = ['bug', 'lỗi', 'error', 'loi'];
+	const bugWords = ['bug', 'loi', 'error', 'loi'];
 	const bugCount = bugWords.filter((w) => lower.includes(w)).length;
 	if (bugCount >= 2) return 'MULTI_FIX';
 
 	// DEBUG: investigation/root-cause intent (check BEFORE single FIX)
 	if (
-		lower.includes('tại sao') ||
+		lower.includes('why') ||
 		lower.includes('tai-sao') ||
 		lower.includes('why') ||
 		lower.includes('root-cause') ||
@@ -226,15 +226,15 @@ function detectIntent(text) {
 	if (lower.includes('architecture') || lower.includes('redesign') || lower.includes('migration') || lower.includes('refactor-toan-bo'))
 		return 'STRATEGIC';
 
-	if (lower.includes('bug') || lower.includes('fix') || lower.includes('lỗi') || lower.includes('sửa')) return 'FIX';
-	if (lower.includes('review') || lower.includes('audit') || lower.includes('kiểm tra')) return 'REVIEW';
-	if (lower.includes('plan') || lower.includes('kế hoạch') || lower.includes('thiết kế')) return 'PLAN';
+	if (lower.includes('bug') || lower.includes('fix') || lower.includes('error') || lower.includes('fix')) return 'FIX';
+	if (lower.includes('review') || lower.includes('audit') || lower.includes('check')) return 'REVIEW';
+	if (lower.includes('plan') || lower.includes('planning') || lower.includes('design')) return 'PLAN';
 
 	return 'BUILD'; // Default intent
 }
 
 /**
- * Generate the mission prompt with Phong Lâm Hỏa Sơn (風林火山) token optimization.
+ * Generate the mission prompt with Phong Lam Hoa Son (風林火山) token optimization.
  *
  * 🌪️ GIÓ (SIMPLE):  --fast --no-test  → 30% tokens, speed run
  * 🌲 RỪNG (MEDIUM): --auto            → 60% tokens, standard quality
@@ -288,7 +288,7 @@ function isTeamMission(prompt) {
 }
 
 /**
- * Thất Kế Assessment — 7-question pre-mission evaluation (始計 Ch.1)
+ * That Ke Assessment — 7-question pre-mission evaluation (始計 Ch.1)
  * 多算勝，少算不勝 — Calculate more to win
  *
  * Only runs for 'complex' and 'strategic' missions.

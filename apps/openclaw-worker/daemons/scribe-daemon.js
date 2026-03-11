@@ -5,7 +5,7 @@ const QL = require('./lib/quan-luat-enforcer');
 const { emit, SIGNALS } = require('./lib/signal-bus');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 SCRIBE DAEMON — 書記 (Thư Ký) & 🧬 EVOLUTIONARY HISTORIAN
+// 🏯 SCRIBE DAEMON — 書記 (Scribe) & 🧬 EVOLUTIONARY HISTORIAN
 // ═══════════════════════════════════════════════════════════════
 // Rank: THU_KY (Secretary) -> SU_QUAN (Historian)
 // Territory: memory, dataset

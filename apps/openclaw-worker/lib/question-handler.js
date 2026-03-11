@@ -1,13 +1,13 @@
 /**
- * 🧠 INTELLIGENT QUESTION HANDLER — CTO đọc hiểu câu hỏi CC CLI
+ * 🧠 INTELLIGENT QUESTION HANDLER — CTO reads and understands CC CLI questions
  *
- * Khi CC CLI hỏi câu hỏi (không phải pattern cứng), module này:
- * 1. Capture nội dung câu hỏi từ tmux pane
- * 2. Send to LLM provider for analysis
- * 3. Nhận quyết định: approve / reject / custom answer
- * 4. Gửi response phù hợp cho CC CLI
+ * When CC CLI asks a question (not a hardcoded pattern), this module:
+ * 1. Captures question content from tmux pane
+ * 2. Sends to LLM provider for analysis
+ * 3. Receives decision: approve / reject / custom answer
+ * 4. Sends appropriate response to CC CLI
  *
- * SAFETY: Câu hỏi nguy hiểm (xóa file, deploy prod, drop DB) → REJECT
+ * SAFETY: Dangerous questions (delete files, deploy prod, drop DB) → REJECT
  */
 
 const http = require('http');
@@ -34,7 +34,7 @@ const DANGER_PATTERNS = [
 
 // Questions matching these = ALWAYS APPROVE (no LLM needed)
 const SAFE_PATTERNS = [
-	/continue|tiếp tục|proceed|yes.*continue/i,
+	/continue|proceed|yes.*continue/i,
 	/install.*(?:dep|package|module)/i,
 	/create.*(?:file|directory|folder|test)/i,
 	/run.*test/i,
@@ -42,7 +42,7 @@ const SAFE_PATTERNS = [
 	/save.*(?:file|change|progress)/i,
 	/read.*(?:file|docs|document)/i,
 	/update.*(?:doc|readme|changelog)/i,
-	/xử lý chung|tiếp tục xử lý/i,
+	/handle generally|continue processing/i,
 ];
 
 /**
@@ -51,22 +51,22 @@ const SAFE_PATTERNS = [
  */
 function analyzeLLM(questionText) {
 	return new Promise((resolve) => {
-		const systemPrompt = `Bạn là CTO AI. CC CLI (coding agent) đang hỏi một câu hỏi. 
-Phân tích câu hỏi và quyết định:
+		const systemPrompt = `You are an AI CTO. CC CLI (coding agent) is asking a question.
+Analyze the question and decide:
 
 RULES:
-- Nếu câu hỏi an toàn (tiếp tục, install, create, test) → approve
-- Nếu câu hỏi nguy hiểm (xoá data, deploy prod, force push) → reject
-- Nếu câu hỏi cần chọn option → chọn option an toàn nhất
-- Nếu không chắc → approve (vì CC CLI đang chạy trong sandbox với bypass permissions)
+- If the question is safe (continue, install, create, test) → approve
+- If the question is dangerous (delete data, deploy prod, force push) → reject
+- If the question requires choosing an option → choose the safest option
+- If unsure → approve (CC CLI runs in a sandbox with permissions bypassed)
 
-Trả lời ĐÚNG FORMAT JSON (không có text khác):
+Reply in EXACT JSON FORMAT (no other text):
 {"action":"approve|reject|answer","response":"text to send to CLI","reason":"why"}`;
 
 		const body = JSON.stringify({
 			model: MODEL,
 			max_tokens: 200,
-			messages: [{ role: 'user', content: `${systemPrompt}\n\nCC CLI hỏi:\n${questionText}` }],
+			messages: [{ role: 'user', content: `${systemPrompt}\n\nCC CLI asks:\n${questionText}` }],
 		});
 
 		const req = http.request(

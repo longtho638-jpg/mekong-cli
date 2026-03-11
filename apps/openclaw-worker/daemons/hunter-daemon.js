@@ -6,13 +6,13 @@ const { generateHunterMission } = require('./lib/hunter-scanner');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 HUNTER DAEMON — 獵人 (Liệp Nhân)
+// 🏯 HUNTER DAEMON — 獵人 (Hunter)
 // ═══════════════════════════════════════════════════════════════
-// Rank: TRINH_SÁT (Trinh Sát — Scout)
+// Rank: TRINH_SAT (Scout)
 // Territory: code_scanning
-// 36 Kế: #7 Vô Trung Sinh Hữu, #13 Đả Thảo Kinh Xà
-// Điều 2: Phát hiện → Báo cáo chuẩn Signal Protocol
-// Điều 3: KHÔNG FIX, CHỈ SCAN → chuyển Builder
+// 36 Stratagems: #7 Vo Trung Sinh Huu, #13 Da Thao Kinh Xa
+// Rule 2: Detect → Report via standard Signal Protocol
+// Rule 3: NO FIX, SCAN ONLY → pass to Builder
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'hunter';
@@ -21,7 +21,7 @@ const POLL_INTERVAL = 60000;
 const MAX_QUEUE_SIZE = 3;
 
 function sendSignal(type, payload, priority = 'MEDIUM', to = 'builder') {
-    // Quân Luật Điều 2: Signal chuẩn
+    // Military Law Rule 2: Standard signal
     const signal = QL.createSignal(DAEMON_NAME, to, type, payload, priority);
     const signalPath = path.join(config.MEKONG_DIR, 'signals', 'inbox', `${signal.id}.json`);
     try {
@@ -54,7 +54,7 @@ async function verifyDeployment(url, screenshotPath) {
 }
 
 async function startHunterDaemon() {
-  QL.logQuanLuat(DAEMON_NAME, '🏹 Tôm Thợ Săn STARTED');
+  QL.logQuanLuat(DAEMON_NAME, '🏹 Hunter STARTED');
   QL.logQuanLuat(DAEMON_NAME, 'Running in background. Monitoring task queue...');
 
   setInterval(async () => {

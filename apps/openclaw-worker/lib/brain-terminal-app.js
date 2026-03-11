@@ -85,7 +85,7 @@ function spawnBrain() {
 	const proxyPort = proxyUrl ? (new URL(proxyUrl).port || '') : '';
 	const configDir = proxyPort ? `/Users/macbookprom1/.claude_config_${proxyPort}` : `/Users/macbookprom1/.claude`;
 
-	// DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
+	// DashScope Direct: keep ANTHROPIC_* env vars from settings.json
 	const envSetup = [`unset CLAUDE_CONFIG_DIR`, `unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`].join(' && ');
 
 	const claudeCmd = `/Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`;

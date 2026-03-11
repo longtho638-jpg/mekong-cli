@@ -1,8 +1,8 @@
 /**
- * 🐉 Summoning Gateway — Triệu Hồi Thuật
+ * 🐉 Summoning Gateway — Summoning Protocol
  *
- * CTO = Triệu Hồi Sư. Modules Tôm Hùm = NÃO. CC CLI = XÁC.
- * Gateway nạp expertise từ module vào CC CLI pane dưới dạng system prompt.
+ * CTO = Summoner. Tôm Hùm Modules = BRAIN. CC CLI = BODY.
+ * Gateway loads expertise from modules into CC CLI pane as system prompt.
  *
  * Flow: detectState() → pickSquad() → summon(command) → inject CC CLI → dismiss()
  *
@@ -23,7 +23,7 @@ const { log } = require('./brain-logger');
 const SQUADS = {
 	STRATEGIC: {
 		name: '🧠 Strategic Command',
-		description: 'Hoạch định, phân tích, ra quyết định chiến lược',
+		description: 'Planning, analysis, strategic decision-making',
 		members: {
 			'/strategist': 'strategic-brain',
 			'/wise-counsel': 'binh-phap-strategist',
@@ -37,7 +37,7 @@ const SQUADS = {
 	},
 	RECON: {
 		name: '🔍 Reconnaissance',
-		description: 'Scan, phát hiện vấn đề, thu thập intelligence',
+		description: 'Scan, detect issues, gather intelligence',
 		members: {
 			'/cto-scan': 'auto-cto-pilot',
 			'/pre-scan': 'cto-pre-dispatch-scan',
@@ -52,7 +52,7 @@ const SQUADS = {
 	},
 	MISSION: {
 		name: '🚀 Mission Ops',
-		description: 'Dispatch, chạy, theo dõi mission',
+		description: 'Dispatch, run, monitor missions',
 		members: {
 			'/dispatch': 'mission-dispatcher',
 			'/task-dispatch': 'cto-task-dispatch',
@@ -65,7 +65,7 @@ const SQUADS = {
 	},
 	EVOLUTION: {
 		name: '🧬 Evolution & Learning',
-		description: 'Tự học, tự cải tiến, tích lũy tri thức',
+		description: 'Self-learn, self-improve, accumulate knowledge',
 		members: {
 			'/evolve': 'evolution-engine',
 			'/learn': 'learning-engine',
@@ -80,7 +80,7 @@ const SQUADS = {
 	},
 	REVENUE: {
 		name: '💰 Revenue & Business',
-		description: 'Quản lý tài chính, license, revenue health',
+		description: 'Manage finances, licensing, revenue health',
 		members: {
 			'/revenue-scan': 'revenue-health-scanner',
 			'/license-check': 'raas-license-validator',
@@ -91,7 +91,7 @@ const SQUADS = {
 	},
 	TRADING: {
 		name: '📊 Trading Company',
-		description: 'Quản lý trading operations, scheduling, decisions',
+		description: 'Manage trading operations, scheduling, decisions',
 		members: {
 			'/trading-schedule': 'trading-cadence-scheduler',
 			'/trading-decide': 'trading-company-decision-engine',
@@ -100,7 +100,7 @@ const SQUADS = {
 	},
 	BRAIN: {
 		name: '🔧 Brain Infrastructure',
-		description: 'Quản lý process, spawn, state, health của CC CLI brain',
+		description: 'Manage process, spawn, state, health of CC CLI brain',
 		members: {
 			'/brain-spawn': 'brain-spawn-manager',
 			'/brain-state': 'brain-state-machine',
@@ -118,7 +118,7 @@ const SQUADS = {
 	},
 	DEFENSE: {
 		name: '🛡️ Defense & Safety',
-		description: 'Bảo mật, safety guard, quân luật, circuit breaker',
+		description: 'Security, safety guard, military law, circuit breaker',
 		members: {
 			'/quan-luat': 'quan-luat-enforcer',
 			'/safety': 'safety-guard',

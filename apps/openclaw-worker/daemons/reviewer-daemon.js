@@ -4,13 +4,13 @@ const config = require('./config');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 REVIEWER DAEMON — 憲兵 (Hiến Binh)
+// 🏯 REVIEWER DAEMON — 憲兵 (Military Police)
 // ═══════════════════════════════════════════════════════════════
-// Rank: HIEN_BINH (Hiến Binh — Military Police)
+// Rank: HIEN_BINH (Military Police)
 // Territory: code_quality
-// 36 Kế: #27 Giả Si Bất Điên, #35 Liên Hoàn Kế
-// Điều 3: CHỈ AUDIT + RATE, KHÔNG FIX → chuyển Builder
-// Điều 4: Gemini Flash tier (FREE)
+// 36 Stratagems: #27 Gia Si Bat Dien, #35 Lien Hoan Ke
+// Rule 3: AUDIT + RATE ONLY, NO FIX → pass to Builder
+// Rule 4: Gemini Flash tier (FREE)
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'reviewer';
@@ -89,12 +89,12 @@ async function reviewerLoop() {
 TIMEOUT: 15
 PROJECT: all
 
-/cook "虛實 REVIEWER INTEL: Code quality ${review.score}/10 — ${relativePath}. Trả lời bằng TIẾNG VIỆT.
+/cook "虛實 REVIEWER INTEL: Code quality ${review.score}/10 — ${relativePath}. 
 
 🎯 PRE-ANALYZED BY HẬU CẦN (CC CLI KHÔNG CẦN SCAN):
 
 📍 File: ${relativePath}
-📊 Score: ${review.score}/10 (cần > 8/10)
+📊 Score: ${review.score}/10 (must be > 8/10)
 
 🔍 Issues found:
 ${review.issues.map(i => '  ❌ ' + i).join('\n')}
@@ -105,8 +105,8 @@ ${review.issues.map(i => '  ❌ ' + i).join('\n')}
 ${content.split('\n').slice(0, 100).map((l, i) => `  ${i + 1}: ${l}`).join('\n')}
 
 Task:
-1. Fix ĐÚNG issues đã liệt kê ở trên tại ${relativePath}.
-2. Không scan, vì Hậu Cần đã scan xong.
+1. Correctly fix the issues listed above in ${relativePath}.
+2. No scan needed — Logistics already completed scanning.
 3. Verify: build/lint.
 4. Report: FIXED_COUNT, NEW_SCORE." --auto
 `;

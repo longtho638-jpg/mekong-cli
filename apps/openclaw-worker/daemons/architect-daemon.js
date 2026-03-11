@@ -5,13 +5,13 @@ const config = require('./config');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 ARCHITECT DAEMON — 建築師 (Kiến Trúc Sư)
+// 🏯 ARCHITECT DAEMON — 建築師 (Architect)
 // ═══════════════════════════════════════════════════════════════
-// Rank: KIEN_TRUC_SU (Kiến Trúc Sư — Architect)
+// Rank: KIEN_TRUC_SU (Architect)
 // Territory: system_design
-// 36 Kế: #4 Dĩ Dật Đãi Lao, #25 Thâu Lương Hoán Trụ
-// Điều 3: CHỈ MAP + ANALYZE, KHÔNG CODE → chuyển Builder
-// Điều 7: Mọi mission phải qua planning trước khi execute
+// 36 Stratagems: #4 Yi Yi Dai Lao, #25 Thau Luong Hoan Tru
+// Rule 3: MAP + ANALYZE ONLY, NO CODE → pass to Builder
+// Rule 7: Every mission must go through planning before execution
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'architect';

@@ -4,13 +4,13 @@ const config = require('./config');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 SAGE DAEMON — 賢哲 (Hiền Triết)
+// 🏯 SAGE DAEMON — 賢哲 (Philosopher)
 // ═══════════════════════════════════════════════════════════════
-// Rank: HIEN_TRIET (Hiền Triết — Philosopher)
+// Rank: HIEN_TRIET (Philosopher)
 // Territory: knowledge
-// 36 Kế: #9 Cách Ngạn Quan Hỏa, #26 Chỉ Tang Mạ Hòe
-// Điều 3: CHỈ SYNTHESIZE + QUERY, KHÔNG MODIFY CODE
-// Điều 4: Gemini Flash tier (FREE)
+// 36 Stratagems: #9 Cach Ngan Quan Hoa, #26 Chi Tang Ma Hoe
+// Rule 3: SYNTHESIZE + QUERY ONLY, DO NOT MODIFY CODE
+// Rule 4: Gemini Flash tier (FREE)
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'sage';

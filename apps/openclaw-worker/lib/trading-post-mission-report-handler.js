@@ -166,8 +166,7 @@ function dispatchFollowUp(sourceRole, command, priority) {
 	const filename = `${priority}_mission_algo_trader_trading_followup_${sourceRole}_${ts}.txt`;
 	const content =
 		`algo-trader: ${command}\n\n` +
-		`Trả lời bằng TIẾNG VIỆT. ` +
-		`Follow-up từ /trading:${sourceRole}. ` +
+		`Follow-up from /trading:${sourceRole}. ` +
 		`CRITICAL: DO NOT run git commit, git push, or /check-and-commit.`;
 
 	try {

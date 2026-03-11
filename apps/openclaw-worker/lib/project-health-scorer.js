@@ -1,17 +1,17 @@
 /**
- * Project Health Scorer — Chấm điểm sức khỏe project 0-100
+ * Project Health Scorer — Score project health 0-100
  *
  * Scoring:
- *   Build check     +20: npm run build hoặc tsc --noEmit thành công
- *   Test check      +25: npm test thành công
- *   Lint check      +15: không có lỗi nghiêm trọng
- *   README check    +10: README.md tồn tại và > 100 bytes
- *   package.json    +10: có name, version, scripts
- *   Git clean       +10: không có thay đổi uncommitted
- *   Production URL  +10: curl trả về HTTP 200 (tùy chọn)
+ *   Build check     +20: npm run build or tsc --noEmit succeeds
+ *   Test check      +25: npm test succeeds
+ *   Lint check      +15: no critical errors
+ *   README check    +10: README.md exists and > 100 bytes
+ *   package.json    +10: has name, version, scripts
+ *   Git clean       +10: no uncommitted changes
+ *   Production URL  +10: curl returns HTTP 200 (optional)
  *
- * Ý nghĩa điểm:
- *   < 70    → FIX mode (ưu tiên Phase 2)
+ * Score meaning:
+ *   < 70    → FIX mode (prioritize Phase 2)
  *   70–89   → STANDARD pipeline
  *   >= 90   → SHIP mode (fast-track Phase 5)
  */
@@ -31,7 +31,7 @@ const SCORE_WEIGHTS = {
 };
 
 /**
- * Chạy lệnh shell, trả về { ok: bool, output: string }
+ * Run shell command, return { ok: bool, output: string }
  */
 function runCheck(cmd, cwd, timeoutMs) {
 	try {
@@ -48,7 +48,7 @@ function runCheck(cmd, cwd, timeoutMs) {
 }
 
 /**
- * Kiểm tra README.md tồn tại và đủ nội dung (> 100 bytes)
+ * Check README.md exists and has enough content (> 100 bytes)
  */
 function checkReadme(projectDir) {
 	const readmePath = path.join(projectDir, 'README.md');
@@ -61,7 +61,7 @@ function checkReadme(projectDir) {
 }
 
 /**
- * Kiểm tra package.json có đầy đủ name, version, scripts
+ * Check package.json has name, version, scripts
  */
 function checkPackageJson(projectDir) {
 	const pkgPath = path.join(projectDir, 'package.json');
@@ -74,42 +74,42 @@ function checkPackageJson(projectDir) {
 }
 
 /**
- * Kiểm tra git working tree sạch (không có file thay đổi chưa commit)
+ * Check git working tree is clean (no uncommitted changes)
  */
 function checkGitClean(projectDir) {
 	const result = runCheck('git status --porcelain', projectDir, 10000);
 	if (!result.ok) return false;
-	// Output rỗng = working tree sạch
+	// Empty output = clean working tree
 	return result.output.trim().length === 0;
 }
 
 /**
- * Kiểm tra production URL trả về HTTP 200
- * Đọc URL từ package.json (field "homepage") hoặc vercel.json
+ * Check production URL returns HTTP 200
+ * Reads URL from package.json (field "homepage") or vercel.json
  */
 function checkProductionUrl(projectDir) {
 	let url = null;
 
-	// Thử đọc từ package.json
+	// Try reading from package.json
 	try {
 		const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf-8'));
 		if (pkg.homepage && pkg.homepage.startsWith('http')) url = pkg.homepage;
 	} catch (e) {
-		/* bỏ qua */
+		/* ignore */
 	}
 
-	// Thử đọc từ vercel.json (alias field)
+	// Try reading from vercel.json (alias field)
 	if (!url) {
 		try {
 			const vcfg = JSON.parse(fs.readFileSync(path.join(projectDir, 'vercel.json'), 'utf-8'));
 			const aliases = vcfg.alias || vcfg.aliases || [];
 			if (aliases.length > 0) url = `https://${aliases[0]}`;
 		} catch (e) {
-			/* bỏ qua */
+			/* ignore */
 		}
 	}
 
-	// Không có URL → bỏ qua kiểm tra (không trừ điểm)
+	// No URL → skip check (no score penalty)
 	if (!url) return null;
 
 	const result = runCheck(`curl -sI "${url}" | head -1`, projectDir, 8000);
@@ -117,15 +117,15 @@ function checkProductionUrl(projectDir) {
 }
 
 /**
- * Chấm điểm sức khỏe project.
- * @param {string} projectDir - Đường dẫn tuyệt đối tới thư mục project
+ * Score project health.
+ * @param {string} projectDir - Absolute path to project directory
  * @returns {Promise<{score: number, details: object, mode: string}>}
  */
 async function scoreProject(projectDir) {
 	const details = {};
 	let score = 0;
 
-	// Kiểm tra thư mục tồn tại
+	// Check directory exists
 	if (!fs.existsSync(projectDir)) {
 		return { score: 0, details: { error: 'Project directory not found' }, mode: 'FIX' };
 	}
@@ -135,13 +135,13 @@ async function scoreProject(projectDir) {
 	details.packageJson = hasPkg;
 	if (hasPkg) score += SCORE_WEIGHTS.packageJson;
 
-	// Đọc scripts nếu có package.json
+	// Read scripts if package.json exists
 	let scripts = {};
 	try {
 		const pkg = JSON.parse(fs.readFileSync(path.join(projectDir, 'package.json'), 'utf-8'));
 		scripts = pkg.scripts || {};
 	} catch (e) {
-		/* không có package.json */
+		/* no package.json */
 	}
 
 	// --- Build check (+20) ---
@@ -155,7 +155,7 @@ async function scoreProject(projectDir) {
 		details.build = tscResult.ok;
 		if (tscResult.ok) score += SCORE_WEIGHTS.build;
 	} else {
-		// Không có build script → SKIP (không cộng, không trừ)
+		// No build script → SKIP (no points added or deducted)
 		details.build = null;
 	}
 
@@ -185,31 +185,31 @@ async function scoreProject(projectDir) {
 	details.gitClean = checkGitClean(projectDir);
 	if (details.gitClean) score += SCORE_WEIGHTS.gitClean;
 
-	// --- Production URL check (+10, tùy chọn) ---
+	// --- Production URL check (+10, optional) ---
 	const prodOk = checkProductionUrl(projectDir);
 	details.production = prodOk;
 	if (prodOk === true) score += SCORE_WEIGHTS.production;
-	// prodOk === null → bỏ qua, không ảnh hưởng điểm
+	// prodOk === null → skip, no score impact
 
-	// Chuẩn hóa điểm về tối đa 100
-	// Khi một số kiểm tra bị SKIP (null), tính lại max có thể đạt được
+	// Normalize score to max 100
+	// When some checks are SKIP (null), recalculate achievable max
 	let maxPossible = 100;
 	if (details.build === null) maxPossible -= SCORE_WEIGHTS.build;
 	if (details.test === null) maxPossible -= SCORE_WEIGHTS.test;
 	if (details.lint === null) maxPossible -= SCORE_WEIGHTS.lint;
 	if (details.production === null) maxPossible -= SCORE_WEIGHTS.production;
 
-	// Scale điểm về 100 nếu max < 100
+	// Scale score to 100 if max < 100
 	const normalizedScore = maxPossible > 0 ? Math.round((score / maxPossible) * 100) : 0;
 
-	// Xác định mode dựa trên điểm
+	// Determine mode based on score
 	let mode;
 	if (normalizedScore >= 90) {
 		mode = 'SHIP'; // Fast-track Phase 5
 	} else if (normalizedScore >= 70) {
-		mode = 'STANDARD'; // Pipeline bình thường
+		mode = 'STANDARD'; // Normal pipeline
 	} else {
-		mode = 'FIX'; // Ưu tiên Phase 2 — sửa lỗi
+		mode = 'FIX'; // Prioritize Phase 2 — fix errors
 	}
 
 	return { score: normalizedScore, rawScore: score, maxPossible, details, mode };

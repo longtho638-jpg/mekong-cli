@@ -227,7 +227,7 @@ class MekongBot:
             self._save_config()
 
         # Show "thinking" indicator
-        thinking_msg = await update.message.reply_text("🧠 Đang phân tích...")
+        thinking_msg = await update.message.reply_text("🧠 Analyzing...")
 
         try:
             from src.core.nlp_commander import get_commander
@@ -237,8 +237,8 @@ class MekongBot:
 
             if task.parse_error:
                 await thinking_msg.edit_text(
-                    f"⚠️ Không parse được: {task.parse_error}\n\n"
-                    f"Thử dùng /cook <goal> trực tiếp.",
+                    f"⚠️ Could not parse: {task.parse_error}\n\n"
+                    f"Try using /cook <goal> directly.",
                 )
                 return
 
@@ -278,7 +278,7 @@ class MekongBot:
 
         except Exception as e:
             await thinking_msg.edit_text(
-                f"❌ NLP error: {str(e)[:100]}\nThử /cook <goal> trực tiếp.",
+                f"❌ NLP error: {str(e)[:100]}\nTry /cook <goal> directly.",
             )
 
     # ============================================================
@@ -353,7 +353,7 @@ class MekongBot:
 
         if not inbox:
             await update.message.reply_text(
-                "📭 Inbox trống.\nDùng /cook <goal> để gửi task.",
+                "📭 Inbox empty.\nUse /cook <goal> to queue a task.",
             )
             return
 

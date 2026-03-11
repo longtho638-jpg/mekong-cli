@@ -92,15 +92,15 @@ async function postMissionSummary(missionId, project, success, elapsedSec) {
 	if (Date.now() - _lastPostTime < POST_COOLDOWN_MS) return;
 
 	try {
-		const status = success ? '✅ THÀNH CÔNG' : '❌ THẤT BẠI';
+		const status = success ? '✅ SUCCESS' : '❌ FAILED';
 		const title = `[Tôm Hùm] Mission ${missionId} — ${status}`;
 		const body = [
 			`**Project:** ${project}`,
-			`**Kết quả:** ${status}`,
-			`**Thời gian:** ${elapsedSec}s`,
+			`**Result:** ${status}`,
+			`**Duration:** ${elapsedSec}s`,
 			`**Timestamp:** ${new Date().toISOString()}`,
 			'',
-			'_Tự động post bởi Tôm Hùm AGI — Mekong-CLI Autonomous CTO_',
+			'_Auto-posted by Tôm Hùm AGI — Mekong-CLI Autonomous CTO_',
 		].join('\n');
 
 		await client.createPost(title, body, 'ai-agents');

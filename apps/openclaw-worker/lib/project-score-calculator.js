@@ -3,9 +3,9 @@
 /**
  * 🎯 RaaS AGI Project Score Calculator
  * 10 dimensions × 10 pts = 100/100
- * Ánh xạ 13 chương Binh Pháp → tiêu chí đo lường tự động.
+ * Maps 13 Binh Phap chapters → automated measurement criteria.
  *
- * Grade S (≥90): RaaS AGI Ready — Vibe Factory ngừng inject task
+ * Grade S (≥90): RaaS AGI Ready — Vibe Factory stops injecting tasks
  * Grade A (80-89): Near-ready
  * Grade B (60-79): In Progress
  * Grade C (40-59): Needs Work

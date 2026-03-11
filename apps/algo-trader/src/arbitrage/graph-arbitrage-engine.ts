@@ -234,4 +234,40 @@ export class GraphArbitrageEngine extends EventEmitter {
     this.edges.clear();
     this.nodes.clear();
   }
+
+  /** Alias for detectCycles() - legacy API */
+  findArbitrageCycles(): ArbitrageCycle[] {
+    return this.detectCycles();
+  }
+
+  private _running = false;
+  private _lastScanTime = 0;
+  private _startTime = 0;
+
+  /** Start the engine (for lifecycle management) */
+  async start(): Promise<void> {
+    this._running = true;
+    this._startTime = Date.now();
+    logger.info('[GraphArb] Engine started');
+  }
+
+  /** Stop the engine */
+  async stop(): Promise<void> {
+    this._running = false;
+    logger.info('[GraphArb] Engine stopped');
+  }
+
+  /** Check if engine is running */
+  isRunning(): boolean {
+    return this._running;
+  }
+
+  /** Get engine metrics */
+  getMetrics(): { cyclesFound: number; lastScanTime: number; uptime: number } {
+    return {
+      cyclesFound: this.edges.size,
+      lastScanTime: this._lastScanTime,
+      uptime: this._startTime ? Date.now() - this._startTime : 0,
+    };
+  }
 }

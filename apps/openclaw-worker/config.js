@@ -3,7 +3,7 @@ const path = require('path');
 const MEKONG_DIR = process.env.MEKONG_DIR || path.join(process.env.HOME || '', 'mekong-cli');
 
 // ═══════════════════════════════════════════════════════════════
-// 🔒 IRON CONFIG — KHOÁ CỨNG: CẤM THAY ĐỔI (kể cả Tôm Hùm)
+// 🔒 IRON CONFIG — LOCKED: FORBIDDEN TO CHANGE (including Tôm Hùm)
 // Approved by Chairman — Only modifiable by direct human edit
 // Date locked: 2026-02-15 | Version: v1.1.0-BMAD-DNA
 // DNA FUSION: ClaudeKit × BMAD-METHOD — 風林火山 + ⛰️NÚI
@@ -21,10 +21,10 @@ const config = {
   DONE_FILE: '/tmp/tom_hum_mission_done',
   TASK_PATTERN: /^(?:CRITICAL_|HIGH_|MEDIUM_|LOW_)?(?:mission_)?.+\.(txt|json)$/,
   MISSION_TIMEOUT_MS: 60 * 60 * 1000,
-  TIMEOUT_SIMPLE: 15 * 60 * 1000,     // 15 phút — 🌪️GIÓ
-  TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 phút — 🌲RỪNG
-  TIMEOUT_COMPLEX: 60 * 60 * 1000,    // 60 phút — 🔥LỬA
-  TIMEOUT_STRATEGIC: 90 * 60 * 1000,  // 90 phút — ⛰️NÚI (BMAD workflows)
+  TIMEOUT_SIMPLE: 15 * 60 * 1000,     // 15 min — 🌪️GIO
+  TIMEOUT_MEDIUM: 30 * 60 * 1000,     // 30 min — 🌲RUNG
+  TIMEOUT_COMPLEX: 60 * 60 * 1000,    // 60 min — 🔥LUA
+  TIMEOUT_STRATEGIC: 90 * 60 * 1000,  // 90 min — ⛰️NUI (BMAD workflows)
   POLL_INTERVAL_MS: 500, // ⚡ BALANCED: 500ms Polling (reduced CPU usage)
   COOLING_INTERVAL_MS: 90000,
   SCANNER_INTERVAL_MS: 30 * 60 * 1000, // 30 mins — Level 4 Scanner
@@ -40,7 +40,7 @@ const config = {
   WORKER_MODEL_NAME: 'qwen3-coder-plus', // DashScope worker model
   FALLBACK_MODEL_NAME: 'qwen3.5-plus', // CTO Brain = strongest model
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
-  // Subagent model — CC CLI dùng biến này để spawn subagent đúng model Qwen
+  // Subagent model — CC CLI uses this to spawn subagent with correct Qwen model
   SUBAGENT_MODEL: process.env.CLAUDE_CODE_SUBAGENT_MODEL || 'qwen3-coder-plus',
   // 🎯 PANE→PROJECT ROUTING — DYNAMIC (2026-03-09)
   // CTO reads live tmux pane paths via getActivePaneProjects().
@@ -87,7 +87,7 @@ const config = {
   // Rule: Match ClaudeKit /commands to situation — NOT blind /cook
   // complexity: 'simple' | 'medium' | 'complex' — determines prompt format
   BINH_PHAP_TASKS: [
-    { id: 'binh_phap_deep_scan', complexity: 'complex', cmd: 'Deep Scan & Fix via Binh Pháp Master: Analyze entire codebase for architectural flaws, circular deps, and security gaps. Fix 10x impact issues.' },
+    { id: 'binh_phap_deep_scan', complexity: 'complex', cmd: 'Deep Scan & Fix via Binh Phap Master: Analyze entire codebase for architectural flaws, circular deps, and security gaps. Fix 10x impact issues.' },
     { id: '10x_architecture', complexity: 'complex', cmd: '10x Architecture Review: Propose and implement modularization to decoupling core services.' },
     { id: 'console_cleanup', complexity: 'simple', cmd: 'Clean all console.log and debug statements from production code' },
     { id: 'type_safety', complexity: 'medium', cmd: 'Audit TypeScript any types — report all locations needing proper type annotations, fix them' },

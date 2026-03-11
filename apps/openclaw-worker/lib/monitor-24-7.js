@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
- * 🦞 24/7 CTO MONITOR — Giám sát Tôm Hùm realtime
+ * 🦞 24/7 CTO MONITOR — Real-time Tôm Hùm monitoring
  *
- * Chạy song song với task-watcher. Thu thập metrics mỗi 30s.
- * Phát hiện anomalies và tự can thiệp khi cần.
+ * Runs in parallel with task-watcher. Collects metrics every 30s.
+ * Detects anomalies and self-intervenes when needed.
  *
  * Usage: node lib/monitor-24-7.js
- * Hoặc import: require('./lib/monitor-24-7').startMonitor()
+ * Or import: require('./lib/monitor-24-7').startMonitor()
  */
 
 const { execSync } = require('child_process');

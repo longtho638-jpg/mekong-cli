@@ -4,13 +4,13 @@ const config = require('./config');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 DISPATCHER DAEMON — 調配 (Điều Phối)
+// 🏯 DISPATCHER DAEMON — 調配 (Coordinator)
 // ═══════════════════════════════════════════════════════════════
-// Rank: DIEU_PHOI (Điều Phối Viên — Coordinator)
+// Rank: DIEU_PHOI (Coordinator)
 // Territory: queue_management
-// 36 Kế: #6 Dương Đông Kích Tây, #19 Phủ Để Trừu Tân
-// Điều 5: MAX 3 missions/daemon, 15 total pending
-// Điều 2: Route signals → missions, standardize priority
+// 36 Stratagems: #6 Duong Dong Kich Tay, #19 Phu De Truu Tan
+// Rule 5: MAX 3 missions/daemon, 15 total pending
+// Rule 2: Route signals → missions, standardize priority
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'dispatcher';

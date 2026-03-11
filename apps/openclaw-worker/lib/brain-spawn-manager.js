@@ -61,8 +61,8 @@ function canRespawn() {
  * NO proxy. CC CLI reads ~/.claude/settings.json for ANTHROPIC_BASE_URL + model aliases.
  */
 function generateClaudeCommand(intent = 'API') {
-	// DashScope Direct: giữ nguyên ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY từ settings.json
-	// CHỈ unset CLAUDE_CONFIG_DIR để tránh xung đột config giữa các pane
+	// DashScope Direct: keep ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY from settings.json
+	// ONLY unset CLAUDE_CONFIG_DIR to avoid config conflicts between panes
 	return (
 		`unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` +
 		` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
@@ -147,7 +147,7 @@ function isShellPrompt(output) {
 
 /**
  * findIdleWorker — DYNAMIC PANE ROUTING (2026-03-09):
- * Chairman Rule: "CTO phải nhìn đường dẫn thực tế, không fix cứng"
+ * Chairman Rule: "CTO must look at actual paths, do not hardcode"
  *
  * Queries tmux for each pane's current working directory.
  * Matches projectDir against live pane paths.

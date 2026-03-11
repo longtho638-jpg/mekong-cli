@@ -1,16 +1,16 @@
 /**
- * Binh Pháp Registry — DNA #5 ClaudeKit Deep Fusion v5.0
+ * Binh Phap Registry — DNA #5 ClaudeKit Deep Fusion v5.0
  *
  * Pure data module that codifies BINH_PHAP_MASTER.md mappings:
- *   - 13 Agents × Ngũ Đức Tướng
- *   - 28 Commands × Thất Kế Routing
- *   - 9 Cửu Địa × Skill Sets
+ *   - 13 Agents × Ngu Duc Tuong
+ *   - 28 Commands × That Ke Routing
+ *   - 9 Cuu Dia × Skill Sets
  *
  * Used by mission-dispatcher.js for mission log annotation.
  * No side effects — import-safe.
  */
 
-// 13 Agents × Ngũ Đức (將 — Tướng)
+// 13 Agents × Ngu Duc (將 — Tuong)
 const AGENTS = {
 	planner: { role: '軍師 Quân Sư', virtue: 'TRÍ 智', chapter: '始計 Ch.1' },
 	'fullstack-developer': { role: '先鋒 Tiên Phong', virtue: 'DŨNG 勇', chapter: '作戰 Ch.2' },
@@ -27,7 +27,7 @@ const AGENTS = {
 	'mcp-manager': { role: '器械 Khí Giới', virtue: 'NHÂN 仁', chapter: '九變 Ch.8' },
 };
 
-// 28 Commands × Thất Kế Routing (計 — Kế Sách)
+// 28 Commands × That Ke Routing (計 — Kế Sách)
 const COMMANDS = {
 	'/plan': { principle: '多算勝', chapter: '始計 Ch.1' },
 	'/plan:fast': { principle: '兵貴勝', chapter: '作戰 Ch.2' },
@@ -59,16 +59,16 @@ const COMMANDS = {
 	'/worktree': { principle: '分兵', chapter: '虛實 Ch.6' },
 };
 
-// 5 Lớp Factory Pipeline 🏭
+// 5 Factory Pipeline Layers 🏭
 const FACTORY_STAGES = {
-	SPEC: { principle: '廟算 (Miếu Toán - Định khuôn mẫu)', chapter: '始計 Ch.1' },
-	PLAN: { principle: '校計 (Hiệu Kế - Lên kế hoạch)', chapter: '始計 Ch.1' },
-	BUILD: { principle: '兵之情主速 (Binh quý thần tốc)', chapter: '軍爭 Ch.7' },
-	VERIFY: { principle: '水之形避高而趨下 (Tìm chỗ rỗng test)', chapter: '虛實 Ch.6' },
-	SHIP: { principle: '動如雷震 (Động như sấm sét)', chapter: '行軍 Ch.9' },
+	SPEC: { principle: '廟算 (Temple Planning - Set the template)', chapter: '始計 Ch.1' },
+	PLAN: { principle: '校計 (Calculate the Plan)', chapter: '始計 Ch.1' },
+	BUILD: { principle: '兵之情主速 (Speed is paramount)', chapter: '軍爭 Ch.7' },
+	VERIFY: { principle: '水之形避高而趨下 (Find the gaps in testing)', chapter: '虛實 Ch.6' },
+	SHIP: { principle: '動如雷震 (Strike like thunder)', chapter: '行軍 Ch.9' },
 };
 
-// 9 Cửu Địa × Skill Sets (地 — Địa Thế)
+// 9 Cuu Dia × Skill Sets (地 — Terrain)
 const CUU_DIA = {
 	tan: { name: '散地 Tản Địa', situation: 'Dev local', skills: ['planning', 'brainstorm', 'sequential-thinking', 'research'] },
 	khinh: { name: '輕地 Khinh Địa', situation: 'Feature branch', skills: ['cook', 'fix', 'scout', 'git', 'code-review'] },

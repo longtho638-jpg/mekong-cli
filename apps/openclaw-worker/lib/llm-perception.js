@@ -208,7 +208,7 @@ function perceivePaneWithLLM(paneOutput, projectName, paneIdx) {
 			},
 		);
 
-		// ✅ OLLAMA FALLBACK (九變 Ch.8 - Cửu Biến Adaptation)
+		// ✅ OLLAMA FALLBACK (九變 Ch.8 - Cuu Bien Adaptation)
 		// Mapped from v2026.3.2 memorySearch.fallback="ollama"
 		const attemptOllamaFallback = () => {
 			log(`P${paneIdx} ⚠️ LLM failed. Executing local Ollama fallback...`);

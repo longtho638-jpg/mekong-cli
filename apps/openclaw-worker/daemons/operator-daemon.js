@@ -6,13 +6,13 @@ const QL = require('./lib/quan-luat-enforcer');
 const { emit, SIGNALS } = require('./lib/signal-bus');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 OPERATOR DAEMON — 哨兵 (Lính Canh)
+// 🏯 OPERATOR DAEMON — 哨兵 (Sentinel)
 // ═══════════════════════════════════════════════════════════════
-// Rank: LINH_CANH (Lính Canh — Sentinel)
+// Rank: LINH_CANH (Sentinel)
 // Territory: system_health
-// 36 Kế: #6 Thanh Đông Kích Tây, #15 Điệu Hổ Ly Sơn
-// Điều 6: CANH GÁC BẮT BUỘC — Health check every 5min
-// Điều 4: Gemini Flash tier (FREE)
+// 36 Stratagems: #6 Thanh Dong Kich Tay, #15 Dieu Ho Ly Son
+// Rule 6: MANDATORY GUARD DUTY — Health check every 5min
+// Rule 4: Gemini Flash tier (FREE)
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'operator';
@@ -65,7 +65,7 @@ function getSystemMetrics() {
 }
 
 function sendSignal(type, payload, priority = 'MEDIUM', to = 'dispatcher') {
-    // Điều 2: Signal chuẩn qua QL enforcer
+    // Rule 2: Standard signal via QL enforcer
     const signal = QL.createSignal(DAEMON_NAME, to, type, payload, priority);
     const inboxDir = path.join(config.MEKONG_DIR, 'signals', 'inbox');
     try {

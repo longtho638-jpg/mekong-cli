@@ -9,9 +9,9 @@
  *
  * Strategy: Files stay FLAT in lib/ (Node.js require works natively).
  *           This registry provides LOGICAL organization without physical moves.
- *           Think of it as the 編制 (biên chế) roster — not the barracks layout.
+ *           Think of it as the 編制 (order of battle) roster — not the barracks layout.
  *
- * 2500-year principle: 法 (Pháp) = tổ chức, biên chế, hậu cần
+ * 2500-year principle: 法 (Phap) = organization, order of battle, logistics
  */
 
 const path = require('path');
@@ -209,7 +209,7 @@ function printRoster(rootDir) {
 	process.stderr.write('\n🏯 DOANH TRẠI ROSTER:\n');
 	for (const [div, info] of Object.entries(DIVISIONS)) {
 		const count = info.files.filter((f) => fs.existsSync(path.join(rootDir, f))).length;
-		process.stderr.write(`  ${info.label}: ${count}/${info.files.length} binh sĩ\n`);
+		process.stderr.write(`  ${info.label}: ${count}/${info.files.length} soldiers\n`);
 	}
 	process.stderr.write('\n');
 }

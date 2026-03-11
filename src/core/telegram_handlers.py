@@ -95,7 +95,7 @@ async def tasks_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
 
     if not inbox:
         await update.message.reply_text(
-            "📭 Inbox trống.\nDùng /cook <goal> để gửi task.",
+            "📭 Inbox empty.\nUse /cook <goal> to queue a task.",
         )
         return
 

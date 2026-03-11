@@ -1,6 +1,6 @@
 /**
  * cto-task-dispatch.js
- * CTO Nhà Máy RaaS — Agent Role mapping + chuyên môn hoá từng pane.
+ * CTO Factory RaaS — Agent Role mapping + specialization per pane.
  * Task selection: REALITY scan → External queue → Specialised pool fallback.
  */
 
@@ -11,8 +11,8 @@ const fs = require('fs');
 const path = require('path');
 
 // ──────────────────────────────────────────────────────────────
-// PANE ROLES — Mỗi pane là 1 phòng ban chuyên môn
-// P0 = Chairman (IRON GUARD, không dispatch)
+// PANE ROLES — Each pane is a specialized department
+// P0 = Chairman (IRON GUARD, no dispatch)
 // ──────────────────────────────────────────────────────────────
 const PANE_ROLES = {
 	1: {
@@ -56,7 +56,7 @@ function getPaneRole(paneIdx) {
 
 // ──────────────────────────────────────────────────────────────
 // PROJECT_BACKLOGS — full pipeline per project, ordered by priority
-// Worker nhận nguyên backlog, tự chạy hết. CTO không inject từng task.
+// Worker receives the full backlog and runs it all. CTO does not inject individual tasks.
 // ──────────────────────────────────────────────────────────────
 const PROJECT_BACKLOGS = {
 	'algo-trader': [

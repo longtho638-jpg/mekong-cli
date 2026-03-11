@@ -1,9 +1,9 @@
 """
 RaaS Task Client — Subagent Delegation via Gateway
 
-Client để delegate tasks lên RaaS Gateway subagents.
-Hỗ trợ:
-  - JWT-signed requests với certificate headers
+Client to delegate tasks to RaaS Gateway subagents.
+Supports:
+  - JWT-signed requests with certificate headers
   - Subagent type routing (cook, plan, debug, etc.)
   - Rate limit enforcement via Cloudflare KV
   - Usage metric logging cho Phase 4 metering
@@ -133,7 +133,7 @@ class RaasTaskClient:
     RaaS Task Client for subagent delegation.
 
     Features:
-    - JWT-signed requests với certificate headers
+    - JWT-signed requests with certificate headers
     - Subagent type routing
     - Rate limit enforcement
     - Usage metric logging
@@ -161,7 +161,7 @@ class RaasTaskClient:
         self._audit_logger = get_audit_logger()
         self._session = requests.Session()
 
-        # Setup session với default headers
+        # Setup session with default headers
         self._session.headers.update({
             "Content-Type": "application/json",
             "User-Agent": "mekong-cli/0.2.0",

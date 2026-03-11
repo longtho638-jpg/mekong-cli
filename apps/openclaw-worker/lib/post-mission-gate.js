@@ -1,8 +1,8 @@
 /**
- * Post-Mission Gate — Binh Pháp CI/CD Verification (Level 3 AGI)
+ * Post-Mission Gate — Binh Phap CI/CD Verification (Level 3 AGI)
  *
- * 第四篇 軍形: "先為不可勝" — Trước hết phải bất khả bại
- * 第十二篇 火攻: Safety Gate v2.0 — 亡國不可以復存 (nước mất không phục hồi)
+ * 第四篇 軍形: "先為不可勝" — First make yourself invincible
+ * 第十二篇 火攻: Safety Gate v2.0 — 亡國不可以復存 (a fallen nation cannot be restored)
  */
 
 const cp = require('child_process');
@@ -223,9 +223,9 @@ ERROR_LOG:
 ${errorOutput.slice(-2000) || buildErr.message}
 
 TASK:
-1. Phân tích lỗi build bên trên.
-2. Sửa lỗi trong project ${projectDir}.
-3. Đảm bảo npm run build vượt qua.
+1. Analyze the build error above.
+2. Fix the error in project ${projectDir}.
+3. Ensure npm run build passes.
 `.trim();
 
 			fs.writeFileSync(fixMissionPath, fixContent);

@@ -1,16 +1,16 @@
 /**
- * Semantic Role Matcher — Ánh xạ nội dung task sang 1/105 vai trò chuyên gia
+ * Semantic Role Matcher — Maps task content to 1 of 105 specialist roles
  *
- * Thuật toán scoring có trọng số:
- * - Khớp keyword chính xác trong text: +10 điểm
- * - Khớp một phần (substring): +5 điểm
- * - Bonus intent alignment (intent khớp category): +3 điểm
- * - Ngưỡng tối thiểu để chọn specialist: 10 điểm (dưới ngưỡng → FULL_STACK_GENERALIST)
+ * Weighted scoring algorithm:
+ * - Exact keyword match in text: +10 points
+ * - Partial match (substring): +5 points
+ * - Intent alignment bonus (intent matches category): +3 points
+ * - Minimum threshold to select specialist: 10 points (below threshold → FULL_STACK_GENERALIST)
  */
 
 'use strict';
 
-// Map intent string sang category keywords để bonus alignment
+// Map intent string to category keywords for bonus alignment
 const INTENT_CATEGORY_MAP = {
   PLAN: ['architect', 'plan', 'design', 'strategist', 'manager'],
   REVIEW: ['reviewer', 'auditor', 'scanner', 'tester', 'checker'],
@@ -20,11 +20,11 @@ const INTENT_CATEGORY_MAP = {
   COOK: ['builder', 'developer', 'coder', 'creator', 'engineer'],
 };
 
-// Ngưỡng score tối thiểu để chọn specialist thay vì fallback
+// Minimum score threshold to select a specialist instead of fallback
 const MIN_SCORE_THRESHOLD = 10;
 
 /**
- * Chuẩn hóa text về lowercase, bỏ ký tự đặc biệt
+ * Normalize text to lowercase, remove special characters
  * @param {string} text
  * @returns {string}
  */
@@ -37,22 +37,22 @@ function normalizeText(text) {
 }
 
 /**
- * Tính điểm match giữa task text và keywords của một role
- * @param {string} normalizedTask - Task text đã normalize
- * @param {string[]} keywords - Danh sách keywords của role
- * @returns {number} - Tổng điểm
+ * Calculate match score between task text and a role's keywords
+ * @param {string} normalizedTask - Normalized task text
+ * @param {string[]} keywords - Role keywords list
+ * @returns {number} - Total score
  */
 function scoreKeywords(normalizedTask, keywords) {
   let score = 0;
   for (const kw of keywords) {
     const normalizedKw = kw.toLowerCase();
-    // Khớp chính xác (từ toàn phần hoặc cụm từ)
+    // Exact match (full word or phrase)
     if (normalizedTask.includes(normalizedKw)) {
-      // Bonus nếu là cụm từ dài hơn (keyword nhiều từ quan trọng hơn)
+      // Bonus for longer phrases (multi-word keywords are more significant)
       const wordCount = normalizedKw.split(' ').length;
       score += 10 + (wordCount - 1) * 3;
     } else {
-      // Khớp một phần: ít nhất 1 từ trong keyword xuất hiện
+      // Partial match: at least 1 word in keyword appears
       const kwWords = normalizedKw.split(' ');
       const partialMatches = kwWords.filter(w => w.length > 3 && normalizedTask.includes(w));
       if (partialMatches.length > 0) {
@@ -64,10 +64,10 @@ function scoreKeywords(normalizedTask, keywords) {
 }
 
 /**
- * Tính bonus alignment giữa intent và tên role
+ * Calculate alignment bonus between intent and role name
  * @param {string} intent - Intent string (PLAN, REVIEW, FIX, etc.)
- * @param {string} roleName - Tên role viết thường
- * @returns {number} - Điểm bonus
+ * @param {string} roleName - Lowercase role name
+ * @returns {number} - Bonus points
  */
 function intentAlignmentBonus(intent, roleName) {
   const intentKeywords = INTENT_CATEGORY_MAP[intent] || [];
@@ -79,11 +79,11 @@ function intentAlignmentBonus(intent, roleName) {
 }
 
 /**
- * Tìm vai trò phù hợp nhất cho task text
- * @param {string} taskText - Nội dung task gốc
- * @param {string} [intent='COOK'] - Intent đã detect
+ * Find the best matching role for a task text
+ * @param {string} taskText - Original task content
+ * @param {string} [intent='COOK'] - Detected intent
  * @param {Object} allHands - Map name → role object
- * @param {Object} fallbackRole - Role mặc định khi không match
+ * @param {Object} fallbackRole - Default role when no match
  * @returns {{ role: Object, score: number, fallback: boolean }}
  */
 function matchRole(taskText, intent, allHands, fallbackRole) {
@@ -94,7 +94,7 @@ function matchRole(taskText, intent, allHands, fallbackRole) {
   let bestScore = 0;
 
   for (const role of Object.values(allHands)) {
-    // Bỏ qua fallback role khi scoring
+    // Skip fallback role during scoring
     if (role.name === 'FULL_STACK_GENERALIST') continue;
 
     const kwScore = scoreKeywords(normalized, role.keywords || []);
@@ -107,7 +107,7 @@ function matchRole(taskText, intent, allHands, fallbackRole) {
     }
   }
 
-  // Nếu score không đạt ngưỡng → dùng fallback
+  // If score is below threshold → use fallback
   const isFallback = bestScore < MIN_SCORE_THRESHOLD;
   if (isFallback) {
     bestRole = fallbackRole;

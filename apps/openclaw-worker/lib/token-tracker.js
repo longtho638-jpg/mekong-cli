@@ -1,8 +1,8 @@
 /**
  * Token Tracker — 作戰 Hậu Cần (Resource Management)
  *
- * "日費千金" — Mỗi ngày tốn ngàn vàng (token budget!)
- * "兵貴勝不貴久" — Quân quý thắng nhanh, không kéo dài
+ * "日費千金" — A thousand gold pieces per day (token budget!)
+ * "兵貴勝不貴久" — Speed in victory is paramount, do not prolong
  *
  * Tracks tokens per mission by scraping proxy log timestamps.
  * Records to .token-usage.json for daily/weekly reporting.

@@ -1,7 +1,7 @@
 /**
  * 🎯 Daemon AI Client — AG Proxy Routing
  *
- * 因糧於敵 — "Dùng lương thảo của giặc" (Ch.2 作戰)
+ * 因糧於敵 — "Forage from the enemy" (Ch.2 作戰)
  *
  * All daemon AI calls route through AG Proxy (FREE Flash/Pro).
  * NEVER call NVIDIA/external APIs directly — violates PROXY_RULES §1.

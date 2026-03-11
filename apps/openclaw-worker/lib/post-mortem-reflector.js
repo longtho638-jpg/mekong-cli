@@ -141,7 +141,7 @@ function detectGotchaPattern(data) {
 	if (output.includes('Cannot find module')) return `Missing module — always check imports before implementing`;
 	if (output.includes('is not a function')) return `API mismatch — verify function signature before calling`;
 	if (output.includes('ENOENT')) return `File not found — validate file paths`;
-	if (output.includes('RESOURCE_EXHAUSTED')) return `Quota exhausted — use model fallback (九變 Biến 4)`;
+	if (output.includes('RESOURCE_EXHAUSTED')) return `Quota exhausted — use model fallback (九變 Bien 4)`;
 	if (content.length > 5000) return `Oversized prompt (${content.length} chars) — keep missions focused`;
 
 	return null;

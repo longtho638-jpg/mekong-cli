@@ -132,8 +132,8 @@ async function preDispatchGuard(workerIdx, TMUX_SESSION, startTime) {
  * 🔒 CHAIRMAN RULE: CTO MUST NOT get stuck on menus. Auto-select recommended option.
  *
  * Detects:
- * - Numbered menus: "1. Xoá tất cả (Recommended)" + "Enter to select"
- * - CC CLI completion: "Tiếp tục / Continue"
+ * - Numbered menus: "1. Delete all (Recommended)" + "Enter to select"
+ * - CC CLI completion: "Continue"
  * - Yes/No prompts: "(Y/n)", "Proceed?"
  * - Permission prompts: "accept all responsibility"
  * - API key prompts
@@ -146,7 +146,7 @@ async function autoApproveQuestion(output, workerIdx, TMUX_SESSION) {
 
 	// ══════════════════════════════════════════════════════════════
 	// 🔒 NUMBERED MENU with "Enter to select · ↑/↓ to navigate"
-	// Example: "1. Xoá tất cả (Recommended)\n2. Chỉ .claude/skills/\n..."
+	// Example: "1. Delete all (Recommended)\n2. Only .claude/skills/\n..."
 	// CC CLI highlights option 1 by default → just press Enter
 	// ══════════════════════════════════════════════════════════════
 	if (/Enter to select.*navigate/i.test(output) || /↑\/↓ to navigate/i.test(output)) {
@@ -193,9 +193,9 @@ async function autoApproveQuestion(output, workerIdx, TMUX_SESSION) {
 	else if (/Option A/i.test(output)) {
 		tmuxExec(`tmux send-keys -t ${t} a Enter`, TMUX_SESSION);
 	}
-	// CC CLI completion menu: "Tiếp tục / Continue"
+	// CC CLI completion menu: "Continue" (detects both English and Vietnamese variants)
 	else if (/Ti[eế]p t[uụ]c/i.test(output) || /Continue/i.test(output) || /1\.\s+(?:Ti[eế]p t[uụ]c|Continue)/i.test(output)) {
-		log(`QUESTION: CC CLI completion menu — selecting 'Tiếp tục/Continue'`);
+		log(`QUESTION: CC CLI completion menu — selecting 'Continue'`);
 		tmuxExec(`tmux send-keys -t ${t} Enter`, TMUX_SESSION);
 	}
 	// Project switch

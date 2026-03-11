@@ -1,7 +1,7 @@
 /**
  * 🌊 Throughput Maximizer — 兵貴勝不貴久 (Ch.2 作戰)
  *
- * "Hứng trọn nước từ server Google, không nút thắt cổ chai"
+ * "Capture full throughput from Google servers, no bottlenecks"
  *
  * 4 TẦNG TỐI ƯU:
  *
@@ -68,7 +68,7 @@ function maximizeNodeEngine() {
 
 function maximizeTmuxBuffer(sessionName = 'tom_hum_brain') {
 	try {
-		// Default scrollback: 2000 lines → TĂNG lên 50000
+		// Default scrollback: 2000 lines → INCREASE to 50000
 		// AI responses can be 500+ lines — need FULL capture for perception scoring
 		execSync(`tmux set-option -t ${sessionName} -g history-limit 50000`, { stdio: 'pipe' });
 		log('🌊 [THROUGHPUT] tmux history-limit = 50000 (was 2000)');

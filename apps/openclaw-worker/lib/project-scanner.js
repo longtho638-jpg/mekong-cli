@@ -1,8 +1,8 @@
 /**
  * AGI Level 4: Self-Planning Scanner — 始計→謀攻
  *
- * Quét toàn bộ project để lập kế hoạch cải thiện dài hạn.
- * Khác với Auto-CTO (chỉ fix lỗi build/test), Scanner tập trung vào:
+ * Scans the entire project to plan long-term improvements.
+ * Unlike Auto-CTO (only fixes build/test errors), Scanner focuses on:
  * 1. Tech debt (TODO/FIXME)
  * 2. Git status (uncommitted changes)
  * 3. Architectural improvements (via Gemini analysis)
@@ -132,7 +132,7 @@ async function runFullScan() {
 			for (const mission of health.recommendations) {
 				if (mission.priority === 'HIGH') {
 					const filename = `HIGH_mission_${project}_planned_${Date.now()}.txt`;
-					const content = `/cook "Trả lời bằng TIẾNG VIỆT. Planned Mission: ${mission.title}. Reason: ${mission.reason}" --auto`;
+					const content = `/cook "Planned Mission: ${mission.title}. Reason: ${mission.reason}" --auto`;
 					fs.writeFileSync(path.join(config.WATCH_DIR, filename), content);
 					log(`[SCANNER] Created HIGH priority mission for ${project}: ${mission.title}`);
 				}
@@ -150,7 +150,7 @@ async function runFullScan() {
 function startScanner() {
 	if (scannerInterval) return;
 
-	// Chạy ngay lần đầu
+	// Run immediately on first call
 	runFullScan();
 
 	scannerInterval = setInterval(runFullScan, config.SCANNER_INTERVAL_MS || 1800000);

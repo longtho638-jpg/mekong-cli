@@ -4,13 +4,13 @@ const config = require('./config');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 DIPLOMAT DAEMON — 外交 (Ngoại Giao)
+// 🏯 DIPLOMAT DAEMON — 外交 (Diplomat)
 // ═══════════════════════════════════════════════════════════════
-// Rank: NGOAI_GIAO (Ngoại Giao Quan — Diplomat)
+// Rank: NGOAI_GIAO (Diplomat)
 // Territory: documentation
-// 36 Kế: #11 Lý Đại Đào Cương, #22 Quan Môn Tróc Tặc
-// Điều 3: CHỈ UPDATE DOCS, KHÔNG CODE → đọc + viết README/CHANGELOG
-// Điều 8: Liên lạc không đứt — docs phải current
+// 36 Stratagems: #11 Ly Dai Dao Cuong, #22 Quan Mon Troc Tac
+// Rule 3: UPDATE DOCS ONLY, NO CODE → read + write README/CHANGELOG
+// Rule 8: Communication unbroken — docs must be current
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'diplomat';

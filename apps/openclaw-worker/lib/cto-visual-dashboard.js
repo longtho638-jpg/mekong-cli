@@ -1,5 +1,5 @@
 /**
- * 🖥️ CTO Visual Dashboard v2 — Đa Luồng Real-Time Status
+ * 🖥️ CTO Visual Dashboard v2 — Multi-Thread Real-Time Status
  *
  * Renders live worker status in tmux status bar + optional terminal dashboard.
  * Chairman can SEE all workers running parallel at a glance.
@@ -9,7 +9,7 @@
  *   - Updates tmux status-right with worker states
  *   - Writes status to ~/tom_hum_dashboard.log for external monitoring
  *
- * 始計 (Thủy Kế): Nhìn toàn cục → ra quyết định chính xác
+ * 始計 (Shui Ji): See the full picture → make precise decisions
  */
 
 const { execSync } = require('child_process');

@@ -85,7 +85,7 @@ class MemoryStore:
         # Index in vector store for semantic search
         self._index_entry(entry)
 
-        # Async save — không block main thread (daemon thread)
+        # Async save — does not block main thread (daemon thread)
         # Unless sync_save flag is set (for testing)
         if self._sync_save:
             self._save()

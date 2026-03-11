@@ -69,7 +69,7 @@ function spawnBrain() {
 
 	const { proxyUrl, configDir } = getProxyConfig();
 
-	// DashScope Direct: giữ ANTHROPIC_* env vars từ settings.json
+	// DashScope Direct: keep ANTHROPIC_* env vars from settings.json
 	const launcher = '/tmp/tom_hum_cc_launcher.sh';
 	fs.writeFileSync(
 		launcher,

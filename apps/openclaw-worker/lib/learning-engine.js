@@ -194,7 +194,7 @@ function getReport() {
 }
 
 let learningInterval = null;
-const LEARNING_INTERVAL_MS = 60 * 60 * 1000; // 60 phút
+const LEARNING_INTERVAL_MS = 60 * 60 * 1000; // 60 min
 
 function runLearningCycle() {
 	try {

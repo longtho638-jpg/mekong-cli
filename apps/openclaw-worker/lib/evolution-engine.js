@@ -349,7 +349,7 @@ function optimizeTokenRouting() {
 /**
  * Generate CRITICAL brain surgery mission when health is degraded
  * 🔥LỬA (風林火山): /cook --parallel --auto — Agent Teams parallel execution
- * CẤM raw text — PHẢI dùng ClaudeKit command (IRON RULE Chairman 2026-02-17)
+ * FORBIDDEN raw text — MUST use ClaudeKit command (IRON RULE Chairman 2026-02-17)
  */
 function triggerBrainSurgery(triggers, state) {
 	// 🧬 BRAIN SURGERY v33: Guard against duplicate surgery missions
@@ -387,7 +387,7 @@ function triggerBrainSurgery(triggers, state) {
 	const triggerSummary = triggers.map((t) => `${t.type}: ${t.detail} (sev ${t.severity})`).join('; ');
 
 	// 🔥LỬA ClaudeKit format: /cook --parallel --auto (Agent Teams 10+ subagents)
-	const missionContent = `/cook "Trả lời bằng TIẾNG VIỆT. 🧬 BRAIN SURGERY — AGI Level 6 Evolution Engine detected degradation: ${triggerSummary}. Working dir: /Users/macbookprom1/mekong-cli/apps/openclaw-worker. TASKS: (1) Read knowledge/memory.md for post-mortem insights, (2) Identify root cause per trigger in lib/ code, (3) Implement targeted fix — NOT full rewrite, (4) npm run build to verify, (5) git commit '🧬 EVOLUTION: fix summary'. SCOPE: Max 5 files, max 200 lines. Chỉ sửa TỐI ĐA 5 file mỗi mission." --parallel --auto`;
+	const missionContent = `/cook "🧬 BRAIN SURGERY — AGI Level 6 Evolution Engine detected degradation: ${triggerSummary}. Working dir: /Users/macbookprom1/mekong-cli/apps/openclaw-worker. TASKS: (1) Read knowledge/memory.md for post-mortem insights, (2) Identify root cause per trigger in lib/ code, (3) Implement targeted fix — NOT full rewrite, (4) npm run build to verify, (5) git commit '🧬 EVOLUTION: fix summary'. SCOPE: Max 5 files, max 200 lines." --parallel --auto`;
 
 	const taskFile = path.join(TASKS_DIR, `CRITICAL_mission_evolution_surgery_${Date.now()}.txt`);
 	try {

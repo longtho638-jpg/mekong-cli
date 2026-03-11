@@ -1,9 +1,9 @@
 /**
- * Task Dedup Registry — Chống Loop Trùng Lặp
+ * Task Dedup Registry — Duplicate Loop Prevention
  *
- * Lưu hash mỗi task đã dispatch → data/dispatched-tasks.json
- * Check trước khi inject → nếu trùng → SKIP
- * TTL 24h: task cũ hơn 24h được phép re-dispatch
+ * Stores hash of each dispatched task → data/dispatched-tasks.json
+ * Check before inject → if duplicate → SKIP
+ * TTL 24h: tasks older than 24h are allowed to re-dispatch
  */
 
 const fs = require('fs');

@@ -1,8 +1,8 @@
 'use strict';
 
 /**
- * 🏭 Project Bootstrapper — Auto-scaffold từ Client Intake
- * Nhận intake.json → tạo project folder → gen configs → register vào Vibe Factory
+ * 🏭 Project Bootstrapper — Auto-scaffold from Client Intake
+ * Receives intake.json → creates project folder → gen configs → register into Vibe Factory
  */
 
 const fs = require('fs');

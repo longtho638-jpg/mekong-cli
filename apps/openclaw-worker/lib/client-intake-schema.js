@@ -1,20 +1,20 @@
 'use strict';
 
 /**
- * 📋 Client Intake Schema — 8 Mục Thu Thập Chuẩn Ngành
+ * 📋 Client Intake Schema — 8 Industry-Standard Collection Fields
  * Validates intake data from clients before bootstrapping a new project.
  */
 
 const INTAKE_SCHEMA = {
 	company: {
-		name: { type: 'string', required: true, label: 'Tên công ty / cá nhân' },
+		name: { type: 'string', required: true, label: 'Company / individual name' },
 		industry: {
 			type: 'enum',
 			values: ['F&B', 'eCommerce', 'SaaS', 'Agency', 'Fintech', 'Education', 'Healthcare', 'Other'],
 			required: true,
 		},
 		size: { type: 'enum', values: ['Solo', '2-10', '10-50', '50+'], required: false, default: 'Solo' },
-		website: { type: 'string', required: false, label: 'Website hiện tại' },
+		website: { type: 'string', required: false, label: 'Current website' },
 		contact: {
 			name: { type: 'string', required: true },
 			email: { type: 'string', required: true },
@@ -22,19 +22,19 @@ const INTAKE_SCHEMA = {
 		},
 	},
 	project: {
-		name: { type: 'string', required: true, label: 'Tên project (kebab-case)', pattern: /^[a-z0-9-]+$/ },
+		name: { type: 'string', required: true, label: 'Project name (kebab-case)', pattern: /^[a-z0-9-]+$/ },
 		type: { type: 'enum', values: ['Landing', 'eCommerce', 'SaaS', 'Dashboard', 'Mobile', 'API', 'Bot'], required: true },
-		goal: { type: 'string', required: true, label: 'Mục tiêu dự án (1-2 câu)' },
-		problems: { type: 'array', required: false, label: 'Vấn đề khách đang gặp' },
+		goal: { type: 'string', required: true, label: 'Project goal (1-2 sentences)' },
+		problems: { type: 'array', required: false, label: 'Issues the client is facing' },
 	},
 	target: {
-		audience: { type: 'string', required: true, label: 'Đối tượng sử dụng' },
+		audience: { type: 'string', required: true, label: 'Target users' },
 		dailyUsers: { type: 'number', required: false, default: 100 },
 		devices: { type: 'enum', values: ['mobile-first', 'desktop-first', 'both'], required: true, default: 'mobile-first' },
 		locale: { type: 'enum', values: ['vi', 'en', 'both'], required: true, default: 'vi' },
 	},
 	features: {
-		core: { type: 'array', required: true, label: 'Tính năng bắt buộc' },
+		core: { type: 'array', required: true, label: 'Required features' },
 		nice_to_have: { type: 'array', required: false, default: [] },
 		integrations: { type: 'array', required: false, default: [], label: 'PayOS, Stripe, Supabase, Zalo, etc' },
 	},
@@ -47,7 +47,7 @@ const INTAKE_SCHEMA = {
 		},
 		primaryColor: { type: 'string', required: false, default: '#2563eb' },
 		secondaryColor: { type: 'string', required: false, default: '#f59e0b' },
-		references: { type: 'array', required: false, default: [], label: 'URL sites tham khảo' },
+		references: { type: 'array', required: false, default: [], label: 'Reference site URLs' },
 		logo: { type: 'string', required: false },
 	},
 	tech: {

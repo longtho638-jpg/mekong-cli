@@ -5,7 +5,7 @@
  *    "The general who wins a battle makes many calculations in his temple before the battle is fought"
  *
  * This module performs deep strategic assessment (始計) using LLM Vision
- * to transform a "Smart" task into a "Wise" (Trí tuệ) mission.
+ * to transform a "Smart" task into a "Wise" mission.
  *
  * DNA FUSION: Sun Tzu's 13 Chapters + ClaudeKit Agents + BMAD Workflows
  */
@@ -43,7 +43,7 @@ async function strategize(task, project) {
 	const lessons = getRelevantLessons(project, task);
 	const intelBlock = lessons.map((l) => `- ${l}`).join('\n');
 
-	const prompt = `You are Sun Tzu (Tôn Tử), the legendary military strategist. Analyze this mission for project "${project}" through the lens of the 13 Chapters of Binh Phap (The Art of War).
+	const prompt = `You are Sun Tzu, the legendary military strategist. Analyze this mission for project "${project}" through the lens of the 13 Chapters of Binh Phap (The Art of War).
 
 MISSION: ${task}
 
@@ -51,11 +51,11 @@ BATTLEFIELD INTEL (Historical Lessons):
 ${intelBlock}
 
 ASSIGN:
-1. FIVE ESSENTIALS (Ngũ Sự): Identify ĐẠO (Alignment), THIÊN (Timing), ĐỊA (Environment), TƯỚNG (Leadership), PHÁP (Process).
-2. NINE SITUATIONS (Cữu Địa): Classify the terrain (e.g. 散地 Tản Địa = Local dev, 死地 Tử Địa = Prod down).
-3. COMBAT MODE (Phong Lâm Hỏa Sơn): Choose GIÓ (Speed), RỪNG (Discipline), LỬA (Power), or NÚI (Strategic).
-4. STRATEGIC MANEUVER (Kế Sách): Choose one of the 36 Stratagems (e.g. "Man thiên quá hải" or "Sấn hỏa đả kiếp").
-5. MANDATE (Mệnh lệnh): Write a brief, wise command in VIETNAMESE that gives the agent "Wisdom" (Trí tuệ). Use Sun Tzu's voice. Take the Battlefield Intel into account.
+1. FIVE ESSENTIALS (Ngu Su): Identify DAO (Alignment), THIEN (Timing), DIA (Environment), TUONG (Leadership), PHAP (Process).
+2. NINE SITUATIONS (Cuu Dia): Classify the terrain (e.g. 散地 Tan Dia = Local dev, 死地 Tu Dia = Prod down).
+3. COMBAT MODE (Phong Lam Hoa Son): Choose GIO (Speed), RUNG (Discipline), LUA (Power), or NUI (Strategic).
+4. STRATEGIC MANEUVER (Ke Sach): Choose one of the 36 Stratagems.
+5. MANDATE: Write a brief, wise command that gives the agent strategic wisdom. Use Sun Tzu's voice. Take the Battlefield Intel into account.
 
 Format your response as a valid JSON object:
 {
@@ -74,7 +74,7 @@ Format your response as a valid JSON object:
 		const body = JSON.stringify({
 			model: MODEL,
 			max_tokens: 1024,
-			system: 'You are Tôn Tử (Sun Tzu), the legendary general. Return ONLY valid JSON.',
+			system: 'You are Sun Tzu, the legendary general. Return ONLY valid JSON.',
 			messages: [{ role: 'user', content: prompt }],
 		});
 
@@ -148,13 +148,13 @@ Format your response as a valid JSON object:
 function fallbackStrategy(task) {
 	const isCritical = task.toLowerCase().includes('critical') || task.toLowerCase().includes('prod down');
 	return {
-		essentials: { dao: 'Bảo vệ thành quả', thien: 'Khẩn cấp', dia: 'Khu vực lõi', tuong: 'Dũng mãnh', phap: 'Tối thiẻu hóa rủi ro' },
-		situation: isCritical ? '死地 Tử Địa' : 'Khinh Địa',
+		essentials: { dao: 'Protect gains', thien: 'Urgent', dia: 'Core area', tuong: 'Decisive', phap: 'Minimize risk' },
+		situation: isCritical ? '死地 Tu Dia' : 'Khinh Dia',
 		mode: isCritical ? 'LỬA' : 'RỪNG',
-		stratagem: 'Dĩ dật đãi lao',
+		stratagem: 'Yi Yi Dai Lao (reserve strength against fatigue)',
 		mandate: isCritical
-			? 'Quân hỏa tốc, đánh trực diện vào tâm lỗi. Không lùi bước.'
-			: 'Hành quân chậm rãi, thận trọng như rừng. Giữ vững kỷ luật.',
+			? 'Strike fast, attack the core error directly. Do not retreat.'
+			: 'Advance steadily, cautious as a forest. Maintain discipline.',
 		agi_level: 6,
 		reasoning: 'Fallback logic',
 	};

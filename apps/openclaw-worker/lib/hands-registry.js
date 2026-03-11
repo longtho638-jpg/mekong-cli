@@ -1,11 +1,11 @@
 /**
  * 🐉 BINH PHÁP v6.0: The Hands Registry — Backward-Compatible Wrapper
  *
- * Re-exports từ hệ thống 105-Hands mới (lib/hands/index.js).
- * API cũ `getHandForIntent(intent)` vẫn hoạt động 100%.
+ * Re-exports from the new 105-Hands system (lib/hands/index.js).
+ * Legacy API `getHandForIntent(intent)` still works 100%.
  *
- * v5: 3 hands cứng (PLANNER, CODER, REVIEWER)
- * v6: 105 specialist roles + semantic matching, backward compat với v5
+ * v5: 3 hardcoded hands (PLANNER, CODER, REVIEWER)
+ * v6: 105 specialist roles + semantic matching, backward compat with v5
  */
 
 'use strict';
@@ -13,14 +13,14 @@
 const { HANDS, ALL_HANDS, getHandForIntent, getHandByName, matchRole } = require('./hands/index');
 
 module.exports = {
-	// Backward compat: 3 HANDS gốc vẫn tồn tại
+	// Backward compat: original 3 HANDS still exist
 	HANDS,
-	// Đầy đủ 105 roles
+	// Full 105 roles
 	ALL_HANDS,
-	// Backward compat API: ánh xạ intent → PLANNER/CODER/REVIEWER
+	// Backward compat API: map intent → PLANNER/CODER/REVIEWER
 	getHandForIntent,
-	// Mới: lookup theo tên chính xác
+	// New: lookup by exact name
 	getHandByName,
-	// Mới: semantic matching task text → specialist role
+	// New: semantic matching task text → specialist role
 	matchRole,
 };

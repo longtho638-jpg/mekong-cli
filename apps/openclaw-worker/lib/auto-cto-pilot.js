@@ -24,7 +24,7 @@ const { tryStrategicMission } = require('./strategic-brain');
 const { scanRevenueHealth, generateRevenueMission } = require('./revenue-health-scanner');
 const { generateEconomicMission } = require('./clawwork-integration');
 const { dispatchDueTradingMissions } = require('./trading-cadence-scheduler');
-// Ship Pipeline — kiểm tra trạng thái trước khi sinh task mới
+// Ship Pipeline — check status before generating new tasks
 const shipPipeline = require('./ship-pipeline');
 
 let intervalRef = null;
@@ -51,7 +51,7 @@ const MAX_FIX_CYCLES = 3;
 const MAX_FIXES_PER_SCAN = 3; // 🔒 Ch.6 虛實: focus force on fewer targets
 // 🔒 Ch.2 作戰: Balanced speed — fast enough to detect idle, slow enough to not spam
 const SCAN_INTERVAL_MS = 60000; // 60s — dispatch only when pane truly idle
-const FIX_INTERVAL_MS = 15000; // 15s — fix/verify: phản xạ nhanh
+const FIX_INTERVAL_MS = 15000; // 15s — fix/verify: fast reflex
 const DEFAULT_INTERVAL_MS = 60000; // 60s — match scan speed
 
 // --- BUG #11: Per-project consecutive failure tracking ---
@@ -312,8 +312,8 @@ function generateFixMission(error, project) {
 			prompt = `Fix: ${error.message}`;
 	}
 
-	// Wrap with Vietnamese + safety constraints
-	const fullPrompt = `/cook "Trả lời bằng TIẾNG VIỆT. ${prompt} Chỉ sửa TỐI ĐA 5 file mỗi mission. CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations." --auto`;
+	// Wrap with safety constraints
+	const fullPrompt = `/cook "${prompt} Fix at most 5 files per mission. CRITICAL: DO NOT run git commit, git push, or /check-and-commit. The CI/CD gate handles git operations." --auto`;
 
 	const severity = error.severity === 'critical' ? 'HIGH' : 'MEDIUM';
 	const filename = `${severity}_mission_${project.replace(/-/g, '_')}_fix_${error.type}_${Date.now()}.txt`;
@@ -582,7 +582,7 @@ function startAutoCTO() {
 					projectDir = detectProjectDir(project);
 				}
 				if (!fs.existsSync(projectDir)) {
-					log(`AUTO-CTO: Bỏ qua ${project} — không tìm thấy`);
+					log(`AUTO-CTO: Skipping ${project} — not found`);
 					advanceProject(state);
 					scheduleNext();
 					return;
@@ -592,7 +592,7 @@ function startAutoCTO() {
 				switch (state.phase) {
 					case 'scan':
 						if (!isSafeToScan()) {
-							log(`AUTO-CTO [🧊]: Bỏ qua scan — hệ thống quá nóng.`);
+							log(`AUTO-CTO [🧊]: Skipping scan — system too hot.`);
 							scheduleNext();
 							return;
 						}
@@ -616,16 +616,16 @@ function startAutoCTO() {
 		}, interval);
 	}
 
-	log(`AUTO-CTO [九變 v2]: Phản xạ thích ứng — scan ${SCAN_INTERVAL_MS / 1000}s, fix/verify ${FIX_INTERVAL_MS / 1000}s`);
+	log(`AUTO-CTO [九變 v2]: Adaptive reflex — scan ${SCAN_INTERVAL_MS / 1000}s, fix/verify ${FIX_INTERVAL_MS / 1000}s`);
 	scheduleNext();
 }
 
 async function handleScan(state, project, projectDir) {
-	// --- Ship Pipeline Hook (九變): nếu pipeline chưa xong → ưu tiên task pipeline ---
+	// --- Ship Pipeline Hook (九變): if pipeline not done → prioritize pipeline task ---
 	const pipelineCmd = shipPipeline.getNextPhaseCommand(project);
 	if (pipelineCmd && !shipPipeline.isShipComplete(project)) {
 		const phaseName = shipPipeline.getPhaseName((shipPipeline.getPipelineStatus(project) || { currentPhase: 1 }).currentPhase);
-		log(`AUTO-CTO [SHIP PIPELINE]: ${project} — phase ${phaseName} chưa hoàn thành, dispatch pipeline task`);
+		log(`AUTO-CTO [SHIP PIPELINE]: ${project} — phase ${phaseName} not complete, dispatching pipeline task`);
 		const filename = `HIGH_mission_${project.replace(/-/g, '_')}_pipeline_${phaseName.toLowerCase()}_${Date.now()}.txt`;
 		fs.writeFileSync(path.join(config.WATCH_DIR, filename), pipelineCmd);
 		// Advance phase sau khi dispatch (optimistic)
@@ -665,9 +665,9 @@ async function handleScan(state, project, projectDir) {
 			}
 		}
 
-		// 🚀 GREEN PATH: Open Source RaaS AGI — đích đến của mọi dự án
-		// Khi project GREEN, đẩy hướng Open Source + RaaS AGI thay vì idle
-		const RAAS_COOLDOWN_MS = 30 * 60 * 1000; // 30 phút giữa các lần dispatch cùng project
+		// 🚀 GREEN PATH: Open Source RaaS AGI — destination of every project
+		// When project is GREEN, push toward Open Source + RaaS AGI instead of idle
+		const RAAS_COOLDOWN_MS = 30 * 60 * 1000; // 30 min between dispatches per project
 		const raasStateFile = path.join(__dirname, '..', `.raas-last-${project}.json`);
 		let raasRecentlyDispatched = false;
 		try {
@@ -683,12 +683,12 @@ async function handleScan(state, project, projectDir) {
 			// Project-specific Open Source RaaS AGI missions
 			const RAAS_MISSIONS = {
 				'mekong-cli':
-					'/cook "始計 Open Source RaaS Hub: audit secrets → .env.example, README cho contributors, MIT LICENSE, npm audit fix, CI/CD pipeline cho open-source, ánh xạ binh_phap_master.md 13 chương vào kiến trúc. Target: production-ready open-source RaaS AGI CTO brain." --auto',
+					'/cook "始計 Open Source RaaS Hub: audit secrets → .env.example, README for contributors, MIT LICENSE, npm audit fix, CI/CD pipeline for open-source, map binh_phap_master.md 13 chapters to architecture. Target: production-ready open-source RaaS AGI CTO brain." --auto',
 				'algo-trader':
-					'/cook "始計 Open Source AGI Trading Bot: audit credentials → .env.example, document AGI strategies trong README, clean tests, error handling missing env vars, security audit cho open-source RaaS marketplace release." --auto',
-				well: '/cook "始計 Open Source Health Platform: audit Supabase keys, i18n vi/en hoàn chỉnh, PayOS integration docs, zero console errors, README cho RaaS open-source health platform release." --auto',
+					'/cook "始計 Open Source AGI Trading Bot: audit credentials → .env.example, document AGI strategies in README, clean tests, error handling for missing env vars, security audit for open-source RaaS marketplace release." --auto',
+				well: '/cook "始計 Open Source Health Platform: audit Supabase keys, complete i18n vi/en, PayOS integration docs, zero console errors, README for RaaS open-source health platform release." --auto',
 				'84tea':
-					'/cook "始計 Open Source F&B Platform: audit secrets, menu system docs, PWA optimization, README open-source contribution guide cho RaaS F&B vertical." --auto',
+					'/cook "始計 Open Source F&B Platform: audit secrets, menu system docs, PWA optimization, README open-source contribution guide for RaaS F&B vertical." --auto',
 			};
 			const mission = RAAS_MISSIONS[project];
 			if (mission) {

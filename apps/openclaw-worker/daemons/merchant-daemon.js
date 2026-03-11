@@ -5,13 +5,13 @@ const QL = require('./lib/quan-luat-enforcer');
 const { emit, SIGNALS } = require('./lib/signal-bus');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 MERCHANT DAEMON — 軍需 (Quân Nhu)
+// 🏯 MERCHANT DAEMON — 軍需 (Quartermaster)
 // ═══════════════════════════════════════════════════════════════
-// Rank: QUAN_NHU (Quân Nhu — Quartermaster)
+// Rank: QUAN_NHU (Quartermaster)
 // Territory: revenue
-// 36 Kế: #20 Hỗn Thủy Mô Ngư, #23 Viễn Giao Cận Công
-// Điều 3: CHỈ TRACK REVENUE, KHÔNG DEPLOY → chuyển Scribe
-// Điều 4: Gemini Flash tier (FREE)
+// 36 Stratagems: #20 Hon Thuy Mo Ngu, #23 Vien Giao Can Cong
+// Rule 3: TRACK REVENUE ONLY, NO DEPLOY → pass to Scribe
+// Rule 4: Gemini Flash tier (FREE)
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'merchant';

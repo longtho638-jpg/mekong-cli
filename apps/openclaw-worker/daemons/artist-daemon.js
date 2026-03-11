@@ -5,13 +5,13 @@ const { chromium } = require('playwright');
 const QL = require('./lib/quan-luat-enforcer');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 ARTIST DAEMON — 畫師 (Họa Sĩ)
+// 🏯 ARTIST DAEMON — 畫師 (Painter)
 // ═══════════════════════════════════════════════════════════════
-// Rank: HOA_SI (Họa Sĩ — Painter)
+// Rank: HOA_SI (Painter)
 // Territory: ui_ux
-// 36 Kế: #8 Ám Độ Trần Thương, #17 Phao Chuyên Dẫn Ngọc
-// Điều 3: CHỈ AUDIT VISUAL, KHÔNG CODE → chuyển Builder
-// Điều 4: Gemini Flash tier (FREE)
+// 36 Stratagems: #8 Am Do Tran Thuong, #17 Phao Chuyen Dan Ngoc
+// Rule 3: AUDIT VISUAL ONLY, NO CODE → pass to Builder
+// Rule 4: Gemini Flash tier (FREE)
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'artist';

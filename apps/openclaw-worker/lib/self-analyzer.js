@@ -234,7 +234,7 @@ Return JSON: {"analysis": "brief summary", "prioritize": ["task_ids"], "deprecat
 
 /**
  * Get AGI score — composite intelligence metric.
- * 🦞 FIX 2026-02-26: Included "Wisdom" (Trí tuệ) based on Strategic Brain history
+ * 🦞 FIX 2026-02-26: Included "Wisdom" based on Strategic Brain history
  */
 function getAGIScore() {
 	const mem = loadMemory();
@@ -276,19 +276,19 @@ function getAGIScore() {
 			success: successScore,
 			wisdom: wisdomScore,
 		},
-		// AGI Levels — Rebranded for Sun Tzu (Tôn Tử) 2500
+		// AGI Levels — Rebranded for Sun Tzu 2500
 		level:
 			total >= 90
-				? '10 (Tôn Tử AGI)'
+				? '10 (Sun Tzu AGI)'
 				: total >= 80
-					? '9 (Đại Đô Đốc)'
+					? '9 (Grand Admiral)'
 					: total >= 70
-						? '8 (Bậc Thầy Chiến Lược)'
+						? '8 (Strategic Master)'
 						: total >= 50
-							? '7 (Linh Hồn Trí Tuệ)'
+							? '7 (Intelligent Soul)'
 							: total >= 30
-								? '6 (Cựu Binh)'
-								: '5 (Lính Mới)',
+								? '6 (Veteran)'
+								: '5 (Recruit)',
 	};
 }
 

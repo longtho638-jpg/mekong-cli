@@ -1,7 +1,7 @@
 /**
  * 📡 SIGNAL BUS — 奇正相生 (CHÍNH + KỲ Signal System)
  *
- * Ch.5 兵勢: "以正合，以奇勝" — Dùng CHÍNH giao chiến, dùng KỲ để thắng
+ * Ch.5 兵勢: "以正合，以奇勝" — Use orthodox to engage, use unorthodox to win
  *
  * CHÍNH (Orthodox): Task files in tasks/ — persistent, recoverable
  * KỲ (Unorthodox):  EventEmitter signals — fast, real-time IPC

@@ -1,5 +1,5 @@
 /**
- * Mission Recovery — Cửu Biến 7-State Adaptation (九變 Ch.8)
+ * Mission Recovery — Cuu Bien 7-State Adaptation (九變 Ch.8)
  *
  * Expanded from 2 fallback models to 7 adaptation states per doctrine.
  * Each state maps to a specific scenario with diagnostic awareness.
@@ -15,53 +15,53 @@ const config = require('../config');
 const ADAPTATION_STATES = [
 	{
 		id: 'opus_burst',
-		description: 'AG Opus burst (2 calls) → kéo trớn thinking',
+		description: 'AG Opus burst (2 calls) → build up thinking momentum',
 		model: 'claude-sonnet-4-6-20250514',
 		provider: 'antigravity',
 		chapter: '九變 Biến 1',
 	},
 	{
 		id: 'opus_done',
-		description: 'Opus burst done → nhã ra Google Pro/Flash FREE',
+		description: 'Opus burst done → release to Google Pro/Flash FREE',
 		model: 'gemini-3-pro',
 		provider: 'google',
-		chapter: '九變 Biến 2',
+		chapter: '九變 Bien 2',
 	},
 	{
 		id: 'skip_ag',
-		description: 'Not worthy of Opus → skip AG, thẳng Google',
+		description: 'Not worthy of Opus → skip AG, go straight to Google',
 		model: 'gemini-3-flash',
 		provider: 'google',
-		chapter: '九變 Biến 3',
+		chapter: '九變 Bien 3',
 	},
 	{
 		id: 'google_error',
-		description: 'Google 429/error → chuyển Ollama',
+		description: 'Google 429/error → switch to Ollama',
 		model: 'gemini-3-flash',
 		provider: 'ollama',
-		chapter: '九變 Biến 4',
+		chapter: '九變 Bien 4',
 	},
 	{
 		id: 'ollama_gap',
-		description: 'Ollama gap → chuyển OpenRouter (last resort)',
+		description: 'Ollama gap → switch to OpenRouter (last resort)',
 		model: 'auto',
 		provider: 'openrouter',
-		chapter: '九變 Biến 5',
+		chapter: '九變 Bien 5',
 	},
 	{
 		id: 'ag_budget_hit',
-		description: 'AG hourly budget (30) → nhã ra Google (tiết kiệm)',
+		description: 'AG hourly budget (30) → release to Google (save tokens)',
 		model: 'gemini-3-pro',
 		provider: 'google',
-		chapter: '九變 Biến 6',
+		chapter: '九變 Bien 6',
 	},
 	{
 		id: 'all_blocked',
-		description: 'ALL blocked → 有所不爭 — dừng, đợi cooldown',
+		description: 'ALL blocked → 有所不爭 — stop, wait for cooldown',
 		model: null,
 		provider: null,
 		action: 'cooldown',
-		chapter: '九變 Biến 7',
+		chapter: '九變 Bien 7',
 	},
 ];
 
@@ -124,7 +124,7 @@ function truncatePrompt(prompt) {
 
 /**
  * Determine recovery action from mission failure output.
- * Enhanced with Cửu Biến adaptation awareness.
+ * Enhanced with Cuu Bien adaptation awareness.
  *
  * Returns: { action, model, adaptationState, chapter }
  */

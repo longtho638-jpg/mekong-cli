@@ -3,33 +3,33 @@ const path = require('path');
 const config = require('../config');
 
 /**
- * Task Deduplicator — chống tạo duplicate mission files
+ * Task Deduplicator — prevent duplicate mission file creation
  *
- * Nguyên nhân duplicate:
- * - Daemons chạy loop tạo tasks giống nhau
- * - Chỉ check tasks/ mà không check tasks/processed/
- * - Khi task complete → move vào processed/ → daemon tạo lại task giống
+ * Causes of duplicates:
+ * - Daemons running loops create identical tasks
+ * - Only checking tasks/ without checking tasks/processed/
+ * - When task completes → moved to processed/ → daemon recreates same task
  *
- * Giải pháp:
- * - Check BOTH tasks/ VÀ tasks/processed/
+ * Solution:
+ * - Check BOTH tasks/ AND tasks/processed/
  * - Dedup key format: {project}_{daemon}_{type}
- * - Tối đa 1 task/type/project (ngoại trừ auto_ tasks có thể nhiều hơn)
+ * - Max 1 task/type/project (except auto_ tasks which can have more)
  */
 
-const DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 giờ — task cùng type trong 24h = duplicate
+const DEDUP_WINDOW_MS = 24 * 60 * 60 * 1000; // 24 hours — same type task within 24h = duplicate
 
 /**
- * Check xem đã có task cùng type chưa (trong tasks/ VÀ tasks/processed/)
- * @param {string} project - Tên project (e.g., 'sophia-ai-factory')
- * @param {string} daemon - Tên daemon (e.g., 'hunter', 'reviewer')
- * @param {string} type - Loại task (e.g., 'console_log', 'security_risk', 'type_safety')
- * @returns {boolean} - true nếu đã có duplicate (skip tạo task), false nếu OK tạo task
+ * Check whether a task of the same type already exists (in tasks/ AND tasks/processed/)
+ * @param {string} project - Project name (e.g., 'sophia-ai-factory')
+ * @param {string} daemon - Daemon name (e.g., 'hunter', 'reviewer')
+ * @param {string} type - Task type (e.g., 'console_log', 'security_risk', 'type_safety')
+ * @returns {boolean} - true if duplicate exists (skip task creation), false if OK to create
  */
 function hasDuplicate(project, daemon, type) {
 	const dedupKey = `${project}_${daemon}_${type.toLowerCase()}`;
 
 	try {
-		// Check BOTH tasks/ và tasks/processed/
+		// Check BOTH tasks/ and tasks/processed/
 		const tasksDir = path.join(config.MEKONG_DIR, 'tasks');
 		const processedDir = path.join(config.MEKONG_DIR, 'tasks', 'processed');
 
@@ -42,13 +42,13 @@ function hasDuplicate(project, daemon, type) {
 				if (!f.endsWith('.txt')) return false;
 				if (!f.includes(dedupKey)) return false;
 
-				// Check timestamp nếu có (format: _TIMESTAMP.txt)
+				// Check timestamp if present (format: _TIMESTAMP.txt)
 				const match = f.match(/_(\d{13})\.txt$/);
 				if (match) {
 					const fileTimestamp = parseInt(match[1], 10);
 					const age = Date.now() - fileTimestamp;
 					if (age > DEDUP_WINDOW_MS) {
-						// File quá cũ (>24h) — không coi là duplicate
+						// File too old (>24h) — not considered a duplicate
 						return false;
 					}
 				}
@@ -57,26 +57,26 @@ function hasDuplicate(project, daemon, type) {
 			});
 		};
 
-		// Check cả 2 dirs
+		// Check both dirs
 		const foundInTasks = checkDir(tasksDir);
 		const foundInProcessed = checkDir(processedDir);
 
 		return foundInTasks || foundInProcessed;
 	} catch (e) {
-		// Nếu error (e.g., dir không tồn tại) → fail-safe: không block
+		// On error (e.g., dir does not exist) → fail-safe: do not block
 		console.error(`[DEDUP] Error checking duplicate: ${e.message}`);
 		return false;
 	}
 }
 
 /**
- * Get dedup key từ filename
- * @param {string} filename - Tên file mission
- * @returns {string|null} - Dedup key hoặc null nếu không parse được
+ * Get dedup key from filename
+ * @param {string} filename - Mission file name
+ * @returns {string|null} - Dedup key or null if unable to parse
  */
 function getKeyFromFilename(filename) {
 	// Format: mission_{project}_{daemon}_{type}_{timestamp}.txt
-	// hoặc: {PRIORITY}_mission_{project}_{daemon}_{type}_{timestamp}.txt
+	// or: {PRIORITY}_mission_{project}_{daemon}_{type}_{timestamp}.txt
 	const match = filename.match(/mission_([^_]+)_([^_]+)_([^_]+)_\d+\.txt$/);
 	if (!match) return null;
 
@@ -85,9 +85,9 @@ function getKeyFromFilename(filename) {
 }
 
 /**
- * Count số task hiện tại của một project
- * @param {string} project - Tên project
- * @returns {number} - Số lượng task chưa xử lý
+ * Count current tasks for a project
+ * @param {string} project - Project name
+ * @returns {number} - Number of unprocessed tasks
  */
 function countPendingTasks(project) {
 	try {

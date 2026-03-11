@@ -6,13 +6,13 @@ const QL = require('./lib/quan-luat-enforcer');
 const { emit, SIGNALS } = require('./lib/signal-bus');
 
 // ═══════════════════════════════════════════════════════════════
-// 🏯 BUILDER DAEMON — 工兵 (Công Binh)
+// 🏯 BUILDER DAEMON — 工兵 (Combat Engineer)
 // ═══════════════════════════════════════════════════════════════
-// Rank: CONG_BINH (Công Binh — Engineer)
+// Rank: CONG_BINH (Engineer)
 // Territory: tech_debt
-// 36 Kế: #3 Tá Đao Sát Nhân, #14 Tá Thi Hoàn Hồn
-// Điều 3: KHÔNG SCAN, CHỈ FIX → nhận signal từ Hunter
-// Điều 4: Gemini Flash tier (FREE) — CẤM dùng Premium
+// 36 Stratagems: #3 Ta Dao Sat Nhan, #14 Ta Thi Hoan Hon
+// Rule 3: NO SCAN, FIX ONLY → receive signal from Hunter
+// Rule 4: Gemini Flash tier (FREE) — CẤM dùng Premium
 // ═══════════════════════════════════════════════════════════════
 
 const DAEMON_NAME = 'builder';

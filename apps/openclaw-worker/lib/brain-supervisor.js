@@ -1,7 +1,7 @@
 /**
  * 🧠 Brain Supervisor — Unified CTO & CC CLI Monitoring Loop
  *
- * 始計→九變: Giám sát tổng thể, escalation ladder khi cần nâng não.
+ * 始計→九變: Overall monitoring, escalation ladder when brain upgrade needed.
  *
  * Monitors:
  *   - CC CLI context % (< 15% → /compact)

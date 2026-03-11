@@ -8,10 +8,10 @@ from src.core.event_bus import Event, EventBus, EventType
 
 # Human-friendly Vietnamese messages for dashboard events
 HUMAN_MESSAGES: dict[str, str] = {
-    "RESOURCE_EXHAUSTED": "Agent đang nghỉ, thử lại sau 2 phút",
-    "GOAL_COMPLETED": "Nhiệm vụ hoàn thành",
-    "GOAL_STARTED": "Bắt đầu nhiệm vụ",
-    "STEP_FAILED": "Bước thực hiện gặp lỗi",
+    "RESOURCE_EXHAUSTED": "Agent resting, retry in 2 minutes",
+    "GOAL_COMPLETED": "Mission completed",
+    "GOAL_STARTED": "Mission started",
+    "STEP_FAILED": "Step execution failed",
 }
 
 # Map EventType to human-friendly message key

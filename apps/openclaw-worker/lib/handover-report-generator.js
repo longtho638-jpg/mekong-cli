@@ -1,9 +1,9 @@
 /**
- * Handover Report Generator — Tự động tạo báo cáo bàn giao khi pipeline hoàn thành
+ * Handover Report Generator — Auto-generate handover report when pipeline completes
  *
- * Tạo 2 file trong thư mục gốc project:
- *   - HANDOVER_REPORT.md   : Tóm tắt toàn bộ kết quả ship
- *   - PRODUCTION_CHECKLIST.md : Checklist pre/post launch
+ * Creates 2 files in the project root:
+ *   - HANDOVER_REPORT.md   : Full summary of ship results
+ *   - PRODUCTION_CHECKLIST.md : Pre/post launch checklist
  */
 
 const fs = require('fs');
@@ -11,7 +11,7 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 /**
- * Chạy lệnh shell an toàn, trả về stdout hoặc chuỗi rỗng nếu thất bại
+ * Run shell command safely, return stdout or empty string on failure
  */
 function safeExec(cmd, cwd) {
 	try {
@@ -22,7 +22,7 @@ function safeExec(cmd, cwd) {
 }
 
 /**
- * Đọc thông tin từ package.json
+ * Read info from package.json
  */
 function readPackageJson(projectDir) {
 	try {
@@ -33,7 +33,7 @@ function readPackageJson(projectDir) {
 }
 
 /**
- * Lấy danh sách commit gần đây (tối đa 10) để trích xuất features
+ * Get recent commit list (max 10) to extract features
  */
 function getRecentCommits(projectDir, limit) {
 	const raw = safeExec(`git log --oneline -${limit || 10} --no-merges`, projectDir);
@@ -48,7 +48,7 @@ function getRecentCommits(projectDir, limit) {
 }
 
 /**
- * Lấy branch và commit cuối cùng
+ * Get current branch and last commit
  */
 function getGitInfo(projectDir) {
 	return {
@@ -59,7 +59,7 @@ function getGitInfo(projectDir) {
 }
 
 /**
- * Đếm test pass/fail từ output npm test (hỗ trợ Jest/Vitest format)
+ * Count test pass/fail from npm test output (supports Jest/Vitest format)
  */
 function parseTestStats(projectDir) {
 	try {
@@ -83,13 +83,13 @@ function parseTestStats(projectDir) {
 			return { total: parseInt(vitestMatch[1]), pass: parseInt(vitestMatch[1]), fail: 0 };
 		}
 	} catch (e) {
-		/* test chạy thất bại */
+		/* test run failed */
 	}
 	return null;
 }
 
 /**
- * Trích xuất production URL từ package.json hoặc vercel.json
+ * Extract production URL from package.json or vercel.json
  */
 function getProductionUrl(projectDir, pkg) {
 	if (pkg.homepage && pkg.homepage.startsWith('http')) return pkg.homepage;
@@ -98,13 +98,13 @@ function getProductionUrl(projectDir, pkg) {
 		const aliases = vcfg.alias || vcfg.aliases || [];
 		if (aliases.length > 0) return `https://${aliases[0]}`;
 	} catch (e) {
-		/* không có vercel.json */
+		/* no vercel.json */
 	}
 	return null;
 }
 
 /**
- * Sinh nội dung HANDOVER_REPORT.md
+ * Build HANDOVER_REPORT.md content
  */
 function buildHandoverReport(projectDir, healthScore, scoutIssues) {
 	const pkg = readPackageJson(projectDir);
@@ -114,27 +114,27 @@ function buildHandoverReport(projectDir, healthScore, scoutIssues) {
 	const prodUrl = getProductionUrl(projectDir, pkg);
 	const now = new Date().toISOString().replace('T', ' ').slice(0, 19);
 
-	// Trích xuất features từ commit messages (lọc bỏ fix/chore)
+	// Extract features from commit messages (filter out fix/chore)
 	const features =
 		commits
 			.filter((c) => /^feat:|^add:|^implement/i.test(c.message))
 			.map((c) => `- ${c.message}`)
-			.join('\n') || '- (không có commit feat gần đây)';
+			.join('\n') || '- (no recent feat commits)';
 
 	const testSection = testStats
 		? `- Total: ${testStats.total} tests\n- Pass: ${testStats.pass} | Fail: ${testStats.fail}`
-		: '- Không có test hoặc không thể đọc kết quả';
+		: '- No tests or unable to read results';
 
 	const recentCommitList =
 		commits
 			.slice(0, 5)
 			.map((c) => `- \`${c.hash}\` ${c.message}`)
-			.join('\n') || '- (không có commit)';
+			.join('\n') || '- (no commits)';
 
 	const issuesSection =
 		scoutIssues && scoutIssues.length > 0
 			? scoutIssues.map((i) => `- ${i}`).join('\n')
-			: '- Không có vấn đề nghiêm trọng nào được ghi nhận';
+			: '- No critical issues recorded';
 
 	return `# Handover Report — ${pkg.name || path.basename(projectDir)}
 Generated: ${now}
@@ -164,7 +164,7 @@ ${issuesSection}
 }
 
 /**
- * Sinh nội dung PRODUCTION_CHECKLIST.md
+ * Build PRODUCTION_CHECKLIST.md content
  */
 function buildProductionChecklist(projectName) {
 	return `# Production Checklist — ${projectName}
@@ -198,10 +198,10 @@ function buildProductionChecklist(projectName) {
 }
 
 /**
- * Tạo cả 2 file báo cáo vào thư mục gốc project.
- * @param {string} projectDir - Đường dẫn tuyệt đối tới thư mục project
- * @param {number} healthScore - Điểm sức khỏe từ project-health-scorer
- * @param {string[]} scoutIssues - Danh sách vấn đề tìm được ở phase SCOUT
+ * Generate both report files into the project root.
+ * @param {string} projectDir - Absolute path to the project directory
+ * @param {number} healthScore - Health score from project-health-scorer
+ * @param {string[]} scoutIssues - List of issues found in the SCOUT phase
  */
 function generateHandoverDocs(projectDir, healthScore, scoutIssues) {
 	const projectName = path.basename(projectDir);

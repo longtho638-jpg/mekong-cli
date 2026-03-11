@@ -33,7 +33,7 @@ DOMAIN_SIGNALS: dict[str, list[str]] = {
     ],
     "creative": [
         "write", "content", "blog", "email", "copy", "post", "announce",
-        "marketing", "social", "newsletter", "landing", "viết",
+        "marketing", "social", "newsletter", "landing", "write",
     ],
     "ops": [
         "monitor", "check", "status", "health", "backup", "cron",
@@ -49,7 +49,7 @@ DOMAIN_SIGNALS: dict[str, list[str]] = {
     ],
     "support": [
         "ticket", "user report", "error message", "help", "faq",
-        "refund", "complaint", "không hiểu", "lỗi",
+        "refund", "complaint", "confused", "error",
     ],
 }
 

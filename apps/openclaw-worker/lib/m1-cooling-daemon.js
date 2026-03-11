@@ -301,7 +301,7 @@ async function waitForSafeTemperature() {
 }
 
 /**
- * Preemptive Cooling before heavy missions (Hàn Băng Quyết v2)
+ * Preemptive Cooling before heavy missions (Han Bang Quyet v2)
  * @param {string} complexity
  */
 async function preemptiveCool(complexity) {
