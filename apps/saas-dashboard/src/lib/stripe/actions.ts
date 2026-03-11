@@ -54,20 +54,21 @@ export async function createCustomerPortalSession(): Promise<{ url?: string; err
       return { error: 'Authentication required' };
     }
 
-    // Get Stripe customer ID from database (implement later)
-    // For now, return error
-    return { error: 'No active subscription found' };
+    // TODO: Get Stripe customer ID from database when subscription table is ready
+    // For now, create a new customer
+    const customer = await stripe.customers.create({
+      email: session.user.email,
+      metadata: {
+        userId: session.user.id,
+      },
+    });
 
-    // TODO: Implement when subscription table is ready
-    // const customer = await getCustomerByUserId(session.user.id);
-    // if (!customer) return { error: 'No customer found' };
+    const portalSession = await stripe.billingPortal.sessions.create({
+      customer: customer.id,
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/subscription`,
+    });
 
-    // const portalSession = await stripe.billingPortal.sessions.create({
-    //   customer: customer.stripeCustomerId,
-    //   return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-    // });
-
-    // return { url: portalSession.url };
+    return { url: portalSession.url };
   } catch (error) {
     console.error('Portal error:', error);
     return { error: 'Failed to create portal session' };

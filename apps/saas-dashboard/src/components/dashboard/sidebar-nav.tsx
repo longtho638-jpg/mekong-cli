@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/dashboard/missions', label: 'Missions', icon: Rocket },
   { href: '/dashboard/usage', label: 'Usage', icon: BarChart3 },
+  { href: '/dashboard/subscription', label: 'Subscription', icon: Zap },
   { href: '/dashboard/settings', label: 'Settings', icon: Settings },
 ];
 
