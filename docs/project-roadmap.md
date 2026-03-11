@@ -1,7 +1,7 @@
 # Mekong CLI Roadmap
 
-**Current Version:** v3.0.0 (Stable)
-**Last Updated:** 2026-03-02
+**Current Version:** v3.0.1 (Stable)
+**Last Updated:** 2026-03-11
 **Status:** Open Source, Community-Driven
 
 ## Vision
@@ -15,9 +15,9 @@ Mekong CLI is building the **de facto standard for AI-powered agent orchestratio
 
 ---
 
-## v3.0.0 (Current) — Foundation Release
+## v3.0.1 (Current) — UI Restructure Complete
 
-**Status:** ✅ Shipped | **Release Date:** 2026-03-02
+**Status:** ✅ Shipped | **Release Date:** 2026-03-11
 
 ### Delivered
 
@@ -30,27 +30,23 @@ Mekong CLI is building the **de facto standard for AI-powered agent orchestratio
 - ✅ Python SDK for mission submission
 - ✅ FastAPI server with WebSocket streaming
 - ✅ Automatic rollback on verification failure
-- ✅ RaaS API Bootstrap (Phase 1-6) ← **NEW**
-- ✅ 102+ unit tests (>85% coverage) ← **UPDATED**
+- ✅ RaaS API Bootstrap (Phase 1-6)
+- ✅ Landing page v5.0 UI restructure (17 fixes) ← **NEW**
+- ✅ 102+ unit tests (>85% coverage)
 
-### RaaS Bootstrap Details (Phase 1-6 Complete)
+### v3.0 Milestones
 
-**Phase 1:** RaaS Core API (router, task store, models)
-**Phase 2:** Dashboard upgrade (tenant views, credit tracking)
-**Phase 3:** Landing page (pricing tiers, feature matrix)
-**Phase 4:** API Gateway upgrade (edge auth + KV limiter)
-**Phase 5:** Billing MCU metering (complexity-based pricing)
-**Phase 6:** Testing (40+ RaaS tests, all passing ✅)
+**RaaS Bootstrap (Phase 1-6):** Production REST API, JWT auth, credit system, Polar.sh webhooks, rate limiting, audit trails ✅
 
-**Key Features:**
-- Production REST API (`/api/v1/missions`, `/api/v1/tasks`)
-- JWT auth middleware + tenant isolation
-- Credit reservation & quota enforcement
-- MCU (Mission Complexity Unit) pricing model
-- Cloudflare Workers edge gateway
-- Polar.sh webhook integration
-- Rate limiting with Cloudflare KV
-- Audit trail for all operations
+**Landing Page v5.0 (17 fixes):**
+- Stats updated to 319 commands, 89 super workflows, 463 skills, 127 agents
+- Free tier added (4-column pricing layout)
+- Hero, cascade demo, features grid rewritten for super command/DAG architecture
+- New `/engineering` page showcasing infrastructure capabilities
+- AgencyOS branding removed, replaced with Mekong CLI identity
+- Vietnamese text removed from terms/privacy pages
+- SEO metadata optimized in layout.tsx
+- Stats consistency verified across all pages
 
 ### Quality Metrics
 
