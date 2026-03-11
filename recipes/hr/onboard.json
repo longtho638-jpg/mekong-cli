@@ -1,0 +1,32 @@
+{
+  "id": "hr-onboard",
+  "name": "Employee Onboarding",
+  "description": "Welcome kit → access setup → 30-60-90 plan → buddy assignment. 3 commands, ~10 min.",
+  "trigger": "/hr:onboard",
+  "output_dir": "reports/hr/onboard",
+  "estimated_credits": 8,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "setup",
+        "name": "Welcome & Schedule",
+        "mode": "parallel",
+        "commands": [
+          { "id": "hr-management", "args": "--onboard --output reports/hr/onboard/welcome-kit.md" },
+          { "id": "schedule", "args": "--output reports/hr/onboard/first-week-schedule.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Onboarding Plan",
+        "mode": "sequential",
+        "commands": [
+          { "id": "plan", "args": "--30-60-90 --output reports/hr/onboard/onboarding-plan.md" }
+        ],
+        "depends_on": ["setup"]
+      }
+    ]
+  }
+}

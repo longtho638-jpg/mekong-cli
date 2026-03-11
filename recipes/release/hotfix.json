@@ -1,0 +1,33 @@
+{
+  "id": "release-hotfix",
+  "name": "Hotfix Pipeline",
+  "description": "Branch → fix → test → cherry-pick → deploy. 4 commands, ~15 min.",
+  "trigger": "/release:hotfix",
+  "output_dir": "reports/release/hotfix",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "fix",
+        "name": "Branch & Fix",
+        "mode": "sequential",
+        "commands": [
+          { "id": "git-branch", "args": "--hotfix" },
+          { "id": "fix", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "ship",
+        "name": "Test & Deploy",
+        "mode": "sequential",
+        "commands": [
+          { "id": "test", "args": "--all" },
+          { "id": "deploy-prod", "args": "--hotfix" }
+        ],
+        "depends_on": ["fix"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "HR Manager Workflows",
+  "description": "HR manager super commands for recruiting, performance reviews, and onboarding",
+  "recipes": ["hr/recruit.json", "hr/performance-cycle.json", "hr/onboard.json"]
+}

@@ -1,0 +1,46 @@
+{
+  "id": "sales-pipeline-build",
+  "name": "Pipeline Builder",
+  "description": "ICP → lead list → outreach sequences → CRM setup → pipeline dashboard. 5 commands, ~30 min.",
+  "trigger": "/sales:pipeline-build",
+  "output_dir": "reports/sales/pipeline",
+  "estimated_credits": 20,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "research",
+        "name": "ICP & Lead Research",
+        "mode": "parallel",
+        "commands": [
+          { "id": "customer-research", "args": "--output reports/sales/pipeline/icp-profile.md" },
+          { "id": "leadgen", "args": "--output reports/sales/pipeline/lead-list.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "build",
+        "name": "Pipeline & Outreach",
+        "mode": "parallel",
+        "commands": [
+          { "id": "pipeline", "args": "--output reports/sales/pipeline/pipeline-stages.md" },
+          { "id": "email", "args": "--output reports/sales/pipeline/outreach-sequences.md" }
+        ],
+        "depends_on": ["research"]
+      },
+      {
+        "id": "operationalize",
+        "name": "CRM Configuration",
+        "mode": "sequential",
+        "commands": [
+          { "id": "crm", "args": "--output reports/sales/pipeline/crm-config.md" }
+        ],
+        "depends_on": ["build"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/sales/pipeline/PIPELINE-SUMMARY.md"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "id": "hr-recruit",
+  "name": "Recruiting Pipeline",
+  "description": "JD → sourcing → screening criteria → interview kit → offer template. 4 commands, ~20 min.",
+  "trigger": "/hr:recruit",
+  "output_dir": "reports/hr/recruit",
+  "estimated_credits": 15,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "prepare",
+        "name": "Job Description & Compensation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "hr-management", "args": "--jd --output reports/hr/recruit/job-description.md" },
+          { "id": "budget", "args": "--comp --output reports/hr/recruit/comp-benchmark.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "process",
+        "name": "Sourcing & Interview Process",
+        "mode": "sequential",
+        "commands": [
+          { "id": "leadgen", "args": "--talent --output reports/hr/recruit/candidate-sources.md" },
+          { "id": "schedule", "args": "--output reports/hr/recruit/interview-process.md" }
+        ],
+        "depends_on": ["prepare"]
+      }
+    ]
+  }
+}

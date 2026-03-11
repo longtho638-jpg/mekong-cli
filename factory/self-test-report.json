@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-11T06:42:51.756086+00:00",
+  "generated_at": "2026-03-11T07:13:04.813931+00:00",
   "score": 100,
   "verdict": "HEALTHY",
   "checks": [
@@ -12,13 +12,13 @@
     {
       "name": "command_contracts",
       "passed": true,
-      "details": "343 contracts checked, 0 errors",
+      "details": "371 contracts checked, 0 errors",
       "errors": []
     },
     {
       "name": "contract_coverage",
       "passed": true,
-      "details": "194/194 commands covered",
+      "details": "222/222 commands covered",
       "errors": []
     },
     {
@@ -36,7 +36,7 @@
     {
       "name": "layers_consistency",
       "passed": true,
-      "details": "5 layers, 194 commands, 0 errors",
+      "details": "5 layers, 222 commands, 0 errors",
       "errors": []
     },
     {

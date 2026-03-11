@@ -1,0 +1,25 @@
+{
+  "id": "platform-environment-setup",
+  "name": "Environment Setup",
+  "description": "Init → install deps → configure MCP → verify. 4 commands, ~10 min.",
+  "trigger": "/platform:environment-setup",
+  "output_dir": "reports/platform/env",
+  "estimated_credits": 5,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "setup",
+        "name": "Full Environment Setup",
+        "mode": "sequential",
+        "commands": [
+          { "id": "init", "args": "" },
+          { "id": "install", "args": "" },
+          { "id": "setup-mcp", "args": "" },
+          { "id": "health", "args": "" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

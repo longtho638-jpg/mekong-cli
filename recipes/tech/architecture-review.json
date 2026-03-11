@@ -1,0 +1,33 @@
+{
+  "id": "tech-architecture-review",
+  "name": "Architecture Review",
+  "description": "API audit → schema review → dependency analysis → improvement plan. 4 commands, ~25 min.",
+  "trigger": "/tech:architecture-review",
+  "output_dir": "reports/tech/arch-review",
+  "estimated_credits": 15,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "audit",
+        "name": "System Audit",
+        "mode": "parallel",
+        "commands": [
+          { "id": "arch", "args": "--audit --output reports/tech/arch-review/architecture-audit.md" },
+          { "id": "api", "args": "--audit --output reports/tech/arch-review/api-audit.md" },
+          { "id": "schema", "args": "--audit --output reports/tech/arch-review/schema-review.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Improvement Plan",
+        "mode": "sequential",
+        "commands": [
+          { "id": "plan", "args": "--output reports/tech/arch-review/improvement-plan.md" }
+        ],
+        "depends_on": ["audit"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "id": "marketing-content-engine",
+  "name": "Content Engine",
+  "description": "SEO research → content calendar → blog drafts → social posts → email sequences. 5 commands, ~35 min.",
+  "trigger": "/marketing:content-engine",
+  "output_dir": "reports/marketing/content",
+  "estimated_credits": 20,
+  "estimated_minutes": 35,
+  "dag": {
+    "groups": [
+      {
+        "id": "research",
+        "name": "SEO & Audience Research",
+        "mode": "parallel",
+        "commands": [
+          { "id": "seo", "args": "--output reports/marketing/content/seo-keywords.md" },
+          { "id": "market-analysis", "args": "--output reports/marketing/content/audience-insights.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "create",
+        "name": "Content Creation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "content", "args": "--output reports/marketing/content/content-calendar.md" },
+          { "id": "social", "args": "--output reports/marketing/content/social-posts.md" },
+          { "id": "email", "args": "--output reports/marketing/content/email-sequences.md" }
+        ],
+        "depends_on": ["research"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/marketing/content/CONTENT-ENGINE-SUMMARY.md"
+    }
+  }
+}

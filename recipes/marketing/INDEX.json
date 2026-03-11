@@ -1,0 +1,9 @@
+{
+  "name": "Marketing Manager Workflows",
+  "description": "Marketing manager super commands for content engine, campaign execution, and performance reporting",
+  "recipes": [
+    "marketing/content-engine.json",
+    "marketing/campaign-run.json",
+    "marketing/performance-report.json"
+  ]
+}

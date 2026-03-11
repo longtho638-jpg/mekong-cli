@@ -1,0 +1,37 @@
+{
+  "id": "sales-deal-close",
+  "name": "Deal Closer",
+  "description": "Research buyer → proposal → pricing strategy → closing playbook. 4 commands, ~20 min.",
+  "trigger": "/sales:deal-close",
+  "output_dir": "reports/sales/deal",
+  "estimated_credits": 15,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "intel",
+        "name": "Buyer Intelligence",
+        "mode": "parallel",
+        "commands": [
+          { "id": "customer-research", "args": "--output reports/sales/deal/buyer-intel.md" },
+          { "id": "competitor", "args": "--output reports/sales/deal/competitive-positioning.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "close",
+        "name": "Proposal & Close",
+        "mode": "sequential",
+        "commands": [
+          { "id": "proposal", "args": "--output reports/sales/deal/proposal-draft.md" },
+          { "id": "close", "args": "--output reports/sales/deal/closing-playbook.md" }
+        ],
+        "depends_on": ["intel"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/sales/deal/DEAL-SUMMARY.md"
+    }
+  }
+}

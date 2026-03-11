@@ -1,0 +1,43 @@
+{
+  "id": "devops-deploy-pipeline",
+  "name": "Deployment Pipeline",
+  "description": "Lint → test → build → staging → smoke → production. 6 commands, ~30 min.",
+  "trigger": "/devops:deploy-pipeline",
+  "output_dir": "reports/devops/deploy",
+  "estimated_credits": 18,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "gates",
+        "name": "Quality Gates",
+        "mode": "parallel",
+        "commands": [
+          { "id": "lint", "args": "" },
+          { "id": "typecheck", "args": "" },
+          { "id": "test", "args": "--all" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "stage",
+        "name": "Staging Deploy & Smoke",
+        "mode": "sequential",
+        "commands": [
+          { "id": "deploy-staging", "args": "" },
+          { "id": "smoke", "args": "" }
+        ],
+        "depends_on": ["gates"]
+      },
+      {
+        "id": "prod",
+        "name": "Production Deploy",
+        "mode": "sequential",
+        "commands": [
+          { "id": "deploy-prod", "args": "" }
+        ],
+        "depends_on": ["stage"]
+      }
+    ]
+  }
+}

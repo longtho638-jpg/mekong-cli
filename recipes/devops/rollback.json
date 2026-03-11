@@ -1,0 +1,32 @@
+{
+  "id": "devops-rollback",
+  "name": "Emergency Rollback",
+  "description": "Rollback → smoke test → health check → incident report. 3 commands, ~10 min.",
+  "trigger": "/devops:rollback",
+  "output_dir": "reports/devops/rollback",
+  "estimated_credits": 5,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "rollback",
+        "name": "Execute Rollback",
+        "mode": "sequential",
+        "commands": [
+          { "id": "rollback", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "verify",
+        "name": "Verify Health",
+        "mode": "parallel",
+        "commands": [
+          { "id": "smoke", "args": "" },
+          { "id": "health", "args": "" }
+        ],
+        "depends_on": ["rollback"]
+      }
+    ]
+  }
+}

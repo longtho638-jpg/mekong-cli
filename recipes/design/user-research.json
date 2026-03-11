@@ -1,0 +1,32 @@
+{
+  "id": "design-user-research",
+  "name": "UX Research Sprint",
+  "description": "Personas → user journeys → pain points → opportunity map. 3 commands, ~20 min.",
+  "trigger": "/design:user-research",
+  "output_dir": "reports/design/research",
+  "estimated_credits": 12,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "discover",
+        "name": "User Discovery",
+        "mode": "parallel",
+        "commands": [
+          { "id": "persona", "args": "--output reports/design/research/personas.md" },
+          { "id": "feedback", "args": "--output reports/design/research/user-feedback.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "synthesize",
+        "name": "Opportunity Synthesis",
+        "mode": "sequential",
+        "commands": [
+          { "id": "brainstorm", "args": "--output reports/design/research/opportunity-map.md" }
+        ],
+        "depends_on": ["discover"]
+      }
+    ]
+  }
+}

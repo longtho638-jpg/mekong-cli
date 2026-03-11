@@ -1,0 +1,5 @@
+{
+  "name": "Legal Manager Workflows",
+  "description": "Legal manager super commands for contract review and compliance checks",
+  "recipes": ["legal/contract-review.json", "legal/compliance-check.json"]
+}

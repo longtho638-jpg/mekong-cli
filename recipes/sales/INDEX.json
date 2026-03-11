@@ -1,0 +1,9 @@
+{
+  "name": "Sales Manager Workflows",
+  "description": "Sales manager super commands for pipeline building, deal closing, and weekly reviews",
+  "recipes": [
+    "sales/pipeline-build.json",
+    "sales/deal-close.json",
+    "sales/weekly-review.json"
+  ]
+}

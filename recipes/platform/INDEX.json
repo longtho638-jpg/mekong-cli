@@ -1,0 +1,5 @@
+{
+  "name": "Platform Manager Workflows",
+  "description": "Platform manager super commands for monitoring setup and environment configuration",
+  "recipes": ["platform/monitoring-setup.json", "platform/environment-setup.json"]
+}

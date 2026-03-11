@@ -1,0 +1,36 @@
+{
+  "id": "sales-weekly-review",
+  "name": "Sales Weekly Review",
+  "description": "Pipeline health → conversion analysis → forecast → action items. 3 commands, ~10 min.",
+  "trigger": "/sales:weekly-review",
+  "output_dir": "reports/sales/weekly",
+  "estimated_credits": 8,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "snapshot",
+        "name": "Pipeline & Revenue Snapshot",
+        "mode": "parallel",
+        "commands": [
+          { "id": "pipeline", "args": "--review --output reports/sales/weekly/pipeline-health.md" },
+          { "id": "revenue", "args": "--output reports/sales/weekly/revenue-tracking.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Weekly Forecast",
+        "mode": "sequential",
+        "commands": [
+          { "id": "forecast", "args": "--output reports/sales/weekly/weekly-forecast.md" }
+        ],
+        "depends_on": ["snapshot"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/sales/weekly/WEEKLY-REVIEW.md"
+    }
+  }
+}

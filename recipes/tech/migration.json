@@ -1,0 +1,33 @@
+{
+  "id": "tech-migration",
+  "name": "Migration Pipeline",
+  "description": "Audit current → plan migration → generate scripts → test → verify. 4 commands, ~30 min.",
+  "trigger": "/tech:migration",
+  "output_dir": "reports/tech/migration",
+  "estimated_credits": 18,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "analyze",
+        "name": "Schema & Data Audit",
+        "mode": "parallel",
+        "commands": [
+          { "id": "schema", "args": "--current --output reports/tech/migration/current-schema.md" },
+          { "id": "audit", "args": "--data --output reports/tech/migration/data-audit.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "execute",
+        "name": "Migration & Test",
+        "mode": "sequential",
+        "commands": [
+          { "id": "migrate", "args": "--output reports/tech/migration/migration-scripts.md" },
+          { "id": "test", "args": "--migration" }
+        ],
+        "depends_on": ["analyze"]
+      }
+    ]
+  }
+}

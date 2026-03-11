@@ -1,0 +1,36 @@
+{
+  "id": "finance-collections",
+  "name": "Collections Pipeline",
+  "description": "AR aging → priority list → reminder emails → escalation plan. 3 commands, ~10 min.",
+  "trigger": "/finance:collections",
+  "output_dir": "reports/finance/collections",
+  "estimated_credits": 8,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "assess",
+        "name": "AR Assessment",
+        "mode": "sequential",
+        "commands": [
+          { "id": "invoice", "args": "--overdue --output reports/finance/collections/ar-aging.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "act",
+        "name": "Collection Actions",
+        "mode": "parallel",
+        "commands": [
+          { "id": "email", "args": "--template collection --output reports/finance/collections/reminder-emails.md" },
+          { "id": "schedule", "args": "--output reports/finance/collections/follow-up-schedule.md" }
+        ],
+        "depends_on": ["assess"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/finance/collections/COLLECTIONS-SUMMARY.md"
+    }
+  }
+}

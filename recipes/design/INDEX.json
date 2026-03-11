@@ -1,0 +1,5 @@
+{
+  "name": "Design Lead Workflows",
+  "description": "Design lead super commands for UX research and design sprints",
+  "recipes": ["design/user-research.json", "design/sprint.json"]
+}

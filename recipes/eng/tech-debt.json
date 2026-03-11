@@ -1,0 +1,34 @@
+{
+  "id": "eng-tech-debt",
+  "name": "Tech Debt Sprint",
+  "description": "Audit → prioritize → refactor → test → verify. 5 commands, ~40 min.",
+  "trigger": "/eng:tech-debt",
+  "output_dir": "reports/eng/tech-debt",
+  "estimated_credits": 20,
+  "estimated_minutes": 40,
+  "dag": {
+    "groups": [
+      {
+        "id": "audit",
+        "name": "Code Quality Audit",
+        "mode": "parallel",
+        "commands": [
+          { "id": "audit", "args": "--output reports/eng/tech-debt/code-quality.md" },
+          { "id": "coverage", "args": "--output reports/eng/tech-debt/test-coverage.md" },
+          { "id": "lint", "args": "--output reports/eng/tech-debt/lint-report.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "fix",
+        "name": "Refactor & Test",
+        "mode": "sequential",
+        "commands": [
+          { "id": "refactor", "args": "$ARGUMENTS" },
+          { "id": "test", "args": "--all" }
+        ],
+        "depends_on": ["audit"]
+      }
+    ]
+  }
+}

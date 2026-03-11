@@ -1,0 +1,32 @@
+{
+  "id": "hr-performance-cycle",
+  "name": "Performance Review Cycle",
+  "description": "Self-assessment → manager review → calibration → feedback delivery. 3 commands, ~15 min.",
+  "trigger": "/hr:performance-cycle",
+  "output_dir": "reports/hr/performance",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "assess",
+        "name": "Assessment & Metrics",
+        "mode": "parallel",
+        "commands": [
+          { "id": "performance-review", "args": "--output reports/hr/performance/review-templates.md" },
+          { "id": "kpi", "args": "--team --output reports/hr/performance/team-metrics.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "deliver",
+        "name": "Feedback Delivery",
+        "mode": "sequential",
+        "commands": [
+          { "id": "feedback", "args": "--output reports/hr/performance/feedback-guides.md" }
+        ],
+        "depends_on": ["assess"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "tech-api-design",
+  "name": "API Design",
+  "description": "Requirements → schema → OpenAPI spec → implementation plan. 3 commands, ~20 min.",
+  "trigger": "/tech:api-design",
+  "output_dir": "reports/tech/api",
+  "estimated_credits": 12,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "design",
+        "name": "Schema & API Spec",
+        "mode": "sequential",
+        "commands": [
+          { "id": "schema", "args": "--output reports/tech/api/data-model.md" },
+          { "id": "api", "args": "--design --output reports/tech/api/api-spec.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Implementation Plan",
+        "mode": "sequential",
+        "commands": [
+          { "id": "plan", "args": "--output reports/tech/api/implementation-plan.md" }
+        ],
+        "depends_on": ["design"]
+      }
+    ]
+  }
+}

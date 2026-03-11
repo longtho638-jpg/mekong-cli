@@ -1,0 +1,38 @@
+{
+  "id": "finance-monthly-close",
+  "name": "Monthly Financial Close",
+  "description": "Revenue reconcile → expense audit → P&L → cash flow → tax prep. 5 commands, ~25 min.",
+  "trigger": "/finance:monthly-close",
+  "output_dir": "reports/finance/monthly-close",
+  "estimated_credits": 18,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "reconcile",
+        "name": "Revenue & Expense Reconciliation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "revenue", "args": "--output reports/finance/monthly-close/revenue.md" },
+          { "id": "expense", "args": "--output reports/finance/monthly-close/expenses.md" },
+          { "id": "invoice", "args": "--aging --output reports/finance/monthly-close/ar-aging.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "statements",
+        "name": "Financial Statements",
+        "mode": "sequential",
+        "commands": [
+          { "id": "cashflow", "args": "--output reports/finance/monthly-close/cashflow.md" },
+          { "id": "financial-report", "args": "--output reports/finance/monthly-close/P-AND-L.md" }
+        ],
+        "depends_on": ["reconcile"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/finance/monthly-close/MONTHLY-CLOSE-SUMMARY.md"
+    }
+  }
+}

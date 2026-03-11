@@ -1,0 +1,32 @@
+{
+  "id": "legal-contract-review",
+  "name": "Contract Review",
+  "description": "Analyze contract → flag risks → suggest amendments → negotiation brief. 3 commands, ~15 min.",
+  "trigger": "/legal:contract-review",
+  "output_dir": "reports/legal/contract",
+  "estimated_credits": 12,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "analyze",
+        "name": "Contract & Market Analysis",
+        "mode": "parallel",
+        "commands": [
+          { "id": "agreement", "args": "--review --output reports/legal/contract/risk-analysis.md" },
+          { "id": "market-analysis", "args": "--contract-benchmarks --output reports/legal/contract/market-terms.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "negotiate",
+        "name": "Amendment Suggestions",
+        "mode": "sequential",
+        "commands": [
+          { "id": "contract", "args": "--output reports/legal/contract/amendment-suggestions.md" }
+        ],
+        "depends_on": ["analyze"]
+      }
+    ]
+  }
+}

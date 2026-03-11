@@ -1,0 +1,33 @@
+{
+  "id": "eng-onboard-dev",
+  "name": "Developer Onboarding",
+  "description": "Codebase tour → setup guide → first ticket → mentor assignment. 4 commands, ~15 min.",
+  "trigger": "/eng:onboard-dev",
+  "output_dir": "reports/eng/onboard",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "docs",
+        "name": "Documentation & Architecture",
+        "mode": "parallel",
+        "commands": [
+          { "id": "docs-onboard", "args": "--output reports/eng/onboard/setup-guide.md" },
+          { "id": "arch", "args": "--overview --output reports/eng/onboard/architecture-overview.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "starter",
+        "name": "Starter Ticket & Guide",
+        "mode": "sequential",
+        "commands": [
+          { "id": "kanban", "args": "--first-ticket --output reports/eng/onboard/starter-ticket.md" },
+          { "id": "docs-readme", "args": "--output reports/eng/onboard/contribution-guide.md" }
+        ],
+        "depends_on": ["docs"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "id": "legal-compliance-check",
+  "name": "Compliance Check",
+  "description": "Privacy policy → terms → data handling → regulatory gaps. 3 commands, ~15 min.",
+  "trigger": "/legal:compliance-check",
+  "output_dir": "reports/legal/compliance",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "audit",
+        "name": "Security & Legal Audit",
+        "mode": "parallel",
+        "commands": [
+          { "id": "security", "args": "--compliance --output reports/legal/compliance/data-handling.md" },
+          { "id": "audit", "args": "--legal --output reports/legal/compliance/regulatory-gaps.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "fix",
+        "name": "Policy Updates",
+        "mode": "sequential",
+        "commands": [
+          { "id": "agreement", "args": "--templates --output reports/legal/compliance/policy-updates.md" }
+        ],
+        "depends_on": ["audit"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "id": "eng-sprint-execute",
+  "name": "Sprint Execution",
+  "description": "Plan parallel → implement features → test all → review → ship. 5 commands, ~50 min.",
+  "trigger": "/eng:sprint-execute",
+  "output_dir": "reports/eng/sprint",
+  "estimated_credits": 25,
+  "estimated_minutes": 50,
+  "dag": {
+    "groups": [
+      {
+        "id": "plan",
+        "name": "Sprint Planning",
+        "mode": "sequential",
+        "commands": [
+          { "id": "plan", "args": "--parallel --output reports/eng/sprint/execution-plan.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "build",
+        "name": "Parallel Implementation",
+        "mode": "parallel",
+        "commands": [
+          { "id": "cook", "args": "--phase-1 $ARGUMENTS" },
+          { "id": "cook", "args": "--phase-2 $ARGUMENTS" }
+        ],
+        "depends_on": ["plan"]
+      },
+      {
+        "id": "quality",
+        "name": "Testing & Review",
+        "mode": "parallel",
+        "commands": [
+          { "id": "test", "args": "--all" },
+          { "id": "review", "args": "" }
+        ],
+        "depends_on": ["build"]
+      },
+      {
+        "id": "ship",
+        "name": "Deploy to Staging",
+        "mode": "sequential",
+        "commands": [
+          { "id": "deploy-staging", "args": "" }
+        ],
+        "depends_on": ["quality"]
+      }
+    ]
+  }
+}

@@ -111,6 +111,20 @@ layers:
       - business-campaign-launch
       - business-financial-close
       - business-client-onboard
+      - sales-pipeline-build
+      - sales-deal-close
+      - sales-weekly-review
+      - marketing-content-engine
+      - marketing-campaign-run
+      - marketing-performance-report
+      - finance-monthly-close
+      - finance-budget-plan
+      - finance-collections
+      - hr-recruit
+      - hr-performance-cycle
+      - hr-onboard
+      - legal-contract-review
+      - legal-compliance-check
 
   product:
     chapter: "謀攻 — Attack by Stratagem"
@@ -143,6 +157,8 @@ layers:
       - product-launch-feature
       - product-competitive-intel
       - product-retrospective
+      - design-user-research
+      - design-sprint
 
   engineering:
     chapter: "軍爭 — Military Contention"
@@ -204,6 +220,12 @@ layers:
       - engineering-refactor
       - engineering-incident
       - engineering-new-service
+      - eng-sprint-execute
+      - eng-tech-debt
+      - eng-onboard-dev
+      - tech-architecture-review
+      - tech-api-design
+      - tech-migration
 
   ops:
     chapter: "九變 — Nine Variations"
@@ -245,3 +267,9 @@ layers:
       - ops-security-audit
       - ops-sync-all
       - ops-disaster-recovery
+      - devops-deploy-pipeline
+      - devops-rollback
+      - platform-monitoring-setup
+      - platform-environment-setup
+      - release-ship
+      - release-hotfix

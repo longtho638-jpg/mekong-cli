@@ -1,6 +1,6 @@
 {
-  "version": "1.0.0",
-  "last_updated": "2026-03-10",
+  "version": "1.1.0",
+  "last_updated": "2026-03-11",
   "recipes": [
     {
       "name": "Hello Mekong",
@@ -80,7 +80,7 @@
       "category": "devops"
     }
   ],
-  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder", "business", "product", "engineering", "ops"],
+  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder", "business", "product", "engineering", "ops", "sales", "marketing", "finance", "hr", "legal", "design", "eng", "tech", "platform", "release"],
   "founder": {
     "name": "VC Studio Workflows",
     "description": "Founder super commands — parallel pipelines for each investment stage",
@@ -134,6 +134,78 @@
       "ops/security-audit.json",
       "ops/sync-all.json",
       "ops/disaster-recovery.json"
+    ]
+  },
+  "sales": {
+    "name": "Sales Manager Workflows",
+    "description": "Sales manager super commands for pipeline building, deal closing, and weekly reviews",
+    "recipes": ["sales/pipeline-build.json", "sales/deal-close.json", "sales/weekly-review.json"]
+  },
+  "marketing": {
+    "name": "Marketing Manager Workflows",
+    "description": "Marketing manager super commands for content engine, campaign execution, and performance reporting",
+    "recipes": ["marketing/content-engine.json", "marketing/campaign-run.json", "marketing/performance-report.json"]
+  },
+  "finance": {
+    "name": "Finance Manager Workflows",
+    "description": "Finance manager super commands for monthly close, budget planning, and collections",
+    "recipes": ["finance/monthly-close.json", "finance/budget-plan.json", "finance/collections.json"]
+  },
+  "hr": {
+    "name": "HR Manager Workflows",
+    "description": "HR manager super commands for recruiting, performance reviews, and onboarding",
+    "recipes": ["hr/recruit.json", "hr/performance-cycle.json", "hr/onboard.json"]
+  },
+  "legal": {
+    "name": "Legal Manager Workflows",
+    "description": "Legal manager super commands for contract review and compliance checks",
+    "recipes": ["legal/contract-review.json", "legal/compliance-check.json"]
+  },
+  "design": {
+    "name": "Design Lead Workflows",
+    "description": "Design lead super commands for UX research and design sprints",
+    "recipes": ["design/user-research.json", "design/sprint.json"]
+  },
+  "eng": {
+    "name": "Engineering Manager Workflows",
+    "description": "Engineering manager super commands for sprint execution, tech debt, and developer onboarding",
+    "recipes": [
+      "eng/sprint-execute.json",
+      "eng/tech-debt.json",
+      "eng/onboard-dev.json"
+    ]
+  },
+  "tech": {
+    "name": "Tech Lead Workflows",
+    "description": "Tech lead super commands for architecture review, API design, and migrations",
+    "recipes": [
+      "tech/architecture-review.json",
+      "tech/api-design.json",
+      "tech/migration.json"
+    ]
+  },
+  "devops": {
+    "name": "DevOps Lead Workflows",
+    "description": "DevOps lead super commands for deployment pipeline and emergency rollback",
+    "recipes": [
+      "devops/deploy-pipeline.json",
+      "devops/rollback.json"
+    ]
+  },
+  "platform": {
+    "name": "Platform Manager Workflows",
+    "description": "Platform manager super commands for monitoring setup and environment configuration",
+    "recipes": [
+      "platform/monitoring-setup.json",
+      "platform/environment-setup.json"
+    ]
+  },
+  "release": {
+    "name": "Release Manager Workflows",
+    "description": "Release manager super commands for shipping releases and hotfix pipelines",
+    "recipes": [
+      "release/ship.json",
+      "release/hotfix.json"
     ]
   }
 }

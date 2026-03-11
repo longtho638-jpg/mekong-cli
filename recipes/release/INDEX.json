@@ -1,0 +1,1 @@
+{"name": "Release Manager Workflows", "description": "Release manager super commands for shipping releases and hotfix pipelines", "recipes": ["release/ship.json", "release/hotfix.json"]}

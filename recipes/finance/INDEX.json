@@ -1,0 +1,9 @@
+{
+  "name": "Finance Manager Workflows",
+  "description": "Finance manager super commands for monthly close, budget planning, and collections",
+  "recipes": [
+    "finance/monthly-close.json",
+    "finance/budget-plan.json",
+    "finance/collections.json"
+  ]
+}

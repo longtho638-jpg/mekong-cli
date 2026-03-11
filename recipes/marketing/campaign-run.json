@@ -1,0 +1,37 @@
+{
+  "id": "marketing-campaign-run",
+  "name": "Campaign Execution",
+  "description": "Audience → creatives → channels → tracking → launch. 4 commands, ~25 min.",
+  "trigger": "/marketing:campaign-run",
+  "output_dir": "reports/marketing/campaign",
+  "estimated_credits": 15,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "plan",
+        "name": "Campaign Planning",
+        "mode": "parallel",
+        "commands": [
+          { "id": "marketing-plan", "args": "--output reports/marketing/campaign/campaign-plan.md" },
+          { "id": "customer-research", "args": "--output reports/marketing/campaign/target-audience.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "execute",
+        "name": "Campaign Execution",
+        "mode": "parallel",
+        "commands": [
+          { "id": "ads", "args": "--output reports/marketing/campaign/ad-creatives.md" },
+          { "id": "campaign", "args": "--output reports/marketing/campaign/launch-checklist.md" }
+        ],
+        "depends_on": ["plan"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/marketing/campaign/CAMPAIGN-SUMMARY.md"
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Tech Lead Workflows",
+  "description": "Tech lead super commands for architecture review, API design, and migrations",
+  "recipes": ["tech/architecture-review.json", "tech/api-design.json", "tech/migration.json"]
+}

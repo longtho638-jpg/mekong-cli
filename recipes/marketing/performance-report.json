@@ -1,0 +1,36 @@
+{
+  "id": "marketing-performance-report",
+  "name": "Marketing Performance",
+  "description": "Channel metrics → ROI analysis → optimization recommendations. 3 commands, ~15 min.",
+  "trigger": "/marketing:performance-report",
+  "output_dir": "reports/marketing/performance",
+  "estimated_credits": 10,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "data",
+        "name": "Data Collection",
+        "mode": "parallel",
+        "commands": [
+          { "id": "market-analysis", "args": "--output reports/marketing/performance/channel-metrics.md" },
+          { "id": "seo", "args": "--audit --output reports/marketing/performance/seo-health.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "report",
+        "name": "Performance Report",
+        "mode": "sequential",
+        "commands": [
+          { "id": "general-report", "args": "--output reports/marketing/performance/MARKETING-REPORT.md" }
+        ],
+        "depends_on": ["data"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/marketing/performance/PERFORMANCE-SUMMARY.md"
+    }
+  }
+}

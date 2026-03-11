@@ -1,0 +1,33 @@
+{
+  "id": "design-sprint",
+  "name": "Design Sprint",
+  "description": "Understand → sketch → decide → prototype → test. 4 commands, ~30 min.",
+  "trigger": "/design:sprint",
+  "output_dir": "reports/design/sprint",
+  "estimated_credits": 18,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "understand",
+        "name": "User Needs & Competitors",
+        "mode": "parallel",
+        "commands": [
+          { "id": "persona", "args": "--output reports/design/sprint/user-needs.md" },
+          { "id": "competitor", "args": "--output reports/design/sprint/design-audit.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "create",
+        "name": "Scope & Prototype",
+        "mode": "sequential",
+        "commands": [
+          { "id": "scope", "args": "--output reports/design/sprint/feature-scope.md" },
+          { "id": "demo", "args": "--output reports/design/sprint/prototype-spec.md" }
+        ],
+        "depends_on": ["understand"]
+      }
+    ]
+  }
+}

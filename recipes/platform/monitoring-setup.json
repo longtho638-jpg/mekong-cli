@@ -1,0 +1,33 @@
+{
+  "id": "platform-monitoring-setup",
+  "name": "Monitoring Setup",
+  "description": "Health checks → alerts → dashboard → runbook. 4 commands, ~20 min.",
+  "trigger": "/platform:monitoring-setup",
+  "output_dir": "reports/platform/monitoring",
+  "estimated_credits": 12,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "setup",
+        "name": "Health & Baseline",
+        "mode": "parallel",
+        "commands": [
+          { "id": "health", "args": "--setup --output reports/platform/monitoring/health-config.md" },
+          { "id": "benchmark", "args": "--baseline --output reports/platform/monitoring/baselines.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "docs",
+        "name": "Runbook & Status Page",
+        "mode": "sequential",
+        "commands": [
+          { "id": "docs", "args": "--runbook --output reports/platform/monitoring/runbook.md" },
+          { "id": "status", "args": "--output reports/platform/monitoring/status-page.md" }
+        ],
+        "depends_on": ["setup"]
+      }
+    ]
+  }
+}

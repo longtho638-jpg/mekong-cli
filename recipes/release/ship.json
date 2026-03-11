@@ -1,0 +1,34 @@
+{
+  "id": "release-ship",
+  "name": "Ship Release",
+  "description": "Changelog → version bump → test → tag → deploy. 5 commands, ~25 min.",
+  "trigger": "/release:ship",
+  "output_dir": "reports/release",
+  "estimated_credits": 15,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "prepare",
+        "name": "Changelog & Tests",
+        "mode": "parallel",
+        "commands": [
+          { "id": "docs-changelog", "args": "--output reports/release/changelog.md" },
+          { "id": "test", "args": "--all" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "ship",
+        "name": "Tag & Deploy",
+        "mode": "sequential",
+        "commands": [
+          { "id": "git-tag", "args": "" },
+          { "id": "ship", "args": "" },
+          { "id": "deploy-prod", "args": "" }
+        ],
+        "depends_on": ["prepare"]
+      }
+    ]
+  }
+}

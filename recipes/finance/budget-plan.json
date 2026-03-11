@@ -1,0 +1,36 @@
+{
+  "id": "finance-budget-plan",
+  "name": "Budget Planning",
+  "description": "Department budgets → allocation → forecast → approval deck. 3 commands, ~20 min.",
+  "trigger": "/finance:budget-plan",
+  "output_dir": "reports/finance/budget",
+  "estimated_credits": 12,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "analyze",
+        "name": "Budget Analysis",
+        "mode": "parallel",
+        "commands": [
+          { "id": "budget", "args": "--output reports/finance/budget/department-budgets.md" },
+          { "id": "forecast", "args": "--output reports/finance/budget/financial-forecast.md" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "plan",
+        "name": "Budget Plan",
+        "mode": "sequential",
+        "commands": [
+          { "id": "finance", "args": "--output reports/finance/budget/BUDGET-PLAN.md" }
+        ],
+        "depends_on": ["analyze"]
+      }
+    ],
+    "on_complete": {
+      "compile_summary": true,
+      "summary_file": "reports/finance/budget/BUDGET-SUMMARY.md"
+    }
+  }
+}

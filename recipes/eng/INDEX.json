@@ -1,0 +1,5 @@
+{
+  "name": "Engineering Manager Workflows",
+  "description": "Engineering manager super commands for sprint execution, tech debt, and developer onboarding",
+  "recipes": ["eng/sprint-execute.json", "eng/tech-debt.json", "eng/onboard-dev.json"]
+}

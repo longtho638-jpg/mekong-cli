@@ -1,0 +1,5 @@
+{
+  "name": "DevOps Lead Workflows",
+  "description": "DevOps lead super commands for deployment pipeline and emergency rollback",
+  "recipes": ["devops/deploy-pipeline.json", "devops/rollback.json"]
+}
