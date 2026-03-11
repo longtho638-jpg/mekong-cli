@@ -8,7 +8,8 @@ describe('GraphArbitrageEngine', () => {
   let engine: GraphArbitrageEngine;
 
   beforeEach(() => {
-    engine = new GraphArbitrageEngine({ maxHops: 4, minProfitPct: 0.1 });
+    // Set freeHopLimit=3 to allow 3-hop triangular arbitrage cycles in tests
+    engine = new GraphArbitrageEngine({ maxHops: 4, minProfitPct: 0.1, freeHopLimit: 3 });
   });
 
   describe('edge management', () => {

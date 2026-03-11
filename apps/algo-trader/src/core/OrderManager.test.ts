@@ -5,7 +5,29 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { OrderManager } from './OrderManager';
-import { IOrder, OrderSide, OrderType, OrderStatus } from '../interfaces/IExchange';
+import type { IOrder } from '../interfaces/IExchange';
+import { OrderSide, OrderType } from '../types/trading.types';
+
+// Order status constants (matching CCXT order status strings)
+export const OrderStatus = {
+  OPEN: 'open',
+  FILLED: 'filled',
+  CANCELLED: 'cancelled',
+  REJECTED: 'rejected',
+  EXPIRED: 'expired',
+} as const;
+
+// Order side constants (matching CCXT order side strings)
+export const OrderSideEnum = {
+  BUY: 'buy' as OrderSide,
+  SELL: 'sell' as OrderSide,
+} as const;
+
+// Order type constants (matching CCXT order type strings)
+export const OrderTypeEnum = {
+  MARKET: 'market' as OrderType,
+  LIMIT: 'limit' as OrderType,
+} as const;
 
 // Mock fs module
 jest.mock('fs', () => ({
@@ -26,8 +48,8 @@ describe('OrderManager', () => {
   const createMockOrder = (overrides?: Partial<IOrder>): IOrder => ({
     id: 'order-1',
     symbol: 'BTC/USDT',
-    side: OrderSide.BUY,
-    type: OrderType.MARKET,
+    side: OrderSideEnum.BUY,
+    type: OrderTypeEnum.MARKET,
     amount: 0.1,
     price: 50000,
     status: OrderStatus.OPEN,
@@ -154,8 +176,8 @@ describe('OrderManager', () => {
 
   describe('addArbTrade', () => {
     it('should add both buy and sell orders', () => {
-      const buyOrder = createMockOrder({ id: 'buy-1', side: OrderSide.BUY });
-      const sellOrder = createMockOrder({ id: 'sell-1', side: OrderSide.SELL });
+      const buyOrder = createMockOrder({ id: 'buy-1', side: OrderSideEnum.BUY });
+      const sellOrder = createMockOrder({ id: 'sell-1', side: OrderSideEnum.SELL });
 
       orderManager.addArbTrade(buyOrder, sellOrder);
 
@@ -176,12 +198,12 @@ describe('OrderManager', () => {
 
     it('should handle multiple arb trades', () => {
       orderManager.addArbTrade(
-        createMockOrder({ id: 'buy-1', side: OrderSide.BUY }),
-        createMockOrder({ id: 'sell-1', side: OrderSide.SELL })
+        createMockOrder({ id: 'buy-1', side: OrderSideEnum.BUY }),
+        createMockOrder({ id: 'sell-1', side: OrderSideEnum.SELL })
       );
       orderManager.addArbTrade(
-        createMockOrder({ id: 'buy-2', side: OrderSide.BUY }),
-        createMockOrder({ id: 'sell-2', side: OrderSide.SELL })
+        createMockOrder({ id: 'buy-2', side: OrderSideEnum.BUY }),
+        createMockOrder({ id: 'sell-2', side: OrderSideEnum.SELL })
       );
 
       const orders = orderManager.getOrders();

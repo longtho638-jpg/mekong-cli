@@ -47,6 +47,7 @@ export class SignalGenerator {
     const votes: ConsensusSignal['votes'] = [];
     let buyWeight = 0;
     let sellWeight = 0;
+    let noneWeight = 0;  // Track NONE weight for minVotes calculation
     let totalWeight = 0;
     let latestPrice = 0;
     let latestTimestamp = 0;
@@ -59,6 +60,9 @@ export class SignalGenerator {
         buyWeight += ws.weight;
       } else if (vote === SignalType.SELL) {
         sellWeight += ws.weight;
+      } else {
+        // NONE or null - still counts as a "voting strategy" for minVotes
+        noneWeight += ws.weight;
       }
 
       if (vote !== SignalType.NONE) {
@@ -71,18 +75,55 @@ export class SignalGenerator {
       }
     }
 
-    if (totalWeight === 0 || votes.length < this.config.minVotes) {
+    // minVotes counts participating strategies (including NONE), not just actual BUY/SELL votes
+    // This ensures we have enough strategies active, regardless of whether they vote to abstain
+    const participatingStrategies = signals.length;
+    if (totalWeight === 0 || participatingStrategies < this.config.minVotes) {
       return null;
     }
 
-    const buyFraction = buyWeight / totalWeight;
-    const sellFraction = sellWeight / totalWeight;
+    // Threshold check: use totalWeight (including NONE) to require broad consensus
+    const buyFractionOfTotal = buyWeight / totalWeight;
+    const sellFractionOfTotal = sellWeight / totalWeight;
 
-    // Check consensus threshold
-    if (buyFraction >= this.config.consensusThreshold) {
+    // Confidence calculation: use votingWeight (excluding NONE) to show strength among voters
+    const votingWeight = buyWeight + sellWeight;
+    const buyConfidence = votingWeight > 0 ? buyWeight / votingWeight : 0;
+    const sellConfidence = votingWeight > 0 ? sellWeight / votingWeight : 0;
+
+    // Check consensus threshold using total weight fraction
+    const buyMeetsThreshold = buyFractionOfTotal >= this.config.consensusThreshold;
+    const sellMeetsThreshold = sellFractionOfTotal >= this.config.consensusThreshold;
+
+    if (buyMeetsThreshold && sellMeetsThreshold) {
+      // Both meet threshold - pick the one with higher raw weight
+      // If equal, prefer SELL (conservative approach - don't buy on uncertainty)
+      if (buyWeight > sellWeight) {
+        return {
+          type: SignalType.BUY,
+          confidence: buyConfidence,
+          price: latestPrice,
+          timestamp: latestTimestamp,
+          votes,
+          metadata: { totalWeight, buyWeight, sellWeight },
+        };
+      } else {
+        // sellWeight >= buyWeight: SELL wins ties (conservative)
+        return {
+          type: SignalType.SELL,
+          confidence: sellConfidence,
+          price: latestPrice,
+          timestamp: latestTimestamp,
+          votes,
+          metadata: { totalWeight, buyWeight, sellWeight },
+        };
+      }
+    }
+
+    if (buyMeetsThreshold) {
       return {
         type: SignalType.BUY,
-        confidence: buyFraction,
+        confidence: buyConfidence,
         price: latestPrice,
         timestamp: latestTimestamp,
         votes,
@@ -90,10 +131,10 @@ export class SignalGenerator {
       };
     }
 
-    if (sellFraction >= this.config.consensusThreshold) {
+    if (sellMeetsThreshold) {
       return {
         type: SignalType.SELL,
-        confidence: sellFraction,
+        confidence: sellConfidence,
         price: latestPrice,
         timestamp: latestTimestamp,
         votes,

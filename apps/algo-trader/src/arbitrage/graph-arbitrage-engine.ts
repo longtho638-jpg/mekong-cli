@@ -110,10 +110,20 @@ export class GraphArbitrageEngine extends EventEmitter {
     if (V < 2 || edgeList.length === 0) return [];
 
     const nodeIndex = new Map<string, number>(nodeList.map((n, i) => [n, i]));
-    const dist = new Array<number>(V).fill(0);
-    const pred = new Array<number>(V).fill(-1);
 
-    for (let iter = 0; iter < V - 1; iter++) {
+    // Add virtual source node (index V) with 0-weight edges to all nodes
+    const dist = new Array<number>(V + 1).fill(0);
+    const pred = new Array<number>(V + 1).fill(-1);
+    const virtualSource = V;
+
+    // First relaxation: virtual source to all nodes (implicitly 0 weight)
+    for (let i = 0; i < V; i++) {
+      pred[i] = virtualSource;
+    }
+
+    // V iterations (not V-1, because we have V+1 nodes now)
+    for (let iter = 0; iter < V; iter++) {
+      let changed = false;
       for (const edge of edgeList) {
         const u = nodeIndex.get(edge.from)!;
         const v = nodeIndex.get(edge.to)!;
@@ -121,16 +131,23 @@ export class GraphArbitrageEngine extends EventEmitter {
         if (dist[u] + edge.weight < dist[v]) {
           dist[v] = dist[u] + edge.weight;
           pred[v] = u;
+          changed = true;
         }
       }
+      // Early exit if no changes
+      if (!changed && iter > 0) break;
     }
 
+    // Detect nodes in negative cycles
     const inCycle = new Set<number>();
     for (const edge of edgeList) {
       const u = nodeIndex.get(edge.from)!;
       const v = nodeIndex.get(edge.to)!;
       if (u === undefined || v === undefined) continue;
-      if (dist[u] + edge.weight < dist[v]) inCycle.add(v);
+      if (dist[u] + edge.weight < dist[v]) {
+        // Found a node that can still be relaxed = part of negative cycle
+        inCycle.add(v);
+      }
     }
 
     const cycles: ArbitrageCycle[] = [];
@@ -172,28 +189,40 @@ export class GraphArbitrageEngine extends EventEmitter {
   ): ArbitrageCycle | null {
     // Walk back V steps to ensure we're inside the cycle
     let cur = startIdx;
-    for (let i = 0; i < nodeList.length; i++) {
-      if (pred[cur] === -1) return null;
+    const V = nodeList.length;
+    for (let i = 0; i < V; i++) {
+      if (pred[cur] === -1 || pred[cur] === V) return null; // -1 or virtual source = no cycle
       cur = pred[cur];
     }
 
+    // Now trace the actual cycle
     const cycleStart = cur;
-    const pathIndices: number[] = [];
-    let node = cycleStart;
+    const pathIndices: number[] = [cycleStart];
+    let node = pred[cycleStart];
 
-    do {
-      pathIndices.unshift(node);
+    while (node !== cycleStart && node !== -1 && node !== nodeList.length) {
+      pathIndices.push(node);
       node = pred[node];
-      if (node === -1) return null;
-    } while (node !== cycleStart && pathIndices.length <= nodeList.length);
+      // Safety limit to prevent infinite loops
+      if (pathIndices.length > V) return null;
+    }
 
-    pathIndices.unshift(cycleStart);
+    // If we didn't complete the cycle, return null
+    if (node !== cycleStart) return null;
 
+    // The predecessor chain traces backwards through the cycle
+    // Reverse to get the actual cycle direction
+    pathIndices.reverse();
+
+    // Convert indices to node names
     const path = pathIndices.map(i => nodeList[i]);
-    const edges: GraphEdge[] = [];
 
-    for (let i = 0; i < path.length - 1; i++) {
-      const key = `${path[i]}->${path[i + 1]}`;
+    // Build edges list - now path is in correct direction
+    const edges: GraphEdge[] = [];
+    for (let i = 0; i < path.length; i++) {
+      const from = path[i];
+      const to = path[(i + 1) % path.length];
+      const key = `${from}->${to}`;
       const edge = this.edges.get(key);
       if (!edge) return null;
       edges.push(edge);
