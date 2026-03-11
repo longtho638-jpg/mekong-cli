@@ -1,0 +1,65 @@
+{
+  "id": "tech-architecture-review",
+  "version": "1.0.0",
+  "layer": "engineering",
+  "chapter": "軍爭 — Military Contention",
+  "display": {
+    "name_vi": "Tech Architecture Review",
+    "name_en": "Tech Architecture Review",
+    "icon": "",
+    "description_vi": "API audit → schema review → dependency analysis → improvement plan",
+    "description_en": "API audit  schema review  dependency analysis  improvement plan"
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "engineering-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

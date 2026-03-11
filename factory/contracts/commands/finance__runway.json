@@ -1,0 +1,65 @@
+{
+  "id": "finance/runway",
+  "version": "1.0.0",
+  "layer": "founder",
+  "chapter": "始計 — Initial Calculations",
+  "display": {
+    "name_vi": "Runway",
+    "name_en": "Runway",
+    "icon": "",
+    "description_vi": "Execute Runway command",
+    "description_en": "Execute Runway command"
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "founder-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

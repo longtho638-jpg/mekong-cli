@@ -1,0 +1,65 @@
+{
+  "id": "general-report",
+  "version": "1.0.0",
+  "layer": "product",
+  "chapter": "謀攻 — Attack by Stratagem",
+  "display": {
+    "name_vi": "General Report",
+    "name_en": "General Report",
+    "icon": "",
+    "description_vi": "General report",
+    "description_en": "General report"
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "product-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

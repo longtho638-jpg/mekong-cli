@@ -1,0 +1,65 @@
+{
+  "id": "devops-rollback",
+  "version": "1.0.0",
+  "layer": "ops",
+  "chapter": "九變 — Nine Variations",
+  "display": {
+    "name_vi": "Devops Rollback",
+    "name_en": "Devops Rollback",
+    "icon": "",
+    "description_vi": "Emergency rollback → smoke test → health check → incident report",
+    "description_en": "Emergency rollback  smoke test  health check  incident report"
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "ops-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

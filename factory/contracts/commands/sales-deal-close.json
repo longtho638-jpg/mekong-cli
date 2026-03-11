@@ -1,0 +1,65 @@
+{
+  "id": "sales-deal-close",
+  "version": "1.0.0",
+  "layer": "business",
+  "chapter": "作戰 — Waging War",
+  "display": {
+    "name_vi": "Sales Deal Close",
+    "name_en": "Sales Deal Close",
+    "icon": "",
+    "description_vi": "Research buyer, build proposal, pricing strategy, closing playbook. 4 commands, ~20 min.",
+    "description_en": "Research buyer, build proposal, pricing strategy, closing playbook. 4 commands, ~20 min."
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "business-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

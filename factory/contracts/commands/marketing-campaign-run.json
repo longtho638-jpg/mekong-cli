@@ -1,0 +1,65 @@
+{
+  "id": "marketing-campaign-run",
+  "version": "1.0.0",
+  "layer": "business",
+  "chapter": "作戰 — Waging War",
+  "display": {
+    "name_vi": "Marketing Campaign Run",
+    "name_en": "Marketing Campaign Run",
+    "icon": "",
+    "description_vi": "Audience targeting, ad creatives, channel strategy, campaign launch checklist. 4 commands, ~25 min.",
+    "description_en": "Audience targeting, ad creatives, channel strategy, campaign launch checklist. 4 commands, ~25 min."
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "business-hub",
+    "complexity": "standard",
+    "timeout_ms": 120000,
+    "credit_cost": 3,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 5
+  }
+}

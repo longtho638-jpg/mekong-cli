@@ -1,0 +1,65 @@
+{
+  "id": "kanban/report",
+  "version": "1.0.0",
+  "layer": "ops",
+  "chapter": "九變 — Nine Variations",
+  "display": {
+    "name_vi": "Report",
+    "name_en": "Report",
+    "icon": "",
+    "description_vi": "Generate execution report",
+    "description_en": "Generate execution report"
+  },
+  "execution": {
+    "agents": [
+      "planner",
+      "fullstack-developer"
+    ],
+    "hub": "ops-hub",
+    "complexity": "simple",
+    "timeout_ms": 30000,
+    "credit_cost": 1,
+    "requires_approval": false
+  },
+  "input": {
+    "type": "object",
+    "required": [
+      "goal"
+    ],
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Natural language task description"
+      },
+      "project": {
+        "type": "string",
+        "description": "Target project path"
+      }
+    }
+  },
+  "output": {
+    "type": "object",
+    "properties": {
+      "summary": {
+        "type": "string"
+      },
+      "files_modified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "credits_used": {
+        "type": "integer"
+      }
+    }
+  },
+  "cascade": {
+    "triggers": []
+  },
+  "validation": {
+    "output_must_contain": [],
+    "min_output_length": 50,
+    "max_credit_cost": 3
+  }
+}
