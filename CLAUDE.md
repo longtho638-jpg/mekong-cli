@@ -10,17 +10,16 @@
 
 | Location | Content |
 |----------|---------|
-| `mekong/skills/` | 245 skill definitions (SKILL.md) |
-| `mekong/commands/` | Symlinked → `.claude/commands/` |
+| `.claude/skills/` | 542 skill definitions (SKILL.md) |
+| `.claude/commands/` | 176 command definitions (.md) |
 | `mekong/agents/` | Agent definitions |
 | `mekong/adapters/` | LLM provider configs |
 | `mekong/infra/` | 4-layer deploy templates |
 | `mekong/daemon/` | Tôm Hùm autonomous dispatch |
-| `.agencyos/commands/` | 245 command definitions (.md) |
 | `factory/contracts/` | 176 JSON machine contracts |
+| `mekong/` | Adapters, infra, daemon (NOT skills/commands) |
 
-Symlinks: `.claude/skills → ../mekong/skills`, `.claude/commands → ../mekong/commands`
-CC CLI reads via symlinks. Edit in `mekong/`, NOT `.claude/`.
+CC CLI reads `.claude/skills/` and `.claude/commands/` directly. NO symlinks.
 
 ---
 
