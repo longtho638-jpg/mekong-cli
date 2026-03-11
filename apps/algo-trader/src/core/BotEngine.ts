@@ -19,6 +19,8 @@ import { TickStore } from '../netdata/TickStore';
 import { HealthManager } from '../netdata/HealthManager';
 import { BotConfig } from './bot-engine-config-and-state-types';
 import { BotTradeExecutor } from './bot-engine-trade-executor-and-position-manager';
+import { AGIAdapter } from '../agi/integration/agi-adapter';
+import { loadAGIConfig } from '../agi/integration/agi-config';
 
 export type { BotConfig };
 
@@ -30,6 +32,7 @@ export class BotEngine {
   private isRunning = false;
   private isProcessingSignal = false; // Prevent race conditions during async trade execution
   private tradeExecutor: BotTradeExecutor;
+  private agiAdapter?: AGIAdapter;
 
   // A2UI subsystem
   readonly eventBus: AgentEventBus;
@@ -78,6 +81,20 @@ export class BotEngine {
       this.auditLogger,
       this.autonomyController,
     );
+
+    // Initialize AGI adapter if enabled
+    const agiConfig = loadAGIConfig();
+    if (agiConfig.agiEnabled) {
+      this.agiAdapter = new AGIAdapter({
+        enabled: agiConfig.agiEnabled,
+        ollamaBaseUrl: agiConfig.agiBaseUrl,
+        model: agiConfig.agiModel,
+        timeoutMs: agiConfig.agiTimeoutMs,
+        minConfidence: agiConfig.agiMinConfidence,
+        fallbackToRules: agiConfig.agiFallbackToRules,
+      });
+      logger.info('[AGI] AGI Adapter initialized with model:', agiConfig.agiModel);
+    }
   }
 
   /** Register a plugin with the engine */
@@ -195,9 +212,42 @@ export class BotEngine {
     if (!pluginResult) return;
     signal = pluginResult;
 
+    // AGI enhancement step
+    let agiEnhanced = false;
+    let agiConfidence = 0;
+    if (this.agiAdapter) {
+      try {
+        const indicators: Record<string, number> = {
+          price: signal.price,
+          ...(signal.metadata as Record<string, number> || {})
+        };
+        const enhanced = await this.agiAdapter.enhanceSignal({
+          type: signal.type as 'BUY' | 'SELL' | 'HOLD',
+          symbol: this.config.symbol,
+          timestamp: Date.now(),
+          indicators,
+          price: signal.price,
+        });
+
+        agiEnhanced = enhanced.agiEnhanced;
+        agiConfidence = enhanced.confidence;
+
+        // If AGI overrides signal, use AGI decision
+        if (agiEnhanced && enhanced.combinedAction !== signal.type) {
+          logger.info(`[AGI] Override: ${signal.type} → ${enhanced.combinedAction} (confidence: ${agiConfidence.toFixed(2)})`);
+          signal.type = enhanced.combinedAction === 'BUY' ? SignalType.BUY
+            : enhanced.combinedAction === 'SELL' ? SignalType.SELL
+            : SignalType.NONE;
+        }
+      } catch (error) {
+        logger.error(`[AGI] Enhancement failed: ${error instanceof Error ? error.message : String(error)}`);
+        // Fallback to original signal (already in place)
+      }
+    }
+
     const indicators: Record<string, number> = { price: signal.price, ...(signal.metadata as Record<string, number> || {}) };
     this.signalExplainer.explainSignal(this.strategy.name, signal.type as 'BUY' | 'SELL' | 'NONE', indicators);
-    logger.info(`[SIGNAL] ${signal.type} @ ${signal.price} (${JSON.stringify(signal.metadata || {})})`);
+    logger.info(`[SIGNAL] ${signal.type} @ ${signal.price} (${JSON.stringify(signal.metadata || {})})${agiEnhanced ? ` [AGI:${agiConfidence.toFixed(2)}]` : ''}`);
 
     const { openPosition } = this.tradeExecutor.state;
 
