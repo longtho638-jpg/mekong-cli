@@ -7,8 +7,11 @@ import { registerStatusCommand } from './commands/status.js';
 import { registerCrmCommand } from './commands/crm.js';
 import { registerFinanceCommand } from './commands/finance.js';
 import { registerDashboardCommand } from './commands/dashboard.js';
+import { registerKaizenCommand } from './commands/kaizen.js';
+import { registerMarketplaceCommand } from './commands/marketplace.js';
+import { registerPluginCommand } from './commands/plugin.js';
 
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 
 export async function main(argv?: string[]): Promise<void> {
   const program = new Command();
@@ -42,6 +45,9 @@ export async function main(argv?: string[]): Promise<void> {
   registerCrmCommand(program, engine);
   registerFinanceCommand(program, engine);
   registerDashboardCommand(program, engine);
+  registerKaizenCommand(program);
+  registerMarketplaceCommand(program);
+  registerPluginCommand(program);
 
   await program.parseAsync(argv ?? process.argv);
 }
