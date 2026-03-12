@@ -12,7 +12,10 @@ from .orchestrator import (
     StepResult,
 )
 from .parser import Recipe, RecipeParser, RecipeStep
+from .pipeline_manager import PipelineManager, PipelineResult, PipelineStage, PipelineStatus
 from .planner import PlanningContext, RecipePlanner, TaskComplexity, VerificationCriteria
+from .progress_tracker import ProgressCallback, ProgressPhase, ProgressSnapshot, ProgressTracker
+from .task_queue import PriorityTaskQueue, TaskPriority as QueueTaskPriority
 from .plugin_loader import PluginLoader
 from .plugin_registry import PluginManifest, PluginRegistry, PluginStatus, PluginType
 from .protocols import AgentProtocol, StreamingMixin
@@ -56,6 +59,11 @@ __all__ = [
     "OpenAICompatibleProvider",
     "OrchestrationResult",
     "OrchestrationStatus",
+    # Pipeline Manager
+    "PipelineManager",
+    "PipelineResult",
+    "PipelineStage",
+    "PipelineStatus",
     "PlanningContext",
     # Plugin System
     "PluginLoader",
@@ -86,6 +94,14 @@ __all__ = [
     "VerificationCriteria",
     "VerificationReport",
     "VerificationStatus",
+    # Progress Tracker
+    "ProgressCallback",
+    "ProgressPhase",
+    "ProgressSnapshot",
+    "ProgressTracker",
+    # Task Queue
+    "PriorityTaskQueue",
+    "QueueTaskPriority",
     "get_alert_router",
     "send_alert",
     "validate_dag",

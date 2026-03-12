@@ -117,6 +117,8 @@ class StepExecutor:
         self.llm_client = llm_client
         self.history = history
         self.telemetry = telemetry
+        self.console = Console()
+        self._reflection: Any | None = None
 
     def execute_and_verify(
         self,
