@@ -86,6 +86,11 @@ export const ConfigSchema = z.object({
       time: z.string().default('08:00'),
     }).default({}),
   }).default({}),
+  license: z.object({
+    api_url: z.string().default('https://api.mekong.ai/v1'),
+    offline_grace_days: z.number().default(7),
+    background_check: z.boolean().default(true),
+  }).default({}),
 });
 
 export type MekongConfig = z.infer<typeof ConfigSchema>;

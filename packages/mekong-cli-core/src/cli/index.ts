@@ -10,8 +10,11 @@ import { registerDashboardCommand } from './commands/dashboard.js';
 import { registerKaizenCommand } from './commands/kaizen.js';
 import { registerMarketplaceCommand } from './commands/marketplace.js';
 import { registerPluginCommand } from './commands/plugin.js';
+import { registerLicenseCommand } from './commands/license.js';
+import { attachLicenseMiddleware } from '../license/middleware.js';
+import { LicenseGate } from '../license/gate.js';
 
-const VERSION = '0.3.0';
+const VERSION = '0.4.0';
 
 export async function main(argv?: string[]): Promise<void> {
   const program = new Command();
@@ -48,6 +51,11 @@ export async function main(argv?: string[]): Promise<void> {
   registerKaizenCommand(program);
   registerMarketplaceCommand(program);
   registerPluginCommand(program);
+  registerLicenseCommand(program);
+
+  // Attach license gate middleware (after all commands registered)
+  const gate = new LicenseGate();
+  attachLicenseMiddleware(program, gate);
 
   await program.parseAsync(argv ?? process.argv);
 }

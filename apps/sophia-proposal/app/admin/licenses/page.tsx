@@ -19,14 +19,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/Select';
-import { Plus, Key, Trash2, RotateCcw, Activity, Users, DollarSign, Loader2 } from 'lucide-react';
+import { Plus, Key, Trash2, RotateCcw, Activity, Users, DollarSign, Loader2, AlertTriangle } from 'lucide-react';
 import { LicenseService } from '../../lib/license-service';
+import { UsageMetering } from '../../lib/usage-metering';
 import type { License as ServiceLicense } from '../../lib/license-types';
 
 interface License {
   id: string;
   key: string;
-  tier: 'FREE' | 'PRO' | 'ENTERPRISE';
+  tier: 'FREE' | 'PRO' | 'ENTERPRISE' | 'MASTER';
   status: 'active' | 'revoked' | 'expired';
   createdAt: string;
   expiresAt?: string;
@@ -34,10 +35,17 @@ interface License {
   lastUsed?: string;
   subscriptionId?: string;
   subscriptionStatus?: 'active' | 'cancelled' | 'uncancelled';
+  usageStats?: {
+    apiCallsPercent: number;
+    transferMbPercent: number;
+    status: 'normal' | 'warning' | 'critical' | 'exceeded';
+  };
 }
 
 // Convert service license to UI license
 function toUiLicense(license: ServiceLicense): License {
+  const usageStats = UsageMetering.getUsageStats(license.id);
+
   return {
     id: license.id,
     key: (license.metadata?.licenseKey as string) || `raas-${license.tier.toLowerCase()}-${license.id}`,
@@ -49,6 +57,11 @@ function toUiLicense(license: ServiceLicense): License {
     lastUsed: new Date().toISOString().split('T')[0],
     subscriptionId: license.subscriptionId,
     subscriptionStatus: license.subscriptionStatus,
+    usageStats: {
+      apiCallsPercent: usageStats.apiCalls.percent,
+      transferMbPercent: usageStats.transferMb.percent,
+      status: usageStats.status,
+    },
   };
 }
 
@@ -56,7 +69,7 @@ export default function AdminLicensesPage() {
   const [licenses, setLicenses] = useState<License[]>([]);
   const [selectedTier, setSelectedTier] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [newLicenseTier, setNewLicenseTier] = useState<'PRO' | 'ENTERPRISE'>('PRO');
+  const [newLicenseTier, setNewLicenseTier] = useState<'PRO' | 'ENTERPRISE' | 'MASTER'>('PRO');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -257,68 +270,110 @@ export default function AdminLicensesPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredLicenses.map((license) => (
-                      <TableRow key={license.id}>
-                        <TableCell className="font-mono text-sm">
-                          {license.key.slice(0, 16)}...
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={license.tier === 'ENTERPRISE' ? 'default' : 'secondary'}>
-                            {license.tier}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={license.status === 'active' ? 'default' : 'destructive'}>
-                            {license.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {license.subscriptionStatus ? (
-                            <Badge
-                              variant={
-                                license.subscriptionStatus === 'active'
-                                  ? 'default'
-                                  : license.subscriptionStatus === 'cancelled'
-                                  ? 'destructive'
-                                  : 'secondary'
-                              }
-                            >
-                              {license.subscriptionStatus}
+                    {filteredLicenses.map((license) => {
+                      const maxPercent = Math.max(
+                        license.usageStats?.apiCallsPercent || 0,
+                        license.usageStats?.transferMbPercent || 0
+                      );
+                      const alertLevel = license.usageStats?.status || 'normal';
+                      const showProgress = maxPercent > 0;
+
+                      return (
+                        <TableRow key={license.id}>
+                          <TableCell className="font-mono text-sm">
+                            {license.key.slice(0, 16)}...
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={license.tier === 'ENTERPRISE' ? 'default' : 'secondary'}>
+                              {license.tier}
                             </Badge>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {license.subscriptionId || (
-                            <span className="text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                        <TableCell>{license.createdAt}</TableCell>
-                        <TableCell>{license.expiresAt || 'Never'}</TableCell>
-                        <TableCell>{license.usageCount}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            {license.status === 'active' && (
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Badge variant={license.status === 'active' ? 'default' : 'destructive'}>
+                                {license.status}
+                              </Badge>
+                              {alertLevel === 'warning' && (
+                                <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                              )}
+                              {alertLevel === 'critical' && (
+                                <AlertTriangle className="h-4 w-4 text-orange-500" />
+                              )}
+                              {alertLevel === 'exceeded' && (
+                                <AlertTriangle className="h-4 w-4 text-red-500" />
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {license.subscriptionStatus ? (
+                              <Badge
+                                variant={
+                                  license.subscriptionStatus === 'active'
+                                    ? 'default'
+                                    : license.subscriptionStatus === 'cancelled'
+                                    ? 'destructive'
+                                    : 'secondary'
+                                }
+                              >
+                                {license.subscriptionStatus}
+                              </Badge>
+                            ) : (
+                              <span className="text-xs text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {license.subscriptionId || (
+                              <span className="text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                          <TableCell>{license.createdAt}</TableCell>
+                          <TableCell>{license.expiresAt || 'Never'}</TableCell>
+                          <TableCell>
+                            <div className="space-y-2">
+                              <div className="text-xs text-muted-foreground">
+                                {license.usageStats?.apiCallsPercent || 0}% API
+                              </div>
+                              {showProgress && (
+                                <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                  <div
+                                    className={`h-full ${
+                                      alertLevel === 'exceeded'
+                                        ? 'bg-red-500'
+                                        : alertLevel === 'critical'
+                                        ? 'bg-orange-500'
+                                        : alertLevel === 'warning'
+                                        ? 'bg-yellow-500'
+                                        : 'bg-green-500'
+                                    }`}
+                                    style={{ width: `${Math.min(100, maxPercent)}%` }}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              {license.status === 'active' && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRevoke(license.id)}
+                                >
+                                  <RotateCcw className="h-4 w-4" />
+                                </Button>
+                              )}
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => handleRevoke(license.id)}
+                                onClick={() => handleDelete(license.id)}
                               >
-                                <RotateCcw className="h-4 w-4" />
+                                <Trash2 className="h-4 w-4" />
                               </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(license.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </CardContent>
@@ -345,6 +400,7 @@ export default function AdminLicensesPage() {
                   <SelectContent>
                     <SelectItem value="PRO">Pro ($149/mo)</SelectItem>
                     <SelectItem value="ENTERPRISE">Enterprise ($499/mo)</SelectItem>
+                    <SelectItem value="MASTER">Master (Custom)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

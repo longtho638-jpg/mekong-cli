@@ -59,4 +59,9 @@ export const DEFAULT_CONFIG: MekongConfig = {
     daily_standup: { enabled: false, time: '09:00' },
     weekly_digest: { enabled: false, day: 'monday', time: '08:00' },
   },
+  license: {
+    api_url: 'https://api.mekong.ai/v1',
+    offline_grace_days: 7,
+    background_check: true,
+  },
 };

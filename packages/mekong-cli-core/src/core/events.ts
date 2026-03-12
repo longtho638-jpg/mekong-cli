@@ -9,7 +9,8 @@ export type MekongEvent =
   | 'sop:started' | 'sop:step_completed' | 'sop:completed' | 'sop:failed'
   | 'budget:warning' | 'budget:exceeded'
   | 'constraint:violation'
-  | 'memory:saved' | 'memory:compacted';
+  | 'memory:saved' | 'memory:compacted'
+  | 'license:warning';
 
 /** Global event bus — all modules communicate through this */
 export const eventBus = new EventEmitter();

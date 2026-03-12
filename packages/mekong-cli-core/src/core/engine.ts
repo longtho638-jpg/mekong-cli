@@ -21,6 +21,8 @@ import { emit } from './events.js';
 import { MekongError } from '../types/common.js';
 import type { WorkerDeps } from '../agents/worker.js';
 import type { SopRun } from '../types/sop.js';
+import { LicenseGate } from '../license/gate.js';
+import type { LicenseTier } from '../license/types.js';
 
 export interface EngineOptions {
   configOverrides?: Partial<MekongConfig>;
@@ -35,7 +37,9 @@ export class MekongEngine {
   sopExecutor!: SopExecutor;
   session!: SessionMemory;
   budget!: BudgetTracker;
+  license!: LicenseGate;
   private initialized = false;
+  private currentTier: LicenseTier = 'free';
 
   async init(options: EngineOptions = {}): Promise<void> {
     this.config = await loadConfig(options.configOverrides);
@@ -80,8 +84,23 @@ export class MekongEngine {
 
     this.sopExecutor = new SopExecutor({ tools: this.tools, askUser: options.askUser });
 
+    // License gate — non-blocking background check
+    this.license = new LicenseGate();
     this.initialized = true;
     emit('engine:started', { providers: this.llm.getProviders() });
+
+    // Background license validation (non-blocking, does not delay boot)
+    if (this.config.license?.background_check !== false) {
+      this.license.validate().then(result => {
+        if (result.ok) {
+          this.currentTier = result.value.tier;
+          if (result.value.message) {
+            // Grace period or expiry warning — emit for observability
+            emit('license:warning', { message: result.value.message, tier: this.currentTier });
+          }
+        }
+      }).catch(() => { /* background check failure is non-fatal */ });
+    }
   }
 
   /** Run a natural language task through the orchestrator */
@@ -134,6 +153,7 @@ export class MekongEngine {
       toolCount: this.initialized ? this.tools.list().length : 0,
       sessionId: this.initialized ? this.session.sessionId : null,
       usage: this.initialized ? this.llm.getUsageSummary() : null,
+      tier: this.currentTier,
     };
   }
 
