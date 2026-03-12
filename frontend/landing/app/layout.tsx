@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Mekong CLI — AI-Operated Business Platform',
     description: '319 commands, 463 skills, 127 AI agents. 5-layer pyramid from Founder to Ops.',
-    url: 'https://mekong.cli.dev',
+    url: 'https://agencyos.network',
     siteName: 'Mekong CLI',
   },
 }
