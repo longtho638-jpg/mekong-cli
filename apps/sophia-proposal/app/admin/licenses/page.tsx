@@ -32,6 +32,8 @@ interface License {
   expiresAt?: string;
   usageCount: number;
   lastUsed?: string;
+  subscriptionId?: string;
+  subscriptionStatus?: 'active' | 'cancelled' | 'uncancelled';
 }
 
 // Convert service license to UI license
@@ -45,6 +47,8 @@ function toUiLicense(license: ServiceLicense): License {
     expiresAt: license.expiresAt?.toISOString().split('T')[0],
     usageCount: Math.floor(Math.random() * 1000), // Mock usage for demo
     lastUsed: new Date().toISOString().split('T')[0],
+    subscriptionId: license.subscriptionId,
+    subscriptionStatus: license.subscriptionStatus,
   };
 }
 
@@ -63,7 +67,7 @@ export default function AdminLicensesPage() {
     try {
       const allLicenses = LicenseService.getAll();
       setLicenses(allLicenses.map(toUiLicense));
-    } catch (err) {
+    } catch {
       setError('Failed to load licenses');
     } finally {
       setIsLoading(false);
@@ -92,7 +96,7 @@ export default function AdminLicensesPage() {
       });
       setLicenses([toUiLicense(newLicense), ...licenses]);
       setShowCreateModal(false);
-    } catch (err) {
+    } catch {
       setError('Failed to create license');
     }
   }
@@ -103,7 +107,7 @@ export default function AdminLicensesPage() {
       setLicenses(licenses.map(l =>
         l.id === id ? { ...l, status: 'revoked' as const } : l
       ));
-    } catch (err) {
+    } catch {
       setError('Failed to revoke license');
     }
   }
@@ -112,7 +116,7 @@ export default function AdminLicensesPage() {
     try {
       LicenseService.delete(id);
       setLicenses(licenses.filter(l => l.id !== id));
-    } catch (err) {
+    } catch {
       setError('Failed to delete license');
     }
   }
@@ -244,6 +248,8 @@ export default function AdminLicensesPage() {
                       <TableHead>License Key</TableHead>
                       <TableHead>Tier</TableHead>
                       <TableHead>Status</TableHead>
+                      <TableHead>Subscription Status</TableHead>
+                      <TableHead>Subscription ID</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Expires</TableHead>
                       <TableHead>Usage</TableHead>
@@ -265,6 +271,28 @@ export default function AdminLicensesPage() {
                           <Badge variant={license.status === 'active' ? 'default' : 'destructive'}>
                             {license.status}
                           </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {license.subscriptionStatus ? (
+                            <Badge
+                              variant={
+                                license.subscriptionStatus === 'active'
+                                  ? 'default'
+                                  : license.subscriptionStatus === 'cancelled'
+                                  ? 'destructive'
+                                  : 'secondary'
+                              }
+                            >
+                              {license.subscriptionStatus}
+                            </Badge>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {license.subscriptionId || (
+                            <span className="text-muted-foreground">—</span>
+                          )}
                         </TableCell>
                         <TableCell>{license.createdAt}</TableCell>
                         <TableCell>{license.expiresAt || 'Never'}</TableCell>
