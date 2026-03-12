@@ -19,6 +19,8 @@ import { registerUnifiedArbCommand } from './cli/unified-agi-arbitrage-command';
 import { registerSetupCommand } from './cli/setup-wizard-command';
 import { registerQuickstartCommand } from './cli/quickstart-zero-config-command';
 import { registerTelegramBotCommand } from './cli/telegram-phone-trading-bot-command';
+import { registerPolymarketTelegramCommand } from './cli/polymarket-telegram-command';
+import { registerLiveTradingCommands } from './cli/live-trading-cli';
 import { logger } from './utils/logger';
 import { startRaasServer, stopRaasServer, setReady } from './api/fastify-raas-server';
 import * as dotenv from 'dotenv';
@@ -295,6 +297,8 @@ registerUnifiedArbCommand(program);
 registerSetupCommand(program);
 registerQuickstartCommand(program);
 registerTelegramBotCommand(program);
+registerPolymarketTelegramCommand(program);
+registerLiveTradingCommands(program);
 
 // Register ML strategies in StrategyLoader (PRO feature - gracefully handle FREE tier)
 try {
