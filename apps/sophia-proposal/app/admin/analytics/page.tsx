@@ -1,10 +1,24 @@
 'use client'
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { useAllAnalytics } from '../../lib/analytics-hooks'
-import { MetricsCard, RevenueChart, SubscriptionGauge, UsageProgressBar, LicenseHealthTable } from '../../components/analytics'
 import { GlassCard } from '../../components/ui/GlassCard'
 import { FadeIn } from '../../components/animations/FadeIn'
+import { Loader2 } from 'lucide-react'
+
+// Lazy load heavy chart components for code splitting
+const MetricsCard = React.lazy(async () => ({ default: (await import('../../components/analytics/MetricsCard')).MetricsCard }))
+const RevenueChart = React.lazy(async () => ({ default: (await import('../../components/analytics/RevenueChart')).RevenueChart }))
+const SubscriptionGauge = React.lazy(async () => ({ default: (await import('../../components/analytics/SubscriptionGauge')).SubscriptionGauge }))
+const UsageProgressBar = React.lazy(async () => ({ default: (await import('../../components/analytics/UsageProgressBar')).UsageProgressBar }))
+const LicenseHealthTable = React.lazy(async () => ({ default: (await import('../../components/analytics/LicenseHealthTable')).LicenseHealthTable }))
+
+// Loading fallback component
+const ChartSkeleton = () => (
+  <div className="h-64 flex items-center justify-center bg-white/5 rounded-lg">
+    <Loader2 className="w-8 h-8 animate-spin text-purple-400" />
+  </div>
+)
 
 export default function AnalyticsPage() {
   const analytics = useAllAnalytics()
@@ -74,70 +88,86 @@ export default function AnalyticsPage() {
 
         {/* Top Metrics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <MetricsCard
-            title="Monthly Revenue"
-            value={`$${analytics.revenue.mrr.toLocaleString()}`}
-            delta={{ value: 12, isPositive: true, label: 'vs last month' }}
-            glow="success"
-            delay={0}
-          />
-          <MetricsCard
-            title="Annual Revenue"
-            value={`$${analytics.revenue.arr.toLocaleString()}`}
-            delta={{ value: 8, isPositive: true, label: 'projected' }}
-            glow="primary"
-            delay={0.1}
-          />
-          <MetricsCard
-            title="Active Licenses"
-            value={analytics.health.active.toLocaleString()}
-            delta={{ value: 5, isPositive: true, label: 'this week' }}
-            glow="secondary"
-            delay={0.2}
-          />
-          <MetricsCard
-            title="Health Score"
-            value={`${analytics.health.healthScore}%`}
-            delta={{ value: 2, isPositive: true, label: 'improvement' }}
-            glow="success"
-            delay={0.3}
-          />
+          <Suspense fallback={<ChartSkeleton />}>
+            <MetricsCard
+              title="Monthly Revenue"
+              value={`$${analytics.revenue.mrr.toLocaleString()}`}
+              delta={{ value: 12, isPositive: true, label: 'vs last month' }}
+              glow="success"
+              delay={0}
+            />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <MetricsCard
+              title="Annual Revenue"
+              value={`$${analytics.revenue.arr.toLocaleString()}`}
+              delta={{ value: 8, isPositive: true, label: 'projected' }}
+              glow="primary"
+              delay={0.1}
+            />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <MetricsCard
+              title="Active Licenses"
+              value={analytics.health.active.toLocaleString()}
+              delta={{ value: 5, isPositive: true, label: 'this week' }}
+              glow="secondary"
+              delay={0.2}
+            />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <MetricsCard
+              title="Health Score"
+              value={`${analytics.health.healthScore}%`}
+              delta={{ value: 2, isPositive: true, label: 'improvement' }}
+              glow="success"
+              delay={0.3}
+            />
+          </Suspense>
         </div>
 
         {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <RevenueChart
-            data={revenueData}
-            title="Revenue Projection"
-            currency="USD"
-            height={280}
-            animated
-          />
-          <SubscriptionGauge
-            tiers={subscriptionTiers}
-            title="Subscription Distribution"
-            totalLabel="Total Subscribers"
-            animated
-          />
+          <Suspense fallback={<ChartSkeleton />}>
+            <RevenueChart
+              data={revenueData}
+              title="Revenue Projection"
+              currency="USD"
+              height={280}
+              animated
+            />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <SubscriptionGauge
+              tiers={subscriptionTiers}
+              title="Subscription Distribution"
+              totalLabel="Total Subscribers"
+              animated
+            />
+          </Suspense>
         </div>
 
         {/* Usage & License Health */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <UsageProgressBar
-            tiers={usageTiers}
-            title="Usage by Tier"
-            animated
-            showPercentage
-          />
-          <LicenseHealthTable
-            licenses={licenses}
-            title="License Distribution"
-            maxVisible={5}
-            onRowClick={(license) => {
-              // Row click handler - can be extended with modal or navigation
-              void license
-            }}
-          />
+          <Suspense fallback={<ChartSkeleton />}>
+            <UsageProgressBar
+              tiers={usageTiers}
+              title="Usage by Tier"
+              animated
+              showPercentage
+            />
+          </Suspense>
+          <Suspense fallback={<ChartSkeleton />}>
+            <LicenseHealthTable
+              licenses={licenses}
+              title="License Distribution"
+              maxVisible={5}
+              onRowClick={(license: { id: string }) => {
+                // Row click handler - can be extended with modal or navigation
+                void license
+              }}
+            />
+          </Suspense>
         </div>
 
         {/* License Status Summary */}
