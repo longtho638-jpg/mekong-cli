@@ -1,0 +1,22 @@
+{
+  "id": "studio-expert-dispatch",
+  "name": "Dispatch Expert Engagement",
+  "description": "Dispatch matched expert for active engagement with portfolio company. 1 command, ~3 min.",
+  "trigger": "/expert:dispatch",
+  "output_dir": "reports/studio/expert",
+  "estimated_credits": 2,
+  "estimated_minutes": 3,
+  "dag": {
+    "groups": [
+      {
+        "id": "dispatch",
+        "name": "Dispatch Expert",
+        "mode": "sequential",
+        "commands": [
+          { "id": "expert-dispatch", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

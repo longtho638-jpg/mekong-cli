@@ -1,0 +1,22 @@
+{
+  "id": "studio-match-vc-startup",
+  "name": "Match VC to Startup",
+  "description": "Match VC investor to portfolio startup based on thesis alignment and stage fit. 1 command, ~3 min.",
+  "trigger": "/match:vc-startup",
+  "output_dir": "reports/studio/match",
+  "estimated_credits": 2,
+  "estimated_minutes": 3,
+  "dag": {
+    "groups": [
+      {
+        "id": "match",
+        "name": "VC-Startup Matching",
+        "mode": "sequential",
+        "commands": [
+          { "id": "match-vc-startup", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

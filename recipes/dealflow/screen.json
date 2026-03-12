@@ -1,0 +1,22 @@
+{
+  "id": "dealflow-screen",
+  "name": "Screen Opportunity",
+  "description": "Screen deal opportunity against investment thesis and scoring criteria. 1 command, ~5 min.",
+  "trigger": "/dealflow:screen",
+  "output_dir": "reports/dealflow/screen",
+  "estimated_credits": 3,
+  "estimated_minutes": 5,
+  "dag": {
+    "groups": [
+      {
+        "id": "screen",
+        "name": "Screen Deal",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-screen", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

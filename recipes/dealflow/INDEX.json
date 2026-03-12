@@ -1,0 +1,11 @@
+{
+  "namespace": "dealflow",
+  "description": "Deal flow pipeline commands — source, screen, diligence, term-sheet, close",
+  "recipes": [
+    "source",
+    "screen",
+    "diligence",
+    "term-sheet",
+    "close"
+  ]
+}

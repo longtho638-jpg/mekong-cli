@@ -1,0 +1,35 @@
+{
+  "id": "studio-diligence-deep",
+  "name": "Deep Due Diligence",
+  "description": "5 parallel DD agents → synthesis. ~25 min.",
+  "trigger": "/studio:diligence:deep",
+  "output_dir": "reports/studio/diligence",
+  "estimated_credits": 15,
+  "estimated_minutes": 25,
+  "dag": {
+    "groups": [
+      {
+        "id": "research",
+        "name": "Multi-Agent Research",
+        "mode": "parallel",
+        "commands": [
+          { "id": "venture-terrain", "args": "--deal=$ARGUMENTS" },
+          { "id": "venture-five-factors", "args": "--deal=$ARGUMENTS" },
+          { "id": "venture-momentum", "args": "--deal=$ARGUMENTS" },
+          { "id": "venture-void-substance", "args": "--deal=$ARGUMENTS" },
+          { "id": "dealflow-diligence", "args": "$ARGUMENTS --depth=deep" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "synthesize",
+        "name": "Synthesize Results",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-screen", "args": "$ARGUMENTS --with-dd" }
+        ],
+        "depends_on": ["research"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "studio-match-founder-idea",
+  "name": "Match Founder to Idea",
+  "description": "Match founder profile to validated business idea based on skills and domain. 1 command, ~3 min.",
+  "trigger": "/match:founder-idea",
+  "output_dir": "reports/studio/match",
+  "estimated_credits": 2,
+  "estimated_minutes": 3,
+  "dag": {
+    "groups": [
+      {
+        "id": "match",
+        "name": "Founder-Idea Matching",
+        "mode": "sequential",
+        "commands": [
+          { "id": "match-founder-idea", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

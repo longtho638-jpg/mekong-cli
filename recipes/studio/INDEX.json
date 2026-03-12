@@ -1,0 +1,19 @@
+{
+  "namespace": "studio",
+  "description": "VC Studio Platform commands — portfolio, expert, matching, and super recipes",
+  "recipes": [
+    "bootstrap",
+    "launch-full",
+    "sprint-weekly",
+    "operate-daily",
+    "diligence-deep",
+    "portfolio-create",
+    "portfolio-status",
+    "portfolio-report",
+    "expert-match",
+    "expert-dispatch",
+    "expert-pool",
+    "match-founder-idea",
+    "match-vc-startup"
+  ]
+}

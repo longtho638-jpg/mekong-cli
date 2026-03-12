@@ -1,0 +1,22 @@
+{
+  "id": "studio-portfolio-report",
+  "name": "Cross-Portfolio Analytics",
+  "description": "Generate cross-portfolio analytics report with trends and recommendations. 1 command, ~5 min.",
+  "trigger": "/portfolio:report",
+  "output_dir": "reports/studio/portfolio",
+  "estimated_credits": 3,
+  "estimated_minutes": 5,
+  "dag": {
+    "groups": [
+      {
+        "id": "report",
+        "name": "Generate Report",
+        "mode": "sequential",
+        "commands": [
+          { "id": "portfolio-report", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

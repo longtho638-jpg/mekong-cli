@@ -1,0 +1,22 @@
+{
+  "id": "dealflow-source",
+  "name": "AI Deal Sourcing",
+  "description": "Source new deals using AI-powered market scanning and network mining. 1 command, ~5 min.",
+  "trigger": "/dealflow:source",
+  "output_dir": "reports/dealflow/source",
+  "estimated_credits": 3,
+  "estimated_minutes": 5,
+  "dag": {
+    "groups": [
+      {
+        "id": "source",
+        "name": "Source Deals",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-source", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

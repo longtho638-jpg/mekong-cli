@@ -1,0 +1,22 @@
+{
+  "id": "studio-portfolio-create",
+  "name": "Create Portfolio Company",
+  "description": "Create new portfolio company profile, cap table, and OpenClaw instance. 1 command, ~5 min.",
+  "trigger": "/portfolio:create",
+  "output_dir": "reports/studio/portfolio",
+  "estimated_credits": 2,
+  "estimated_minutes": 5,
+  "dag": {
+    "groups": [
+      {
+        "id": "create",
+        "name": "Create Company",
+        "mode": "sequential",
+        "commands": [
+          { "id": "portfolio-create", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

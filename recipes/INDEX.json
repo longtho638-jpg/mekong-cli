@@ -80,7 +80,37 @@
       "category": "devops"
     }
   ],
-  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder", "business", "product", "engineering", "ops", "sales", "marketing", "finance", "hr", "legal", "design", "eng", "tech", "platform", "release", "sdr", "ae", "writer", "growth", "accounting", "analyst", "recruiter", "people", "ui", "ux", "dev", "junior", "backend", "frontend", "sre", "releng"],
+  "categories": ["examples", "setup", "automation", "devops", "web", "data", "founder", "business", "product", "engineering", "ops", "sales", "marketing", "finance", "hr", "legal", "design", "eng", "tech", "platform", "release", "sdr", "ae", "writer", "growth", "accounting", "analyst", "recruiter", "people", "ui", "ux", "dev", "junior", "backend", "frontend", "sre", "releng", "studio", "dealflow"],
+  "studio": {
+    "name": "VC Studio Workflows",
+    "description": "Venture studio super commands — portfolio, dealflow, expert matching, and 3-party orchestration",
+    "recipes": [
+      "studio/bootstrap.json",
+      "studio/launch-full.json",
+      "studio/sprint-weekly.json",
+      "studio/operate-daily.json",
+      "studio/diligence-deep.json",
+      "studio/portfolio-create.json",
+      "studio/portfolio-status.json",
+      "studio/portfolio-report.json",
+      "studio/expert-match.json",
+      "studio/expert-dispatch.json",
+      "studio/expert-pool.json",
+      "studio/match-founder-idea.json",
+      "studio/match-vc-startup.json"
+    ]
+  },
+  "dealflow": {
+    "name": "Dealflow Pipeline Workflows",
+    "description": "Deal pipeline commands — source, screen, diligence, term-sheet, close",
+    "recipes": [
+      "dealflow/source.json",
+      "dealflow/screen.json",
+      "dealflow/diligence.json",
+      "dealflow/term-sheet.json",
+      "dealflow/close.json"
+    ]
+  },
   "founder": {
     "name": "VC Studio Workflows",
     "description": "Founder super commands — parallel pipelines for each investment stage",

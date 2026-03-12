@@ -1,0 +1,42 @@
+{
+  "id": "studio-sprint-weekly",
+  "name": "Weekly Studio Sprint",
+  "description": "Portfolio status → follow-ups → cross-portfolio report. 5 commands, ~20 min.",
+  "trigger": "/studio:sprint:weekly",
+  "output_dir": "reports/studio/sprint",
+  "estimated_credits": 8,
+  "estimated_minutes": 20,
+  "dag": {
+    "groups": [
+      {
+        "id": "status",
+        "name": "Gather Status",
+        "mode": "parallel",
+        "commands": [
+          { "id": "portfolio-status", "args": "--all" },
+          { "id": "dealflow-screen", "args": "--pipeline-summary" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "follow-up",
+        "name": "Follow-ups & Actions",
+        "mode": "parallel",
+        "commands": [
+          { "id": "expert-dispatch", "args": "--pending-reviews" },
+          { "id": "venture-momentum", "args": "--portfolio-wide" }
+        ],
+        "depends_on": ["status"]
+      },
+      {
+        "id": "report",
+        "name": "Weekly Report",
+        "mode": "sequential",
+        "commands": [
+          { "id": "portfolio-report", "args": "--weekly --output reports/studio/sprint/weekly-report.md" }
+        ],
+        "depends_on": ["follow-up"]
+      }
+    ]
+  }
+}

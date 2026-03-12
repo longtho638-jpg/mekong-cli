@@ -1,0 +1,22 @@
+{
+  "id": "studio-portfolio-status",
+  "name": "Portfolio Health Dashboard",
+  "description": "Check health scores, KPIs, and alerts across portfolio companies. 1 command, ~3 min.",
+  "trigger": "/portfolio:status",
+  "output_dir": "reports/studio/portfolio",
+  "estimated_credits": 1,
+  "estimated_minutes": 3,
+  "dag": {
+    "groups": [
+      {
+        "id": "status",
+        "name": "Portfolio Status",
+        "mode": "sequential",
+        "commands": [
+          { "id": "portfolio-status", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

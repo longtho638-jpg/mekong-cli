@@ -1,0 +1,22 @@
+{
+  "id": "studio-expert-match",
+  "name": "Match Expert to Need",
+  "description": "Match expert from pool to portfolio company need using skill/domain fit. 1 command, ~3 min.",
+  "trigger": "/expert:match",
+  "output_dir": "reports/studio/expert",
+  "estimated_credits": 2,
+  "estimated_minutes": 3,
+  "dag": {
+    "groups": [
+      {
+        "id": "match",
+        "name": "Expert Matching",
+        "mode": "sequential",
+        "commands": [
+          { "id": "expert-match", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

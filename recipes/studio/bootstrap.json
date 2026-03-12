@@ -1,0 +1,33 @@
+{
+  "id": "studio-bootstrap",
+  "name": "Bootstrap Venture Studio",
+  "description": "Init studio → define thesis → setup expert pool → create first company. 4 commands, ~15 min.",
+  "trigger": "/studio:bootstrap",
+  "output_dir": "reports/studio/bootstrap",
+  "estimated_credits": 5,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "init",
+        "name": "Initialize Studio",
+        "mode": "sequential",
+        "commands": [
+          { "id": "studio-init", "args": "$ARGUMENTS" },
+          { "id": "venture-thesis", "args": "update" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "setup",
+        "name": "Setup Infrastructure",
+        "mode": "parallel",
+        "commands": [
+          { "id": "expert-pool", "args": "--setup" },
+          { "id": "portfolio-create", "args": "--template" }
+        ],
+        "depends_on": ["init"]
+      }
+    ]
+  }
+}

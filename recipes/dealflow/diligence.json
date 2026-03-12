@@ -1,0 +1,22 @@
+{
+  "id": "dealflow-diligence",
+  "name": "Due Diligence Pipeline",
+  "description": "Run standard due diligence checks on a deal — market, team, tech, financials. 1 command, ~10 min.",
+  "trigger": "/dealflow:diligence",
+  "output_dir": "reports/dealflow/diligence",
+  "estimated_credits": 5,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "diligence",
+        "name": "Run Due Diligence",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-diligence", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

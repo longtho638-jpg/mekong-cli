@@ -1,0 +1,44 @@
+{
+  "id": "studio-launch-full",
+  "name": "Full Venture Launch",
+  "description": "Thesis → source → screen → evaluate. 6 commands, ~30 min.",
+  "trigger": "/studio:launch:full",
+  "output_dir": "reports/studio/launch",
+  "estimated_credits": 10,
+  "estimated_minutes": 30,
+  "dag": {
+    "groups": [
+      {
+        "id": "strategy",
+        "name": "Strategy Foundation",
+        "mode": "sequential",
+        "commands": [
+          { "id": "venture-thesis", "args": "evaluate" },
+          { "id": "venture-terrain", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "source",
+        "name": "Source & Analyze",
+        "mode": "parallel",
+        "commands": [
+          { "id": "dealflow-source", "args": "--sector=$ARGUMENTS --count=5" },
+          { "id": "venture-void-substance", "args": "$ARGUMENTS" },
+          { "id": "venture-momentum", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": ["strategy"]
+      },
+      {
+        "id": "evaluate",
+        "name": "Evaluate Pipeline",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-screen", "args": "--all-new" },
+          { "id": "venture-five-factors", "args": "--top=3" }
+        ],
+        "depends_on": ["source"]
+      }
+    ]
+  }
+}

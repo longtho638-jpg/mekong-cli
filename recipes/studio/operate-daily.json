@@ -1,0 +1,42 @@
+{
+  "id": "studio-operate-daily",
+  "name": "Daily Studio Operations",
+  "description": "Standup → tickets → metrics → invoices. 5 commands, ~15 min.",
+  "trigger": "/studio:operate:daily",
+  "output_dir": "reports/studio/daily",
+  "estimated_credits": 5,
+  "estimated_minutes": 15,
+  "dag": {
+    "groups": [
+      {
+        "id": "standup",
+        "name": "Morning Standup",
+        "mode": "parallel",
+        "commands": [
+          { "id": "portfolio-status", "args": "--brief" },
+          { "id": "dealflow-screen", "args": "--new-today" }
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "actions",
+        "name": "Daily Actions",
+        "mode": "parallel",
+        "commands": [
+          { "id": "expert-dispatch", "args": "--due-today" },
+          { "id": "venture-momentum", "args": "--daily-check" }
+        ],
+        "depends_on": ["standup"]
+      },
+      {
+        "id": "close",
+        "name": "End of Day",
+        "mode": "sequential",
+        "commands": [
+          { "id": "portfolio-report", "args": "--daily --output reports/studio/daily/eod-report.md" }
+        ],
+        "depends_on": ["actions"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "dealflow-close",
+  "name": "Close Deal & Onboard",
+  "description": "Close deal, execute agreements, and onboard company to portfolio. 1 command, ~10 min.",
+  "trigger": "/dealflow:close",
+  "output_dir": "reports/dealflow/close",
+  "estimated_credits": 5,
+  "estimated_minutes": 10,
+  "dag": {
+    "groups": [
+      {
+        "id": "close",
+        "name": "Close & Onboard",
+        "mode": "sequential",
+        "commands": [
+          { "id": "dealflow-close", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}

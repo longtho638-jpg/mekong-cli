@@ -1,0 +1,22 @@
+{
+  "id": "studio-expert-pool",
+  "name": "Manage Expert Pool",
+  "description": "Add, remove, or list experts in the studio expert pool. 1 command, ~2 min.",
+  "trigger": "/expert:pool",
+  "output_dir": "reports/studio/expert",
+  "estimated_credits": 1,
+  "estimated_minutes": 2,
+  "dag": {
+    "groups": [
+      {
+        "id": "pool",
+        "name": "Expert Pool Management",
+        "mode": "sequential",
+        "commands": [
+          { "id": "expert-pool", "args": "$ARGUMENTS" }
+        ],
+        "depends_on": []
+      }
+    ]
+  }
+}
