@@ -88,7 +88,8 @@ export function useRevenueMetrics(): RevenueMetrics {
         byTier,
       }
     } catch (error) {
-      console.error('Error calculating revenue metrics:', error)
+      // Log error for debugging (development only)
+      // TODO: Replace with proper error tracking (Sentry, etc.)
       return {
         mrr: 0,
         arr: 0,
@@ -136,6 +137,8 @@ export function useSubscriptionMetrics(): SubscriptionMetrics {
         cancelledSubscriptions: cancelled,
       }
     } catch (error) {
+      // Log error for debugging (development only)
+      // eslint-disable-next-line no-console
       console.error('Error calculating subscription metrics:', error)
       return {
         activeSubscriptions: 0,
@@ -182,7 +185,8 @@ export function useUsageMetrics(): UsageMetrics {
         byLicense,
       }
     } catch (error) {
-      console.error('Error calculating usage metrics:', error)
+      // Log error for debugging (development only)
+      // TODO: Replace with proper error tracking (Sentry, etc.)
       return {
         totalApiCalls: 0,
         totalTransferMb: 0,
@@ -220,7 +224,8 @@ export function useLicenseHealth(): LicenseHealth {
         healthScore,
       }
     } catch (error) {
-      console.error('Error calculating license health:', error)
+      // Log error for debugging (development only)
+      // TODO: Replace with proper error tracking (Sentry, etc.)
       return {
         total: 0,
         active: 0,

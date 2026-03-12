@@ -216,6 +216,7 @@ class OverageAlertEngineClass {
     // - Dashboard: Already stored, UI polls this
 
     // For now, log to console for debugging
+    // eslint-disable-next-line no-console
     console.log(`[ALERT] ${alert.level.toUpperCase()}: ${alert.message}`)
   }
 
