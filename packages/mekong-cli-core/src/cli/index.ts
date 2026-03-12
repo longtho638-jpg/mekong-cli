@@ -4,8 +4,11 @@ import { MekongEngine, attachObservability } from '../core/index.js';
 import { registerRunCommand } from './commands/run.js';
 import { registerSopCommand } from './commands/sop.js';
 import { registerStatusCommand } from './commands/status.js';
+import { registerCrmCommand } from './commands/crm.js';
+import { registerFinanceCommand } from './commands/finance.js';
+import { registerDashboardCommand } from './commands/dashboard.js';
 
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
 
 export async function main(argv?: string[]): Promise<void> {
   const program = new Command();
@@ -36,6 +39,9 @@ export async function main(argv?: string[]): Promise<void> {
   registerRunCommand(program, engine);
   registerSopCommand(program, engine);
   registerStatusCommand(program, engine);
+  registerCrmCommand(program, engine);
+  registerFinanceCommand(program, engine);
+  registerDashboardCommand(program, engine);
 
   await program.parseAsync(argv ?? process.argv);
 }
