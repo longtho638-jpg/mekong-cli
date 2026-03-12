@@ -11,6 +11,9 @@ on:
       - 'tests/test_orchestrator_integration.py'
       - 'tests/test_orchestrator_unit.py'
       - 'tests/test_dag_scheduler.py'
+      - 'tests/test_plan_constraints.py'
+      - 'tests/test_dependency_inference.py'
+      - 'tests/test_plan_optimizer.py'
   pull_request:
     branches: [main, master]
     paths:
@@ -21,6 +24,9 @@ on:
       - 'tests/test_orchestrator_integration.py'
       - 'tests/test_orchestrator_unit.py'
       - 'tests/test_dag_scheduler.py'
+      - 'tests/test_plan_constraints.py'
+      - 'tests/test_dependency_inference.py'
+      - 'tests/test_plan_optimizer.py'
 
 jobs:
   pev-tests:
@@ -41,7 +47,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-asyncio anyio
+          pip install pytest pytest-asyncio anyio pytest-cov
           pip install -e .
 
       - name: Run PEV test suite
@@ -55,6 +61,9 @@ jobs:
             tests/test_orchestrator_integration.py \
             tests/test_orchestrator_unit.py \
             tests/test_dag_scheduler.py \
+            tests/test_plan_constraints.py \
+            tests/test_dependency_inference.py \
+            tests/test_plan_optimizer.py \
             -v --tb=short
 
       - name: Upload test results
