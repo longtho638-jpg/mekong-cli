@@ -115,10 +115,98 @@ const layers = topoSort(dag);
 const { valid, errors } = validateDag(dag);
 ```
 
+## ROIaaS 5-Phase DNA (v0.4 - v0.8)
+
+Implements HIEN-PHAP-ROIAAS Dieu 6 — every CLI feature maps to measurable ROI.
+
+### Phase 1: License Gate (v0.4)
+
+```typescript
+import { LicenseGate, LicenseStore, LicenseVerifier } from '@mekong/cli-core/license';
+
+const store = new LicenseStore();
+const verifier = new LicenseVerifier('your-hmac-secret');
+const gate = new LicenseGate(store, verifier);
+
+const validation = await gate.validate();
+// validation.valid, validation.tier, validation.quotas
+
+const canUse = gate.canAccess('kaizen'); // checks tier >= required
+```
+
+**CLI**: `mekong license status|activate|deactivate|info`
+
+### Phase 2: License Admin (v0.5)
+
+```typescript
+import { LicenseAdmin, KeyGenerator } from '@mekong/cli-core/license';
+
+const admin = new LicenseAdmin(storePath, 'hmac-secret');
+const key = await admin.createKey({ tier: 'pro', owner: 'user@example.com', expiresInDays: 365 });
+await admin.revokeKey(key.id);
+const keys = await admin.listKeys();
+```
+
+**CLI**: `mekong license-admin create|list|revoke|rotate|audit`
+
+### Phase 3: Payment Webhooks (v0.6)
+
+```typescript
+import { WebhookHandler, WebhookVerifier } from '@mekong/cli-core/payments';
+
+const verifier = new WebhookVerifier('polar-webhook-secret');
+const handler = new WebhookHandler(verifier, subscriptionManager, receiptStore);
+const result = await handler.handle(rawBody, headers);
+// checkout.completed -> auto-creates license
+// subscription.canceled -> revokes license
+```
+
+**CLI**: `mekong billing status|receipts|webhook-test`
+
+### Phase 4: Usage Metering (v0.7)
+
+```typescript
+import { MeteringCollector, UsageLimiter } from '@mekong/cli-core/metering';
+
+const collector = new MeteringCollector(store);
+collector.recordLlmCall({ model: 'claude-sonnet-4', tokens: 1500 });
+collector.recordToolRun({ tool: 'search', duration: 200 });
+
+const limiter = new UsageLimiter(store, 'pro');
+const check = await limiter.checkLimit('llm'); // { allowed, used, limit, remaining }
+```
+
+**CLI**: `mekong usage today|this-month|summary|export|limits`
+
+### Phase 5: ROI Analytics (v0.8)
+
+```typescript
+import { ROICalculator, AgentScorer, RevenueTracker } from '@mekong/cli-core/analytics';
+
+const roi = new ROICalculator();
+const metrics = roi.calculate({ timeSavedHours: 40, hourlyRate: 150, revGenerated: 5000, totalCost: 149 });
+// metrics.roiPercentage, metrics.netValue
+
+const scorer = new AgentScorer();
+const score = scorer.score({ progress: 80, activity: 90, successRate: 85, errorRecovery: 70 });
+// AGI Score 0-100 per HIEN-PHAP Dieu 7.3
+```
+
+**CLI**: `mekong analytics roi|agents|revenue|growth|export`
+
+### Tier Model
+
+| Tier | LLM/day | Tools/day | SOPs/day |
+|------|---------|-----------|----------|
+| Free | 100 | 50 | 10 |
+| Starter | 1,000 | 500 | 100 |
+| Pro | 10,000 | 5,000 | 1,000 |
+| Enterprise | Unlimited | Unlimited | Unlimited |
+
 ## Development
 
 ```bash
-pnpm test          # run tests
+pnpm test          # run tests (692+)
 pnpm run lint      # type check
 pnpm run build     # build dist
 ```
