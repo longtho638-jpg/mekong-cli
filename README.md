@@ -84,15 +84,36 @@ All infrastructure runs on Cloudflare:
 | Storage | Cloudflare R2 | $0 |
 | Cache | Cloudflare KV | $0 |
 
+## VC Studio Platform v6.0 — Binh Phap Ton Tu
+
+Three-party orchestration: **VC + Expert + Founder**, powered by OpenClaw.
+
+```
+🏯 Studio    /studio /portfolio /dealflow /expert /venture /match
+```
+
+| Command Group | Examples |
+|---------------|----------|
+| Studio | `mekong studio init`, `studio status`, `studio report` |
+| Portfolio | `mekong portfolio create`, `portfolio list`, `portfolio health` |
+| Deal Flow | `mekong dealflow add`, `dealflow screen`, `dealflow diligence` |
+| Expert | `mekong expert add`, `expert match`, `expert dispatch` |
+| Venture | `mekong venture thesis`, `venture terrain`, `venture five-factors` |
+| Match | `mekong match founder-idea`, `match vc-startup`, `match expert-need` |
+
+23 CC CLI commands + 18 DAG recipes. See [HUONG-DAN-SU-DUNG-v6.0.md](HUONG-DAN-SU-DUNG-v6.0.md) for full guide.
+
 ## Project Structure
 
 ```
 ├── src/                   # Python CLI core (PEV engine)
+├── src/studio/            # VC Studio Python modules (v6.0)
+├── src/cli/               # CLI command registration
 ├── apps/openclaw-worker/  # Tôm Hùm autonomous daemon
 ├── frontend/landing/      # Next.js 16 landing (agencyos.network)
 ├── .agencyos/commands/    # 319 command definitions
 ├── factory/contracts/     # 410 JSON machine contracts
-├── recipes/               # 85 DAG workflow recipes
+├── recipes/               # 85+ DAG workflow recipes
 ├── mekong/                # Namespace (skills, adapters, config)
 └── reports/               # Self-dogfood analysis (242 reports)
 ```
