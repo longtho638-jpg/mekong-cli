@@ -56,14 +56,18 @@ max_batch_size = 20
 max_retries = 5
 dead_letter_queue = "webhook-dlq"
 
-# R2 Buckets (DISABLED - enable R2 in dashboard)
-# [[r2_buckets]]
-# binding = "R2"
-# bucket_name = "algo-trader-artifacts"
+# R2 Buckets
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "algo-trader-artifacts"
 
-# [[r2_buckets]]
-# binding = "AUDIT_R2"
-# bucket_name = "algo-trader-audit-logs"
+[[r2_buckets]]
+binding = "AUDIT_R2"
+bucket_name = "algo-trader-audit-logs"
+
+# AI Binding (Cloudflare Workers AI)
+[ai]
+binding = "AI"
 
 # Cron Triggers (keep Workers warm)
 [triggers]

@@ -1,6 +1,9 @@
 /**
  * AGI SOPs Integration for AlgoTrader
- * Execute trading SOPs using local LLM
+ * Execute trading SOPs using Cloudflare Workers AI
+ *
+ * Production: Uses CF AI binding ( Workers runtime)
+ * Local: Uses CF REST API with API token
  */
 
 import Orchestrator from './orchestrator.js';
@@ -27,10 +30,16 @@ registerAction('backtest:run', async (params) => {
   return { result: { totalReturn: 0.15, sharpe: 1.2 } };
 });
 
-const orchestrator = new Orchestrator({
-  model: process.env.AGI_MODEL || 'llama3.2',
-  host: process.env.OLLAMA_HOST || 'http://127.0.0.1:11434'
-});
+// Production: CF Workers AI with AI binding
+// Local: CF REST API with credentials
+const createOrchestrator = (options = {}) => {
+  return new Orchestrator({
+    model: options.model || '@cf/meta/llama-3-8b-instruct',
+    accountId: process.env.CF_ACCOUNT_ID,
+    apiToken: process.env.CF_API_TOKEN,
+    ai: options.ai // Workers binding
+  });
+};
 
-export { orchestrator };
-export default orchestrator;
+export { createOrchestrator };
+export default createOrchestrator();

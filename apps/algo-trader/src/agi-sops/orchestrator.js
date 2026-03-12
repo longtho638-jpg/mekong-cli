@@ -1,16 +1,18 @@
 /**
  * AGI SOPs Orchestrator
- * Parses and executes SOP workflows using local LLM
+ * Parses and executes SOP workflows using Cloudflare Workers AI
  */
 
-import { Ollama } from 'ollama';
 import { parseSOP } from './sop-parser.js';
 import { executeAction } from './actions/registry.js';
 
 export class Orchestrator {
   constructor(options = {}) {
-    this.model = options.model || 'llama3.2';
-    this.client = new Ollama({ host: options.host || 'http://127.0.0.1:11434' });
+    this.model = options.model || '@cf/meta/llama-3-8b-instruct';
+    this.accountId = options.accountId || process.env.CF_ACCOUNT_ID;
+    this.apiToken = options.apiToken || process.env.CF_API_TOKEN;
+    // For Workers runtime: use env.AI binding
+    this.ai = options.ai || null;
     this.sops = new Map();
     this.executionHistory = [];
   }
@@ -68,7 +70,7 @@ export class Orchestrator {
   }
 
   /**
-   * Execute single SOP step with LLM guidance
+   * Execute single SOP step with LLM guidance using CF Workers AI
    */
   async executeStep(step, context) {
     console.log(`[Step] ${step.name || step.action}`);
@@ -76,18 +78,11 @@ export class Orchestrator {
     try {
       // Use LLM to parse/validate parameters if needed
       if (step.prompt) {
-        const llmResponse = await this.client.chat({
-          model: this.model,
-          messages: [{
-            role: 'user',
-            content: step.prompt,
-            context: JSON.stringify(context)
-          }]
-        });
+        const llmOutput = await this.runInference(step.prompt, context);
 
         step.params = {
           ...step.params,
-          llmOutput: llmResponse.message.content
+          llmOutput
         };
       }
 
@@ -106,6 +101,42 @@ export class Orchestrator {
         error: error.message
       };
     }
+  }
+
+  /**
+   * Run LLM inference via Cloudflare Workers AI
+   */
+  async runInference(prompt, context = {}) {
+    const messages = [{
+      role: 'user',
+      content: prompt,
+      context: JSON.stringify(context)
+    }];
+
+    // Workers runtime with AI binding
+    if (this.ai) {
+      const response = await this.ai.run(this.model, { messages });
+      return response.response || response.result;
+    }
+
+    // Node.js runtime with REST API
+    const url = `https://api.cloudflare.com/client/v4/accounts/${this.accountId}/ai/run/${this.model}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.apiToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ messages })
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(`CF AI API error: ${error}`);
+    }
+
+    const result = await response.json();
+    return result.result?.response || result.response;
   }
 
   /**

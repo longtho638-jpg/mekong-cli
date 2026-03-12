@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Cloudflare Pages compatibility
-  output: 'standalone',
+  // Static export for Cloudflare Pages
+  output: 'export',
   images: {
     unoptimized: true,
     disableStaticImages: true
@@ -21,6 +21,12 @@ const nextConfig: NextConfig = {
     config.cache = false;
     return config;
   },
+  // Exclude agi-sops from tracing (Python .venv > 25MB)
+  outputFileTracingExcludes: {
+    '*': ['./agi-sops/**/*'],
+  },
+  // Static export output directory
+  distDir: 'out',
 };
 
 export default nextConfig;
