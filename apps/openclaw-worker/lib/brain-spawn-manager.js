@@ -63,9 +63,11 @@ function canRespawn() {
 function generateClaudeCommand(intent = 'API') {
 	// DashScope Direct: keep ANTHROPIC_BASE_URL + ANTHROPIC_API_KEY from settings.json
 	// ONLY unset CLAUDE_CONFIG_DIR to avoid config conflicts between panes
+	// Export CLAUDE_CODE_SUBAGENT_MODEL so subagents spawned by CC CLI use Qwen model
 	return (
 		`unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` +
 		` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
+		` && export CLAUDE_CODE_SUBAGENT_MODEL=${config.SUBAGENT_MODEL}` +
 		` && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`
 	);
 }

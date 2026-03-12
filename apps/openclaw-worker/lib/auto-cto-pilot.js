@@ -406,13 +406,7 @@ function startAutoCTO() {
 								const firstLine = taskContent.split('\n')[0].trim();
 								const command = firstLine.startsWith('/') ? firstLine : `/cook ${firstLine}`;
 
-								const MODEL_POOL = {
-									0: 'qwen3.5-plus', // P0: mekong-cli
-									1: 'qwen3-coder-plus', // P1: algo-trader
-									2: 'qwen3.5-plus', // P2: sophia-ai-factory
-									3: 'qwen3.5-plus', // P3: well
-									4: 'claude-opus-4-6', // P4: Opus strategic
-								};
+								const MODEL_POOL = Object.fromEntries(Object.entries(config.PANE_CONFIG).map(([k, v]) => [k, v.model]));
 								const paneModel = MODEL_POOL[targetIdx] || MODEL_POOL[0];
 
 								log(`🦞 DISPATCHING: "${taskFile}" → P${targetIdx} [${paneModel}]`);

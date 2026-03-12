@@ -42,9 +42,14 @@ const config = {
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
   // Subagent model — CC CLI dùng biến này để spawn subagent đúng model Qwen
   SUBAGENT_MODEL: process.env.CLAUDE_CODE_SUBAGENT_MODEL || 'qwen3-coder-plus',
-  // 🎯 PANE→PROJECT ROUTING — DYNAMIC (2026-03-09)
-  // CTO reads live tmux pane paths via getActivePaneProjects().
-  // No hardcoded mapping needed. Any project in any pane works.
+  // 🎯 PANE_CONFIG — Single source of truth for pane→project→model routing
+  PANE_CONFIG: {
+    0: { project: 'mekong-cli', dir: '', model: 'qwen3.5-plus' },
+    1: { project: 'algo-trader', dir: 'apps/algo-trader', model: 'qwen3-coder-plus' },
+    2: { project: 'sophia-ai-factory', dir: 'apps/sophia-proposal', model: 'qwen3.5-plus' },
+    3: { project: 'well', dir: 'apps/well', model: 'qwen3.5-plus' },
+    4: { project: 'opus-strategic', dir: '', model: 'claude-opus-4-6' },
+  },
   // PROJECTS list below is for reference/scanning only, NOT for routing.
   PROJECTS: ['mekong-cli', 'algo-trader', 'sophia-ai-factory', 'well', 'mekong-cli-core', 'openclaw-worker'],
 
@@ -165,5 +170,7 @@ Object.freeze(config.BINH_PHAP_TASKS);
 Object.freeze(config.MODEL_FALLBACK_CHAIN);
 Object.freeze(config.SAFETY_GATE);
 Object.freeze(config.SAFETY_GATE.FORBIDDEN_FILES);
+Object.freeze(config.PANE_CONFIG);
+Object.values(config.PANE_CONFIG).forEach(v => Object.freeze(v));
 
 module.exports = config;
