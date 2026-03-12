@@ -57,14 +57,14 @@ export class GoogleCalendarIntegration implements Integration {
       });
       const items = res.data.items ?? [];
       const events: CalendarEvent[] = items.map((e) => ({
-        id: e.id,
+        id: e.id ?? undefined,
         title: e.summary ?? '(no title)',
-        description: e.description,
+        description: e.description ?? undefined,
         startTime: e.start?.dateTime ?? e.start?.date ?? '',
         endTime: e.end?.dateTime ?? e.end?.date ?? '',
-        attendees: (e.attendees ?? []).map((a: { email: string }) => a.email),
-        location: e.location,
-        meetingUrl: e.hangoutLink,
+        attendees: (e.attendees ?? []).map((a) => a.email ?? '').filter(Boolean),
+        location: e.location ?? undefined,
+        meetingUrl: e.hangoutLink ?? undefined,
         calendarId,
       }));
       return ok(events);
@@ -78,7 +78,7 @@ export class GoogleCalendarIntegration implements Integration {
     try {
       const res = await this.calendar.events.insert({
         calendarId,
-        resource: {
+        requestBody: {
           summary: event.title,
           description: event.description,
           location: event.location,
@@ -87,7 +87,7 @@ export class GoogleCalendarIntegration implements Integration {
           attendees: (event.attendees ?? []).map((email: string) => ({ email })),
         },
       });
-      return ok(res.data.id as string);
+      return ok(res.data.id ?? '');
     } catch (e) {
       return err(e instanceof Error ? e : new Error(String(e)));
     }
@@ -103,14 +103,14 @@ export class GoogleCalendarIntegration implements Integration {
       const now = new Date();
       const until = new Date(now.getTime() + daysAhead * 86400_000);
       const res = await this.calendar.freebusy.query({
-        resource: {
+        requestBody: {
           timeMin: now.toISOString(),
           timeMax: until.toISOString(),
           items: [{ id: calendarId }],
         },
       });
       const busySlots: Array<{ start: string; end: string }> =
-        res.data.calendars?.[calendarId]?.busy ?? [];
+        (res.data as any).calendars?.[calendarId]?.busy ?? [];
 
       const slots: TimeSlot[] = [];
       let cursor = new Date(now);
@@ -149,14 +149,14 @@ export class GoogleCalendarIntegration implements Integration {
       });
       const items = res.data.items ?? [];
       const events: CalendarEvent[] = items.map((e) => ({
-        id: e.id,
+        id: e.id ?? undefined,
         title: e.summary ?? '(no title)',
-        description: e.description,
+        description: e.description ?? undefined,
         startTime: e.start?.dateTime ?? e.start?.date ?? '',
         endTime: e.end?.dateTime ?? e.end?.date ?? '',
-        attendees: (e.attendees ?? []).map((a: { email: string }) => a.email),
-        location: e.location,
-        meetingUrl: e.hangoutLink,
+        attendees: (e.attendees ?? []).map((a) => a.email ?? '').filter(Boolean),
+        location: e.location ?? undefined,
+        meetingUrl: e.hangoutLink ?? undefined,
         calendarId,
       }));
       return ok(events);
