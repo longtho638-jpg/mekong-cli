@@ -163,4 +163,175 @@ Dashboard analytics include:
 
 ---
 
+## Phase 4: Usage Metering + Overage Billing
+
+**ROIaaS Phase 4** — Automated usage-based billing with daily tier limits and overage charges.
+
+### Daily Tier Limits
+
+| Tier | API Calls/Day | Overage Price |
+|------|---------------|---------------|
+| **FREE** | 100 calls/day | N/A (hard block) |
+| **PRO** | 10,000 calls/day | $0.01 per call over |
+| **ENTERPRISE** | 100,000 calls/day | $0.005 per call over (50% discount) |
+
+### Usage Metering Service
+
+The `UsageMeteringService` tracks daily API usage per license key:
+
+```typescript
+import { UsageMeteringService, DAILY_LIMITS, OVERAGE_PRICE_PER_CALL } from './lib/usage-metering';
+
+const metering = UsageMeteringService.getInstance();
+
+// Set license tier
+metering.setLicenseTier('lic_abc123', LicenseTier.PRO);
+
+// Track API call
+await metering.trackApiCall('lic_abc123', '/api/v1/predict', 'user_123');
+
+// Check usage status
+const status = metering.getUsageStatus('lic_abc123');
+console.log(status);
+// {
+//   licenseKey: 'lic_abc123',
+//   date: '2026-03-12',
+//   tier: 'pro',
+//   dailyLimit: 10000,
+//   currentUsage: 1,
+//   remaining: 9999,
+//   percentUsed: 0.01,
+//   isExceeded: false,
+//   overageUnits: 0,
+//   overageCost: 0
+// }
+
+// Calculate overage cost
+const overage = metering.calculateOverage('lic_abc123');
+console.log(`Overage cost: $${overage}`);
+```
+
+### Overage Billing Flow
+
+1. **Track Usage**: Middleware auto-tracks each API call
+2. **Check Limits**: Compare against daily tier limits
+3. **Emit Alerts**: Threshold alerts at 80%, 90%, 100%
+4. **Calculate Overage**: $0.01 per call over daily limit
+5. **Generate Invoice**: End-of-day overage summary
+
+### Usage Tracking Middleware
+
+Auto-tracks API calls on every request:
+
+```typescript
+// Register in fastify-raas-server.ts
+import { usageTrackingPlugin } from './middleware/usage-tracking-middleware';
+
+void server.register(usageTrackingPlugin, {
+  enabled: true,
+  excludePaths: ['/health', '/ready', '/metrics'],
+  includeComputeTiming: true, // Track ML compute minutes
+});
+```
+
+**Tracked Event Types:**
+
+| Event Type | Endpoints | Default Units |
+|------------|-----------|---------------|
+| `api_call` | All other endpoints | 1 |
+| `ml_inference` | `/api/ml/*`, `/api/predict/*` | 1 |
+| `backtest_run` | `/api/backtest/*` (POST) | 1 |
+| `trade_execution` | `/api/trade/*`, `/api/orders/*` (POST/PUT) | 1 |
+| `strategy_execution` | `/api/strategy/*` | 1 |
+| `compute_minute` | ML endpoints (timing-based) | elapsed minutes |
+
+### Threshold Alerts
+
+Event emitter for real-time alerts:
+
+```typescript
+const metering = UsageMeteringService.getInstance();
+
+metering.on('threshold_alert', (alert) => {
+  console.log('ALERT', {
+    licenseKey: alert.licenseKey,
+    threshold: alert.threshold, // 80, 90, or 100
+    currentUsage: alert.currentUsage,
+    dailyLimit: alert.dailyLimit,
+    percentUsed: alert.percentUsed,
+  });
+
+  // Send email/SMS at 100%
+  if (alert.threshold === 100) {
+    sendOverageNotification(alert.licenseKey);
+  }
+});
+```
+
+### Overage Calculator
+
+For detailed billing calculations:
+
+```typescript
+import { overageCalculator } from './billing/overage-calculator';
+
+const summary = await overageCalculator.calculateOverageSummary('tenant_123');
+console.log(summary);
+// {
+//   tenantId: 'tenant_123',
+//   period: '2026-03',
+//   tier: 'pro',
+//   charges: [
+//     {
+//       metric: 'api_calls',
+//       overageUnits: 500,
+//       totalCharge: 5.00, // 500 * $0.01
+//     }
+//   ],
+//   totalOverage: 5.00,
+// }
+```
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/usage/:licenseKey` | Get current usage status |
+| `GET` | `/api/v1/usage/:licenseKey/breakdown` | Get endpoint breakdown |
+| `GET` | `/api/v1/overage/:licenseKey` | Calculate overage charges |
+| `POST` | `/api/v1/usage/reset` | Reset usage (admin only) |
+
+### Configuration
+
+Add to `.env`:
+
+```bash
+# Usage Metering
+USAGE_METERING_ENABLED=true
+OVERAGE_ENABLED=true
+OVERAGE_PRICE_PER_CALL=0.01
+
+# Alert thresholds
+ALERT_THRESHOLD_1=80
+ALERT_THRESHOLD_2=90
+ALERT_THRESHOLD_3=100
+```
+
+### Testing
+
+```bash
+# Run usage metering tests
+npm test -- --testPathPattern=usage-metering
+
+# Run middleware tests
+npm test -- --testPathPattern=usage-tracking-middleware
+```
+
+**Test Coverage:**
+
+- `src/lib/usage-metering.test.ts` — 25 tests
+- `src/api/middleware/usage-tracking-middleware.test.ts` — 12 tests
+
+---
+
 *Last updated: 2026-03-12*
