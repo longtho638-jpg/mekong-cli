@@ -8,9 +8,7 @@ Covers:
 
 from __future__ import annotations
 
-import pytest
-
-from src.core.dependency_inference import DependencyInference, StepIO
+from src.core.dependency_inference import DependencyInference
 from src.core.parser import RecipeStep
 
 

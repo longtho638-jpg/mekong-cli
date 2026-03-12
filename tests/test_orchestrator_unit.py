@@ -13,11 +13,10 @@ from __future__ import annotations
 import sys
 import os
 import subprocess
-from unittest.mock import MagicMock, Mock, patch, call
+from unittest.mock import Mock, patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import pytest
 
 from src.core.orchestrator import (
     OrchestrationResult,
@@ -440,7 +439,7 @@ class TestStepExecutorSelfHealing:
 
     def test_self_healing_history_event_appended(self):
         """ExecutionEvent for SELF_HEAL_ATTEMPTED is appended to history."""
-        from src.core.execution_history import EventKind, ExecutionEvent
+        from src.core.execution_history import EventKind
 
         mock_llm = Mock()
         mock_llm.generate = Mock(return_value="echo healed")
