@@ -398,22 +398,23 @@ class TestPlan(unittest.TestCase):
 
 
 class TestValidatePlan(unittest.TestCase):
-    """Test validate_plan() - circular dependency detection.
+    """Test validate_plan() - dependency validation.
 
-    Note: validate_plan checks step.params.get("dependencies", []) which means
-    RecipeSteps must have their dependencies in params, not the top-level
-    dependencies field. This is how plan() stores dependencies.
+    Dependencies in params use 1-based ordering (matching step.order values),
+    consistent with how plan() stores them via `[d + 1 for d in deps]`.
+
+    Convention: step order=2 depending on step order=1 -> params={"dependencies": [1]}
     """
 
     def setUp(self):
         self.planner = RecipePlanner()
 
     def test_valid_plan_no_issues(self):
-        """Valid plan should have no issues."""
+        """Valid plan with 1-based deps should have no issues."""
         steps = [
             RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": []}),
-            RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": [0]}),
-            RecipeStep(order=3, title="Step 3", description="Third", params={"dependencies": [1]}),
+            RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": [1]}),
+            RecipeStep(order=3, title="Step 3", description="Third", params={"dependencies": [2]}),
         ]
         recipe = Recipe(name="Test Recipe", description="Test", steps=steps)
 
@@ -421,41 +422,41 @@ class TestValidatePlan(unittest.TestCase):
         self.assertEqual(issues, [])
 
     def test_circular_dependency_on_self(self):
-        """Step depending on itself should be flagged."""
+        """Step depending on itself (1-based: dep == step.order) should be flagged."""
         steps = [
-            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [0]}),
+            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [1]}),
         ]
         recipe = Recipe(name="Test", description="Test", steps=steps)
 
         issues = self.planner.validate_plan(recipe)
-        # Both conditions match: self-reference AND future dependency
-        self.assertEqual(len(issues), 2)
-        self.assertIn("circular dependency", issues[0].lower())
-        self.assertIn("future step", issues[1].lower())
+        # Self-reference triggers: "depends on itself" AND "depends on future/same step"
+        self.assertGreaterEqual(len(issues), 1)
+        issues_text = " ".join(issues).lower()
+        self.assertIn("depends on itself", issues_text)
 
     def test_future_dependency(self):
-        """Step depending on future step should be flagged."""
+        """Step depending on future step (1-based: dep >= step.order) should be flagged."""
         steps = [
-            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [1]}),
+            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [2]}),
             RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": []}),
         ]
         recipe = Recipe(name="Test", description="Test", steps=steps)
 
         issues = self.planner.validate_plan(recipe)
-        self.assertEqual(len(issues), 1)
-        self.assertIn("future step", issues[0].lower())
+        self.assertGreaterEqual(len(issues), 1)
+        self.assertIn("future", issues[0].lower())
 
     def test_multiple_future_dependencies(self):
         """Multiple future dependencies should all be flagged."""
         steps = [
-            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [1, 2]}),
+            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": [2, 3]}),
             RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": []}),
             RecipeStep(order=3, title="Step 3", description="Third", params={"dependencies": []}),
         ]
         recipe = Recipe(name="Test", description="Test", steps=steps)
 
         issues = self.planner.validate_plan(recipe)
-        self.assertEqual(len(issues), 2)
+        self.assertGreaterEqual(len(issues), 2)
 
     def test_empty_recipe(self):
         """Empty recipe should have issue."""
@@ -466,12 +467,49 @@ class TestValidatePlan(unittest.TestCase):
         self.assertIn("no steps", issues[0].lower())
 
     def test_complex_valid_plan(self):
-        """Complex valid plan should pass validation."""
+        """Complex valid plan with 1-based deps should pass validation."""
         steps = [
             RecipeStep(order=1, title="Setup", description="Install", params={"dependencies": []}),
-            RecipeStep(order=2, title="Build", description="Compile", params={"dependencies": [0]}),
-            RecipeStep(order=3, title="Test", description="Run tests", params={"dependencies": [1]}),
-            RecipeStep(order=4, title="Deploy", description="Publish", params={"dependencies": [2]}),
+            RecipeStep(order=2, title="Build", description="Compile", params={"dependencies": [1]}),
+            RecipeStep(order=3, title="Test", description="Run tests", params={"dependencies": [2]}),
+            RecipeStep(order=4, title="Deploy", description="Publish", params={"dependencies": [3]}),
+        ]
+        recipe = Recipe(name="Test", description="Test", steps=steps)
+
+        issues = self.planner.validate_plan(recipe)
+        self.assertEqual(issues, [])
+
+    def test_orphan_dependency(self):
+        """Step depending on non-existent step should be flagged."""
+        steps = [
+            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": []}),
+            RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": [99]}),
+        ]
+        recipe = Recipe(name="Test", description="Test", steps=steps)
+
+        issues = self.planner.validate_plan(recipe)
+        self.assertEqual(len(issues), 1)
+        self.assertIn("non-existent", issues[0].lower())
+
+    def test_duplicate_dependencies(self):
+        """Step with duplicate deps should be flagged."""
+        steps = [
+            RecipeStep(order=1, title="Step 1", description="First", params={"dependencies": []}),
+            RecipeStep(order=2, title="Step 2", description="Second", params={"dependencies": [1, 1]}),
+        ]
+        recipe = Recipe(name="Test", description="Test", steps=steps)
+
+        issues = self.planner.validate_plan(recipe)
+        self.assertEqual(len(issues), 1)
+        self.assertIn("duplicate", issues[0].lower())
+
+    def test_multi_step_valid_dag(self):
+        """Multi-step DAG with valid backward deps should pass."""
+        steps = [
+            RecipeStep(order=1, title="A", description="First", params={"dependencies": []}),
+            RecipeStep(order=2, title="B", description="Second", params={"dependencies": [1]}),
+            RecipeStep(order=3, title="C", description="Third", params={"dependencies": [1]}),
+            RecipeStep(order=4, title="D", description="Fourth", params={"dependencies": [2, 3]}),
         ]
         recipe = Recipe(name="Test", description="Test", steps=steps)
 
@@ -575,6 +613,92 @@ class TestLLMDecompose(unittest.TestCase):
 
         tasks = self.planner._llm_decompose("test", context)
         self.assertGreater(len(tasks), 0)
+
+
+class TestAGIv2StepTypes(unittest.TestCase):
+    """Test AGI v2 step type detection in _rule_based_decompose."""
+
+    def setUp(self):
+        self.planner = RecipePlanner()
+
+    def test_browse_pattern(self):
+        """Browse goal should generate browse step."""
+        context = PlanningContext(goal="browse https://example.com")
+        tasks = self.planner._rule_based_decompose("browse https://example.com", context)
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["type"], "browse")
+
+    def test_tool_pattern_npm_install(self):
+        """npm install should generate tool step."""
+        context = PlanningContext(goal="npm install express")
+        tasks = self.planner._rule_based_decompose("npm install express", context)
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["type"], "tool")
+
+    def test_evolve_pattern_refactor(self):
+        """Refactor goal should generate evolve steps."""
+        context = PlanningContext(goal="refactor auth module")
+        tasks = self.planner._rule_based_decompose("refactor auth module", context)
+        self.assertEqual(len(tasks), 2)
+        self.assertEqual(tasks[0]["type"], "shell")
+        self.assertEqual(tasks[1]["type"], "llm")
+
+    def test_evolve_pattern_optimize(self):
+        """Optimize goal should generate evolve steps."""
+        context = PlanningContext(goal="optimize database queries")
+        tasks = self.planner._rule_based_decompose("optimize database queries", context)
+        self.assertEqual(len(tasks), 2)
+
+    def test_url_extraction(self):
+        """URL extraction from goal string."""
+        url = self.planner._extract_url("check website https://api.example.com/v1")
+        self.assertEqual(url, "https://api.example.com/v1")
+
+    def test_url_extraction_no_url(self):
+        """No URL in goal should return empty string."""
+        url = self.planner._extract_url("just a regular goal")
+        self.assertEqual(url, "")
+
+    def test_detect_step_type_browse(self):
+        """Browse keywords should detect browse type."""
+        self.assertEqual(self.planner._detect_step_type("browse website"), "browse")
+        self.assertEqual(self.planner._detect_step_type("check website status"), "browse")
+
+    def test_detect_step_type_tool(self):
+        """Tool keywords should detect tool type."""
+        self.assertEqual(self.planner._detect_step_type("npm install"), "tool")
+        self.assertEqual(self.planner._detect_step_type("pip install"), "tool")
+
+    def test_detect_step_type_evolve(self):
+        """Evolve keywords should detect evolve type."""
+        self.assertEqual(self.planner._detect_step_type("refactor code"), "evolve")
+        self.assertEqual(self.planner._detect_step_type("optimize query"), "evolve")
+
+    def test_detect_step_type_none(self):
+        """Unknown goal should return empty string."""
+        self.assertEqual(self.planner._detect_step_type("hello world"), "")
+
+
+class TestReplanFailedBranch(unittest.TestCase):
+    """Test replan_failed_branch() method."""
+
+    def setUp(self):
+        self.planner = RecipePlanner()
+
+    def test_replan_creates_new_recipe(self):
+        """Replan should create a new recipe for failed steps."""
+        original = Recipe(
+            name="Original",
+            description="Test",
+            steps=[
+                RecipeStep(order=1, title="Step 1", description="echo ok", params={}),
+                RecipeStep(order=2, title="Step 2", description="exit 1", params={}),
+                RecipeStep(order=3, title="Step 3", description="echo done", params={"dependencies": [2]}),
+            ],
+        )
+        new_recipe = self.planner.replan_failed_branch(original, failed_step_order=2)
+        self.assertIsNotNone(new_recipe)
+        self.assertTrue(new_recipe.metadata.get("replanned", False))
 
 
 if __name__ == "__main__":

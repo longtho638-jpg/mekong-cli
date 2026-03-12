@@ -36,6 +36,7 @@ class PlanningContext:
     project_info: dict[str, Any] = field(default_factory=dict)
     available_agents: list[str] = field(default_factory=list)
     complexity: TaskComplexity = TaskComplexity.MODERATE
+    max_decomposition_depth: int = 2
 
 
 @dataclass
@@ -153,10 +154,139 @@ class RecipePlanner:
         match = _re.search(r'https?://\S+|www\.\S+', goal)
         return match.group(0) if match else ""
 
+    # Compound patterns that signal a task is complex
+    _COMPOUND_PATTERNS = (
+        " and then ", " after that ", " followed by ",
+        " then ", " afterwards ", " subsequently ",
+    )
+
+    def _is_complex_task(self, task: dict[str, Any]) -> bool:
+        """Determine if a task warrants further decomposition.
+
+        A task is considered complex if any of these heuristics match:
+        - Description contains compound connectors (and then / followed by / etc.)
+        - Description length exceeds 100 characters
+        - Task is explicitly marked complexity=complex
+
+        Args:
+            task: Task dictionary with at least a 'description' key.
+
+        Returns:
+            True if the task should be recursively decomposed.
+
+        """
+        # Explicit marker takes precedence
+        if task.get("complexity") == "complex":
+            return True
+
+        description = task.get("description", "")
+
+        # Length heuristic
+        if len(description) > 100:
+            return True
+
+        # Compound-action heuristic (case-insensitive)
+        desc_lower = description.lower()
+        if any(pattern in desc_lower for pattern in self._COMPOUND_PATTERNS):
+            return True
+
+        return False
+
+    def _recursive_decompose(
+        self,
+        goal: str,
+        context: PlanningContext,
+        depth: int = 0,
+        max_depth: int = 2,
+        parent_goal: str = "",
+    ) -> list[dict[str, Any]]:
+        """Recursively decompose a goal, expanding complex sub-tasks.
+
+        Calls the base decomposition logic, then for each resulting task
+        that is deemed complex (and depth < max_depth), replaces it with
+        its own sub-decomposition.  Dependencies are adjusted so that the
+        flat output preserves the correct ordering.
+
+        Args:
+            goal: Goal string to decompose.
+            context: Planning context.
+            depth: Current recursion depth (0 = top-level call).
+            max_depth: Maximum allowed depth (default 2 per KISS).
+            parent_goal: Parent goal string for traceability metadata.
+
+        Returns:
+            Flat list of task dicts with correct dependencies.
+
+        """
+        # Base decomposition (LLM or rule-based)
+        if self.llm_client:
+            base_tasks = self._llm_decompose(goal, context)
+        else:
+            base_tasks = self._rule_based_decompose(goal, context)
+
+        # Tag every task with its parent goal
+        for task in base_tasks:
+            task["parent_goal"] = parent_goal or goal
+
+        # If we've hit the depth limit, return as-is
+        if depth >= max_depth:
+            return base_tasks
+
+        # Expand complex tasks
+        result: list[dict[str, Any]] = []
+        # index_offset tracks how many extra tasks we've inserted so far,
+        # so we can shift dependency indices of later tasks.
+        index_offset = 0
+
+        for orig_idx, task in enumerate(base_tasks):
+            # Adjust this task's own dependencies for previously inserted tasks
+            adjusted_deps = [d + index_offset for d in task.get("dependencies", [])]
+            task = dict(task)  # shallow copy to avoid mutating original
+            task["dependencies"] = adjusted_deps
+
+            if not self._is_complex_task(task):
+                result.append(task)
+            else:
+                # Recursively decompose
+                sub_tasks = self._recursive_decompose(
+                    goal=task.get("description", task.get("title", "")),
+                    context=context,
+                    depth=depth + 1,
+                    max_depth=max_depth,
+                    parent_goal=goal,
+                )
+
+                # The sub-tasks slot into position orig_idx + index_offset.
+                # Their internal 0-based dependencies need to be shifted by
+                # the current result length.
+                insertion_base = len(result)
+                expanded_tasks = []
+                for sub_task in sub_tasks:
+                    sub_copy = dict(sub_task)
+                    sub_copy["dependencies"] = [
+                        d + insertion_base for d in sub_task.get("dependencies", [])
+                    ]
+                    expanded_tasks.append(sub_copy)
+
+                # Tasks that originally depended on orig_idx should now depend on
+                # the *last* sub-task (which represents completion of this expansion).
+                result.extend(expanded_tasks)
+
+                # Every subsequent task that pointed to orig_idx must now point to
+                # the last sub-task index.  We handle this by keeping the offset
+                # increment as (len(sub_tasks) - 1) extra slots.
+                index_offset += len(sub_tasks) - 1
+
+        return result
+
     def decompose_goal(
         self, goal: str, context: PlanningContext,
     ) -> list[dict[str, Any]]:
         """Decompose high-level goal into atomic tasks.
+
+        Uses recursive multi-step reasoning: the base decomposition is
+        applied, then any task identified as complex is itself decomposed
+        up to context.max_decomposition_depth levels deep.
 
         Args:
             goal: User's high-level objective
@@ -166,12 +296,12 @@ class RecipePlanner:
             List of task dictionaries with title, description, dependencies
 
         """
-        # If LLM client available, use AI decomposition
-        if self.llm_client:
-            return self._llm_decompose(goal, context)
-
-        # Fallback: Rule-based decomposition
-        return self._rule_based_decompose(goal, context)
+        return self._recursive_decompose(
+            goal=goal,
+            context=context,
+            depth=0,
+            max_depth=context.max_decomposition_depth,
+        )
 
     def _rule_based_decompose(
         self, goal: str, context: PlanningContext,
@@ -625,6 +755,10 @@ Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}
     def validate_plan(self, recipe: Recipe) -> list[str]:
         """Validate recipe for common issues.
 
+        Deps in params use 1-based ordering (matching step.order values),
+        as produced by plan(). Self-reference: dep == step.order. Future dep:
+        dep >= step.order (dep must be strictly less than step.order).
+
         Args:
             recipe: Recipe to validate
 
@@ -633,16 +767,31 @@ Example: [{{"title": "Setup", "description": "npm install", "dependencies": []}}
 
         """
         issues = []
+        valid_orders = {s.order for s in recipe.steps}
 
-        # Check for circular dependencies
         for step in recipe.steps:
             deps = step.params.get("dependencies", [])
-            if step.order - 1 in deps:
-                issues.append(f"Step {step.order} has circular dependency on itself")
 
+            # Self-reference check (1-based)
+            if step.order in deps:
+                issues.append(f"Step {step.order} depends on itself")
+
+            # Non-existent dependency
+            non_existent = set()
             for dep in deps:
-                if dep >= step.order - 1:
-                    issues.append(f"Step {step.order} depends on future step {dep + 1}")
+                if dep not in valid_orders:
+                    non_existent.add(dep)
+                    issues.append(f"Step {step.order} depends on non-existent step {dep}")
+
+            # Future dependency: dep order must be strictly less than step order
+            # Skip deps already flagged as non-existent to avoid double-reporting
+            for dep in deps:
+                if dep not in non_existent and dep >= step.order:
+                    issues.append(f"Step {step.order} depends on future/same step {dep}")
+
+            # Duplicate dependencies
+            if len(deps) != len(set(deps)):
+                issues.append(f"Step {step.order} has duplicate dependencies")
 
         # Check for empty steps
         if not recipe.steps:
