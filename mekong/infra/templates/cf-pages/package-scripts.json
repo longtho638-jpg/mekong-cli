@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "build:static": "next build && next export",
+    "preview": "npx wrangler pages dev out",
+    "deploy": "npx wrangler pages deploy out --project-name={{PROJECT_NAME}}",
+    "deploy:prod": "npx wrangler pages deploy out --project-name={{PROJECT_NAME}} --branch main"
+  }
+}

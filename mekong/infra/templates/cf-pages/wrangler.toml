@@ -1,0 +1,11 @@
+# Cloudflare Pages — Static/SSR Frontend
+# Usage: cp mekong/infra/templates/cf-pages/* your-app/
+name = "{{PROJECT_NAME}}"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+# For static export:
+# pages_build_output_dir = "out"
+
+# For Next.js SSR:
+# pages_build_output_dir = ".vercel/output/static"

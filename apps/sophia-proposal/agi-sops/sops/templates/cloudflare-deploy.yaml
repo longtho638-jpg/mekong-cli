@@ -1,0 +1,50 @@
+name: cloudflare-deploy
+version: 1.0.0
+description: "Deploy to Cloudflare Pages + Workers"
+
+steps:
+  - id: install-deps
+    command: "pnpm install"
+    timeout: 120
+    validation: "exit_code == 0"
+    description: "Install dependencies with pnpm"
+
+  - id: type-check
+    command: "pnpm run type-check"
+    timeout: 60
+    validation: "exit_code == 0"
+    description: "Run TypeScript type check"
+
+  - id: lint
+    command: "pnpm run lint"
+    timeout: 60
+    validation: "exit_code == 0"
+    description: "Run ESLint"
+
+  - id: test
+    command: "pnpm test"
+    timeout: 300
+    validation: "exit_code == 0"
+    description: "Run test suite"
+
+  - id: build
+    command: "pnpm run build"
+    timeout: 180
+    validation: "exit_code == 0"
+    description: "Build for production"
+
+  - id: wrangler-deploy
+    command: "pnpm run deploy"
+    timeout: 120
+    validation: "exit_code == 0"
+    rollback: "wrangler rollback"
+    description: "Deploy to Cloudflare"
+
+quality_gates:
+  - name: pages_deploy
+    check: "curl -sI https://your-project.pages.dev | grep -q '200 OK'"
+    description: "Verify Cloudflare Pages deployment"
+
+  - name: worker_active
+    check: "wrangler status | grep -q 'Active'"
+    description: "Verify Worker is active"

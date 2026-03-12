@@ -1,0 +1,44 @@
+# GitHub Actions — 4-Layer Deploy
+# Copy to .github/workflows/ and customize per project
+
+name: Deploy
+on:
+  push:
+    branches: [main]
+
+jobs:
+  # Layer 1: Frontend → CF Pages
+  frontend:
+    if: contains(github.event.head_commit.modified, 'frontend/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: cd frontend && npm ci && npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          command: pages deploy frontend/out --project-name=${{ vars.PROJECT_NAME }}
+
+  # Layer 2: Edge API → CF Workers
+  edge-api:
+    if: contains(github.event.head_commit.modified, 'api/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          workingDirectory: api
+
+  # Layer 4: Backend → Fly.io
+  backend:
+    if: contains(github.event.head_commit.modified, 'backend/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: cd backend && flyctl deploy
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

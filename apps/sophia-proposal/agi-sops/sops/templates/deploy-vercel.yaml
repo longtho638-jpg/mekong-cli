@@ -1,0 +1,56 @@
+name: deploy-vercel
+version: 1.0.0
+description: "Deploy to Vercel with CI/CD verification"
+
+steps:
+  - id: install-deps
+    command: "npm install"
+    timeout: 120
+    validation: "exit_code == 0"
+    description: "Install dependencies"
+
+  - id: type-check
+    command: "npm run type-check"
+    timeout: 60
+    validation: "exit_code == 0"
+    description: "Run TypeScript type check"
+
+  - id: build
+    command: "npm run build"
+    timeout: 300
+    validation: "exit_code == 0"
+    description: "Build production bundle"
+
+  - id: test
+    command: "npm test"
+    timeout: 300
+    validation: "exit_code == 0"
+    description: "Run test suite"
+
+  - id: git-add
+    command: "git add ."
+    timeout: 10
+    validation: "exit_code == 0"
+    description: "Stage all changes"
+
+  - id: git-commit
+    command: "git commit -m 'deploy: production release'"
+    timeout: 10
+    validation: "exit_code == 0"
+    description: "Commit changes"
+
+  - id: git-push
+    command: "git push origin main"
+    timeout: 30
+    validation: "exit_code == 0"
+    rollback: "git push origin HEAD~1 --delete"
+    description: "Push to main branch"
+
+quality_gates:
+  - name: ci_green
+    check: "gh run list -L 1 | grep -q success"
+    description: "Verify CI/CD pipeline passed"
+
+  - name: vercel_deploy
+    check: "curl -sI https://your-app.vercel.app | grep -q '200 OK'"
+    description: "Verify Vercel deployment successful"
