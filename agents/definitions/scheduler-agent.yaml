@@ -1,0 +1,188 @@
+# Agent: Scheduler Agent
+# Role: Task Scheduling & Workflow Orchestration
+
+name: scheduler-agent
+version: 1.0
+description: Autonomous scheduling and workflow orchestration agent for managing recurring tasks, SLA tracking, and heartbeat execution
+
+---
+
+triggers:
+  - type: schedule
+    cron: "* * * * *"  # Every minute
+  - type: webhook
+    event: "task.created"
+  - type: webhook
+    event: "task.completed"
+  - type: command
+    pattern: "/schedule *"
+  - type: heartbeat
+    interval: "30 minutes"
+
+capabilities:
+  - cron_scheduling
+  - task_queue_management
+  - sla_tracking
+  - workflow_orchestration
+  - dependency_resolution
+  - retry_handling
+  - deadline_monitoring
+
+tools:
+  - name: scheduler
+    actions: [schedule, cancel, reschedule, list]
+  - name: task_queue
+    actions: [enqueue, dequeue, prioritize, peek]
+  - name: heartbeat
+    actions: [read, execute, mark_complete]
+  - name: calendar
+    actions: [check_availability, book, send_invite]
+  - name: notification
+    actions: [email, sms, slack, push]
+
+actions:
+  - name: execute_heartbeat
+    description: Execute pending heartbeat tasks
+    input:
+      - heartbeat_file: Path to HEARTBEAT.md
+      - current_time: Current timestamp
+    output:
+      - executed: List of executed tasks
+      - skipped: Already completed tasks
+      - failed: Failed tasks
+
+  - name: check_sla_deadlines
+    description: Monitor SLA deadlines and alert on breaches
+    input:
+      - tickets: Active support tickets
+      - tasks: Active tasks with deadlines
+    output:
+      - at_risk: Items approaching SLA breach
+      - breached: Items past SLA deadline
+      - alerts: Generated alerts
+
+  - name: schedule_recurring_task
+    description: Schedule a recurring task
+    input:
+      - task_type: Type of recurring task
+      - cron: Cron expression
+      - params: Task parameters
+    output:
+      - schedule_id: Created schedule ID
+      - next_run: Next execution time
+
+  - name: prioritize_queue
+    description: Prioritize task queue based on rules
+    input:
+      - queue: Task queue
+      - rules: Prioritization rules
+    output:
+      - ordered_queue: Prioritized queue
+      - reasoning: Prioritization rationale
+
+  - name: dispatch_workflow
+    description: Dispatch workflow to appropriate agents
+    input:
+      - workflow_type: Type of workflow
+      - input_data: Workflow input
+    output:
+      - dispatched_to: List of agents
+      - workflow_id: Workflow instance ID
+
+  - name: retry_failed_task
+    description: Retry failed tasks with backoff
+    input:
+      - task_id: Failed task ID
+      - retry_count: Current retry count
+    output:
+      - status: retrying/exhausted
+      - next_retry: Next retry time
+
+heartbeat_integration:
+  intervals:
+    - interval: "30 minutes"
+      tasks:
+        - check_sla_at_risk
+        - process_new_support_emails
+
+    - interval: "daily_8am"
+      tasks:
+        - generate_standup
+        - check_overdue_invoices
+        - list_leads_followup
+        - show_calendar_events
+
+    - interval: "monday_10am"
+      tasks:
+        - run_payment_followup
+        - review_stale_leads
+
+    - interval: "sunday_6pm"
+      tasks:
+        - generate_weekly_digest
+        - calculate_mrr_change
+        - send_weekly_summary
+
+    - interval: "monthly_1st_9am"
+      tasks:
+        - run_monthly_close
+        - generate_monthly_report
+        - check_recurring_expenses
+        - review_health_scores
+
+quality_gates:
+  - type: schedule_reliability
+    target: "99.9% on-time execution"
+  - type: sla_monitoring
+    target: "100% SLA tracked"
+  - type: retry_handling
+    max_retries: 3
+    backoff: "exponential"
+
+behavior:
+  - idempotent_execution: true  # Safe to retry
+  - respect_dependencies: true
+  - graceful_degradation: true  # Continue on failures
+  - log_all_executions: true
+  - alert_on_critical_failure: true
+  - maintain_audit_trail: true
+
+integrations:
+  - cron:
+      actions: [parse, validate, execute]
+  - redis:
+      actions: [queue_push, queue_pop, ttl]
+  - postgres:
+      actions: [store_task, update_status, query]
+  - slack:
+      actions: [notify_deadline, notify_breach]
+  - pagerduty:
+      actions: [trigger_alert, escalate]
+
+sla:
+  task_dispatch: "< 1 minute"
+  heartbeat_execution: "on schedule"
+  sla_check: "every 30 minutes"
+  alert_generation: "immediate"
+
+metrics:
+  - tasks_scheduled
+  - tasks_completed
+  - tasks_failed
+  - avg_execution_time
+  - sla_breaches_prevented
+  - heartbeat_tasks_executed
+  - retry_success_rate
+
+error_handling:
+  retry_policy:
+    max_attempts: 3
+    backoff_type: exponential
+    initial_delay: "1 minute"
+    max_delay: "30 minutes"
+
+  failure_actions:
+    - log_error
+    - notify_owner
+    - create_incident_ticket
+    - pause_dependent_tasks

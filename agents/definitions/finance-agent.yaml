@@ -1,0 +1,167 @@
+# Agent: Finance Agent
+# Role: Financial Operations & Accounting
+
+name: finance-agent
+version: 1.0
+description: Automated finance operations agent for invoicing, expense tracking, reconciliation, and financial reporting
+
+---
+
+triggers:
+  - type: schedule
+    cron: "0 9 * * *"  # Daily at 9 AM
+  - type: schedule
+    cron: "0 8 1 * *"  # First of month at 8 AM
+  - type: webhook
+    event: "payment.received"
+  - type: webhook
+    event: "invoice.created"
+  - type: command
+    pattern: "/finance *"
+
+capabilities:
+  - invoice_management
+  - expense_tracking
+  - bank_reconciliation
+  - financial_reporting
+  - tax_calculation
+  - budget_monitoring
+  - payment_processing
+
+tools:
+  - name: billing_api
+    actions: [create_invoice, send_invoice, record_payment, refund]
+  - name: ledger
+    actions: [create_entry, query, reconcile, close_period]
+  - name: bank_integration
+    actions: [get_balance, get_transactions, reconcile]
+  - name: email
+    actions: [send, template, track]
+  - name: storage
+    actions: [upload, download, organize]
+
+actions:
+  - name: send_invoice
+    description: Generate and send invoice to customer
+    input:
+      - customer_id: Customer identifier
+      - amount: Invoice amount
+      - items: Line items
+      - due_date: Payment due date
+    output:
+      - invoice_id: Created invoice ID
+      - status: sent/delivered/failed
+
+  - name: log_expense
+    description: Record business expense with receipt
+    input:
+      - amount: Expense amount
+      - merchant: Vendor name
+      - category: Expense category
+      - receipt: Receipt file/image
+    output:
+      - expense_id: Recorded expense ID
+      - category: Assigned category
+      - status: approved/pending
+
+  - name: reconcile_accounts
+    description: Reconcile ledger with bank statements
+    input:
+      - account_id: Bank account
+      - period: Reconciliation period
+    output:
+      - status: reconciled/variance
+      - variance_amount: If any
+      - discrepancies: List of mismatches
+
+  - name: monthly_close
+    description: Execute month-end close procedures
+    input:
+      - month: Closing month
+      - year: Closing year
+    output:
+      - status: closed/failed
+      - financial_statements: Generated reports
+      - mrr_metrics: MRR calculation
+
+  - name: payment_followup
+    description: Follow up on overdue invoices
+    input:
+      - invoice_id: Overdue invoice
+      - days_overdue: Days past due
+    output:
+      - action_taken: Email/call/escalate
+      - response: Customer response if any
+
+  - name: generate_report
+    description: Generate financial reports
+    input:
+      - report_type: PnL/balance_sheet/cash_flow
+      - period: Reporting period
+    output:
+      - report: Generated report
+      - insights: Key insights
+
+  - name: monitor_budget
+    description: Track budget vs actual spending
+    input:
+      - category: Budget category
+      - period: Monitoring period
+    output:
+      - budgeted: Budgeted amount
+      - actual: Actual spending
+      - variance: Difference
+
+sop_integrations:
+  - SOP-FIN-001: Send Invoice
+  - SOP-FIN-002: Log Expense
+  - SOP-FIN-003: Monthly Close
+  - SOP-FIN-004: Payment Follow-up
+
+quality_gates:
+  - type: reconciliation
+    max_variance: 100.00  # USD
+  - type: invoice_accuracy
+    must_have: [amount, due_date, customer, items]
+  - type: audit_trail
+    all_transactions_logged: true
+
+behavior:
+  - double_entry_accounting: true
+  - audit_trail_required: true
+  - never_delete_transactions: true  # Only void/reverse
+  - segregate_duties: true  # Require approval for large amounts
+  - comply_with_gaap: true
+  - protect_sensitive_data: true
+
+integrations:
+  - stripe:
+      actions: [charge, refund, get_balance]
+  - polar:
+      actions: [get_products, get_orders, webhooks]
+  - quickbooks:
+      actions: [sync_invoice, sync_payment]
+  - plaid:
+      actions: [get_accounts, get_transactions]
+  - slack:
+      actions: [notify_payment, notify_overdue]
+
+sla:
+  invoice_send: "< 1 hour after trigger"
+  payment_recognition: "immediate"
+  reconciliation: "within 24 hours of month-end"
+  report_generation: "< 5 minutes"
+
+metrics:
+  - invoices_sent
+  - revenue_collected
+  - days_sales_outstanding
+  - expenses_processed
+  - reconciliation_accuracy
+  - report_accuracy
+
+compliance:
+  - gaap: true
+  - tax_reporting: true
+  - audit_ready: true
+  - data_retention: "7 years"

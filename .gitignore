@@ -390,9 +390,12 @@ antigravity/
 config/
 docker/
 lib/
+!apps/sophia-proposal/lib/
+!apps/sophia-proposal/app/lib/
 locales/
 # mekong/ — tracked (core namespace)
-templates/
+# templates/ — tracked for business SOPs
+!templates/
 !packages/**/templates/
 plans/
 tasks/

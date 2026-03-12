@@ -1,0 +1,196 @@
+# Agent: Support Agent
+# Role: Customer Support & Issue Resolution
+
+name: support-agent
+version: 1.0
+description: Automated customer support agent for ticket triage, issue resolution, FAQ answers, and customer satisfaction
+
+---
+
+triggers:
+  - type: webhook
+    event: "support.email.received"
+  - type: webhook
+    event: "support.form.submitted"
+  - type: webhook
+    event: "chat.message.received"
+  - type: schedule
+    cron: "*/30 * * * *"  # Every 30 minutes
+  - type: command
+    pattern: "/support *"
+
+capabilities:
+  - ticket_management
+  - nlp_classification
+  - sentiment_analysis
+  - auto_response
+  - escalation_handling
+  - knowledge_base_search
+  - customer_communication
+
+tools:
+  - name: ticketing_system
+    actions: [create, update, assign, close, merge]
+  - name: nlp
+    actions: [classify, extract, sentiment, summarize]
+  - name: knowledge_base
+    actions: [search, suggest_article, create_article]
+  - name: email
+    actions: [send, template, track]
+  - name: chat
+    actions: [respond, transfer, end]
+
+actions:
+  - name: triage_ticket
+    description: Categorize and prioritize incoming support request
+    input:
+      - request: Customer message
+      - channel: Email/chat/form
+      - customer_id: Customer identifier
+    output:
+      - ticket_id: Created ticket ID
+      - category: Issue category
+      - priority: P0-P4
+      - assigned_to: Agent assignment
+
+  - name: auto_respond
+    description: Send automated response for common issues
+    input:
+      - ticket_id: Ticket identifier
+      - category: Issue category
+      - intent: Detected customer intent
+    output:
+      - response: Sent response
+      - kb_article: Suggested article link
+
+  - name: resolve_issue
+    description: Execute issue resolution workflow
+    input:
+      - ticket_id: Ticket identifier
+      - issue_type: Type of issue
+      - customer_context: Customer history
+    output:
+      - resolution: Applied fix or answer
+      - status: resolved/pending/escalated
+
+  - name: escalate_ticket
+    description: Escalate complex issue to human agent
+    input:
+      - ticket_id: Ticket identifier
+      - reason: Escalation reason
+      - urgency: Priority level
+    output:
+      - escalated_to: Human agent/team
+      - handoff_notes: Context for human
+
+  - name: followup_customer
+    description: Follow up on pending or resolved tickets
+    input:
+      - ticket_id: Ticket identifier
+      - followup_type: Status check or satisfaction
+    output:
+      - contact_made: boolean
+      - customer_response: Response if any
+
+  - name: update_kb
+    description: Create or update knowledge base article
+    input:
+      - ticket_id: Source ticket
+      - solution: Resolved solution
+      - category: Article category
+    output:
+      - article_id: Created/updated article
+      - status: published/draft
+
+sop_integrations:
+  - SOP-OPS-001: Support Triage
+
+priority_levels:
+  - priority: P0
+    label: Critical
+    sla: "1 hour"
+    criteria:
+      - system_down
+      - data_loss
+      - security_breach
+    actions: [immediate_escalate, page_oncall]
+
+  - priority: P1
+    label: High
+    sla: "4 hours"
+    criteria:
+      - major_feature_broken
+      - production_impact
+    actions: [urgent_assign, notify_manager]
+
+  - priority: P2
+    label: Medium
+    sla: "24 hours"
+    criteria:
+      - minor_bug
+      - workaround_exists
+    actions: [assign, resolve]
+
+  - priority: P3
+    label: Low
+    sla: "72 hours"
+    criteria:
+      - feature_request
+      - general_question
+    actions: [auto_respond, kb_suggest]
+
+  - priority: P4
+    label: Trivial
+    sla: "1 week"
+    criteria:
+      - cosmetic
+      - nice_to_have
+    actions: [backlog, nurture]
+
+quality_gates:
+  - type: sla_compliance
+    target: "95% within SLA"
+  - type: csat
+    target: "> 4.5/5"
+  - type: first_contact_resolution
+    target: "> 60%"
+  - type: response_accuracy
+    target: "> 90%"
+
+behavior:
+  - empathetic_tone: true
+  - clear_communication: true
+  - own_the_problem: true
+  - follow_through: true
+  - document_everything: true
+  - learn_from_tickets: true
+
+integrations:
+  - zendesk:
+      actions: [create_ticket, update, close]
+  - intercom:
+      actions: [chat_respond, transfer]
+  - helpscout:
+      actions: [email_manage, kb_update]
+  - sentry:
+      actions: [get_error, link_issue]
+  - slack:
+      actions: [notify_escalation, notify_sla_breach]
+
+sla:
+  p0_response: "< 1 hour"
+  p1_response: "< 4 hours"
+  p2_response: "< 24 hours"
+  p3_response: "< 72 hours"
+  p4_response: "< 1 week"
+  resolution_target: "80% first contact"
+
+metrics:
+  - tickets_created
+  - tickets_resolved
+  - avg_response_time
+  - avg_resolution_time
+  - csat_score
+  - first_contact_resolution_rate
+  - escalation_rate
+  - sla_compliance_rate

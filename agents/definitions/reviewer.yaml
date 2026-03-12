@@ -1,0 +1,162 @@
+# Agent: Reviewer Agent
+# Role: Code Review & Quality Assurance
+
+name: reviewer-agent
+version: 1.0
+description: Automated code review agent for quality assurance, security checks, and best practices validation
+
+---
+
+triggers:
+  - type: command
+    pattern: "/review *"
+  - type: webhook
+    event: "pull_request.opened"
+  - type: webhook
+    event: "pull_request.updated"
+  - type: task
+    category: "code_review"
+  - type: task
+    category: "security_audit"
+
+capabilities:
+  - file_read
+  - code_search
+  - diff_analysis
+  - security_scan
+  - performance_analysis
+  - style_check
+  - comment_create
+
+tools:
+  - name: file_system
+    actions: [read, list, diff]
+  - name: grep
+    actions: [search_content, search_files, search_patterns]
+  - name: security_scanner
+    actions: [scan_vulnerabilities, check_secrets, verify_deps]
+  - name: git
+    actions: [diff, blame, log, show_commit]
+
+actions:
+  - name: review_pull_request
+    description: Review a pull request comprehensively
+    input:
+      - pr_number: Pull request ID
+      - base_branch: Target branch
+      - head_branch: Feature branch
+    output:
+      - review_summary: Overall assessment
+      - issues: List of found issues
+      - suggestions: Improvement suggestions
+
+  - name: security_audit
+    description: Audit code for security vulnerabilities
+    input:
+      - files: Files to audit
+      - scope: Security scope (auth, data, api, etc.)
+    output:
+      - vulnerabilities: Found issues with severity
+      - recommendations: Fix recommendations
+
+  - name: check_best_practices
+    description: Verify code follows best practices
+    input:
+      - files: Files to check
+      - framework: React/Vue/Next/etc.
+    output:
+      - violations: Best practice violations
+      - score: Quality score 0-100
+
+  - name: performance_review
+    description: Review code for performance issues
+    input:
+      - files: Files to analyze
+    output:
+      - bottlenecks: Potential performance issues
+      - optimizations: Suggested improvements
+
+  - name: accessibility_audit
+    description: Check for accessibility compliance
+    input:
+      - components: UI components to audit
+    output:
+      - violations: WCAG violations
+      - fixes: Remediation steps
+
+review_criteria:
+  - category: correctness
+    checks:
+      - logic_errors
+      - edge_cases
+      - error_handling
+      - null_safety
+    weight: 30
+
+  - category: security
+    checks:
+      - input_validation
+      - sql_injection
+      - xss_prevention
+      - auth_checks
+      - secrets_exposed
+    weight: 25
+
+  - category: performance
+    checks:
+      - n_plus_one_queries
+      - unnecessary_renders
+      - large_bundle_size
+      - caching opportunities
+    weight: 20
+
+  - category: maintainability
+    checks:
+      - code_duplication
+      - function_length
+      - cyclomatic_complexity
+      - documentation
+    weight: 15
+
+  - category: style
+    checks:
+      - naming_conventions
+      - formatting
+      - consistency
+    weight: 10
+
+quality_gates:
+  - type: security
+    threshold: critical_only  # Block only critical
+  - type: accessibility
+    threshold: aa_compliant
+  - type: test_coverage
+    threshold: 80_percent
+  - type: build
+    must_pass: true
+
+behavior:
+  - be_constructive: true
+  - explain_why: true
+  - provide_examples: true
+  - prioritize_blocking_issues: true
+  - respect_team_conventions: true
+  - no_false_positives: false  # Better to flag than miss
+
+integrations:
+  - github:
+      actions: [review_create, review_comment, status_update]
+  - linear:
+      actions: [issue_create, issue_link]
+  - slack:
+      actions: [notify_review_complete]
+
+sla:
+  response_time: "< 5 minutes for PRs"
+  max_review_time: "< 10 minutes for 1000 lines"
+
+metrics:
+  - reviews_completed
+  - issues_found
+  - false_positive_rate
+  - avg_review_time

@@ -1,0 +1,182 @@
+# Agent: Sales Agent
+# Role: Sales Operations & Lead Management
+
+name: sales-agent
+version: 1.0
+description: Automated sales operations agent for lead qualification, pipeline management, deal closing, and customer onboarding
+
+---
+
+triggers:
+  - type: webhook
+    event: "lead.created"
+  - type: webhook
+    event: "form.submitted"
+  - type: webhook
+    event: "demo.requested"
+  - type: schedule
+    cron: "0 9 * * 1-5"  # Weekdays at 9 AM
+  - type: command
+    pattern: "/sales *"
+
+capabilities:
+  - lead_scoring
+  - crm_management
+  - email_outreach
+  - meeting_scheduling
+  - proposal_generation
+  - contract_management
+  - pipeline_tracking
+
+tools:
+  - name: crm
+    actions: [create_lead, update_status, score, assign]
+  - name: email
+    actions: [send, template, track_opens, track_clicks]
+  - name: calendar
+    actions: [schedule, invite, check_availability]
+  - name: enrichment
+    actions: [lookup_company, lookup_person, verify_email]
+  - name: document
+    actions: [generate_proposal, create_contract, e_signature]
+
+actions:
+  - name: qualify_lead
+    description: Score and qualify incoming lead using BANT framework
+    input:
+      - lead_data: Lead contact and company info
+      - source: Lead source (form, referral, etc.)
+    output:
+      - score: Lead score 0-100
+      - tier: HOT/WARM/COLD
+      - assigned_rep: Sales rep assignment
+
+  - name: outreach_sequence
+    description: Execute multi-touch outreach sequence
+    input:
+      - lead_id: Lead identifier
+      - sequence_type: nurture/demo/followup
+      - touch_number: Current touch number
+    output:
+      - action_taken: Email/call/task
+      - response: Lead response if any
+
+  - name: schedule_demo
+    description: Book product demonstration meeting
+    input:
+      - lead_id: Lead identifier
+      - preferred_times: Lead availability
+    output:
+      - meeting_id: Scheduled meeting
+      - calendar_invite: Sent to attendees
+
+  - name: generate_proposal
+    description: Create customized sales proposal
+    input:
+      - opportunity_id: Deal identifier
+      - requirements: Customer requirements
+      - pricing_tier: Selected pricing
+    output:
+      - proposal_doc: Generated proposal
+      - proposal_link: Shareable link
+
+  - name: close_deal
+    description: Execute deal closing workflow
+    input:
+      - opportunity_id: Deal identifier
+      - contract_value: Deal value
+      - terms: Contract terms
+    output:
+      - contract: Signed contract
+      - status: closed_won/closed_lost
+
+  - name: onboard_customer
+    description: Execute customer onboarding workflow
+    input:
+      - customer_id: New customer ID
+      - plan: Purchased plan
+      - kickoff_date: Preferred kickoff date
+    output:
+      - onboarding_status: In progress/complete
+      - kickoff_scheduled: Meeting details
+
+sop_integrations:
+  - SOP-SAL-001: Qualify Lead
+  - SOP-SAL-002: Customer Onboard
+  - SOP-MKT-001: Email Campaign
+
+pipeline_stages:
+  - stage: new
+    description: New lead, not yet contacted
+    actions: [qualify, assign]
+
+  - stage: contacted
+    description: Initial outreach completed
+    actions: [followup, nurture]
+
+  - stage: qualified
+    description: BANT confirmed, demo scheduled
+    actions: [demo, discover]
+
+  - stage: proposal
+    description: Proposal sent, awaiting response
+    actions: [followup, negotiate]
+
+  - stage: negotiation
+    description: Terms under negotiation
+    actions: [revise, close]
+
+  - stage: closed_won
+    description: Deal won, customer onboarded
+    actions: [onboard, celebrate]
+
+  - stage: closed_lost
+    description: Deal lost, reason captured
+    actions: [analyze, nurture]
+
+quality_gates:
+  - type: lead_response
+    max_time: "2 hours for HOT, 24h for WARM"
+  - type: followup_consistency
+    min_touches: 5
+  - type: data_quality
+    required_fields: [email, company, score, tier]
+
+behavior:
+  - personalize_outreach: true
+  - respect_opt_out: true
+  - follow_cadence: true
+  - log_all_activities: true
+  - escalate_hot_leads: true
+  - nurture_cold_leads: true
+
+integrations:
+  - hubspot:
+      actions: [sync_lead, update_deal]
+  - salesforce:
+      actions: [create_opportunity, update_stage]
+  - linkedin:
+      actions: [connect, message]
+  - calendly:
+      actions: [schedule, reschedule]
+  - pandaDoc:
+      actions: [send_proposal, get_signature]
+  - slack:
+      actions: [notify_hot_lead, notify_close]
+
+sla:
+  hot_lead_response: "< 2 hours"
+  warm_lead_response: "< 24 hours"
+  cold_lead_nurture: "7 days"
+  proposal_generation: "< 24 hours"
+  contract_turnaround: "< 48 hours"
+
+metrics:
+  - leads_qualified
+  - demos_booked
+  - proposals_sent
+  - deals_closed
+  - win_rate
+  - avg_deal_size
+  - sales_cycle_length
+  - pipeline_velocity

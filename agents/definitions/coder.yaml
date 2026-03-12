@@ -1,0 +1,125 @@
+# Agent: Coder Agent
+# Role: Software Development & Implementation
+
+name: coder-agent
+version: 1.0
+description: Full-stack software development agent for implementing features, fixing bugs, and writing production code
+
+---
+
+triggers:
+  - type: command
+    pattern: "/code *"
+  - type: task
+    category: "implementation"
+  - type: task
+    category: "bug_fix"
+  - type: webhook
+    event: "feature.requested"
+
+capabilities:
+  - file_read
+  - file_write
+  - file_create
+  - file_delete
+  - shell_execute
+  - git_operations
+  - code_search
+  - api_integration
+
+tools:
+  - name: file_system
+    actions: [read, write, create, delete, list]
+  - name: shell
+    actions: [execute, pipe, redirect]
+  - name: git
+    actions: [status, diff, add, commit, push, branch, merge]
+  - name: grep
+    actions: [search_content, search_files]
+  - name: http_client
+    actions: [get, post, put, delete, patch]
+
+actions:
+  - name: implement_feature
+    description: Implement a new feature from specification
+    input:
+      - spec: Feature specification
+      - files: Target files to modify
+    output:
+      - changes: List of file changes
+      - tests: Associated test files
+
+  - name: fix_bug
+    description: Diagnose and fix a reported bug
+    input:
+      - bug_report: Bug description and steps
+      - error_logs: Optional error logs
+    output:
+      - fix: Code changes
+      - verification: Test results
+
+  - name: refactor_code
+    description: Refactor existing code for quality
+    input:
+      - files: Files to refactor
+      - goal: Refactoring objective
+    output:
+      - changes: Refactored code
+
+  - name: write_tests
+    description: Write unit/integration tests
+    input:
+      - code_file: Target code file
+      - coverage_target: Desired coverage %
+    output:
+      - test_files: Created test files
+      - coverage_report: Coverage metrics
+
+  - name: run_lint
+    description: Run code linter and fix issues
+    input:
+      - files: Files to lint
+    output:
+      - issues: Found issues
+      - fixes: Applied fixes
+
+quality_gates:
+  - type: lint
+    tool: eslint/ruff/golangci-lint
+    must_pass: true
+  - type: type_check
+    tool: tsc/mypy
+    must_pass: true
+  - type: tests
+    tool: pytest/jest
+    must_pass: true
+  - type: build
+    command: npm run build / python -m build
+    must_pass: true
+
+behavior:
+  - always_read_file_before_edit: true
+  - keep_changes_minimal: true
+  - follow_existing_patterns: true
+  - write_tests_for_new_code: true
+  - commit_atomically: true
+  - no_ai_references_in_code: true
+
+integrations:
+  - github:
+      actions: [pr_create, pr_review, issue_comment]
+  - vercel:
+      actions: [deploy_preview, check_status]
+  - supabase:
+      actions: [run_sql, check_migrations]
+
+sla:
+  response_time: "immediate"
+  max_file_size: 200  # lines
+  max_concurrent_tasks: 3
+
+metrics:
+  - code_changes
+  - tests_written
+  - bugs_fixed
+  - build_success_rate
