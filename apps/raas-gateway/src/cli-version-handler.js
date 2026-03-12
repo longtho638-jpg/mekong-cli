@@ -56,7 +56,7 @@ export async function getCliVersionInfo(env, tenantId, role) {
 
   // Track usage (non-blocking)
   trackVersionCheck(env, tenantId, role, CLI_VERSION).catch(err => {
-    console.error('Version check tracking error:', err);
+    /* Version check tracking error */
   });
 
   return new Response(JSON.stringify(response), {
@@ -85,7 +85,7 @@ async function getCriticalUpdates(env) {
     const data = await kv.get('cli_critical_versions', 'json');
     return data || [];
   } catch (error) {
-    console.error('Failed to get critical updates:', error);
+    /* Failed to get critical updates */
     return [];
   }
 }
@@ -104,7 +104,7 @@ async function getSecurityUpdates(env) {
     const data = await kv.get('cli_security_versions', 'json');
     return data || [];
   } catch (error) {
-    console.error('Failed to get security updates:', error);
+    /* Failed to get security updates */
     return [];
   }
 }
@@ -125,7 +125,7 @@ async function getReleaseNotes(env, version) {
     const notes = await kv.get(key);
     return notes || 'Bug fixes and improvements';
   } catch (error) {
-    console.error('Failed to get release notes:', error);
+    /* Failed to get release notes */
     return 'Bug fixes and improvements';
   }
 }
@@ -146,7 +146,7 @@ async function getReleaseDate(env, version) {
     const date = await kv.get(key);
     return date || new Date().toISOString();
   } catch (error) {
-    console.error('Failed to get release date:', error);
+    /* Failed to get release date */
     return new Date().toISOString();
   }
 }
@@ -173,6 +173,6 @@ export async function trackVersionCheck(env, licenseKey, tenantId, tier) {
       0 // No payload for GET request
     );
   } catch (error) {
-    console.error('Version check tracking failed:', error);
+    /* Version check tracking failed */
   }
 }

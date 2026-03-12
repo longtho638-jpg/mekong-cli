@@ -23,10 +23,10 @@ export class StorageService {
       // await this.kvNamespace.put(key, JSON.stringify(metrics), { expirationTtl: 86400 * 30 }); // 30 days
 
       // For now, we'll just return true to indicate success
-      console.log(`Storing metrics for project ${projectNamespace}, report ${reportId}:`, metrics);
+      /* Storing metrics for project */
       return true;
     } catch (error) {
-      console.error('Error storing metrics in KV:', error);
+      /* Error storing metrics in KV */
       return false;
     }
   }
@@ -45,7 +45,7 @@ export class StorageService {
       // For now, return false indicating the key hasn't been processed
       return false;
     } catch (error) {
-      console.error('Error checking idempotency key:', error);
+      /* Error checking idempotency key */
       return false;
     }
   }
@@ -62,10 +62,10 @@ export class StorageService {
       // await this.kvNamespace.put(key, now.toString(), { expirationTtl: 86400 * 7 }); // 7 days
 
       // For now, we'll just return true to indicate success
-      console.log(`Stored idempotency key for project ${projectNamespace}: ${idempotencyKey}`);
+      /* Stored idempotency key */
       return true;
     } catch (error) {
-      console.error('Error storing idempotency key:', error);
+      /* Error storing idempotency key */
       return false;
     }
   }

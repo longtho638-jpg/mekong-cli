@@ -8,7 +8,6 @@ export class TriggerEvaluator {
     const value = this.getFieldValue(condition.field, context);
 
     if (value === undefined) {
-      console.warn(`Field not found: ${condition.field}`);
       return false;
     }
 
@@ -30,7 +29,6 @@ export class TriggerEvaluator {
       case 'crosses_below':
         return this.checkCrossesBelow(value, condition.value);
       default:
-        console.warn(`Unknown operator: ${condition.operator}`);
         return false;
     }
   }
@@ -46,9 +44,9 @@ export class TriggerEvaluator {
   /**
    * Get field value from context using dot notation
    */
-  private getFieldValue(field: string, context: SignalContext): any {
+  private getFieldValue(field: string, context: SignalContext): unknown {
     const parts = field.split('.');
-    let value: any = context;
+    let value: unknown = context;
 
     for (const part of parts) {
       if (value === undefined || value === null) return undefined;
@@ -62,8 +60,8 @@ export class TriggerEvaluator {
    * Compare numbers safely
    */
   private compareNumbers(
-    actual: any,
-    expected: any,
+    actual: unknown,
+    expected: unknown,
     comparator: (a: number, b: number) => boolean
   ): boolean {
     const numActual = typeof actual === 'number' ? actual : parseFloat(actual);
@@ -76,7 +74,7 @@ export class TriggerEvaluator {
   /**
    * Check if value crosses above threshold (simplified - would need previous value)
    */
-  private checkCrossesAbove(currentValue: any, threshold: any): boolean {
+  private checkCrossesAbove(currentValue: unknown, threshold: unknown): boolean {
     // For now, just check if current > threshold
     // In production, would compare with previous value
     return this.compareNumbers(currentValue, threshold, (a, b) => a > b);
@@ -85,7 +83,7 @@ export class TriggerEvaluator {
   /**
    * Check if value crosses below threshold
    */
-  private checkCrossesBelow(currentValue: any, threshold: any): boolean {
+  private checkCrossesBelow(currentValue: unknown, threshold: unknown): boolean {
     return this.compareNumbers(currentValue, threshold, (a, b) => a < b);
   }
 }

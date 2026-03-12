@@ -7,6 +7,14 @@ import { MacdBollingerRsiStrategy } from '../strategies/MacdBollingerRsiStrategy
 import { CrossExchangeArbitrage, TriangularArbitrage, StatisticalArbitrage } from '@agencyos/vibe-arbitrage-engine/strategies';
 import { LicenseService, LicenseTier, LicenseError } from '../lib/raas-gate';
 
+// Polymarket strategies
+import { ComplementaryArbStrategy } from '../strategies/polymarket/ComplementaryArbStrategy';
+import { MakerBotStrategy } from '../strategies/polymarket/MakerBotStrategy';
+import { WeatherBotStrategy } from '../strategies/polymarket/WeatherBotStrategy';
+import { AIReasoningStrategy } from '../strategies/polymarket/AIReasoningStrategy';
+import { HedgeDiscoveryStrategy } from '../strategies/polymarket/HedgeDiscoveryStrategy';
+import { WhaleTrackingStrategy } from '../strategies/polymarket/WhaleTrackingStrategy';
+
 // Deferred imports for ML strategies (only loaded when needed)
 import type { QLearningStrategy as QLearningStrategyType } from '../ml/tabular-q-learning-rl-trading-strategy';
 import type { GruPredictionStrategy as GruPredictionStrategyType } from '../ml/gru-prediction-strategy';
@@ -22,6 +30,13 @@ export class StrategyLoader {
     ['CrossExchange', CrossExchangeArbitrage],
     ['Triangular', TriangularArbitrage],
     ['Statistical', StatisticalArbitrage],
+    // Polymarket strategies
+    ['ComplementaryArb', ComplementaryArbStrategy],
+    ['MakerBot', MakerBotStrategy],
+    ['WeatherBot', WeatherBotStrategy],
+    ['AIReasoning', AIReasoningStrategy],
+    ['HedgeDiscovery', HedgeDiscoveryStrategy],
+    ['WhaleTracking', WhaleTrackingStrategy],
   ]);
 
   /** Factory functions for strategies that need config (ML strategies - PREMIUM). */

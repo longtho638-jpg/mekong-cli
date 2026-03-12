@@ -373,7 +373,7 @@ export async function monitoringRoutesExtension(fastify: FastifyInstance): Promi
 
         // For now, return mock data based on trade metrics
         // In production, this would query actual API call logs
-        const calls = metrics.anomalies.map((anomaly: any) => ({
+        const calls = metrics.anomalies.map((anomaly) => ({
           tenantId: anomaly.tenantId,
           endpoint: '/api/v1/trade',
           method: 'POST',
@@ -390,8 +390,8 @@ export async function monitoringRoutesExtension(fastify: FastifyInstance): Promi
 
         const totalCalls = calls.length;
         const avgLatency =
-          totalCalls > 0 ? Math.round(calls.reduce((sum: number, c: any) => sum + c.latencyMs, 0) / totalCalls) : 0;
-        const errorCount = calls.filter((c: any) => c.statusCode >= 400).length;
+          totalCalls > 0 ? Math.round(calls.reduce((sum, c) => sum + c.latencyMs, 0) / totalCalls) : 0;
+        const errorCount = calls.filter((c) => c.statusCode >= 400).length;
 
         const response: ApiCallsResponse = {
           calls: calls.slice(0, 50),

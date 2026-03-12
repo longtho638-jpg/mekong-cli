@@ -10,12 +10,12 @@
 import { IExchange, IOrder, IBalance, IOrderBook } from '../interfaces/exchange-types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// CCXT types are resolved at runtime via require() — typed as `any` at package boundary
+// CCXT types are resolved at runtime via require() — typed as `unknown` at package boundary
 // to avoid requiring ccxt type declarations as a build-time dependency.
 
 export class ExchangeClientBase implements IExchange {
   name: string;
-  protected exchange: any;
+  protected exchange: unknown;
 
   constructor(exchangeId: string, apiKey?: string, secret?: string) {
     this.name = exchangeId;

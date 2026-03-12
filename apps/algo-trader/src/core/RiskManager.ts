@@ -1,3 +1,36 @@
+/**
+ * Position for correlation calculation
+ */
+export interface PositionReturn {
+  symbol: string;
+  returns: number[];
+}
+
+/**
+ * Correlation matrix result
+ */
+export interface CorrelationMatrix {
+  symbols: string[];
+  matrix: number[][];
+}
+
+/**
+ * Kelly configuration for binary markets
+ */
+export interface KellyConfig {
+  fraction?: number;  // Fraction of Kelly to use (default: 0.25 = quarter Kelly)
+  maxPercent?: number; // Maximum position as % of bankroll (default: 25%)
+}
+
+/**
+ * Kelly criterion result
+ */
+export interface KellyResult {
+  fullKelly: number;    // Full Kelly %
+  adjustedKelly: number; // Kelly * fraction
+  positionSize: number; // USD to allocate
+}
+
 export interface StopLossTakeProfitConfig {
   stopLossPercent?: number;   // Hard stop-loss distance from entry (e.g. 2 = 2%)
   takeProfitPercent?: number; // Take-profit distance from entry (e.g. 5 = 5%)
@@ -36,6 +69,23 @@ export interface DrawdownControlConfig {
   recoveryPercentage: number; // Percentage of high-watermark to resume after drawdown
   resetAfterRecovery: boolean; // Whether to reset stats after recovery
 }
+
+/**
+ * RiskManager configuration
+ */
+export interface RiskManagerConfig {
+  bankroll: number;
+  maxPositionPercent?: number;  // Max % of bankroll per position (default: 25%)
+  dailyLossLimit?: number;      // Max daily loss in USD
+  kellyFraction?: number;       // Fraction of Kelly to use (default: 0.25)
+}
+
+const DEFAULT_CONFIG: RiskManagerConfig = {
+  bankroll: 10000,
+  maxPositionPercent: 25,
+  dailyLossLimit: 500,
+  kellyFraction: 0.25,  // Quarter Kelly
+};
 
 export interface DynamicRiskParams {
   positionSizeMultiplier: number; // Multiplier based on volatility or market conditions
@@ -377,5 +427,269 @@ export class RiskManager {
       stopLossMultiplier,
       leverageAdjustment
     };
+  }
+
+  // ============================================================
+  // KELLY CRITERION & POSITION SIZING
+  // ============================================================
+
+  /**
+   * Calculate Kelly Criterion for binary markets (Polymarket-style)
+   * Formula: f* = (p*b - q) / b where:
+   *   - p = probability of winning (edge)
+   *   - q = 1 - p = probability of losing
+   *   - b = odds (payout ratio, e.g., 0.8 for 80% return)
+   *
+   * @param edge Win probability (0-1), e.g., 0.55 = 55% edge
+   * @param odds Payout ratio (decimal), e.g., 0.8 means 80% return on win
+   * @param config Optional Kelly configuration
+   * @returns Kelly result with full/adjusted percentages and position size
+   */
+  static calculateKelly(
+    edge: number,
+    odds: number,
+    config?: KellyConfig
+  ): KellyResult {
+    if (edge < 0 || edge > 1) {
+      throw new Error('Edge must be between 0 and 1');
+    }
+    if (odds <= 0) {
+      throw new Error('Odds must be positive');
+    }
+
+    const p = edge;
+    const q = 1 - p;
+    const b = odds;
+
+    // Kelly formula: f* = (bp - q) / b
+    const fullKelly = ((b * p - q) / b);
+
+    // Clamp negative Kelly to 0 (don't bet)
+    const clampedKelly = Math.max(0, Math.min(1, fullKelly));
+
+    // Apply fraction (e.g., quarter Kelly = 0.25)
+    const fraction = config?.fraction ?? 0.25;
+    const adjustedKelly = clampedKelly * fraction;
+
+    // Apply max position limit
+    const maxPercent = (config?.maxPercent ?? 25) / 100;
+    const cappedKelly = Math.min(adjustedKelly, maxPercent);
+
+    return {
+      fullKelly: clampedKelly * 100,      // As percentage
+      adjustedKelly: cappedKelly * 100,   // As percentage (after fraction + cap)
+      positionSize: 0                      // Set by caller based on bankroll
+    };
+  }
+
+  /**
+   * Calculate Kelly position size given bankroll
+   */
+  static calculateKellyPositionSize(
+    edge: number,
+    odds: number,
+    bankroll: number,
+    config?: KellyConfig
+  ): number {
+    const kellyResult = this.calculateKelly(edge, odds, config);
+    return bankroll * (kellyResult.adjustedKelly / 100);
+  }
+
+  // ============================================================
+  // POSITION LIMITS
+  // ============================================================
+
+  /**
+   * Check if a position size is within allowed limits
+   * @param positionSize USD amount of the position
+   * @param bankroll Total bankroll
+   * @param maxPositionPercent Maximum position as % of bankroll (default: 25%)
+   * @returns true if position is within limits
+   */
+  static checkPositionLimit(
+    positionSize: number,
+    bankroll: number,
+    maxPositionPercent?: number
+  ): boolean {
+    if (positionSize < 0) {
+      return false;
+    }
+    const maxPercent = maxPositionPercent ?? 25;
+    const maxAllowed = bankroll * (maxPercent / 100);
+    return positionSize <= maxAllowed;
+  }
+
+  // ============================================================
+  // DAILY LOSS LIMIT
+  // ============================================================
+
+  /**
+   * Check if daily loss limit has been exceeded
+   * @param dailyPnL Current daily P&L (negative = loss)
+   * @param limit Daily loss limit in USD
+   * @returns true if limit exceeded (should halt trading)
+   */
+  static checkDailyLoss(dailyPnL: number, limit: number): boolean {
+    if (limit <= 0) {
+      return false;
+    }
+    return dailyPnL < -limit;
+  }
+
+  // ============================================================
+  // CORRELATION MATRIX
+  // ============================================================
+
+  /**
+   * Calculate correlation matrix between positions
+   * Uses Pearson correlation coefficient on return series
+   *
+   * @param positions Array of positions with return histories
+   * @returns Correlation matrix with symbols and NxN matrix
+   */
+  static calculateCorrelation(positions: PositionReturn[]): CorrelationMatrix {
+    const n = positions.length;
+    if (n === 0) {
+      return { symbols: [], matrix: [] };
+    }
+
+    // Find minimum common length
+    const minLen = Math.min(...positions.map(p => p.returns.length));
+    if (minLen < 2) {
+      // Not enough data for correlation
+      const identity = Array(n).fill(0).map((_, i) =>
+        Array(n).fill(0).map((_, j) => i === j ? 1 : 0)
+      );
+      return {
+        symbols: positions.map(p => p.symbol),
+        matrix: identity
+      };
+    }
+
+    // Truncate to common length
+    const returns = positions.map(p => p.returns.slice(-minLen));
+    const symbols = positions.map(p => p.symbol);
+
+    // Calculate means
+    const means = returns.map(r => r.reduce((a, b) => a + b, 0) / minLen);
+
+    // Calculate correlation matrix
+    const matrix: number[][] = [];
+    for (let i = 0; i < n; i++) {
+      matrix[i] = [];
+      for (let j = 0; j < n; j++) {
+        if (i === j) {
+          matrix[i][j] = 1;
+        } else {
+          // Pearson correlation
+          let numerator = 0;
+          let denomI = 0;
+          let denomJ = 0;
+          for (let k = 0; k < minLen; k++) {
+            const di = returns[i][k] - means[i];
+            const dj = returns[j][k] - means[j];
+            numerator += di * dj;
+            denomI += di * di;
+            denomJ += dj * dj;
+          }
+          const denom = Math.sqrt(denomI * denomJ);
+          matrix[i][j] = denom > 0 ? numerator / denom : 0;
+        }
+      }
+    }
+
+    return { symbols, matrix };
+  }
+
+  /**
+   * Calculate correlation between two return series
+   */
+  static correlationBetween(returns1: number[], returns2: number[]): number {
+    const n = Math.min(returns1.length, returns2.length);
+    if (n < 2) return 0;
+
+    const r1 = returns1.slice(-n);
+    const r2 = returns2.slice(-n);
+
+    const mean1 = r1.reduce((a, b) => a + b, 0) / n;
+    const mean2 = r2.reduce((a, b) => a + b, 0) / n;
+
+    let numerator = 0;
+    let denom1 = 0;
+    let denom2 = 0;
+
+    for (let i = 0; i < n; i++) {
+      const d1 = r1[i] - mean1;
+      const d2 = r2[i] - mean2;
+      numerator += d1 * d2;
+      denom1 += d1 * d1;
+      denom2 += d2 * d2;
+    }
+
+    const denom = Math.sqrt(denom1 * denom2);
+    return denom > 0 ? numerator / denom : 0;
+  }
+
+  // ============================================================
+  // INVENTORY SKEW (Market Making)
+  // ============================================================
+
+  /**
+   * Calculate inventory skew for market making
+   * Skew adjusts prices based on current inventory to reduce risk
+   *
+   * Formula: skew = -inventory * inventorySkewFactor
+   * Positive inventory (long) → skew down (encourage sells)
+   * Negative inventory (short) → skew up (encourage buys)
+   *
+   * @param delta Net inventory delta (positive = long, negative = short)
+   * @param maxInventory Maximum inventory before full skew
+   * @param maxSkewPercent Maximum skew percentage (default: 1%)
+   * @returns Skew as a decimal (e.g., 0.005 = 0.5% price adjustment)
+   */
+  static getInventorySkew(
+    delta: number,
+    maxInventory: number,
+    maxSkewPercent: number = 1
+  ): number {
+    if (maxInventory <= 0) {
+      return 0;
+    }
+
+    // Normalize inventory to [-1, 1] range
+    const normalizedInventory = Math.max(-1, Math.min(1, delta / maxInventory));
+
+    // Skew is opposite of inventory (long → skew down, short → skew up)
+    const skewFraction = -normalizedInventory * (maxSkewPercent / 100);
+
+    return skewFraction;
+  }
+
+  /**
+   * Get skewed bid/ask prices for market making
+   * @param midPrice Mid-market price
+   * @param delta Current inventory
+   * @param maxInventory Maximum inventory
+   * @param spread Bid-ask spread (default: 0.02 = 2%)
+   * @param maxSkewPercent Maximum skew (default: 1%)
+   * @returns Object with skewed bid and ask prices
+   */
+  static getSkewedPrices(
+    midPrice: number,
+    delta: number,
+    maxInventory: number,
+    spread: number = 0.02,
+    maxSkewPercent: number = 1
+  ): { bid: number; ask: number; skew: number } {
+    const skew = this.getInventorySkew(delta, maxInventory, maxSkewPercent);
+    const halfSpread = spread / 2;
+
+    // Apply skew to both bid and ask in the same direction
+    // Long inventory → lower both prices (encourage selling)
+    // Short inventory → raise both prices (encourage buying)
+    const bid = midPrice * (1 - halfSpread + skew);
+    const ask = midPrice * (1 + halfSpread + skew);
+
+    return { bid, ask, skew };
   }
 }

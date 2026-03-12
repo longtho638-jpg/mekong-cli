@@ -21,7 +21,7 @@ export class RaasAuditLogger {
   private static instance: RaasAuditLogger;
   private logBuffer: AuditEvent[] = [];
   private readonly MAX_BUFFER_SIZE = 100;
-  private readonly logStream?: any;
+  private readonly logStream?: NodeJS.WritableStream;
 
   private constructor() {
     // In production: initialize file/Winston/SIEM stream

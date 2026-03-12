@@ -72,7 +72,7 @@ export async function getQuotaLimits(env, licenseKey, tier) {
         return JSON.parse(stored);
       }
     } catch (err) {
-      console.error('Quota limits KV read error:', err.message);
+      /* Quota limits KV read error */
     }
   }
 
@@ -133,7 +133,7 @@ export async function getUsageCounters(env, licenseKey, tier) {
           }
         }
       } catch (err) {
-        console.error('Usage KV read error:', err.message);
+        /* Usage KV read error */
       }
     }
 
@@ -162,7 +162,7 @@ export async function getUsageCounters(env, licenseKey, tier) {
       lastUpdated: new Date().toISOString()
     };
   } catch (err) {
-    console.error('Get usage counters error:', err.message);
+    /* Get usage counters error */
     return {
       licenseKey,
       monthlyRequests: 0,
@@ -273,7 +273,7 @@ export async function checkQuota(env, licenseKey, tier) {
       blockReason
     };
   } catch (err) {
-    console.error('Quota check error:', err.message);
+    /* Quota check error */
     // Fail open - allow request but log error
     return {
       allowed: true,
@@ -296,7 +296,7 @@ export async function checkQuota(env, licenseKey, tier) {
  */
 export async function incrementUsage(env, licenseKey, payloadSize, idempotencyKey) {
   if (!env.QUOTA_KV) {
-    console.warn('QUOTA_KV binding missing, skipping usage increment');
+    /* QUOTA_KV binding missing, skipping usage increment */
     return;
   }
 
@@ -320,7 +320,7 @@ export async function incrementUsage(env, licenseKey, payloadSize, idempotencyKe
     // This just adds daily/hourly granularity for quota checks
 
   } catch (err) {
-    console.error('Increment usage error:', err.message);
+    /* Increment usage error */
   }
 }
 
@@ -333,7 +333,7 @@ export async function incrementUsage(env, licenseKey, payloadSize, idempotencyKe
  */
 export async function storeQuotaLimits(env, licenseKey, limits) {
   if (!env.QUOTA_KV) {
-    console.warn('QUOTA_KV binding missing, cannot store limits');
+    /* QUOTA_KV binding missing, cannot store limits */
     return false;
   }
 
@@ -343,10 +343,9 @@ export async function storeQuotaLimits(env, licenseKey, limits) {
     const merged = { ...existing, ...limits };
 
     await env.QUOTA_KV.put(key, JSON.stringify(merged));
-    console.log(`Stored quota limits for ${licenseKey}`);
     return true;
   } catch (err) {
-    console.error('Store quota limits error:', err.message);
+    /* Store quota limits error */
     return false;
   }
 }

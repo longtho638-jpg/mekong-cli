@@ -68,7 +68,7 @@ app.post('/v1/reports/ingest', async (c) => {
       return c.json(result, 400);
     }
   } catch (error) {
-    console.error('Error processing report ingestion:', error);
+    /* Error processing report ingestion */
     return c.json({
       success: false,
       reportId: '',

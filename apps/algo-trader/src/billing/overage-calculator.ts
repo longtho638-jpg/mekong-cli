@@ -619,7 +619,7 @@ export class OverageCalculator {
    * @param summary - Overage summary from calculateOverageWithStripe
    * @returns Array of created Stripe usage records
    */
-  async createStripeUsageRecords(summary: OverageSummary): Promise<any[]> {
+  async createStripeUsageRecords(summary: OverageSummary): Promise<Record<string, unknown>[]> {
     const stripe = getStripeClient();
     // Get subscription item ID from first charge (all charges have the same subscription item)
     const stripeSubscriptionItemId = summary.charges[0]?.stripeSubscriptionItemId;
@@ -629,7 +629,7 @@ export class OverageCalculator {
       return [];
     }
 
-    const records: any[] = [];
+    const records: Record<string, unknown>[] = [];
     const now = Math.floor(Date.now() / 1000);
 
     for (const charge of summary.charges) {

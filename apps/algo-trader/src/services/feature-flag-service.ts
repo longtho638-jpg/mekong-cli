@@ -9,7 +9,7 @@
  * - Hash-based deterministic rollout
  */
 
-import { PrismaClient, FeatureFlag, LicenseFeatureFlag } from '@prisma/client';
+import { PrismaClient, FeatureFlag, LicenseFeatureFlag, Prisma } from '@prisma/client';
 import { createHash } from 'crypto';
 
 const prisma = new PrismaClient();
@@ -26,7 +26,7 @@ export interface CreateFeatureFlagInput {
   enabled?: boolean;
   rolloutPercentage?: number;
   userWhitelist?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Prisma.InputJsonValue;
 }
 
 export class FeatureFlagService {
@@ -115,7 +115,7 @@ export class FeatureFlagService {
         enabled: input.enabled ?? true,
         rolloutPercentage: input.rolloutPercentage ?? 100,
         userWhitelist: input.userWhitelist ?? [],
-        metadata: input.metadata ?? {}
+        metadata: (input.metadata ?? {}) as Prisma.InputJsonValue
       }
     });
 
@@ -136,7 +136,7 @@ export class FeatureFlagService {
         ...(updates.enabled !== undefined && { enabled: updates.enabled }),
         ...(updates.rolloutPercentage !== undefined && { rolloutPercentage: updates.rolloutPercentage }),
         ...(updates.userWhitelist !== undefined && { userWhitelist: updates.userWhitelist }),
-        ...(updates.metadata !== undefined && { metadata: updates.metadata })
+        ...(updates.metadata !== undefined && { metadata: updates.metadata as Prisma.InputJsonValue })
       }
     });
 
@@ -246,7 +246,7 @@ export class FeatureFlagService {
     licenseId: string,
     featureName: string,
     enabled: boolean,
-    overrideValue?: any
+    overrideValue?: Prisma.InputJsonValue
   ): Promise<LicenseFeatureFlag> {
     const flag = await this.getFlagByName(featureName);
     if (!flag) {
@@ -265,7 +265,7 @@ export class FeatureFlagService {
         where: { id: existing.id },
         data: {
           enabled,
-          overrideValue: overrideValue ?? null
+          overrideValue: overrideValue ?? (null as unknown as Prisma.InputJsonValue)
         }
       });
     }
@@ -275,7 +275,7 @@ export class FeatureFlagService {
         licenseId,
         featureFlagId: flag.id,
         enabled,
-        overrideValue: overrideValue ?? null
+        overrideValue: overrideValue ?? (null as unknown as Prisma.InputJsonValue)
       }
     });
   }

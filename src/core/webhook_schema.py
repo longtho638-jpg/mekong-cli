@@ -11,7 +11,7 @@ Usage:
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Any, Literal
+from typing import Any, Literal, Union
 from pydantic import BaseModel, Field
 
 
@@ -261,23 +261,7 @@ WEBHOOK_EVENT_SCHEMAS: list[WebhookEventSchema] = [
 ]
 
 
-# =============================================================================
-# TYPE ALIASES FOR EASE OF USE
-# =============================================================================
-
-MissionEventPayload = (
-    MissionCreatedPayload
-    | MissionPlanningPayload
-    | MissionStepStartedPayload
-    | MissionStepCompletedPayload
-    | MissionStepFailedPayload
-    | MissionCompletedPayload
-    | MissionFailedPayload
-    | CreditsLowPayload
-)
-
-
-def get_payload_class(event_type: str) -> type[BaseWebhookPayload] | None:
+def get_payload_class(event_type: str) -> Union[type[BaseWebhookPayload], None]:
     """Get payload class for an event type.
 
     Args:
@@ -297,6 +281,19 @@ def get_payload_class(event_type: str) -> type[BaseWebhookPayload] | None:
         "credits.low": CreditsLowPayload,
     }
     return mapping.get(event_type)
+
+
+# Type alias for union of all mission event payloads (Python 3.9 compatible)
+MissionEventPayload = Union[
+    MissionCreatedPayload,
+    MissionPlanningPayload,
+    MissionStepStartedPayload,
+    MissionStepCompletedPayload,
+    MissionStepFailedPayload,
+    MissionCompletedPayload,
+    MissionFailedPayload,
+    CreditsLowPayload,
+]
 
 
 __all__ = [

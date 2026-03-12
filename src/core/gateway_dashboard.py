@@ -184,7 +184,7 @@ function loadProjects(){
 fetch('/projects').then(function(r){return r.json()}).then(function(list){
 var sel=document.getElementById('project-select');
 list.forEach(function(p){var o=document.createElement('option');o.value=p.name;o.textContent=p.name;sel.appendChild(o)});
-}).catch(function(err){console.error('[Dashboard] Failed to load projects:', err)})
+}).catch(function(err){/* Failed to load projects */})
 }
 
 /* --- Live log helpers --- */

@@ -54,8 +54,7 @@ export async function checkRateLimit(env, tenantId, role) {
 
   // KV binding required
   if (!env.RATE_LIMIT_KV) {
-    // No KV configured — allow but log warning
-    console.warn('RATE_LIMIT_KV binding missing, skipping rate limit');
+    // No KV configured — allow but skip rate limit
     return { allowed: true, remaining: limit, limit, resetIn: 60 };
   }
 
@@ -81,7 +80,6 @@ export async function checkRateLimit(env, tenantId, role) {
     };
   } catch (err) {
     // KV error — fail open (allow request) to avoid blocking legitimate traffic
-    console.error('Rate limit KV error:', err.message);
     return { allowed: true, remaining: limit, limit, resetIn: 60 };
   }
 }

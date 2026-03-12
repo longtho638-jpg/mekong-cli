@@ -534,18 +534,18 @@ export default {
         if (path.startsWith('/v1/trade')) {
           const idempotencyKey = request.headers.get('X-Idempotency-Key');
           trackExtensionUsage(env, tenantId, 'algo-trader', 1, idempotencyKey).catch(err => {
-            console.error('Extension usage tracking error:', err);
+            /* Extension usage tracking error */
           });
         }
 
         // Track usage in RAAS_USAGE_KV (monthly aggregation)
         trackUsage(env, licenseKey, tenantId, role, endpointType, request.method, payloadSize).catch(err => {
-          console.error('Usage tracking failed:', err);
+          /* Usage tracking failed */
         });
 
         // Increment quota counters (daily/hourly)
         incrementUsage(env, licenseKey, payloadSize).catch(err => {
-          console.error('Quota increment error:', err);
+          /* Quota increment error */
         });
 
         // Check and trigger quota alerts (non-blocking) with billing metadata
@@ -558,7 +558,7 @@ export default {
             currency: quotaResult.status?.limit?.currency || 'USD'
           };
           checkAndTriggerAlerts(env, quotaResult, billingMetadata).catch(err => {
-            console.error('Quota alert error:', err);
+            /* Quota alert error */
           });
         }
       }

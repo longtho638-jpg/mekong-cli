@@ -1,5 +1,5 @@
 export interface AgentResult {
-  data: any;
+  data: unknown;
   error?: string;
 }
 

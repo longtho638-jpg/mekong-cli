@@ -235,6 +235,7 @@ describe('ROIaaS Phase 1 Gate Functions', () => {
     });
 
     test('should return hasAccess=true for PRO tier', () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-pro-test';
       LicenseService.getInstance().validateSync('raas-pro-test');
       const result = checkLicense();
       expect(result.valid).toBe(true);
@@ -243,6 +244,7 @@ describe('ROIaaS Phase 1 Gate Functions', () => {
     });
 
     test('should return hasAccess=true for ENTERPRISE tier', () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-ent-test';
       LicenseService.getInstance().validateSync('raas-ent-test');
       const result = checkLicense();
       expect(result.valid).toBe(true);

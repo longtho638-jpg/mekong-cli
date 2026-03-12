@@ -206,13 +206,13 @@ export function createOrderRoutes() {
 
       // Apply filters
       if (symbol) {
-        orders = orders.filter((o: any) => o.symbol === symbol);
+        orders = orders.filter((o) => o.symbol === symbol);
       }
       if (status) {
-        orders = orders.filter((o: any) => o.status === status);
+        orders = orders.filter((o) => o.status === status);
       }
       if (side) {
-        orders = orders.filter((o: any) => o.side === side);
+        orders = orders.filter((o) => o.side === side);
       }
 
       // Pagination
@@ -220,7 +220,7 @@ export function createOrderRoutes() {
       const paginated = orders.slice(offset, offset + limit);
 
       return c.json({
-        orders: paginated.map((o: any) => ({
+        orders: paginated.map((o) => ({
           orderId: o.id,
           clientOrderId: o.clientOrderId,
           status: o.status,

@@ -8,8 +8,7 @@ import type { Result } from '../../types/common.js';
 export class GoogleCalendarIntegration implements Integration {
   readonly name = 'google-calendar';
   connected = false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private calendar: any = null;
+  private calendar: ReturnType<typeof google.calendar> | null = null;
 
   async connect(credentials: IntegrationCredentials): Promise<Result<void>> {
     if (credentials.type !== 'oauth') {
@@ -56,8 +55,8 @@ export class GoogleCalendarIntegration implements Integration {
         singleEvents: true,
         timeMin: new Date().toISOString(),
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const events: CalendarEvent[] = (res.data.items ?? []).map((e: any) => ({
+      const items = res.data.items ?? [];
+      const events: CalendarEvent[] = items.map((e) => ({
         id: e.id,
         title: e.summary ?? '(no title)',
         description: e.description,
@@ -148,8 +147,8 @@ export class GoogleCalendarIntegration implements Integration {
         singleEvents: true,
         orderBy: 'startTime',
       });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const events: CalendarEvent[] = (res.data.items ?? []).map((e: any) => ({
+      const items = res.data.items ?? [];
+      const events: CalendarEvent[] = items.map((e) => ({
         id: e.id,
         title: e.summary ?? '(no title)',
         description: e.description,

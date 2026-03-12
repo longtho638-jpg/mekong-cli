@@ -248,5 +248,76 @@ class TestRunFullRecipe:
             assert mock_run.call_count >= 2  # May retry
 
 
+class TestExecuteToolStep:
+    """Test _execute_tool_step() - AGI v2 ToolRegistry."""
+
+    def test_tool_success(self):
+        """Successful tool execution returns result."""
+        recipe = Recipe(name="test", description="Test")
+        step = RecipeStep(order=1, title="Test", description="npm:install",
+                          params={"type": "tool", "tool_name": "npm:install", "tool_args": {}})
+        executor = RecipeExecutor(recipe)
+        mock_registry = Mock()
+        mock_registry.execute.return_value = {"output": "installed", "success": True, "duration_ms": 100}
+        with patch("src.core.tool_registry.ToolRegistry", return_value=mock_registry):
+            result = executor._execute_tool_step(step)
+            assert result.exit_code == 0
+            assert result.metadata["mode"] == "tool"
+            assert result.metadata["tool_name"] == "npm:install"
+
+    def test_tool_failure(self):
+        """Failed tool execution returns error."""
+        recipe = Recipe(name="test", description="Test")
+        step = RecipeStep(order=1, title="Test", description="bad:tool",
+                          params={"type": "tool", "tool_name": "bad:tool", "tool_args": {}})
+        executor = RecipeExecutor(recipe)
+        mock_registry = Mock()
+        mock_registry.execute.return_value = {"output": "", "success": False, "error": "not found", "duration_ms": 0}
+        with patch("src.core.tool_registry.ToolRegistry", return_value=mock_registry):
+            result = executor._execute_tool_step(step)
+            assert result.exit_code == 1
+
+    def test_tool_import_error(self):
+        """Missing ToolRegistry should return error gracefully."""
+        recipe = Recipe(name="test", description="Test")
+        step = RecipeStep(order=1, title="Test", description="tool",
+                          params={"type": "tool", "tool_name": "test", "tool_args": {}})
+        executor = RecipeExecutor(recipe)
+        with patch("src.core.tool_registry.ToolRegistry", side_effect=ImportError("no module")):
+            result = executor._execute_tool_step(step)
+            assert result.exit_code == 1
+            assert result.error is not None
+
+
+class TestExecuteBrowseStep:
+    """Test _execute_browse_step() - AGI v2 BrowserAgent."""
+
+    def test_browse_import_error(self):
+        """Missing BrowserAgent should return error gracefully."""
+        recipe = Recipe(name="test", description="Test")
+        step = RecipeStep(order=1, title="Test", description="https://example.com",
+                          params={"type": "browse", "url": "https://example.com", "action": "check"})
+        executor = RecipeExecutor(recipe)
+        with patch.dict("sys.modules", {"src.core.browser_agent": None}):
+            result = executor._execute_browse_step(step)
+            assert result.exit_code == 1
+
+
+class TestApiStepEdgeCases:
+    """Test API step edge cases."""
+
+    def test_api_request_exception(self):
+        """Request exception should return error."""
+        import requests
+        recipe = Recipe(name="test", description="Test")
+        step = RecipeStep(order=1, title="Test", description="Fetch",
+                          params={"type": "api", "url": "https://api.example.com/fail"})
+        executor = RecipeExecutor(recipe)
+        with patch("requests.request", side_effect=requests.exceptions.ConnectionError("timeout")):
+            result = executor._execute_api_step(step)
+            assert result.exit_code == 1
+            assert result.error is not None
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

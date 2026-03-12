@@ -110,7 +110,7 @@ export async function getExtensionStatus(env, tenantId, extensionName = 'algo-tr
       resetAt
     };
   } catch (error) {
-    console.error('[ExtensionStatus] KV read error:', error);
+    /* Extension status KV read error */
     // Fail-open: return permitted on KV errors
     return {
       permitted: true,
@@ -196,7 +196,7 @@ export async function trackExtensionUsage(env, tenantId, extensionName, requestC
       exceeded
     };
   } catch (error) {
-    console.error('[TrackExtensionUsage] KV error:', error);
+    /* TrackExtensionUsage KV error */
     return { success: false, usage: 0, limit: 0, exceeded: false };
   }
 }
@@ -214,7 +214,7 @@ export async function trackExtensionUsage(env, tenantId, extensionName, requestC
 export async function setExtensionStatus(env, tenantId, extensionName, permitted, status, limit) {
   try {
     if (!env.SUSPENSION_CACHE) {
-      console.warn('[SetExtensionStatus] KV not configured');
+      /* KV not configured */
       return false;
     }
 
@@ -232,10 +232,10 @@ export async function setExtensionStatus(env, tenantId, extensionName, permitted
       expirationTtl: 86400  // 24 hours
     });
 
-    console.log(`[SetExtensionStatus] Tenant ${tenantId} extension ${extensionName} set to ${status}`);
+    /* Extension status set */
     return true;
   } catch (error) {
-    console.error('[SetExtensionStatus] KV error:', error);
+    /* SetExtensionStatus KV error */
     return false;
   }
 }

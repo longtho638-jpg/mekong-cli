@@ -12,3 +12,25 @@ tests
 *.test.js
 coverage
 .nyc_output
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+docker/
+infra/
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+.DS_Store
+
+# Reports & Backups
+reports/
+backups/
+*.bak
+
+# Dashboard (built separately)
+dashboard/node_modules
+dashboard/dist

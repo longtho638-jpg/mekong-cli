@@ -17,7 +17,7 @@ export class WebhookService {
    */
   async triggerDashboardUpdate(payload: WebhookPayload): Promise<boolean> {
     if (!this.webhookUrl || !this.authToken) {
-      console.warn('Webhook URL or auth token not configured, skipping dashboard update');
+      /* Webhook URL or auth token not configured, skipping dashboard update */
       return true; // Don't fail if webhook is not configured
     }
 
@@ -33,14 +33,14 @@ export class WebhookService {
       });
 
       if (response.ok) {
-        console.log('Dashboard update webhook sent successfully');
+        /* Dashboard update webhook sent successfully */
         return true;
       } else {
-        console.error(`Webhook request failed with status: ${response.status}`);
+        /* Webhook request failed */
         return false;
       }
     } catch (error) {
-      console.error('Error sending webhook:', error);
+      /* Error sending webhook */
       return false;
     }
   }

@@ -1,6 +1,6 @@
 // Simple console logger fallback if @mekong/shared is not available
 const logger = {
-    error: (message: string, context?: any) => {
+    error: (message: string, context?: unknown) => {
         console.error(message, context);
     }
 };

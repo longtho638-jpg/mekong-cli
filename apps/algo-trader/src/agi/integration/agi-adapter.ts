@@ -183,7 +183,6 @@ export class AGIAdapter {
    */
   setEnabled(enabled: boolean): void {
     this.config.enabled = enabled;
-    console.log(`[AGIAdapter] AGI ${enabled ? 'enabled' : 'disabled'}`);
   }
 
   /**

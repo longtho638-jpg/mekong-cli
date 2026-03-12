@@ -229,11 +229,12 @@ export class UsageQuotaService {
  * Middleware factory for quota enforcement
  */
 export function requireQuotaMiddleware() {
-  return async (req: any, res: any, next: (err?: any) => void) => {
+  return async (req: Record<string, unknown>, res: { setHeader: (name: string, value: string) => void; status: (code: number) => { json: (data: unknown) => void } }, next: (err?: unknown) => void) => {
     try {
       const quotaService = UsageQuotaService.getInstance();
-      const licenseKey = req.headers['x-license-key'] || req.licenseKey;
-      const tier = req.headers['x-license-tier'] || 'free';
+      const headers = req.headers as Record<string, string | undefined> || {};
+      const licenseKey = headers['x-license-key'] || (req.licenseKey as string);
+      const tier = headers['x-license-tier'] || 'free';
 
       if (!licenseKey) {
         return res.status(401).json({ error: 'License key required' });
@@ -254,8 +255,8 @@ export function requireQuotaMiddleware() {
 
       // Add quota headers
       const usage = await quotaService.getUsage(licenseKey, tier);
-      res.setHeader('X-RateLimit-Limit', usage.limit);
-      res.setHeader('X-RateLimit-Remaining', usage.remaining);
+      res.setHeader('X-RateLimit-Limit', usage.limit.toString());
+      res.setHeader('X-RateLimit-Remaining', usage.remaining.toString());
       res.setHeader('X-RateLimit-Percent-Used', usage.percentUsed.toString());
 
       next();

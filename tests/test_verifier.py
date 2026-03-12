@@ -519,5 +519,70 @@ class TestStrictModeBehavior(unittest.TestCase):
         self.assertFalse(verifier.strict_mode)
 
 
+class TestCustomCheckSecurity(unittest.TestCase):
+    """Test _run_custom_check security sanitization."""
+
+    def setUp(self):
+        self.verifier = RecipeVerifier()
+
+    def test_dangerous_command_blocked(self):
+        """Dangerous commands should be blocked by CommandSanitizer."""
+        result = ExecutionResult()
+        check = self.verifier._run_custom_check("rm -rf /", result)
+        self.assertEqual(check.status, VerificationStatus.FAILED)
+        self.assertIn("security", check.message.lower())
+
+    def test_empty_dict_command(self):
+        """Dict with empty command should fail."""
+        result = ExecutionResult()
+        check = self.verifier._run_custom_check({"command": "", "expected_output": "test"}, result)
+        self.assertEqual(check.status, VerificationStatus.FAILED)
+        self.assertIn("Empty", check.message)
+
+    def test_invalid_spec_type(self):
+        """Non-string, non-dict spec should fail."""
+        result = ExecutionResult()
+        check = self.verifier._run_custom_check(42, result)
+        self.assertEqual(check.status, VerificationStatus.FAILED)
+        self.assertIn("Invalid", check.message)
+
+
+class TestVerifyNullExitCode(unittest.TestCase):
+    """Test verify() with None exit_code in criteria."""
+
+    def setUp(self):
+        self.verifier = RecipeVerifier()
+
+    def test_none_exit_code_skipped(self):
+        """None exit_code in criteria should skip check."""
+        result = ExecutionResult(exit_code=1)
+        criteria = {"exit_code": None}
+        report = self.verifier.verify(result, criteria)
+        self.assertTrue(report.passed)
+        self.assertEqual(len(report.checks), 0)
+
+    def test_file_not_exists_criteria(self):
+        """file_not_exists criteria should work in verify()."""
+        result = ExecutionResult()
+        criteria = {"file_not_exists": ["/nonexistent/surely/not/here.txt"]}
+        report = self.verifier.verify(result, criteria)
+        self.assertTrue(report.passed)
+        self.assertEqual(len(report.checks), 1)
+
+    def test_invalid_regex_fallback(self):
+        """Invalid regex in output_contains should fall back to substring."""
+        result = ExecutionResult(exit_code=0, stdout="test[data", stderr="")
+        check = self.verifier.verify_output_contains(result, "[invalid regex")
+        # "[invalid regex" is invalid regex, falls back to substring
+        # "test[data" does not contain "[invalid regex" as substring
+        self.assertEqual(check.status, VerificationStatus.FAILED)
+
+    def test_invalid_regex_not_contains_fallback(self):
+        """Invalid regex in output_not_contains should fall back to substring."""
+        result = ExecutionResult(exit_code=0, stdout="clean output", stderr="")
+        check = self.verifier.verify_output_not_contains(result, "[invalid regex")
+        self.assertEqual(check.status, VerificationStatus.PASSED)
+
+
 if __name__ == "__main__":
     unittest.main()

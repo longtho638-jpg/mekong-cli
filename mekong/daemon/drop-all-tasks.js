@@ -40,6 +40,4 @@ for (const t of tasks) {
     if (fs.existsSync(processedPath)) fs.unlinkSync(processedPath);
     fs.writeFileSync(filepath, SCOPE_LOCK + t.content);
     count++;
-    console.log(`${count}. DROPPED: ${filename}`);
 }
-console.log(`\n✅ ALL ${count} tasks dropped with SCOPE LOCK!`);

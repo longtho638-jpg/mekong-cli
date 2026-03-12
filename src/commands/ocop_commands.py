@@ -80,7 +80,8 @@ def analyze(
 
         progress.update(task, description="Sending to AI Agent for analysis...")
 
-        # TODO: Integrate with LLM client for actual analysis
+        # TECH-DEBT: OCOP-001 - Integrate with LLM client for actual analysis
+        # See: docs/TECHNICAL_DEBT_TODO.md
         # For now, generate structured output from input
         analysis = _generate_analysis_stub(product_data, file_path)
 
@@ -150,7 +151,8 @@ def export_listing(
     ) as progress:
         task = progress.add_task(f"Generating {target} listing...", total=None)
 
-        # TODO: Integrate with LLM client for actual listing generation
+        # TECH-DEBT: OCOP-002 - Integrate with LLM client for actual listing generation
+        # See: docs/TECHNICAL_DEBT_TODO.md
         listing = _generate_listing_stub(target, product_data)
 
         progress.update(task, description="Listing generated!")

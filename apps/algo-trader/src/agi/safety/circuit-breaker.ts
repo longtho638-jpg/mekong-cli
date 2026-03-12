@@ -44,7 +44,6 @@ export class CircuitBreaker {
       const timeSinceLastFailure = Date.now() - this.lastFailureTime;
       if (timeSinceLastFailure >= this.options.timeoutMs) {
         // Transition to half-open (allow one test request)
-        console.log('[CircuitBreaker] Half-open state - allowing test request');
         return false;
       }
       return true;
@@ -81,6 +80,5 @@ export class CircuitBreaker {
     this.failures = 0;
     this.isOpen = false;
     this.lastFailureTime = 0;
-    console.log('[CircuitBreaker] Reset');
   }
 }

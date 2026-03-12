@@ -31,13 +31,13 @@ import { logger } from '../utils/logger';
 export interface MiddlewareContext {
   getHeader: (name: string) => string | undefined;
   getIP: () => string | undefined;
-  deny: (code: number, body: any) => void;
+  deny: (code: number, body: Record<string, unknown>) => void;
   allow: () => void;
 }
 
 export interface NextMiddlewareResult {
   headers?: Record<string, string>;
-  response?: { status: number; body: any };
+  response?: { status: number; body: Record<string, unknown> };
 }
 
 /**
@@ -47,7 +47,7 @@ async function validateLicenseCore(
   getHeader: (name: string) => string | undefined,
   getIP: () => string | undefined,
   requiredTier: LicenseTier
-): Promise<{ valid: boolean; validation?: LicenseValidation; error?: any }> {
+): Promise<{ valid: boolean; validation?: LicenseValidation; error?: unknown }> {
   const key = getHeader('x-api-key') ||
               getHeader('authorization')?.replace('Bearer ', '') ||
               process.env.RAAS_LICENSE_KEY;
@@ -100,7 +100,7 @@ export function createLicenseMiddleware(requiredTier: LicenseTier = LicenseTier.
 
     if (!result.valid) {
       const { error, validation } = result.error!;
-      let body: any;
+      let body: Record<string, unknown>;
 
       if (error.type === 'unlicensed') {
         body = {
@@ -149,14 +149,14 @@ export function createLicenseMiddleware(requiredTier: LicenseTier = LicenseTier.
  */
 export function expressLicenseMiddleware(requiredTier: LicenseTier = LicenseTier.PRO) {
   const middleware = createLicenseMiddleware(requiredTier);
-  return async (req: any, res: any, next: () => void) => {
+  return async (req: unknown, res: unknown, next: () => void) => {
     const allowed = await middleware({
       getHeader: (name) => {
-        const val = req.headers?.[name];
+        const val = (req as Record<string, unknown>)?.[name];
         return Array.isArray(val) ? val[0] : val;
       },
-      getIP: () => req.ip || req.socket?.remoteAddress || '',
-      deny: (code, body) => res.status(code).json(body),
+      getIP: () => (req as Record<string, unknown>)?.ip || (req as Record<string, unknown>)?.socket?.remoteAddress || '',
+      deny: (code, body) => (res as Record<string, unknown>).status(code).json(body),
       allow: () => next(),
     });
     if (allowed) next();
@@ -166,21 +166,21 @@ export function expressLicenseMiddleware(requiredTier: LicenseTier = LicenseTier
 /**
  * Next.js HOC for Pages Router
  */
-export function withLicenseGuard(handler: any, requiredTier: LicenseTier = LicenseTier.PRO) {
+export function withLicenseGuard(handler: unknown, requiredTier: LicenseTier = LicenseTier.PRO) {
   const middleware = createLicenseMiddleware(requiredTier);
-  return async (req: any, res: any) => {
+  return async (req: unknown, res: unknown) => {
     const allowed = await middleware({
       getHeader: (name) => {
-        const val = req.headers?.[name];
+        const val = (req as Record<string, unknown>)?.[name];
         return Array.isArray(val) ? val[0] : val;
       },
-      getIP: () => req.ip || req.socket?.remoteAddress || '',
-      deny: (code, body) => res.status(code).json(body),
+      getIP: () => (req as Record<string, unknown>)?.ip || (req as Record<string, unknown>)?.socket?.remoteAddress || '',
+      deny: (code, body) => (res as Record<string, unknown>).status(code).json(body),
       allow: () => {},
     });
     if (allowed) {
-      (req as any).license = { valid: true, tier: requiredTier };
-      return handler(req, res);
+      (req as Record<string, unknown>).license = { valid: true, tier: requiredTier };
+      return (handler as (req: unknown, res: unknown) => void)(req, res);
     }
   };
 }
@@ -188,8 +188,8 @@ export function withLicenseGuard(handler: any, requiredTier: LicenseTier = Licen
 /**
  * Next.js App Router middleware
  */
-export function nextJsMiddleware(request: any, requiredTier: LicenseTier = LicenseTier.PRO) {
-  const pathname = request.nextUrl?.pathname || '';
+export function nextJsMiddleware(request: unknown, requiredTier: LicenseTier = LicenseTier.PRO) {
+  const pathname = (request as Record<string, unknown>)?.nextUrl?.pathname || '';
   const publicPaths = ['/api/health', '/api/ready', '/api/public', '/dashboard'];
 
   if (publicPaths.some(p => pathname.startsWith(p))) {
@@ -200,8 +200,8 @@ export function nextJsMiddleware(request: any, requiredTier: LicenseTier = Licen
   let result: NextMiddlewareResult = {};
 
   middleware({
-    getHeader: (name) => request.headers?.get?.(name) || request.headers?.[name],
-    getIP: () => request.ip || request.headers?.get?.('x-forwarded-for') || '',
+    getHeader: (name) => (request as Record<string, unknown>)?.headers?.[name] || (request as Record<string, unknown>)?.headers?.get?.(name),
+    getIP: () => (request as Record<string, unknown>)?.ip || (request as Record<string, unknown>)?.headers?.get?.('x-forwarded-for') || '',
     deny: (code, body) => {
       result = { response: { status: code, body } };
     },
@@ -223,17 +223,17 @@ export function nextJsMiddleware(request: any, requiredTier: LicenseTier = Licen
 /**
  * Fastify plugin
  */
-export async function fastifyLicensePlugin(fastify: any, opts: { tier?: LicenseTier } = {}) {
+export async function fastifyLicensePlugin(fastify: unknown, opts: { tier?: LicenseTier } = {}) {
   const middleware = createLicenseMiddleware(opts.tier || LicenseTier.PRO);
 
-  fastify.addHook('preHandler', async (request: any, reply: any) => {
+  fastify.addHook('preHandler', async (request: unknown, reply: unknown) => {
     const publicPaths = ['/health', '/ready', '/metrics', '/api/v1/billing/webhook'];
-    if (publicPaths.some(p => request.url.startsWith(p))) return;
+    if (publicPaths.some(p => (request as Record<string, string>)?.url?.startsWith(p))) return;
 
     const allowed = await middleware({
-      getHeader: (name) => request.headers[name],
-      getIP: () => request.ip || request.raw?.socket?.remoteAddress || '',
-      deny: (code, body) => reply.code(code).send(body),
+      getHeader: (name) => (request as Record<string, unknown>)?.headers?.[name],
+      getIP: () => (request as Record<string, unknown>)?.ip || (request as Record<string, unknown>)?.raw?.socket?.remoteAddress || '',
+      deny: (code, body) => (reply as Record<string, unknown>).code(code).send(body),
       allow: () => {},
     });
 
@@ -241,7 +241,7 @@ export async function fastifyLicensePlugin(fastify: any, opts: { tier?: LicenseT
       throw new Error('License denied');
     }
 
-    (request as any).license = { valid: true };
+    (request as Record<string, unknown>).license = { valid: true };
   });
 }
 
@@ -250,11 +250,11 @@ export async function fastifyLicensePlugin(fastify: any, opts: { tier?: LicenseT
  */
 export function honoLicenseMiddleware(requiredTier: LicenseTier = LicenseTier.PRO) {
   const middleware = createLicenseMiddleware(requiredTier);
-  return async (c: any, next: () => Promise<void>) => {
+  return async (c: unknown, next: () => Promise<void>) => {
     const allowed = await middleware({
-      getHeader: (name) => c.req.header(name),
-      getIP: () => c.req.raw?.headers?.get('x-forwarded-for') || '',
-      deny: (code, body) => c.json(body, code),
+      getHeader: (name) => (c as Record<string, unknown>)?.req?.header(name),
+      getIP: () => (c as Record<string, unknown>)?.req?.raw?.headers?.get('x-forwarded-for') || '',
+      deny: (code, body) => (c as Record<string, unknown>).json(body, code),
       allow: () => {},
     });
     if (allowed) await next();

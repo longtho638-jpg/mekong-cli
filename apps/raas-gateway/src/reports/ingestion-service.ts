@@ -85,7 +85,7 @@ export class ReportIngestionService {
     );
 
     if (!idempotencyStored) {
-      console.warn('Failed to store idempotency key, but metrics were stored');
+      /* Failed to store idempotency key, but metrics were stored */
     }
 
     // Prepare webhook payload
@@ -100,7 +100,7 @@ export class ReportIngestionService {
     const webhookTriggered = await this.webhookService.triggerDashboardUpdate(webhookPayload);
 
     if (!webhookTriggered) {
-      console.warn('Failed to trigger dashboard update webhook');
+      /* Failed to trigger dashboard update webhook */
     }
 
     return {

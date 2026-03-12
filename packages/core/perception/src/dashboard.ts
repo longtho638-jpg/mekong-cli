@@ -8,7 +8,7 @@ export interface DashboardReport {
   summary: {
     totalProjects: number;
     builtProjects: number;
-    healthyProjects: number; // Projects with 0 tech debt items (strict) or low (loose)
+    healthyProjects: number;
     totalTechDebt: {
       tsIgnore: number;
       anyType: number;
@@ -16,7 +16,7 @@ export interface DashboardReport {
     };
   };
   projects: ProjectHealth[];
-  serviceStatus: any;
+  serviceStatus: Record<string, unknown>;
 }
 
 export class PerceptionDashboard {

@@ -108,11 +108,11 @@ export class GitHubClient {
       // and filter here. A more optimized version would use an iterator.
 
       const pullRequests = (prData.repository?.pullRequests?.nodes || []).filter(
-        (pr: any) => new Date(pr.createdAt) >= sinceDate
+        (pr) => new Date(pr.createdAt as string) >= sinceDate
       );
 
       const releases = (releaseData.repository?.releases?.nodes || []).filter(
-        (rel: any) => new Date(rel.createdAt) >= sinceDate
+        (rel) => new Date(rel.createdAt as string) >= sinceDate
       );
 
       return {

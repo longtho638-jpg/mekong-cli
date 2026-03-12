@@ -65,7 +65,7 @@ export class ReportParsingService {
         projectId: parsed.projectId || parsed.projectId || 'default-json-' + Date.now().toString(36)
       };
     } catch (error) {
-      console.error('Error parsing JSON report:', error);
+      /* Error parsing JSON report */
       return {
         timestamp: Date.now(),
         projectId: 'parse-error-' + Date.now().toString(36)

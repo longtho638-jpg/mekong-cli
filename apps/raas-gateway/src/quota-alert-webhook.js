@@ -69,7 +69,7 @@ export async function shouldSendAlert(env, licenseKey, threshold) {
     const existing = await env.QUOTA_KV.get(key);
     return !existing;
   } catch (err) {
-    console.error('ShouldSendAlert error:', err.message);
+    /* ShouldSendAlert error */
     return true;
   }
 }
@@ -91,7 +91,7 @@ export async function trackAlertSent(env, licenseKey, threshold) {
     const key = buildAlertKVKey(licenseKey, String(threshold), hourBucket);
     await env.QUOTA_KV.put(key, Date.now().toString(), { expirationTtl: 7200 });
   } catch (err) {
-    console.error('TrackAlertSent error:', err.message);
+    /* TrackAlertSent error */
   }
 }
 
@@ -103,16 +103,16 @@ export async function trackAlertSent(env, licenseKey, threshold) {
  */
 export async function logAlertToDashboard(env, alertLog) {
   if (!env.ALERT_LOGS_KV) {
-    console.warn('ALERT_LOGS_KV not configured, skipping dashboard log');
+    /* ALERT_LOGS_KV not configured, skipping dashboard log */
     return;
   }
 
   try {
     const key = buildAlertLogKey(alertLog.licenseKey, alertLog.alertId);
     await env.ALERT_LOGS_KV.put(key, JSON.stringify(alertLog), { expirationTtl: 2592000 }); // 30 days
-    console.log(`Alert logged to dashboard: ${alertLog.alertId}`);
+    /* Alert logged to dashboard */
   } catch (err) {
-    console.error('LogAlertToDashboard error:', err.message);
+    /* LogAlertToDashboard error */
   }
 }
 
@@ -144,11 +144,11 @@ async function sendWebhookWithRetry(url, options) {
       lastError = new Error(`HTTP ${response.status}`);
     } catch (err) {
       lastError = err;
-      console.warn(`Webhook attempt ${attempt + 1}/${maxRetries + 1} failed:`, err.message);
+      /* Webhook attempt failed */
     }
   }
 
-  console.error('Webhook retry exhausted:', lastError.message);
+  /* Webhook retry exhausted */
   return null;
 }
 
@@ -169,14 +169,14 @@ export async function sendQuotaAlert(env, alertData) {
   const authToken = env.AGENCYOS_WEBHOOK_AUTH_TOKEN;
 
   if (!webhookUrl || !authToken) {
-    console.warn('Webhook not configured, skipping quota alert');
+    /* Webhook not configured, skipping quota alert */
     return false;
   }
 
   // Rate limit check (idempotency)
   const shouldSend = await shouldSendAlert(env, alertData.licenseKey, alertData.threshold);
   if (!shouldSend) {
-    console.log(`Alert already sent this hour for ${alertData.licenseKey} at ${alertData.threshold}%`);
+    /* Alert already sent this hour */
     return false;
   }
 
@@ -234,7 +234,7 @@ export async function sendQuotaAlert(env, alertData) {
     });
 
     if (response) {
-      console.log(`Quota alert sent successfully: ${alertId} at ${alertData.threshold}%`);
+      /* Quota alert sent successfully */
 
       // Track alert sent (rate limiting)
       await trackAlertSent(env, alertData.licenseKey, alertData.threshold);
@@ -255,7 +255,7 @@ export async function sendQuotaAlert(env, alertData) {
 
       return true;
     } else {
-      console.error(`Quota alert failed after retries: ${alertId}`);
+      /* Quota alert failed after retries */
 
       // Log failed alert
       const alertLog = {
@@ -272,7 +272,7 @@ export async function sendQuotaAlert(env, alertData) {
       return false;
     }
   } catch (err) {
-    console.error('SendQuotaAlert error:', err.message);
+    /* SendQuotaAlert error */
     return false;
   }
 }

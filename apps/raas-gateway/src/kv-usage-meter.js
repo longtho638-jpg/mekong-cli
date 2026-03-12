@@ -88,7 +88,7 @@ export function getEndpointType(pathname) {
  */
 export async function trackUsage(env, licenseKey, tenantId, tier, endpoint, method, payloadSize) {
   if (!env.RAAS_USAGE_KV) {
-    console.warn('RAAS_USAGE_KV binding missing, skipping usage tracking');
+    /* RAAS_USAGE_KV binding missing, skipping usage tracking */
     return;
   }
 
@@ -119,7 +119,7 @@ export async function trackUsage(env, licenseKey, tenantId, tier, endpoint, meth
     // Store in KV with 24-hour TTL (keeps data for 1 day)
     await env.RAAS_USAGE_KV.put(kvKey, JSON.stringify(metrics), { expirationTtl: 86400 });
   } catch (err) {
-    console.error('Usage tracking KV error:', err.message);
+    /* Usage tracking KV error */
   }
 }
 
@@ -169,7 +169,7 @@ export async function getUsageMetrics(env, licenseKey, startHour, endHour, limit
       hasMore: hasMore
     };
   } catch (err) {
-    console.error('Get usage metrics error:', err.message);
+    /* Get usage metrics error */
     return { metrics: [], total: 0, hasMore: false };
   }
 }
@@ -199,7 +199,7 @@ export async function getHourlyUsage(env, licenseKey) {
 
     return metrics.sort((a, b) => a.hourBucket.localeCompare(b.hourBucket));
   } catch (err) {
-    console.error('Get hourly usage error:', err.message);
+    /* Get hourly usage error */
     return [];
   }
 }

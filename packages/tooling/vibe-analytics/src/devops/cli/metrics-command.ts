@@ -125,7 +125,7 @@ export const metricsCommand = new Command("metrics")
         console.log('');
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(chalk.red("Analysis Failed:"), error instanceof Error ? error.message : error);
       process.exit(1);
     }

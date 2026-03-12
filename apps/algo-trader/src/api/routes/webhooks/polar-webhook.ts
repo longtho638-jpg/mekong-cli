@@ -16,6 +16,26 @@ export interface PolarWebhookResult {
 }
 
 /**
+ * Polar subscription webhook data type
+ */
+interface PolarSubscriptionData {
+  id: string;
+  plan?: { product_id?: string };
+  product_id?: string;
+  metadata?: Record<string, string>;
+  [key: string]: string | Record<string, string> | undefined;
+}
+
+/**
+ * Polar checkout webhook data type
+ */
+interface PolarCheckoutData {
+  id: string;
+  customer_email?: string;
+  [key: string]: string | undefined;
+}
+
+/**
  * Handle Polar webhook events
  */
 export class PolarWebhookHandler {
@@ -90,7 +110,7 @@ export class PolarWebhookHandler {
   /**
    * Handle subscription.created
    */
-  private async handleSubscriptionCreated(data: any): Promise<PolarWebhookResult> {
+  private async handleSubscriptionCreated(data: PolarSubscriptionData): Promise<PolarWebhookResult> {
     try {
       const subscriptionId = data.id;
       const tier = this.mapTierFromData(data);
@@ -122,7 +142,7 @@ export class PolarWebhookHandler {
   /**
    * Handle subscription.active
    */
-  private async handleSubscriptionActive(data: any): Promise<PolarWebhookResult> {
+  private async handleSubscriptionActive(data: PolarSubscriptionData): Promise<PolarWebhookResult> {
     try {
       const subscriptionId = data.id;
       const tier = this.mapTierFromData(data);
@@ -154,7 +174,7 @@ export class PolarWebhookHandler {
   /**
    * Handle subscription.updated
    */
-  private async handleSubscriptionUpdated(data: any): Promise<PolarWebhookResult> {
+  private async handleSubscriptionUpdated(data: PolarSubscriptionData): Promise<PolarWebhookResult> {
     try {
       const subscriptionId = data.id;
       const tier = this.mapTierFromData(data);
@@ -186,7 +206,7 @@ export class PolarWebhookHandler {
   /**
    * Handle subscription.cancelled
    */
-  private async handleSubscriptionCancelled(data: any): Promise<PolarWebhookResult> {
+  private async handleSubscriptionCancelled(data: PolarSubscriptionData): Promise<PolarWebhookResult> {
     try {
       const subscriptionId = data.id;
 
@@ -216,7 +236,7 @@ export class PolarWebhookHandler {
   /**
    * Handle checkout.created (optional - for tracking)
    */
-  private async handleCheckoutCreated(data: any): Promise<PolarWebhookResult> {
+  private async handleCheckoutCreated(data: PolarCheckoutData): Promise<PolarWebhookResult> {
     logger.info('[Polar Webhook] Checkout created', {
       checkoutId: data.id,
       customerEmail: data.customer_email,
@@ -232,7 +252,7 @@ export class PolarWebhookHandler {
   /**
    * Map webhook data to LicenseTier
    */
-  private mapTierFromData(data: any): LicenseTier {
+  private mapTierFromData(data: PolarSubscriptionData): LicenseTier {
     const productId = data.product_id || data.plan?.product_id || '';
 
     // Map Polar product IDs to license tiers

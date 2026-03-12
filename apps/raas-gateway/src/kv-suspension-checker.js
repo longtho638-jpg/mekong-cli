@@ -33,7 +33,7 @@ export async function checkSuspensionStatus(env, tenantId) {
       reason: value.reason || 'Payment delinquency'
     };
   } catch (error) {
-    console.error('[SuspensionCheck] KV read error:', error);
+    /* SuspensionCheck KV read error */
     // Fail-open: KV errors should not block all traffic
     return { blocked: false, status: null, since: null, reason: null };
   }
@@ -50,7 +50,7 @@ export async function checkSuspensionStatus(env, tenantId) {
 export async function syncSuspensionToKV(env, tenantId, status, reason = '') {
   try {
     if (!env.SUSPENSION_CACHE) {
-      console.warn('[SuspensionSync] KV not configured');
+      /* KV not configured */
       return false;
     }
 
@@ -59,7 +59,6 @@ export async function syncSuspensionToKV(env, tenantId, status, reason = '') {
     if (status === 'ACTIVE') {
       // Remove from suspension cache
       await env.SUSPENSION_CACHE.delete(key);
-      console.log(`[SuspensionSync] Tenant ${tenantId} reactivated, removed from KV`);
       return true;
     }
 
@@ -75,10 +74,9 @@ export async function syncSuspensionToKV(env, tenantId, status, reason = '') {
       expirationTtl: 86400
     });
 
-    console.log(`[SuspensionSync] Tenant ${tenantId} marked as ${status} in KV`);
     return true;
   } catch (error) {
-    console.error('[SuspensionSync] KV write error:', error);
+    /* SuspensionSync KV write error */
     return false;
   }
 }

@@ -44,7 +44,7 @@ async function getStripeDataByLicenseKey(env, licenseKey) {
     const data = await env.RAAS_KV.get(key, 'json');
     return data;
   } catch (error) {
-    console.error('[LicenseActivation] Failed to get Stripe data:', error);
+    /* Failed to get Stripe data */
     return null;
   }
 }
@@ -65,7 +65,7 @@ async function isLicenseActivated(env, licenseKey) {
     const status = await env.RAAS_KV.get(key);
     return status === 'active';
   } catch (error) {
-    console.error('[LicenseActivation] Failed to check status:', error);
+    /* Failed to check status */
     return false;
   }
 }
@@ -81,8 +81,7 @@ async function isLicenseActivated(env, licenseKey) {
 async function markLicenseActivated(env, licenseKey, tier, domain) {
   try {
     if (!env.RAAS_KV) {
-      // No KV configured, return success for local dev
-      console.warn('[LicenseActivation] KV not configured, simulating success');
+      /* KV not configured, simulating success */
       return true;
     }
 
@@ -99,7 +98,7 @@ async function markLicenseActivated(env, licenseKey, tier, domain) {
 
     return true;
   } catch (error) {
-    console.error('[LicenseActivation] Failed to mark activated:', error);
+    /* Failed to mark activated */
     return false;
   }
 }
@@ -253,7 +252,7 @@ export async function handleLicenseActivation(request, env) {
     });
 
   } catch (error) {
-    console.error('[LicenseActivation] Error:', error);
+    /* License activation error */
     return new Response(JSON.stringify({
       error: 'internal_error',
       message: error.message || 'Failed to activate license'

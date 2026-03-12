@@ -15,7 +15,7 @@ CREATE TABLE "audit_logs" (
     "side" TEXT,
     "amount" DECIMAL(18,8),
     "price" DECIMAL(18,8),
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CreateIndex

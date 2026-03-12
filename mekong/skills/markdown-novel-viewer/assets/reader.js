@@ -364,7 +364,7 @@
     }
 
     if (!window.mermaidModule) {
-      console.warn('Mermaid module not loaded');
+      /* Mermaid module not loaded */
       return;
     }
 
@@ -400,7 +400,7 @@
         suppressErrors: false
       });
     } catch (err) {
-      console.error('Mermaid run error:', err);
+      /* Mermaid run error */
       // Show errors inline for diagrams that failed
       diagrams.forEach(el => {
         if (!el.querySelector('svg') && !el.hasAttribute('data-processed')) {
@@ -511,7 +511,7 @@
           try {
             await window.mermaidModule.run({ nodes: [diagram], suppressErrors: false });
           } catch (e) {
-            console.error('Mermaid re-render on expand failed:', e);
+            /* Mermaid re-render on expand failed */
           }
         }
       });

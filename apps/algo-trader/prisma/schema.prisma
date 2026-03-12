@@ -362,3 +362,64 @@ model TierExtension {
   @@index([status])
   @@map("tier_extensions")
 }
+
+// Polymarket-specific models
+model PolymarketPosition {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tokenId     String
+  marketId    String
+  side        String   // YES/NO
+  size        Decimal
+  avgPrice    Decimal
+  realizedPnl Decimal  @default(0)
+  openedAt    DateTime @default(now())
+  closedAt    DateTime?
+
+  @@index([tenantId, tokenId])
+  @@map("polymarket_positions")
+}
+
+model PolymarketOrder {
+  id          String   @id @default(uuid())
+  tenantId    String
+  tokenId     String
+  side        String   // BUY/SELL
+  size        Decimal
+  price       Decimal
+  orderType   String   // GTC/GTD/FOK
+  status      String   // pending/filled/cancelled
+  orderId     String   @unique
+  createdAt   DateTime @default(now())
+  filledAt    DateTime?
+
+  @@index([tenantId, orderId])
+  @@map("polymarket_orders")
+}
+
+model KalshiPosition {
+  id          String   @id @default(uuid())
+  tenantId    String
+  ticker      String
+  side        String   // yes/no
+  count       Decimal
+  avgPrice    Decimal
+  realizedPnl Decimal  @default(0)
+  openedAt    DateTime @default(now())
+  closedAt    DateTime?
+
+  @@index([tenantId, ticker])
+  @@map("kalshi_positions")
+}
+
+model BinanceListingAlert {
+  id        String   @id @default(uuid())
+  ticker    String
+  name      String
+  detectedAt DateTime @default(now())
+  processed Boolean  @default(false)
+  signalId  String?
+
+  @@index([ticker, detectedAt])
+  @@map("binance_listing_alerts")
+}

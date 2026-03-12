@@ -627,9 +627,9 @@ export function requirePremiumData(): void {
  * Usage: app.use('/api/premium/*', requireLicense('pro'))
  */
 export function requireLicenseMiddleware(tier: LicenseTier = LicenseTier.PRO) {
-  return (req: any, res: any, next: (err?: any) => void) => {
+  return (req: Record<string, unknown>, res: { status: (code: number) => { json: (data: unknown) => void } }, next: (err?: unknown) => void) => {
     try {
-      LicenseService.getInstance().requireTier(tier, req.path);
+      LicenseService.getInstance().requireTier(tier, req.path as string);
       next();
     } catch (err) {
       if (err instanceof LicenseError) {

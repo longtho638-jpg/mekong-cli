@@ -71,8 +71,8 @@ program
           // We will log them for now.
       }
 
-    } catch (error: any) {
-      console.error('Fatal Error:', error.message);
+    } catch (error: unknown) {
+      console.error('Fatal Error:', error instanceof Error ? error.message : error);
       process.exit(1);
     }
   });

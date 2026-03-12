@@ -11,7 +11,7 @@ export interface SessionContext {
     platform: string;
   };
   shortTermMemory: string[]; // Recent prompts/responses
-  longTermMemory: Record<string, any>; // Key-value store for facts
+  longTermMemory: Record<string, unknown>; // Key-value store for facts
 }
 
 export class SessionMemory {
@@ -60,15 +60,15 @@ export class SessionMemory {
     await this.sync();
   }
 
-  async setFact(key: string, value: any): Promise<void> {
+  async setFact(key: string, value: unknown): Promise<void> {
     if (!this.currentSession) throw new Error('No active session');
-    
+
     this.currentSession.longTermMemory[key] = value;
     this.currentSession.lastActive = Date.now();
     await this.sync();
   }
 
-  async getFact(key: string): Promise<any> {
+  async getFact(key: string): Promise<unknown> {
     if (!this.currentSession) throw new Error('No active session');
     return this.currentSession.longTermMemory[key];
   }

@@ -131,7 +131,11 @@ export async function registerUsageRoutes(fastify: FastifyInstance) {
           `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
         // Get aggregated usage from database
-        let aggregatedUsage: any[] = [];
+        let aggregatedUsage: Array<{
+          eventType: string;
+          totalUnits: number;
+          eventCount: number;
+        }> = [];
         try {
           aggregatedUsage = await usageQueries.getAggregatedUsage(
             licenseKey,
@@ -256,7 +260,7 @@ export async function registerUsageRoutes(fastify: FastifyInstance) {
           `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
         // Get usage events for the period
-        let events: any[] = [];
+        let events: Array<Record<string, unknown>> = [];
         try {
           const [year, monthNum] = period.split('-').map(Number);
           const startDate = new Date(year, monthNum - 1, 1);
@@ -274,7 +278,7 @@ export async function registerUsageRoutes(fastify: FastifyInstance) {
         // Convert to Stripe format - aggregate by day
         const dailyTotals = new Map<number, number>();
 
-        for (const event of events) {
+        for (const event of events as Array<{ createdAt: string | Date; units: number }>) {
           const dayStart = new Date(event.createdAt);
           dayStart.setHours(0, 0, 0, 0);
           const timestamp = Math.floor(dayStart.getTime() / 1000);
@@ -422,7 +426,7 @@ export async function registerUsageRoutes(fastify: FastifyInstance) {
       const limit = Math.min(parseInt(limitStr || '50', 10), 100);
 
       try {
-        let recentUsage: any[] = [];
+        let recentUsage: Array<Record<string, unknown>> = [];
         try {
           recentUsage = await usageQueries.getRecentUsage(limit);
         } catch (dbError) {
