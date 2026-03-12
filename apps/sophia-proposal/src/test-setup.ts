@@ -1,5 +1,13 @@
 // Test setup for Sophia Proposal
 import '@testing-library/jest-dom';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const cleanup = () => {};
+// Mock IntersectionObserver for framer-motion
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+  takeRecords(): IntersectionObserverEntry[] {
+    return [];
+  }
+} as unknown as typeof IntersectionObserver;

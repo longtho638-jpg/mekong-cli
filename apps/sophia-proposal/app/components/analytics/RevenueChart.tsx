@@ -112,7 +112,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
 
   return (
     <FadeIn direction="up">
-      <GlassCard className={cn('p-6', className)}>
+      <GlassCard data-testid="revenue-chart" className={cn('p-6', className)}>
         {title && <h3 className="text-lg font-semibold text-white mb-6">{title}</h3>}
 
         <div className="relative" style={{ height }}>

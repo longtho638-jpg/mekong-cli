@@ -60,7 +60,7 @@ export const SubscriptionGauge: React.FC<SubscriptionGaugeProps> = ({
 
   return (
     <FadeIn direction="up">
-      <GlassCard className={cn('p-6', className)}>
+      <GlassCard data-testid="subscription-gauge" className={cn('p-6', className)}>
         {title && <h3 className="text-lg font-semibold text-white mb-6">{title}</h3>}
 
         <div className="flex flex-col items-center">

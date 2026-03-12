@@ -6,7 +6,7 @@ respecting PlanConstraints (OrderingConstraint, MutualExclusion).
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, List, Optional
 
 if TYPE_CHECKING:

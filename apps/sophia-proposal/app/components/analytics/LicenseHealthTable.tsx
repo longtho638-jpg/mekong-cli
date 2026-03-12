@@ -64,7 +64,7 @@ export const LicenseHealthTable: React.FC<LicenseHealthTableProps> = ({
 
   return (
     <FadeIn direction="up">
-      <GlassCard className={cn('p-0 overflow-hidden', className)}>
+      <GlassCard data-testid="license-health-table" className={cn('p-0 overflow-hidden', className)}>
         {title && (
           <div className="p-6 border-b border-white/5">
             <h3 className="text-lg font-semibold text-white">{title}</h3>
