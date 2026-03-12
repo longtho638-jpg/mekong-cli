@@ -1,6 +1,5 @@
 """Tests for src/studio/models.py — Pydantic models for VC Studio."""
 
-import pytest
 from src.studio.models import (
     DealStage,
     CompanyStage,

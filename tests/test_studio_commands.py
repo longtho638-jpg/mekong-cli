@@ -1,6 +1,5 @@
 """Tests for src/cli/studio_commands.py — Typer CLI commands for VC Studio."""
 
-import pytest
 from typer.testing import CliRunner
 from src.cli.studio_commands import (
     app,
