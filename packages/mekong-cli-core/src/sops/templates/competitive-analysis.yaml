@@ -1,0 +1,42 @@
+sop:
+  name: "Competitive Analysis"
+  version: "1.0.0"
+  category: business
+  estimated_time: "15min"
+  inputs:
+    - name: competitors
+      type: string
+      required: true
+      description: "Comma-separated list of competitor names/URLs"
+    - name: focus
+      type: enum
+      options: [pricing, features, positioning, all]
+      default: all
+  steps:
+    - id: research
+      name: "Research competitors"
+      agent: researcher
+      action: llm
+      config:
+        prompt: |
+          Research these competitors: {competitors}
+          Focus: {focus}
+          For each: pricing, key features, target audience, recent changes.
+    - id: compare
+      name: "Comparative analysis"
+      agent: researcher
+      action: llm
+      config:
+        prompt: |
+          Based on research: {step.research.output}
+          Create comparison matrix.
+          Identify our advantages and gaps.
+          Suggest 3 actionable differentiators.
+      depends_on: [research]
+    - id: save
+      name: "Save analysis"
+      action: file
+      config:
+        path: "./reports/competitive-analysis-{date}.md"
+        content_from: "step.compare.output"
+      depends_on: [compare]

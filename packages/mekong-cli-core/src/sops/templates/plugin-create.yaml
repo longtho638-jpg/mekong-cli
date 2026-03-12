@@ -1,0 +1,38 @@
+sop:
+  name: "Create Plugin Scaffold"
+  version: "1.0.0"
+  category: development
+  estimated_time: "5min"
+  inputs:
+    - name: plugin_name
+      type: string
+      required: true
+    - name: description
+      type: string
+      required: true
+    - name: provides
+      type: enum
+      options: [tool, agent, sop, integration]
+      required: true
+  steps:
+    - id: scaffold
+      name: "Generate plugin structure"
+      agent: coder
+      action: llm
+      config:
+        prompt: |
+          Create plugin scaffold at ./mekong-plugins/{plugin_name}/:
+          - manifest.json with name @me/{plugin_name}, provides: {provides}
+          - index.ts with onLoad/onUnload hooks
+          - README.md with description: {description}
+          - Basic implementation for {provides} type
+    - id: validate
+      name: "Validate plugin"
+      action: shell
+      command: "mekong plugin validate ./mekong-plugins/{plugin_name}"
+      depends_on: [scaffold]
+    - id: test
+      name: "Load and test plugin"
+      action: shell
+      command: "mekong plugin load ./mekong-plugins/{plugin_name}"
+      depends_on: [validate]

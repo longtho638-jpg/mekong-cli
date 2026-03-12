@@ -1,0 +1,32 @@
+sop:
+  name: "Publish SOP to Marketplace"
+  version: "1.0.0"
+  category: development
+  estimated_time: "5min"
+  inputs:
+    - name: sop_dir
+      type: path
+      required: true
+      description: "Directory containing SOP package files"
+  steps:
+    - id: validate
+      name: "Validate package"
+      action: shell
+      command: "mekong marketplace validate {sop_dir}"
+    - id: pack
+      name: "Pack into .mkg"
+      action: shell
+      command: "mekong marketplace pack {sop_dir}"
+      depends_on: [validate]
+    - id: review
+      name: "Review package contents"
+      action: prompt
+      config:
+        message: "Package ready. Review contents above and confirm publish? (y/n)"
+      depends_on: [pack]
+    - id: publish
+      name: "Publish to marketplace"
+      action: shell
+      command: "mekong marketplace publish {sop_dir}/*.mkg"
+      depends_on: [review]
+      requires_approval: "true"

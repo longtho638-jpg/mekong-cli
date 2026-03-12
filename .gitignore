@@ -292,6 +292,7 @@ agents/
 !apps/algo-trader/src/jobs/workers/
 !apps/algo-trader/tests/jobs/workers/
 cli/
+!packages/**/cli/
 workers/
 mekong-docs/
 docs-portal/
@@ -392,6 +393,7 @@ lib/
 locales/
 # mekong/ — tracked (core namespace)
 templates/
+!packages/**/templates/
 plans/
 tasks/
 

@@ -1,0 +1,46 @@
+sop:
+  name: "System Self-Audit"
+  version: "1.0.0"
+  category: analytics
+  estimated_time: "10min"
+  steps:
+    - id: health
+      name: "System health check"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: |
+          Run full system health check:
+          1. All integrations healthy?
+          2. MCP servers connected?
+          3. Memory storage within limits?
+          4. Metrics collection working?
+          5. Scheduled tasks running on time?
+    - id: patterns
+      name: "Analyze execution patterns"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: "Run ExecutionFeedback.analyzePatterns(5) to find recurring patterns"
+      depends_on: [health]
+    - id: skills
+      name: "Check for new skill candidates"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: "Run SkillEvolution.detectCandidates() — any new automatable patterns?"
+      depends_on: [patterns]
+    - id: memory
+      name: "Curate memory"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: "Run MemoryCurator: compact old sessions, deduplicate knowledge, cleanup stale data"
+      depends_on: [skills]
+    - id: report
+      name: "Generate audit report"
+      action: file
+      config:
+        path: "./reports/self-audit-{date}.md"
+        content_from: "step.health.output + step.patterns.output + step.skills.output + step.memory.output"
+      depends_on: [memory]

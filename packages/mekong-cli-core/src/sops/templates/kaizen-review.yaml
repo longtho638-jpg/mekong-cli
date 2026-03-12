@@ -1,0 +1,44 @@
+sop:
+  name: "Kaizen Performance Review"
+  version: "1.0.0"
+  category: analytics
+  estimated_time: "5min"
+  inputs:
+    - name: period_days
+      type: number
+      default: 7
+    - name: depth
+      type: enum
+      options: [quick, standard, deep]
+      default: standard
+  steps:
+    - id: analyze
+      name: "Run Kaizen analysis"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: |
+          Generate Kaizen report for last {period_days} days at {depth} depth.
+          Use KaizenReporter.generate()
+    - id: bottlenecks
+      name: "Identify bottlenecks"
+      agent: scheduler
+      action: llm
+      config:
+        prompt: |
+          From analysis: {step.analyze.output}
+          List top 3 bottlenecks with recommended fixes.
+      depends_on: [analyze]
+    - id: apply
+      name: "Review auto-applicable suggestions"
+      action: prompt
+      config:
+        message: "Apply auto-suggestions above? (y/n/select)"
+      depends_on: [bottlenecks]
+    - id: save
+      name: "Save Kaizen report"
+      action: file
+      config:
+        path: "./reports/kaizen-{date}.md"
+        content_from: "step.analyze.output"
+      depends_on: [apply]

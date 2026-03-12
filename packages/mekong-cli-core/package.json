@@ -1,6 +1,6 @@
 {
   "name": "@mekong/cli-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "bin": {
     "mekong": "./dist/cli/index.js"
@@ -24,12 +24,17 @@
     "glob": "^11.0.0",
     "googleapis": "^171.4.0",
     "handlebars": "^4.7.8",
+    "ignore": "^7.0.5",
     "markdown-table": "^3.0.4",
     "nodemailer": "^8.0.2",
     "ora": "^8.2.0",
     "p-queue": "^8.1.0",
+    "semver": "^7.7.4",
+    "simple-statistics": "^7.8.9",
     "stripe": "^20.4.1",
+    "tar": "^7.5.11",
     "winston": "^3.17.0",
+    "ws": "^8.19.0",
     "yaml": "^2.7.0",
     "zod": "^3.24.0"
   },
@@ -37,6 +42,9 @@
     "@types/cron": "^2.4.3",
     "@types/node": "^22.0.0",
     "@types/nodemailer": "^7.0.11",
+    "@types/semver": "^7.7.1",
+    "@types/tar": "^7.0.87",
+    "@types/ws": "^8.18.1",
     "tsup": "^8.4.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
