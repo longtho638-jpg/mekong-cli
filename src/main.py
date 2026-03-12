@@ -24,6 +24,7 @@ from src.cli.swarm_commands import swarm_app
 from src.cli.schedule_commands import schedule_app
 from src.cli.memory_commands import memory_app
 from src.cli.autonomous_commands import register_agi_commands
+from src.cli.studio_commands import register_studio_commands
 
 app = typer.Typer(
     name="mekong",
@@ -41,6 +42,7 @@ register_recipe_commands(app)
 register_cook_command(app)
 register_workflow_commands(app)
 register_agi_commands(app)
+register_studio_commands(app)
 
 # Register sub-typers
 app.add_typer(swarm_app, name="swarm")

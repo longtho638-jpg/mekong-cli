@@ -1,7 +1,40 @@
-# Vibe Coding Factory — 5-Layer Pyramid Configuration
+# Vibe Coding Factory — 6-Layer Pyramid Configuration
 # Each layer maps to an Art of War chapter and cascades downstream.
 
 layers:
+  studio:
+    chapter: "孫子兵法 — Art of War (Complete)"
+    role: "VC Studio / Venture Builder"
+    description: "Venture studio platform — portfolio management, deal flow, expert matching, 3-party orchestration. The apex layer."
+    cascades_to: [founder]
+    entry_prompt: "Layer studio. Portfolio, dealflow, expert matching, hay venture strategy?"
+    hubs:
+      - studio-hub
+    commands:
+      - studio-bootstrap
+      - studio-launch-full
+      - studio-sprint-weekly
+      - studio-operate-daily
+      - studio-diligence-deep
+      - portfolio-create
+      - portfolio-status
+      - portfolio-report
+      - dealflow-source
+      - dealflow-screen
+      - dealflow-diligence
+      - dealflow-term-sheet
+      - dealflow-close
+      - expert-match
+      - expert-dispatch
+      - expert-pool
+      - venture-thesis
+      - venture-terrain
+      - venture-momentum
+      - venture-five-factors
+      - venture-void-substance
+      - match-founder-idea
+      - match-vc-startup
+
   founder:
     chapter: "始計 — Initial Calculations"
     role: "Founder / CEO"
