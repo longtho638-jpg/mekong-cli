@@ -1,0 +1,37 @@
+sop:
+  name: "Automated Code Review"
+  version: "1.0.0"
+  description: "AI-powered code review pipeline"
+  author: "mekong"
+  tags: [development, review]
+  inputs:
+    - name: branch
+      type: string
+      required: true
+      description: "Branch to review"
+    - name: base_branch
+      type: string
+      required: false
+      default: "main"
+  preconditions:
+    - type: command_available
+      value: git
+      message: "git must be installed"
+  steps:
+    - id: diff
+      name: "Get changes"
+      action: shell
+      command: "git diff {base_branch}...{branch} --stat"
+      on_failure: stop
+      on_success: review
+    - id: review
+      name: "AI code review"
+      action: llm
+      prompt: "Review this diff focusing on bugs, security, performance, style, missing tests."
+      on_failure: stop
+      on_success: report
+    - id: report
+      name: "Generate report"
+      action: shell
+      command: "echo 'Review complete for {branch}'"
+      on_failure: stop

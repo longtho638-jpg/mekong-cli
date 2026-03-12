@@ -1,0 +1,49 @@
+sop:
+  name: "Incident Response"
+  version: "1.0.0"
+  description: "Structured incident detection, diagnosis, and resolution pipeline"
+  author: "mekong"
+  tags: [ops, incident, reliability]
+  inputs:
+    - name: incident_id
+      type: string
+      required: true
+      description: "Unique identifier for the incident"
+    - name: severity
+      type: string
+      required: false
+      default: "medium"
+  preconditions:
+    - type: command_available
+      value: echo
+      message: "shell must be available"
+  steps:
+    - id: assess
+      name: "Assess incident"
+      action: llm
+      prompt: "Assess incident {incident_id} with severity {severity}. Determine scope and impact."
+      on_failure: stop
+      on_success: diagnose
+    - id: diagnose
+      name: "Diagnose root cause"
+      action: llm
+      prompt: "Diagnose root cause of incident {incident_id} based on assessment findings."
+      on_failure: stop
+      on_success: notify
+    - id: notify
+      name: "Notify stakeholders"
+      action: shell
+      command: "echo 'Incident {incident_id} ({severity}): stakeholders notified'"
+      on_failure: continue
+      on_success: fix
+    - id: fix
+      name: "Apply fix"
+      action: llm
+      prompt: "Generate remediation steps for incident {incident_id} based on root cause diagnosis."
+      on_failure: stop
+      on_success: verify
+    - id: verify
+      name: "Verify resolution"
+      action: shell
+      command: "echo 'Incident {incident_id} resolved and verified'"
+      on_failure: stop

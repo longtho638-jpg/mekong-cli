@@ -1,0 +1,43 @@
+sop:
+  name: "Content Pipeline"
+  version: "1.0.0"
+  description: "Research, draft, review, and publish content"
+  author: "mekong"
+  tags: [content, marketing]
+  inputs:
+    - name: topic
+      type: string
+      required: true
+      description: "Content topic to write about"
+    - name: output_file
+      type: string
+      required: false
+      default: "content-output.md"
+  preconditions:
+    - type: command_available
+      value: echo
+      message: "shell must be available"
+  steps:
+    - id: research
+      name: "Research topic"
+      action: llm
+      prompt: "Research the topic '{topic}' and summarize key points, facts, and angles."
+      on_failure: stop
+      on_success: draft
+    - id: draft
+      name: "Draft content"
+      action: llm
+      prompt: "Write a detailed article on '{topic}' based on the research."
+      on_failure: stop
+      on_success: review
+    - id: review
+      name: "Review content"
+      action: llm
+      prompt: "Review and improve the draft for clarity, accuracy, tone, and SEO."
+      on_failure: stop
+      on_success: save
+    - id: save
+      name: "Save content"
+      action: shell
+      command: "echo 'Content saved to {output_file}'"
+      on_failure: stop

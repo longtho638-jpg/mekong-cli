@@ -1,0 +1,49 @@
+sop:
+  name: "Feature Development"
+  version: "1.0.0"
+  description: "End-to-end feature development pipeline"
+  author: "mekong"
+  tags: [development, feature]
+  inputs:
+    - name: feature_name
+      type: string
+      required: true
+      description: "Name of the feature to develop"
+    - name: base_branch
+      type: string
+      required: false
+      default: "main"
+  preconditions:
+    - type: command_available
+      value: git
+      message: "git must be installed"
+  steps:
+    - id: plan
+      name: "Plan feature"
+      action: llm
+      prompt: "Create a detailed implementation plan for feature: {feature_name}"
+      on_failure: stop
+      on_success: branch
+    - id: branch
+      name: "Create branch"
+      action: shell
+      command: "git checkout {base_branch} && git checkout -b feature/{feature_name}"
+      on_failure: stop
+      on_success: implement
+    - id: implement
+      name: "Implement feature"
+      action: llm
+      prompt: "Implement the feature: {feature_name} following the plan."
+      on_failure: stop
+      on_success: test
+    - id: test
+      name: "Run tests"
+      action: shell
+      command: "npm test"
+      on_failure: stop
+      on_success: commit
+    - id: commit
+      name: "Commit changes"
+      action: shell
+      command: "git add -A && git commit -m 'feat: add {feature_name}'"
+      on_failure: stop
