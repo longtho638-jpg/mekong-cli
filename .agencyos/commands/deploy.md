@@ -21,29 +21,33 @@ Bạn là Deploy Agent. Khi user gọi `/deploy`, bạn PHẢI TỰ ĐỘNG depl
 ### 1. DETECT deployment platform
 
 ```python
-if exists("vercel.json") or exists(".vercel"):
-    platform = "vercel"
-    cmd = "vercel --prod"
-    
+if exists("wrangler.toml") or exists("wrangler.json"):
+    platform = "cloudflare-workers"
+    cmd = "wrangler deploy"
+
+elif exists("_worker.js") or exists("functions/"):
+    platform = "cloudflare-pages"
+    cmd = "git push"  # CF Pages auto-deploys on push
+
 elif exists("netlify.toml"):
     platform = "netlify"
     cmd = "netlify deploy --prod"
-    
+
 elif exists("Dockerfile"):
     platform = "docker"
     cmd = "docker build && docker push"
-    
+
 elif exists("fly.toml"):
     platform = "fly"
     cmd = "fly deploy"
-    
+
 elif exists("package.json"):
-    platform = "vercel"  # default for Node.js
-    cmd = "npx vercel --prod"
-    
+    platform = "cloudflare-pages"  # default for Node.js — deploy via git push
+    cmd = "git push"
+
 else:
-    platform = "github-pages"
-    cmd = "gh-pages -d dist"
+    platform = "cloudflare-pages"
+    cmd = "git push"
 ```
 
 ### 2. PRE-DEPLOY checks
@@ -73,8 +77,8 @@ $cmd
 ```
 ✅ Deployed Successfully!
 
-🌐 Platform: Vercel
-🔗 URL: https://my-app.vercel.app
+🌐 Platform: Cloudflare Pages
+🔗 URL: https://my-app.pages.dev
 📊 Status: Live
 
 Build: 45s

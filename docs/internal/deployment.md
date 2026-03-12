@@ -1,20 +1,20 @@
-# 🚀 AntigravityKit Deployment Guide
+# Deployment Guide: AgencyOS / AntigravityKit
 
 > Production deployment guide for AntigravityKit
-> Backend → Cloud Run | Frontend → Vercel
+> Backend → Cloud Run | Frontend → Cloudflare Pages
 
 ---
 
-## 📋 Prerequisites
+## Prerequisites
 
-- Google Cloud account
-- Vercel account
+- Google Cloud account (backend)
+- Cloudflare account (frontend + edge API)
 - GitHub repository
 - Domain name (optional)
 
 ---
 
-## 🐳 Backend Deployment (Cloud Run)
+## Backend Deployment (Cloud Run)
 
 ### Step 1: Prepare Docker Image
 
@@ -85,42 +85,79 @@ Output example: `https://agencyos-api-xxx.run.app`
 
 ---
 
-## ▲ Frontend Deployment (Vercel)
+## Frontend Deployment (Cloudflare Pages)
 
-### Step 1: Install Vercel CLI
+### Step 1: Connect Repository
 
-```bash
-npm install -g vercel
+1. Go to Cloudflare Dashboard → Pages → Create a project
+2. Connect your GitHub repository
+3. Select root directory: `frontend/` (or project root)
+4. Framework preset: `Next.js` or `Astro`
+
+### Step 2: Configure Build Settings
+
+```
+Build command:  npm run build
+Output dir:     dist  (or .next for Next.js)
+Node version:   20
 ```
 
-### Step 2: Configure Environment
+### Step 3: Set Environment Variables
 
-Create `frontend/.env.production`:
+In Cloudflare Pages project settings → Environment variables:
 
 ```bash
 NEXT_PUBLIC_API_URL=https://agencyos-api-xxx.run.app
 ```
 
-### Step 3: Deploy
+### Step 4: Deploy
 
 ```bash
-cd frontend
-vercel --prod
+# Cloudflare Pages auto-deploys on every push to main
+git push origin main
 ```
 
-### Step 4: Configure Domain (Optional)
+### Step 5: Configure Custom Domain (Optional)
+
+In Cloudflare Pages → project → Custom domains:
 
 ```bash
-# Add custom domain
-vercel domains add agencyos.network
+# Add custom domain (agencyos.network)
+# Cloudflare handles DNS + SSL automatically when domain is on Cloudflare
+```
 
-# Point frontend to domain
-vercel alias https://your-deployment.vercel.app agencyos.network
+DNS records (managed via Cloudflare DNS automatically):
+```
+Type: CNAME
+Name: @
+Value: <project>.pages.dev  (Cloudflare manages this)
 ```
 
 ---
 
-## 🔧 Environment Variables
+## Edge API Deployment (Cloudflare Workers)
+
+For lightweight API, webhooks, and middleware:
+
+```bash
+# Install Wrangler
+npm install -g wrangler
+
+# Login
+wrangler login
+
+# Deploy worker
+cd apps/raas-gateway
+wrangler deploy
+
+# Set secrets
+wrangler secret put OPENCLAW_URL
+wrangler secret put SERVICE_TOKEN
+```
+
+---
+
+## Environment Variables
 
 ### Backend Environment Variables
 
@@ -138,7 +175,7 @@ vercel alias https://your-deployment.vercel.app agencyos.network
 
 ---
 
-## 🌐 DNS Configuration
+## DNS Configuration
 
 ### For api.agencyos.network (Backend)
 
@@ -148,27 +185,25 @@ Name: api
 Value: ghs.googlehosted.com
 ```
 
-### For agencyos.network (Frontend)
+### For agencyos.network (Frontend via Cloudflare Pages)
 
+When domain is managed by Cloudflare, Pages sets DNS automatically.
+Manual setup if needed:
 ```
-Type: A
-Name: @
-Value: 76.76.21.21 (Vercel IP)
-
 Type: CNAME
-Name: www
-Value: cname.vercel-dns.com
+Name: @
+Value: <project>.pages.dev
 ```
 
 ---
 
-## ✅ Deployment Checklist
+## Deployment Checklist
 
 ### Pre-deployment
 - [ ] All tests passing locally
 - [ ] Environment variables configured
 - [ ] Docker image builds successfully
-- [ ] Frontend builds successfully
+- [ ] Frontend builds successfully (`npm run build`)
 
 ### Backend Deployment
 - [ ] Docker image pushed to GCR
@@ -177,20 +212,20 @@ Value: cname.vercel-dns.com
 - [ ] CORS configured correctly
 
 ### Frontend Deployment
-- [ ] Vercel project created
-- [ ] Environment variables set
+- [ ] Cloudflare Pages project connected to repo
+- [ ] Environment variables set in CF Pages settings
 - [ ] Production build successful
 - [ ] API connection verified
 
 ### Post-deployment
-- [ ] SSL certificates active
+- [ ] SSL certificates active (Cloudflare handles automatically)
 - [ ] DNS configured correctly
 - [ ] Monitoring setup
 - [ ] Backup strategy in place
 
 ---
 
-## 🔍 Health Checks
+## Health Checks
 
 ### Backend Health Check
 
@@ -223,7 +258,7 @@ Expected: `200 OK`
 
 ---
 
-## 📊 Monitoring
+## Monitoring
 
 ### Cloud Run Metrics
 
@@ -237,13 +272,13 @@ gcloud run services describe agencyos-api \
   --format 'get(status.traffic)'
 ```
 
-### Vercel Analytics
+### Cloudflare Analytics
 
-Visit: https://vercel.com/dashboard/analytics
+Visit: https://dash.cloudflare.com → Pages → your project → Analytics
 
 ---
 
-## 🔄 CI/CD Setup
+## CI/CD Setup
 
 ### GitHub Actions Workflow
 
@@ -261,18 +296,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
       - name: Setup Cloud SDK
         uses: google-github-actions/setup-gcloud@v0
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
-      
+
       - name: Build and Push Docker Image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/agencyos-api:${{ github.sha }} .
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/agencyos-api:${{ github.sha }}
-      
+
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy agencyos-api \
@@ -283,20 +318,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
         with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
-          working-directory: ./frontend
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: agencyos-landing
+          directory: ./frontend/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Backend Issues
 
@@ -322,21 +357,21 @@ gcloud run services describe agencyos-api
 
 **Problem**: Build failed
 ```bash
-# Check build logs
-vercel logs deployment-url
+# Check Cloudflare Pages build logs in dashboard
+# Dashboard → Pages → project → Deployments → failed deploy → View logs
 ```
 
 ---
 
-## 💰 Cost Estimates
+## Cost Estimates
 
-### Cloud Run
+### Cloud Run (Backend)
 - **Free tier**: 2M requests/month
 - **Typical cost**: $5-20/month (1M requests)
 
-### Vercel
-- **Hobby plan**: Free
-- **Pro plan**: $20/month (team features)
+### Cloudflare Pages (Frontend)
+- **Free plan**: Unlimited sites, 500 builds/month
+- **Pro plan**: $20/month (advanced features)
 
 ### Total Estimated Cost
 - **Small agency**: $0-10/month
@@ -345,18 +380,18 @@ vercel logs deployment-url
 
 ---
 
-## 🔒 Security Best Practices
+## Security Best Practices
 
-1. **Always use HTTPS**
+1. **Always use HTTPS** (Cloudflare enforces automatically)
 2. **Enable authentication for admin endpoints**
-3. **Set up rate limiting**
+3. **Set up rate limiting** (Cloudflare WAF or Workers)
 4. **Use environment variables for secrets**
-5. **Enable Cloud Armor for DDoS protection**
+5. **Enable Cloudflare DDoS protection** (automatic on free plan)
 6. **Regular security audits**
 
 ---
 
-## 📈 Scaling
+## Scaling
 
 ### Horizontal Scaling (Cloud Run)
 
@@ -376,9 +411,9 @@ Replace in-memory demo data with:
 
 ---
 
-## ✨ Success!
+## Success!
 
-Your AntigravityKit is now live! 🎊
+Your AgencyOS stack is now live!
 
 - **Backend**: https://api.agencyos.network
 - **Frontend**: https://agencyos.network
@@ -386,4 +421,4 @@ Your AntigravityKit is now live! 🎊
 
 ---
 
-*Deployment guide v1.0 | Updated: 2026-01-07*
+*Deployment guide v2.0 | Updated: 2026-03-12 | CF-only*

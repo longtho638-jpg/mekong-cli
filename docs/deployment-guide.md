@@ -1,12 +1,12 @@
 # Deployment Guide: AgencyOS RaaS
 
-## 1. Landing Page (Vercel)
+## 1. Landing Page (Cloudflare Pages)
 
 **Project**: `apps/agencyos-landing`
-**Platform**: Vercel
+**Platform**: Cloudflare Pages
 
 ### Configuration
-The project includes a `vercel.json` configuration file that sets important security headers:
+Add security headers in `_headers` file (Cloudflare Pages static headers) or via `wrangler.toml`:
 - `X-Content-Type-Options: nosniff`
 - `X-Frame-Options: DENY`
 - `X-XSS-Protection: 1; mode=block`
@@ -14,18 +14,19 @@ The project includes a `vercel.json` configuration file that sets important secu
 - `Permissions-Policy`: Restricts camera, microphone, and geolocation.
 
 ### Setup Instructions
-1.  **Import to Vercel**:
+1.  **Connect to Cloudflare Pages**:
+    -   Go to Cloudflare Dashboard → Pages → Create a project.
     -   Connect your GitHub repository.
-    -   Select the root directory: `apps/agencyos-landing`.
-    -   Framework Preset: `Next.js`.
+    -   Select root directory: `apps/agencyos-landing`.
+    -   Framework Preset: `Next.js` (static export) or use `@astrojs/cloudflare`.
 
 2.  **Environment Variables**:
-    Configure these in Vercel Project Settings:
-    -   `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`: From Stripe Dashboard (Public).
-    -   `STRIPE_SECRET_KEY`: From Stripe Dashboard (Secret).
+    Configure these in Cloudflare Pages project settings:
+    -   `NEXT_PUBLIC_POLAR_PUBLISHABLE_KEY`: From Polar Dashboard (Public).
+    -   `POLAR_SECRET_KEY`: From Polar Dashboard (Secret).
 
 3.  **Deploy**:
-    -   Push to `main` to trigger a production deployment.
+    -   Push to `main` to trigger automatic Cloudflare Pages deployment.
 
 ---
 

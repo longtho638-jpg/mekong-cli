@@ -135,9 +135,9 @@ git push origin kai/<feature>
 
 ## Deployment
 
-- **Docker**: Multi-stage build, node:20-alpine
+- **Cloudflare Pages**: Primary — `git push` triggers auto-deploy (CF Pages auto-build)
+- **Docker**: Multi-stage build, node:20-alpine (for self-hosted / K8s)
 - **K8s**: `k8s/` manifests (deployment, service, ingress, configmap)
-- **Static**: Can deploy to Vercel, Netlify, Cloudflare Pages
 
 ## Documentation
 

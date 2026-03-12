@@ -579,7 +579,7 @@ ON FAILURE: Refund credits → Return error
 | `MEKONG_PLUGIN_DIR` | `~/.mekong/plugins/` | Local plugin directory |
 | `RAAS_DB_PATH` | `~/.mekong/raas/tenants.db` | SQLite database path |
 | `LOG_LEVEL` | `info` | Logging level (debug/info/warning/error) |
-| `VERCEL_TOKEN` | (optional) | For Vercel deployments |
+| `CF_API_TOKEN` | (optional) | For Cloudflare Pages/Workers deployments |
 
 ### Database Schema
 

@@ -15,7 +15,7 @@ Mekong CLI is a full-stack SaaS application with:
 - **Backend**: FastAPI REST API (backend/api)
 - **AI Engine**: Antigravity Core (antigravity/core)
 - **Database**: Supabase (PostgreSQL)
-- **Payments**: PayPal (Primary), Polar (Backup)
+- **Payments**: Polar (Primary)
 - **CLI Tools**: CC Command Center (scripts/)
 
 ---
@@ -65,11 +65,11 @@ Mekong CLI is a full-stack SaaS application with:
 │                      EXTERNAL INTEGRATIONS                        │
 └────────────┬─────────────────────────────────────────────────────┘
              │
-             ├─→ PayPal API (sandbox/live)
-             ├─→ Polar.sh API (backup)
+             ├─→ Polar.sh API (payments)
              ├─→ Supabase API (database/auth)
              ├─→ Gemini API (AI models)
-             └─→ Google Cloud (deployment)
+             ├─→ Cloudflare (frontend + edge API)
+             └─→ Google Cloud (backend deployment)
 ```
 
 ---
@@ -588,14 +588,14 @@ GEMINI_API_KEY=your_api_key_here
 
 **Implementation**: `antigravity/core/mcp_orchestrator.py`
 
-### 5. Google Cloud Integration (Deployment)
+### 5. Cloudflare Integration (Deployment)
 
 **Services Used**:
-- **Cloud Run**: FastAPI backend deployment
-- **Cloud SQL**: PostgreSQL (if not Supabase)
-- **Cloud Storage**: File uploads (future)
+- **Cloudflare Pages**: Next.js frontend (auto-deploy on `git push`)
+- **Cloudflare Workers**: Edge API, webhooks, rate limiting (deploy via `wrangler deploy`)
+- **Cloud Run** (legacy): FastAPI backend deployment
 
-**Deployment**: `scripts/cc deploy backend`
+**Deployment**: `wrangler deploy` (Workers) or `git push` (Pages)
 
 ---
 
@@ -659,27 +659,29 @@ Developer Machine
 └── AI: Antigravity Claude Proxy (localhost:8080)
 ```
 
-### Production Environment (Google Cloud)
+### Production Environment (Cloudflare + Cloud Run)
 
 ```
-Google Cloud Platform
+Cloudflare + Google Cloud Platform
+├── Cloudflare Pages: Next.js frontend (auto-deploy on git push)
+├── Cloudflare Workers: Edge API, webhooks, rate limiting
 ├── Cloud Run: FastAPI backend (autoscaling 0-10 instances)
-├── Cloud Storage: Static assets (Next.js build)
-├── Cloud Load Balancer: HTTPS termination
 ├── Cloud SQL: PostgreSQL (if not Supabase)
 └── External:
     ├── Supabase: Database + Auth
-    ├── PayPal: Payment processing
-    └── Vercel: Next.js hosting (alternative to Cloud Storage)
+    └── Polar: Payment processing
 ```
 
 **Deployment Commands**:
 ```bash
-# Backend
-cc deploy backend          # Deploy FastAPI to Cloud Run
+# Backend (Cloudflare Workers)
+wrangler deploy            # Deploy Workers/API to Cloudflare
 
-# Frontend (Vercel)
-vercel --prod              # Deploy Next.js to Vercel
+# Frontend (Cloudflare Pages)
+git push                   # Auto-deploys via CF Pages on push
+
+# Legacy Backend (Cloud Run)
+cc deploy backend          # Deploy FastAPI to Cloud Run
 
 # Health Check
 cc deploy health           # System diagnostics
@@ -744,7 +746,7 @@ cc deploy rollback         # Emergency rollback
 **Caching**:
 - SWR revalidation (5 seconds)
 - API response cache (Redis, future)
-- CDN caching (Vercel Edge Network)
+- CDN caching (Cloudflare Edge Network — 300+ PoPs)
 
 ### Backend
 
