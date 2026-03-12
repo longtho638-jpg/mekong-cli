@@ -30,7 +30,13 @@ from rich.table import Table
 
 from .dag_scheduler import DAGScheduler, validate_dag
 from .event_bus import EventType, get_event_bus
+from .execution_context import ExecutionContext
 from .execution_history import EventKind, ExecutionEvent, ExecutionHistory
+from .execution_hooks import (
+    HookRegistry,
+    logging_after_hook,
+    logging_before_hook,
+)
 from .executor import RecipeExecutor
 from .health_endpoint import (
     register_component_check,
@@ -42,6 +48,7 @@ from .parser import Recipe, RecipeStep
 from .planner import PlanningContext, RecipePlanner
 from .retry_policy import RetryPolicy
 from .telemetry import TelemetryCollector
+from .timeout_manager import TimeoutConfig, TimeoutManager
 from .verifier import RecipeVerifier, VerificationReport
 from .workflow_state import StepStatus, WorkflowState, WorkflowStatus
 from .command_sanitizer import CommandSanitizer
@@ -811,7 +818,26 @@ class RecipeOrchestrator:
             "\n[bold yellow]⚙️  PHASE 2: EXECUTION & VERIFICATION[/bold yellow]",
         )
 
-        executor = RecipeExecutor(recipe)
+        # Create Phase 2 modules: context, timeout manager, hook registry
+        exec_ctx = ExecutionContext()
+        timeout_cfg = TimeoutConfig(
+            step_timeout=300.0,
+            global_timeout=None,
+        )
+        timeout_mgr = TimeoutManager(config=timeout_cfg)
+        timeout_mgr.start_workflow()
+
+        hook_registry = HookRegistry()
+        hook_registry.register_before("logging", logging_before_hook)
+        hook_registry.register_after("logging", logging_after_hook)
+
+        executor = RecipeExecutor(
+            recipe,
+            context=exec_ctx,
+            timeout_mgr=timeout_mgr,
+            hooks=hook_registry,
+            retry_policy=self.retry_policy,
+        )
         step_executor = self._init_step_executor(executor)
 
         dag = DAGScheduler(recipe.steps)
@@ -907,6 +933,16 @@ class RecipeOrchestrator:
     ) -> OrchestrationResult:
         """Run sequential step execution."""
         for step in recipe.steps:
+            # Check global timeout before each step
+            tmgr = getattr(step_executor.executor, "timeout_mgr", None)
+            if tmgr is not None:
+                try:
+                    tmgr.check_global_timeout()
+                except Exception as timeout_exc:
+                    result.status = OrchestrationStatus.FAILED
+                    result.errors.append(f"Global timeout exceeded before step {step.order}: {timeout_exc}")
+                    break
+
             self.history.append(
                 ExecutionEvent.create(
                     EventKind.STEP_SCHEDULED,
