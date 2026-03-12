@@ -64,4 +64,10 @@ export const DEFAULT_CONFIG: MekongConfig = {
     offline_grace_days: 7,
     background_check: true,
   },
+  payments: {
+    polar_api_key_env: 'POLAR_API_KEY',
+    polar_webhook_secret_env: 'POLAR_WEBHOOK_SECRET',
+    receipt_store_path: '~/.mekong/payments/receipts.jsonl',
+    product_tier_map: {},
+  },
 };

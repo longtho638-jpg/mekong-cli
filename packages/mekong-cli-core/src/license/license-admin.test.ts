@@ -463,7 +463,7 @@ describe('Phase 7: Integration', () => {
     }
   });
 
-  it('VERSION is 0.5.0 in cli/index.ts', async () => {
+  it('VERSION is 0.6.0 in cli/index.ts', async () => {
     const { main } = await import('../cli/index.js');
     expect(typeof main).toBe('function');
     // Read source to verify VERSION string
@@ -471,7 +471,7 @@ describe('Phase 7: Integration', () => {
       new URL('../cli/index.ts', import.meta.url).pathname.replace(/\.js$/, '.ts'),
       'utf-8',
     ).catch(() => '');
-    if (src) expect(src).toContain("'0.5.0'");
+    if (src) expect(src).toContain("'0.6.0'");
   });
 
   it('multiple admins with same registry path share state', async () => {

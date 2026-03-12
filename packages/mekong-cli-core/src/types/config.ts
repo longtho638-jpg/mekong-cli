@@ -91,6 +91,12 @@ export const ConfigSchema = z.object({
     offline_grace_days: z.number().default(7),
     background_check: z.boolean().default(true),
   }).default({}),
+  payments: z.object({
+    polar_api_key_env: z.string().default('POLAR_API_KEY'),
+    polar_webhook_secret_env: z.string().default('POLAR_WEBHOOK_SECRET'),
+    receipt_store_path: z.string().default('~/.mekong/payments/receipts.jsonl'),
+    product_tier_map: z.record(z.string()).default({}),
+  }).default({}),
 });
 
 export type MekongConfig = z.infer<typeof ConfigSchema>;
