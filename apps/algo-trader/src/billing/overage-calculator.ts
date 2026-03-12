@@ -375,8 +375,8 @@ export class OverageCalculator {
       return { exceeded: false, currentUsage: 0, limit: 0, remaining: 0, percentageUsed: 0 };
     }
 
-    const tier = tenant.tier.toLowerCase();
-    const limits = this.tierLimits[tier as keyof TierLimits];
+    const tier = tenant.tier.toLowerCase() as keyof TierLimits;
+    const limits = this.tierLimits[tier];
 
     if (!limits) {
       return { exceeded: false, currentUsage: 0, limit: 0, remaining: 0, percentageUsed: 0 };

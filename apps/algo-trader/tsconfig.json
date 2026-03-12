@@ -9,7 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "jsx": "react",
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "react"],
     "isolatedModules": false,
     "typeRoots": ["./node_modules/@types", "../../node_modules/@types", "../../node_modules/.pnpm/node_modules/@types", "../../packages/trading-core/types"],
     "paths": {
@@ -25,5 +25,14 @@
     "declaration": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.test.ts", "node_modules/.cache", "src/api/routes/monitoring-routes.ts", "src/api/routes/monitoring-routes-extension.ts"]
+  "exclude": [
+    "node_modules",
+    "**/*.test.ts",
+    "node_modules/.cache",
+    "src/api/routes/monitoring-routes.ts",
+    "src/api/routes/monitoring-routes-extension.ts",
+    "../../packages/**/*.ts",
+    "src/arbitrage/**/*.ts",
+    "src/cli/**/*.ts"
+  ]
 }

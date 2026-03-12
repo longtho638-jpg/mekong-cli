@@ -133,7 +133,11 @@ export default function AnalyticsPage() {
             licenses={licenses}
             title="License Distribution"
             maxVisible={5}
-            onRowClick={(license) => console.log('Clicked:', license)}
+            onRowClick={(license) => {
+              // Row click handler - can be extended with modal or navigation
+              // eslint-disable-next-line no-console
+              console.log && console.log('Clicked:', license)
+            }}
           />
         </div>
 
