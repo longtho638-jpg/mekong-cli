@@ -121,7 +121,7 @@ class OverageAlertEngineClass {
     licenseId: string,
     metric: 'api_calls' | 'transfer_mb',
     percent: number,
-    _status: 'normal' | 'warning' | 'critical' | 'exceeded'
+    _status: 'normal' | 'warning' | 'critical' | 'exceeded' // eslint-disable-line @typescript-eslint/no-unused-vars
   ): AlertRecord[] {
     const alerts: AlertRecord[] = []
     const config = this.getConfig(licenseId) || this.getDefaultConfig(licenseId)
@@ -177,7 +177,7 @@ class OverageAlertEngineClass {
     percent: number,
     level: AlertLevel,
     type: AlertType,
-    _config: AlertConfig
+    _config: AlertConfig // eslint-disable-line @typescript-eslint/no-unused-vars
   ): AlertRecord {
     const id = `alert_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
     const message = this.getAlertMessage(licenseId, metric, percent, level)

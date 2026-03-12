@@ -17,6 +17,12 @@ const eslintConfig = defineConfig([
     // Ignore test files in .claude
     "**/__tests__/**",
   ]),
+  // Allow setState in useEffect for initial auth state (legitimate use case)
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

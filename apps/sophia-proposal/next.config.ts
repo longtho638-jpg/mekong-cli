@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { getSecurityHeaders } from "./lib/security-headers";
 
 const nextConfig: NextConfig = {
   // Static export for Cloudflare Pages
@@ -27,6 +28,15 @@ const nextConfig: NextConfig = {
   },
   // Static export output directory
   distDir: 'out',
+  // Security headers for static export
+  // Note: Headers are applied at edge/CDN level (Cloudflare Pages)
+  // This config documents the expected headers for deployment
+  headers: async () => [
+    {
+      source: '/(.*)',
+      headers: getSecurityHeaders(),
+    },
+  ],
 };
 
 export default nextConfig;

@@ -23,6 +23,8 @@ import { Plus, Key, Trash2, RotateCcw, Activity, Users, DollarSign, Loader2, Ale
 import { LicenseService } from '../../lib/license-service';
 import { UsageMetering } from '../../lib/usage-metering';
 import type { License as ServiceLicense } from '../../lib/license-types';
+import { AuthGuard } from '../../components/auth/AuthGuard';
+import { AuthProvider } from '../../lib/auth-context';
 
 interface License {
   id: string;
@@ -65,7 +67,7 @@ function toUiLicense(license: ServiceLicense): License {
   };
 }
 
-export default function AdminLicensesPage() {
+function LicensesPageContent() {
   const [licenses, setLicenses] = useState<License[]>([]);
   const [selectedTier, setSelectedTier] = useState<string>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -417,5 +419,15 @@ export default function AdminLicensesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function AdminLicensesPage() {
+  return (
+    <AuthProvider>
+      <AuthGuard>
+        <LicensesPageContent />
+      </AuthGuard>
+    </AuthProvider>
   );
 }

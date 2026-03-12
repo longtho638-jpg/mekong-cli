@@ -135,8 +135,7 @@ export default function AnalyticsPage() {
             maxVisible={5}
             onRowClick={(license) => {
               // Row click handler - can be extended with modal or navigation
-              // eslint-disable-next-line no-console
-              console.log && console.log('Clicked:', license)
+              void license
             }}
           />
         </div>

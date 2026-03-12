@@ -9,6 +9,10 @@ import type {
 } from './license-types'
 import { UsageMetering } from './usage-metering'
 import type { UsageSummary } from './usage-metering'
+import {
+  CreateLicenseInputSchema,
+  UpdateSubscriptionInputSchema,
+} from './license-schemas'
 
 /**
  * Generate unique license key
@@ -126,21 +130,24 @@ class LicenseServiceClass {
    * Create new license
    */
   create(input: CreateLicenseInput): License {
+    // Validate input using Zod schema
+    const validatedInput = CreateLicenseInputSchema.parse(input)
+
     const id = `lic_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`
     const licenseKey = generateLicenseKey()
     const now = new Date()
 
     const license: License = {
       id,
-      tier: input.tier,
+      tier: validatedInput.tier,
       status: 'active',
-      customerId: input.customerId,
-      customerName: input.customerName,
+      customerId: validatedInput.customerId,
+      customerName: validatedInput.customerName,
       createdAt: now,
-      expiresAt: input.expiresInDays
-        ? new Date(now.getTime() + input.expiresInDays * 24 * 60 * 60 * 1000)
+      expiresAt: validatedInput.expiresInDays
+        ? new Date(now.getTime() + validatedInput.expiresInDays * 24 * 60 * 60 * 1000)
         : undefined,
-      features: input.features || getDefaultFeatures(input.tier),
+      features: validatedInput.features || getDefaultFeatures(validatedInput.tier),
       metadata: {
         licenseKey,
       },
@@ -203,6 +210,12 @@ class LicenseServiceClass {
     if (!license) {
       return undefined
     }
+
+    // Validate subscription input using Zod schema
+    UpdateSubscriptionInputSchema.parse({
+      subscriptionId,
+      subscriptionStatus,
+    })
 
     license.subscriptionId = subscriptionId
     license.subscriptionStatus = subscriptionStatus
