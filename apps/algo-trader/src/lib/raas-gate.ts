@@ -654,3 +654,38 @@ export async function activateSubscription(tenantId: string, tier: LicenseTier, 
 export async function deactivateSubscription(tenantId: string): Promise<void> {
   LicenseService.getInstance().deactivateSubscription(tenantId);
 }
+
+// ─── ROIaaS Phase 1 Gate Functions ───────────────────────────────────────────
+
+/**
+ * Check RAAS_LICENSE_KEY and return validation result
+ * Free tier = delayed signals, Premium tier = real-time + auto-trade
+ */
+export function checkLicense(): { valid: boolean; tier: LicenseTier; hasAccess: boolean } {
+  const service = LicenseService.getInstance();
+  // Use cached license if available, otherwise validate
+  const validation = service.validatedLicense || service.validateSync();
+
+  return {
+    valid: validation.valid,
+    tier: validation.tier,
+    hasAccess: validation.valid && validation.tier !== LicenseTier.FREE,
+  };
+}
+
+/**
+ * Check if running on free tier (delayed signals only)
+ */
+export function isFreeTier(): boolean {
+  const service = LicenseService.getInstance();
+  return service.getTier() === LicenseTier.FREE;
+}
+
+/**
+ * Check if running on premium tier (real-time + auto-trade)
+ */
+export function isPremiumTier(): boolean {
+  const service = LicenseService.getInstance();
+  const tier = service.getTier();
+  return tier === LicenseTier.PRO || tier === LicenseTier.ENTERPRISE;
+}

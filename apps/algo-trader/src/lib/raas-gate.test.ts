@@ -216,6 +216,78 @@ describe('Worker Endpoint Protection', () => {
   });
 });
 
+// ─── ROIaaS Phase 1 Gate Functions Tests ─────────────────────────────────────
+
+import { checkLicense, isFreeTier, isPremiumTier } from './raas-gate';
+
+describe('ROIaaS Phase 1 Gate Functions', () => {
+  beforeEach(() => {
+    LicenseService.getInstance().reset();
+    delete process.env.RAAS_LICENSE_KEY;
+  });
+
+  describe('checkLicense', () => {
+    test('should return free tier when no license key', () => {
+      const result = checkLicense();
+      expect(result.valid).toBe(false);
+      expect(result.tier).toBe(LicenseTier.FREE);
+      expect(result.hasAccess).toBe(false);
+    });
+
+    test('should return hasAccess=true for PRO tier', () => {
+      LicenseService.getInstance().validateSync('raas-pro-test');
+      const result = checkLicense();
+      expect(result.valid).toBe(true);
+      expect(result.tier).toBe(LicenseTier.PRO);
+      expect(result.hasAccess).toBe(true);
+    });
+
+    test('should return hasAccess=true for ENTERPRISE tier', () => {
+      LicenseService.getInstance().validateSync('raas-ent-test');
+      const result = checkLicense();
+      expect(result.valid).toBe(true);
+      expect(result.tier).toBe(LicenseTier.ENTERPRISE);
+      expect(result.hasAccess).toBe(true);
+    });
+  });
+
+  describe('isFreeTier', () => {
+    test('should return true when no license key', () => {
+      expect(isFreeTier()).toBe(true);
+    });
+
+    test('should return false for PRO tier', async () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-pro-test';
+      await validateLicense();
+      expect(isFreeTier()).toBe(false);
+    });
+
+    test('should return false for ENTERPRISE tier', async () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-ent-test';
+      await validateLicense();
+      expect(isFreeTier()).toBe(false);
+    });
+  });
+
+  describe('isPremiumTier', () => {
+    test('should return false when no license key', () => {
+      expect(isPremiumTier()).toBe(false);
+    });
+
+    test('should return true for PRO tier', async () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-pro-test';
+      await validateLicense();
+      expect(isPremiumTier()).toBe(true);
+    });
+
+    test('should return true for ENTERPRISE tier', async () => {
+      process.env.RAAS_LICENSE_KEY = 'raas-ent-test';
+      await validateLicense();
+      expect(isPremiumTier()).toBe(true);
+    });
+  });
+});
+
 
 
 

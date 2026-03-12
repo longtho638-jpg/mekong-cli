@@ -20,6 +20,7 @@ export function App() {
         <Route path="/backtests" element={<BacktestsPage />} />
         <Route path="/marketplace" element={<MarketplacePage />} />
         <Route path="/licenses" element={<LicensePage />} />
+        <Route path="/admin/licenses" element={<LicensePage />} />
         <Route path="/phase2" element={<Phase2Page />} />
         <Route path="/phase3" element={<Phase3Page />} />
         <Route path="/phase9" element={<Phase9Page />} />
