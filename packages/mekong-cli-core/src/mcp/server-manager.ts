@@ -91,8 +91,8 @@ export class McpServerManager {
 
   /** Disconnect all servers */
   async disconnectAll(): Promise<void> {
-    const names = Array.from(this.clients.keys());
-    await Promise.all(names.map(name => this.disconnect(name)));
+    const names = new Set([...this.clients.keys(), ...this.states.keys()]);
+    await Promise.all(Array.from(names).map(name => this.disconnect(name)));
   }
 
   /** Get all available tools across all connected servers */
