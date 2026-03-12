@@ -8,7 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "deploy:cf": "wrangler pages deploy .next",
-    "dev:cf": "wrangler pages dev .next"
+    "dev:cf": "wrangler pages dev .next",
+    "analyze": "ANALYZE=true next build",
+    "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
+    "changelog:all": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -21,6 +24,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.6",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -28,6 +32,8 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
+    "conventional-changelog-cli": "^4.1.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^9.39.3",
     "eslint-config-next": "16.1.6",
     "jsdom": "^28.1.0",
