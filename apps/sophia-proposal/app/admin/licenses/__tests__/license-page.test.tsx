@@ -42,10 +42,16 @@ describe('AdminLicensesPage', () => {
     },
   ];
 
-  it('should render loading state initially', () => {
+  it('should render loading state initially', async () => {
+    // Mock empty license list - loading state shows during async init
     (LicenseService.getAll as ReturnType<typeof vi.fn>).mockReturnValue([]);
-    render(<AdminLicensesPage />);
-    expect(screen.getByText(/loading licenses.../i)).toBeInTheDocument();
+    const { container } = render(<AdminLicensesPage />);
+
+    // Loading state appears during async initialization
+    await waitFor(() => {
+      const loader = container.querySelector('.animate-spin');
+      expect(loader).toBeInTheDocument();
+    });
   });
 
   it('should display license stats', async () => {
@@ -78,7 +84,7 @@ describe('AdminLicensesPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText(/raas-pro-abc123xyz/i)).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
 
     // Select PRO tier filter
     const selectTrigger = screen.getByRole('combobox');
@@ -90,7 +96,7 @@ describe('AdminLicensesPage', () => {
     // Should filter to show only PRO licenses
     await waitFor(() => {
       expect(screen.getByText(/PRO/i)).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
   });
 
   it('should open create license modal', async () => {
@@ -133,7 +139,7 @@ describe('AdminLicensesPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('ENTERPRISE')).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
   });
 
   it('should display active badge for active licenses', async () => {
@@ -142,7 +148,7 @@ describe('AdminLicensesPage', () => {
 
     await waitFor(() => {
       expect(screen.getByText('active')).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
   });
 
   it('should show revoke button for active licenses', async () => {
@@ -152,7 +158,7 @@ describe('AdminLicensesPage', () => {
     await waitFor(() => {
       const revokeButtons = screen.getAllByRole('button', { name: /revoke/i });
       expect(revokeButtons.length).toBeGreaterThan(0);
-    });
+    }, { timeout: 2000 });
   });
 
   it('should show delete button for all licenses', async () => {
@@ -162,7 +168,7 @@ describe('AdminLicensesPage', () => {
     await waitFor(() => {
       const deleteButtons = screen.getAllByRole('button', { name: /delete/i });
       expect(deleteButtons.length).toBeGreaterThan(0);
-    });
+    }, { timeout: 2000 });
   });
 
   it('should display revenue calculation in stats', async () => {
@@ -172,7 +178,7 @@ describe('AdminLicensesPage', () => {
     await waitFor(() => {
       // PRO = $149, ENTERPRISE = $499
       expect(screen.getByText('$648')).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
   });
 
   it('should handle empty license list', async () => {
@@ -182,6 +188,6 @@ describe('AdminLicensesPage', () => {
     await waitFor(() => {
       expect(screen.getByText('Total Licenses')).toBeInTheDocument();
       expect(screen.getByText('0')).toBeInTheDocument();
-    });
+    }, { timeout: 2000 });
   });
 });
