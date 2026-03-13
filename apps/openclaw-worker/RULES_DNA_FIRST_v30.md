@@ -1,1 +1,0 @@
-docs/RULES_DNA_FIRST_v30.md

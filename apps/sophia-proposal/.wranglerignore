@@ -1,7 +1,0 @@
-.next/cache/
-node_modules/
-*.log
-.vercel/
-.git/
-.env*
-!.env.example

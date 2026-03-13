@@ -1,1 +1,0 @@
-daemons/diplomat-daemon.js

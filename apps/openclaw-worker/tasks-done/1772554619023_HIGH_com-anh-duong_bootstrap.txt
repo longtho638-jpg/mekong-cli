@@ -1,1 +1,0 @@
-/cook "NEW PROJECT: com-anh-duong for Cơm Ánh Dương. Goal: Web đặt cơm online. Tech: nextjs+supabase. 1/ DEEP 10x PLAN architecture. 2/ COOK implement core features: menu, cart, checkout. 3/ production-code-audit: lint-and-validate, security-review. npm audit fix. 4/ VERIFY GREEN GOLIVE. Commit."

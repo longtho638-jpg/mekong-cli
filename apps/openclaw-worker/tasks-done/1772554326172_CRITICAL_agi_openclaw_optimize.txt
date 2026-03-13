@@ -1,1 +1,0 @@
-/bootstrap:auto:parallel /cook AGI-optimize OpenClaw worker — deep scan all modules in lib/, add self-healing + auto-retry + adaptive learning to brain-state-machine.js, mission-runner.js, factory-pipeline.js. Write tests for new patterns. Full autonomous upgrade — no human intervention needed.

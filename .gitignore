@@ -113,31 +113,10 @@ apps/dashboard-internal/
 **/internal/**
 openclaw-key.json
 
-# Private Client Projects (NOT public — Agency OS commercial layer)
-apps/84tea/
-apps/anima119/
-apps/apex-os/
-apps/sophia-ai-factory/
-# apps/sophia-proposal/  # TEMP: Allow for CF migration
-apps/sa-dec-flower-hunt/
-apps/com-anh-duong/
-apps/com-anh-duong-10x/
-apps/well/
-apps/agencyos-web/
-apps/agencyos-landing/
-apps/dashboard/
-apps/admin/
-apps/analytics/
-apps/developers/
-apps/landing/
-apps/web/
-apps/stealth-engine/
-apps/vibe-coding-cafe/
-apps/agentic-brain/
-apps/gemini-proxy-clone/
-apps/antigravity-cli/
-apps/antigravity-gateway/
-apps/project/
+# Private Client Projects — ALL apps/ are LOCAL ONLY
+# Monorepo structure: apps stay on disk, NEVER pushed to public GitHub
+# Each sub-project has its own repo if needed
+apps/
 
 # Private Orchestration (Tôm Hùm internal state)
 apps/openclaw-worker/data/

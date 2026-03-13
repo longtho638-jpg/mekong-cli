@@ -1,1 +1,0 @@
-daemons/scribe-daemon.js

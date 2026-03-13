@@ -1,4 +1,0 @@
-RaaS AGI 100/100 Go-Live Mission
-Project: mekong-cli
-Goal: Binh_Phap_Master.md Chapter 1-13 Auto-Execute
-Command: /cook "Ánh xạ Binh_Phap_Master.md để đẩy AGI RaaS 100/100 và GO LIVE cho 4 dự án: mekong-cli, well, algo-trader, apex-os" --auto

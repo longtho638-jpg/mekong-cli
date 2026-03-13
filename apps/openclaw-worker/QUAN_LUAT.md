@@ -1,1 +1,0 @@
-docs/QUAN_LUAT.md

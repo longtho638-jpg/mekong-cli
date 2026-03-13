@@ -1,1 +1,0 @@
-/cook "CTO: Deep 10x LEARN architecture & security pattern from github.com/vurakit/agentveil. Apply AgentVeil concepts to RaaS AGI ecosystem. 1/ DEEP 10x PLAN. 2/ Ánh xạ & COOK implement features. 3/ REFACTOR clean code & SECURITY AUDIT. 4/ Chạy build, VERIFY BROWSER & đạt GREEN GOLIVE. Commit."
