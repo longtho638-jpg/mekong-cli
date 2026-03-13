@@ -63,13 +63,16 @@ module.exports = {
     'arbitrage-executor.test',
   ],
   testMatch: ['**/*.test.ts'],
-  moduleDirectories: ['node_modules', '<rootDir>/node_modules'],
+  moduleDirectories: ['node_modules', '<rootDir>/node_modules', '<rootDir>/src'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^@agencyos/trading-core/(.*)$': '<rootDir>/../../packages/trading-core/$1',
     '^@agencyos/trading-core$': '<rootDir>/../../packages/trading-core/index.ts',
     '^@agencyos/vibe-arbitrage-engine/(.*)$': '<rootDir>/../../packages/vibe-arbitrage-engine/$1',
     '^@agencyos/vibe-arbitrage-engine$': '<rootDir>/../../packages/vibe-arbitrage-engine/index.ts',
+    '^../interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
+    '^../../interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
+    '^../../../interfaces/(.*)$': '<rootDir>/src/interfaces/$1',
   },
   transform: {
     '^.+\\.ts$': ['ts-jest', {
@@ -79,7 +82,7 @@ module.exports = {
   },
   // Transform ESM packages that cause syntax errors
   transformIgnorePatterns: [
-    '/node_modules/(?!jose)',
+    '/node_modules/(?!jose|@polymarket)',
   ],
   // Cache test results for faster re-runs
   cache: true,

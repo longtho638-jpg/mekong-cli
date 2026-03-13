@@ -2,7 +2,7 @@
  * Polymarket CLOB Client Tests
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "@jest/globals";
 import { PolymarketClobClient, Side, OrderType, CONTRACTS } from "./client";
 
 // Mock the ClobClient from @polymarket/clob-client
