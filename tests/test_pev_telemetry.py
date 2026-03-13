@@ -339,6 +339,79 @@ class TestPEVDashboardData(unittest.TestCase):
         assert rates["t2"] == 0.0
 
 
+    def test_execution_history_disk_limit_reached(self):
+        """Disk reading stops when limit reached (covers break at line 74)."""
+        import pathlib
+        # Write many disk files
+        for i in range(5):
+            data = {"pipeline_id": f"dlim-{i}", "status": "completed"}
+            fp = pathlib.Path(self.tmpdir) / f"dlim-{i}.json"
+            fp.write_text(json.dumps(data))
+
+        # Request only 3 — should stop early
+        history = self.dashboard.get_execution_history(limit=3)
+        assert len(history) == 3
+
+    def test_execution_history_bad_json_on_disk(self):
+        """Malformed JSON files on disk are skipped (covers lines 81-82)."""
+        import pathlib
+        bad_file = pathlib.Path(self.tmpdir) / "bad-json.json"
+        bad_file.write_text("NOT VALID JSON {{")
+        good_data = {"pipeline_id": "good-disk", "status": "completed"}
+        good_file = pathlib.Path(self.tmpdir) / "good-disk.json"
+        good_file.write_text(json.dumps(good_data))
+
+        history = self.dashboard.get_execution_history(limit=10)
+        ids = [h["pipeline_id"] for h in history]
+        assert "good-disk" in ids
+
+    def test_pipeline_detail_from_disk(self):
+        """get_pipeline_detail reads from disk when not in memory (covers lines 103-107)."""
+        import pathlib
+        data = {
+            "pipeline_id": "disk-detail",
+            "status": "completed",
+            "duration_ms": 500.0,
+        }
+        filepath = pathlib.Path(self.tmpdir) / "disk-detail.json"
+        filepath.write_text(json.dumps(data))
+
+        detail = self.dashboard.get_pipeline_detail("disk-detail")
+        assert detail is not None
+        assert detail["pipeline_id"] == "disk-detail"
+        assert detail["status"] == "completed"
+
+    def test_pipeline_detail_disk_bad_json(self):
+        """get_pipeline_detail returns None for corrupted disk file."""
+        import pathlib
+        bad = pathlib.Path(self.tmpdir) / "corrupt.json"
+        bad.write_text("{broken")
+
+        assert self.dashboard.get_pipeline_detail("corrupt") is None
+
+    def test_singleton_get_dashboard_data(self):
+        """get_dashboard_data returns singleton (covers lines 139-141)."""
+        from src.core.pev_dashboard_data import (
+            get_dashboard_data, reset_dashboard_data,
+        )
+        reset_dashboard_data()
+        d1 = get_dashboard_data()
+        d2 = get_dashboard_data()
+        assert d1 is d2
+        reset_dashboard_data()
+
+    def test_reset_dashboard_data(self):
+        """reset_dashboard_data clears singleton (covers line 147)."""
+        from src.core.pev_dashboard_data import (
+            get_dashboard_data, reset_dashboard_data,
+        )
+        d1 = get_dashboard_data()
+        reset_dashboard_data()
+        d2 = get_dashboard_data()
+        assert d1 is not d2
+        reset_dashboard_data()
+
+
 class TestPEVHealthChecks(unittest.TestCase):
     """Tests for PEV health check functions."""
 
