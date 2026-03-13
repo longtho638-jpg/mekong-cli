@@ -47,7 +47,10 @@ export abstract class BasePolymarketStrategy implements IStrategy {
    * Initialize with market data
    */
   async init(candles: ICandle[], config?: Record<string, unknown>): Promise<void> {
-    this.config = config ?? {};
+    // Only merge config if provided, preserve subclass defaults
+    if (config) {
+      this.config = { ...this.config, ...config };
+    }
     // For Polymarket, we use market ticks instead of candles
     this.candles = candles;
   }

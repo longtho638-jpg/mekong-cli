@@ -79,11 +79,15 @@ module.exports = {
       tsconfig: '<rootDir>/tsconfig.json',
       diagnostics: false,
     }],
+    // Transform ESM packages in node_modules
+    '^.+\\.js$': 'babel-jest',
   },
   // Transform ESM packages that cause syntax errors
   transformIgnorePatterns: [
-    '/node_modules/(?!jose|@polymarket)',
+    '/node_modules/(?!jose|@polymarket|ethers)',
   ],
+  // Required for ESM support with ts-jest
+  extensionsToTreatAsEsm: ['.ts'],
   // Cache test results for faster re-runs
   cache: true,
   cacheDirectory: '<rootDir>/node_modules/.cache/jest',
