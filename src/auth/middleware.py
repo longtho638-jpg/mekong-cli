@@ -61,7 +61,7 @@ class SessionMiddleware(BaseHTTPMiddleware):
             Tuple of (user, token_payload) if valid, None otherwise
         """
         # Decode and validate token
-        is_valid, payload, error = self._session_manager.decode_token(token)
+        is_valid, payload, error = self._session_manager.decode_token(token)  # noqa: F841 (error unused)
         if not is_valid:
             return None
 
@@ -265,7 +265,7 @@ class OptionalAuthMiddleware(BaseHTTPMiddleware):
 
     async def _authenticate_user(self, token: str) -> Optional[tuple[User, dict]]:
         """Authenticate user from JWT token."""
-        is_valid, payload, error = self._session_manager.decode_token(token)
+        is_valid, payload, error = self._session_manager.decode_token(token)  # noqa: F841 (error unused)
         if not is_valid:
             return None
 

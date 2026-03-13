@@ -77,7 +77,7 @@ class MacOSKeychainBackend(SecureStorageBackend):
     def store_credential(self, key: str, value: str) -> None:
         """Store license key in macOS Keychain."""
         # security add-generic-password -s <service> -a <account> -w <value>
-        returncode, stdout, stderr = self._run_security([
+        returncode, stdout, stderr = self._run_security([  # noqa: F841 (stdout unused, stderr used in error)
             "add-generic-password",
             "-s", self.SERVICE_NAME,
             "-a", self.account,
@@ -109,7 +109,7 @@ class MacOSKeychainBackend(SecureStorageBackend):
     def delete_credential(self, key: str) -> bool:
         """Delete license key from macOS Keychain."""
         # security delete-generic-password -s <service> -a <account> -l <key>
-        returncode, stdout, stderr = self._run_security([
+        returncode, stdout, stderr = self._run_security([  # noqa: F841 (stdout unused)
             "delete-generic-password",
             "-s", self.SERVICE_NAME,
             "-a", self.account,
@@ -152,7 +152,7 @@ class WindowsVaultBackend(SecureStorageBackend):
         # Use cmdkey for basic credential storage
         escaped_value = value.replace('"', '""')
         command = f'cmdkey /generic:"{self.SERVICE_NAME}:{key}:{self.account}" /user:"{self.account}" /pass:"{escaped_value}"'
-        returncode, stdout, stderr = self._run_powershell(command)
+        returncode, stdout, stderr = self._run_powershell(command)  # noqa: F841 (stdout unused)
 
         if returncode != 0:
             raise SecureStorageError(f"Failed to store credential: {stderr.strip()}")
@@ -201,7 +201,7 @@ class WindowsVaultBackend(SecureStorageBackend):
     def delete_credential(self, key: str) -> bool:
         """Delete credential from Windows Credential Vault."""
         command = f'cmdkey /delete:"{self.SERVICE_NAME}:{key}:{self.account}"'
-        returncode, stdout, stderr = self._run_powershell(command)
+        returncode, stdout, stderr = self._run_powershell(command)  # noqa: F841 (stdout unused)
         return returncode == 0
 
 

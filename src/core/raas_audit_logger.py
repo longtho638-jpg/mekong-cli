@@ -173,8 +173,8 @@ class RAASAuditLogger:
         Returns:
             Tuple of (payload dict, tenant_id)
         """
-        headers, tenant = self._get_auth_headers()
-        tenant_id = tenant.tenant_id if tenant else "anonymous"
+        headers, tenant = self._get_auth_headers()  # noqa: F841 (headers/tenant used in trace)
+        tenant_id = tenant.tenant_id if tenant else "anonymous"  # noqa: F841
 
         payload = {
             "project": "mekong-cli",
@@ -210,8 +210,8 @@ class RAASAuditLogger:
         """
         start = time.perf_counter()
 
-        headers, tenant = self._get_auth_headers()
-        payload, tenant_id = self._build_payload(event, commit_sha, session_id, metadata)
+        headers, tenant = self._get_auth_headers()  # noqa: F841 (used in trace)
+        payload, tenant_id = self._build_payload(event, commit_sha, session_id, metadata)  # noqa: F841 (tenant_id used)
 
         trace = RaaSInteractionTrace(
             timestamp=datetime.now(timezone.utc).isoformat(),

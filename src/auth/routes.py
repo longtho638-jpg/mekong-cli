@@ -103,7 +103,7 @@ async def dev_login(request: Request):
     )
 
     # Create session with owner role for full access testing
-    session, jwt_token, refresh_token = await session_manager.create_session(
+    session, jwt_token, refresh_token = await session_manager.create_session(  # noqa: F841 (session/refresh_token unused in dev login)
         user=user,
         role="owner",
     )
@@ -181,7 +181,7 @@ async def google_callback(
     client = OAuth2Client()
     try:
         # Handle callback and get user info
-        user_info, access_token = await client.handle_google_callback(code)
+        user_info, access_token = await client.handle_google_callback(code)  # noqa: F841 (access_token unused)
 
         # Find or create user
         user_repo = UserRepository()
@@ -193,7 +193,7 @@ async def google_callback(
 
         # Create session
         session_manager = SessionManager(user_repo)
-        session, jwt_token, refresh_token = await session_manager.create_session(
+        session, jwt_token, refresh_token = await session_manager.create_session(  # noqa: F841 (session/refresh_token unused)
             user=user,
             role="member",  # Default role, can be updated from license
         )
@@ -271,7 +271,7 @@ async def github_callback(
     client = OAuth2Client()
     try:
         # Handle callback and get user info
-        user_info, access_token = await client.handle_github_callback(code)
+        user_info, access_token = await client.handle_github_callback(code)  # noqa: F841 (access_token unused)
 
         # Find or create user
         user_repo = UserRepository()
@@ -283,7 +283,7 @@ async def github_callback(
 
         # Create session
         session_manager = SessionManager(user_repo)
-        session, jwt_token, refresh_token = await session_manager.create_session(
+        session, jwt_token, refresh_token = await session_manager.create_session(  # noqa: F841 (session/refresh_token unused)
             user=user,
             role="member",
         )
