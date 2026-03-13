@@ -101,7 +101,8 @@ class PEVDashboardData:
         filepath = self._storage_dir / f"{pipeline_id}.json"
         if filepath.exists():
             try:
-                return json.loads(filepath.read_text())
+                result: dict[str, Any] = json.loads(filepath.read_text())
+                return result
             except (json.JSONDecodeError, OSError):
                 return None
         return None
