@@ -249,7 +249,7 @@ class DeviceCertificate:
         # Get MAC address from primary network interface
         mac_address = None
         # Try to get MAC from all interfaces
-        for iface in [0, 1, 2, 3]:
+        for _iface in [0, 1, 2, 3]:  # noqa: F841 (loop var unused, just iteration)
             try:
                 mac = uuid.getnode()
                 if mac:
