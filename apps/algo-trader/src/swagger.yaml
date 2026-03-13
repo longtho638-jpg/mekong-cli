@@ -1,0 +1,500 @@
+openapi: 3.0.0
+info:
+  title: Algo-Trader ROIaaS API
+  description: Real-time trading signals, backtesting, and subscription management
+  version: 1.0.0
+  contact:
+    name: AgencyOS Support
+    email: support@agencyos.network
+    url: https://agencyos.network
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development
+  - url: https://api.algo-trader.agencyos.network/api
+    description: Production
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    UserIdAuth:
+      type: apiKey
+      in: header
+      name: X-User-ID
+
+  schemas:
+    LicenseTier:
+      type: string
+      enum: [FREE, PRO, ENTERPRISE]
+
+    BacktestResult:
+      type: object
+      properties:
+        totalReturn:
+          type: number
+        totalTrades:
+          type: integer
+        winRate:
+          type: number
+        profitFactor:
+          type: number
+        maxDrawdown:
+          type: number
+        sharpeRatio:
+          type: number
+        sortinoRatio:
+          type: number
+        calmarRatio:
+          type: number
+        lookbackDays:
+          type: integer
+        tier:
+          $ref: '#/components/schemas/LicenseTier'
+        timestamp:
+          type: integer
+
+    SignalAccuracyMetrics:
+      type: object
+      properties:
+        totalSignals:
+          type: integer
+        correctSignals:
+          type: integer
+        accuracyRate:
+          type: number
+        falsePositives:
+          type: integer
+        falseNegatives:
+          type: integer
+        precision:
+          type: number
+        recall:
+          type: number
+        f1Score:
+          type: number
+
+    PnLProjection:
+      type: object
+      properties:
+        expectedReturn:
+          type: number
+        confidenceInterval:
+          type: object
+          properties:
+            lower:
+              type: number
+            upper:
+              type: number
+            confidence:
+              type: integer
+        riskMetrics:
+          type: object
+          properties:
+            volatility:
+              type: number
+            maxDrawdown:
+              type: number
+            sharpeRatio:
+              type: number
+            var95:
+              type: number
+        projectionDays:
+          type: integer
+        initialCapital:
+          type: number
+        projectedFinalCapital:
+          type: number
+
+    NotificationPreferences:
+      type: object
+      properties:
+        userId:
+          type: string
+        emailEnabled:
+          type: boolean
+        smsEnabled:
+          type: boolean
+        telegramEnabled:
+          type: boolean
+        webhookEnabled:
+          type: boolean
+        pushEnabled:
+          type: boolean
+        realtimeEnabled:
+          type: boolean
+        digestEnabled:
+          type: boolean
+        webhookUrl:
+          type: string
+        telegramChatId:
+          type: string
+        phoneNumber:
+          type: string
+        alertTypes:
+          type: object
+          additionalProperties:
+            type: boolean
+
+    AlertPayload:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [signal_generated, daily_pnl_summary, portfolio_risk_warning, subscription_expiring, usage_limit_warning]
+        severity:
+          type: string
+          enum: [low, medium, high, critical]
+        title:
+          type: string
+        message:
+          type: string
+        data:
+          type: object
+        timestamp:
+          type: integer
+        userId:
+          type: string
+
+    UsageStatus:
+      type: object
+      properties:
+        userId:
+          type: string
+        tier:
+          $ref: '#/components/schemas/LicenseTier'
+        trades:
+          type: object
+          properties:
+            used:
+              type: integer
+            limit:
+              oneOf:
+                - type: integer
+                - type: string
+            remaining:
+              type: number
+            percentUsed:
+              type: number
+        apiCalls:
+          type: object
+          properties:
+            used:
+              type: integer
+            limit:
+              type: integer
+            remaining:
+              type: integer
+            percentUsed:
+              type: number
+
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          enum: [false]
+        error:
+          type: string
+        message:
+          type: string
+        upgradePrompt:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+            upgradeUrl:
+              type: string
+
+  responses:
+    UnauthorizedError:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TierRestricted:
+      description: Feature requires higher tier
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimitExceeded:
+      description: API rate limit exceeded
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+paths:
+  /backtest/limits:
+    get:
+      summary: Get tier-based backtest limits
+      tags: [Backtest]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      responses:
+        '200':
+          description: Tier limits
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  tiers:
+                    type: object
+                  currentTier:
+                    $ref: '#/components/schemas/LicenseTier'
+
+  /backtest/simulate:
+    post:
+      summary: Run strategy backtest simulation
+      tags: [Backtest]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                strategyId:
+                  type: string
+                symbol:
+                  type: string
+                lookbackDays:
+                  type: integer
+                  default: 30
+                initialCapital:
+                  type: integer
+                  default: 10000
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      timestamp:
+                        type: integer
+                      yesPrice:
+                        type: number
+                      noPrice:
+                        type: number
+                      volume:
+                        type: number
+                      openInterest:
+                        type: number
+      responses:
+        '200':
+          description: Backtest result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  result:
+                    $ref: '#/components/schemas/BacktestResult'
+                  message:
+                    type: string
+        '403':
+          $ref: '#/components/responses/TierRestricted'
+
+  /backtest/accuracy:
+    post:
+      summary: Test signal accuracy
+      tags: [Backtest]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                signals:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      timestamp:
+                        type: integer
+                      predicted:
+                        type: boolean
+                      actual:
+                        type: boolean
+                lookbackDays:
+                  type: integer
+      responses:
+        '200':
+          description: Accuracy metrics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  metrics:
+                    $ref: '#/components/schemas/SignalAccuracyMetrics'
+
+  /backtest/project:
+    post:
+      summary: Project PnL (PRO+)
+      tags: [Backtest]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                historicalTrades:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      marketId:
+                        type: string
+                      profit:
+                        type: number
+                      timestamp:
+                        type: integer
+                projectionDays:
+                  type: integer
+                  default: 30
+                initialCapital:
+                  type: integer
+                  default: 10000
+      responses:
+        '200':
+          description: PnL projection
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  projection:
+                    $ref: '#/components/schemas/PnLProjection'
+        '403':
+          $ref: '#/components/responses/TierRestricted'
+
+  /notifications/preferences:
+    get:
+      summary: Get notification preferences
+      tags: [Notifications]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      responses:
+        '200':
+          description: User preferences
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  preferences:
+                    $ref: '#/components/schemas/NotificationPreferences'
+                  tier:
+                    $ref: '#/components/schemas/LicenseTier'
+    put:
+      summary: Update notification preferences
+      tags: [Notifications]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferences'
+      responses:
+        '200':
+          description: Preferences updated
+        '403':
+          $ref: '#/components/responses/TierRestricted'
+
+  /notifications/test:
+    post:
+      summary: Send test notification
+      tags: [Notifications]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                channel:
+                  type: string
+                message:
+                  type: string
+      responses:
+        '200':
+          description: Test sent
+        '429':
+          $ref: '#/components/responses/RateLimitExceeded'
+
+  /notifications/channels:
+    get:
+      summary: Get available channels
+      tags: [Notifications]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      responses:
+        '200':
+          description: Available channels per tier
+
+  /usage:
+    get:
+      summary: Get current usage
+      tags: [Usage]
+      security:
+        - ApiKeyAuth: []
+        - UserIdAuth: []
+      responses:
+        '200':
+          description: Usage status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  status:
+                    $ref: '#/components/schemas/UsageStatus'
+
+  /usage/limits:
+    get:
+      summary: Get tier limits
+      tags: [Usage]
+      responses:
+        '200':
+          description: Tier limits configuration

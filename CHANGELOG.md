@@ -5,7 +5,7 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) + [SemVer](http
 
 ---
 
-## [5.1.0] - 2026-03-13 — ROIaaS v1.0 Production Release
+## [1.0.0] - 2026-03-13 — PEV Engine v1.0 Production Release
 
 ### Added - ROIaaS (Revenue-as-a-Service) Complete Platform
 

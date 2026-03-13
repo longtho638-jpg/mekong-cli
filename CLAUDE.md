@@ -1,8 +1,8 @@
-# MEKONG CLI v5.0 — OPENCLAW CONSTITUTION
+# MEKONG CLI v1.0 — OPENCLAW CONSTITUTION
 *"I am OpenClaw. I run this company."*
 
 **Mekong CLI** — AI-operated business platform. Open source. Universal LLM.
-**Version:** 5.0.0 | **License:** MIT | **Language:** English
+**Version:** 1.0.0 | **License:** MIT | **Language:** English
 
 ---
 

@@ -39,6 +39,9 @@ import { cacheStatsRoutes } from './routes/cache-stats-routes';
 import { registerUsageRoutes } from './routes/internal/usage-routes';
 import { registerUsageRoutes as registerTradeMeteringRoutes } from '../metering/usage-api-routes';
 import { buildPhase6Routes } from './routes/phase6-ghost-routes';
+import { registerBacktestRoutes } from './routes/backtest-routes';
+import { registerNotificationsRoutes } from './routes/notifications-routes';
+import { registerApiDocsRoute } from './routes/api-docs-route';
 import { usageTrackingPlugin } from './middleware/usage-tracking-middleware';
 import { IdempotencyStore, idempotencyMiddleware, createIdempotencyResponseHandler } from '../middleware/idempotency-middleware';
 import { hardLimitsPlugin } from './middleware/hard-limits-middleware';
@@ -153,6 +156,15 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
 
   // Phase 6 Ghost Protocol routes (ENTERPRISE-only)
   void server.register(buildPhase6Routes());
+
+  // ROIaaS Phase 6 - Backtest routes
+  void server.register(registerBacktestRoutes);
+
+  // ROIaaS Phase 7 - Notifications routes
+  void server.register(registerNotificationsRoutes);
+
+  // API Docs - Swagger UI
+  void server.register(registerApiDocsRoute);
 
   // Hard limits middleware (quota enforcement)
   void server.register(hardLimitsPlugin);

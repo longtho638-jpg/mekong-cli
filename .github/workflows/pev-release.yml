@@ -1,0 +1,143 @@
+name: PEV Engine CI/CD
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'src/core/planner.py'
+      - 'src/core/executor.py'
+      - 'src/core/verifier.py'
+      - 'src/core/orchestrator.py'
+      - 'src/core/parser.py'
+      - 'src/core/llm_client.py'
+      - 'src/core/exceptions.py'
+      - 'src/core/agent_base.py'
+      - 'tests/core/**'
+      - 'pyproject.toml'
+      - 'Dockerfile'
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'src/core/**'
+      - 'tests/core/**'
+      - 'pyproject.toml'
+
+env:
+  PYTHON_VERSION: '3.12'
+  DOCKER_IMAGE: mekong-cli/pev-engine
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+
+      - name: Install linters
+        run: |
+          pip install --upgrade pip
+          pip install "ruff>=0.9,<1.0" black isort
+
+      - name: Ruff check
+        run: ruff check src/core/ tests/core/
+
+      - name: Black check
+        run: black --check --line-length 100 src/core/ tests/core/
+
+      - name: Isort check
+        run: isort --check-only --profile black --line-length 100 src/core/ tests/core/
+
+  test:
+    name: Test PEV Engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio pytest-cov anyio "httpx<0.28"
+          pip install -e .
+
+      - name: Run PEV tests
+        run: |
+          python3 -m pytest tests/core/ -v --tb=short \
+            --cov=src/core --cov-report=xml --cov-report=term-missing
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+      - name: Upload coverage
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: test
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build PEV Engine image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: false
+          tags: |
+            ${{ env.DOCKER_IMAGE }}:${{ github.sha }}
+            ${{ env.DOCKER_IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  publish:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [test, docker]
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
