@@ -35,6 +35,9 @@ import {
 } from '../strategies/polymarket';
 import { IPolymarketSignal, IPolymarketOrder } from '../interfaces/IPolymarket';
 import { logger } from '../utils/logger';
+import { CircuitBreaker } from '../risk/circuit-breaker';
+import { DrawdownTracker } from '../risk/drawdown-tracker';
+import { PnLTracker, PnLAlerts, AlertRules, type TradeRecord } from '../risk';
 
 interface BotStatus {
   running: boolean;
@@ -46,7 +49,9 @@ interface BotStatus {
   rejectedTrades: number;
   dailyPnL: number;
   dailyVolume: number;
+  totalPnL: number;
   strategies: Array<{ name: string; enabled: boolean; signalCount: number }>;
+  pnlBreakdown?: Array<{ strategy: string; totalPnl: number; realizedPnl: number; unrealizedPnl: number }>;
 }
 
 export interface PolymarketBotConfig {
@@ -92,6 +97,13 @@ export class PolymarketBotEngine extends EventEmitter {
 
   // Risk tracking
   private dailyLoss = 0;
+  private pnlTracker: PnLTracker;
+  private pnlAlerts: PnLAlerts;
+  private alertRules: AlertRules;
+  private tradeCounter = 0;
+  private circuitBreaker: CircuitBreaker;
+  private drawdownTracker: DrawdownTracker;
+  private portfolioValue: number = 10000;
 
   constructor(config: Partial<PolymarketBotConfig> = {}) {
     super();
@@ -124,6 +136,50 @@ export class PolymarketBotEngine extends EventEmitter {
 
     // Initialize strategies
     this.initStrategies();
+
+    // Initialize circuit breaker
+    this.circuitBreaker = new CircuitBreaker({
+      breakerId: 'polymarket-bot',
+      hardLimit: 0.15,      // -15% hard stop
+      softLimit: 0.10,      // -10% warning
+      recoveryPct: 0.05,    // +5% recovery required
+    });
+
+    // Initialize drawdown tracker
+    this.drawdownTracker = new DrawdownTracker({
+      initialValue: this.config.maxBankroll,
+      warningThreshold: 0.10,
+      criticalThreshold: 0.15,
+    });
+
+    // Wire up circuit breaker events
+    this.circuitBreaker.on('trip', () => {
+      logger.warn('[BotEngine] Circuit breaker TRIPPED - Trading halted');
+      this.emit('circuit:trip');
+    });
+
+    this.circuitBreaker.on('reset', () => {
+      logger.info('[BotEngine] Circuit breaker RESET - Trading resumed');
+      this.emit('circuit:reset');
+    });
+
+    // Wire up drawdown events
+    this.drawdownTracker.on('critical', ({ drawdown }) => {
+      logger.error(`[BotEngine] Critical drawdown: ${(drawdown * 100).toFixed(2)}%`);
+    });
+
+    this.drawdownTracker.on('warning', ({ drawdown }) => {
+      logger.warn(`[BotEngine] Drawdown warning: ${(drawdown * 100).toFixed(2)}%`);
+    });
+
+    // Initialize PnL tracking
+    this.pnlTracker = new PnLTracker();
+    this.pnlAlerts = new PnLAlerts(this.pnlTracker, {
+      daily: { warn: -0.05, critical: -0.10 },
+      total: { warn: -0.05, critical: -0.10 },
+      perStrategy: true,
+    });
+    this.alertRules = new AlertRules();
   }
 
   private initStrategies(): void {
@@ -351,6 +407,14 @@ export class PolymarketBotEngine extends EventEmitter {
   private processSignal(signal: IPolymarketSignal): void {
     this.state.totalSignals++;
 
+    // Risk check 0: Circuit breaker (NEW)
+    if (!this.circuitBreaker.canTrade()) {
+      logger.warn('[BotEngine] Circuit breaker tripped - rejecting signal');
+      this.state.rejectedTrades++;
+      this.emit('signal:rejected', { signal, reason: 'circuit_breaker' });
+      return;
+    }
+
     // Risk check 1: Daily loss limit
     if (this.dailyLoss >= this.config.maxDailyLoss * this.config.maxBankroll) {
       logger.warn('[BotEngine] Daily loss limit reached - rejecting signal');
@@ -385,9 +449,22 @@ export class PolymarketBotEngine extends EventEmitter {
    * Execute signal (place order)
    */
   private async executeSignal(signal: IPolymarketSignal): Promise<void> {
+    // Record trade for PnL tracking
+    const trade: TradeRecord = {
+      tradeId: `trade-${++this.tradeCounter}-${Date.now()}`,
+      strategy: signal.metadata.strategy as string || 'Unknown',
+      tokenId: signal.tokenId,
+      side: signal.side,
+      action: signal.action,
+      price: signal.price,
+      size: signal.size,
+      timestamp: Date.now(),
+    };
+
     if (this.config.dryRun) {
       logger.info(`[BotEngine] DRY RUN: ${signal.action} ${signal.size} ${signal.side} @ ${signal.price}`);
-      this.emit('signal:executed', { signal, dryRun: true });
+      this.pnlTracker.recordTrade(trade);
+      this.emit('signal:executed', { signal, dryRun: true, trade });
       return;
     }
 
@@ -402,7 +479,12 @@ export class PolymarketBotEngine extends EventEmitter {
           signal.side === 'YES' ? 'BUY' : 'SELL',
         );
         logger.info(`[BotEngine] Order placed: ${order.orderId}`);
-        this.emit('order:placed', order);
+
+        // Record trade on fill
+        trade.realizedPnl = 0; // Will be updated on sell
+        this.pnlTracker.recordTrade(trade);
+
+        this.emit('order:placed', { ...order, trade });
       }
     } catch (err) {
       logger.error('[BotEngine] Execution error:', err instanceof Error ? err.message : String(err));
@@ -415,6 +497,8 @@ export class PolymarketBotEngine extends EventEmitter {
    */
   getStatus(): BotStatus {
     const uptime = Date.now() - this.state.startTime;
+    const strategyPnL = this.pnlTracker.getAllStrategyPnL();
+
     return {
       running: this.state.running,
       uptimeMs: uptime,
@@ -423,14 +507,58 @@ export class PolymarketBotEngine extends EventEmitter {
       totalSignals: this.state.totalSignals,
       executedTrades: this.state.executedTrades,
       rejectedTrades: this.state.rejectedTrades,
-      dailyPnL: this.state.dailyPnL,
+      dailyPnL: this.pnlTracker.getDailyPnL(),
       dailyVolume: this.state.dailyVolume,
+      totalPnL: this.pnlTracker.getTotalPnL(),
       strategies: Array.from(this.strategies.values()).map(s => ({
         name: s.name,
         enabled: s.enabled,
         signalCount: s.signalCount,
       })),
+      pnlBreakdown: strategyPnL.map(s => ({
+        strategy: s.strategy,
+        totalPnl: s.totalPnl,
+        realizedPnl: s.realizedPnl,
+        unrealizedPnl: s.unrealizedPnl,
+      })),
     };
+  }
+
+  /**
+   * Update portfolio value (call this when portfolio value changes)
+   */
+  updatePortfolioValue(value: number): void {
+    this.portfolioValue = value;
+    this.circuitBreaker.updateValue(value);
+    this.drawdownTracker.updateValue(value);
+  }
+
+  /**
+   * Get circuit breaker status
+   */
+  getCircuitBreakerStatus() {
+    return this.circuitBreaker.getMetrics();
+  }
+
+  /**
+   * Get drawdown metrics
+   */
+  getDrawdownMetrics() {
+    return this.drawdownTracker.getMetrics();
+  }
+
+  /**
+   * Manual circuit breaker reset (via CLI command)
+   */
+  resetCircuitBreaker(): void {
+    this.circuitBreaker.manualReset();
+  }
+
+  /**
+   * Manual circuit breaker trip (for testing)
+   */
+  tripCircuitBreaker(reason: string): void {
+    this.circuitBreaker.manualTrip(reason);
   }
 
   private formatUptime(ms: number): string {

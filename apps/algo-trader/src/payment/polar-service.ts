@@ -79,7 +79,7 @@ export class PolarService {
       throw new Error(`Polar API error: ${error}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as { id: string; url: string; status: string };
     return {
       id: data.id,
       url: data.url,
@@ -132,7 +132,15 @@ export class PolarService {
       throw new Error(`Polar API error: ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as {
+      id: string;
+      status: 'active' | 'cancelled' | 'expired';
+      product_id: string;
+      price_amount: number;
+      recurring_interval: 'month' | 'year';
+      current_period_start: string;
+      current_period_end: string;
+    };
     return {
       id: data.id,
       status: data.status,

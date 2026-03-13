@@ -53,7 +53,8 @@
     "dev:worker": "wrangler dev",
     "sync-dunning-kv": "ts-node src/jobs/dunning-kv-sync.ts",
     "audit": "pnpm exec ts-node src/audit/index.ts",
-    "chaos-test": "pnpm exec ts-node src/testing/chaos/index.ts"
+    "chaos-test": "pnpm exec ts-node src/testing/chaos/index.ts",
+    "risk:dashboard": "pnpm exec ts-node src/index.ts risk:dashboard"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.0.0",

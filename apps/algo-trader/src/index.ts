@@ -21,6 +21,7 @@ import { registerQuickstartCommand } from './cli/quickstart-zero-config-command'
 import { registerTelegramBotCommand } from './cli/telegram-phone-trading-bot-command';
 import { registerPolymarketTelegramCommand } from './cli/polymarket-telegram-command';
 import { registerLiveTradingCommands } from './cli/live-trading-cli';
+import { registerRiskDashboardCommand } from './cli/risk-dashboard-command';
 import { logger } from './utils/logger';
 import { startRaasServer, stopRaasServer, setReady } from './api/fastify-raas-server';
 import * as dotenv from 'dotenv';
@@ -299,6 +300,7 @@ registerQuickstartCommand(program);
 registerTelegramBotCommand(program);
 registerPolymarketTelegramCommand(program);
 registerLiveTradingCommands(program);
+registerRiskDashboardCommand(program);
 
 // Register ML strategies in StrategyLoader (PRO feature - gracefully handle FREE tier)
 try {

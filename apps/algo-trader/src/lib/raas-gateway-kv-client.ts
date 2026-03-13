@@ -436,7 +436,7 @@ export class RaaSGatewayKVClient {
         throw new Error(`KV get failed: ${response.status}`);
       }
 
-      return await response.json();
+      return await response.json() as T;
     } catch (error) {
       logger.error('[RaaSKV] Get failed', { key, error });
       return null;
@@ -505,7 +505,7 @@ export class RaaSGatewayKVClient {
         throw new Error(`KV list keys failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as { keys: Array<{ name: string }> };
       const keys = data.keys || [];
 
       // Filter and fetch events
@@ -562,7 +562,7 @@ export class RaaSGatewayKVClient {
         return 0;
       }
 
-      const data = await response.json();
+      const data = await response.json() as { count: number };
       return data.count || 0;
     } catch (error) {
       logger.error('[RaaSKV] getUsageEventsCount failed', { licenseKey, error });

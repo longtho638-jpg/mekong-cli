@@ -112,7 +112,7 @@ export class RaaSCacheClient {
         `${this.baseUrl}/cache/${this.agencyId}/${key}/exists`,
         { headers: this.getHeaders() }
       );
-      const data = await response.json();
+      const data = await response.json() as { exists: boolean };
       return data.exists === true;
     } catch {
       return false;

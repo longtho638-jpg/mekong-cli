@@ -20,7 +20,9 @@
     },
     "incremental": true,
     "composite": false,
-    "declaration": true
+    "declaration": true,
+    "downlevelIteration": true,
+    "lib": ["ES2023"]
   },
   "include": [
     "src/api/**/*",

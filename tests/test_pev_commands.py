@@ -10,7 +10,6 @@ import json
 import sys
 import os
 import unittest
-from unittest.mock import MagicMock, patch
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -154,7 +153,7 @@ class TestProgressTracker(unittest.TestCase):
 
     def test_tracker_snapshot(self):
         """Tracker produces valid snapshots."""
-        from src.core.progress_tracker import ProgressPhase, ProgressTracker
+        from src.core.progress_tracker import ProgressTracker
 
         tracker = ProgressTracker()
         tracker.start_workflow(3)

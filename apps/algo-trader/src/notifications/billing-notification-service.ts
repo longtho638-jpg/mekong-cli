@@ -378,7 +378,7 @@ export class BillingNotificationService {
         return { channel: 'email', success: false, error };
       }
 
-      const result = await res.json();
+      const result = await res.json() as { id: string };
       return { channel: 'email', success: true, messageId: result.id };
     }
 
@@ -453,7 +453,7 @@ export class BillingNotificationService {
       return { channel: 'sms', success: false, error };
     }
 
-    const result = await res.json();
+    const result = await res.json() as { sid: string };
     return { channel: 'sms', success: true, messageId: result.sid };
   }
 
@@ -492,7 +492,7 @@ export class BillingNotificationService {
       return { channel: 'telegram', success: false, error };
     }
 
-    const result = await res.json();
+    const result = await res.json() as { result: { message_id: number } };
     return { channel: 'telegram', success: true, messageId: String(result.result.message_id) };
   }
 

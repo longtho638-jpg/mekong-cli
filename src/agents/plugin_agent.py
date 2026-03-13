@@ -4,6 +4,8 @@ Mekong CLI - PluginAgent
 Agent for plugin management: list, install, remove, update plugins.
 """
 
+from __future__ import annotations
+
 import json
 import subprocess
 from pathlib import Path
