@@ -225,3 +225,46 @@ def classify_task(goal: str, context: dict | None = None) -> TaskProfile:
         mcu_cost=mcu_cost,
         preferred_tier=preferred_tier,
     )
+
+
+# --- Multi-Agent Routing (Water Protocol 水) ---
+
+# Tasks that need multiple agents working together
+MULTI_AGENT_PATTERNS: dict[str, list[str]] = {
+    # Pattern: list of agent roles that should collaborate
+    "revenue report": ["cfo", "data"],
+    "content about financials": ["cfo", "cmo"],
+    "deploy and monitor": ["cto", "coo"],
+    "sales report": ["sales", "data"],
+    "technical blog": ["cto", "editor"],
+    "customer churn analysis": ["cs", "cfo", "data"],
+    "product launch": ["cmo", "cto", "sales"],
+    "incident response": ["coo", "cto"],
+    "onboard customer": ["cs", "sales"],
+    "investor update": ["cfo", "cmo", "editor"],
+}
+
+
+def classify_multi_agent(goal: str) -> list[str]:
+    """Detect if a goal needs multiple agents (Water Protocol).
+
+    Returns list of agent roles. Single-element list = single agent.
+    Multi-element list = agents should collaborate.
+
+    Args:
+        goal: User's high-level objective.
+
+    Returns:
+        List of agent role strings.
+    """
+    goal_lower = goal.lower()
+
+    # Check multi-agent patterns
+    for pattern, agents in MULTI_AGENT_PATTERNS.items():
+        pattern_words = pattern.split()
+        if all(word in goal_lower for word in pattern_words):
+            return agents
+
+    # Default: single agent from existing classifier
+    profile = classify_task(goal)
+    return [profile.agent_role]

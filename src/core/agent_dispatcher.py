@@ -1,6 +1,7 @@
 """ALGO 8 — Agent Dispatcher.
 
 Loads agent-specific prompts and injects domain context into message chains.
+Water Protocol (水): Enriches agent prompts with hub expertise.
 """
 
 from __future__ import annotations
@@ -12,6 +13,7 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 
 AGENTS_DIR = Path(__file__).parent.parent.parent / "agents"
+HUBS_DIR = Path(__file__).parent.parent.parent / "packages" / "agents" / "hubs"
 
 # Default agent system prompts (used when no .md file exists)
 DEFAULT_PROMPTS: dict[str, str] = {
@@ -29,25 +31,88 @@ DEFAULT_PROMPTS: dict[str, str] = {
     "support": "You are a customer support specialist. Help users resolve issues quickly and accurately.",
 }
 
+# Agent role → hub file mapping
+ROLE_HUB_MAP: dict[str, str] = {
+    "cto": "engineering-hub",
+    "cmo": "marketing-hub",
+    "coo": "it-hub",
+    "cfo": "finance-hub",
+    "cs": "cs-hub",
+    "sales": "sales-hub",
+    "editor": "creative-hub",
+    "data": "finance-hub",
+    "studio": "studio-hub",
+    "vc": "vc-hub",
+    "legal": "legal-hub",
+    "hr": "hr-hub",
+}
 
-def load_agent_prompt(agent_role: str) -> str:
-    """Load agent system prompt from file or defaults.
 
-    Looks for agents/{agent_role}.md first, falls back to DEFAULT_PROMPTS.
+def _load_matching_hub(agent_role: str) -> str:
+    """Load hub content for an agent role.
+
+    Hub files provide domain expertise to enrich agent behavior.
+    Truncated to 2000 chars to avoid context overflow.
     """
+    hub_name = ROLE_HUB_MAP.get(agent_role)
+    if not hub_name:
+        return ""
+
+    hub_path = HUBS_DIR / f"{hub_name}.md"
+    if not hub_path.exists():
+        logger.warning("Hub file not found: %s", hub_path)
+        return ""
+
+    try:
+        content = hub_path.read_text(encoding="utf-8").strip()
+        # Strip YAML frontmatter
+        if content.startswith("---"):
+            parts = content.split("---", 2)
+            if len(parts) >= 3:
+                content = parts[2].strip()
+        # Truncate to avoid context overflow
+        return content[:2000]
+    except OSError as e:
+        logger.warning("Failed to read hub file %s: %s", hub_path, e)
+        return ""
+
+
+def load_agent_prompt(agent_role: str, include_hub: bool = True) -> str:
+    """Load agent system prompt from file, enriched with hub context.
+
+    Priority:
+    1. agents/{agent_role}.md (core identity)
+    2. + packages/agents/hubs/{matched-hub}.md (domain expertise)
+    3. Fallback: DEFAULT_PROMPTS
+
+    Args:
+        agent_role: Role name (cto, cfo, cmo, etc.)
+        include_hub: If True, enrich with hub expertise (default True)
+
+    Returns:
+        Full system prompt for the agent.
+    """
+    # Load core agent identity
+    core_prompt = ""
     md_path = AGENTS_DIR / f"{agent_role}.md"
     if md_path.exists():
         try:
-            return md_path.read_text(encoding="utf-8").strip()
+            core_prompt = md_path.read_text(encoding="utf-8").strip()
         except OSError as e:
             logger.warning("Failed to read agent prompt %s: %s", md_path, e)
 
-    prompt = DEFAULT_PROMPTS.get(agent_role, "")
-    if not prompt:
-        logger.warning("No prompt found for agent role: %s", agent_role)
-        return f"You are a helpful {agent_role} agent."
+    if not core_prompt:
+        core_prompt = DEFAULT_PROMPTS.get(agent_role, f"You are a helpful {agent_role} agent.")
 
-    return prompt
+    if not include_hub:
+        return core_prompt
+
+    # Enrich with matching hub context
+    hub_prompt = _load_matching_hub(agent_role)
+    if hub_prompt:
+        return f"{core_prompt}\n\n---\n\n## Domain Expertise (from Hub)\n\n{hub_prompt}"
+
+    return core_prompt
 
 
 def inject_codebase_context(messages: list[dict], goal: str) -> list[dict]:
