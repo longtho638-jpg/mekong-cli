@@ -14,7 +14,7 @@
  */
 
 import { FastifyInstance } from 'fastify';
-import { premiumBacktestEngine, SignalAccuracyMetrics } from '../../premium/backtest-engine';
+import { premiumBacktestEngine, SignalAccuracyMetrics, PolymarketDataPoint } from '../../premium/backtest-engine';
 import { LicenseService, LicenseTier, LicenseError } from '../../lib/raas-gate';
 import { tradeMeteringService } from '../../metering/trade-metering';
 import { logger } from '../../utils/logger';
@@ -120,7 +120,7 @@ export async function registerBacktestRoutes(fastify: FastifyInstance): Promise<
       premiumBacktestEngine.validateLookback(lookbackDays);
 
       // Mock strategy for demo (in production, load from strategy marketplace)
-      const mockStrategy = async (data: typeof data): Promise<'YES' | 'NO' | null> => {
+      const mockStrategy = async (data: PolymarketDataPoint[]): Promise<'YES' | 'NO' | null> => {
         if (data.length < 2) return null;
         // Simple momentum strategy
         const prevYes = data[data.length - 2].yesPrice;

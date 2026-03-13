@@ -144,7 +144,7 @@ describe('Email Templates Service', () => {
 
     it('should generate upgrade prompt subject', () => {
       const template = getUpgradePromptTemplate(mockData);
-      expect(template.subject).toContain('Upgrade to PRO');
+      expect(template.subject).toContain('Upgrade to pro');
       expect(template.subject).toContain('Unlimited Trading');
     });
 
