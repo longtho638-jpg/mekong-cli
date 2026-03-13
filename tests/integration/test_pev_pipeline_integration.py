@@ -9,9 +9,7 @@ import pytest
 
 from src.core.circuit_breaker import (
     CircuitBreaker,
-    CircuitOpenError,
     CircuitState,
-    get_circuit_breaker,
     reset_all_breakers,
 )
 from src.core.pipeline_checkpoint import PipelineCheckpoint, list_incomplete_pipelines
