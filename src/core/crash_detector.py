@@ -8,6 +8,7 @@ Triggers auto-recovery on crash detection (Phase 5).
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import os
@@ -141,7 +142,8 @@ class CrashDetector:
         )
 
         # Trigger auto-recovery (Phase 5)
-        self._trigger_recovery(exit_code, command)
+        # Fire-and-forget: schedule coroutine without awaiting to avoid blocking
+        asyncio.create_task(self._trigger_recovery(exit_code, command))
 
         # Persist to disk
         self._persist_crash(crash)

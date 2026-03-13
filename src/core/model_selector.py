@@ -222,3 +222,47 @@ def select_model(profile: TaskProfile, state: SystemState) -> ModelConfig:
         cost_per_mtok_input=costs[0],
         cost_per_mtok_output=costs[1],
     )
+
+# --- Task Complexity Override (Superpowers-inspired) ---
+# When task is mechanical, use cheaper model regardless of agent role
+
+TASK_TIER_OVERRIDE: dict[str, str | None] = {
+    "mechanical": "gemini-2.0-flash-lite",  # isolated functions, clear specs
+    "integration": None,                     # keep matrix default
+    "architecture": None,                    # keep matrix default (or upgrade)
+}
+
+
+def select_model_with_tier(
+    profile: TaskProfile,
+    state: SystemState,
+    task_tier: str = "integration",
+) -> ModelConfig:
+    """Enhanced model selection with task complexity tier.
+
+    Args:
+        profile: Classified task profile.
+        state: Current system state.
+        task_tier: "mechanical", "integration", or "architecture".
+
+    Returns:
+        ModelConfig — may override matrix selection for mechanical tasks.
+    """
+    override = TASK_TIER_OVERRIDE.get(task_tier)
+    if override:
+        # Use cheap model for mechanical tasks
+        provider = detect_provider(override)
+        from src.core.cost_estimator import COST_TABLE
+        costs = COST_TABLE.get(override, (0.0, 0.0))
+        ctx = CONTEXT_WINDOW_MAP.get(override, 128000)
+        return ModelConfig(
+            model_id=override,
+            provider=provider,
+            max_tokens=int(ctx * 0.75),
+            temperature=0.2,
+            context_window=ctx,
+            cost_per_mtok_input=costs[0],
+            cost_per_mtok_output=costs[1],
+        )
+    # Default: use existing matrix logic
+    return select_model(profile, state)

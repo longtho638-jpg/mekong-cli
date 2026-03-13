@@ -9,8 +9,11 @@ Commands:
 - mekong ocop list: Show available export platforms
 """
 
+from __future__ import annotations
+
 import json
 from pathlib import Path
+from typing import Optional
 
 import typer
 from rich.console import Console
@@ -264,7 +267,7 @@ def _display_listing(listing: dict, target: str, dry_run: bool) -> None:
     console.print(table)
 
 
-def _generate_listing_stub(target: str, product_data: dict | None) -> dict:
+def _generate_listing_stub(target: str, product_data: Optional[dict]) -> dict:
     """Generate stub listing. Replace with LLM integration."""
     return {
         "title": "Premium Vietnamese Robusta Coffee Beans — Grade A, VietGAP Certified",
