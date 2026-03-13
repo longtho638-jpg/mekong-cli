@@ -19,7 +19,7 @@ export default function HeroSection() {
           {/* Badge */}
           <div className="mb-6 inline-flex animate-fade-in-down items-center gap-2 rounded-full border border-[var(--md-primary-container)] bg-[var(--md-primary-container)] px-4 py-1.5 text-xs font-medium text-[var(--md-primary)] shadow-lg backdrop-blur-sm">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--md-primary)]" />
-            Mekong CLI v5.0 &nbsp;&middot;&nbsp; {STATS.recipes} DAG Recipes &nbsp;&middot;&nbsp; MIT License
+            Mekong CLI v6.0 &nbsp;&middot;&nbsp; {STATS.recipes} DAG Recipes &nbsp;&middot;&nbsp; 百川入海 (Water Protocol)
           </div>
 
           {/* Headline */}
@@ -34,7 +34,8 @@ export default function HeroSection() {
             <span className="font-mono text-[var(--md-primary)]">{STATS.commands} commands</span> &middot;{' '}
             <span className="font-mono text-indigo-300">{STATS.superCommands} super workflows</span> &middot;{' '}
             <span className="font-mono text-[var(--md-secondary)]">{STATS.roles} roles</span> &middot;{' '}
-            <span className="font-mono text-emerald-300">{STATS.layers} business layers</span>.
+            <span className="font-mono text-emerald-300">{STATS.layers} business layers</span>{' '}
+            <span className="font-mono text-violet-300">+ Studio Platform</span>.
             Open source.
           </p>
 

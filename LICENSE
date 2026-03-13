@@ -1,21 +1,58 @@
-MIT License
+Business Source License 1.1
 
 Copyright (c) 2026 AgencyOS
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Parameters:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Licensor:             AgencyOS.
+Licensed Program:     Mekong CLI.
+Licensed Source:      https://github.com/longtho638-jpg/mekong-cli
+Change Date:          2028-03-13.
+Change License:       MIT License.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+---
+
+Terms:
+
+1. Licensor grants you the rights contained herein for the Licensed Program
+   subject to your compliance with the terms and conditions of this License.
+
+2. You may use, copy, modify and distribute the Licensed Program for any
+   purpose, including for commercial purposes, subject to the following
+   conditions:
+
+   a. Non-Production Use: You may use the Licensed Program for non-production
+      purposes, including development, testing, and evaluation, without
+      restriction.
+
+   b. Production Use: You may use the Licensed Program for production purposes
+      only if you have a valid subscription agreement with the Licensor.
+
+   c. Redistribution: You may redistribute the Licensed Program, provided that
+      you include a copy of this License with any such redistribution.
+
+3. You may not reverse engineer, decompile, or disassemble the Licensed Program,
+   except to the extent expressly permitted by applicable law.
+
+4. THIS LICENSE DOES NOT GRANT ANY RIGHTS TO INTELLECTUAL PROPERTY OTHER THAN
+   THE LICENSED PROGRAM. ALL OTHER RIGHTS ARE RESERVED.
+
+5. THE LICENSED PROGRAM IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+   IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE LICENSED PROGRAM OR THE USE OF OR OTHER
+   DEALINGS IN THE LICENSED PROGRAM.
+
+6. This License is governed by the laws of the jurisdiction in which the
+   Licensor is located, without regard to its conflict of laws principles.
+
+---
+
+Business Source License 1.1
+Licensor:  AgencyOS
+Program:   Mekong CLI
+Source:    https://github.com/longtho638-jpg/mekong-cli
+Changed:   2028-03-13
+Changed to: MIT License

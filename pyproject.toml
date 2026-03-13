@@ -3,7 +3,7 @@ name = "mekong-cli"
 version = "1.0.0"
 description = "AI-operated business platform with PEV Engine — 319 commands, universal LLM, Cloudflare deploy"
 authors = ["Binh Phap Venture Studio <admin@binhphap.io>"]
-license = "MIT"
+license = "BSL-1.1"
 homepage = "https://github.com/mekong-cli/mekong-cli"
 repository = "https://github.com/mekong-cli/mekong-cli"
 keywords = ["cli", "agi", "ai", "agents", "automation"]
@@ -14,7 +14,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: BSD License",
 ]
 readme = "README.md"
 packages = [{include = "src"}]

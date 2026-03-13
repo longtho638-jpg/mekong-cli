@@ -154,4 +154,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) and [QUICKSTART.md](QUICKSTART.md).
 
 ## License
 
-**Mekong CLI** © 2026 Binh Phap Venture Studio — [MIT License](LICENSE)
+**Mekong CLI** © 2026 Binh Phap Venture Studio — [BSL 1.1 License](LICENSE) (changes to MIT on 2028-03-13)
