@@ -97,12 +97,19 @@ class AGILoop:
         self.iteration = 0
         self.consecutive_failures = 0
         self._running = False
-        self._shutdown_event = asyncio.Event()
+        self._shutdown_event: asyncio.Event | None = None
         # Persistent history
         self._history = self._load_history()
         self.completed_improvements: list[str] = self._history.get("completed", [])
         self.start_time = time.time()
         self.last_success_time: float | None = None
+
+    @property
+    def shutdown_event(self) -> asyncio.Event:
+        """Lazy-create shutdown event (requires running event loop)."""
+        if self._shutdown_event is None:
+            self._shutdown_event = asyncio.Event()
+        return self._shutdown_event
 
     def _load_history(self) -> dict[str, Any]:
         """Load persistent improvement history from disk."""
@@ -455,7 +462,7 @@ class AGILoop:
     async def _safe_sleep(self, seconds: int) -> None:
         """Sleep that can be interrupted by shutdown."""
         try:
-            await asyncio.wait_for(self._shutdown_event.wait(), timeout=seconds)
+            await asyncio.wait_for(self.shutdown_event.wait(), timeout=seconds)
         except TimeoutError:
             pass  # Normal: timeout means sleep completed
 
@@ -463,7 +470,8 @@ class AGILoop:
         """Handle SIGINT/SIGTERM."""
         logger.info("\n🛑 Shutdown signal received. Finishing current cycle...")
         self._running = False
-        self._shutdown_event.set()
+        if self._shutdown_event is not None:
+            self._shutdown_event.set()
 
     def stop(self) -> None:
         """Stop the AGI loop gracefully, allowing the current cycle to finish."""

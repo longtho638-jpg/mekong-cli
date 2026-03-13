@@ -120,7 +120,7 @@ class TestMemoryStoreBackwardCompat:
         """MemoryStore.record() works without Qdrant."""
         from src.core.memory import MemoryStore, MemoryEntry
         with tempfile.TemporaryDirectory() as tmp:
-            store = MemoryStore(os.path.join(tmp, "test_mem.yaml"))
+            store = MemoryStore(os.path.join(tmp, "test_mem.yaml"), sync_save=True)
             entry = MemoryEntry(goal="test goal", status="success")
             store.record(entry)
             results = store.query("test")

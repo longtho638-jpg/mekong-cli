@@ -320,6 +320,10 @@ class TestHealthEndpointIntegration:
     def test_health_app_testclient(self) -> None:
         """Test health endpoint with TestClient."""
         from fastapi.testclient import TestClient
+        from src.core.health_endpoint import _component_checks
+
+        # Clear any component checks registered by other tests to avoid pollution
+        _component_checks.clear()
 
         app = create_health_app()
         client = TestClient(app)
