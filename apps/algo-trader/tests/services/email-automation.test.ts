@@ -39,6 +39,9 @@ global.fetch = jest.fn();
 // Mock setInterval to prevent background scheduler from running
 jest.useFakeTimers();
 
+// Set RESEND_API_KEY before tests run
+process.env.RESEND_API_KEY = 'test-key';
+
 describe('EmailAutomationService', () => {
   let service: EmailAutomationService;
   let mockPrisma: any;
@@ -113,11 +116,6 @@ describe('EmailAutomationService', () => {
       name: 'Test User',
       email: 'test@example.com',
     };
-
-    beforeEach(() => {
-      // Set RESEND_API_KEY for all tests in this describe block
-      process.env.RESEND_API_KEY = 'test-key';
-    });
 
     it('should send trial expiry reminder email', async () => {
       mockPrisma.tenant.findUnique.mockResolvedValue(mockTenant);
@@ -201,7 +199,6 @@ describe('EmailAutomationService', () => {
     beforeEach(() => {
       mockPrisma.tenant.findUnique.mockResolvedValue(mockTenant);
       tradeMeteringService.setUserTier('tenant-1', LicenseTier.FREE);
-      process.env.RESEND_API_KEY = 'test-key';
     });
 
     it('should send usage milestone email at 80%', async () => {
@@ -266,7 +263,6 @@ describe('EmailAutomationService', () => {
     beforeEach(() => {
       mockPrisma.tenant.findUnique.mockResolvedValue(mockTenant);
       tradeMeteringService.setUserTier('tenant-1', LicenseTier.FREE);
-      process.env.RESEND_API_KEY = 'test-key';
     });
 
     it('should send upgrade prompt for FREE tier user', async () => {
@@ -315,7 +311,6 @@ describe('EmailAutomationService', () => {
 
     beforeEach(() => {
       mockPrisma.tenant.findUnique.mockResolvedValue(mockTenant);
-      process.env.RESEND_API_KEY = 'test-key';
     });
 
     it('should send weekly digest to PRO users', async () => {
@@ -363,10 +358,6 @@ describe('EmailAutomationService', () => {
   });
 
   describe('Monitoring methods', () => {
-    beforeEach(() => {
-      process.env.RESEND_API_KEY = 'test-key';
-    });
-
     it('should return sent milestones count', () => {
       expect(service.getSentMilestonesCount()).toBe(0);
     });
@@ -414,7 +405,7 @@ describe('EmailAutomationService', () => {
 
       (global.fetch as jest.Mock).mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ id: 'email-alert' }),
+        json: async () => ({ id: 'email-alert' }),
       });
 
       const emailSentPromise = new Promise((resolve) => {
