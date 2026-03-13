@@ -52,6 +52,7 @@ from .timeout_manager import TimeoutConfig, TimeoutManager
 from .verifier import RecipeVerifier, VerificationReport
 from .workflow_state import StepStatus, WorkflowState, WorkflowStatus
 from .command_sanitizer import CommandSanitizer
+from .license_checker import get_license_checker, LicenseCheckResult
 
 # ROIaaS Phase Completion Handler
 from ..raas.phase_completion_detector import get_detector
@@ -791,12 +792,61 @@ class RecipeOrchestrator:
         except Exception as e:
             self.console.print(f"[yellow]⚠ Phase completion check error: {e}[/yellow]")
 
+    def _check_license_gate(self, recipe: Recipe) -> LicenseCheckResult | None:
+        """Check RAAS license gate before premium pipeline execution.
+
+        Determines task profile from recipe metadata and checks tier access.
+        Returns None if access is allowed, or a LicenseCheckResult if blocked.
+        """
+        checker = get_license_checker()
+
+        # Determine task profile from recipe metadata
+        metadata = recipe.metadata or {}
+        profile = metadata.get("task_profile", "simple")
+
+        # Check profile access
+        result = checker.check_pipeline_access(profile)
+        if not result.allowed:
+            return result
+
+        # Check parallel execution feature if DAG recipe
+        has_deps = any(
+            (s.params or {}).get("depends_on") for s in recipe.steps
+        )
+        if has_deps:
+            dag_check = checker.check_feature("dag_scheduling")
+            if not dag_check.allowed:
+                return dag_check
+
+        # Check swarm feature
+        if metadata.get("use_swarm"):
+            swarm_check = checker.check_feature("swarm_mode")
+            if not swarm_check.allowed:
+                return swarm_check
+
+        return None
+
     def run_from_recipe(
         self,
         recipe: Recipe,
         progress_callback: Callable[..., None] | None = None,
     ) -> OrchestrationResult:
         """Execute existing recipe with verification."""
+        # RAAS License Gate: check tier access before execution
+        gate_result = self._check_license_gate(recipe)
+        if gate_result is not None and not gate_result.allowed:
+            self.console.print(
+                f"[red]🔒 License Gate:[/red] {gate_result.reason}"
+            )
+            if gate_result.upgrade_hint:
+                self.console.print(f"[yellow]💡 {gate_result.upgrade_hint}[/yellow]")
+            return OrchestrationResult(
+                status=OrchestrationStatus.FAILED,
+                recipe=recipe,
+                total_steps=len(recipe.steps),
+                errors=[f"License gate: {gate_result.reason}"],
+            )
+
         workflow_id = uuid.uuid4().hex[:12]
         result = OrchestrationResult(
             status=OrchestrationStatus.SUCCESS,
