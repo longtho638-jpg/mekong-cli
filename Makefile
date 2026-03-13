@@ -1,6 +1,7 @@
 .PHONY: all install dev test lint format server clean stats help setup health build \
         generate-contracts validate-contracts self-test regenerate \
-        start-daemon stop-daemon daemon-status start-gateway
+        start-daemon stop-daemon daemon-status start-gateway \
+        pev-test pev-lint pev-build pev-publish
 
 all: help
 
@@ -84,6 +85,21 @@ stop-daemon:
 daemon-status:
 	@pgrep -f "openclaw-worker" > /dev/null && echo "Daemon: RUNNING" || echo "Daemon: STOPPED"
 
+# === PEV Engine ===
+pev-test:
+	python3 -m pytest tests/core/ -v --tb=short --cov=src/core --cov-report=term-missing
+
+pev-lint:
+	python3 -m ruff check src/core/ tests/core/
+	python3 -m black --check --line-length 100 src/core/ tests/core/
+	python3 -m isort --check-only --profile black --line-length 100 src/core/ tests/core/
+
+pev-build:
+	python3 -m build
+
+pev-publish: pev-lint pev-test pev-build
+	python3 -m twine upload dist/*
+
 # === Gateway ===
 start-gateway:
 	python3 -m uvicorn src.core.gateway:app --reload --port 8000
@@ -131,6 +147,12 @@ help:
 	@echo "    make validate-contracts  Validate contracts against schemas"
 	@echo "    make self-test           Run health check (score 0-100)"
 	@echo "    make regenerate          generate + validate + self-test"
+	@echo ""
+	@echo "  PEV Engine:"
+	@echo "    make pev-test     Run PEV core tests with coverage"
+	@echo "    make pev-lint     Lint PEV core (ruff+black+isort)"
+	@echo "    make pev-build    Build Python package"
+	@echo "    make pev-publish  Lint + test + build + publish"
 	@echo ""
 	@echo "  Daemon:"
 	@echo "    make start-daemon   Start Tôm Hùm autonomous daemon"

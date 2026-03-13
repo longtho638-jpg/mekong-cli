@@ -37,6 +37,7 @@ import { analyticsRoutes } from './routes/analytics-routes';
 import { registerUsageEventsRoutes } from './routes/usage-events-routes';
 import { cacheStatsRoutes } from './routes/cache-stats-routes';
 import { registerUsageRoutes } from './routes/internal/usage-routes';
+import { registerUsageRoutes as registerTradeMeteringRoutes } from '../metering/usage-api-routes';
 import { buildPhase6Routes } from './routes/phase6-ghost-routes';
 import { usageTrackingPlugin } from './middleware/usage-tracking-middleware';
 import { IdempotencyStore, idempotencyMiddleware, createIdempotencyResponseHandler } from '../middleware/idempotency-middleware';
@@ -137,6 +138,9 @@ export function buildServer(opts: RaasServerOptions = {}): FastifyInstance {
 
   // Usage events routes (new - Phase 4)
   void server.register(registerUsageEventsRoutes);
+
+  // Trade metering routes (ROIaaS Phase 4)
+  void server.register(registerTradeMeteringRoutes);
 
   // Internal usage routes for billing sync
   void server.register(registerUsageRoutes);

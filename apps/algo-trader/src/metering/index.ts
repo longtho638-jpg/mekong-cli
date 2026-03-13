@@ -1,8 +1,23 @@
 /**
- * Metering Module — License Usage Tracking
+ * Metering Module — Usage Tracking for Algo-Trader
  *
- * Provides usage metering and aggregation for license-based billing.
+ * ROIaaS Phase 4 - Daily tier-based usage metering
  */
 
-export { UsageTrackerService } from './usage-tracker-service';
-export type { UsageEvent, AggregatedUsage } from './usage-tracker-service';
+export {
+  TradeMeteringService,
+  tradeMeteringService,
+  TIER_LIMITS,
+  ALERT_THRESHOLDS,
+} from './trade-metering';
+
+export type {
+  DailyLimits,
+  DailyUsageRecord,
+  UsageStatus,
+  LimitAlert,
+} from './trade-metering';
+
+export { registerUsageRoutes, usageTrackingMiddleware } from './usage-api-routes';
+
+export type { UsageRequest } from './usage-api-routes';

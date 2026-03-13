@@ -5,7 +5,79 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) + [SemVer](http
 
 ---
 
-## [3.1.0] - 2026-03-10
+## [5.1.0] - 2026-03-13 — ROIaaS v1.0 Production Release
+
+### Added - ROIaaS (Revenue-as-a-Service) Complete Platform
+
+#### Phase 1: RAAS License Gate
+- Tier-based license gating for PEV Engine (Starter/Pro/Enterprise)
+- License validation middleware with JWT token support
+- RAAS gate integration in FastAPI server
+- License management API endpoints
+
+#### Phase 2: License Management
+- Polar.sh webhook integration for license activation
+- License lifecycle management (activate/renew/revoke)
+- Tier configuration and rate limiting
+- License dashboard UI components
+
+#### Phase 3: Trading Execution
+- PEV Engine integration with trading strategies
+- Signal gate for premium strategy access
+- Orderbook analysis module
+- Trading visualization components
+
+#### Phase 4: Usage Metering
+- Trade metering system for usage tracking
+- Usage API routes for metering data
+- Tenant-based rate limiting
+- Quota management with cache optimization
+
+#### Phase 5: ROI Analytics
+- ROI dashboard with real-time metrics
+- Analytics queries for performance tracking
+- Revenue reporting and export
+- Usage-based billing integration
+
+#### Phase 6: Self-Healing & Error Recovery
+- Auto-recovery for failed trades
+- Error boundary handling in PEV orchestrator
+- Graceful shutdown with state preservation
+- Violation tracking and compliance alerts
+
+#### Phase 7: Telemetry & Monitoring
+- Usage tracking middleware for API requests
+- Rate limit metrics collection
+- Performance monitoring dashboard
+- Alert system for anomalies
+
+#### Phase 8: CLI & Automation
+- Auto-release GitHub Action (5+ feat/fix commits trigger release)
+- PEV release workflow automation
+- CLI commands for license administration
+- Usage reporting commands
+
+### Changed
+- Enhanced PEV Engine with ROIaaS gating
+- Improved test suite with 16+ integration tests
+- Consolidated ROIaaS documentation in apps/algo-trader/docs/
+- Updated orchestrator with ROIaaS decorators
+
+### Fixed
+- Removed unused imports in PEV integration tests
+- Fixed 12 test failures in metering module
+- Fixed mypy errors in dashboard data
+- TypeScript errors in Google Calendar integration
+- Go-live hardening for production readiness
+
+### Infrastructure
+- Added auto-release GitHub Action workflow
+- Added PEV release workflow
+- Enhanced CI/CD with usage metering validation
+
+---
+
+## [5.0.0] - 2026-03-10
 
 ### Added
 - Plugin Ecosystem: registry, validator, marketplace (`src/plugins/`)

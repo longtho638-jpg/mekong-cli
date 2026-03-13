@@ -59,22 +59,52 @@ $ mekong founder:raise "Series A for AI platform"
 
 32 roles from CEO to intern. 85 DAG workflow recipes. [See full list →](docs/COMMANDS.md)
 
-## Architecture
+## PEV Engine v1.0 — Plan → Execute → Verify
+
+Production-ready orchestration engine with 7 phases:
 
 ```
-Plan → Execute → Verify (PEV Engine)
-       ↓ failed?             ↓ self-heal              ↓ auto-retry
-     Debug → Fix → Retest   Learn → Adapt            Escalate → Human
+Plan → Execute → Verify
+  ↓ failed?       ↓ self-heal        ↓ auto-retry
+  Debug → Fix     Learn → Adapt      Escalate → Human
 ```
 
+| Phase | Module | Description |
+|-------|--------|-------------|
+| 1 | Planning Engine | Constraint-aware planning, dependency inference, optimization |
+| 2 | Execution Engine | Context management, timeouts, pre/post hooks |
+| 3 | Verification Engine | Assertions, output comparison, error detection |
+| 4 | Pipeline Manager | Progress tracking, orchestrator coordination |
+| 5 | CLI Integration | Typer commands for plan/execute/verify |
+| 6 | Self-Healing | Auto-diagnosis, error recovery, adaptive retry |
+| 7 | Telemetry | Structured logging, metrics, health checks |
+
+### Key Features
 - **Universal LLM**: 3 env vars, any OpenAI-compatible provider
 - **DAG Scheduler**: Parallel execution with dependency graphs
 - **Self-healing**: Failed steps auto-diagnosed and corrected
-- **100% Cloudflare**: Pages (frontend) + Workers (backend) + D1 + KV + R2
+- **ROIaaS**: License gating + usage metering + billing
+
+## Pricing Tiers
+
+| Feature | FREE | PRO ($49/mo) | ENTERPRISE ($499/mo) |
+|---------|------|-------------|---------------------|
+| Trades/day | 5 | Unlimited | Unlimited |
+| Signals/day | 3 | Unlimited | Unlimited |
+| API calls/day | 100 | 10,000 | 100,000 |
+| Strategies | Basic RSI+SMA | All built-in | Custom + private |
+| Self-healing | — | Standard | Priority + SLA |
+| Support | Community | Email | Dedicated |
+
+```bash
+# Activate PRO tier
+export RAAS_LICENSE_KEY=your-license-key
+mekong cook "Deploy production API"
+```
 
 ## Deploy
 
-All infrastructure runs on Cloudflare:
+All infrastructure runs on Cloudflare ($0 base cost):
 
 | Layer | Platform | Cost |
 |-------|----------|------|
