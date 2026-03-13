@@ -1,11 +1,17 @@
 """Tests for RAG Engine"""
 
 import shutil
+import sys
+from pathlib import Path
 
-import pytest
+# Add agi-sops root to path for imports when running from mekong-cli root
+AGI_SOPS_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(AGI_SOPS_ROOT))
 
-from src.core.models import SOP, SOPStep
-from src.rag.retriever import RAGEngine
+import pytest  # noqa: E402
+
+from src.core.models import SOP, SOPStep  # noqa: E402
+from src.rag.retriever import RAGEngine  # noqa: E402
 
 
 class TestRAGEngine:
