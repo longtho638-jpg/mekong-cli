@@ -33,18 +33,29 @@ DEFAULT_PROMPTS: dict[str, str] = {
 
 # Agent role → hub file mapping
 ROLE_HUB_MAP: dict[str, str] = {
+    # Core agents
     "cto": "engineering-hub",
+    "cfo": "finance-hub",
     "cmo": "marketing-hub",
     "coo": "it-hub",
-    "cfo": "finance-hub",
     "cs": "cs-hub",
     "sales": "sales-hub",
     "editor": "creative-hub",
     "data": "finance-hub",
+    # Studio agents (v6.0)
     "studio": "studio-hub",
     "vc": "vc-hub",
     "legal": "legal-hub",
     "hr": "hr-hub",
+    # Extended hubs (map to closest agent)
+    "executive": "executive-hub",
+    "entrepreneur": "entrepreneur-hub",
+    "strategist": "binh-phap-hub",
+    "community": "community-hub",
+    "educator": "education-hub",
+    "realtor": "real-estate-hub",
+    "retailer": "retail-hub",
+    "wellness": "wellness-hub",
 }
 
 

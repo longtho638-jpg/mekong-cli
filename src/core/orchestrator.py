@@ -53,6 +53,7 @@ from .verifier import RecipeVerifier, VerificationReport
 from .workflow_state import StepStatus, WorkflowState, WorkflowStatus
 from .command_sanitizer import CommandSanitizer
 from .license_checker import get_license_checker, LicenseCheckResult
+from .context_flow import ContextFlow
 
 # ROIaaS Phase Completion Handler
 from ..raas.phase_completion_detector import get_detector
@@ -206,6 +207,23 @@ class StepExecutor:
                 self_healed=self_healed,
                 agent=step.agent,
             )
+
+        # Post-execution review (Water Protocol — SubagentReviewer)
+        if execution_result.exit_code == 0 and self.llm_client:
+            try:
+                from .subagent_reviewer import SubagentReviewer
+                reviewer = SubagentReviewer(self.llm_client)
+                spec_result = reviewer.review_spec(step.description, execution_result.stdout or "")
+                if not spec_result.compliant and spec_result.severity == "critical":
+                    logger.warning(
+                        "SubagentReviewer: step %d spec non-compliant (critical): %s",
+                        step.order, spec_result.issues,
+                    )
+                    # Mark verification as failed
+                    verification_report.passed = False
+                    verification_report.errors.extend(spec_result.issues)
+            except Exception as e:
+                logger.debug("SubagentReviewer skipped: %s", e)
 
         return StepResult(
             step=step,
@@ -922,8 +940,31 @@ class RecipeOrchestrator:
 
         self.console.print("[dim]DAG mode: parallel execution enabled[/dim]")
 
+        # Water Protocol: context flows between DAG steps
+        _dag_flow = ContextFlow(task_id=workflow_id)
+
         def _dag_executor(step: RecipeStep) -> StepResult:
-            return step_executor.execute_and_verify(step, workflow_id, step.order)
+            # Enrich step with context from prior steps
+            prior_context = _dag_flow.get_context_for(step.agent or "default")
+            if prior_context and step.description:
+                step = RecipeStep(
+                    order=step.order,
+                    title=step.title,
+                    description=f"{prior_context}\n\n{step.description}",
+                    agent=step.agent,
+                    params=step.params,
+                )
+
+            result = step_executor.execute_and_verify(step, workflow_id, step.order)
+
+            # Record output into flow for subsequent steps
+            output_text = ""
+            if result.execution and hasattr(result.execution, 'stdout'):
+                output_text = (result.execution.stdout or "")[:1000]
+            status = "DONE" if result.verification.passed else "BLOCKED"
+            _dag_flow.add(step.agent or f"step-{step.order}", output_text, status=status)
+
+            return result
 
         def _on_dag_complete(order: int, dag_result: Any) -> None:
             if dag_result.success:

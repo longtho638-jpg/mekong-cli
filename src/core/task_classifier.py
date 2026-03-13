@@ -51,6 +51,14 @@ DOMAIN_SIGNALS: dict[str, list[str]] = {
         "ticket", "user report", "error message", "help", "faq",
         "refund", "complaint", "confused", "error",
     ],
+    "finance": [
+        "revenue", "profit", "expense", "invoice", "budget", "cashflow",
+        "margin", "pricing", "financial", "cost", "roi", "funding",
+    ],
+    "editorial": [
+        "edit", "proofread", "review content", "documentation", "changelog",
+        "readme", "tutorial", "guide", "style guide", "grammar",
+    ],
 }
 
 DOMAIN_TO_AGENT: dict[str, str] = {
@@ -60,6 +68,8 @@ DOMAIN_TO_AGENT: dict[str, str] = {
     "analysis": "data",
     "sales": "sales",
     "support": "cs",
+    "finance": "cfo",
+    "editorial": "editor",
 }
 
 SENSITIVITY_KEYWORDS = {
@@ -100,6 +110,16 @@ def _detect_domain(goal_lower: str) -> str:
 def _assign_agent(goal_lower: str, domain: str) -> str:
     """Step 2: Assign agent role with override rules."""
     agent = DOMAIN_TO_AGENT.get(domain, "cto")
+
+    # Override: finance-specific keywords → cfo
+    finance_words = {"revenue", "profit", "expense", "invoice", "budget", "cashflow", "financial", "pricing"}
+    if finance_words & set(goal_lower.split()):
+        return "cfo"
+
+    # Override: editorial-specific keywords → editor
+    editorial_words = {"proofread", "edit documentation", "changelog", "readme", "style guide"}
+    if any(kw in goal_lower for kw in editorial_words):
+        return "editor"
 
     # Override rules
     if any(kw in goal_lower for kw in ["changelog", "docs", "tutorial"]):

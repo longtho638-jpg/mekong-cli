@@ -16,12 +16,15 @@ import logging
 import uuid
 from dataclasses import dataclass, field
 
-from src.core.task_classifier import classify_task, TaskProfile
-from src.core.model_selector import select_model, SystemState
+from src.core.task_classifier import classify_task, classify_multi_agent, TaskProfile
+from src.core.model_selector import select_model, select_model_with_tier, SystemState
 from src.core.cost_estimator import estimate_cost, CostEstimate
 from src.core.mcu_gate import MCUGate
 from src.core.agent_dispatcher import build_message_chain
 from src.core.fallback_chain import execute_with_fallback
+from src.core.context_flow import ContextFlow
+from src.core.subagent_reviewer import SubagentReviewer
+from src.core.llm_client import get_client
 
 logger = logging.getLogger(__name__)
 
@@ -95,11 +98,14 @@ async def route_and_execute(
     if not mission_id:
         mission_id = str(uuid.uuid4())
 
-    # ── STAGE 1: CLASSIFY ─────────────────────────────────────
+    # ── STAGE 1: CLASSIFY (Water Protocol 水 — multi-agent aware) ──
     profile = classify_task(goal, context={"tenant_id": tenant_id})
+    agent_roles = classify_multi_agent(goal)
+    is_multi_agent = len(agent_roles) > 1
     logger.info(
-        "Stage 1 — Classified: complexity=%s, domain=%s, agent=%s, mcu=%d",
+        "Stage 1 — Classified: complexity=%s, domain=%s, agent=%s, mcu=%d, multi_agent=%s",
         profile.complexity, profile.domain, profile.agent_role, profile.mcu_cost,
+        agent_roles if is_multi_agent else "no",
     )
 
     # ── STAGE 2: MCU CHECK + LOCK ─────────────────────────────
@@ -132,35 +138,100 @@ async def route_and_execute(
         model_config.model_id, cost_est.margin_pct,
     )
 
-    # ── STAGE 4+5: LOAD AGENT PROMPT + BUILD MESSAGES ─────────
-    messages, system_prompt = build_message_chain(
-        goal=goal,
-        agent_role=profile.agent_role,
-        domain=profile.domain,
-        tenant_id=tenant_id,
-    )
-    logger.info("Stage 4+5 — Agent '%s' prompt loaded, messages built", profile.agent_role)
+    # ── STAGE 4+5+6: EXECUTE (multi-agent or single) ─────────
+    if is_multi_agent:
+        # Water Protocol: multiple agents collaborate with context flow
+        flow = ContextFlow(task_id=mission_id)
+        final_output_parts = []
 
-    # ── STAGE 6: EXECUTE WITH FALLBACK ────────────────────────
-    try:
-        exec_result = await execute_with_fallback(
-            model_config=model_config,
-            messages=messages,
-            system_prompt=system_prompt,
-            on_token_cb=on_token,
-            data_sensitivity=profile.data_sensitivity,
-        )
-    except Exception as e:
-        logger.error("Stage 6 — Execution failed: %s", e)
-        gate.refund_full(lock_id, reason=str(e))
-        return MissionResult(
-            success=False,
-            mission_id=mission_id,
-            error=f"execution_failed: {e}",
-            profile=profile,
-        )
+        for agent_role in agent_roles:
+            # Build context-enriched goal for this agent
+            prior_context = flow.get_context_for(agent_role)
+            enriched_goal = f"{prior_context}\n{goal}" if prior_context else goal
 
-    # ── STAGE 7: VERIFY OUTPUT ────────────────────────────────
+            messages, system_prompt = build_message_chain(
+                goal=enriched_goal,
+                agent_role=agent_role,
+                domain=profile.domain,
+                tenant_id=tenant_id,
+            )
+            logger.info("Stage 4+5 — Multi-agent: '%s' prompt loaded", agent_role)
+
+            try:
+                exec_result = await execute_with_fallback(
+                    model_config=model_config,
+                    messages=messages,
+                    system_prompt=system_prompt,
+                    on_token_cb=on_token,
+                    data_sensitivity=profile.data_sensitivity,
+                )
+            except Exception as e:
+                logger.error("Stage 6 — Agent '%s' failed: %s", agent_role, e)
+                flow.add(agent_role, "", status="BLOCKED", concerns=str(e))
+                continue
+
+            if exec_result.success:
+                flow.add(agent_role, exec_result.output, status="DONE")
+                final_output_parts.append(f"[{agent_role.upper()}]\n{exec_result.output}")
+            else:
+                flow.add(agent_role, exec_result.error, status="BLOCKED", concerns=exec_result.error)
+
+            # Stop if blocker detected
+            if flow.has_blocker():
+                logger.warning("Stage 6 — Blocker detected at agent '%s', stopping", agent_role)
+                break
+
+        # Combine outputs
+        combined_output = "\n\n".join(final_output_parts)
+        logger.info("Stage 6 — Multi-agent complete: %s", flow.get_summary())
+
+        if flow.has_blocker():
+            gate.refund_full(lock_id, reason="multi_agent_blocked")
+            return MissionResult(
+                success=False,
+                mission_id=mission_id,
+                error=f"multi_agent_blocked: {flow.get_summary()}",
+                profile=profile,
+            )
+
+        # Create a synthetic exec_result for the review stage
+        class _MultiAgentResult:
+            success = True
+            output = combined_output
+            model_used = model_config.model_id
+            error = ""
+            attempts = [r for r in agent_roles]
+        exec_result = _MultiAgentResult()
+
+    else:
+        # Single agent path (original logic, preserved)
+        messages, system_prompt = build_message_chain(
+            goal=goal,
+            agent_role=profile.agent_role,
+            domain=profile.domain,
+            tenant_id=tenant_id,
+        )
+        logger.info("Stage 4+5 — Agent '%s' prompt loaded, messages built", profile.agent_role)
+
+        try:
+            exec_result = await execute_with_fallback(
+                model_config=model_config,
+                messages=messages,
+                system_prompt=system_prompt,
+                on_token_cb=on_token,
+                data_sensitivity=profile.data_sensitivity,
+            )
+        except Exception as e:
+            logger.error("Stage 6 — Execution failed: %s", e)
+            gate.refund_full(lock_id, reason=str(e))
+            return MissionResult(
+                success=False,
+                mission_id=mission_id,
+                error=f"execution_failed: {e}",
+                profile=profile,
+            )
+
+    # ── STAGE 7: VERIFY OUTPUT (with SubagentReviewer) ────────
     if not exec_result.success:
         logger.warning("Stage 7 — All models failed, refunding MCU")
         gate.refund_full(lock_id, reason=exec_result.error)
@@ -169,8 +240,21 @@ async def route_and_execute(
             mission_id=mission_id,
             error=exec_result.error,
             profile=profile,
-            attempts=exec_result.attempts,
+            attempts=getattr(exec_result, 'attempts', []),
         )
+
+    # Post-execution review (Water Protocol)
+    review_result = None
+    try:
+        reviewer = SubagentReviewer(get_client())
+        review_result = reviewer.full_review(goal, exec_result.output)
+        if not review_result.get("proceed", True):
+            logger.warning(
+                "Stage 7 — Review failed: %s",
+                review_result.get("spec_review", {}).get("issues", []),
+            )
+    except Exception as e:
+        logger.debug("Stage 7 — Review skipped: %s", e)
 
     # ── STAGE 8: MCU CONFIRM ──────────────────────────────────
     confirm_result = gate.confirm(lock_id)

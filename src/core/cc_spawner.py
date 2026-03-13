@@ -63,6 +63,7 @@ class CCSession:
         return {
             "id": self.id,
             "goal": self.goal[:60],
+            "agent_role": self.agent_role,
             "status": self.status.value,
             "pid": self.pid,
             "duration": round(self.duration, 1),
@@ -225,6 +226,20 @@ class CCSpawner:
 
             if process.returncode == 0:
                 session.status = SessionStatus.COMPLETED
+                # Parse subagent status from output (Water Protocol)
+                _output = session.output
+                if "<status>BLOCKED</status>" in _output:
+                    session.status = SessionStatus.FAILED
+                    session.error = "subagent_blocked"
+                elif "<status>NEEDS_CONTEXT</status>" in _output:
+                    session.status = SessionStatus.FAILED
+                    session.error = "subagent_needs_context"
+                elif "<status>DONE_WITH_CONCERNS</status>" in _output:
+                    # Still completed but log concerns
+                    import re as _re
+                    _match = _re.search(r"<status>DONE_WITH_CONCERNS</status>\s*(.*)", _output, _re.DOTALL)
+                    if _match:
+                        session.error = f"concerns: {_match.group(1)[:200]}"
             else:
                 session.status = SessionStatus.FAILED
                 session.error = f"Exit code: {process.returncode}"

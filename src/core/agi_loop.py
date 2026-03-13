@@ -337,6 +337,7 @@ class AGILoop:
             session = await spawner.spawn(
                 goal=cc_prompt,
                 timeout=300,  # 5 min max per improvement
+                agent_role="cto",  # AGI loop improvements are CTO-domain
             )
 
             # Wait for completion
