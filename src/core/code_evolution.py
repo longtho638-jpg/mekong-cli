@@ -145,7 +145,7 @@ class CodeEvolutionEngine:
                         f"{rel_path}: Too large ({len(lines)} lines). "
                         f"Consider splitting."
                     )
-                for i, line in enumerate(lines, 1):
+                for line in lines:
                     if len(line) > 120:
                         file_info.setdefault("long_lines", 0)
                         file_info["long_lines"] = (

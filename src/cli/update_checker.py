@@ -324,7 +324,7 @@ class UpdateChecker:
         )
 
         console.print(f"\n[{self._get_color(update)}]{msg_type}[/]: "
-                     f"mekong-cli {update.current_version} → {update.latest_version}")
+                      f"mekong-cli {update.current_version} → {update.latest_version}")
 
         if update.release_notes:
             console.print(f"  {update.release_notes}")

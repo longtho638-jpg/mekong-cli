@@ -7,6 +7,7 @@ Specialized agent for finding CEO/Founder contact information from domains.
 from typing import List
 from ..core.agent_base import AgentBase, Task, Result
 
+
 class LeadHunter(AgentBase):
     """
     Agent responsible for hunting leads (CEO/Founder emails) from a domain.

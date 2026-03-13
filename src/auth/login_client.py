@@ -24,6 +24,7 @@ DEFAULT_GATEWAY_URL = os.environ.get(
 )
 REQUEST_TIMEOUT = int(os.environ.get("RAAS_REQUEST_TIMEOUT", "5"))
 
+
 def _get_version() -> str:
     """Get Mekong CLI version."""
     try:
@@ -31,6 +32,7 @@ def _get_version() -> str:
         return importlib.metadata.version("mekong-cli")
     except Exception:
         return "3.0.0"
+
 
 USER_AGENT = f"mekong-cli/{_get_version()}"
 

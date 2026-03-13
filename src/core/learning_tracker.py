@@ -33,7 +33,6 @@ class LearningHistoryTracker:
         self.memory = get_memory_facade()
         self.memory.connect()
 
-
         # Initialize local storage as backup for YAML fallback
         self.local_storage_path = Path.home() / ".mekong" / "learning_history"
         self.local_storage_path.mkdir(parents=True, exist_ok=True)
@@ -161,8 +160,10 @@ class LearningHistoryTracker:
             for local_event in local_events:
                 if len(events) >= limit:
                     break
-                if (local_event.get("type") == "learning_event" and
-                    topic.lower() in local_event.get("topic", "").lower()):
+                if (
+                    local_event.get("type") == "learning_event"
+                    and topic.lower() in local_event.get("topic", "").lower()
+                ):
                     # Avoid duplicates
                     if not any(event["event_id"] == local_event["event_id"] for event in events):
                         events.append(local_event)

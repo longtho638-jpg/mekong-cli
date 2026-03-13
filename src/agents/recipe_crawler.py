@@ -7,6 +7,7 @@ Specialized agent for discovering and downloading recipes from the community rep
 from typing import List
 from ..core.agent_base import AgentBase, Task, Result
 
+
 class RecipeCrawler(AgentBase):
     """
     Agent responsible for finding and downloading recipes.

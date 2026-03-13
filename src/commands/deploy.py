@@ -52,8 +52,10 @@ def deploy_vercel(env: str, verbose: bool):
     """Deploy to Vercel"""
     try:
         # Check if vercel CLI is installed
-        result = subprocess.run(["vercel", "--version"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["vercel", "--version"],
+            capture_output=True, text=True, check=False
+        )
         if result.returncode != 0:
             console.print("[red]❌ Vercel CLI not found. Install with: npm install -g vercel[/red]")
             raise typer.Exit(code=1)
@@ -84,8 +86,10 @@ def deploy_netlify(env: str, verbose: bool):
     """Deploy to Netlify"""
     try:
         # Check if netlify CLI is installed
-        result = subprocess.run(["netlify", "--version"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["netlify", "--version"],
+            capture_output=True, text=True, check=False
+        )
         if result.returncode != 0:
             console.print("[red]❌ Netlify CLI not found. Install with: npm install -g netlify-cli[/red]")
             raise typer.Exit(code=1)
@@ -121,8 +125,10 @@ def deploy_heroku(env: str, verbose: bool):
     """Deploy to Heroku"""
     try:
         # Check if heroku CLI is installed
-        result = subprocess.run(["heroku", "--version"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["heroku", "--version"],
+            capture_output=True, text=True, check=False
+        )
         if result.returncode != 0:
             console.print("[red]❌ Heroku CLI not found. Install with: https://devcenter.heroku.com/articles/heroku-cli[/red]")
             raise typer.Exit(code=1)
@@ -155,8 +161,10 @@ def deploy_docker(env: str, verbose: bool):
     """Deploy using Docker"""
     try:
         # Check if Docker is available
-        result = subprocess.run(["docker", "--version"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["docker", "--version"],
+            capture_output=True, text=True, check=False
+        )
         if result.returncode != 0:
             console.print("[red]❌ Docker not found. Please install Docker.[/red]")
             raise typer.Exit(code=1)
@@ -262,8 +270,10 @@ def status(platform: str = typer.Argument(..., help="Platform to check: vercel, 
 def check_vercel_status():
     """Check Vercel deployment status"""
     try:
-        result = subprocess.run(["vercel", "list"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["vercel", "list"],
+            capture_output=True, text=True, check=False
+        )
 
         if result.returncode == 0:
             console.print(Panel(result.stdout, title="Vercel Deployments"))
@@ -279,8 +289,10 @@ def check_vercel_status():
 def check_netlify_status():
     """Check Netlify deployment status"""
     try:
-        result = subprocess.run(["netlify", "status"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["netlify", "status"],
+            capture_output=True, text=True, check=False
+        )
 
         if result.returncode == 0:
             console.print(Panel(result.stdout, title="Netlify Status"))
@@ -296,8 +308,10 @@ def check_netlify_status():
 def check_heroku_status():
     """Check Heroku deployment status"""
     try:
-        result = subprocess.run(["heroku", "apps"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["heroku", "apps"],
+            capture_output=True, text=True, check=False
+        )
 
         if result.returncode == 0:
             console.print(Panel(result.stdout, title="Heroku Apps"))
@@ -314,8 +328,10 @@ def check_docker_status():
     """Check Docker deployment status"""
     try:
         # Check if Docker daemon is running
-        result = subprocess.run(["docker", "info"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["docker", "info"],
+            capture_output=True, text=True, check=False
+        )
 
         if result.returncode == 0:
             console.print(Panel("Docker daemon is running", title="Docker Status", border_style="green"))
@@ -323,8 +339,10 @@ def check_docker_status():
             console.print(Panel("Docker daemon is not running", title="Docker Status", border_style="red"))
 
         # Check running containers
-        result = subprocess.run(["docker", "ps"],
-                              capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["docker", "ps"],
+            capture_output=True, text=True, check=False
+        )
 
         if result.returncode == 0:
             console.print(Panel(result.stdout, title="Running Containers"))

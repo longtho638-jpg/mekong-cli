@@ -385,7 +385,6 @@ class IntelligentPromptManager:
         ]
 
 
-
 # Convenience function for initialization
 def create_intelligent_prompt_manager(user_id: str = "system:default_prompt_manager") -> IntelligentPromptManager:
     """Create an intelligent prompt manager instance.

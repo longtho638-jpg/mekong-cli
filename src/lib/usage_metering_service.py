@@ -513,8 +513,12 @@ class UsageMeteringService:
 
         if status == "sent":
             # Delete sent events to keep DB small
-            conn.execute("DELETE FROM metrics_events WHERE id = (SELECT id FROM metrics_events WHERE event_type = ? AND tenant_id = ? AND timestamp = ? LIMIT 1)",
-                (event.event_type, event.tenant_id, event.timestamp))
+            conn.execute(
+                "DELETE FROM metrics_events WHERE id = ("
+                "SELECT id FROM metrics_events WHERE event_type = ? "
+                "AND tenant_id = ? AND timestamp = ? LIMIT 1)",
+                (event.event_type, event.tenant_id, event.timestamp)
+            )
         else:
             query = """
                 UPDATE metrics_events

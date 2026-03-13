@@ -63,7 +63,6 @@ def clean_build():
         "coverage.json",
     ]
 
-
     for pattern in dirs_to_clean:
         for path in Path('.').glob(pattern):
             if path.is_dir():
@@ -174,8 +173,10 @@ def info():
 
     # Check Docker
     try:
-        result = subprocess.run(["docker", "images", "mekong-cli"],
-                              capture_output=True, text=True)
+        result = subprocess.run(
+            ["docker", "images", "mekong-cli"],
+            capture_output=True, text=True
+        )
         if "mekong-cli" in result.stdout:
             table.add_row("Docker Image", "✅ Built", "mekong-cli:latest")
         else:
@@ -208,9 +209,11 @@ def docker(
 
         if push:
             console.print(f"[bold blue]⬆️  Pushing image: {tag}[/bold blue]")
-            subprocess.run(["docker", "push", tag],
-                                       cwd=Path.cwd(), check=True,
-                                       capture_output=not verbose, text=True)
+            subprocess.run(
+                ["docker", "push", tag],
+                cwd=Path.cwd(), check=True,
+                capture_output=not verbose, text=True
+            )
             console.print(f"[green]✅ Docker image pushed: {tag}[/green]")
 
     except subprocess.CalledProcessError as e:

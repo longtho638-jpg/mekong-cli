@@ -100,6 +100,7 @@ def _verify_jwt_token(token: str, secret: str) -> TenantContext:
             secret.encode(), signing_input, hashlib.sha256
         ).digest()
         # Pad base64url to standard base64
+
         def _b64_decode(s: str) -> bytes:
             s += "=" * (-len(s) % 4)
             return base64.urlsafe_b64decode(s)

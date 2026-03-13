@@ -326,13 +326,15 @@ def audit_config() -> None:
     findings = []
 
     # Check for common security misconfigurations
-    config_files = list(Path(".").glob("**/{settings,config,configuration}.py")) + \
-                  list(Path(".").glob("**/config.json")) + \
-                  list(Path(".").glob("**/appsettings.json")) + \
-                  list(Path(".").glob("**/application.properties")) + \
-                  list(Path(".").glob("**/.env*")) + \
-                  list(Path(".").glob("**/docker-compose*.yml")) + \
-                  list(Path(".").glob("**/docker-compose*.yaml"))
+    config_files = (
+        list(Path(".").glob("**/{settings,config,configuration}.py"))
+        + list(Path(".").glob("**/config.json"))
+        + list(Path(".").glob("**/appsettings.json"))
+        + list(Path(".").glob("**/application.properties"))
+        + list(Path(".").glob("**/.env*"))
+        + list(Path(".").glob("**/docker-compose*.yml"))
+        + list(Path(".").glob("**/docker-compose*.yaml"))
+    )
 
     for config_file in config_files:
         content = config_file.read_text()
@@ -405,8 +407,10 @@ def generate_report(output_file: str = typer.Option("security-report.json", "--o
     # Add dependency audit
     try:
         # Try to get pip freeze output for dependency list
-        result = subprocess.run([sys.executable, "-m", "pip", "freeze"],
-                              capture_output=True, text=True, check=True)
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "freeze"],
+            capture_output=True, text=True, check=True
+        )
         report_data["sections"]["dependencies"] = result.stdout.split('\n')
     except Exception:
         report_data["sections"]["dependencies"] = ["Could not retrieve dependency list"]
@@ -427,8 +431,10 @@ def generate_report(output_file: str = typer.Option("security-report.json", "--o
     # Add git security check
     if Path(".git").exists():
         try:
-            result = subprocess.run(["git", "remote", "-v"],
-                                  capture_output=True, text=True, check=True)
+            result = subprocess.run(
+                ["git", "remote", "-v"],
+                capture_output=True, text=True, check=True
+            )
             report_data["sections"]["git_remotes"] = result.stdout
         except Exception:
             report_data["sections"]["git_remotes"] = "Could not retrieve git remotes"

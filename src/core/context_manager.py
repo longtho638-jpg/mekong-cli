@@ -302,8 +302,10 @@ class ContextAwareAgent:
         """
         # Check if this topic was discussed before
         user_input_lower = user_input.lower()
-        previously_discussed = any(topic.lower() in user_input_lower
-                                  for topic in context_summary.get("topics_discussed", []))
+        previously_discussed = any(
+            topic.lower() in user_input_lower
+            for topic in context_summary.get("topics_discussed", [])
+        )
 
         if context_summary["total_interactions"] == 0:
             # First interaction

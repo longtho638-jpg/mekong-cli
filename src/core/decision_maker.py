@@ -30,7 +30,6 @@ class DecisionMaker:
         self.memory = get_memory_facade()
         self.memory.connect()
 
-
         # Initialize local storage as backup for YAML fallback
         self.local_storage_path = Path.home() / ".mekong" / "decision_maker"
         self.local_storage_path.mkdir(parents=True, exist_ok=True)
@@ -261,8 +260,10 @@ class DecisionMaker:
                 memory_content = result.get("memory", str(result))
                 if memory_content.startswith("{"):  # JSON string
                     parsed = json.loads(memory_content)
-                    if (parsed.get("type") == "decision_record" and
-                        parsed.get("decision_hash") == decision_hash):
+                    if (
+                        parsed.get("type") == "decision_record"
+                        and parsed.get("decision_hash") == decision_hash
+                    ):
                         return parsed
             except json.JSONDecodeError:
                 continue
@@ -270,8 +271,10 @@ class DecisionMaker:
         # Search in local storage
         local_decisions = self._load_from_local_storage()
         for local_decision in local_decisions:
-            if (local_decision.get("type") == "decision_record" and
-                local_decision.get("decision_hash") == decision_hash):
+            if (
+                local_decision.get("type") == "decision_record"
+                and local_decision.get("decision_hash") == decision_hash
+            ):
                 return local_decision
 
         return None

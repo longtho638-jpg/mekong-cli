@@ -232,8 +232,10 @@ def generate_seo_brief(keyword: SEOKeyword) -> dict:
     return {
         "keyword": keyword.keyword,
         "title_h1": f"How to {keyword.keyword}: Complete Guide",
-        "meta_description": f"Learn {keyword.keyword} with practical steps. "
-                           f"Updated guide with examples.",
+        "meta_description": (
+            f"Learn {keyword.keyword} with practical steps. "
+            f"Updated guide with examples."
+        ),
         "target_word_count": 1500 if keyword.priority == "HIGH" else 1000,
         "outline": [
             f"What is {keyword.keyword}?",

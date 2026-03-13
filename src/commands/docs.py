@@ -318,12 +318,16 @@ def publish_to_github_pages(source: str, verbose: bool):
         subprocess.run(["git", "checkout", "gh-pages"], check=False, capture_output=not verbose)
 
         # If gh-pages doesn't exist, create it
-        result = subprocess.run(["git", "show-ref", "--verify", "--quiet", "refs/heads/gh-pages"],
-                               capture_output=True)
+        result = subprocess.run(
+            ["git", "show-ref", "--verify", "--quiet", "refs/heads/gh-pages"],
+            capture_output=True
+        )
         if result.returncode != 0:
             # Create orphaned gh-pages branch
-            subprocess.run(["git", "checkout", "--orphan", "gh-pages"], check=True,
-                          capture_output=not verbose)
+            subprocess.run(
+                ["git", "checkout", "--orphan", "gh-pages"],
+                check=True, capture_output=not verbose
+            )
 
         # Clear existing content
         import shutil
@@ -348,11 +352,11 @@ def publish_to_github_pages(source: str, verbose: bool):
         # Add and commit
         subprocess.run(["git", "add", "."], check=True, capture_output=not verbose)
         subprocess.run(["git", "commit", "-m", "Update documentation"],
-                      check=True, capture_output=not verbose)
+                       check=True, capture_output=not verbose)
 
         # Push to GitHub Pages
         subprocess.run(["git", "push", "origin", "gh-pages"],
-                      check=True, capture_output=not verbose)
+                       check=True, capture_output=not verbose)
 
         console.print("[green]✅ Documentation published to GitHub Pages![/green]")
         console.print("[dim]Visit: https://<username>.github.io/<repository>[/dim]")
@@ -373,8 +377,10 @@ def publish_to_netlify(source: str, verbose: bool):
 
     try:
         # Check if netlify CLI is available
-        result = subprocess.run(["netlify", "--version"],
-                               capture_output=True, text=True, check=False)
+        result = subprocess.run(
+            ["netlify", "--version"],
+            capture_output=True, text=True, check=False
+        )
         if result.returncode != 0:
             console.print("[red]❌ Netlify CLI not found. Install with: npm install -g netlify-cli[/red]")
             return

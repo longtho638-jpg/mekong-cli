@@ -41,10 +41,10 @@ TIME_ESTIMATES = {
     'test': {'manual': 60, 'cli': 5},        # 1h → 5min = 12x faster
     'review': {'manual': 45, 'cli': 3},      # 45min → 3min = 15x faster
     'deploy': {'manual': 30, 'cli': 2},      # 30min → 2min = 15x faster
-    'debug': {'manual': 120, 'cli': 15},     # 2h → 15min = 8x faster
+    'debug': {'manual': 120, 'cli': 15},      # 2h → 15min = 8x faster
     # Agents
-    'planner': {'manual': 90, 'cli': 3},     # 1.5h → 3min = 30x faster
-    'researcher': {'manual': 180, 'cli': 5}, # 3h → 5min = 36x faster
+    'planner': {'manual': 90, 'cli': 3},      # 1.5h → 3min = 30x faster
+    'researcher': {'manual': 180, 'cli': 5},  # 3h → 5min = 36x faster
     'fullstack-developer': {'manual': 240, 'cli': 10},
     'tester': {'manual': 60, 'cli': 3},
     'code-reviewer': {'manual': 90, 'cli': 5},

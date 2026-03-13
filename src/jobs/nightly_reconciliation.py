@@ -33,13 +33,13 @@ from rich.table import Table
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from src.db.repository import get_repository, LicenseRepository
-from src.billing.reconciliation import (
+from src.db.repository import LicenseRepository, get_repository  # noqa: E402
+from src.billing.reconciliation import (  # noqa: E402
     AuditResult,
     ReconciliationConfig,
     get_reconciliation_service,
 )
-from src.core.event_bus import get_event_bus, EventType
+from src.core.event_bus import get_event_bus, EventType  # noqa: E402
 
 console = Console()
 logger = logging.getLogger(__name__)

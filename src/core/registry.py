@@ -28,6 +28,7 @@ class RegistryIndex:
     version: str = "0.1.0"
     tags: list[str] | None = None
 
+
 class RecipeRegistry:
     """Manages the collection of available recipes."""
 

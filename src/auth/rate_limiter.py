@@ -45,13 +45,13 @@ class RateLimitConfig:
 
 # Default rate limit configurations
 DEFAULT_RATE_LIMITS: Dict[RateLimitPreset, RateLimitConfig] = {
-    RateLimitPreset.AUTH_LOGIN: RateLimitConfig(limit=5, window=60),      # 5/min
-    RateLimitPreset.AUTH_CALLBACK: RateLimitConfig(limit=10, window=60),  # 10/min
-    RateLimitPreset.AUTH_REFRESH: RateLimitConfig(limit=30, window=3600), # 30/hour
-    RateLimitPreset.AUTH_DEV_LOGIN: RateLimitConfig(limit=10, window=60), # 10/min
-    RateLimitPreset.API_DEFAULT: RateLimitConfig(limit=100, window=60),   # 100/min
-    RateLimitPreset.API_WRITE: RateLimitConfig(limit=20, window=60),      # 20/min
-    RateLimitPreset.API_READ: RateLimitConfig(limit=200, window=60),      # 200/min
+    RateLimitPreset.AUTH_LOGIN: RateLimitConfig(limit=5, window=60),       # 5/min
+    RateLimitPreset.AUTH_CALLBACK: RateLimitConfig(limit=10, window=60),   # 10/min
+    RateLimitPreset.AUTH_REFRESH: RateLimitConfig(limit=30, window=3600),  # 30/hour
+    RateLimitPreset.AUTH_DEV_LOGIN: RateLimitConfig(limit=10, window=60),  # 10/min
+    RateLimitPreset.API_DEFAULT: RateLimitConfig(limit=100, window=60),    # 100/min
+    RateLimitPreset.API_WRITE: RateLimitConfig(limit=20, window=60),       # 20/min
+    RateLimitPreset.API_READ: RateLimitConfig(limit=200, window=60),       # 200/min
 }
 
 

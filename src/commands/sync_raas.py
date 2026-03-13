@@ -39,6 +39,7 @@ def get_cli_version() -> str:
         pass
     return "unknown"
 
+
 # RaaS Gateway Configuration
 RAAS_GATEWAY_BASE_URL = "https://raas.agencyos.network"
 AUTH_ENDPOINT = f"{RAAS_GATEWAY_BASE_URL}/auth/validate"

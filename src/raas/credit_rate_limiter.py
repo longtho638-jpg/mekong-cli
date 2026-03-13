@@ -45,6 +45,7 @@ def get_overage_config(tier: str) -> OverageConfig:
     """Get overage config for tier. Defaults to free (no overage)."""
     return OVERAGE_TIERS.get(tier.lower(), OVERAGE_TIERS["free"])
 
+
 _DDL = """
 CREATE TABLE IF NOT EXISTS rate_limit_events (
     id          TEXT PRIMARY KEY,

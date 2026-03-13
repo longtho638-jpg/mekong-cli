@@ -356,8 +356,10 @@ class CrossSessionStateManager:
             for local_item in local_data:
                 if len(interactions) >= limit:
                     break
-                if (local_item.get("type") == "user_interaction" and
-                    local_item.get("user_id") == self.user_id):
+                if (
+                    local_item.get("type") == "user_interaction"
+                    and local_item.get("user_id") == self.user_id
+                ):
                     local_interaction = local_item.get("interaction")
                     if local_interaction and local_interaction not in interactions:
                         interactions.append(local_interaction)
@@ -449,8 +451,10 @@ class CrossSessionStateManager:
             for local_item in local_data:
                 if len(sessions) >= limit:
                     break
-                if (local_item.get("type") == "session_record" and
-                    local_item.get("user_id") == self.user_id):
+                if (
+                    local_item.get("type") == "session_record"
+                    and local_item.get("user_id") == self.user_id
+                ):
                     local_session = local_item.get("session")
                     if local_session and local_session not in sessions:
                         sessions.append(local_session)

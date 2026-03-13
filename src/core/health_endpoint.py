@@ -205,7 +205,7 @@ def start_health_server(
     Returns:
         Uvicorn server instance
     """
-    global _startup_time, _server_instance
+    global _startup_time, _server_instance  # noqa: F824 (used in nested run_server)
 
     app = create_health_app()
 
@@ -225,7 +225,7 @@ def start_health_server(
     def run_server() -> None:
         global _startup_time
         _startup_time = datetime.now(timezone.utc).timestamp()
-        _server_instance = server
+        _server_instance = server  # noqa: F841 (used by global statement)
         logger.info(f"Health endpoint started at http://{host}:{port}")
         get_event_bus().emit(
             EventType.COLLECTOR_DISCOVERED,

@@ -238,7 +238,7 @@ class RecipePlanner:
         # so we can shift dependency indices of later tasks.
         index_offset = 0
 
-        for orig_idx, task in enumerate(base_tasks):
+        for task in base_tasks:
             # Adjust this task's own dependencies for previously inserted tasks
             adjusted_deps = [d + index_offset for d in task.get("dependencies", [])]
             task = dict(task)  # shallow copy to avoid mutating original

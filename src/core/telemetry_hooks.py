@@ -29,6 +29,7 @@ from src.core.machine_fingerprint import get_machine_fingerprint_hash
 
 logger = logging.getLogger(__name__)
 
+
 class EventStatus(Enum):
     """Event status."""
     SUCCESS = "success"

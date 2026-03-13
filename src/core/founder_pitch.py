@@ -184,7 +184,7 @@ STANDARD_QUESTIONS: list[PitchQuestion] = [
     PitchQuestion(9, "What's your biggest assumption that could be wrong?",
                   "risk awareness"),
     PitchQuestion(10, "If you don't raise this round, what happens?",
-                   "bootstrappability, burn discipline"),
+                  "bootstrappability, burn discipline"),
 ]
 
 CURVEBALL_QUESTIONS: list[PitchQuestion] = [
