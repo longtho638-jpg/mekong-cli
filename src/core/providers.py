@@ -261,7 +261,10 @@ class OpenAICompatibleProvider(LLMProvider):
             msg = f"{self.name}: no base_url configured"
             raise RuntimeError(msg)
 
-        use_model = model or self._default_model
+        # === MODEL ALIAS RESOLUTION ===
+        from src.core.model_alias import resolve_model
+        use_model = resolve_model(model or self._default_model, self._provider_name)
+        # === END MODEL ALIAS ===
         payload: dict[str, Any] = {
             "model": use_model,
             "messages": messages,
