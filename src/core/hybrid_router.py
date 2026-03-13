@@ -17,7 +17,7 @@ import uuid
 from dataclasses import dataclass, field
 
 from src.core.task_classifier import classify_task, classify_multi_agent, TaskProfile
-from src.core.model_selector import select_model, select_model_with_tier, SystemState
+from src.core.model_selector import select_model_with_tier, SystemState
 from src.core.cost_estimator import estimate_cost, CostEstimate
 from src.core.mcu_gate import MCUGate
 from src.core.agent_dispatcher import build_message_chain
@@ -128,9 +128,11 @@ async def route_and_execute(
     lock_id = lock_result.lock_id
     logger.info("Stage 2 — MCU locked: %d MCU (lock_id=%s)", profile.mcu_cost, lock_id)
 
-    # ── STAGE 3: MODEL SELECT ─────────────────────────────────
+    # ── STAGE 3: MODEL SELECT (tier-aware) ────────────────────
     state = system_state or _get_system_state()
-    model_config = select_model(profile, state)
+    # Use tier-aware selection: mechanical tasks → cheap model
+    task_tier = "mechanical" if profile.complexity == "simple" and not profile.requires_reasoning else "integration"
+    model_config = select_model_with_tier(profile, state, task_tier=task_tier)
     cost_est = estimate_cost(profile, model_config.model_id)
 
     logger.info(
