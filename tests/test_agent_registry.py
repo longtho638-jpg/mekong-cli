@@ -184,6 +184,10 @@ class TestGlobalRegistry(unittest.TestCase):
 
     def test_resolve_and_instantiate_workspace_agent(self):
         """Test resolving and instantiating WorkspaceAgent."""
+        # Skip if gws CLI not installed (required by WorkspaceAgent.__init__)
+        import shutil
+        if shutil.which("gws") is None:
+            raise unittest.SkipTest("@googleworkspace/cli (gws) not installed")
         WorkspaceAgent = registry.get("workspace")
         agent = WorkspaceAgent()
         self.assertEqual(agent.name, "workspace")
