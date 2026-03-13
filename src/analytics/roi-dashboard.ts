@@ -129,22 +129,24 @@ export class ROIDashboard {
     for (const daily of report.dailyReports) {
       // Command time savings
       for (const [cmd, count] of Object.entries(daily.commandBreakdown)) {
+        const cmdCount = count as number;
         const estimate = TIME_ESTIMATES[cmd] || { manual: 60, cli: 5 };
-        const saved = (estimate.manual - estimate.cli) * count;
+        const saved = (estimate.manual - estimate.cli) * cmdCount;
         totalMinutesSaved += saved;
         timeSavedByCommand[cmd] = (timeSavedByCommand[cmd] || 0) + saved;
       }
 
       // Agent time savings + costs
       for (const [agent, count] of Object.entries(daily.agentBreakdown)) {
+        const agentCount = count as number;
         const estimate = TIME_ESTIMATES[agent] || { manual: 60, cli: 5 };
-        const saved = (estimate.manual - estimate.cli) * count;
+        const saved = (estimate.manual - estimate.cli) * agentCount;
         totalMinutesSaved += saved;
         timeSavedByAgent[agent] = (timeSavedByAgent[agent] || 0) + saved;
 
         // Agent LLM cost
         const agentCost = AGENT_COSTS[agent] || 0.05;
-        totalAgentCost += agentCost * count;
+        totalAgentCost += agentCost * agentCount;
       }
     }
 
@@ -191,14 +193,16 @@ export class ROIDashboard {
 
       // Command savings
       for (const [cmd, count] of Object.entries(daily.commandBreakdown)) {
+        const cmdCount = count as number;
         const estimate = TIME_ESTIMATES[cmd] || { manual: 60, cli: 5 };
-        minutesSaved += (estimate.manual - estimate.cli) * count;
+        minutesSaved += (estimate.manual - estimate.cli) * cmdCount;
       }
 
       // Agent savings
       for (const [agent, count] of Object.entries(daily.agentBreakdown)) {
+        const agentCount = count as number;
         const estimate = TIME_ESTIMATES[agent] || { manual: 60, cli: 5 };
-        minutesSaved += (estimate.manual - estimate.cli) * count;
+        minutesSaved += (estimate.manual - estimate.cli) * agentCount;
       }
 
       dailyROI.push({

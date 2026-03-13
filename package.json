@@ -37,7 +37,10 @@
     "health": "bash scripts/health-check.sh"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "4.20260313.1",
     "@types/node": "25.3.3",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "concurrently": "^9.2.1",
     "turbo": "^2.8.12",
     "vitest": "4.0.18"
@@ -84,5 +87,15 @@
       "tar@<=7.5.9": ">=7.5.10",
       "xlsx@<0.18.5": ">=0.18.5"
     }
+  },
+  "dependencies": {
+    "@hookform/resolvers": "5.2.2",
+    "framer-motion": "12.36.0",
+    "lucide-react": "0.577.0",
+    "react": "19.2.4",
+    "react-d3-tree": "3.6.6",
+    "react-dom": "19.2.4",
+    "react-hook-form": "7.71.2",
+    "zod": "4.3.6"
   }
 }

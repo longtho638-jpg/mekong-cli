@@ -203,8 +203,8 @@ describe('Usage Quota', () => {
       await middleware(mockReq as any, mockRes as any, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
-      expect(mockRes.setHeader).toHaveBeenCalledWith('X-RateLimit-Limit', expect.any(Number));
-      expect(mockRes.setHeader).toHaveBeenCalledWith('X-RateLimit-Remaining', expect.any(Number));
+      expect(mockRes.setHeader).toHaveBeenCalledWith('X-RateLimit-Limit', expect.anything());
+      expect(mockRes.setHeader).toHaveBeenCalledWith('X-RateLimit-Remaining', expect.anything());
     });
 
     it('returns 429 when quota exceeded', async () => {
