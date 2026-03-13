@@ -13,6 +13,7 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+
 # ── Data Models ──────────────────────────────────────────────────────
 
 @dataclass
@@ -57,6 +58,7 @@ class PublicCoPackage:
     current_metrics: QuarterlyMetrics | None = None
     guidance: GuidanceModel | None = None
     material_events: list[MaterialEvent] = field(default_factory=list)
+
 
 # ── Constants ─────────────────────────────────────────────────────────
 
