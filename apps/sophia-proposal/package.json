@@ -1,0 +1,48 @@
+{
+  "name": "sophia-proposal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "deploy:cf": "wrangler pages deploy out",
+    "dev:cf": "wrangler pages dev .next",
+    "analyze": "ANALYZE=true next build",
+    "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
+    "changelog:all": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.34.3",
+    "lucide-react": "^0.563.0",
+    "next": "^15.3.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.6",
+    "@tailwindcss/postcss": "^4.2.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^20.19.35",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "1.0.0",
+    "conventional-changelog-cli": "^4.1.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "eslint": "^9.39.3",
+    "eslint-config-next": "16.1.6",
+    "jsdom": "^28.1.0",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0",
+    "@vitest/coverage-v8": "^3.0.0"
+  }
+}
