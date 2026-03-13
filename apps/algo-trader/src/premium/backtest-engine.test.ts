@@ -42,8 +42,8 @@ describe('PremiumBacktestEngine', () => {
 
     it('should reject lookback exceeding tier limits', () => {
       // FREE tier cannot request more than 7 days
-      expect(() => engine.validateLookback(8)).toThrow(/lookback_limit_exceeded/);
-      expect(() => engine.validateLookback(90)).toThrow(/lookback_limit_exceeded/);
+      expect(() => engine.validateLookback(8)).toThrow(/exceeds free tier limit/);
+      expect(() => engine.validateLookback(90)).toThrow(/exceeds free tier limit/);
     });
 
     it('should handle edge case of zero lookback', () => {
