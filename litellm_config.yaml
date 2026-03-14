@@ -1,0 +1,63 @@
+# LiteLLM Proxy Configuration — Mekong CLI
+# Docs: https://docs.litellm.ai/docs/proxy/configs
+# Start: litellm --config litellm_config.yaml --port 4000
+
+model_list:
+  # PRIMARY: Qwen Coding Plan ($10/mo unlimited)
+  - model_name: "default"
+    litellm_params:
+      model: "openai/qwen3-coder-plus"
+      api_base: "https://dashscope.aliyuncs.com/compatible-mode/v1"
+      api_key: "os.environ/DASHSCOPE_API_KEY"
+    model_info:
+      max_tokens: 8192
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+
+  # FALLBACK 1: DeepSeek
+  - model_name: "default"
+    litellm_params:
+      model: "deepseek/deepseek-chat"
+      api_key: "os.environ/DEEPSEEK_API_KEY"
+    model_info:
+      input_cost_per_token: 0.00000027
+      output_cost_per_token: 0.0000011
+
+  # FALLBACK 2: Ollama local (free, offline)
+  - model_name: "default"
+    litellm_params:
+      model: "ollama/qwen2.5-coder:7b"
+      api_base: "http://localhost:11434"
+    model_info:
+      input_cost_per_token: 0.0
+      output_cost_per_token: 0.0
+
+  # SMART: Claude via OpenRouter (for complex tasks)
+  - model_name: "smart"
+    litellm_params:
+      model: "openrouter/anthropic/claude-sonnet-4"
+      api_key: "os.environ/OPENROUTER_API_KEY"
+
+  # LOCAL ONLY: For sensitive data
+  - model_name: "local"
+    litellm_params:
+      model: "ollama/qwen2.5-coder:7b"
+      api_base: "http://localhost:11434"
+
+router_settings:
+  routing_strategy: "usage-based-routing-v2"
+  num_retries: 3
+  timeout: 120
+  allowed_fails: 2
+  cooldown_time: 60
+  retry_after: 5
+
+litellm_settings:
+  max_budget: 15.0
+  budget_duration: "1mo"
+  drop_params: true
+  set_verbose: false
+
+general_settings:
+  master_key: "os.environ/LITELLM_MASTER_KEY"
+  database_url: "os.environ/LITELLM_DB_URL"

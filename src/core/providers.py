@@ -339,10 +339,115 @@ class OfflineProvider(LLMProvider):
         return LLMResponse(content=content, model="offline")
 
 
+# ---------------------------------------------------------------------------
+# LiteLLMProvider (Proxy)
+# ---------------------------------------------------------------------------
+
+class LiteLLMProvider(LLMProvider):
+    """LiteLLM proxy provider — unified gateway with auto-failback."""
+
+    def __init__(
+        self,
+        base_url: str = "http://localhost:4000",
+        api_key: str = "sk-mekong-local",
+        model: str = "default",
+    ) -> None:
+        self._base_url = base_url.rstrip("/") if base_url else ""
+        self._api_key = api_key
+        self._default_model = model
+        self._available = False
+
+        # Test connection
+        if self._base_url:
+            try:
+                import httpx
+                resp = httpx.get(f"{self._base_url}/health", timeout=2.0)
+                self._available = resp.status_code == 200
+            except Exception:
+                self._available = False
+
+    @property
+    def name(self) -> str:
+        return "litellm"
+
+    def is_available(self) -> bool:
+        return self._available
+
+    def chat(
+        self,
+        messages: list[dict[str, str]],
+        model: str,
+        temperature: float,
+        max_tokens: int,
+        json_mode: bool,
+    ) -> LLMResponse:
+        """Send chat through LiteLLM proxy with auto-failback."""
+        if not self._base_url:
+            msg = "LiteLLM: no base_url configured"
+            raise RuntimeError(msg)
+
+        # Lazy import httpx
+        try:
+            import httpx
+        except ImportError:
+            logger.warning("[LiteLLMProvider] httpx not installed — falling back")
+            return LLMResponse(content="[LiteLLM] httpx not installed", model="litellm")
+
+        headers = {
+            "Authorization": f"Bearer {self._api_key}",
+            "Content-Type": "application/json",
+        }
+
+        payload = {
+            "model": model or self._default_model,
+            "messages": messages,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+        }
+        if json_mode:
+            payload["response_format"] = {"type": "json_object"}
+
+        url = f"{self._base_url}/v1/chat/completions"
+        logger.debug("[LiteLLM] POST %s model=%s", url, model)
+
+        try:
+            client = httpx.Client(timeout=120.0)
+            resp = client.post(url, json=payload, headers=headers)
+            resp.raise_for_status()
+            data = resp.json()
+
+            content = data["choices"][0]["message"]["content"]
+            usage = data.get("usage", {})
+            cost = data.get("_hidden_params", {}).get("response_cost", 0)
+
+            logger.debug("[LiteLLM] Cost: $%.6f", cost)
+
+            return LLMResponse(
+                content=content,
+                model=data.get("model", model),
+                usage=usage,
+                raw={"cost": cost, **data},
+            )
+
+        except httpx.HTTPStatusError as e:
+            if e.response.status_code == 429:
+                logger.warning("[LiteLLM] Budget exceeded — falling back to local")
+            else:
+                logger.exception("[LiteLLM] HTTP error: %s", e)
+            raise
+        except httpx.ConnectError:
+            logger.warning("[LiteLLM] Proxy unreachable — falling back")
+            raise
+        finally:
+            if "client" in locals():
+                client.close()
+
+
 __all__ = [
     "GeminiProvider",
     "LLMProvider",
     "LLMResponse",
+    "LiteLLMProvider",
     "OfflineProvider",
     "OpenAICompatibleProvider",
 ]
