@@ -7,6 +7,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added (2026-03-14 - Retention & Engagement System Phase 20 - COMPLETED)
+
+#### Engagement Tracking & Churn Prediction Engine
+- **SQLite Storage**: 4 tables (engagement_metrics, engagement_scores, churn_predictions, nudge_campaigns)
+- **Engagement Scoring**: 0-100 score based on recency (40%), frequency (35%), breadth (25%)
+- **Churn Prediction**: 4-tier classification (low/medium/high/critical) with risk scoring
+- **Re-engagement Nudges**: Max 3 active campaigns per workspace with personalized messaging
+- **Usage Streaks**: Gamification with 6 badges (streak_7, streak_30, streak_90, consistency, comeback, champion)
+- **Workspace Health Score**: A-F letter grades based on overall engagement health
+- **REST API Endpoints**: 9 endpoints at `/api/retention/*` for full CRUD + analytics operations
+- **Test Coverage**: 31 unit tests, 100% pass rate
+
+#### New Files Created
+- `src/retention/engagement_store.py` - Engagement metrics storage and queries
+- `src/retention/scoring_engine.py` - Engagement score calculation (recency/frequency/breadth)
+- `src/retention/churn_predictor.py` - Churn risk classification and prediction
+- `src/retention/nudge_engine.py` - Re-engagement campaign management
+- `src/retention/streaks_tracker.py` - Usage streak tracking with badge unlocks
+- `src/retention/health_calculator.py` - Workspace health score A-F grading
+- `src/api/retention_endpoints.py` - 9 REST endpoints for retention operations
+- `tests/test_engagement_store.py` - Engagement store tests (8 tests)
+- `tests/test_churn_predictor.py` - Churn prediction tests (7 tests)
+- `tests/test_nudge_engine.py` - Re-engagement nudge tests (6 tests)
+- `tests/test_streaks_tracker.py` - Usage streak tests (5 tests)
+- `tests/test_health_calculator.py` - Health score tests (5 tests)
+
+#### API Endpoints (9 total)
+- `GET /api/retention/engagement/{workspace_id}` - Get engagement metrics
+- `POST /api/retention/engagement/{workspace_id}` - Record engagement event
+- `GET /api/retention/churn-risk/{workspace_id}` - Get churn prediction
+- `GET /api/retention/nudges/{workspace_id}` - Get active nudges
+- `POST /api/retention/nudges/{workspace_id}` - Create nudge campaign
+- `PUT /api/retention/nudges/{campaign_id}` - Update nudge
+- `DELETE /api/retention/nudges/{campaign_id}` - Cancel nudge
+- `GET /api/retention/health/{workspace_id}` - Get workspace health score
+- `GET /api/retention/streaks/{workspace_id}` - Get usage streaks and badges
+
+#### Test Results
+- **Total Tests**: 31 unit tests
+- **Pass Rate**: 100%
+- **Test Files**: 5 test modules
+- **Coverage**: All core modules tested (scoring, churn, nudges, streaks, health)
+
+#### Key Features
+- Recency-weighted engagement scoring (40% recent activity weight)
+- Frequency-based activity tracking (35% activity count weight)
+- Breadth tracking (25% feature diversity weight)
+- Churn risk scoring with 4-tier thresholds (critical > 70, high 50-70, medium 25-50, low < 25)
+- Max 3 active nudges per workspace to avoid campaign fatigue
+- 6 gamification badges unlocked by usage milestones
+- Workspace health: A (excellent 80+), B (good 60-79), C (fair 40-59), D (poor 20-39), F (critical < 20)
+
 ### Added (2026-03-14 - Dashboard Analytics UI Phase 5 - COMPLETED)
 
 #### Dashboard App & Onboarding Analytics
