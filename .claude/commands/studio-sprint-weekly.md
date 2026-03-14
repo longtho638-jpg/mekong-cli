@@ -35,3 +35,8 @@ Execute DAG groups in dependency order:
 ## Goal context
 
 <goal>$ARGUMENTS</goal>
+
+## Engine Note
+
+CRITICAL: Each sub-command MUST run via `mekong` CLI engine, NOT manual file operations.
+Example: "portfolio-create" → `mekong portfolio create $ARGS`

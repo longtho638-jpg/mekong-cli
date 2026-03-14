@@ -37,3 +37,8 @@ This is a MULTI-AGENT command. The 5 research tasks MUST run in parallel via Tas
 ## Goal context
 
 <goal>$ARGUMENTS</goal>
+
+## Engine Note
+
+CRITICAL: Each sub-command MUST run via `mekong` CLI engine, NOT manual file operations.
+Example: "portfolio-create" → `mekong portfolio create $ARGS`

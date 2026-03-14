@@ -21,3 +21,8 @@ mekong studio init "$STUDIO_NAME" && mekong venture thesis update
 ## Output
 
 Delegates to mekong CLI — see CLI output.
+
+## Engine Note
+
+CRITICAL: Each sub-command MUST run via `mekong` CLI engine, NOT manual file operations.
+Example: "portfolio-create" → `mekong portfolio create $ARGS`

@@ -1,19 +1,10 @@
 /**
  * Five-Factor Evaluation Engine — 道天地將法
- *
- * Sun Tzu's five factors applied to startup/deal evaluation:
- * 道 Dao (20%): Mission-market fit
- * 天 Thien (25%): Timing and macro conditions
- * 地 Dia (20%): Competitive landscape and terrain
- * 將 Tuong (20%): Founder/leadership quality
- * 法 Phap (15%): Business model and systems
- *
- * Uses LLM for qualitative assessment, structured output as JSON.
- * Weights configurable in thesis.yaml.
+ * Sun Tzu's five factors applied to startup/deal evaluation.
  */
 
 import type { FiveFactorEvaluation } from '../studio/types.js';
-import type { Result } from '../types/common.js';
+import { ok, err, type Result } from '../types/common.js';
 
 export type FactorName = 'dao' | 'thien' | 'dia' | 'tuong' | 'phap';
 
@@ -26,22 +17,67 @@ export interface EvaluationTarget {
   marketData?: string;
 }
 
-export class FiveFactorEngine {
-  constructor(private llm: unknown, private weights?: Record<string, number>) {}
+type LlmClient = { chat?: (req: { messages: Array<{ role: string; content: string }> }) => Promise<{ content: string }> };
 
-  /** Full five-factor evaluation */
-  async evaluate(target: EvaluationTarget): Promise<Result<FiveFactorEvaluation>> {
-    // 1. Evaluate each factor via LLM with structured output
-    // 2. Calculate weighted composite score
-    // 3. Generate recommendation based on thresholds:
-    //    composite >= 70 → proceed
-    //    composite 40-69 → pause (needs more investigation)
-    //    composite < 40 → pass
-    throw new Error('Not implemented');
+const DEFAULT_WEIGHTS: Record<FactorName, number> = {
+  dao: 0.20, thien: 0.25, dia: 0.20, tuong: 0.20, phap: 0.15,
+};
+
+const FACTOR_PROMPTS: Record<FactorName, string> = {
+  dao: 'Evaluate mission-market fit (道). Is there a clear problem-solution fit? Score 0-100.',
+  thien: 'Evaluate timing and macro conditions (天). Is the market timing right? Score 0-100.',
+  dia: 'Evaluate competitive landscape (地). How defensible is the position? Score 0-100.',
+  tuong: 'Evaluate founder/leadership quality (將). Are they the right team? Score 0-100.',
+  phap: 'Evaluate business model and systems (法). Is the model scalable? Score 0-100.',
+};
+
+export class FiveFactorEngine {
+  private weights: Record<FactorName, number>;
+
+  constructor(private llm: unknown, weights?: Record<string, number>) {
+    this.weights = { ...DEFAULT_WEIGHTS, ...(weights as Record<FactorName, number> | undefined) };
   }
 
-  /** Evaluate single factor */
+  async evaluate(target: EvaluationTarget): Promise<Result<FiveFactorEvaluation>> {
+    const factors: FactorName[] = ['dao', 'thien', 'dia', 'tuong', 'phap'];
+    const context = `Company: ${target.name}\nSector: ${target.sector}\nDescription: ${target.description}\nFounder: ${target.founderInfo ?? 'N/A'}\nMarket: ${target.marketData ?? 'N/A'}`;
+
+    const results: Record<string, { score: number; reasoning: string }> = {};
+    for (const factor of factors) {
+      results[factor] = await this.evaluateFactor(factor, context);
+    }
+
+    const composite = factors.reduce((sum, f) => sum + results[f].score * this.weights[f], 0);
+    const compositeScore = Math.round(composite);
+    const recommendation = compositeScore >= 70 ? 'proceed' : compositeScore >= 40 ? 'pause' : 'pass';
+
+    const evaluation: FiveFactorEvaluation = {
+      targetName: target.name,
+      evaluatedAt: new Date().toISOString(),
+      dao: { score: results.dao.score, reasoning: results.dao.reasoning },
+      thien: { score: results.thien.score, reasoning: results.thien.reasoning, signals: [] },
+      dia: { score: results.dia.score, reasoning: results.dia.reasoning, terrain: 'accessible' },
+      tuong: { score: results.tuong.score, reasoning: results.tuong.reasoning, virtues: {} },
+      phap: { score: results.phap.score, reasoning: results.phap.reasoning },
+      compositeScore,
+      recommendation,
+      confidence: 0.7,
+    };
+    return ok(evaluation);
+  }
+
   async evaluateFactor(factor: FactorName, context: string): Promise<{ score: number; reasoning: string }> {
-    throw new Error('Not implemented');
+    const client = this.llm as LlmClient;
+    if (!client?.chat) return { score: 50, reasoning: 'LLM unavailable — default score' };
+
+    try {
+      const resp = await client.chat({
+        messages: [{ role: 'user', content: `${FACTOR_PROMPTS[factor]}\n\nContext:\n${context}\n\nReturn JSON: {"score": number, "reasoning": "string"}` }],
+      });
+      const parsed = JSON.parse(resp.content) as { score: number; reasoning: string };
+      return { score: parsed.score ?? 50, reasoning: parsed.reasoning ?? 'AI evaluated' };
+    } catch {
+      return { score: 50, reasoning: 'LLM unavailable — default score' };
+    }
   }
 }
