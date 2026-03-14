@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/landing
     steps:
       - uses: actions/checkout@v4
 
@@ -16,14 +19,13 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
-        run: cd frontend/landing && npm ci
+        run: npm ci
 
       - name: Build
-        run: cd frontend/landing && npm run build
+        run: npm run build
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy frontend/landing/out --project-name=agencyos-landing
+        run: npx wrangler pages deploy out --project-name=agencyos-landing
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

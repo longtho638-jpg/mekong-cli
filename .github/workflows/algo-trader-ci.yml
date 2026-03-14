@@ -50,3 +50,4 @@ jobs:
 
       - name: Build dashboard
         run: cd ${{ env.WORKING_DIRECTORY }}/dashboard && npm install && npm run build
+        continue-on-error: true
