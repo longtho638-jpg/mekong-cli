@@ -22,6 +22,11 @@ from .dispatcher import Dispatcher, DispatchResult, LoadBalanceStrategy
 from .circuit_breaker import CircuitBreaker, CircuitBreakerRegistry, CircuitState, CircuitBreakerStats
 from .jidoka import JidokaMonitor, ErrorSeverity, ErrorPattern, JidokaEvent
 
+# Session 13: Learning Journal + Memory
+from .learning_journal import LearningJournal as LearningJournalV2, MissionEntry, DailyStats
+from .pattern_library import PatternLibrary, Pattern, PatternMatch
+from .improvement_engine import ImprovementEngine, ImprovementTask, ImprovementRecommendation
+
 __all__ = [
     "TaskWatcher",
     "ComplexityClassifier",
@@ -50,4 +55,14 @@ __all__ = [
     "ErrorSeverity",
     "ErrorPattern",
     "JidokaEvent",
+    # Session 13 exports
+    "LearningJournalV2",
+    "MissionEntry",
+    "DailyStats",
+    "PatternLibrary",
+    "Pattern",
+    "PatternMatch",
+    "ImprovementEngine",
+    "ImprovementTask",
+    "ImprovementRecommendation",
 ]
