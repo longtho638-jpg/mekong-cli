@@ -1,5 +1,14 @@
 const STEPS = [
   {
+    role: '🏯 Studio',
+    cmd: '$ mekong studio:launch:full "AI SaaS"',
+    out: 'Thesis → Terrain → Source → Screen → Five-Factors ✓',
+    color: 'text-violet-400',
+    border: 'border-[var(--md-outline-variant)]',
+    bg: 'bg-[var(--md-surface-container-low)]',
+    dot: 'bg-violet-400',
+  },
+  {
     role: '👑 CEO',
     cmd: '$ mekong founder:raise "Series A for AI platform"',
     out: 'Spawning 3 parallel agents...',

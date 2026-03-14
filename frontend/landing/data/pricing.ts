@@ -24,10 +24,10 @@ export const TIERS: PricingTier[] = [
     highlight: false,
     badge: undefined,
     features: [
-      'Full CLI — 319 commands',
+      'Full CLI — 342 commands',
       'Bring your own LLM (any provider)',
       'Community support',
-      'MIT License — fork freely',
+      'BSL 1.1 — use freely, auto-MIT 2030',
     ],
   },
   {
@@ -57,8 +57,8 @@ export const TIERS: PricingTier[] = [
     badge: 'Most popular',
     features: [
       '1,000 credits / month',
-      'All 89 super commands',
-      '85 DAG recipe workflows',
+      'All 94 super commands',
+      '103 DAG recipe workflows',
       'Tom Hum autonomous daemon',
       'Priority support',
     ],
@@ -111,7 +111,7 @@ export const FAQS: FAQ[] = [
   },
   {
     q: 'Can I use it for free?',
-    a: 'Yes. The CLI is fully open source (MIT). Install it, bring your own LLM key, and run all 319 commands with no credits needed.',
+    a: 'Yes. The CLI is source-available (BSL 1.1). Install it, bring your own LLM key, and run all 342 commands with no credits needed.',
   },
   {
     q: 'Can I cancel anytime?',

@@ -3,22 +3,24 @@
 import { useState } from 'react'
 
 const TERMINAL_LINES = [
-  { text: '$ pip install mekong-cli', color: 'text-[var(--md-on-surface-variant)]' },
-  { text: '$ export LLM_BASE_URL=https://openrouter.ai/api/v1', color: 'text-[var(--md-on-surface-variant)]' },
-  { text: '$ export LLM_API_KEY=sk-or-v1-yourkey', color: 'text-[var(--md-on-surface-variant)]' },
-  { text: '$ export LLM_MODEL=anthropic/claude-sonnet-4', color: 'text-[var(--md-on-surface-variant)]' },
+  { text: '$ git clone https://github.com/longtho638-jpg/mekong-cli.git', color: 'text-[var(--md-on-surface-variant)]' },
+  { text: '$ cd mekong-cli && pip install -e .', color: 'text-[var(--md-on-surface-variant)]' },
+  { text: '$ mekong init', color: 'text-[var(--md-primary)]' },
   { text: '', color: '' },
-  { text: '$ mekong founder:validate-sprint "AI-operated business platform"', color: 'text-[var(--md-primary)]' },
+  { text: '  🏯 Choose template: standard (4 agents, hybrid LLM)', color: 'text-[var(--md-outline)]' },
+  { text: '  ✅ Workspace created: .mekong/studio/my-studio/', color: 'text-emerald-400' },
   { text: '', color: '' },
-  { text: '  ⚡ Loading recipe: recipes/founder/validate.json', color: 'text-[var(--md-outline)]' },
-  { text: '  ⚡ Group 1 (parallel): /validate + /tam + /swot', color: 'text-[var(--md-tertiary)]' },
-  { text: '  ⚡ Group 2 (parallel): /unit-economics + /moat-audit', color: 'text-[var(--md-tertiary)]' },
+  { text: '$ mekong up', color: 'text-[var(--md-primary)]' },
+  { text: '  ✅ gateway: online (port 8000)', color: 'text-emerald-400' },
+  { text: '  ✅ heartbeat-scheduler: online', color: 'text-emerald-400' },
+  { text: '  ✅ cto-daemon: online', color: 'text-emerald-400' },
   { text: '', color: '' },
-  { text: '  ✅ Done: reports/validation/VALIDATION-VERDICT.md', color: 'text-emerald-400' },
-  { text: '  💳 Credits: -20 (balance: 180)', color: 'text-[var(--md-secondary)]' },
+  { text: '$ mekong studio:launch:full "AI tools"', color: 'text-violet-400' },
+  { text: '  ⚡ DAG: thesis → terrain → source ×3 → screen → five-factors', color: 'text-[var(--md-tertiary)]' },
+  { text: '  ✅ Done: 5 deals sourced, top 3 evaluated', color: 'text-emerald-400' },
 ]
 
-const INSTALL_CMD = 'pip install mekong-cli'
+const INSTALL_CMD = 'git clone https://github.com/longtho638-jpg/mekong-cli.git && cd mekong-cli && pip install -e . && mekong init'
 
 export default function QuickstartSection() {
   const [copied, setCopied] = useState(false)

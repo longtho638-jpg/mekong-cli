@@ -5,11 +5,31 @@ export interface Service {
   credits: number
   priceUsd: number
   durationMin: number
-  category: 'founder' | 'business' | 'product' | 'engineering' | 'marketing'
+  category: 'founder' | 'business' | 'product' | 'engineering' | 'marketing' | 'studio'
   superCommand: string
 }
 
 export const SERVICES: Service[] = [
+  {
+    id: 'studio-launch',
+    title: 'VC Studio Launch',
+    description: '7 commands — thesis evaluation, terrain analysis, deal sourcing, screening, five-factor deep eval.',
+    credits: 40,
+    priceUsd: 129,
+    durationMin: 30,
+    category: 'studio',
+    superCommand: '/studio:launch:full',
+  },
+  {
+    id: 'studio-diligence',
+    title: 'Deep Due Diligence',
+    description: '5 commands — five-factor eval, void-substance mapping, momentum scoring, terrain + expert matching.',
+    credits: 35,
+    priceUsd: 109,
+    durationMin: 25,
+    category: 'studio',
+    superCommand: '/studio:diligence:deep',
+  },
   {
     id: 'founder-raise-kit',
     title: 'Fundraise Kit',

@@ -3,6 +3,7 @@ import PyramidHero from '@/components/pyramid-hero'
 import StatsBar from '@/components/stats-bar'
 import CascadeDemo from '@/components/cascade-demo'
 import FeaturesGrid from '@/components/features-grid'
+import WaterProtocolSection from '@/components/water-protocol-section'
 import HowItWorks from '@/components/how-it-works'
 import ComparisonSection from '@/components/comparison-section'
 import ServiceCards from '@/components/service-cards'
@@ -18,6 +19,7 @@ export default function HomePage() {
       <StatsBar />
       <CascadeDemo />
       <FeaturesGrid />
+      <WaterProtocolSection />
       <HowItWorks />
       <ComparisonSection />
       <ServiceCards />

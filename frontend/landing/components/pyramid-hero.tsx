@@ -1,5 +1,7 @@
 'use client'
 
+import { STATS } from '@/data/stats'
+
 const LAYERS = [
   {
     id: 'studio',
@@ -94,7 +96,7 @@ export default function PyramidHero() {
 
         {/* Stats row */}
         <p className="mx-auto mb-14 max-w-2xl text-base text-[var(--md-on-surface-variant)] sm:text-lg pyramid-fade-in">
-          <span className="font-mono font-semibold text-[var(--md-primary)]">319 commands.</span>{' '}
+          <span className="font-mono font-semibold text-[var(--md-primary)]">{STATS.commands} commands.</span>{' '}
           <span className="font-mono font-semibold text-indigo-400">463 skills.</span>{' '}
           <span className="font-mono font-semibold text-[var(--md-secondary)]">127 AI agents.</span>{' '}
           One unified system.

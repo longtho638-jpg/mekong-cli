@@ -2,7 +2,7 @@ const STEPS = [
   {
     number: '01',
     title: 'Choose a workflow',
-    desc: '101 super commands for 32 roles. Pick your role, pick your task.',
+    desc: '94 super commands for 32 roles across 6 layers. Pick your role, pick your task.',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125" />
@@ -15,7 +15,7 @@ const STEPS = [
   {
     number: '02',
     title: 'DAG executes',
-    desc: 'Recipe splits into parallel groups. Multiple AI agents work simultaneously.',
+    desc: 'Recipe splits into parallel groups. Water Protocol 水 — agents pass context to each other.',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
@@ -28,7 +28,7 @@ const STEPS = [
   {
     number: '03',
     title: 'Auto-verify',
-    desc: 'Each step verified. Failed? Auto-retry with self-healing.',
+    desc: 'Two-stage review: spec compliance + quality. Smart model routing saves cost.',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
@@ -41,7 +41,7 @@ const STEPS = [
   {
     number: '04',
     title: 'Compiled output',
-    desc: 'All agent outputs merged into one deliverable report.',
+    desc: 'All agent outputs merged with status tracking: DONE, BLOCKED, or NEEDS_CONTEXT.',
     icon: (
       <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

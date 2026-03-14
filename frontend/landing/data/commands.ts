@@ -20,8 +20,10 @@ import { COMMANDS_OPS_A } from "./commands-ops-a"
 import { COMMANDS_OPS_B } from "./commands-ops-b"
 import { COMMANDS_OPS_C } from "./commands-ops-c"
 import { COMMANDS_SUPER } from "./commands-super"
+import { COMMANDS_STUDIO } from "./commands-studio"
 
 export const COMMANDS: CommandData[] = [
+  ...COMMANDS_STUDIO,
   ...COMMANDS_FOUNDER_A,
   ...COMMANDS_FOUNDER_B,
   ...COMMANDS_BUSINESS_A,

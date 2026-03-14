@@ -1,6 +1,7 @@
 import { SERVICES } from '@/data/services'
 
 const CATEGORY_LABELS: Record<string, string> = {
+  studio: 'Studio',
   founder: 'Founder',
   business: 'Business',
   product: 'Product',
@@ -9,6 +10,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
+  studio: 'text-violet-400 border-violet-400/30 bg-violet-400/10',
   founder: 'text-[var(--md-tertiary)] border-[var(--md-tertiary-container)] bg-[var(--md-tertiary-container)]',
   business: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
   product: 'text-[var(--md-secondary)] border-[var(--md-secondary-container)] bg-[var(--md-secondary-container)]',

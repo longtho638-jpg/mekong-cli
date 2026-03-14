@@ -27,7 +27,7 @@ const FEATURES = [
     ),
     color: 'text-indigo-400 bg-indigo-400/10 border-indigo-400/20',
     title: 'Universal LLM',
-    desc: '3 env vars, any provider. OpenRouter, Qwen, DeepSeek, Ollama, Anthropic, OpenAI — or bring your own endpoint.',
+    desc: 'LiteLLM proxy auto-routes: Qwen $10/mo → DeepSeek → Ollama local. Budget enforcement per tenant. Zero config.',
   },
   {
     icon: (
@@ -36,8 +36,8 @@ const FEATURES = [
       </svg>
     ),
     color: 'text-[var(--md-tertiary)] bg-[var(--md-tertiary-container)] border-[var(--md-tertiary-container)]',
-    title: '5 Business Layers',
-    desc: 'Founder → Business → Product → Engineering → Ops. Strategy cascades down automatically through every layer.',
+    title: '6 Business Layers',
+    desc: 'Studio → Founder → Business → Product → Engineering → Ops. Strategy cascades down automatically through every layer.',
   },
   {
     icon: (
@@ -46,8 +46,8 @@ const FEATURES = [
       </svg>
     ),
     color: 'text-[var(--md-secondary)] bg-[var(--md-secondary-container)] border-[var(--md-secondary-container)]',
-    title: 'Self-Healing Pipeline',
-    desc: 'Plan → Execute → Verify. Failed steps auto-diagnosed and corrected. No manual intervention needed.',
+    title: 'Autonomous Operations',
+    desc: 'HEARTBEAT scheduler runs tasks while you sleep. Jidoka self-healing catches errors at 3AM. Telegram alerts if critical.',
   },
   {
     icon: (
@@ -57,7 +57,7 @@ const FEATURES = [
     ),
     color: 'text-emerald-400 bg-emerald-400/10 border-emerald-400/20',
     title: 'Open Source 100%',
-    desc: 'MIT License. 319 commands, 463 skills, 127 agents. Fork and run your AI company — zero vendor lock-in.',
+    desc: 'BSL 1.1 (auto-MIT 2030). 342 commands, 463 skills, 127 agents. Fork and run your AI company — zero vendor lock-in.',
   },
 ]
 

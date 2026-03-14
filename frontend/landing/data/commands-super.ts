@@ -1,6 +1,52 @@
 import type { CommandData } from "./commands"
 
 export const COMMANDS_SUPER: CommandData[] = [
+  // Studio super commands
+  {
+    id: "studio-launch-full",
+    layer: "studio",
+    displayName: "VC Studio Launch",
+    description: "7 commands — thesis + terrain + sourcing + screening + five-factors in 30 min",
+    complexity: "complex",
+    creditCost: 40,
+    agents: ["cfo", "data", "cto"],
+  },
+  {
+    id: "studio-diligence-deep",
+    layer: "studio",
+    displayName: "Deep Diligence",
+    description: "5 commands — five-factors + void-substance + momentum + expert match in 25 min",
+    complexity: "complex",
+    creditCost: 35,
+    agents: ["cfo", "data", "cto", "hunter"],
+  },
+  {
+    id: "studio-sprint-weekly",
+    layer: "studio",
+    displayName: "Studio Weekly Sprint",
+    description: "Portfolio health + pipeline review + momentum scores",
+    complexity: "standard",
+    creditCost: 15,
+    agents: ["cfo", "operator"],
+  },
+  {
+    id: "studio-operate-daily",
+    layer: "studio",
+    displayName: "Studio Daily Ops",
+    description: "Dashboard refresh + alert check + deal status update",
+    complexity: "simple",
+    creditCost: 5,
+    agents: ["operator"],
+  },
+  {
+    id: "studio-bootstrap",
+    layer: "studio",
+    displayName: "Studio Bootstrap",
+    description: "Initialize studio — thesis + first portfolio company + deal pipeline setup",
+    complexity: "complex",
+    creditCost: 25,
+    agents: ["cto", "cfo"],
+  },
   // Business super commands
   {
     id: "business-revenue-engine",
