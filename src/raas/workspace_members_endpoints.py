@@ -10,10 +10,9 @@ Uses existing WorkspaceRepository for data operations.
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
-from typing import Literal, List, Optional
+from typing import Literal, List
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, EmailStr
 
 from src.raas.workspace_repository import Workspace, WorkspaceRepository

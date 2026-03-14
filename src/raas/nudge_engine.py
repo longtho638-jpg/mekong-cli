@@ -6,9 +6,9 @@ Tracks dismissals to prevent nudge fatigue (max 3 active).
 from __future__ import annotations
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from src.raas.engagement_store import EngagementStore
 from src.raas.engagement_tracker import EngagementTracker
