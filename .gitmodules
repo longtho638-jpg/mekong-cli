@@ -15,3 +15,8 @@
 	url = https://github.com/longtho638-jpg/agencyos-starter.git
 	ignore = dirty
 
+[submodule "apps/algo-trader"]
+	path = apps/algo-trader
+	url = https://github.com/longtho638-jpg/algo-trader.git
+	branch = main
+	ignore = dirty

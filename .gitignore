@@ -117,6 +117,7 @@ openclaw-key.json
 # Monorepo structure: apps stay on disk, NEVER pushed to public GitHub
 # Each sub-project has its own repo if needed
 apps/
+!apps/algo-trader
 
 # Private Orchestration (Tôm Hùm internal state)
 apps/openclaw-worker/data/
