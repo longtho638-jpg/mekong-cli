@@ -19,10 +19,6 @@
     "@mekong/vibe-ui": "workspace:*",
     "@mekong/vibe-analytics": "workspace:*",
     "@mekong/vibe-agents": "workspace:*",
-    "@mekong/vibe-crm": "workspace:*",
-    "@mekong/vibe-ops": "workspace:*",
-    "@mekong/vibe-dev": "workspace:*",
-    "@mekong/vibe-marketing": "workspace:*",
-    "@mekong/vibe-revenue": "workspace:*"
+    "@mekong/vibe-crm": "workspace:*"
   }
 }

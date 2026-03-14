@@ -92,3 +92,15 @@ def register_all_commands(app: typer.Typer) -> None:
     # Autonomous sub-commands
     autonomous_app = typer.Typer(help="Autonomous: AGI loop control")
     app.add_typer(autonomous_app, name="autonomous")
+
+    # Platform commands (mekong up/down/ps/logs)
+    from src.cli.platform_commands import app as platform_app
+    app.add_typer(platform_app, name="platform", help="Platform: start/stop/monitor services")
+
+    # Also register as top-level aliases
+    from src.cli.platform_commands import platform_up, platform_down, platform_ps, platform_logs, platform_restart
+    app.command("up")(platform_up)
+    app.command("down")(platform_down)
+    app.command("ps")(platform_ps)
+    app.command("logs")(platform_logs)
+    app.command("restart")(platform_restart)

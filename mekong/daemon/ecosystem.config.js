@@ -1,77 +1,123 @@
 /**
- * PM2 Ecosystem Configuration for OpenClaw
- *
- * Apps:
- *   tom-hum         — Autonomous task dispatch daemon (restarts every 6h)
- *   openclaw-bridge — Bridge HTTP server
- *   openclaw-tunnel — Serveo.net tunnel manager
- *
- * Usage:
- *   pm2 start ecosystem.config.js
- *   pm2 logs tom-hum
- *   pm2 monit
+ * PM2 Ecosystem — Mekong CLI Full Platform
+ * Usage: pm2 start mekong/daemon/ecosystem.config.js
+ * Or:    mekong up (wrapper command)
  */
+const path = require('path');
+const ROOT = process.env.MEKONG_ROOT || path.resolve(__dirname, '../..');
 
-module.exports = {
-  apps: [
-    {
-      name: 'tom-hum',
-      script: 'task-watcher.js',
-      cwd: __dirname,
-      max_memory_restart: '200M',
-      restart_delay: 5000,
-      autorestart: true,
-      watch: false,
-      cron_restart: '0 */6 * * *',
-      max_restarts: 50,
-      min_uptime: '10s',
-      kill_timeout: 10000,
-      merge_logs: true,
-      log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      error_file: '/Users/macbookprom1/tom_hum_pm2_error.log',
-      out_file: '/Users/macbookprom1/tom_hum_pm2_out.log',
-      env: {
-        NODE_ENV: 'production',
-        MEKONG_DIR: '/Users/macbookprom1/mekong-cli',
-        TOM_HUM_LOG: '/Users/macbookprom1/tom_hum_cto.log',
-      },
-    },
-    {
-      name: 'openclaw-bridge',
-      script: 'bridge-server.js',
-      cwd: __dirname,
-      instances: 1,
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '200M',
-      env: {
-        NODE_ENV: 'production',
-        PORT: 8765,
-      },
-    },
-    {
-      name: 'openclaw-tunnel',
-      script: 'tunnel-manager.sh',
-      cwd: __dirname,
-      interpreter: '/bin/bash',
-      instances: 1,
-      autorestart: true,
-      watch: false,
-      restart_delay: 5000,
-    },
-    {
-      // 🔒 ĐIỀU 56: PORT 9191 — KHÓA CỨNG, CẤM THAY ĐỔI
-      name: 'antigravity-proxy',
-      script: 'antigravity-claude-proxy',
-      instances: 1,
-      autorestart: true,
-      watch: false,
-      max_memory_restart: '300M',
-      env: {
-        PORT: 9191,
-        FALLBACK: 'true',
-        NODE_ENV: 'production',
-      },
-    },
-  ],
-};
+// Profiles: minimal (3 apps), standard (8), full (all)
+const PROFILE = process.env.MEKONG_PROFILE || 'standard';
+
+const INFRA = [
+  {
+    name: 'gateway',
+    script: 'uvicorn',
+    args: 'src.gateway:app --host 0.0.0.0 --port 8000 --workers 1',
+    cwd: ROOT,
+    interpreter: 'none',
+    max_memory_restart: '300M',
+    env: { PYTHONPATH: ROOT },
+  },
+  {
+    name: 'license-server',
+    script: 'uvicorn',
+    args: 'src.api.license_server:app --host 0.0.0.0 --port 8787',
+    cwd: ROOT,
+    interpreter: 'none',
+    max_memory_restart: '200M',
+    env: { PYTHONPATH: ROOT },
+  },
+];
+
+const DAEMONS_STANDARD = [
+  {
+    name: 'heartbeat-scheduler',
+    script: 'python3',
+    args: '-m src.daemon.heartbeat_scheduler',
+    cwd: ROOT,
+    max_memory_restart: '200M',
+    cron_restart: '0 */6 * * *',
+    env: { PYTHONPATH: ROOT },
+  },
+  {
+    name: 'cto-daemon',
+    script: 'cto-daemon.sh',
+    cwd: ROOT,
+    interpreter: '/bin/bash',
+    max_memory_restart: '100M',
+    cron_restart: '0 */6 * * *',
+  },
+];
+
+const DAEMONS_FULL = [
+  {
+    name: 'daemon-router',
+    script: 'mekong/daemon/daemons/dispatcher-daemon.js',
+    cwd: ROOT,
+    node_args: '--max_old_space_size=256',
+    max_memory_restart: '300M',
+  },
+  {
+    name: 'daemon-builder',
+    script: 'mekong/daemon/daemons/builder-daemon.js',
+    cwd: ROOT,
+    node_args: '--max_old_space_size=256',
+    max_memory_restart: '300M',
+  },
+  {
+    name: 'daemon-reviewer',
+    script: 'mekong/daemon/daemons/reviewer-daemon.js',
+    cwd: ROOT,
+    node_args: '--max_old_space_size=256',
+    max_memory_restart: '300M',
+  },
+  {
+    name: 'daemon-intel',
+    script: 'mekong/daemon/daemons/hunter-daemon.js',
+    cwd: ROOT,
+    node_args: '--max_old_space_size=256',
+    max_memory_restart: '300M',
+  },
+  {
+    name: 'daemon-health',
+    script: 'mekong/daemon/daemons/operator-daemon.js',
+    cwd: ROOT,
+    node_args: '--max_old_space_size=256',
+    max_memory_restart: '300M',
+  },
+];
+
+const BOTS = [
+  {
+    name: 'telegram-bot',
+    script: 'python3',
+    args: '-m src.core.telegram_bot',
+    cwd: ROOT,
+    max_memory_restart: '200M',
+    env: { PYTHONPATH: ROOT },
+  },
+];
+
+// Build app list based on profile
+let apps = [];
+if (PROFILE === 'minimal') {
+  apps = [...INFRA.slice(0, 1), ...DAEMONS_STANDARD.slice(0, 1)];
+} else if (PROFILE === 'standard') {
+  apps = [...INFRA, ...DAEMONS_STANDARD, ...BOTS];
+} else {
+  apps = [...INFRA, ...DAEMONS_STANDARD, ...DAEMONS_FULL, ...BOTS];
+}
+
+// Common settings for all apps
+apps = apps.map(app => ({
+  ...app,
+  autorestart: true,
+  watch: false,
+  merge_logs: true,
+  log_date_format: 'YYYY-MM-DD HH:mm:ss',
+  error_file: path.join(ROOT, '.mekong', 'logs', `${app.name}-error.log`),
+  out_file: path.join(ROOT, '.mekong', 'logs', `${app.name}-out.log`),
+}));
+
+module.exports = { apps };
