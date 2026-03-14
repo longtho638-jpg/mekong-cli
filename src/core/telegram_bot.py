@@ -60,6 +60,9 @@ HELP_TEXT = """🦞 *Tôm Hùm — Telegram Commander*
 *Operations:*
 /status — System health
 /schedule — View scheduled jobs
+/heartbeat — HEARTBEAT scheduler tasks
+/alerts — Recent Jidoka alerts
+/health — Platform health (PM2)
 /memory — Recent 5 executions
 /help — This help message
 
@@ -180,6 +183,11 @@ class MekongBot:
 
         # AGI commands
         self._application.add_handler(CommandHandler("agi", self.agi_handler))
+
+        # HEARTBEAT & Jidoka commands (Session 9)
+        self._application.add_handler(CommandHandler("heartbeat", self.heartbeat_handler))
+        self._application.add_handler(CommandHandler("alerts", self.alerts_handler))
+        self._application.add_handler(CommandHandler("health", self.health_handler))
 
         # NLP: catch ALL non-command text messages
         self._application.add_handler(
@@ -626,6 +634,50 @@ class MekongBot:
             icon = "✅" if e.status == "success" else "❌"
             lines.append(f"{icon} {e.goal[:30]} — {e.status}")
         await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
+
+    async def heartbeat_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle /heartbeat — show next scheduled tasks."""
+        from src.daemon.heartbeat_scheduler import HeartbeatScheduler
+        scheduler = HeartbeatScheduler()
+        lines = ["📋 *HEARTBEAT Schedule*\n"]
+        for ws_name, hb_path in scheduler.discover_heartbeats():
+            tasks = scheduler.parse_heartbeat(ws_name, hb_path)
+            lines.append(f"*{ws_name}*: {len(tasks)} tasks")
+            for t in tasks[:5]:
+                interval = f"{t.interval_minutes}m" if t.interval_minutes < 1440 else f"{t.interval_minutes // 1440}d"
+                lines.append(f"  [{interval}] {t.description}")
+        await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
+
+    async def alerts_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle /alerts — show recent Jidoka alerts."""
+        alert_file = Path(".mekong/jidoka-alerts.log")
+        if not alert_file.exists():
+            await update.message.reply_text("✅ No alerts")
+            return
+        lines = alert_file.read_text().strip().split("\n")
+        recent = lines[-10:] if len(lines) > 10 else lines
+        await update.message.reply_text("🚨 *Recent Alerts*\n\n" + "\n".join(recent), parse_mode="Markdown")
+
+    async def health_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        """Handle /health — show platform health via PM2."""
+        import subprocess
+        result = subprocess.run(["pm2", "jlist"], capture_output=True, text=True)
+        if result.returncode != 0:
+            await update.message.reply_text("⚠️ PM2 not running")
+            return
+        import json
+        try:
+            procs = json.loads(result.stdout)
+            lines = ["🏥 *Platform Health*\n"]
+            for p in procs:
+                name = p.get("name", "?")
+                status = p.get("pm2_env", {}).get("status", "?")
+                emoji = "✅" if status == "online" else "❌" if status == "errored" else "⏸"
+                mem_mb = p.get("monit", {}).get("memory", 0) / 1024 / 1024
+                lines.append(f"{emoji} {name}: {status} ({mem_mb:.0f}MB)")
+            await update.message.reply_text("\n".join(lines), parse_mode="Markdown")
+        except Exception:
+            await update.message.reply_text("⚠️ Cannot parse PM2 status")
 
     async def help_handler(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         """Handle /help — show available commands."""
