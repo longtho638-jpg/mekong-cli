@@ -13,6 +13,11 @@ from .journal import LearningJournal
 from .dlq import DeadLetterQueue
 from .scheduler import DaemonScheduler
 
+# Session 11: Multi-Agent Orchestration
+from .worker_pool import WorkerPool, WorkerInfo, WorkerState
+from .task_router import TaskRouter, Task, TaskPriority, TaskStatus
+from .dispatcher import Dispatcher, DispatchResult, LoadBalanceStrategy
+
 __all__ = [
     "TaskWatcher",
     "ComplexityClassifier",
@@ -21,4 +26,15 @@ __all__ = [
     "LearningJournal",
     "DeadLetterQueue",
     "DaemonScheduler",
+    # Session 11 exports
+    "WorkerPool",
+    "WorkerInfo",
+    "WorkerState",
+    "TaskRouter",
+    "Task",
+    "TaskPriority",
+    "TaskStatus",
+    "Dispatcher",
+    "DispatchResult",
+    "LoadBalanceStrategy",
 ]
