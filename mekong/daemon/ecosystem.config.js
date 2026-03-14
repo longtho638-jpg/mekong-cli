@@ -48,6 +48,15 @@ const DAEMONS_STANDARD = [
     max_memory_restart: '100M',
     cron_restart: '0 */6 * * *',
   },
+  {
+    name: 'mission-control',
+    script: 'python3',
+    args: '-c "from src.daemon.mission_control import get_status_summary; import json; print(json.dumps(get_status_summary(), indent=2))"',
+    cwd: ROOT,
+    max_memory_restart: '100M',
+    cron_restart: '0 */5 * * *',  // Update every 5 minutes
+    env: { PYTHONPATH: ROOT },
+  },
 ];
 
 const DAEMONS_FULL = [

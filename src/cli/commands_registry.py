@@ -108,3 +108,7 @@ def register_all_commands(app: typer.Typer) -> None:
     # Schedule commands (HEARTBEAT)
     from src.cli.schedule_commands import app as heartbeat_app
     app.add_typer(heartbeat_app, name="heartbeat", help="HEARTBEAT: schedule tasks from HEARTBEAT.md")
+
+    # Daemon commands (Mission Control)
+    from src.cli.daemon_commands import app as daemon_app
+    app.add_typer(daemon_app, name="daemon", help="Daemon: monitor and manage daemon army")
