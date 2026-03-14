@@ -49,7 +49,7 @@ def platform_up(
         console.print(f"[bold green]✅ Platform started (profile: {profile})[/bold green]")
         platform_ps()
     else:
-        console.print(f"[bold red]❌ Failed to start platform[/bold red]")
+        console.print("[bold red]❌ Failed to start platform[/bold red]")
         console.print(result.stderr)
         console.print("\n[dim]Is PM2 installed? Run: npm install -g pm2[/dim]")
 

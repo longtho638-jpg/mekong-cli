@@ -11,6 +11,7 @@ from rich.table import Table
 console = Console()
 
 schedule_app = typer.Typer(help="Schedule: autonomous recurring missions")
+app = typer.Typer()  # For HEARTBEAT commands
 
 
 @schedule_app.command(name="list")
@@ -91,3 +92,45 @@ def schedule_remove(
     else:
         console.print(f"[bold red]Job {job_id} not found.[/bold red]")
         raise typer.Exit(code=1)
+
+
+# HEARTBEAT Scheduler commands (Session 7)
+@app.command("heartbeat-list")
+def heartbeat_list() -> None:
+    """List all scheduled tasks from HEARTBEAT.md."""
+    from src.daemon.heartbeat_scheduler import HeartbeatScheduler
+    scheduler = HeartbeatScheduler()
+
+    table = Table(title="📋 Scheduled Tasks")
+    table.add_column("Workspace")
+    table.add_column("Task")
+    table.add_column("Interval")
+    table.add_column("Command")
+    table.add_column("Tier")
+
+    for ws_name, hb_path in scheduler.discover_heartbeats():
+        tasks = scheduler.parse_heartbeat(ws_name, hb_path)
+        for t in tasks:
+            interval = f"{t.interval_minutes}m" if t.interval_minutes < 1440 else f"{t.interval_minutes // 1440}d"
+            table.add_row(ws_name, t.description, interval, t.command or "(LLM)", f"T{t.tier}")
+
+    console.print(table)
+
+
+@app.command("heartbeat-test")
+def heartbeat_test(task_name: str = typer.Argument(..., help="Task description to test")) -> None:
+    """Test-run a scheduled task immediately."""
+    import asyncio
+    from src.daemon.heartbeat_scheduler import HeartbeatScheduler
+    scheduler = HeartbeatScheduler()
+
+    for ws_name, hb_path in scheduler.discover_heartbeats():
+        tasks = scheduler.parse_heartbeat(ws_name, hb_path)
+        for t in tasks:
+            if task_name.lower() in t.description.lower():
+                console.print(f"[cyan]Testing: {t.description}[/cyan]")
+                result = asyncio.run(scheduler.execute_task(t))
+                console.print(f"[{'green' if result else 'red'}]Result: {'OK' if result else 'FAILED'}[/{'green' if result else 'red'}]")
+                return
+
+    console.print(f"[red]Task not found: {task_name}[/red]")

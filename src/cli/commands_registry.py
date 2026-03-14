@@ -104,3 +104,7 @@ def register_all_commands(app: typer.Typer) -> None:
     app.command("ps")(platform_ps)
     app.command("logs")(platform_logs)
     app.command("restart")(platform_restart)
+
+    # Schedule commands (HEARTBEAT)
+    from src.cli.schedule_commands import app as heartbeat_app
+    app.add_typer(heartbeat_app, name="heartbeat", help="HEARTBEAT: schedule tasks from HEARTBEAT.md")
