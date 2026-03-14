@@ -526,6 +526,49 @@ Serverless PEV engine running on Cloudflare Workers, exposing core Mekong functi
 
 **Deployment:** `wrangler deploy` from `packages/mekong-engine/`. Bindings (D1, KV, AI) configured in `wrangler.toml`.
 
+### 2.14 Dashboard App (`apps/dashboard/`)
+
+Single-page analytics dashboard for monitoring onboarding metrics and user engagement. Built with modern frontend stack.
+
+**Stack:**
+- **Runtime:** Vite (dev) / Static hosting (prod)
+- **Framework:** React 19 + React Router v7
+- **Styling:** Tailwind CSS v4
+- **Charting:** Recharts (charts, funnels, tables)
+- **Language:** TypeScript 5.6
+- **Deployment:** Cloudflare Pages / `wrangler pages deploy`
+
+**Features:**
+1. **Onboarding Analytics** (`/onboarding/analytics`) — Comprehensive user journey metrics
+   - Funnel chart: Step-by-step conversion visualization
+   - Conversion metrics: Stage-wise conversion rates with trends
+   - Drop-off analysis: Identify abandonment points
+   - Time-to-complete: Distribution of onboarding duration
+   - Cohort analysis: Daily/weekly/monthly retention metrics
+2. **Time Period Controls** — 30/60/90-day lookback windows
+3. **Real-time Data** — Parallel API calls for efficient loading
+
+**API Client** (`lib/analytics-client.ts`):
+- Type-safe endpoints for analytics queries
+- Async data fetching with error handling
+- Support for multiple time periods and cohort groupings
+
+**Build & Deploy:**
+```bash
+# Development
+cd apps/dashboard && npm run dev
+
+# Production build
+npm run build && npm run deploy
+```
+
+**Endpoints Consumed:**
+- `GET /analytics/funnel` — User conversion funnel data
+- `GET /analytics/conversion-rates` — Stage conversion percentages
+- `GET /analytics/dropoffs` — Abandonment point analysis
+- `GET /analytics/time-to-complete` — Duration metrics
+- `GET /analytics/cohorts` — Cohort retention data
+
 ## 3. Data Flow
 
 ### Full PEV Pipeline

@@ -89,7 +89,7 @@ Mekong CLI is building the **de facto standard for AI-powered agent orchestratio
 
 ## v3.2 — Dashboard & Web UI
 
-**Target:** Q3 2026 | **Status:** Backlog
+**Target:** Q3 2026 | **Status:** In Progress
 
 ### Goals
 
@@ -100,11 +100,22 @@ Mekong CLI is building the **de facto standard for AI-powered agent orchestratio
 
 ### Features
 
-- [ ] Next.js-based dashboard (open source)
-- [ ] Drag-and-drop recipe builder
+- [x] **Onboarding Analytics** (Phase 5 - 2026-03-14) — Funnel chart, conversion metrics, drop-off analysis, time-to-complete, cohort table
+- [ ] Mission monitoring dashboard
+- [ ] Credit allocation interface
+- [ ] Recipe Editor — Drag-and-drop workflow designer
 - [ ] Real-time WebSocket updates
 - [ ] Dark mode support
 - [ ] Role-based access control (RBAC)
+
+### Completed Phase (2026-03-14)
+
+**Phase 5: Onboarding Analytics UI**
+- Vite + React 19 app at `apps/dashboard/`
+- Analytics page with 5 visualization components
+- Type-safe API integration with backend
+- Responsive Tailwind CSS v4 design
+- Support for 30/60/90-day time periods
 
 ### Success Criteria
 
