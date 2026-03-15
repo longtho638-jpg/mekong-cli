@@ -26,6 +26,7 @@ from src.cli.memory_commands import memory_app
 from src.cli.autonomous_commands import register_agi_commands
 from src.cli.studio_commands import register_studio_commands
 from src.cli.pev_commands import pev_app
+from src.cli.setup_wizard import app as setup_app
 
 app = typer.Typer(
     name="mekong",
@@ -50,6 +51,7 @@ app.add_typer(swarm_app, name="swarm")
 app.add_typer(schedule_app, name="schedule")
 app.add_typer(memory_app, name="memory")
 app.add_typer(pev_app, name="pev")
+app.add_typer(setup_app, name="setup")
 
 console = Console()
 

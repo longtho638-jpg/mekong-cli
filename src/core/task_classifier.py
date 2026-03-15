@@ -95,7 +95,7 @@ def _count_signals(goal_lower: str, keywords: list[str]) -> int:
     return sum(1 for kw in keywords if kw in goal_lower)
 
 
-def _detect_domain(goal_lower: str) -> str:
+def _detect_domain(goal_lower: str) -> Literal["code", "creative", "ops", "analysis", "sales", "support"]:
     """Step 1: Detect domain from goal keywords."""
     scores = {
         domain: _count_signals(goal_lower, keywords)
@@ -107,7 +107,7 @@ def _detect_domain(goal_lower: str) -> str:
     return best
 
 
-def _assign_agent(goal_lower: str, domain: str) -> str:
+def _assign_agent(goal_lower: str, domain: str) -> Literal["cto", "cmo", "coo", "cfo", "cs", "sales", "editor", "data"]:
     """Step 2: Assign agent role with override rules."""
     agent = DOMAIN_TO_AGENT.get(domain, "cto")
 
@@ -185,7 +185,7 @@ def _detect_creativity(goal_lower: str, domain: str) -> bool:
     return any(kw in goal_lower for kw in creativity_kws)
 
 
-def _detect_sensitivity(goal_lower: str) -> str:
+def _detect_sensitivity(goal_lower: str) -> Literal["public", "internal", "sensitive"]:
     """Step 5: Detect data sensitivity level."""
     for kw in SENSITIVITY_KEYWORDS["sensitive"]:
         if kw in goal_lower:
@@ -200,7 +200,7 @@ def _determine_tier(
     complexity: str,
     data_sensitivity: str,
     requires_reasoning: bool,
-) -> str:
+) -> Literal["local", "api_cheap", "api_mid", "api_best"]:
     """Determine preferred model tier."""
     if data_sensitivity == "sensitive":
         return "local"

@@ -5,7 +5,26 @@
 Describe your goal → AI plans → executes → verifies → delivers results.
 319 commands • 463 skills • 410 contracts • 5 business layers.
 
-## Quick Start
+[![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-6.0.0-green)](VERSION)
+[![Downloads](https://img.shields.io/pypi/dm/mekong-cli.svg)](https://pypi.org/project/mekong-cli/)
+
+## Installation
+
+### Prerequisites
+- Python 3.9+
+- Node.js 18+ (for certain features)
+- Git
+
+### Quick Installation
+
+```bash
+# Install via pip
+pip install mekong-cli
+
+# Or install with optional dependencies
+pip install mekong-cli[full]
+```
 
 ### With API key (OpenRouter / Qwen / DeepSeek / any provider):
 
@@ -33,6 +52,72 @@ mekong cook "Create a Python calculator"
 mekong annual "2026 business plan"
 mekong founder:raise "Pre-seed for AI platform"   # 8 agents parallel
 mekong founder:validate-sprint "Is this investable?"  # PMF verdict in 25 min
+```
+
+## Pricing Tiers
+
+| Feature | FREE | PRO ($49/mo) | ENTERPRISE ($499/mo) |
+|---------|------|-------------|---------------------|
+| Trades/day | 5 | Unlimited | Unlimited |
+| Signals/day | 3 | Unlimited | Unlimited |
+| API calls/day | 100 | 10,000 | 100,000 |
+| Strategies | Basic RSI+SMA | All built-in | Custom + private |
+| Self-healing | — | Standard | Priority + SLA |
+| Support | Community | Email | Dedicated |
+| Max Concurrent Steps | 1 | 4 | 16 |
+| Parallel Execution | No | Yes | Yes |
+| DAG Scheduling | No | Yes | Yes |
+| Custom Agents | No | No | Yes |
+| Priority Queue | No | No | Yes |
+| Task Profiles | Simple only | All profiles | All profiles + custom |
+
+## Feature Comparison Matrix
+
+| Category | Feature | FREE | PRO | ENTERPRISE |
+|----------|---------|------|-----|------------|
+| **Execution** | Parallel Execution | ❌ | ✅ | ✅ |
+| | DAG Scheduling | ❌ | ✅ | ✅ |
+| | Max Concurrent Steps | 1 | 4 | 16 |
+| | Task Profiles | Simple only | All profiles | All profiles + custom |
+| **Agents** | Custom Agents | ❌ | ❌ | ✅ |
+| | Priority Queue | ❌ | ❌ | ✅ |
+| | Swarm Mode | ❌ | ❌ | ✅ |
+| **Development** | Self-Healing | ❌ | ✅ | ✅ |
+| | All Built-in Strategies | ❌ | ✅ | ✅ |
+| | Custom/Private Strategies | ❌ | ❌ | ✅ |
+| **Support** | Response Time | Community | <24h | <4h |
+| | Dedicated Support | ❌ | ❌ | ✅ |
+| | SLA | ❌ | ❌ | ✅ |
+
+## Quick Start Guide
+
+### 1. Setup Wizard
+
+```bash
+mekong setup
+# Follow the interactive setup wizard to configure your environment
+```
+
+### 2. First Command
+
+```bash
+mekong cook "Create a simple web application with React and Express"
+```
+
+### 3. Check License Status
+
+```bash
+mekong license validate
+# Or to see usage stats:
+mekong license status
+```
+
+### 4. Upgrade Your Tier
+
+```bash
+# Activate PRO tier
+export RAAS_LICENSE_KEY=your-license-key
+mekong cook "Deploy production API"
 ```
 
 ## 5 Business Layers
@@ -85,23 +170,6 @@ Plan → Execute → Verify
 - **Self-healing**: Failed steps auto-diagnosed and corrected
 - **ROIaaS**: License gating + usage metering + billing
 
-## Pricing Tiers
-
-| Feature | FREE | PRO ($49/mo) | ENTERPRISE ($499/mo) |
-|---------|------|-------------|---------------------|
-| Trades/day | 5 | Unlimited | Unlimited |
-| Signals/day | 3 | Unlimited | Unlimited |
-| API calls/day | 100 | 10,000 | 100,000 |
-| Strategies | Basic RSI+SMA | All built-in | Custom + private |
-| Self-healing | — | Standard | Priority + SLA |
-| Support | Community | Email | Dedicated |
-
-```bash
-# Activate PRO tier
-export RAAS_LICENSE_KEY=your-license-key
-mekong cook "Deploy production API"
-```
-
 ## Deploy
 
 All infrastructure runs on Cloudflare ($0 base cost):
@@ -147,6 +215,17 @@ Three-party orchestration: **VC + Expert + Founder**, powered by OpenClaw.
 ├── mekong/                # Namespace (skills, adapters, config)
 └── reports/               # Self-dogfood analysis (242 reports)
 ```
+
+## Documentation
+
+For comprehensive documentation, see the following resources:
+
+- [Getting Started Guide](docs/getting-started.md) - Quick start guide for new users
+- [Command Reference](docs/command-reference.md) - Complete list of available commands
+- [API Documentation](docs/api-reference.md) - API endpoints and usage
+- [Pricing Information](docs/pricing.md) - Detailed pricing tiers and features
+
+For license-related API endpoints, see [docs/api-reference.md](docs/api-reference.md).
 
 ## Contributing
 

@@ -26,7 +26,7 @@ class RateLimitConfig:
     burst_size: Optional[int] = None  # Token bucket burst size (default = rpm)
     window_seconds: Optional[int] = None  # Time window in seconds (default: 60)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.burst_size is None:
             self.burst_size = self.requests_per_minute
         if self.window_seconds is None:
@@ -44,7 +44,7 @@ class TierRateLimitConfig:
 
 
 # Default tier configurations
-DEFAULT_TIER_CONFIGS: dict[str, TierRateLimitConfig] = {
+DEFAULT_TIER_CONFIGS: dict[Tier, TierRateLimitConfig] = {
     Tier.FREE: TierRateLimitConfig(
         tier=Tier.FREE,
         auth_login=RateLimitConfig(requests_per_minute=5, burst_size=5),
