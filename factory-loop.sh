@@ -173,8 +173,8 @@ BUSINESS_CMDS=(
 
 # 🎯 Product commands — plan & roadmap (falls through to engineering)
 PRODUCT_CMDS=(
-  "/plan"
-  "/design-sprint"
+  "/product-discovery"
+  "/product-sprint-plan"
 )
 
 # Combine all into rotation — top layers first
