@@ -12,6 +12,12 @@ PANES=(0 1)
 PANE_PROJECTS=("sophia-proposal" "well")
 SLEEP_INTERVAL=120
 
+# Full project context — CC CLI sees this in <goal>$ARGUMENTS</goal>
+PANE_CONTEXT=(
+  "sophia-proposal — Thư mục: apps/sophia-proposal — Repo: sophia-ai-factory.git — Stack: Next.js + FastAPI — Dự án: Sophia AI Video Factory"
+  "well — Thư mục: apps/well — Repo: Well.git — Stack: Next.js + Supabase — Dự án: WellNexus Healthcare B2B"
+)
+
 # ═══════════════════════════════════════════════════════════════
 # STUDIO-LEVEL COMMANDS — CTO dispatches ONLY these
 # CC CLI file: .claude/commands/studio-operate-daily.md (HYPHENS)
@@ -66,9 +72,10 @@ while true; do
       continue
     fi
 
-    # Check IDLE → ALWAYS dispatch Studio-level command
+    # Check IDLE → ALWAYS dispatch Studio-level command WITH project context
     if echo "$LAST_LINES" | grep -qE "❯|bypass permissions"; then
-      CMD="$STUDIO_DAILY $PROJECT"
+      CTX="${PANE_CONTEXT[$i]}"
+      CMD="$STUDIO_DAILY $CTX"
       echo "🏯 [P$PANE] IDLE → STUDIO DISPATCH for $PROJECT:"
       echo "   📌 $CMD"
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CMD"
