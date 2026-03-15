@@ -198,7 +198,7 @@ get_next_command() {
   echo $(( (IDX + 1) % TOTAL )) > "$IDX_FILE"
 
   # Append project context with EXPLICIT scoping + OpenClaw RaaS Quality Directive
-  echo "${CMD} [CHỈ project: ${PROJECT}] [DIR: ${DIR}] ${NAME} — KHÔNG đụng project khác. [OPENCLAW RaaS: Output PHẢI có giá trị thực tế để bán (actionable business assets), áp dụng Binh Pháp chất lượng cao, tuyệt đối không chém gió chung chung]"
+  echo "${CMD} [CHỈ project: ${PROJECT}] [DIR: ${DIR}] ${NAME} — KHÔNG đụng project khác. [OPENCLAW RaaS: Output PHẢI có giá trị thực tế để bán, áp dụng Binh Pháp. TỐI ĐA 1500 CHỮ, CHỈ tập trung vào Core Value, tuyệt đối không suy nghĩ man mác quá 2 phút, không bịa đặt dông dài]"
 }
 
 while true; do
