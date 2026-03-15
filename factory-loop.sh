@@ -197,8 +197,8 @@ get_next_command() {
   # Advance rotation
   echo $(( (IDX + 1) % TOTAL )) > "$IDX_FILE"
 
-  # Append project context with EXPLICIT scoping
-  echo "${CMD} [CHỈ project: ${PROJECT}] [DIR: ${DIR}] ${NAME} — KHÔNG đụng project khác"
+  # Append project context with EXPLICIT scoping + OpenClaw RaaS Quality Directive
+  echo "${CMD} [CHỈ project: ${PROJECT}] [DIR: ${DIR}] ${NAME} — KHÔNG đụng project khác. [OPENCLAW RaaS: Output PHẢI có giá trị thực tế để bán (actionable business assets), áp dụng Binh Pháp chất lượng cao, tuyệt đối không chém gió chung chung]"
 }
 
 while true; do
