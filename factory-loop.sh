@@ -75,7 +75,7 @@ analyze_output() {
   fi
 
   # Priority 3: Not initialized → needs bootstrap (only if no success above)
-  if echo "$OUTPUT_LOWER" | grep -qE "not initialized|does not exist|missing|not configured|no studio found"; then
+  if echo "$OUTPUT_LOWER" | grep -qE "not initialized|does not exist|not configured|no studio found|missing portfolio|missing studio"; then
     echo "bootstrap"
     return
   fi
