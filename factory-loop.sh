@@ -1,9 +1,10 @@
 #!/bin/bash
-# FACTORY LOOP v10.0 — CTO THƯỢNG TẦNG: VC-LEVEL DISPATCH
+# FACTORY LOOP v11.0 — CTO THƯỢNG TẦNG: CASCADE LOGIC + VC-LEVEL DISPATCH
 # CTO dispatches REAL VC/Studio/Founder/Business commands from mekong CLI.
 # Commands defined in .claude/commands/ — CC CLI executes via DAG recipes.
 # 5 Business Layers: Founder → Business → Product → Engineering → Ops
 # CTO NEVER dispatches /cook. That's layer 4/5. CTO dispatches layer 1-3.
+# CASCADE LOGIC: Reads CC CLI output, chains commands logically (bootstrap→operate)
 # Date: 2026-03-15 | agencyos.network architecture
 set -euo pipefail
 
@@ -14,9 +15,117 @@ PANE_DIRS=("apps/sophia-proposal" "apps/well")
 PANE_NAMES=("Sophia AI Video Factory" "WellNexus Healthcare B2B")
 SLEEP_INTERVAL=120
 
-echo "🏭 FACTORY v10.0 — VC-LEVEL CTO — $(date) — PID: $$"
-echo "👑 CTO dispatches Founder/Studio/Business commands — NEVER /cook"
+# CASCADE STATE FILES
+PANE_STATE_DIR="/tmp/pane_state"
+mkdir -p "$PANE_STATE_DIR"
+
+echo "🏭 FACTORY v11.0 — CASCADE CTO — $(date) — PID: $$"
+echo "👑 CTO reads output, chains commands (bootstrap→operate)"
 echo "🏛️ P0=${PANE_PROJECTS[0]}, P1=${PANE_PROJECTS[1]}"
+
+# ═══════════════════════════════════════════════════════════════
+# CASCADE LOGIC — Reads output, chains commands
+# ═══════════════════════════════════════════════════════════════
+
+# Cascade state per pane: tracks what needs to happen next
+# Values: "needs_bootstrap" | "needs_portfolio" | "ready_operate" | "needs_fix"
+
+get_pane_state() {
+  local PANE=$1
+  local STATE_FILE="$PANE_STATE_DIR/pane_${PANE}_state"
+  cat "$STATE_FILE" 2>/dev/null || echo "ready_operate"
+}
+
+set_pane_state() {
+  local PANE=$1
+  local STATE=$2
+  echo "$STATE" > "$PANE_STATE_DIR/pane_${PANE}_state"
+}
+
+# Analyze last 45 lines for cascade triggers
+# Returns: "bootstrap" | "portfolio" | "fix" | "continue" | "error"
+analyze_output() {
+  local OUTPUT="$1"
+  local OUTPUT_LOWER=$(echo "$OUTPUT" | tr '[:upper:]' '[:lower:]')
+
+  # Priority 1: Critical errors → needs fix
+  if echo "$OUTPUT_LOWER" | grep -qE "error:|failed:|exception|traceback|crashed|fatal:"; then
+    echo "fix"
+    return
+  fi
+
+  # Priority 2: Not initialized → needs bootstrap
+  if echo "$OUTPUT_LOWER" | grep -qE "not initialized|not found|empty|no studio|no portfolio|does not exist|missing|not configured"; then
+    echo "bootstrap"
+    return
+  fi
+
+  # Priority 3: Success signals → can continue to next
+  if echo "$OUTPUT_LOWER" | grep -qE "success|completed|saved|created|done|finished|launched|deployed|ready"; then
+    echo "continue"
+    return
+  fi
+
+  # Default: unknown → continue rotation
+  echo "continue"
+}
+
+# Get cascade command based on state and output analysis
+get_cascade_command() {
+  local PANE=$1
+  local PROJECT=$2
+  local DIR=$3
+  local NAME=$4
+  local OUTPUT="$5"
+
+  local CURRENT_STATE=$(get_pane_state "$PANE")
+  local ANALYSIS=$(analyze_output "$OUTPUT")
+
+  # Log analysis
+  echo "   📊 State='$CURRENT_STATE' Analysis='$ANALYSIS'"
+
+  # OVERRIDE: If analysis says fix/bootstrap, do it regardless of state
+  if [ "$ANALYSIS" = "fix" ]; then
+    set_pane_state "$PANE" "needs_fix"
+    echo "/cook Fix errors in $NAME — Thư mục: ${DIR}"
+    return
+  fi
+
+  if [ "$ANALYSIS" = "bootstrap" ]; then
+    set_pane_state "$PANE" "needs_bootstrap"
+    echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+    return
+  fi
+
+  # State machine: chain commands logically
+  case "$CURRENT_STATE" in
+    "needs_bootstrap")
+      # Just set bootstrap, next iteration will check output
+      set_pane_state "$PANE" "needs_portfolio"
+      echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+      ;;
+    "needs_portfolio")
+      # Check if bootstrap succeeded
+      if echo "$OUTPUT" | grep -qE "success|completed|saved"; then
+        set_pane_state "$PANE" "ready_operate"
+        echo "/portfolio-create $NAME — Thư mục: ${DIR}"
+      else
+        # Bootstrap failed, retry
+        echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+      fi
+      ;;
+    "ready_operate")
+      # Normal operation mode — use rotation
+      local ROTATION_CMD=$(get_next_command "$PANE" "$PROJECT" "$DIR" "$NAME")
+      echo "$ROTATION_CMD"
+      ;;
+    *)
+      # Unknown state → bootstrap first
+      set_pane_state "$PANE" "needs_bootstrap"
+      echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+      ;;
+  esac
+}
 
 # ═══════════════════════════════════════════════════════════════
 # THƯỢNG TẦNG COMMAND ROTATION — VC/Studio/Founder/Business
@@ -127,7 +236,7 @@ while true; do
       continue
     fi
 
-    # TRULY IDLE → dispatch VC-level command
+    # TRULY IDLE → dispatch VC-level command with cascade logic
     if echo "$LAST_5" | grep -qE "❯|bypass permissions"; then
       COOLDOWN_FILE="/tmp/cto_cooldown_P${PANE}"
       NOW=$(date +%s)
@@ -139,20 +248,30 @@ while true; do
         continue
       fi
 
-      CMD=$(get_next_command "$PANE" "$PROJECT" "$DIR" "$NAME")
+      # CASCADE LOGIC: Read last 45 lines, analyze, chain commands
+      CASCADE_CMD=$(get_cascade_command "$PANE" "$PROJECT" "$DIR" "$NAME" "$LAST_45")
+
+      # Determine layer for logging
       LAYER="?"
-      case "$CMD" in
+      case "$CASCADE_CMD" in
         /studio*|/portfolio*) LAYER="🏯 Studio" ;;
         /founder*|/venture*) LAYER="👑 Founder" ;;
         /business*|/sales*|/marketing*) LAYER="💼 Business" ;;
         /plan*|/design*) LAYER="🎯 Product" ;;
-        *) LAYER="👑 Founder" ;;
+        /cook*) LAYER="⚙️ Engineering (fix)" ;;
+        *) LAYER="🏯 Studio" ;;
       esac
 
-      echo "$LAYER [P$PANE] DISPATCHING for $PROJECT:"
-      echo "   📌 $CMD"
+      # Log cascade decision
+      echo "$LAYER [P$PANE] CASCADE DISPATCH for $PROJECT:"
+      echo "   📌 $CASCADE_CMD"
 
-      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CMD"
+      # Log output snippet that triggered this decision (first 10 lines)
+      echo "   📄 Output snippet:"
+      echo "$LAST_45" | head -n 10 | sed 's/^/      /'
+      echo "      ..."
+
+      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CASCADE_CMD"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
       echo "$NOW" > "$COOLDOWN_FILE"
