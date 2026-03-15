@@ -101,13 +101,13 @@ get_cascade_command() {
   # OVERRIDE: If analysis says fix/bootstrap, do it regardless of state
   if [ "$ANALYSIS" = "fix" ]; then
     set_pane_state "$PANE" "needs_fix"
-    echo "/cook Fix errors in $NAME — Thư mục: ${DIR}"
+    echo "/cook [CHỈ project: ${PROJECT}] [DIR: ${DIR}] Fix errors in $NAME — KHÔNG đụng project khác"
     return
   fi
 
   if [ "$ANALYSIS" = "bootstrap" ]; then
     set_pane_state "$PANE" "needs_bootstrap"
-    echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+    echo "/studio-bootstrap [CHỈ project: ${PROJECT}] [DIR: ${DIR}] $NAME — KHÔNG đụng project khác"
     return
   fi
 
@@ -116,16 +116,16 @@ get_cascade_command() {
     "needs_bootstrap")
       # Just set bootstrap, next iteration will check output
       set_pane_state "$PANE" "needs_portfolio"
-      echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+      echo "/studio-bootstrap [CHỈ project: ${PROJECT}] [DIR: ${DIR}] $NAME — KHÔNG đụng project khác"
       ;;
     "needs_portfolio")
       # Check if bootstrap succeeded
       if echo "$OUTPUT" | grep -qE "success|completed|saved"; then
         set_pane_state "$PANE" "ready_operate"
-        echo "/portfolio-create $NAME — Thư mục: ${DIR}"
+        echo "/portfolio-create [CHỈ project: ${PROJECT}] [DIR: ${DIR}] $NAME — KHÔNG đụng project khác"
       else
         # Bootstrap failed, retry
-        echo "/studio-bootstrap $NAME — Thư mục: ${DIR}"
+        echo "/studio-bootstrap [CHỈ project: ${PROJECT}] [DIR: ${DIR}] $NAME — KHÔNG đụng project khác"
       fi
       ;;
     "ready_operate")
@@ -197,8 +197,8 @@ get_next_command() {
   # Advance rotation
   echo $(( (IDX + 1) % TOTAL )) > "$IDX_FILE"
 
-  # Append project context as argument
-  echo "${CMD} ${NAME} — Thư mục: ${DIR}"
+  # Append project context with EXPLICIT scoping
+  echo "${CMD} [CHỈ project: ${PROJECT}] [DIR: ${DIR}] ${NAME} — KHÔNG đụng project khác"
 }
 
 while true; do
