@@ -244,10 +244,15 @@ while true; do
       continue
     fi
 
-    # JUST FINISHED
-    if echo "$LAST_45" | grep -qE "✅ Done|completed|✔|git commit|git push|All tests pass|Build succeeded"; then
-      echo "🏁 [P$PANE] JUST FINISHED — cooldown"
-      continue
+    # JUST FINISHED — check LAST 5 lines only (same as WORKING)
+    if echo "$LAST_5" | grep -qE "✅ Done|✔|Sautéed for|Brewed for|Baked for|Cogitated for|Crunched for"; then
+      # Only if pane is at prompt (idle after finishing)
+      if echo "$LAST_5" | grep -qE "❯"; then
+        : # Not truly just-finished, it's idle — fall through to dispatch
+      else
+        echo "🏁 [P$PANE] JUST FINISHED — cooldown"
+        continue
+      fi
     fi
 
     # TRULY IDLE → dispatch VC-level command with cascade logic
@@ -262,16 +267,16 @@ while true; do
         continue
       fi
 
-      # Save current output for chaining (A→B)
+      # Save current output for chaining (A→B) — CC CLI reads from file
       save_pane_output "$PANE" "$LAST_45"
 
-      # CASCADE LOGIC: Read last 45 lines, analyze, chain commands
+      # CASCADE LOGIC: analyze + get command
       CASCADE_CMD=$(get_cascade_command "$PANE" "$PROJECT" "$DIR" "$NAME" "$LAST_45" 2>/dev/null)
 
-      # Get previous output summary (one line) for inline context
-      PREV_SUMMARY=$(get_prev_output "$PANE" | tr '\n' ' | ' | head -c 300)
+      # Save context file for CC CLI to reference
+      echo "$LAST_45" | grep -v "^$" | grep -v "^─" | grep -v "bypass" | grep -v "qwen" | tail -15 > "/tmp/cto_context_P${PANE}.txt"
 
-      # Determine layer for logging
+      # Determine layer
       LAYER="?"
       case "$CASCADE_CMD" in
         /studio*|/portfolio*) LAYER="🏯 Studio" ;;
@@ -285,12 +290,9 @@ while true; do
       echo "$LAYER [P$PANE] CASCADE DISPATCH for $PROJECT:"
       echo "   📌 $CASCADE_CMD"
 
-      # Build SINGLE LINE: /command [CONTEXT: previous output]
-      # CC CLI sees /command FIRST → executes it with context
-      FULL_CMD="${CASCADE_CMD} [CONTEXT từ command trước: ${PREV_SUMMARY}]"
-
-      # Send as single line via send-keys
-      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$FULL_CMD"
+      # SEND CLEAN /command — NO inline context (was garbling)
+      # CC CLI gets /command as proper slash command
+      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CASCADE_CMD"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
       echo "$NOW" > "$COOLDOWN_FILE"
