@@ -1,0 +1,20 @@
+{
+  "mode": "autonomous",
+  "target": "multi-project",
+  "dispatch": {
+    "enabled": true,
+    "engine": "mekong",
+    "max_parallel": 4,
+    "mcu_per_task": 1
+  },
+  "monitoring": {
+    "health_check_interval": 60,
+    "auto_restart": true
+  },
+  "projects": {
+    "mekong-cli": { "enabled": true, "priority": "P0" },
+    "sophia-proposal": { "enabled": true, "priority": "P1" },
+    "algo-trader": { "enabled": true, "priority": "P1" },
+    "well": { "enabled": true, "priority": "P2" }
+  }
+}

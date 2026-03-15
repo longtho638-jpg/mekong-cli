@@ -80,8 +80,9 @@ def api() -> None:
         return
 
     # Provider info
-    console.print(f"[bold]Base URL:[/bold] {llm_client.base_url}")
+    console.print(f"[bold]Proxy URL:[/bold] {llm_client.proxy_url or 'N/A'}")
     console.print(f"[bold]Model:[/bold] {llm_client.model}")
+    console.print(f"[bold]Mode:[/bold] {llm_client.mode}")
     console.print("[bold]Status:[/bold] [green]Connected[/green]")
 
     # Try to get provider quota info
@@ -119,29 +120,36 @@ def quota() -> None:
     )
 
     tracker = CostTracker()
-    stats = tracker.get_stats()
+    summary = tracker.get_summary()
 
     table = Table(title="Usage Statistics")
     table.add_column("Metric", style="cyan")
     table.add_column("Value", style="white")
 
-    table.add_row("Total API Calls", str(stats.get("total_calls", 0)))
-    table.add_row("Total Cost", f"${stats.get('total_cost', 0):.4f}")
-    table.add_row("Total Tokens", str(stats.get("total_tokens", 0)))
-    table.add_row("Cache Hits", str(stats.get("cache_hits", 0)))
-    table.add_row("Cache Misses", str(stats.get("cache_misses", 0)))
+    table.add_row("Total API Calls", str(summary.total_calls))
+    table.add_row("Total Cost", f"${summary.total_cost_usd:.4f}")
+    table.add_row("Total Input Tokens", str(summary.total_input_tokens))
+    table.add_row("Total Output Tokens", str(summary.total_output_tokens))
 
     console.print(table)
 
-    # Budget info
-    if hasattr(tracker, "budget_limit") and tracker.budget_limit:
-        remaining = tracker.budget_limit - stats.get("total_cost", 0)
-        pct_used = (stats.get("total_cost", 0) / tracker.budget_limit) * 100
-        console.print(
-            f"\n[bold]Budget:[/bold] ${tracker.budget_limit:.2f} | "
-            f"Used: ${stats.get('total_cost', 0):.4f} ({pct_used:.1f}%) | "
-            f"Remaining: ${remaining:.2f}"
-        )
+    # Show breakdown by model
+    if summary.by_model:
+        model_table = Table(title="Cost by Model")
+        model_table.add_column("Model", style="cyan")
+        model_table.add_column("Cost (USD)", style="white")
+        for model, cost in summary.by_model.items():
+            model_table.add_row(model, f"${cost:.6f}")
+        console.print(model_table)
+
+    # Show breakdown by provider
+    if summary.by_provider:
+        provider_table = Table(title="Cost by Provider")
+        provider_table.add_column("Provider", style="cyan")
+        provider_table.add_column("Cost (USD)", style="white")
+        for provider, cost in summary.by_provider.items():
+            provider_table.add_row(provider, f"${cost:.6f}")
+        console.print(provider_table)
 
 
 @app.command()
@@ -200,8 +208,8 @@ def health() -> None:
 
     # Check 5: Cost tracking
     tracker = CostTracker()
-    cost_stats = tracker.get_stats()
-    total_cost = cost_stats.get("total_cost", 0)
+    summary = tracker.get_summary()
+    total_cost = summary.total_cost_usd
     console.print(f"[green]✓[/green] Cost tracking active (${total_cost:.4f} total)")
 
     # Summary
