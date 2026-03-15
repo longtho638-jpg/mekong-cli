@@ -32,6 +32,7 @@ def register_all_commands(app: typer.Typer) -> None:
     from src.commands.env import app as env_app
     from src.commands.test_advanced import app as test_advanced_app
     from src.commands.sync_raas import app as sync_raas_app
+    from src.commands.usage_commands import app as usage_app
 
     # BMAD commands
     spec = importlib.util.spec_from_file_location(
@@ -61,6 +62,7 @@ def register_all_commands(app: typer.Typer) -> None:
     app.add_typer(ci_app, name="ci", help="CI/CD pipeline management")
     app.add_typer(env_app, name="env", help="Environment management")
     app.add_typer(test_advanced_app, name="test-advanced", help="Advanced testing strategies")
+    app.add_typer(usage_app, name="usage", help="Usage metering: track CLI command usage per license key")
 
     # Swarm sub-commands
     swarm_app = typer.Typer(help="Swarm: multi-node orchestration")

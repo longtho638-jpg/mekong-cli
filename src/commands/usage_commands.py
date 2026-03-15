@@ -7,9 +7,9 @@ Commands for tracking and reporting CLI command usage per license key.
 - SQLite storage (~/.mekong/raas/tenants.db)
 
 Usage:
-    mekong usage:report
-    mekong usage:report --days 30
-    mekong usage:report --json
+    mekong usage report
+    mekong usage report --days 30
+    mekong usage report --json
 """
 
 import typer
@@ -23,13 +23,13 @@ from typing import Optional
 console = Console()
 
 app = typer.Typer(
-    name="usage:report",
+    name="usage",
     help="📊 Usage tracking and reporting",
     rich_markup_mode="rich",
 )
 
 
-@app.command(name="usage:report")
+@app.command(name="report")
 def usage_report(
     days: int = typer.Option(7, "--days", "-d", help="Number of days to report"),
     json_output: bool = typer.Option(False, "--json", "-j", help="Export as JSON"),
@@ -48,10 +48,10 @@ def usage_report(
     - Free tier remaining quota
 
     Examples:
-        mekong usage:report
-        mekong usage:report --days 30
-        mekong usage:report --json
-        mekong usage:report -d 7 -l mk_your_key
+        mekong usage report
+        mekong usage report --days 30
+        mekong usage report --json
+        mekong usage report -d 7 -l mk_your_key
     """
     # Get license key
     current_license = license_key or os.getenv("RAAS_LICENSE_KEY")
@@ -146,7 +146,7 @@ def usage_report(
         raise typer.Exit(code=1)
 
 
-@app.command(name="usage:check")
+@app.command(name="check")
 def usage_check(
     license_key: Optional[str] = typer.Option(
         None, "--license", "-l",
@@ -184,7 +184,7 @@ def usage_check(
         raise typer.Exit(code=1)
 
 
-@app.command(name="usage:export")
+@app.command(name="export")
 def usage_export(
     output: str = typer.Option(
         "~/.mekong/raas/usage-export.json",
