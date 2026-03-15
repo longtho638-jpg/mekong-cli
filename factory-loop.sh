@@ -1,55 +1,81 @@
 #!/bin/bash
-# FACTORY LOOP v9.0 — SMART CTO: Reads repo, crafts actionable prompts
-# CTO reads git status + recent commits BEFORE dispatching.
-# Generates SPECIFIC, ACTIONABLE prompts — not generic slash commands.
-# Follows 6-layer pyramid: Studio→Founder→Business→Product→Engineering→Ops
-# Date: 2026-03-15
+# FACTORY LOOP v10.0 — CTO THƯỢNG TẦNG: VC-LEVEL DISPATCH
+# CTO dispatches REAL VC/Studio/Founder/Business commands from mekong CLI.
+# Commands defined in .claude/commands/ — CC CLI executes via DAG recipes.
+# 5 Business Layers: Founder → Business → Product → Engineering → Ops
+# CTO NEVER dispatches /cook. That's layer 4/5. CTO dispatches layer 1-3.
+# Date: 2026-03-15 | agencyos.network architecture
 set -euo pipefail
 
 TMUX_SESSION="tom_hum"
 PANES=(0 1)
 PANE_PROJECTS=("sophia-proposal" "well")
 PANE_DIRS=("apps/sophia-proposal" "apps/well")
-PANE_REPOS=("sophia-ai-factory.git" "Well.git")
-PANE_STACKS=("Next.js + FastAPI" "Next.js + Supabase")
 PANE_NAMES=("Sophia AI Video Factory" "WellNexus Healthcare B2B")
-MEKONG_ROOT="$HOME/mekong-cli"
 SLEEP_INTERVAL=120
 
-echo "🏭 FACTORY LOOP v9.0 — SMART CTO — $(date) — PID: $$"
-echo "🧠 CTO reads git state → crafts actionable prompts → dispatches"
+echo "🏭 FACTORY v10.0 — VC-LEVEL CTO — $(date) — PID: $$"
+echo "👑 CTO dispatches Founder/Studio/Business commands — NEVER /cook"
 echo "🏛️ P0=${PANE_PROJECTS[0]}, P1=${PANE_PROJECTS[1]}"
 
 # ═══════════════════════════════════════════════════════════════
-# SMART PROMPT GENERATOR — CTO reads repo state, builds prompt
+# THƯỢNG TẦNG COMMAND ROTATION — VC/Studio/Founder/Business
+# These are REAL .claude/commands/*.md files. CC CLI knows them.
+# Each cascades: Founder→Business→Product→Engineering→Ops
 # ═══════════════════════════════════════════════════════════════
-generate_smart_prompt() {
-  local PROJECT="$1"
-  local DIR="$2"
-  local REPO="$3"
-  local STACK="$4"
-  local NAME="$5"
-  local PROJECT_PATH="$MEKONG_ROOT/$DIR"
 
-  # CTO reads project state (Studio/Founder/Product thinking)
-  local HIEN_PHAP_PHASE="GATE"
-  if [ -d "$PROJECT_PATH" ]; then
-    if [ -f "$PROJECT_PATH/lib/raas-gate.ts" ] || [ -f "$PROJECT_PATH/src/lib/raas-gate.ts" ]; then
-      HIEN_PHAP_PHASE="LICENSE_UI"
-    fi
-    if ls "$PROJECT_PATH"/src/*license* 2>/dev/null | grep -q .; then
-      HIEN_PHAP_PHASE="WEBHOOK"
-    fi
-  fi
+# 🏯 Studio commands — highest level, portfolio-wide
+STUDIO_CMDS=(
+  "/studio-operate-daily"
+  "/studio-sprint-weekly"
+  "/portfolio-status"
+  "/portfolio-report"
+)
 
-  local GIT_LAST=""
-  if [ -d "$PROJECT_PATH" ]; then
-    GIT_LAST=$(cd "$PROJECT_PATH" && git log --oneline -1 2>/dev/null || echo "no commits")
-  fi
+# 👑 Founder commands — strategy & fundraise
+FOUNDER_CMDS=(
+  "/founder-validate"
+  "/venture-thesis"
+  "/venture-terrain"
+  "/venture-momentum"
+  "/venture-five-factors"
+)
 
-  # CTO crafts a ONE-LINE /cook command with all context
-  # CC CLI recognizes /cook → runs its PEV pipeline (Scan→Classify→Execute→Verify)
-  echo "/cook \"[DỰ ÁN: $NAME] [THƯ MỤC: $DIR] [STACK: $STACK] [PHASE: $HIEN_PHAP_PHASE] [COMMIT GẦN NHẤT: $GIT_LAST] ĐỌC ~/mekong-cli/CLAUDE.md VÀ ~/mekong-cli/HIEN-PHAP-ROIAAS.md TRƯỚC. Sau đó: (1) cd $DIR && npm run build — fix nếu fail (2) cd $DIR && npm run lint — fix errors (3) cd $DIR && npm test — fix failures (4) Nếu green → implement Phase $HIEN_PHAP_PHASE theo ~/mekong-cli/HIEN-PHAP-ROIAAS.md (5) git add -A && git commit (6) git push. CẤM tạo placeholder. CẤM skip test.\""
+# 💼 Business commands — revenue & growth
+BUSINESS_CMDS=(
+  "/business-revenue-engine"
+  "/sales-pipeline-build"
+  "/marketing-content-engine"
+)
+
+# 🎯 Product commands — plan & roadmap (falls through to engineering)
+PRODUCT_CMDS=(
+  "/plan"
+  "/design-sprint"
+)
+
+# Combine all into rotation — top layers first
+ALL_CMDS=("${STUDIO_CMDS[@]}" "${FOUNDER_CMDS[@]}" "${BUSINESS_CMDS[@]}" "${PRODUCT_CMDS[@]}")
+
+get_next_command() {
+  local PANE=$1
+  local PROJECT=$2
+  local DIR=$3
+  local NAME=$4
+
+  # Track rotation per pane
+  local IDX_FILE="/tmp/cto_cmd_idx_P${PANE}"
+  local IDX=$(cat "$IDX_FILE" 2>/dev/null || echo "0")
+  local TOTAL=${#ALL_CMDS[@]}
+
+  # Get command from rotation
+  local CMD="${ALL_CMDS[$((IDX % TOTAL))]}"
+
+  # Advance rotation
+  echo $(( (IDX + 1) % TOTAL )) > "$IDX_FILE"
+
+  # Append project context as argument
+  echo "${CMD} ${NAME} — Thư mục: ${DIR}"
 }
 
 while true; do
@@ -57,7 +83,6 @@ while true; do
   RAM=$(vm_stat | awk '/free/ {print $3}' | tr -d '.')
   echo "🧊 [$(date +%T)] Load=$LOAD RAM_free=$RAM"
 
-  # Cleanup
   pkill -f "node.*jest" 2>/dev/null || true
   pkill -f "node.*vitest" 2>/dev/null || true
   pkill -f "tsserver.js" 2>/dev/null || true
@@ -66,13 +91,10 @@ while true; do
     PANE=${PANES[$i]}
     PROJECT=${PANE_PROJECTS[$i]}
     DIR=${PANE_DIRS[$i]}
-    REPO=${PANE_REPOS[$i]}
-    STACK=${PANE_STACKS[$i]}
     NAME=${PANE_NAMES[$i]}
 
     PANE_OUTPUT=$(tmux capture-pane -t "$TMUX_SESSION:0.$PANE" -p 2>/dev/null || echo "")
-    # CTO reads 45 lines — not 10! Need full context to understand state
-    LAST_LINES=$(echo "$PANE_OUTPUT" | tail -n 45)
+    LAST_45=$(echo "$PANE_OUTPUT" | tail -n 45)
     LAST_5=$(echo "$PANE_OUTPUT" | tail -n 5)
 
     # CRASHED
@@ -92,35 +114,42 @@ while true; do
       continue
     fi
 
-    # WORKING — check in full 45 lines for any activity indicator
-    if echo "$LAST_LINES" | grep -qE "Bash\(|Read [0-9]|Write\(|Edit\(|Running|thinking|Hashing|Blanching|Creating|Hatching|Puttering|Generating|Tempering|Crunching|Bloviating|Actioning|Manifesting|Stewing|Billowing|Cogitated|Dilly-dallying|Infusing|Churned|Sautéed|Composting|Baked|Warping|Newspapering|Prestidigitating|Channeling|Metamorphosing|Propagating|Scampering|Brewing|Frosting|Moonwalking|Concocting|Sautéing|Orbiting|Compacting|Ebbing|Pondering|Crystallizing|Precipitating|Mulling|Searching for|thought for"; then
+    # WORKING — check full 45 lines
+    if echo "$LAST_45" | grep -qE "Bash\(|Read [0-9]|Write\(|Edit\(|Running|thinking|Hashing|Blanching|Creating|Hatching|Puttering|Generating|Tempering|Crunching|Bloviating|Actioning|Manifesting|Stewing|Billowing|Cogitated|Dilly-dallying|Infusing|Churned|Sautéed|Composting|Baked|Warping|Newspapering|Prestidigitating|Channeling|Metamorphosing|Propagating|Scampering|Brewing|Frosting|Moonwalking|Concocting|Sautéing|Orbiting|Compacting|Ebbing|Pondering|Crystallizing|Precipitating|Mulling|Searching for|thought for"; then
       echo "⚙️ [P$PANE] WORKING on $PROJECT — SKIP"
       continue
     fi
 
-    # JUST-FINISHED — CC CLI completed a task recently, don't spam
-    if echo "$LAST_LINES" | grep -qE "✅ Done|Task tracking|completed|✔|✓ Step|git commit|git push|All tests pass|Build succeeded"; then
-      echo "🏁 [P$PANE] JUST FINISHED task for $PROJECT — cooldown, skip this cycle"
+    # JUST FINISHED
+    if echo "$LAST_45" | grep -qE "✅ Done|completed|✔|git commit|git push|All tests pass|Build succeeded"; then
+      echo "🏁 [P$PANE] JUST FINISHED — cooldown"
       continue
     fi
 
-    # TRULY IDLE — prompt visible AND no recent work in 45 lines
+    # TRULY IDLE → dispatch VC-level command
     if echo "$LAST_5" | grep -qE "❯|bypass permissions"; then
-      # Check cooldown: don't dispatch if we JUST dispatched last cycle
       COOLDOWN_FILE="/tmp/cto_cooldown_P${PANE}"
       NOW=$(date +%s)
       LAST_DISPATCH=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo "0")
       ELAPSED=$((NOW - LAST_DISPATCH))
-      
+
       if [ "$ELAPSED" -lt 180 ]; then
         echo "⏳ [P$PANE] COOLDOWN (${ELAPSED}s < 180s) — skip"
         continue
       fi
 
-      echo "🧠 [P$PANE] TRULY IDLE → Generating smart /cook for $PROJECT..."
-      CMD=$(generate_smart_prompt "$PROJECT" "$DIR" "$REPO" "$STACK" "$NAME")
-      echo "🏯 [P$PANE] DISPATCHING $NAME:"
-      echo "   📌 ${CMD:0:120}..."
+      CMD=$(get_next_command "$PANE" "$PROJECT" "$DIR" "$NAME")
+      LAYER="?"
+      case "$CMD" in
+        /studio*|/portfolio*) LAYER="🏯 Studio" ;;
+        /founder*|/venture*) LAYER="👑 Founder" ;;
+        /business*|/sales*|/marketing*) LAYER="💼 Business" ;;
+        /plan*|/design*) LAYER="🎯 Product" ;;
+        *) LAYER="👑 Founder" ;;
+      esac
+
+      echo "$LAYER [P$PANE] DISPATCHING for $PROJECT:"
+      echo "   📌 $CMD"
 
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CMD"
       sleep 0.5
