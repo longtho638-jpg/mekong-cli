@@ -31,26 +31,9 @@ generate_smart_prompt() {
   local NAME="$5"
   local PROJECT_PATH="$MEKONG_ROOT/$DIR"
 
-  # CTO reads project state
-  local GIT_STATUS=""
-  local RECENT_COMMITS=""
-  local BUILD_OK="unknown"
-  local HAS_ERRORS=""
-
-  if [ -d "$PROJECT_PATH" ]; then
-    GIT_STATUS=$(cd "$PROJECT_PATH" && git status --short 2>/dev/null | head -5)
-    RECENT_COMMITS=$(cd "$PROJECT_PATH" && git log --oneline -3 2>/dev/null)
-    
-    # Quick build check
-    if [ -f "$PROJECT_PATH/package.json" ]; then
-      HAS_ERRORS=$(cd "$PROJECT_PATH" && npx tsc --noEmit 2>&1 | grep -c "error" 2>/dev/null || echo "0")
-    fi
-  fi
-
-  # Read Hiến Pháp for ROIaaS phase tracking
+  # CTO reads project state (Studio/Founder/Product thinking)
   local HIEN_PHAP_PHASE="GATE"
-  if [ -f "$MEKONG_ROOT/HIEN-PHAP-ROIAAS.md" ]; then
-    # Check which phase the project is at based on existing files
+  if [ -d "$PROJECT_PATH" ]; then
     if [ -f "$PROJECT_PATH/lib/raas-gate.ts" ] || [ -f "$PROJECT_PATH/src/lib/raas-gate.ts" ]; then
       HIEN_PHAP_PHASE="LICENSE_UI"
     fi
@@ -59,33 +42,14 @@ generate_smart_prompt() {
     fi
   fi
 
-  # Build the smart prompt based on project state
-  cat <<PROMPT
-Đọc kỹ trước khi làm:
-1. Đọc file CLAUDE.md (ở root ~/mekong-cli) để hiểu kiến trúc 6 tầng
-2. Đọc file HIEN-PHAP-ROIAAS.md để hiểu 5-Phase DNA: GATE→LICENSE_UI→WEBHOOK→METERING→ANALYTICS
-3. cd $DIR && git log --oneline -5 để hiểu dự án đang ở đâu
+  local GIT_LAST=""
+  if [ -d "$PROJECT_PATH" ]; then
+    GIT_LAST=$(cd "$PROJECT_PATH" && git log --oneline -1 2>/dev/null || echo "no commits")
+  fi
 
-Dự án: $NAME
-Thư mục: $DIR
-Repo: $REPO
-Stack: $STACK
-Phase ROIaaS hiện tại: $HIEN_PHAP_PHASE
-
-Git status: ${GIT_STATUS:-clean}
-Commits gần nhất: ${RECENT_COMMITS:-none}
-TypeScript errors: ${HAS_ERRORS:-unknown}
-
-NHIỆM VỤ (theo thứ tự ưu tiên):
-1. cd $DIR && npm run build 2>&1 | tail -20 — nếu FAIL → fix build errors trước
-2. cd $DIR && npm run lint 2>&1 | tail -20 — fix lint errors
-3. cd $DIR && npm test 2>&1 | tail -20 — fix test failures
-4. Nếu ALL GREEN → tiến hành Phase $HIEN_PHAP_PHASE theo HIEN-PHAP-ROIAAS.md
-5. git add -A && git commit -m "feat($PROJECT): [mô tả ngắn]"
-6. cd $DIR && git push origin main hoặc master
-
-CẤM: Không /cook lại. Không tạo file placeholder. Không skip test. Làm xong báo cáo kết quả.
-PROMPT
+  # CTO crafts a ONE-LINE /cook command with all context
+  # CC CLI recognizes /cook → runs its PEV pipeline (Scan→Classify→Execute→Verify)
+  echo "/cook \"[DỰ ÁN: $NAME] [THƯ MỤC: $DIR] [STACK: $STACK] [PHASE: $HIEN_PHAP_PHASE] [COMMIT GẦN NHẤT: $GIT_LAST] ĐỌC CLAUDE.md VÀ HIEN-PHAP-ROIAAS.md TRƯỚC. Sau đó: (1) cd $DIR && npm run build — fix nếu fail (2) cd $DIR && npm run lint — fix errors (3) cd $DIR && npm test — fix failures (4) Nếu green → implement Phase $HIEN_PHAP_PHASE theo HIEN-PHAP-ROIAAS.md (5) git add -A && git commit (6) git push. CẤM tạo placeholder. CẤM skip test.\""
 }
 
 while true; do
@@ -132,22 +96,17 @@ while true; do
       continue
     fi
 
-    # IDLE → CTO generates smart prompt and dispatches
+    # IDLE → CTO generates smart /cook command and dispatches
     if echo "$LAST_LINES" | grep -qE "❯|bypass permissions"; then
-      echo "🧠 [P$PANE] IDLE → Generating smart prompt for $PROJECT..."
+      echo "🧠 [P$PANE] IDLE → Generating smart /cook for $PROJECT..."
 
-      SMART_PROMPT=$(generate_smart_prompt "$PROJECT" "$DIR" "$REPO" "$STACK" "$NAME")
-
-      # Write prompt to temp file
-      PROMPT_FILE="/tmp/cto_mission_P${PANE}.txt"
-      echo "$SMART_PROMPT" > "$PROMPT_FILE"
+      CMD=$(generate_smart_prompt "$PROJECT" "$DIR" "$REPO" "$STACK" "$NAME")
 
       echo "🏯 [P$PANE] DISPATCHING $NAME:"
-      echo "   📌 Phase: $(grep 'Phase ROIaaS' "$PROMPT_FILE" | head -1)"
+      echo "   📌 ${CMD:0:120}..."
 
-      # Inject prompt into CC CLI via tmux load-buffer → paste-buffer
-      tmux load-buffer "$PROMPT_FILE"
-      tmux paste-buffer -t "$TMUX_SESSION:0.$PANE"
+      # Send one-line /cook command via tmux -l (literal)
+      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CMD"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
       continue
