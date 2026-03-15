@@ -19,9 +19,22 @@ SLEEP_INTERVAL=120
 PANE_STATE_DIR="/tmp/pane_state"
 mkdir -p "$PANE_STATE_DIR"
 
-echo "🏭 FACTORY v11.0 — CASCADE CTO — $(date) — PID: $$"
-echo "👑 CTO reads output, chains commands (bootstrap→operate)"
+echo "🏭 FACTORY v11.2 — CASCADE CTO + OUTPUT CHAINING — $(date) — PID: $$"
+echo "👑 CTO reads output A → feeds into command B → chains results"
 echo "🏛️ P0=${PANE_PROJECTS[0]}, P1=${PANE_PROJECTS[1]}"
+
+# Save/load previous command output per pane (for A→B chaining)
+save_pane_output() {
+  local PANE=$1
+  local OUTPUT=$2
+  # Save last 20 meaningful lines as context for next command
+  echo "$OUTPUT" | grep -v "^$" | grep -v "^─" | grep -v "bypass permissions" | grep -v "qwen" | tail -20 > "$PANE_STATE_DIR/pane_${PANE}_output"
+}
+
+get_prev_output() {
+  local PANE=$1
+  cat "$PANE_STATE_DIR/pane_${PANE}_output" 2>/dev/null || echo "(no previous output)"
+}
 
 # ═══════════════════════════════════════════════════════════════
 # CASCADE LOGIC — Reads output, chains commands
@@ -249,8 +262,14 @@ while true; do
         continue
       fi
 
+      # Save current output for chaining (A→B)
+      save_pane_output "$PANE" "$LAST_45"
+
       # CASCADE LOGIC: Read last 45 lines, analyze, chain commands
       CASCADE_CMD=$(get_cascade_command "$PANE" "$PROJECT" "$DIR" "$NAME" "$LAST_45")
+
+      # Get previous output for context chaining
+      PREV_OUTPUT=$(get_prev_output "$PANE")
 
       # Determine layer for logging
       LAYER="?"
@@ -263,16 +282,23 @@ while true; do
         *) LAYER="🏯 Studio" ;;
       esac
 
-      # Log cascade decision
       echo "$LAYER [P$PANE] CASCADE DISPATCH for $PROJECT:"
       echo "   📌 $CASCADE_CMD"
 
-      # Log output snippet that triggered this decision (first 10 lines)
-      echo "   📄 Output snippet:"
-      echo "$LAST_45" | head -n 10 | sed 's/^/      /'
-      echo "      ..."
+      # Build chained prompt: previous output + new command
+      # Write to temp file to handle multi-line safely
+      PROMPT_FILE="/tmp/cto_chain_P${PANE}.txt"
+      cat > "$PROMPT_FILE" << CHAIN
+[KẾT QUẢ COMMAND TRƯỚC — dùng làm context cho command tiếp theo]
+$PREV_OUTPUT
+[END KẾT QUẢ TRƯỚC]
 
-      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CASCADE_CMD"
+Dựa trên kết quả trên, thực hiện: $CASCADE_CMD
+CHAIN
+
+      # Inject chained prompt via load-buffer
+      tmux load-buffer "$PROMPT_FILE"
+      tmux paste-buffer -t "$TMUX_SESSION:0.$PANE"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
       echo "$NOW" > "$COOLDOWN_FILE"
