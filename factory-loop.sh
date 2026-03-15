@@ -95,8 +95,8 @@ get_cascade_command() {
   local CURRENT_STATE=$(get_pane_state "$PANE")
   local ANALYSIS=$(analyze_output "$OUTPUT")
 
-  # Log analysis
-  echo "   📊 State='$CURRENT_STATE' Analysis='$ANALYSIS'"
+  # Log analysis to stderr (not captured in command output)
+  echo "   📊 State='$CURRENT_STATE' Analysis='$ANALYSIS'" >&2
 
   # OVERRIDE: If analysis says fix/bootstrap, do it regardless of state
   if [ "$ANALYSIS" = "fix" ]; then
@@ -266,10 +266,10 @@ while true; do
       save_pane_output "$PANE" "$LAST_45"
 
       # CASCADE LOGIC: Read last 45 lines, analyze, chain commands
-      CASCADE_CMD=$(get_cascade_command "$PANE" "$PROJECT" "$DIR" "$NAME" "$LAST_45")
+      CASCADE_CMD=$(get_cascade_command "$PANE" "$PROJECT" "$DIR" "$NAME" "$LAST_45" 2>/dev/null)
 
-      # Get previous output for context chaining
-      PREV_OUTPUT=$(get_prev_output "$PANE")
+      # Get previous output summary (one line) for inline context
+      PREV_SUMMARY=$(get_prev_output "$PANE" | tr '\n' ' | ' | head -c 300)
 
       # Determine layer for logging
       LAYER="?"
@@ -285,20 +285,12 @@ while true; do
       echo "$LAYER [P$PANE] CASCADE DISPATCH for $PROJECT:"
       echo "   📌 $CASCADE_CMD"
 
-      # Build chained prompt: previous output + new command
-      # Write to temp file to handle multi-line safely
-      PROMPT_FILE="/tmp/cto_chain_P${PANE}.txt"
-      cat > "$PROMPT_FILE" << CHAIN
-[KẾT QUẢ COMMAND TRƯỚC — dùng làm context cho command tiếp theo]
-$PREV_OUTPUT
-[END KẾT QUẢ TRƯỚC]
+      # Build SINGLE LINE: /command [CONTEXT: previous output]
+      # CC CLI sees /command FIRST → executes it with context
+      FULL_CMD="${CASCADE_CMD} [CONTEXT từ command trước: ${PREV_SUMMARY}]"
 
-Dựa trên kết quả trên, thực hiện: $CASCADE_CMD
-CHAIN
-
-      # Inject chained prompt via load-buffer
-      tmux load-buffer "$PROMPT_FILE"
-      tmux paste-buffer -t "$TMUX_SESSION:0.$PANE"
+      # Send as single line via send-keys
+      tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$FULL_CMD"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
       echo "$NOW" > "$COOLDOWN_FILE"
