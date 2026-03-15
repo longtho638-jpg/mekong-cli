@@ -63,17 +63,21 @@ function canRespawn() {
  */
 function generateClaudeCommand(intent = 'API', paneIdx = 0) {
 	const paneConf = config.PANE_CONFIG[paneIdx] || config.PANE_CONFIG[0];
-	const baseUrl = paneConf.endpoint === 'coding-intl'
-		? config.CODING_PLAN_URL
-		: config.GENERAL_API_URL;
+	const isCodingPlan = paneConf.endpoint === 'coding-intl';
+	const baseUrl = isCodingPlan ? config.CODING_PLAN_URL : config.GENERAL_API_URL;
 	const apiKey = paneConf.apiKey || process.env.ANTHROPIC_API_KEY;
 	const model = paneConf.model || config.MODEL_NAME;
+	// Coding Plan: ANTHROPIC_AUTH_TOKEN (unset API_KEY)
+	// General API: ANTHROPIC_API_KEY (unset AUTH_TOKEN)
+	const keyExport = isCodingPlan
+		? `unset ANTHROPIC_API_KEY && export ANTHROPIC_AUTH_TOKEN=${apiKey}`
+		: `unset ANTHROPIC_AUTH_TOKEN && export ANTHROPIC_API_KEY=${apiKey}`;
 	return (
 		`unset CLAUDE_CONFIG_DIR && unset CLAUDE_AUTOCOMPACT_PCT_OVERRIDE` +
 		` && export NPM_CONFIG_WORKSPACES=false && export npm_config_workspaces=false` +
 		` && export CLAUDE_CODE_SUBAGENT_MODEL=${config.SUBAGENT_MODEL}` +
 		` && export ANTHROPIC_BASE_URL=${baseUrl}` +
-		` && export ANTHROPIC_API_KEY=${apiKey}` +
+		` && ${keyExport}` +
 		` && export ANTHROPIC_MODEL=${model}` +
 		` && /Users/macbookprom1/.local/bin/claude --dangerously-skip-permissions`
 	);
