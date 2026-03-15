@@ -32,31 +32,31 @@ const config = {
   STATE_FILE: path.join(MEKONG_DIR, 'tasks', '.tom_hum_state.json'),
   // 🦞 DIRECT API STRATEGY: No local proxy. Connect directly to DashScope
   MODEL_NAME: process.env.MODEL_NAME || 'qwen3.5-plus', // DashScope direct — daily workhorse
-  // 虛實 Binh Phap Model Hierarchy — ALL Qwen models utilized
-  // 🔥LỬA (Strategic) → qwen3-max (thinking, strongest reasoning)
-  OPUS_MODEL: 'qwen3-max', // DashScope strongest
+  // 虛實 Binh Phap Model Hierarchy — Qwen 3.5 Plus = Opus tier (strongest)
+  // qwen3.5-plus = Opus 4.6 equivalent (1M context, strongest reasoning)
+  // qwen3-max = Sonnet equivalent (balanced)
+  // qwen3-coder-plus = Haiku equivalent (fast code)
+  OPUS_MODEL: 'qwen3.5-plus', // DashScope strongest = Opus tier
   USE_GH_MODELS: false,
   GH_MODEL_NAME: 'qwen3.5-plus',
   WORKER_MODEL_NAME: 'qwen3-coder-plus', // DashScope worker model (code tasks)
-  FALLBACK_MODEL_NAME: 'qwen3.5-plus', // CTO Brain = strong general model
+  FALLBACK_MODEL_NAME: 'qwen3-max', // CTO Brain fallback
   QWEN_MODEL_NAME: process.env.QWEN_MODEL_NAME || 'qwen3-coder-next',
   // Subagent model — CC CLI dùng biến này để spawn subagent đúng model Qwen
   SUBAGENT_MODEL: process.env.CLAUDE_CODE_SUBAGENT_MODEL || 'qwen3-coder-plus',
   // 🎯 PANE_CONFIG — Single source of truth for pane→project→model→endpoint routing
-  // Dual Endpoint: Coding Plan (coding-intl, faster) + General API (dashscope-intl)
-  CODING_PLAN_URL: 'https://coding-intl.dashscope.aliyuncs.com/apps/anthropic',
+  // Single endpoint: DashScope General API (only valid key: sk-4d*)
+  CODING_PLAN_URL: 'https://dashscope-intl.aliyuncs.com/apps/anthropic',
   GENERAL_API_URL: 'https://dashscope-intl.aliyuncs.com/apps/anthropic',
+  // 🏛️ THƯỢNG TẦNG: Architecture context injected into all dispatched missions
+  THUONG_TANG_PREFIX: '[KIẾN TRÚC THƯỢNG TẦNG: mekong-cli monorepo (~/mekong-cli). Core: packages/mekong-engine, packages/ui. Apps: apps/sophia-proposal (Sophia AI Factory, repo: sophia-ai-factory.git), apps/well (WellNexus, repo: Well.git), apps/algo-trader (Algo Trader). Mỗi app có repo GitHub riêng. Chạy lệnh từ mekong-cli root.]',
   PANE_CONFIG: {
-    0: { project: 'mekong-cli', dir: '', model: 'qwen3-max',
-         endpoint: 'coding-intl', apiKey: 'sk-sp-652cd51db1774704a992863926cd1f67' },
-    1: { project: 'sophia-proposal', dir: 'apps/sophia-proposal', model: 'qwen3.5-plus',
-         endpoint: 'dashscope-intl', apiKey: 'sk-4d2965a589ca4d9da2ea05e4bd200d97' },
-    2: { project: 'algo-trader', dir: 'apps/algo-trader', model: 'qwen3-coder-plus',
-         endpoint: 'coding-intl', apiKey: 'sk-sp-afce4429a10e41bb901d6012d7f525c8' },
-    3: { project: 'well', dir: 'apps/well', model: 'qwen3.5-plus',
-         endpoint: 'dashscope-intl', apiKey: 'sk-562c92be8e0f4670a7147699d65d4905' },
-    4: { project: 'opus-strategic', dir: '', model: 'qwen3-max',
-         endpoint: 'coding-intl', apiKey: 'sk-sp-652cd51db1774704a992863926cd1f67' },
+    0: { project: 'sophia-proposal', dir: 'apps/sophia-proposal', model: 'qwen3.5-plus',
+         endpoint: 'dashscope-intl', apiKey: 'sk-4d2965a589ca4d9da2ea05e4bd200d97',
+         repo: 'github.com/longtho638-jpg/sophia-ai-factory.git' },
+    1: { project: 'well', dir: 'apps/well', model: 'qwen3.5-plus',
+         endpoint: 'dashscope-intl', apiKey: 'sk-4d2965a589ca4d9da2ea05e4bd200d97',
+         repo: 'github.com/longtho638-jpg/Well.git' },
   },
   // PROJECTS list — FULL MONOREPO PORTFOLIO (VC Studio CoFounder visibility)
   PROJECTS: [
@@ -80,18 +80,18 @@ const config = {
   HEALTH_CHECK_INTERVAL_MS: 30_000,
   MAX_RECOVERY_ATTEMPTS: 3,
   STALE_OUTPUT_THRESHOLD_MS: 3 * 60_000,
-  MODEL_FALLBACK_CHAIN: ['qwen3-max', 'qwen3.5-plus', 'qwen3-coder-plus', 'qwen3-coder-next'],
+  MODEL_FALLBACK_CHAIN: ['qwen3.5-plus', 'qwen3-max', 'qwen3-coder-plus', 'qwen3-coder-next'],
 
   // ANTIGRAVITY GOD MODE
   ANTIGRAVITY_KEY: 'GOD_MODE_ACTIVE',
   FULL_CLI_MODE: true, // P0 IS CC CLI — no monitor pane
-  // 🦞 1-Tmux Session, 1 Window, 4 Panes:
-  //   P0=mekong-cli, P1=algo-trader, P2=sophia-ai-factory, P3=well
+  // 🦞 1-Tmux Session, 1 Window, 2 Panes (M1 16GB optimized):
+  //   P0=sophia-proposal, P1=well
   TMUX_SESSION: 'tom_hum',
 
   // Agent Team orchestration
-  AGENT_TEAM_SIZE_DEFAULT: 6, // 6 workers: P0(mekong-cli) P1(algo-trader) P2(sophia) P3(well) P4(Opus) P5(core)
-  MAX_CONCURRENT_MISSIONS: 5, // 5 active + P4 strategic standby
+  AGENT_TEAM_SIZE_DEFAULT: 2, // 2 workers: P0(sophia) P1(well)
+  MAX_CONCURRENT_MISSIONS: 2, // 2 active panes
   AGENT_TEAM_TIMEOUT_MS: 4 * 60 * 60 * 1000, // 4 hours for deep missions
 
   // Complexity classification keywords
