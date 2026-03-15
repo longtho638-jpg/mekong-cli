@@ -25,7 +25,7 @@ def reset_state():
     MISSION_STORE.clear()
 
 
-client = TestClient(app)
+client = TestClient(app)  # type: ignore[call-arg]
 
 
 class TestTenantOnboarding:

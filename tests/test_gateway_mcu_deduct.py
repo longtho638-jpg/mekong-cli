@@ -16,7 +16,7 @@ def reset_billing():
     mcu_billing._tenants.clear()
 
 
-client = TestClient(app)
+client = TestClient(app)  # type: ignore[call-arg]
 
 
 class TestMCUDeductEndpoint:
