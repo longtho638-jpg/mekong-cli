@@ -49,7 +49,7 @@ generate_smart_prompt() {
 
   # CTO crafts a ONE-LINE /cook command with all context
   # CC CLI recognizes /cook → runs its PEV pipeline (Scan→Classify→Execute→Verify)
-  echo "/cook \"[DỰ ÁN: $NAME] [THƯ MỤC: $DIR] [STACK: $STACK] [PHASE: $HIEN_PHAP_PHASE] [COMMIT GẦN NHẤT: $GIT_LAST] ĐỌC CLAUDE.md VÀ HIEN-PHAP-ROIAAS.md TRƯỚC. Sau đó: (1) cd $DIR && npm run build — fix nếu fail (2) cd $DIR && npm run lint — fix errors (3) cd $DIR && npm test — fix failures (4) Nếu green → implement Phase $HIEN_PHAP_PHASE theo HIEN-PHAP-ROIAAS.md (5) git add -A && git commit (6) git push. CẤM tạo placeholder. CẤM skip test.\""
+  echo "/cook \"[DỰ ÁN: $NAME] [THƯ MỤC: $DIR] [STACK: $STACK] [PHASE: $HIEN_PHAP_PHASE] [COMMIT GẦN NHẤT: $GIT_LAST] ĐỌC ~/mekong-cli/CLAUDE.md VÀ ~/mekong-cli/HIEN-PHAP-ROIAAS.md TRƯỚC. Sau đó: (1) cd $DIR && npm run build — fix nếu fail (2) cd $DIR && npm run lint — fix errors (3) cd $DIR && npm test — fix failures (4) Nếu green → implement Phase $HIEN_PHAP_PHASE theo ~/mekong-cli/HIEN-PHAP-ROIAAS.md (5) git add -A && git commit (6) git push. CẤM tạo placeholder. CẤM skip test.\""
 }
 
 while true; do
