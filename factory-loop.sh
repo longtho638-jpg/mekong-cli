@@ -48,25 +48,26 @@ analyze_output() {
   local OUTPUT="$1"
   local OUTPUT_LOWER=$(echo "$OUTPUT" | tr '[:upper:]' '[:lower:]')
 
-  # Priority 1: Critical errors → needs fix
+  # Priority 1: SUCCESS signals → project is ready, continue rotation
+  # Check this FIRST so "Bootstrap complete" overrides old "empty" keywords
+  if echo "$OUTPUT_LOWER" | grep -qE "✅|bootstrap complete|ready for|initialized|success|completed|saved|created|done|finished|launched|deployed|operational"; then
+    echo "continue"
+    return
+  fi
+
+  # Priority 2: Critical errors → needs fix
   if echo "$OUTPUT_LOWER" | grep -qE "error:|failed:|exception|traceback|crashed|fatal:"; then
     echo "fix"
     return
   fi
 
-  # Priority 2: Not initialized → needs bootstrap
-  if echo "$OUTPUT_LOWER" | grep -qE "not initialized|not found|empty|no studio|no portfolio|does not exist|missing|not configured"; then
+  # Priority 3: Not initialized → needs bootstrap (only if no success above)
+  if echo "$OUTPUT_LOWER" | grep -qE "not initialized|does not exist|missing|not configured|no studio found"; then
     echo "bootstrap"
     return
   fi
 
-  # Priority 3: Success signals → can continue to next
-  if echo "$OUTPUT_LOWER" | grep -qE "success|completed|saved|created|done|finished|launched|deployed|ready"; then
-    echo "continue"
-    return
-  fi
-
-  # Default: unknown → continue rotation
+  # Default: continue rotation
   echo "continue"
 }
 
