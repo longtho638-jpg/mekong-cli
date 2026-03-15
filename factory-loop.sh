@@ -71,10 +71,12 @@ while true; do
     NAME=${PANE_NAMES[$i]}
 
     PANE_OUTPUT=$(tmux capture-pane -t "$TMUX_SESSION:0.$PANE" -p 2>/dev/null || echo "")
-    LAST_LINES=$(echo "$PANE_OUTPUT" | tail -n 10)
+    # CTO reads 45 lines — not 10! Need full context to understand state
+    LAST_LINES=$(echo "$PANE_OUTPUT" | tail -n 45)
+    LAST_5=$(echo "$PANE_OUTPUT" | tail -n 5)
 
     # CRASHED
-    if echo "$LAST_LINES" | grep -qE "bash-5|% $"; then
+    if echo "$LAST_5" | grep -qE "bash-5|% $"; then
       echo "☠️ [P$PANE] CRASHED — Restarting CC CLI..."
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "cd ~/mekong-cli && claude --dangerously-skip-permissions"
       sleep 0.5
@@ -83,32 +85,47 @@ while true; do
     fi
 
     # QUEUED
-    if echo "$LAST_LINES" | grep -qE "Press up to edit queued"; then
+    if echo "$LAST_5" | grep -qE "Press up to edit queued"; then
       echo "📬 [P$PANE] QUEUED — Clearing..."
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Escape
       sleep 1
       continue
     fi
 
-    # WORKING
-    if echo "$LAST_LINES" | grep -qE "Bash\(|Read [0-9]|Write\(|Edit\(|Running|thinking|Hashing|Blanching|Creating|Hatching|Puttering|Generating|Tempering|Crunching|Bloviating|Actioning|Manifesting|Stewing|Billowing|Cogitated|Dilly-dallying|Infusing|Churned|Sautéed|Composting|Baked|Warping|Newspapering|Prestidigitating|Channeling|Metamorphosing|Propagating|Scampering|Brewing|Frosting|Moonwalking|Concocting|Sautéing|Orbiting|Compacting|Ebbing|Pondering|Crystallizing|Precipitating|Mulling"; then
+    # WORKING — check in full 45 lines for any activity indicator
+    if echo "$LAST_LINES" | grep -qE "Bash\(|Read [0-9]|Write\(|Edit\(|Running|thinking|Hashing|Blanching|Creating|Hatching|Puttering|Generating|Tempering|Crunching|Bloviating|Actioning|Manifesting|Stewing|Billowing|Cogitated|Dilly-dallying|Infusing|Churned|Sautéed|Composting|Baked|Warping|Newspapering|Prestidigitating|Channeling|Metamorphosing|Propagating|Scampering|Brewing|Frosting|Moonwalking|Concocting|Sautéing|Orbiting|Compacting|Ebbing|Pondering|Crystallizing|Precipitating|Mulling|Searching for|thought for"; then
       echo "⚙️ [P$PANE] WORKING on $PROJECT — SKIP"
       continue
     fi
 
-    # IDLE → CTO generates smart /cook command and dispatches
-    if echo "$LAST_LINES" | grep -qE "❯|bypass permissions"; then
-      echo "🧠 [P$PANE] IDLE → Generating smart /cook for $PROJECT..."
+    # JUST-FINISHED — CC CLI completed a task recently, don't spam
+    if echo "$LAST_LINES" | grep -qE "✅ Done|Task tracking|completed|✔|✓ Step|git commit|git push|All tests pass|Build succeeded"; then
+      echo "🏁 [P$PANE] JUST FINISHED task for $PROJECT — cooldown, skip this cycle"
+      continue
+    fi
 
+    # TRULY IDLE — prompt visible AND no recent work in 45 lines
+    if echo "$LAST_5" | grep -qE "❯|bypass permissions"; then
+      # Check cooldown: don't dispatch if we JUST dispatched last cycle
+      COOLDOWN_FILE="/tmp/cto_cooldown_P${PANE}"
+      NOW=$(date +%s)
+      LAST_DISPATCH=$(cat "$COOLDOWN_FILE" 2>/dev/null || echo "0")
+      ELAPSED=$((NOW - LAST_DISPATCH))
+      
+      if [ "$ELAPSED" -lt 180 ]; then
+        echo "⏳ [P$PANE] COOLDOWN (${ELAPSED}s < 180s) — skip"
+        continue
+      fi
+
+      echo "🧠 [P$PANE] TRULY IDLE → Generating smart /cook for $PROJECT..."
       CMD=$(generate_smart_prompt "$PROJECT" "$DIR" "$REPO" "$STACK" "$NAME")
-
       echo "🏯 [P$PANE] DISPATCHING $NAME:"
       echo "   📌 ${CMD:0:120}..."
 
-      # Send one-line /cook command via tmux -l (literal)
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" -l "$CMD"
       sleep 0.5
       tmux send-keys -t "$TMUX_SESSION:0.$PANE" Enter
+      echo "$NOW" > "$COOLDOWN_FILE"
       continue
     fi
 
